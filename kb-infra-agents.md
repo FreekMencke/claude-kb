@@ -25,7 +25,7 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 | How do I debug an incident without flooding context? | Filtered MCP reads (Flux `since`/`grep`/`limit`, Logs Insights aggregates), done by a read-only subagent that returns a short summary. | INFRA-018, INFRA-019 |
 | Do credentials end up in transcripts? | Yes, anything a tool prints is written to the plaintext `.jsonl` and sent to the model. Settings `env` reaches every subprocess. | INFRA-021, INFRA-020 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
-| What should we change in our setup first? | Give the agent a non-admin kubeconfig and pin the MCP servers; the root keys are gone and the agent policy is tightened (2026-10-12). | INFRA-024, Recommendations |
+| What should we change in our setup first? | Done 2026-10-12: read-only cluster identity, pinned MCP servers, `autoMode.environment`, deny rules, root keys gone, agent policy tightened. Left: short-lived AWS credentials (rec 10) and the Bash-vs-MCP decision (rec 9). | INFRA-024, Recommendations |
 
 ## Index
 
@@ -166,7 +166,9 @@ From weakest to strongest:
 3. **A server's read-only flag** removes write tools from the list, so a request from the model can't bring them back. But the flag is client-side code running with your credentials, and MCP servers run outside the sandbox.
 4. **The credential.** IAM policy and Kubernetes RBAC are enforced by AWS and the API server, whatever tool or command made the call. The `view` ClusterRole "does not allow viewing Secrets, since reading the contents of Secrets enables access to ServiceAccount credentials".
 
-A read-only flag is only as strong as the agent's other paths. If Bash can run `kubectl` or `aws` with the same kubeconfig or profile, the agent has the credential's full rights, whatever the server is set to. So the identity the agent can reach should carry only the rights you want it to have. Server flags and rules are defense in depth on top.
+A read-only flag is only as strong as the agent's other paths. If Bash can run `kubectl` or `aws` with the same kubeconfig or profile, the agent has the credential's full rights, whatever the server is set to. So the identity the agent can reach should carry only the rights you want it to have. Server flags and rules are defense in depth on top. The same goes for hosts: if the agent can `ssh` to a machine holding an admin kubeconfig, that machine is one more path to the credential.
+
+Tested 2026-10-12, v2.1.296, terminal (WSL): with `~/.kube/config` as a `view`-bound ServiceAccount token, `kubectl auth can-i` gave `no` for `delete pods -A`, `get secrets -A` and `create pods/exec`, and `yes` for `list pods -A`. Both MCP servers still connected.
 
 ## [INFRA-007] Output size: MCP filters versus CLI output
 - Type: recommendation
@@ -541,18 +543,21 @@ Mapping INFRA-022 to controls, most-recurring first:
 - Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html)
 - Related: INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-010, INFRA-016
 
-Read from local config (structure only) and read-only AWS calls through the MCP server. Names are left out on purpose.
+Read from local config (structure only) and read-only AWS and cluster calls. Names are left out on purpose. Updated after #44, #45 and #46 (2026-10-12); CHANGELOG.md has the earlier state.
 
 **AWS:**
-Updated after FreekMencke/claude-kb#44 (2026-10-12); CHANGELOG.md has the state before.
-- `~/.aws/credentials` holds one long-term key pair, for the `claude` IAM user. The root user's keys are deleted and there is no `default` profile, so an `aws` call without `--profile` fails.
-- The `claude` policy allows Lambda code and config updates and invokes on two function prefixes; writes to the two existing EventBridge rules and to rules with those prefixes; S3 object put and delete on the two site buckets; and `logs:PutRetentionPolicy` on those functions' log groups. It denies IAM, billing, `sts:AssumeRole`, bucket policies and versioning, object-version deletes, function deletes, Route 53, stopping or changing CloudTrail, and log-group deletes. Tested: retention outside the Lambda log groups and `cloudtrail:StopLogging` are refused. Removing the no-op `aws-mcp:*` statement (INFRA-003) didn't affect the MCP server.
-- The site buckets keep versioning off: they hold a site rebuilt from git on each deploy, and it is moving to the cluster.
-- One multi-region CloudTrail trail records management events, read and write, without data events, so object deletes and Lambda invokes still leave no record (INFRA-016).
+- `~/.aws/credentials` holds one long-term key, for the `claude` IAM user. Root's keys and the `default` profile are gone, so `aws` without `--profile` fails.
+- The policy allows Lambda updates and invokes on two function prefixes, writes to the EventBridge rules with those prefixes plus two named ones, object put and delete on the two site buckets, and retention on the Lambdas' log groups. It denies IAM, billing, `sts:AssumeRole`, bucket policy and versioning, object-version and function deletes, Route 53, and CloudTrail or log-group tampering.
+- Site buckets have no versioning: the site is rebuilt from git and moving to the cluster.
+- One multi-region trail records management events only, so object deletes and invokes leave no record (INFRA-016).
 
-**Kubernetes:** both MCP servers and Bash `kubectl` use the default kubeconfig, which holds the **cluster-admin** client certificate. The kubernetes server is read-only with Secrets denied; Flux runs `--read-only` with masking on. Both flags are client-side (INFRA-006). The kubernetes server and the AWS proxy run as `@latest`.
+**Kubernetes:**
+- Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
+- The admin kubeconfig is `~/.kube/admin.yaml`, behind a Read deny rule.
+- Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
+- **Gap:** the server keeps an admin kubeconfig, reachable over `ssh`, which the cluster repo uses to apply. Auto mode and approvals cover that path.
 
-**Claude Code:** auto mode by default, no `autoMode.environment`, no deny rules, no sandbox. Allow rules cover `kubectl get`, `logs` and `diff` in one namespace.
+**Claude Code:** auto mode, with `autoMode.environment` naming the production resources (INFRA-010). Deny rules for `kubectl` deletes, `helm uninstall`, the AWS credentials and the admin kubeconfig. No sandbox.
 
 ## Recommendations for our setup
 
@@ -561,7 +566,7 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 | # | Change | Impact | Effort | Entries |
 |---|---|---|---|---|
 | 1 | Done 2026-10-12 (FreekMencke/claude-kb#44), without `AWS_PROFILE`: a failing call is the clearer signal. Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
-| 2 | Give the agent a non-admin cluster identity: a ServiceAccount bound to `view` (plus read on Flux resources), with its own kubeconfig for both MCP servers and `KUBECONFIG` in Claude Code's `env`. Keep the admin kubeconfig out of the default path. Alternative for Flux only: `--kube-as`. | High | Medium | INFRA-006, INFRA-004, INFRA-005 |
+| 2 | Done 2026-10-12 (FreekMencke/claude-kb#45, RBAC in the cluster's config repo): the agent kubeconfig became the default `~/.kube/config` and admin moved to `~/.kube/admin.yaml`, so neither server needed `KUBECONFIG`. `view` already includes Flux on this cluster. SSH to the server still reaches admin (INFRA-024). Give the agent a non-admin cluster identity: a ServiceAccount bound to `view` (plus read on Flux resources), with its own kubeconfig for both MCP servers and `KUBECONFIG` in Claude Code's `env`. Keep the admin kubeconfig out of the default path. Alternative for Flux only: `--kube-as`. | High | Medium | INFRA-006, INFRA-004, INFRA-005 |
 | 3 | Done 2026-10-12 (FreekMencke/claude-kb#46): `kubernetes-mcp-server@0.0.67` and `mcp-proxy-for-aws-cli@1.7.0`, the latest releases that day. Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
 | 4 | Done 2026-10-12 (FreekMencke/claude-kb#44), with versioning, lifecycle and object-version deletes and CloudTrail changes also denied; the two existing rules have no prefix, so they are named. Clean up the agent policy: remove the `aws-mcp:*` statement and the two grants for missing buckets; scope EventBridge to the agent's rule-name prefixes and `PutRetentionPolicy` to the functions' log groups; add `cloudtrail:StopLogging`, `cloudtrail:DeleteTrail` and `logs:DeleteLogGroup` to the deny statement. Then update the "Cluster and AWS access" section of `~/.claude/CLAUDE.md`, which says the agent may change only prefixed rules. | Medium | Low | INFRA-003, INFRA-024 |
 | 5 | Skipped 2026-10-12 (FreekMencke/claude-kb#44): the buckets hold a site rebuilt from git, which moves to the cluster. Turn on S3 versioning (with a noncurrent-version expiry) on the site buckets the agent can delete from. | Medium | Low | INFRA-023 |
