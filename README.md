@@ -1,8 +1,8 @@
 # claude-kb
 
 A Markdown knowledge base on using Claude efficiently, written for agents to query: model and effort choice,
-subagents and orchestration, agents in repos, token usage and caching, and writing skills. Every entry carries its
-sources, a confidence level and a last-verified date.
+subagents and orchestration, agents in repos, token usage and caching, writing skills, and prompting the current
+models. Every entry carries its sources, a confidence level and a last-verified date.
 
 ## Querying it
 
@@ -37,6 +37,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [kb-sessions.md](kb-sessions.md) | `SESS`: several sessions in one repo (worktrees, shared state, messaging, keeping branches current) |
 | [kb-hooks.md](kb-hooks.md) | `HOOK`: writing, scoping, debugging, securing and pricing hooks |
 | [kb-infra-agents.md](kb-infra-agents.md) | `INFRA`: agents with cloud and cluster access: credentials, MCP servers, rules, auto mode, audit trails, incidents |
+| [kb-prompting.md](kb-prompting.md) | `PROMPT`: instructing the 5.x models: prompt wording, CLAUDE.md and agent bodies, subagent briefs |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
 | [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage |
 
