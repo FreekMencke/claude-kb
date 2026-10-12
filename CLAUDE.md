@@ -17,7 +17,7 @@ Write a single Markdown file named as given in the topic section.
 
 If you are a subagent or workflow agent doing part of the research, don't write any files: return your findings with source URLs to the agent that started you.
 
-If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit.
+If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit. INDEX.md is built from each file's index table: when an entry's title or tags change, edit that file's index row and patch INDEX.md to match. Run `python3 scripts/check_kb.py` after any change to entries and fix what it reports. README.md has the repo layout and the monthly re-verification routine.
 
 Start the file with:
 1. A "Quick answers" table: the 10–15 questions an agent is most likely to ask about this topic, each with a one-line answer and the entry ID(s) holding the detail.
