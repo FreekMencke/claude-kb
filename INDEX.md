@@ -9,6 +9,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-skills.md` | SKILL | Writing, testing and distributing skills | 59 (1 merged into other entries) |
 | `kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 52 (0 merged into other entries) |
 | `kb-sessions.md` | SESS | Several sessions in one repo | 35 (0 merged into other entries) |
+| `kb-hooks.md` | HOOK | Hooks: events, handler types, cost, debugging, security, patterns | 36 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -44,6 +45,9 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | What do parallel sessions in worktrees share, and can I `git stash`? | All of `refs/` (including the stash), `.git/config` and hooks, plus Claude Code's project plugins and "don't ask again" approvals. Never use bare `git stash`: another session can pop it. | SESS-001, SESS-002, SESS-004 |
 | Why doesn't CI start on my PR when other sessions keep merging? | GitHub runs no `pull_request` workflow on a conflicting PR. Poll `gh pr view <n> --json mergeable,mergeStateStatus`, rebase on `CONFLICTING`, and force-push with `--force-with-lease --force-if-includes`. A merge queue removes the loop, but only in org-owned repos. | SESS-021, SESS-022, SESS-024, SESS-025 |
 | Can one session message or hand off to another? | `SendMessage` delivers plain text to your other sessions (v2.1.224+), but it never counts as your consent. For state, resume (`--resume <name>` works across worktrees), teleport from the cloud, or write an issue or progress file. | SESS-017, SESS-018, SESS-029, SESS-031 |
+| How do I write a hook that blocks something? | A `PreToolUse` command hook that exits 2 with the reason on stderr, or exits 0 with `permissionDecision: "deny"` JSON. Exit 1 doesn't block, and a crashing or timed-out hook lets the action through unless it sets `onFailure: "block"` (v2.1.295+). | HOOK-004, HOOK-006, HOOK-013 |
+| What does a hook cost? | A command hook costs a few ms per call and no tokens unless it returns text. A `prompt` hook is a Haiku call per match; on Stop it re-reads the conversation uncached. Filter with `if` (e.g. `Bash(git *)`) and use `async` for slow checks. | HOOK-015, HOOK-010, HOOK-019 |
+| How do I debug a hook that does nothing? | Pipe sample JSON into the script and check the exit code, then run with `claude --debug-file <path>` and grep `Hooks:` lines. Usual causes: exit 1, text before the JSON, a field outside `hookSpecificOutput`, matcher case, one invalid matcher dropping the file. | HOOK-022, HOOK-023, HOOK-024 |
 
 ## Index
 
@@ -404,6 +408,47 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SESS-034 | Watching many sessions | tool | notifications, statusline, monitoring |
 | SESS-035 | Our setup against these findings | comparison | our-setup, global-claude-md |
 
+### Hooks (`kb-hooks.md`, HOOK)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| HOOK-001 | Session, turn and tool-loop events | fact | events, reference |
+| HOOK-002 | Agent, environment and lifecycle events | fact | events, reference |
+| HOOK-003 | Common input fields and hook environment variables | fact | input, env |
+| HOOK-004 | Exit codes and stdout: how a run resolves | fact | exit-codes, output |
+| HOOK-005 | JSON output fields and the 10,000-character cap | fact | json, output, limits |
+| HOOK-006 | PreToolUse decisions and how they meet permission rules | fact | pretooluse, permissions |
+| HOOK-007 | `additionalContext`: where it lands and how to word it | pattern | context, output |
+| HOOK-008 | SessionStart outputs and `CLAUDE_ENV_FILE` | fact | sessionstart, env |
+| HOOK-009 | The five handler types and which events take them | comparison | handler-types |
+| HOOK-010 | Prompt and agent hooks: behaviour and cost | fact | prompt-hooks, agent-hooks, cost |
+| HOOK-011 | Async and `asyncRewake` hooks | fact | async, background |
+| HOOK-012 | Timeouts per handler type and event | fact | timeouts, limits |
+| HOOK-013 | Hooks fail open by default; `onFailure: "block"` | fact | failure, reliability |
+| HOOK-014 | Parallel runs, deduplication and combined decisions | fact | ordering, parallel |
+| HOOK-015 | The cost of a hook on every tool call | fact | cost, latency, measurement |
+| HOOK-016 | Where hooks are defined | fact | locations, plugins, settings |
+| HOOK-017 | Hooks by surface: terminal, desktop, cloud, `-p`, action, SDK | comparison | surfaces, desktop, cloud |
+| HOOK-018 | Matcher syntax | fact | matchers |
+| HOOK-019 | The `if` field: filtering on tool arguments | fact | if, matchers, bash |
+| HOOK-020 | Hooks in skill and agent frontmatter | fact | frontmatter, skills, agents |
+| HOOK-021 | `/hooks`, live reload and switching hooks off | tool | hooks-menu, disable, managed |
+| HOOK-022 | Debug log for hooks | tool | debugging |
+| HOOK-023 | Testing a hook script on its own | pattern | testing, debugging |
+| HOOK-024 | Why a hook silently does nothing | anti-pattern | debugging, pitfalls |
+| HOOK-025 | Hooks run with your permissions; trust and `-p` | fact | security, trust |
+| HOOK-026 | Hooks read untrusted input and are not a security boundary | recommendation | security, injection |
+| HOOK-027 | Pattern: format or lint after an edit | pattern | format, posttooluse |
+| HOOK-028 | Pattern: block dangerous commands and protected files | pattern | safety, pretooluse |
+| HOOK-029 | Pattern: context at SessionStart, after compaction, before compaction | pattern | sessionstart, compaction |
+| HOOK-030 | Pattern: notifications | pattern | notification, stop |
+| HOOK-031 | Pattern: Stop hooks that keep Claude working | pattern | stop, loops |
+| HOOK-032 | Community hook collections worth reading | tool | community, collections |
+| HOOK-033 | Hook anti-patterns | anti-pattern | pitfalls, performance |
+| HOOK-034 | Hooks in other coding agents | comparison | cursor, codex, gemini, copilot |
+| HOOK-035 | Plugin mods versus settings hooks | fact | mods, plugins |
+| HOOK-036 | Our hooks today (osrs-tracker repos, user settings) | fact | our-setup, osrs-tracker |
+
 ## Conflicts
 
 Places where entries, or an entry and another file's recommendations or open questions, disagree. Checked 2026-10-12 against the sources the entries cite; the pages were not re-fetched.
@@ -433,6 +478,12 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Hand-offs: ORCH-036 (progress files in long runs), SESS-031 (choosing a channel between sessions), TOK-030 (handoff before `/clear`).
 - Cloud and teleport: ORCH-016 (cloud sessions), SESS-030 (moving sessions between surfaces).
 - Cache scope: TOK-052 (TTLs and scope), SESS-015 (worktrees split the cache).
+- Hook handler types and model-based hooks: HOOK-009 and HOOK-010 (all types, cost), REPO-025 (review hooks), SKILL-023 (hooks vs skills).
+- Where hooks live and how they merge: HOOK-016 and HOOK-021 (locations, `/hooks`, disabling), REPO-005 and REPO-006 (repo components, precedence).
+- Hook trust and security: HOOK-025 (all hook sources, `-p`), REPO-007 (agent frontmatter, untrusted folders).
+- Hook events: HOOK-001 and HOOK-002 (every event), ORCH-019 (orchestration events and uses).
+- Blocking hooks: HOOK-028 (dangerous commands, protected files), REPO-033 (read-only reviewer), TOK-042 and TOK-044 (output and large-read hooks).
+- Our osrs-tracker hooks: HOOK-036 (hook details and the aws `git -C` gap), REPO-001 (repo baseline).
 
 ## Merges
 
@@ -492,3 +543,4 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | 2026-10-12 | REPO-021 | Template T3 tested in osrs-tracker-web#223: plugin MCP tools listed by name work in a subagent's `tools`; notes on reading screenshots and their path. `kb-repo-agents.md` open question answered. The token savings stay unmeasured until #223's step 6. |
 | 2026-10-12 | (recommendations) | Done recommendations cut to one-line pointers in all four topic files; open items, won't-do decisions, measurements and referenced IDs kept. `kb-repo-agents.md` T1 now points to the live `conventions-reviewer` and keeps the shared read-only hook. |
 | 2026-10-12 | (recommendations) | `kb-skills.md` recommendation 12: `morning` and `import-memory` disabled on claude.ai; `docs`, the file skills, `deep-research`, the three browser skills and `skill-creator` kept on purpose; recommendation done. |
+| 2026-10-12 | HOOK-001–HOOK-036 | New topic `kb-hooks.md` (FreekMencke/claude-kb#19): every event, handler types and their cost, timeouts, failure modes, locations and surfaces, matchers and `if`, debugging, security, patterns, community collections and our setup. Answers REPO's open question on `prompt` hook cost (HOOK-010); ORCH-019's unverified TaskCreated, TaskCompleted and TeammateIdle input fields are now in HOOK-002. |
