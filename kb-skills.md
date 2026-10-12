@@ -1411,7 +1411,7 @@ Still open:
 
 10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). The same applies to this repo's `CLAUDE.md` when worktrees change it.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
-12. **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like). Done for WSL Claude Code; claude.ai itself is still open. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
+12. **Done 2026-10-12: prune unused account skills on claude.ai** (Customize › Skills). Done for WSL Claude Code (`skillOverrides`). On claude.ai, 2026-10-12: `morning` and `import-memory` disabled; kept on purpose: `docs`, `pdf`, `docx`, `pptx`, `xlsx` (used in chat), `deep-research`, `computer-use`, `chrome-browser`, `built-in-browser`, and `skill-creator` (skill-workshop points to it for benchmarks and description tuning). Disabling on claude.ai removes a skill from every surface, chat included, so decide per skill on use anywhere, not just in code. In desktop Local sessions these skills arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
 
 ## Open questions
 
