@@ -1072,6 +1072,8 @@ Ranked by impact against effort. The first group reviews `parallel-code-orchestr
 
 ### Improvements to `parallel-code-orchestrator`
 
+Tracked in roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), opened 2026-10-12: recommendations 1–12 are FreekMencke/claude-skills#4.
+
 1. **Fix the scouting row: "Haiku" doesn't happen by default.** *(High impact, trivial effort.)* Step 3 says "Use Haiku subagents to search", but the built-in Explore agent runs on the session model (Opus) unless `model: haiku` is passed or an `Explore` override exists. Change the row to: "Scouting: `model: haiku` on every Explore or general-purpose call, effort `medium` (Haiku at `low` skips checks)." Evidence: ORCH-005, ORCH-028.
 2. **Add an effort column and set effort on every spawn.** *(High impact, low effort.)* The skill sets model but never effort. In Claude Code, Opus 5.5 and Sonnet 5.5 default to `medium`, so design and contract units and the integrating reviewer run at `medium` unless told otherwise. Suggested values:
    - scouting: Haiku `medium`
@@ -1101,7 +1103,7 @@ What the skill already does well, confirmed by the research: the threshold for w
 
 ### Other setup changes
 
-13. **Add a user-level `Explore` override on Haiku.** *(High impact, trivial effort.)* Create `~/.claude/agents/explore.md` with `name: Explore`, read-only tools, `model: haiku` and `effort: medium`, so every exploration, in every repo, stops running on Opus. Check the result after a week: if searches start missing things, drop the override. Evidence: ORCH-005, ORCH-033.
+13. **Done 2026-10-12. Add a user-level `Explore` override on Haiku.** *(High impact, trivial effort.)* Create `~/.claude/agents/explore.md` with `name: Explore`, read-only tools, `model: haiku` and `effort: medium`, so every exploration, in every repo, stops running on Opus. Check the result after a week: if searches start missing things, drop the override. Evidence: ORCH-005, ORCH-033.
 14. **Set `--max-budget-usd` and `--max-turns` on every scripted `claude -p` and GitHub Action.** *(Medium impact, trivial effort.)* Evidence: ORCH-014, ORCH-038.
 15. **Don't enable agent teams globally.** *(Risk avoidance.)* Enabling them changes what named subagent spawns do. Turn them on per session, only for research and review work. Evidence: ORCH-010.
 
