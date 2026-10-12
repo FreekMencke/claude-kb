@@ -2,9 +2,12 @@
 """Check every kb-*.md file against the entry format in CLAUDE.md, and INDEX.md against the entries.
 
 Usage: python3 scripts/check_kb.py
-Exits with status 1 when it finds a problem, so it can run in CI.
+Exits with status 1 when it finds a problem, so it can run in CI. Possible duplicates across files are printed as
+warnings and never fail the run.
 """
 import collections
+import difflib
+import itertools
 import pathlib
 import re
 import sys
@@ -17,6 +20,11 @@ OTHER_HEADING = re.compile(r"^#{1,2} (?!\[)", re.M)
 META_LINE = re.compile(r"^- (?:" + "|".join(FIELDS) + r"):.*$", re.M)
 # Entries that are syntheses of other entries and cite IDs instead of URLs.
 SYNTHESIS_SOURCE = re.compile(r"synthesis of", re.I)
+# Possible duplicates across files: titles this similar (difflib ratio), or this share of tags (Jaccard, at least 2).
+TITLE_SIMILAR = 0.72
+TAGS_SHARED = 0.6
+# INDEX.md sections where IDs on one line count as already reviewed together.
+REVIEWED_SECTIONS = ["Conflicts", "Overlaps kept on purpose", "Merges", "Similar but distinct"]
 
 
 def entries(text):
@@ -34,6 +42,34 @@ def quick_answer_rows(text):
         return None
     rows = [l for l in m.group(1).splitlines() if l.startswith("|")]
     return max(len(rows) - 2, 0)  # minus header and separator
+
+
+def reviewed_pairs(index_text):
+    """Pairs of IDs named on the same line (ranges like X-001 to X-005 expanded) in the REVIEWED_SECTIONS of INDEX.md."""
+    pairs = set()
+    for name in REVIEWED_SECTIONS:
+        m = re.search(r"^## " + re.escape(name) + r"\s*$(.*?)(?=^## |\Z)", index_text, re.M | re.S)
+        for line in m.group(1).splitlines() if m else []:
+            ids = set(re.findall(r"\b[A-Z]+-\d+\b", line))
+            for prefix, start, end in re.findall(r"\b([A-Z]+)-(\d+) to (?:[A-Z]+-)?(\d+)\b", line):
+                ids |= {f"{prefix}-{n:0{len(start)}d}" for n in range(int(start), int(end) + 1)}
+            pairs |= {frozenset(p) for p in itertools.combinations(ids, 2)}
+    return pairs
+
+
+def possible_duplicates(titles, tags, reviewed):
+    """Warnings, not failures: cross-file entry pairs with near-identical titles or mostly shared tags."""
+    found = []
+    for a, b in itertools.combinations(sorted(titles), 2):
+        (file_a, title_a), (file_b, title_b) = titles[a], titles[b]
+        if file_a == file_b or frozenset((a, b)) in reviewed:
+            continue
+        ratio = difflib.SequenceMatcher(None, title_a.lower(), title_b.lower()).ratio()
+        shared = tags.get(a, set()) & tags.get(b, set())
+        union = tags.get(a, set()) | tags.get(b, set())
+        if ratio >= TITLE_SIMILAR or (len(shared) >= 2 and len(shared) / len(union) >= TAGS_SHARED):
+            found.append(f"{a} '{title_a}' and {b} '{title_b}'")
+    return found
 
 
 def main():
@@ -108,6 +144,19 @@ def main():
         for issue in issues:
             print(f"  - {issue}")
         problems += len(issues)
+
+        titles = {}
+        for f, t in texts.items():
+            for m in re.finditer(r"^## \[([A-Z]+-\d+)\] (.+)$", t, re.M):
+                titles[m.group(1)] = (f.name, m.group(2).strip())
+        tags = {m.group(1): {x.strip() for x in m.group(2).split(",") if x.strip()}
+                for m in re.finditer(r"^\| ([A-Z]+-\d+) \| .*? \| [\w-]+ \| (.*?) \|$", it, re.M)}
+        warnings = possible_duplicates(titles, tags, reviewed_pairs(it))
+        if warnings:
+            print(f"\nPossible duplicates across files ({len(warnings)}, warnings only). Merge or cross-link them,"
+                  " or list the pair under 'Similar but distinct' in INDEX.md:")
+            for w in warnings:
+                print(f"  - {w}")
 
     dups = {k: v for k, v in where.items() if len(v) > 1}
     for eid, names in sorted(dups.items()):
