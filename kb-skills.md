@@ -21,6 +21,11 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
 | How many skills is too many? | No official number; trigger accuracy measurably drops as the roster grows. Install few, prune with `/skill-doctor`. | SKILL-045, SKILL-005 |
+| Do claude.ai skills load in desktop-app Code sessions? | Local and Cloud: yes, delivered by the app as a plugin. Desktop WSL sessions: no, according to a local test. | SKILL-049, SKILL-050 |
+| Which `~/.claude` does a WSL session use? | The distro's Linux home. Windows and WSL share no skills, plugins, settings or credentials. | SKILL-051 |
+| Do plugins work in desktop WSL sessions? | The docs say no; plugins enabled in the distro's settings load anyway. The plugin UI and app-delivered plugins are missing. | SKILL-052 |
+| How do I see which skills a desktop session really has? | After the first message, ask the model to list its skills. The `/` menu and Customize panel are unreliable. | SKILL-054 |
+| Where should skills live with desktop and WSL? | In a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-056 |
 
 ## Index
 
@@ -72,6 +77,18 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | SKILL-044 | Other strong collections: plugin-dev, Trail of Bits, wshobson, Vercel | comparison | collections |
 | SKILL-045 | Anti-pattern: installing collections wholesale | anti-pattern | collections, context-cost |
 | SKILL-046 | Ideas from other AI coding tools | comparison | portability, triggering |
+| SKILL-047 | How the desktop app's Code tab runs Claude Code | fact | desktop, wsl, versions |
+| SKILL-048 | Which skill sources each session type loads | comparison | desktop, wsl, cloud, loading |
+| SKILL-049 | claude.ai account skills reach sessions in two different ways | fact | desktop, claude.ai, sync |
+| SKILL-050 | Desktop WSL sessions don't load claude.ai account skills | fact | desktop, wsl, sync |
+| SKILL-051 | Windows and WSL keep separate `~/.claude` homes | fact | wsl, locations |
+| SKILL-052 | Plugins in desktop WSL sessions: docs say no, distro-enabled plugins load | comparison | desktop, wsl, plugins |
+| SKILL-053 | Desktop worktree sessions read project skills from the main checkout | fact | desktop, worktrees |
+| SKILL-054 | Checking which skills a desktop session actually has | recommendation | desktop, debugging |
+| SKILL-055 | Writing skills on WSL: Linux filesystem, LF endings, exec bits | recommendation | wsl, authoring |
+| SKILL-056 | Setup for someone using both the desktop app and WSL | recommendation | desktop, wsl, distribution |
+| SKILL-057 | Skill features that behave differently in the desktop app | fact | desktop, permissions |
+| SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
 
 ---
 
@@ -1089,6 +1106,273 @@ Every tool now has path-scoped activation and a manual-only mode, and Claude Cod
 
 ---
 
+## Claude desktop app and WSL
+
+Entries SKILL-047 to SKILL-058 were added on 2026-10-12. Where they cite a "local test", the setup was the Windows desktop app 2.31226.1, whose Code tab ran Claude Code 2.1.295 in an Ubuntu WSL2 distro, and the WSL terminal CLI 2.1.296.
+
+## [SKILL-047] How the desktop app's Code tab runs Claude Code
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Claude Code on desktop](https://code.claude.com/docs/en/desktop), [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [#80089](https://github.com/anthropics/claude-code/issues/80089), local test
+- Related: SKILL-048, SKILL-051
+
+The Code tab "runs the same underlying engine" as the CLI, but as "its own copy of Claude Code, which has its own version number". The desktop app downloads and updates that copy, so it can lag or lead the `claude` in your terminal.
+- Check the copy's version with `/status` in a Code-tab session. Update it through the app's "Check for Updates".
+- New Claude Code features and fixes, such as a skills fix in 2.1.296, reach desktop sessions only once the app ships that build.
+
+Session environments are Local, Cloud, SSH, and WSL (Windows only).
+
+For a **WSL** session, the app copies a Linux CLI build into the distro under `~/.claude/remote/ccd-cli/<version>`, plus a small server under `~/.claude/remote/srv/`. It then runs the session through that server.
+- The local test showed `CLAUDE_CODE_ENTRYPOINT=claude-desktop` and `DISABLE_AUTOUPDATER=1`.
+- The app launched the CLI with `--setting-sources=user,project,local`, an inline `--settings` JSON and `--project-config-root`.
+- Tools, git and paths are all Linux-side.
+- WSL sessions require WSL 2. WSL 1 works only for the CLI, without the sandbox.
+
+## [SKILL-048] Which skill sources each session type loads
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Claude Code on desktop: Use skills](https://code.claude.com/docs/en/desktop), [Claude Code skills: Cowork and cloud sessions](https://code.claude.com/docs/en/skills), [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [#88432](https://github.com/anthropics/claude-code/issues/88432), local test
+- Related: SKILL-049, SKILL-050, SKILL-052
+
+| Session | Personal `~/.claude/skills` | Project `.claude/skills` | Installed plugins | claude.ai account skills |
+|---|---|---|---|---|
+| Terminal CLI (`/login`) | yes | yes | yes | yes, from `~/.claude/skills/synced/` |
+| Desktop Local | yes (that OS's home) | yes | yes | yes, delivered by the app as a plugin |
+| Desktop WSL | yes (the distro's home) | yes | docs say no; observed yes (SKILL-052) | **no** (local test, SKILL-050) |
+| Desktop SSH | the remote host's | yes | yes | not documented |
+| Desktop Cloud | no | yes (from the clone) | no | yes |
+| Cowork | no | n/a | from Customize | yes |
+| Desktop scheduled tasks | yes | yes | n/a | n/a |
+
+Other skills that depend on the surface:
+- Bundled skills that need artifacts (`artifact-capabilities`, `artifact-diagramming`) appear only where artifacts are available.
+- `artifact-design` appeared in the desktop session but not in the terminal CLI. The docs don't list it.
+- `dataviz` appeared in both.
+
+Verify each surface rather than assuming parity (SKILL-054).
+
+## [SKILL-049] claude.ai account skills reach sessions in two different ways
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Claude Code skills: synced skills](https://code.claude.com/docs/en/skills), [Settings reference: disableSideloadFlags](https://code.claude.com/docs/en/settings-reference), [#100272](https://github.com/anthropics/claude-code/issues/100272), [#101061](https://github.com/anthropics/claude-code/issues/101061)
+- Related: SKILL-038, SKILL-050, SKILL-058
+
+There are two separate delivery paths, and the settings that control one don't control the other.
+
+1. **Terminal file sync.**
+   - The CLI downloads skills into `~/.claude/skills/synced/` and lists them as `anthropic-skills:<name>`.
+   - It requires a sign-in stored by `/login` and feature-flag fetching.
+   - There is no sync with an API key, `ANTHROPIC_AUTH_TOKEN`, `CLAUDE_CODE_OAUTH_TOKEN`, `apiKeyHelper`, Bedrock, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, bare or safe mode, or `--setting-sources` without `user`.
+   - `syncClaudeAiSkills: false` turns it off.
+2. **Desktop app delivery.**
+   - The app downloads the account's skills into its own folder (`%APPDATA%\Claude\local-agent-mode-sessions\skills-plugin\…` on Windows) and passes them to Local sessions as a plugin.
+   - A deny rule on `Skill(anthropic-skills:<name>)` blocks a skill "when Claude Desktop delivers it to a session as a plugin".
+   - Only the managed `disableSideloadFlags` withholds them from Local sessions.
+   - A user report (#101061) says `syncClaudeAiSkills: false` does not stop the desktop delivery, and that `skillOverrides` can't hide these skills because they are plugin skills.
+
+Both paths show the same `anthropic-skills:<name>` names, which hides which path a session actually used.
+
+## [SKILL-050] Desktop WSL sessions don't load claude.ai account skills
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-12
+- Sources: local test, [Claude Code on desktop](https://code.claude.com/docs/en/desktop), [Claude Code skills: where synced skills load](https://code.claude.com/docs/en/skills)
+- Related: SKILL-048, SKILL-049, SKILL-056
+
+In a desktop WSL session, none of the 17 `anthropic-skills:*` skills was in the skill listing. The distro's `~/.claude/skills/synced/` held all 17, and its last sync round had completed that morning.
+
+Bisect:
+
+| Run | Account skills listed |
+|---|---|
+| WSL terminal CLI 2.1.296, clean env | 17 |
+| The desktop's own CLI build (2.1.295) started from a terminal | 17 |
+| …with `CLAUDE_CODE_ENTRYPOINT=claude-desktop` | 17 |
+| …with `--setting-sources=user,project,local` | 17 |
+| The same build launched by the desktop app | 0 |
+
+So the cause is how the desktop app launches the session, not the CLI version.
+
+Likely mechanism (inference): the documented desktop path (SKILL-049) is "passing plugins to the session", and the docs say plugins aren't passed to WSL sessions. Meanwhile the file sync doesn't apply, presumably because the app supplies credentials to the session (the session's env shows host-brokered auth) rather than a `/login` sign-in.
+
+Consequence: put any skill you need in desktop WSL sessions in the distro's `~/.claude/skills` or the repo's `.claude/skills`, not only on claude.ai.
+
+## [SKILL-051] Windows and WSL keep separate `~/.claude` homes
+- Type: fact
+- Applies to: Claude Code
+- Confidence: community-consensus
+- Last verified: 2026-10-12
+- Sources: [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [Settings](https://code.claude.com/docs/en/settings), [#100742](https://github.com/anthropics/claude-code/issues/100742), [#88432](https://github.com/anthropics/claude-code/issues/88432), [#66303](https://github.com/anthropics/claude-code/issues/66303), [#96790](https://github.com/anthropics/claude-code/issues/96790), local test
+- Related: SKILL-047, SKILL-056
+
+Each side reads its own home:
+- Desktop **Local** sessions and the Windows CLI read `%USERPROFILE%\.claude`.
+- Desktop **WSL** sessions and the WSL CLI read the distro's `/home/<user>/.claude`. A debug log from a WSL session shows `Loading skills from: … user=/home/<user>/.claude/skills`.
+
+The two don't share skills, plugins, `settings.json`, credentials, MCP config (`claude_desktop_config.json` doesn't reach WSL sessions) or claude.ai synced copies.
+
+The docs' "Desktop and the CLI read the same settings files" holds within one OS only. No official page states the Windows/WSL split. The evidence is issue reports plus the local test, in which the Windows side had no skills and no plugins while the distro had everything.
+
+Pitfalls:
+- **Pre-session `/` menu.** In a WSL session, the `/` menu on the new-session screen scans the *Windows* skills folder until the first message is sent (#100742, open).
+- **`CLAUDE_CONFIG_DIR` pointed at `/mnt/c/...`.** It would share credentials and plugin state across both sides. Concurrent writes to `.credentials.json` clobber each other (#76561), so avoid it.
+
+## [SKILL-052] Plugins in desktop WSL sessions: docs say no, distro-enabled plugins load
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-12
+- Sources: [Claude Code on desktop: Install plugins](https://code.claude.com/docs/en/desktop), [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [#88432](https://github.com/anthropics/claude-code/issues/88432), [#97515](https://github.com/anthropics/claude-code/issues/97515), local test
+- Related: SKILL-048, SKILL-050
+
+The docs say: "Plugins aren't available in WSL sessions". The WSL page lists "connectors and plugins" as unavailable.
+
+Observed behaviour:
+- In the local test, a desktop WSL session loaded the skills of plugins enabled in the distro's `~/.claude/settings.json`. These were `claude-md-management` and `frontend-design`, plus the `playwright` plugin's MCP server.
+- #88432 shows the same, with 7 plugin skills in a WSL session's listing.
+- #97515 reports a CLI-installed plugin missing in the Code tab.
+
+Working interpretation:
+- What is unavailable in WSL sessions is the app's plugin *UI*, together with the plugins the *app* manages itself: the claude.ai skills plugin and app-deployed org plugins.
+- Plugins installed with the WSL CLI (`claude plugin install …`) and enabled in the distro's settings do load.
+
+Rely on them, but re-check after app updates, since the documented behaviour says otherwise.
+
+## [SKILL-053] Desktop worktree sessions read project skills from the main checkout
+- Type: fact
+- Applies to: Claude Code
+- Confidence: community-consensus
+- Last verified: 2026-10-12
+- Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [#99145](https://github.com/anthropics/claude-code/issues/99145), [#100497](https://github.com/anthropics/claude-code/issues/100497), local test
+- Related: SKILL-007
+
+The docs say the CLI reads a worktree's own `.claude/skills` and falls back to the main checkout only when the worktree has none (v2.1.277+). The desktop app works differently: it launches worktree sessions with `--project-config-root <main checkout>`.
+- The local test showed this flag pointing at the main repo while the session's working directory was a worktree.
+- Open issues #99145 and #100497 report that project skills, hooks and commands then come from the main checkout.
+- The docs separately state that skills-dir plugins in a desktop worktree load from the main checkout.
+
+Consequence: when a desktop session edits `.claude/skills/` on a worktree branch, that same session keeps running the main checkout's version. To test a skill change, merge it first, or start a CLI session inside the worktree.
+
+## [SKILL-054] Checking which skills a desktop session actually has
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: community-consensus
+- Last verified: 2026-10-12
+- Sources: [Claude Code on desktop](https://code.claude.com/docs/en/desktop), [#82676](https://github.com/anthropics/claude-code/issues/82676), [#91210](https://github.com/anthropics/claude-code/issues/91210), [#93339](https://github.com/anthropics/claude-code/issues/93339), [#100272](https://github.com/anthropics/claude-code/issues/100272), local test
+- Related: SKILL-015, SKILL-048
+
+The desktop `/` menu and the Customize panel are built separately from the skill listing the model receives, and several open issues show them disagreeing:
+- **Lazy spawn.** In WSL and SSH sessions the CLI only starts on the first message, so the menu is incomplete before it (#82676).
+- **Missing entries.** Personal skills can be absent from the menu yet invocable (#93339, #91210).
+- **Late account skills.** `anthropic-skills:*` entries appear only after the first message (#100272).
+
+Reliable checks, best first:
+1. **Ask the model.** After the first message, ask it to list its available skills verbatim. That is the listing that decides triggering.
+2. **Read the app log.** `main.log` has lines such as "Passing N plugin(s) to SDK". For WSL sessions there is also `~/.claude/remote/run/<id>/remote-server.log`.
+3. **Run `/status`** for the bundled version.
+
+Terminal-dialog commands behave differently in the Code tab. Commands with no argument form reply "isn't available in this environment". Whether `/skills`, `/context` and `/skill-doctor` work there is undocumented, so run them from the terminal CLI on the same OS.
+
+## [SKILL-055] Writing skills on WSL: Linux filesystem, LF endings, exec bits
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: unverified
+- Last verified: 2026-10-12
+- Sources: [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [Troubleshooting: slow search on WSL](https://code.claude.com/docs/en/troubleshooting), [#60580](https://github.com/anthropics/claude-code/issues/60580), [#93845](https://github.com/anthropics/claude-code/issues/93845), [#76973](https://github.com/anthropics/claude-code/issues/76973)
+- Related: SKILL-018, SKILL-056
+
+Most of this is general Linux behaviour that no Claude doc confirms for skills specifically, so treat it as unverified.
+
+- **Keep skills and repos on the distro filesystem** (`/home/...`).
+  - Access across `/mnt/c` or `\\wsl.localhost` "is slow and breaks file watching", so live skill reload may not fire. Run `/reload-skills` if in doubt.
+  - Search on `/mnt/c` can return partial results.
+- **Use LF line endings.**
+  - A CRLF `SKILL.md` broke the desktop scheduled-task editor's frontmatter parser (#60580), although the reporter says the skill loader itself tolerates CRLF.
+  - A CRLF shebang breaks bundled scripts under bash.
+  - Fix: `.gitattributes` with `* text=auto eol=lf`.
+- **Keep scripts executable in git** (`git update-index --chmod=+x`). Files on `/mnt/c` report mode 0777 and Windows git can drop the exec bit.
+- **Paths.** Use `${CLAUDE_SKILL_DIR}` and forward slashes. `C:\…` paths in a skill don't work in a WSL session.
+- **`!` injection** uses bash by default, which is always present in WSL. `shell: powershell` needs `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` there.
+- **Sandbox pitfall.** Don't symlink sensitive directories into `/mnt/c`: deny-read paths that are symlinks into `/mnt/c` break the bwrap sandbox (#93845).
+
+## [SKILL-056] Setup for someone using both the desktop app and WSL
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: community-consensus
+- Last verified: 2026-10-12
+- Sources: [Claude Code skills (symlinked skill folders)](https://code.claude.com/docs/en/skills), [#82676 comment](https://github.com/anthropics/claude-code/issues/82676), [#66303](https://github.com/anthropics/claude-code/issues/66303), local test
+- Related: SKILL-050, SKILL-051, SKILL-052
+
+**1. Choose one home and work there.** If repos live in WSL, run desktop sessions in the WSL environment, then put skills, plugins and settings in the distro's `~/.claude`. The Windows side can stay empty.
+
+**2. Keep skills in git and link each one in.** Clone a skills repo on the distro filesystem, then symlink each skill into place:
+
+```bash
+ln -s ~/repos/my-skills/skills/roadmap-issues ~/.claude/skills/roadmap-issues
+```
+
+- Per-skill symlinks are documented. They have also been reported working in desktop WSL sessions, with 33 skills.
+- Linking each skill rather than the whole folder keeps `~/.claude/skills/synced/` separate.
+
+**3. Put repo-specific skills in the repo's `.claude/skills/`.** That is the one path that behaves the same in every session type: CLI, desktop Local and WSL, and cloud.
+
+**4. Don't rely on claude.ai sync for skills you need in WSL desktop sessions** (SKILL-050).
+- Keep claude.ai uploads for chat, Cowork and Local sessions.
+- The same skill can then be listed twice in the terminal: once as personal, once as `anthropic-skills:<name>`. Fix that with `syncClaudeAiSkills: false` in the distro, or by not uploading those skills to claude.ai.
+
+**5. Install plugins with the WSL CLI** (`claude plugin install …`). Desktop WSL sessions currently load them (SKILL-052).
+
+**6. Verify each surface after app updates** (SKILL-054).
+
+## [SKILL-057] Skill features that behave differently in the desktop app
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-12
+- Sources: [Claude Code on desktop: What's not available](https://code.claude.com/docs/en/desktop), [#80696](https://github.com/anthropics/claude-code/issues/80696), [#93987](https://github.com/anthropics/claude-code/issues/93987), [#90460](https://github.com/anthropics/claude-code/issues/90460), [#91053](https://github.com/anthropics/claude-code/issues/91053)
+- Related: SKILL-010, SKILL-054
+
+Documented differences:
+- No `/plugin` TUI. Use "+ › Plugins" or Customize instead.
+- Terminal-dialog commands are unavailable or redirected.
+- No agent teams.
+- No `--print` or scripting.
+- Desktop WSL sessions also lack connectors, the plugin UI, session forking and `@` file suggestions.
+
+Reported in issues, without a maintainer fix:
+- **`allowed-tools` grants never take effect** in the desktop app, so a skill's pre-approved commands still prompt (#80696, closed as not planned on 2026-10-09). Don't design desktop-used skills around `allowed-tools` silencing prompts.
+- **`/reload-skills` reports "(no changes)"** for a skill added mid-session; a new session picks it up (#93987, open).
+- **Typing `/<user-skill>` sometimes does nothing**, even though the model can still load the skill through the Skill tool (#90460, open).
+- **Account skills are listed twice** in the menu, bare and prefixed (#91053, open).
+
+Consequence: test skill behaviour that depends on slash invocation or permissions on the surface where it will run.
+
+## [SKILL-058] Controlling claude.ai account skills on the desktop
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Settings reference: disableSideloadFlags](https://code.claude.com/docs/en/settings-reference), [Claude Code skills: restrict skill access](https://code.claude.com/docs/en/skills), [#101061](https://github.com/anthropics/claude-code/issues/101061)
+- Related: SKILL-049, SKILL-014
+
+The usual controls cover only part of the account skills in desktop sessions.
+- **`syncClaudeAiSkills: false`** stops the terminal file sync and moves `synced/` to `.trash`. According to #101061 it does not stop the desktop app's delivery.
+- **`skillOverrides`** doesn't apply, because desktop-delivered account skills arrive as a plugin.
+- **`permissions.deny: ["Skill(anthropic-skills:<name>)"]`** blocks invocation. Their descriptions still use the listing budget: about 2.5k tokens for 17 skills in one report.
+- **Managed `disableSideloadFlags`** keeps app-managed plugins, including account skills, out of Local sessions. It's an MDM or managed-file key, not a user setting.
+- **Disabling a skill on claude.ai** (Customize › Skills) removes it from every surface. This is the most effective lever for personal accounts.
+
+Context-cost consequence: on the desktop, account skills you never use in code sessions cost listing budget in every session and subagent. Prune them on claude.ai rather than in Claude Code settings.
+
+---
+
 ## Recommendations for our setup
 
 Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. All four are claude.ai skills synced to `~/.claude/skills/synced/`. All pass `claude plugin validate --strict`.
@@ -1127,12 +1411,24 @@ Ranked by impact versus effort:
 6. **Medium impact, low effort: trim the workflow out of the `parallel-code-orchestrator` description.** "…then integrate, verify and run the repo's reviewer agent" is the kind of step summary superpowers found agents follow instead of the body. Keep the outcome and the triggers. Then measure triggering and compliance before and after. (SKILL-013)
 7. **Medium impact, medium effort: protect `parallel-code-orchestrator` against compaction.** At about 2,850 words (an estimated 3.8k tokens) it fits the 5k tokens kept per skill after compaction. But it shares the 25k re-attach budget with other skills, and it runs in the longest sessions. Keep the hard rules (one repo per run, model table, when to stop and ask) in the first screen. Consider moving the brief template, triage and handoff format to `references/` files that are read when those steps start. Check for staleness at each model release: the model-tier table names specific models. (SKILL-006, SKILL-017, SKILL-019, SKILL-032)
 8. **Low effort: audit listing pressure.** The 26 synced skills alone carry about 14.7k characters of descriptions. Seven of them (docs, terminal, pptx, xlsx, computer-health-check, computer-use, docx) are each about 940–1,010 chars. Run `/skill-doctor` and `/context`, and set unused ones to `name-only` or `off`. (SKILL-005, SKILL-030)
-9. **Check availability per surface.** In this desktop-app Code-tab session, none of the synced skills appeared in the skill listing; only plugin and bundled skills did. Sync needs a claude.ai OAuth sign-in and never reaches API-key or cloud sessions. So `roadmap-issues` and `parallel-code-orchestrator`, which refer to each other, may be silently missing on some surfaces. Confirm with `/skills` on each surface you use. (SKILL-038)
+9. **High impact, low effort: make our custom skills reachable in desktop WSL sessions.** This is now confirmed and explained (SKILL-050). Desktop sessions in the Ubuntu distro load none of the claude.ai account skills, even though the files are synced to disk. So `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop` are missing exactly where most of our work runs. Fix:
+   - Put them in a git repo on the distro filesystem and symlink each one into `~/.claude/skills/` (SKILL-056). This is recommendation 4 with a second reason.
+   - Set `syncClaudeAiSkills: false` in the distro's `~/.claude/settings.json`, so the terminal CLI doesn't list each skill twice.
+   - Keep the claude.ai copies only if chat or Cowork use them.
+
+   Until then, the terminal CLI in WSL does have them.
+10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). The same applies to this repo's `CLAUDE.md` when worktrees change it.
+11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
+12. **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like), not in Claude Code settings. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
 
 ## Open questions
 
 - **Listing budget.** Is the 1% of the context window counted in characters or tokens, and what is the default `skillListingBudgetFraction`? The detailed settings entries weren't read.
-- **Missing synced skills.** Why did synced claude.ai skills not appear in this desktop Code-tab session: auth method, a `syncClaudeAiSkills` setting, or the surface? Not investigated.
+- **Desktop WSL mechanism.** Which launch factor stops desktop WSL sessions from loading `~/.claude/skills/synced/`: the host-brokered auth, or something in the app's inline `--settings`? The bisect (SKILL-050) ruled out the CLI version, the entrypoint variable and `--setting-sources`. The inline settings could not be inspected, because reading the process command line was blocked as credential exploration.
+- **Plugins in desktop WSL sessions.** Is it intended that they load (SKILL-052) when the docs say they don't, or will a later app build stop them loading?
+- **Skill commands in the desktop Code tab.** Do `/skills`, `/context` and `/skill-doctor` work there? It's undocumented and wasn't tested.
+- **Sync version.** The docs and the support article give v2.1.273 for terminal sync of claude.ai skills; the CHANGELOG entry is under 2.1.275.
+- **`artifact-design`.** Where does this skill, present only in desktop sessions, come from? It is undocumented.
 - **`/skill-doctor` version.** The docs say v2.1.252+; the CHANGELOG lists it under 2.1.261.
 - **Official marketplace submission.** The claude-plugins-official README points to a form; the Claude Code docs say the official marketplace takes no portal submissions and to use a partner contact.
 - **Skills API beta header.** Is `skills-2025-10-02` still needed? One agent read it is not; another couldn't confirm.
