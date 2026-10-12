@@ -6,7 +6,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 |---|---|---|---|
 | `kb-orchestration.md` | ORCH | Orchestration, parallelization and model selection | 47 (0 merged into other entries) |
 | `kb-token-usage.md` | TOK | Token usage and context efficiency | 62 (4 merged into other entries) |
-| `kb-skills.md` | SKILL | Writing, testing and distributing skills | 58 (1 merged into other entries) |
+| `kb-skills.md` | SKILL | Writing, testing and distributing skills | 59 (1 merged into other entries) |
 | `kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 52 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
@@ -263,6 +263,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-056 | Setup for someone using both the desktop app and WSL | recommendation | desktop, wsl, distribution |
 | SKILL-057 | Skill features that behave differently in the desktop app | fact | desktop, permissions |
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
+| SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
 
 ### Agents in repositories (osrs-tracker-web) (`kb-repo-agents.md`, REPO)
 
@@ -394,7 +395,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | SKILL-005 Skill-listing budget and truncation | Full | TOK-005 | TOK-005 cites the settings and env-vars references and knows the default (see Conflicts). Moved: `--debug` overflow warning, the front-loading advice, the CHANGELOG source. |
 | TOK-063 Scripts and dynamic injection | Full | SKILL-018, SKILL-008 | The SKILL entries are fuller. Moved: the sorting quote (SKILL-018), the 2-minute Bash timeout (SKILL-008). |
 | TOK-037 Multi-agent multiplies tokens | Full | ORCH-020 | ORCH-020 has five sources and every figure; scaling rules are in ORCH-025 and agent-team cost in ORCH-010. Nothing moved. |
-| TOK-036 Subagent model selection | Partial | ORCH-003, ORCH-005 | Resolution order and Explore's model became a pointer. Kept: the official Haiku advice and our 30-day cost numbers. |
+| TOK-036 Subagent model selection | Partial | ORCH-003, ORCH-005 | Resolution order and Explore's model became a pointer. Kept: the official Haiku advice and our 6-day cost numbers (first labelled 30-day). |
 | TOK-006 What a subagent's context starts with | Partial | ORCH-007 | The starts-with list became a pointer. Kept: cache behaviour and measured sizes. |
 | REPO-010 What a repo subagent starts with | Partial | ORCH-007 | The starts-with list (with its CLAUDE.md hierarchy and `omitClaudeMd` details, now in ORCH-007) became a pointer. Kept: the consequences for repo agents. |
 | TOK-061 Writing skill descriptions | Partial | SKILL-003, SKILL-011–013 | Limits and content rules became a pointer. Kept: the length-versus-cost tension, Vercel's eval, our default length. |
@@ -431,3 +432,6 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | 2026-10-12 | TOK-051, TOK-054 | Automatic-caching quote replaced with the docs' wording; speculative caching now cites its own cookbook; "expiry, not an SLA" removed (not in the batch cookbook). |
 | 2026-10-12 | TOK-052 | Checked: the blog URL on claude.dev resolves (claude.com redirects to it). No change. |
 | 2026-10-12 | TOK-072 | Cache table row: tool-definition changes invalidate the whole cache, `tool_choice` and thinking only message blocks. |
+| 2026-10-12 | SKILL-059, SKILL-038 | New SKILL-059: personal Git marketplaces on claude.ai and `<name>@synced` plugins in Claude Code. `kb-skills.md` recommendations 4 and 9 updated to the marketplace route and the `freek-local-skills` split; two open questions added (FreekMencke/claude-kb#4). |
+| 2026-10-12 | TOK-008, TOK-009, TOK-032, TOK-036, TOK-042, TOK-043, REPO-004 | The "30 days" local measurements cover 2026-10-07 to 2026-10-12 (6 days); labels corrected, shares unchanged. Flags `kb-token-usage.md` R1, R4, R5, R7 and R9, whose savings were per 6 days, not per month (FreekMencke/claude-kb#5). |
+| 2026-10-12 | SKILL-008, TOK-013 | `$0`/`$N` substitution also hits literal text when arguments are passed; `cost-state` transcript lines added as a second usage source (FreekMencke/claude-kb#5). |

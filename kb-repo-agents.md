@@ -189,7 +189,7 @@ Gaps against this file's findings:
 3. **No do-not-flag list or finding cap.** **check** items outnumber **violates** findings about 3 to 1 (REPO-047).
 4. **No machine-readable verdict line** for an orchestrator to route on (REPO-050).
 5. **It re-reads CLAUDE.md**, which custom subagents already load (REPO-010).
-6. **Browser checks run in the main context.** The token-usage KB measured about 995 screenshots in 30 days, each re-read on every later turn (TOK-043, REPO-021).
+6. **Browser checks run in the main context.** The token-usage KB measured about 995 screenshots in 6 days, each re-read on every later turn (TOK-043, REPO-021).
 7. **No CI or scheduled agents.** That is deliberate and fine for a solo-maintained repo (REPO-029, REPO-030).
 ---
 

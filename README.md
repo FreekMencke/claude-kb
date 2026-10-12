@@ -6,9 +6,15 @@ sources, a confidence level and a last-verified date.
 
 ## Querying it
 
-From any repo, the `claude-kb-lookup` skill in [FreekMencke/claude-skills](https://github.com/FreekMencke/claude-skills)
-answers questions from this knowledge base and cites entry IDs. It reads a local clone at
-`/home/fremen/repos/claude-kb` and fast-forwards it before each lookup. Install it with that repo's `install.sh`.
+From any repo, the `claude-kb-lookup` skill answers questions from this knowledge base and cites entry IDs. It lives in
+the `freek-local-skills` plugin of [FreekMencke/claude-skills](https://github.com/FreekMencke/claude-skills)
+(`local-skills/skills/claude-kb-lookup/`); install it with that repo's `install.sh`.
+
+- It runs as a forked subagent on Haiku (`context: fork`), so the index stays out of the caller's context: a lookup
+  cost about 0.19 USD against 0.57 inline, with the same entries and facts (FreekMencke/claude-skills#7, 2026-10-12).
+- The fork can't see the conversation, so pass it a self-contained question, and keep its entry IDs in the reply.
+- It reads a local clone at `/home/fremen/repos/claude-kb` and fast-forwards it before each lookup, so it doesn't work
+  in cloud sessions.
 
 By hand: start at [INDEX.md](INDEX.md), find the question in Quick answers or the entry in the index, then read only
 that entry:

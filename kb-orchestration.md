@@ -1072,7 +1072,7 @@ Ranked by impact against effort. The first group reviews `parallel-code-orchestr
 
 ### Improvements to `parallel-code-orchestrator`
 
-Tracked in roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), opened 2026-10-12: recommendations 1–12 are FreekMencke/claude-skills#4.
+Done through roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), opened and closed 2026-10-12: recommendations 1–12 are FreekMencke/claude-skills#4.
 
 1. **Fix the scouting row: "Haiku" doesn't happen by default.** *(High impact, trivial effort.)* Step 3 says "Use Haiku subagents to search", but the built-in Explore agent runs on the session model (Opus) unless `model: haiku` is passed or an `Explore` override exists. Change the row to: "Scouting: `model: haiku` on every Explore or general-purpose call, effort `medium` (Haiku at `low` skips checks)." Evidence: ORCH-005, ORCH-028.
 2. **Add an effort column and set effort on every spawn.** *(High impact, low effort.)* The skill sets model but never effort. In Claude Code, Opus 5.5 and Sonnet 5.5 default to `medium`, so design and contract units and the integrating reviewer run at `medium` unless told otherwise. Suggested values:
