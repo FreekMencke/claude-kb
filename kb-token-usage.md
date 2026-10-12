@@ -19,7 +19,7 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 | How much do batches save? | 50% on input and output, and it stacks with caching. Most finish within 1 hour, max 24 hours. | TOK-054 |
 | How big can a skill description be, and what does it cost? | Every skill's name + description is in context on every turn, within a budget of 1% of the window. Each entry is capped at 1,536 characters. Keep it short and front-load triggers. | TOK-005, TOK-061 |
 | How long should CLAUDE.md be? | Under 200 lines per file. `@imports` don't reduce cost. Move procedures to skills or `paths:`-scoped rules. | TOK-003, TOK-065 |
-| What do images and PDFs cost? | An image costs ⌈w/28⌉×⌈h/28⌉ tokens (max 1,568 standard, 4,784 high-res). A PDF costs 1,500–3,000 tokens per page plus image cost. | TOK-043 |
+| What do images and PDFs cost? | An image costs ⌈w/28⌉×⌈h/28⌉ tokens (max 1,568 standard, 4,784 high-res). A PDF page is processed as text plus an image; the per-page range is unverified. | TOK-043 |
 | Which community tracker should I use? | `ccusage` for history (reads the JSONL). For live use, the built-in status line JSON is enough, or use `claude-hud` or `ccstatusline`. | TOK-080, TOK-082 |
 
 ## Index
@@ -403,10 +403,10 @@ Unverified: reported May 2026 limit doubling and peak-hour changes, and per-mode
 What increases usage: message length, attachment size, current conversation length, tool use (Research, web search, connectors), model choice, effort or extended thinking, artifacts, and multi-step agentic tasks.
 
 How to reduce it:
-- "Start a new conversation in long chats, since automatic context management consumes more of your usage limit."
+- "Longer conversations that trigger automatic context management consume more of your usage limit. Try starting a new conversation if you're approaching your usage limit in a longer chat."
 - Lower effort or turn off extended thinking when it isn't needed.
 - Turn off unused connectors and web search.
-- Keep project instructions short and prune project files. "Documents in a project are cached, so reusing them costs less", but caches expire with inactivity.
+- Keep project instructions short and prune project files. "Content in projects is cached and counts less against your limits when reused." Cache expiry with inactivity is unverified.
 - Batch related questions into one message instead of many short ones.
 
 Check Settings → Usage for the 5-hour and weekly bars.
@@ -506,7 +506,7 @@ Access and console:
 
 Other controls:
 - Per server: `alwaysLoad: true` in `.mcp.json` exempts a server from deferral.
-- Descriptions and server instructions are truncated at 2,048 characters (`CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH`). Changelog v2.1.295 says descriptions loaded *through tool search* are cut at 16,384; the docs don't say so yet.
+- As of v2.1.296 (2026-10-09) the default limit on MCP tool descriptions sent up front and on server instructions is 4,096 characters, up from 2,048 (`CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH`). The MCP and env-vars pages still say 2,048. Changelog v2.1.295 says descriptions loaded *through tool search* are cut at 16,384.
 
 History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases switched to defer-all. Blog posts that describe 10% auto as the default are outdated.
 
@@ -547,7 +547,7 @@ Confidence note: the Anthropic figures are official; the per-server community nu
 
 Official: "Tools like gh, aws, gcloud, and sentry-cli are still more context-efficient than MCP servers because they don't add any per-tool listing." Disable unused servers with `/mcp`.
 
-Even deferred, each server still costs its tool names plus its server instructions (up to 2,048 characters) on every turn.
+Even deferred, each server still costs its tool names plus its server instructions (up to 4,096 characters as of v2.1.296) on every turn.
 
 Scopes:
 - `local` (default): this project only, in `~/.claude.json`.
@@ -851,7 +851,7 @@ Confidence note: the limits and hook pattern are documented; the 30-day numbers 
 - Downsample or crop before sending.
 - In Claude Code, the oldest images are dropped in batches, which breaks the cache (TOK-053).
 
-**PDFs:** 1,500–3,000 tokens per page of text, plus image cost per page. Use the Files API (`file_id`) rather than re-sending base64.
+**PDFs:** each page is processed as text plus an image. The PDF support page gives no per-page range (the 1,500–3,000 figure is unverified). Use the Files API (`file_id`) rather than re-sending base64.
 
 We had 995 image reads in 30 days, mostly UI screenshots. At 1.5–4.8k tokens each, that's roughly 1.5–4.8M tokens entering context, each re-read many times (TOK-009).
 
@@ -909,7 +909,7 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 
 **Automatic caching:**
 - Add a top-level `"cache_control": {"type": "ephemeral"}`. The breakpoint goes on the last cacheable block and moves forward as the conversation grows.
-- "This is the recommended starting point for most use cases."
+- "Start with automatic caching for multi-turn conversations."
 - It uses one of the 4 breakpoint slots. It isn't on legacy Bedrock.
 
 **Cache diagnostics** (GA, Claude API only):
@@ -917,14 +917,14 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - The response gives `cache_miss_reason`: `model_changed`, `system_changed`, `tools_changed`, `messages_changed` and others, with `cache_missed_input_tokens`.
 - Use it when hit rates drop instead of guessing.
 
-**Pre-warming:** a `max_tokens: 0` request with a breakpoint writes the cache and returns no content. It's not allowed in batches. The cookbook's speculative caching warms the cache while the user is still typing.
+**Pre-warming:** a `max_tokens: 0` request with a breakpoint writes the cache and returns no content. It's not allowed in batches.
 
 ## [TOK-052] Prompt caching in Claude Code: TTLs and settings
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-12
-- Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching), [Costs](https://code.claude.com/docs/en/costs), [Lessons from building Claude Code: prompt caching is everything](https://claude.dev/blog/lessons-from-building-claude-code-prompt-caching-is-everything/)
+- Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching), [Costs](https://code.claude.com/docs/en/costs), [Lessons from building Claude Code: prompt caching is everything](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)
 - Related: TOK-053, TOK-034, TOK-006, ORCH-040
 
 Claude Code caches automatically. Default TTLs:
@@ -980,7 +980,7 @@ Rule of thumb: pick model and effort at the start of a session, not in the middl
 Pricing and limits:
 - "All usage is charged at 50% of the standard API prices." For example, Opus 5.5 is $2/$10 and Sonnet 5.5 is $1/$5.
 - A batch holds up to 100,000 requests or 256 MB.
-- "Most batches complete within 1 hour". Batches expire after 24 hours, and expired requests aren't billed. The cookbook calls 24 hours "an expiry, not an SLA".
+- "Most batches complete within 1 hour". Batches expire after 24 hours, and expired requests aren't billed.
 - Results are kept for 29 days from creation.
 
 **With caching:** the discounts stack, but hits are best-effort because requests run concurrently. Typical hit rates are 30–98%. Use identical `cache_control` blocks and consider the 1h TTL.
@@ -1222,7 +1222,7 @@ Confidence note: each row's detail and confidence is in the linked entry.
 | Breakpoint on a block that changes each request | Put it on the last stable block |
 | Prompt under the model's minimum, assumed cached | Check `cache_creation_input_tokens` > 0 |
 | Unstable JSON key order in tool inputs | Serialize deterministically |
-| Changing tools, `tool_choice` or thinking mid-conversation | Keep them fixed; use per-message effort |
+| Changing tools, `tool_choice` or thinking mid-conversation | Changing tool definitions invalidates the whole cache; `tool_choice` and thinking changes invalidate message blocks. Keep them fixed; use per-message effort |
 | All tools loaded upfront with 10+ tools | Tool search, `defer_loading` |
 | Interactive calls for offline jobs | Batch API (−50%) |
 | Comparing token counts across tokenizers | Recount per model (4.7+ is about 30% more) |
