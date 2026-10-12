@@ -685,7 +685,7 @@ Judgement: official docs neither endorse nor reject hooks that force skill evalu
 - Sources: [Claude Code skills: Find unused skills](https://code.claude.com/docs/en/skills), [Monitoring usage](https://code.claude.com/docs/en/monitoring-usage), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), local CLI
 - Related: TOK-005, SKILL-022, SKILL-032
 
-- **`/skill-doctor`** (docs: v2.1.252+; the CHANGELOG lists it under 2.1.261) shows each loaded skill's context cost and how often it is invoked. It also lists plugins you haven't used recently and tells you where to switch skills off (`skillOverrides`). The interactive report is in `/plugin` › Stats.
+- **`/skill-doctor`** (docs: v2.1.252+; the CHANGELOG lists it under 2.1.261) shows each loaded skill's context cost and how often it is invoked. It also lists plugins you haven't used recently and tells you where to switch skills off (`skillOverrides`). The interactive report is in `/plugin` › Stats. `claude -p "/skill-doctor"` prints the same table without a model turn (tested on v2.1.296, 2026-10-12); the desktop Code tab doesn't offer it (SKILL-031).
   - It measures usage and cost only, not trigger accuracy or quality.
   - It excludes bundled and enterprise skills.
   - Don't confuse it with the community `skill-doctor` plugin.
@@ -1268,7 +1268,7 @@ Reliable checks, best first:
 2. **Read the app log.** `main.log` has lines such as "Passing N plugin(s) to SDK". For WSL sessions there is also `~/.claude/remote/run/<id>/remote-server.log`.
 3. **Run `/status`** for the bundled version.
 
-Terminal-dialog commands behave differently in the Code tab. Commands with no argument form reply "isn't available in this environment". Whether `/skills`, `/context` and `/skill-doctor` work there is undocumented, so run them from the terminal CLI on the same OS.
+Terminal-dialog commands behave differently in the Code tab. Commands with no argument form reply "isn't available in this environment". `/skill-doctor` in a new desktop WSL session replies "Skill usage reports are not available on this connection" (observed 2026-10-12). Run it from the terminal CLI on the same OS instead: `claude -p "/skill-doctor"` prints the whole report as text, with no model turn. Whether `/skills` and `/context` work in the Code tab is undocumented.
 
 ## [SKILL-055] Writing skills on WSL: Linux filesystem, LF endings, exec bits
 - Type: recommendation
@@ -1421,14 +1421,14 @@ Ranked by impact versus effort. Done through roadmap [FreekMencke/claude-skills#
    - Update 2026-10-12: chat, Cowork and other machines now get `freek-skills` from the claude.ai marketplace (recommendation 4, SKILL-059); signed-in Claude Code sessions download it as `freek-skills@synced`. On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice. The CLI install (`claude plugin install … --marketplace FreekMencke/claude-skills`) still works for a machine that isn't signed in with claude.ai.
 10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). The same applies to this repo's `CLAUDE.md` when worktrees change it.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
-12. **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like), not in Claude Code settings. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
+12. **Done for WSL Claude Code 2026-10-12** (`skillOverrides: name-only` for all 12, see kb-token-usage R8). **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like), not in Claude Code settings. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
 
 ## Open questions
 
 - **Listing budget.** Is the 1% of the context window counted in characters or tokens, and what is the default `skillListingBudgetFraction`? The detailed settings entries weren't read. Answered in TOK-005 (from the settings and env-vars references): a character budget, `skillListingBudgetFraction: 0.01`, with an 8,000-character fallback; see INDEX.md, Conflicts.
 - **Desktop WSL mechanism.** Which launch factor stops desktop WSL sessions from loading `~/.claude/skills/synced/`: the host-brokered auth, or something in the app's inline `--settings`? The bisect (SKILL-050) ruled out the CLI version, the entrypoint variable and `--setting-sources`. The inline settings could not be inspected, because reading the process command line was blocked as credential exploration.
 - **Plugins in desktop WSL sessions.** Is it intended that they load (SKILL-052) when the docs say they don't, or will a later app build stop them loading?
-- **Skill commands in the desktop Code tab.** Do `/skills`, `/context` and `/skill-doctor` work there? It's undocumented and wasn't tested.
+- **Skill commands in the desktop Code tab.** Do `/skills` and `/context` work there? It's undocumented and wasn't tested. `/skill-doctor` doesn't, at least in desktop WSL sessions (SKILL-031).
 - **Sync version.** The docs and the support article give v2.1.273 for terminal sync of claude.ai skills; the CHANGELOG entry is under 2.1.275.
 - **`artifact-design`.** Where does this skill, present only in desktop sessions, come from? It is undocumented.
 - **`/skill-doctor` version.** The docs say v2.1.252+; the CHANGELOG lists it under 2.1.261.
