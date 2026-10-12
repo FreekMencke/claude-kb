@@ -649,7 +649,7 @@ Notes:
 - Sources: [git-push](https://git-scm.com/docs/git-push), [git-rerere](https://git-scm.com/docs/git-rerere), [git-worktree](https://git-scm.com/docs/git-worktree)
 - Related: SESS-001, SESS-006, SESS-022
 
-The loop: `git fetch origin && git rebase origin/main`, resolve conflicts, rerun the verify command, then force-push.
+The loop: `git fetch origin && git rebase origin/main`, resolve conflicts, rerun the verify command if there were any (our global CLAUDE.md leaves a clean rebase to CI), then force-push.
 
 **Use `--force-with-lease --force-if-includes`, not bare `--force-with-lease`.**
 - Bare `--force-with-lease` protects a ref only if it still equals your remote-tracking ref.
