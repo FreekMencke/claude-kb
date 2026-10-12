@@ -14,6 +14,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 38 (0 merged into other entries) |
 | `kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 | `kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
+| `kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 35 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -67,6 +68,10 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | Auto memory or CLAUDE.md: where does a lesson go? | Auto memory is machine-local, per repo, and unseen by cloud sessions, routines and the GitHub action. Keep it for personal preferences and in-flight state; put anything teammates, reviewers or other repos need in CLAUDE.md, a skill or `docs/`. | MEM-017, MEM-026 |
 | How do I keep CLAUDE.md and memory current? | Add a line when Claude repeats a mistake; `/doctor` (trim) and `/doctor prompt-audit` (stale paths, conflicts); `/revise-claude-md` after a session; delete finished-work memories. Nothing expires memory for you. | MEM-018, MEM-021, MEM-022, MEM-023 |
 | Is a memory server (mem0, claude-mem) better than plain files? | No evidence for coding work; our claude-mem trial was net-negative and removed. Stay on CLAUDE.md plus auto memory. | MEM-033 |
+| Which surface for which job: terminal, desktop, cloud, Remote Control, IDE? | Terminal for scripts, `-p` and every command; desktop for parallel sessions, visual diff review and PR watching; cloud for long tasks that run with the laptop shut; Remote Control to steer a local session from the phone; IDE for editor selection and diagnostics. | SURF-033, SURF-001, SURF-003 |
+| When should output be an artifact rather than a Markdown file? | An artifact (a private claude.ai page, shareable in the org or by link) when a person must see it rendered, click it or comment; a file in the repo for anything agents read later, since another session reads an artifact back only as a summary. | SURF-008, SURF-010, SURF-011 |
+| How do I get a phone push when Claude finishes or needs me? | Turn on **Push when Claude decides** (`agentPushNotifEnabled`) and **Push when actions required** (`inputNeededNotifEnabled`) in `/config`; both default off and fire only while Remote Control is connected. | SURF-020, SURF-022 |
+| What can a cloud session reach, and how do I set it up? | **Trusted** network by default (registries, GitHub, cloud SDKs); GitHub, connectors and the Anthropic API bypass the allowlist. Setup script for toolchains (cached if under about 5 minutes), a repo SessionStart hook for `npm install`. | SURF-024, SURF-026, SURF-025 |
 
 ## Index
 
@@ -618,6 +623,46 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | MEM-034 | Our instruction files and memory, measured | fact | our-setup, measurement |
 | MEM-035 | Our auto memory: misplaced and stale entries | comparison | our-setup, auto-memory, staleness |
 
+### Desktop app, artifacts and remote use (`kb-surfaces.md`, SURF)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| SURF-001 | What the desktop Code tab adds over the terminal | fact | desktop, panes, diff, side-chat |
+| SURF-002 | Desktop PR monitoring, auto-archive and notifications | fact | desktop, ci, pull-requests, notifications |
+| SURF-003 | What the desktop Code tab lacks | fact | desktop, limitations, commands |
+| SURF-004 | Desktop WSL and SSH sessions: what's missing | fact | desktop, wsl, ssh, limitations |
+| SURF-005 | Desktop equivalents of CLI flags and terminal keys | fact | desktop, cli-flags, shortcuts |
+| SURF-006 | Desktop Browser pane and app preview | tool | desktop, browser, preview, launch-json |
+| SURF-007 | Dispatch: tasks from the phone to the desktop | tool | dispatch, mobile, desktop, cowork |
+| SURF-008 | Artifacts: what they are and when to use one | recommendation | artifacts, sharing, reporting |
+| SURF-009 | Artifact availability: plans, logins, surfaces, versions | fact | artifacts, availability, versions |
+| SURF-010 | Artifact privacy, sharing, editors and admin controls | fact | artifacts, privacy, sharing, admin |
+| SURF-011 | When Claude asks before publishing or reading an artifact | fact | artifacts, permissions, prompt-injection |
+| SURF-012 | Artifact runtime capabilities: connectors and downloads | fact | artifacts, connectors, capabilities |
+| SURF-013 | Artifact comments and Claude's replies | fact | artifacts, comments, review |
+| SURF-014 | The artifact shared database (`ArtifactData`) | tool | artifacts, database, state |
+| SURF-015 | Artifact page constraints and token cost | fact | artifacts, csp, size, cost |
+| SURF-016 | Slides, Design and Docs templates, and the design skill | fact | artifacts, templates, design, docs |
+| SURF-017 | Turning artifacts off per user, project or organization | fact | artifacts, settings, policy |
+| SURF-018 | Remote Control: what a connected device can and can't do | fact | remote-control, mobile, commands |
+| SURF-019 | Remote Control connection, reconnects and Trusted Devices | fact | remote-control, security, network |
+| SURF-020 | Mobile push notifications | fact | notifications, mobile, remote-control |
+| SURF-021 | The Claude mobile app as a Claude Code client | fact | mobile, cloud, remote-control |
+| SURF-022 | Which desktop sessions show up on other devices | fact | desktop, remote-control, privacy |
+| SURF-023 | Cloud environments: Default, variables and network secrets | fact | cloud, environments, secrets |
+| SURF-024 | Cloud network access levels and what bypasses them | fact | cloud, network, allowlist |
+| SURF-025 | The cloud GitHub proxy: credentials, push limits, repo scope | fact | cloud, github, proxy, gh |
+| SURF-026 | Cloud setup scripts, caching and SessionStart hooks | fact | cloud, setup-script, hooks, cache |
+| SURF-027 | Cloud VM image, tools and time limits | fact | cloud, vm, limits, docker |
+| SURF-028 | Working inside a cloud session: commands, review, sharing | fact | cloud, commands, sharing, compaction |
+| SURF-029 | Cloud auto-fix for pull requests | tool | cloud, auto-fix, ci, github |
+| SURF-030 | The VS Code extension for coding work | tool | vs-code, ide, checkpoints, diagnostics |
+| SURF-031 | JetBrains IDEs: the CLI with IDE integration | tool | jetbrains, ide, wsl |
+| SURF-032 | Claude in Chrome for coding work | tool | chrome, browser, wsl, context-cost |
+| SURF-033 | Which surface for which job | comparison | decision-table, surfaces |
+| SURF-034 | Surfaces in our setup: desktop WSL and WSL terminal | comparison | our-setup, wsl, desktop |
+| SURF-035 | Sending files to your device: `SendUserFile` | tool | remote-control, cloud, files, mobile |
+
 ## Conflicts
 
 Places where entries, or an entry and another file's recommendations or open questions, disagree. Checked 2026-10-12 against the sources the entries cite; the pages were not re-fetched.
@@ -638,6 +683,9 @@ Places where entries, or an entry and another file's recommendations or open que
 | Where auto memory is delivered (MEM-010) | Agent SDK page: auto memory is "Loaded into the system prompt at session start". Cisco (2026-04-01): Anthropic "pushed a change to Claude Code v2.1.50 that removes this capability from the system prompt". Our v2.1.296 transcript: MEMORY.md arrives in the same user-role `instructions` attachment as CLAUDE.md. | The test and Cisco; the SDK wording looks older. Unresolved until the SDK page changes or a request capture shows otherwise. |
 | Do non-fork subagents get the main auto memory? (MEM-011, TOK-004) | Memory and sub-agents pages, and TOK-004: no, only forks. One v2.1.296 `claude -p` probe: a `general-purpose` subagent had an `AutoMem` attachment and answered from it; Explore did not. | Unresolved; one probe against two pages. Re-test interactively (`kb-memory.md` open question 1). |
 | What auto memory saves (MEM-013) | Memory page: "Claude skips anything it can derive from the codebase, such as architecture, file paths, or debugging fixes." `.claude` directory page: "Claude saves notes as it works: build commands, debugging insights, architecture notes." | The memory page, which matches the v2.1.296 prompt's "What NOT to save" list. |
+| Can anyone open a public artifact link without signing in? | SURF-010: the Claude Code artifacts page says a public link is one "anyone on the internet can open, with no claude.ai sign-in required". The help center's "Publish and share artifacts" says "Everyone needs a Claude account" and "Anyone signed in to Claude who has the link can open it". | Unresolved. The help center covers all artifact kinds and was read the same day; check with a test link before relying on either. |
+| Are artifacts single pages? | SURF-015: the artifacts page's constraints table says "Single page: Relative links do not resolve, because nothing is deployed alongside the page." The `Artifact` tool description in v2.1.295 accepts supporting files (up to 255 per publish) and an asset store. | The tool, for what the current build can do; the docs page may lag. Unresolved until the docs mention supporting files. |
+| Which plans get artifacts in Claude Code? | SURF-009: the Claude Code docs list Pro, Max, Team and Enterprise with a claude.ai login. The help center's "What are artifacts" article says "in Claude Code on every plan that includes Claude Code", and chat artifacts reach Free. | The Claude Code docs for the `Artifact` tool; the help center describes chat artifacts first. |
 
 ## Overlaps kept on purpose
 
@@ -691,6 +739,11 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - API memory tool: TOK-038 (context management overview), MEM-030 and MEM-031 (the tool, compared with auto memory and Managed Agents stores).
 - Instruction file audits: PROMPT-017 (`/doctor prompt-audit` for wording), MEM-021 and MEM-022 (trim, stale paths, `claude-md-management`).
 - Our global CLAUDE.md and repos: SESS-035, FLOW-033 and HOOK-036 (other rules), MEM-034 and MEM-035 (instruction files and auto memory).
+- Surfaces and what loads: SKILL-047 and SKILL-048 (skills per surface), REPO-012 (repo config per surface), HOOK-017 (hooks per surface), MEM-026 (instruction files and memory per surface), SURF-004 and SURF-034 (desktop WSL features, our setup).
+- Remote Control: SESS-020 (starting it, several sessions), SURF-018 to SURF-022 (what a device can do, connection, pushes, mobile, desktop visibility).
+- Cloud sessions: ORCH-016 (overview, VM size), ORCH-017 (GraphQL block in routines), INFRA-002 (isolation for credentials), SURF-023 to SURF-029 (environments, network, GitHub proxy, setup scripts, limits, auto-fix).
+- Notifications and waiting: SESS-034 (watching many sessions), HOOK-030 (Notification hooks), FLOW-024 and FLOW-029 (ways to wait, CI monitor), SURF-002 and SURF-020 (desktop CI bar and OS notifications, phone pushes).
+- Browser checks: REPO-021 (browser-checker agent), SESS-013 (one browser per workspace), FLOW-014 (as verification), SURF-006 and SURF-032 (desktop Browser pane, Claude in Chrome).
 
 ## Merges
 
@@ -715,6 +768,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-12 | SURF-001 to SURF-035 | New topic file `kb-surfaces.md` (FreekMencke/claude-kb#25): the desktop Code tab and its WSL gaps, Dispatch, artifacts (availability, sharing, permissions, capabilities, comments, database, templates, turning them off), Remote Control and mobile, push notifications, cloud environments, network, GitHub proxy, setup scripts and limits, auto-fix, VS Code, JetBrains, Chrome, `SendUserFile`, and a surface decision table. 4 Quick answers, 3 conflicts and 5 overlap clusters added. |
 | 2026-10-12 | MEM-001 to MEM-035 | New topic file `kb-memory.md` (FreekMencke/claude-kb#24): every instruction and memory location, load order, lazy loading and compaction, rules and imports, AGENTS.md, what subagents and each surface see, auto memory (saving, recall, switches, staleness, security), `/init`, `/doctor`, `claude-md-management`, the API memory tool and Managed Agents stores, community memory servers, and a review of our files and memory. 4 Quick answers, 3 conflicts and 7 overlap clusters added. |
 | 2026-10-12 | INFRA-001 to INFRA-024 | New topic file `kb-infra-agents.md` (FreekMencke/claude-kb#21): cloud identities and isolation, AWS/Kubernetes/Flux MCP servers versus CLIs, permission rules, auto mode and the sandbox for infrastructure commands, plan and apply, GitOps, audit trails, incident debugging, credential leaks, published incidents, and a review of our AWS, cluster and MCP access. 3 Quick answers, 1 conflict and 6 overlap clusters added. |
 | 2026-10-12 | SESS-001 to SESS-035 | New topic file `kb-sessions.md` (FreekMencke/claude-kb#20): worktrees and shared git state, shared `~/.claude` state, cross-session messaging, keeping branches current on GitHub, hand-offs, and usage limits. 3 Quick answers and 5 overlap clusters added. |
