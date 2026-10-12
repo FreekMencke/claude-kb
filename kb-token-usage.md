@@ -1769,13 +1769,11 @@ Not recommended now:
 - Serena or claude-context (TOK-084): `typescript-lsp` already covers symbol lookup.
 - Raising cache TTLs: rebuilds are only 8% of writes (TOK-034).
 
-**Research tools (TOK-087 to TOK-102, 2026-10-12).** Ranked by impact against effort. The first two change this repo's CLAUDE.md, which a research session doesn't edit, so they wait for a decision:
+**Research tools (TOK-087 to TOK-102, 2026-10-12).** Ranked by impact against effort. R10 and R11 are done (2026-10-12, FreekMencke/claude-kb#50): CLAUDE.md's research rules now say a WebFetch answer is never a quote, keep context7 for third-party libraries, and brief research subagents with source order, what's tested, absence rules, write limits and a quote per claim. Still open:
 
 | # | Change | Why | Effort | Evidence |
 |---|---|---|---|---|
-| R10 | Sharpen CLAUDE.md's research rules: "a WebFetch answer is never a quote: `curl` the `.md` page and grep"; for Claude docs use the `.md` page or the docs MCP server, and keep context7 for third-party libraries | The current rule says to try context7 before web search; our context7 snapshot of the Claude Code docs predated v2.1.290, and WebFetch's extraction model may cut quotes to 125 characters | 5 min | TOK-087, TOK-089, TOK-095, TOK-098 |
-| R11 | Add a research-brief block to CLAUDE.md or a research skill: source order, start wide then narrow, curl rule, what's already tested, absence rules, write limits, a URL and quote per claim | Both subagents in this session redid tests the lead had run, and one reported a wrong "not found" | 15 min | TOK-100, TOK-101 |
-| R12 | In unattended research runs (`claude -p`, routines), keep fan-outs small, or set `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION` | The 200-search budget is shared with subagents and doesn't refill in `-p` | 2 min | TOK-092, TOK-099 |
+| R12 | (FreekMencke/claude-kb#51) In unattended research runs (`claude -p`, routines), keep fan-outs small, or set `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION` | The 200-search budget is shared with subagents and doesn't refill in `-p` | 2 min | TOK-092, TOK-099 |
 
 Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost only names while deferred, but `llms.txt` plus a curled `.md` page already finds and reads a page for fewer tokens. Revisit if lookups keep missing the right page. The AWS docs tools already come with the `aws` server (TOK-097).
 
