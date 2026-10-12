@@ -1104,7 +1104,7 @@ What the skill already does well, confirmed by the research: the threshold for w
 ### Other setup changes
 
 13. **Done 2026-10-12. Add a user-level `Explore` override on Haiku.** *(High impact, trivial effort.)* Create `~/.claude/agents/explore.md` with `name: Explore`, read-only tools, `model: haiku` and `effort: medium`, so every exploration, in every repo, stops running on Opus. Check the result after a week: if searches start missing things, drop the override. Evidence: ORCH-005, ORCH-033.
-14. **Set `--max-budget-usd` and `--max-turns` on every scripted `claude -p` and GitHub Action.** *(Medium impact, trivial effort.)* Evidence: ORCH-014, ORCH-038.
+14. **Set `--max-budget-usd` and `--max-turns` on every scripted `claude -p` and GitHub Action.** *(Medium impact, trivial effort.)* None exist in our repos as of 2026-10-12; tracked as [FreekMencke/claude-kb#7](https://github.com/FreekMencke/claude-kb/issues/7) so the caps go in when the first one is added. Evidence: ORCH-014, ORCH-038.
 15. **Don't enable agent teams globally.** *(Risk avoidance.)* Enabling them changes what named subagent spawns do. Turn them on per session, only for research and review work. Evidence: ORCH-010.
 
 ## Open questions

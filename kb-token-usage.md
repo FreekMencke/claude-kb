@@ -1396,7 +1396,7 @@ Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first la
 
 Setup today: Claude Code v2.1.296, no status line, no custom agents. Four user-scope MCP servers (context7, kubernetes, flux, aws) and four plugins. Global CLAUDE.md is 79 lines.
 
-Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are done as the `handoff` and `token-audit` skills (FreekMencke/claude-skills#13 and #14, roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223. R8 was measured on 2026-10-12 (below the table); its pruning step is open. R9 is open but worth little (see the measurement).
+Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are done as the `handoff` and `token-audit` skills (FreekMencke/claude-skills#13 and #14, roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223. R8 was measured and the 12 unused synced skills set to `name-only` on 2026-10-12 (below the table); disabling `frontend-design` and `playwright` per project is still open. R9 is won't-do: the measurement shows it saves little and the always-on access is deliberate.
 
 | # | Change | What it does / when it triggers | Est. savings | Effort | Evidence |
 |---|---|---|---|---|---|
