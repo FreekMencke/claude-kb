@@ -632,7 +632,7 @@ Instructions given only in conversation are lost on `/clear` and compaction. Put
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Context window](https://code.claude.com/docs/en/context-window), [Costs](https://code.claude.com/docs/en/costs), [Skills](https://code.claude.com/docs/en/skills), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
-- Related: TOK-032, SKILL-006
+- Related: TOK-032, SKILL-006, MEM-003
 
 Steering the summary:
 - `/compact Focus on code samples and API usage` tells the summarizer what to keep.
@@ -640,12 +640,12 @@ Steering the summary:
 
 Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), `claude -p --resume <id> "/compact"` (compaction works in `-p`), one run per cell: "When summarizing: start the summary with the exact line `MARKER: …`" was followed under both `# Compact instructions` and a neutral `# Notes` heading. The bare "Start with the exact line `MARKER: …`" was ignored under both. Write compact instructions that say they are for the summary; the heading alone doesn't scope them.
 
-What survives:
-- "System prompt, CLAUDE.md, memory, and MCP tools reload automatically."
+What survives (the docs' "After compaction" table):
+- System prompt and output style still apply. Project-root CLAUDE.md, unscoped rules and auto memory are "re-injected from disk", as is a plan-mode plan; git status is read fresh.
+- Nested CLAUDE.md files and `paths:` rules are not re-injected: they reload on demand when a matching file is touched (MEM-003).
 - Up to 5 recently modified files are re-read. A file over 5,000 tokens comes back as a path only.
 - Invoked skills are re-attached: the first 5,000 tokens each, 25,000 total.
-- Nested CLAUDE.md files and `paths:` rules reload on demand.
-- The skill listing doesn't reload. Hook-added context and conversation-only instructions are lost.
+- The skill listing doesn't reload. Hook-added context is only summarized, and conversation-only instructions are lost unless the summary keeps them.
 
 Cost: compaction is itself a request over the whole history. While the cache is warm it reads the prefix at cache rates; after a break past the TTL it reprocesses everything uncached. So compact at a natural break, not mid-task. Hooks: `PreCompact` (exit 2 blocks), `PostCompact`, and `SessionStart` with matcher `compact` to re-inject context.
 
