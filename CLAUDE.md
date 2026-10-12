@@ -15,7 +15,7 @@ Record the source and access date for every claim. If official docs and communit
 ## Research rules
 
 Before researching:
-- Read INDEX.md and grep the `kb-*.md` files for your topic's key terms. Where an entry already covers an idea, link it in `Related` rather than rewriting it. Add an entry only for what's new or for a different angle, and list the overlap under INDEX.md's "Overlaps kept on purpose".
+- Read INDEX.md and grep the `kb-*.md` files for your topic's key terms. Where an entry already covers an idea, link it in `Related` rather than rewriting it. Add an entry only for what's new or for a different angle, and list the overlap under OVERLAPS.md's "Overlaps kept on purpose".
 - Use the prefix the task gives. IDs are never renumbered or reused; new entries in an existing file continue after its highest number.
 
 Reading sources:
@@ -72,7 +72,7 @@ End the file with two sections kept apart from the facts:
 ## Finishing a research session
 
 1. Run `python3 scripts/check_kb.py` and fix what it reports.
-2. Update INDEX.md: the new entries in the index (a new topic heading for a new file), the 2–4 questions agents will most likely ask in the combined Quick answers, any Conflicts and Overlaps, and a Changelog line.
+2. Update INDEX.md: the new entries in the index (a new topic heading for a new file), the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
 3. For a new file, add a row to README.md's Layout table.
 4. If `claude-kb-lookup` should route questions on a new topic, open an issue in FreekMencke/claude-skills to add the topic to the skill's description.
-5. Other sessions edit INDEX.md too: `git fetch origin`, `git rebase origin/main`, rerun the check, then open a PR. Don't push to `main`.
+5. Other sessions edit INDEX.md and CHANGELOG.md too: `git fetch origin`, `git rebase origin/main`, rerun the check, then open a PR. Don't push to `main`.
