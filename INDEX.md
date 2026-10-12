@@ -11,6 +11,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-sessions.md` | SESS | Several sessions in one repo | 35 (0 merged into other entries) |
 | `kb-hooks.md` | HOOK | Hooks: events, handler types, cost, debugging, security, patterns | 36 (0 merged into other entries) |
 | `kb-infra-agents.md` | INFRA | Agents with cloud and cluster access | 24 (0 merged into other entries) |
+| `kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 38 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -52,6 +53,10 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | Is a read-only MCP server enough to keep an agent read-only on AWS or Kubernetes? | No. The flag is client-side, and Bash can run `aws` or `kubectl` with the same profile or kubeconfig. Only the credential's IAM policy or RBAC binds every path; scope the identity the agent can reach. | INFRA-006, INFRA-004, INFRA-005 |
 | How should an agent change infrastructure? | It plans or opens a PR; a human or CI applies. Preview first (`terraform plan -out`, `kubectl diff`, `flux diff`). Auto mode blocks an apply with no visible plan, but misses about 17% of overeager actions. | INFRA-013, INFRA-014, INFRA-009 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of the agent's reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
+| How literally do the 5.x models follow instructions, and should I write MUST or IMPORTANT? | Literally, most of all at low effort: state the scope and the action. Drop CRITICAL/MUST written for older models (it over-triggers); give the reason instead, and mark at most the one line that keeps being skipped. | PROMPT-003, PROMPT-004, PROMPT-005, SKILL-020 |
+| What goes in a subagent or `claude -p` brief? | Objective and why, what you already know or ruled out, exact inputs, boundaries, done-when, return format and length. For unattended runs, say nobody is watching and when to stop. | PROMPT-012, PROMPT-013, PROMPT-014 |
+| How do I stop "done" without a check, or unrequested extra work? | Ask for a real check that exercises the change and for claims backed by this session's results; name the extras to leave out and send them to the summary. | PROMPT-027, PROMPT-031 |
+| Which old prompt lines hurt the current models? | Forced verification and "double-check" (Opus), progress-every-N-calls, anti-markdown blocks (Fable 5.1), "minimize tool calls", and show-your-reasoning (may be refused). `/doctor prompt-audit` finds them. | PROMPT-030, PROMPT-011, PROMPT-017 |
 
 ## Index
 
@@ -453,6 +458,49 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | HOOK-035 | Plugin mods versus settings hooks | fact | mods, plugins |
 | HOOK-036 | Our hooks today (osrs-tracker repos, user settings) | fact | our-setup, osrs-tracker |
 
+### Instructing the 5.x models (`kb-prompting.md`, PROMPT)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| PROMPT-001 | Where Anthropic's prompting guidance lives | fact | docs, per-model-pages |
+| PROMPT-002 | What changed from the 4.x models | fact | migration, 5.x |
+| PROMPT-003 | Literal instruction following: state the scope | fact | literal, scope |
+| PROMPT-004 | Emphasis and capitals: one marked line, not many | recommendation | emphasis, over-triggering |
+| PROMPT-005 | Give the reason behind a rule | pattern | motivation, generalisation |
+| PROMPT-006 | Examples: 3–5, varied, tagged, and positive | pattern | few-shot, examples |
+| PROMPT-007 | XML tags and long-context layout | pattern | xml, long-context, pasted-content |
+| PROMPT-008 | Role prompts: one sentence is enough | fact | role, system-prompt |
+| PROMPT-009 | Say what to do; when banning, name the exact patterns | recommendation | positive-phrasing, prohibitions |
+| PROMPT-010 | Thinking is set by effort; prompts move it less | fact | thinking, effort |
+| PROMPT-011 | Don't ask for the reasoning in the response | anti-pattern | reasoning-extraction, refusals |
+| PROMPT-012 | Briefing a cold-start subagent | pattern | subagents, briefs |
+| PROMPT-013 | Asking for a return format | pattern | subagents, output-format, headless |
+| PROMPT-014 | Unattended runs and `claude -p`: tell it nobody is watching | pattern | headless, autonomy, early-stopping |
+| PROMPT-015 | Wording CLAUDE.md and agent bodies | recommendation | claude-md, agents, wording |
+| PROMPT-016 | Conflicting instructions and where instructions lose force | fact | claude-md, conflicts, compaction |
+| PROMPT-017 | `/doctor prompt-audit`: find instructions written for older models | tool | audit, maintenance |
+| PROMPT-018 | Claude Code runs the current models on a shorter system prompt | fact | system-prompt, claude-code |
+| PROMPT-019 | The four current models compared: scaffolding and over-following | comparison | models, scaffolding |
+| PROMPT-020 | Haiku 5.5: what to add to its prompts | fact | haiku, scaffolding |
+| PROMPT-021 | Sonnet 5.5: initiative depends on effort | fact | sonnet, effort, scope |
+| PROMPT-022 | Opus 5.5: long unattended runs and early reports | fact | opus, unattended |
+| PROMPT-023 | Fable 5.1: finish the task, keep it in scope | fact | fable, scope, writing |
+| PROMPT-024 | Shorter output: lead with the outcome, be selective | recommendation | verbosity, length |
+| PROMPT-025 | Fewer clarifying questions, or more: the knobs | pattern | questions, autonomy, auto-mode |
+| PROMPT-026 | Output styles in Claude Code | tool | output-styles, verbosity |
+| PROMPT-027 | Premature "done": demand evidence and a real check | pattern | failure-modes, verification |
+| PROMPT-028 | Test gaming and hard-coding | pattern | failure-modes, reward-hacking |
+| PROMPT-029 | Sycophancy and holding a position | fact | failure-modes, sycophancy |
+| PROMPT-030 | Remove scaffolding written for older models | anti-pattern | migration, cleanup |
+| PROMPT-031 | Scope creep: name the extras to leave out | pattern | scope, over-eagerness |
+| PROMPT-032 | Review prompts: a severity bar lowers recall | pattern | review, recall |
+| PROMPT-033 | Text right after tool results can read as an injection | fact | harness, injection, reminders |
+| PROMPT-034 | Claude Code's own prompt fragments: what to borrow | comparison | community, claude-code, system-prompt |
+| PROMPT-035 | OpenAI Codex and GPT prompting guides: what transfers | comparison | codex, openai |
+| PROMPT-036 | Gemini CLI, Cline, Aider, Cursor, Amp, Copilot: ideas | comparison | gemini, aider, cursor, leaks |
+| PROMPT-037 | Community prompt and agent collections: what to copy | comparison | community, collections |
+| PROMPT-038 | How Anthropic's newest agent bodies are written | pattern | agents, official-example, wording |
+
 ### Agents with cloud and cluster access (`kb-infra-agents.md`, INFRA)
 
 | ID | Title | Type | Tags |
@@ -494,6 +542,9 @@ Places where entries, or an entry and another file's recommendations or open que
 | Which model for the `Explore` override? | `kb-orchestration.md` recommendation 13 and REPO-022: Haiku 5.5 at `medium`. `kb-token-usage.md` R4 offers an `Explore` override with `model: sonnet` as its alternative. | ORCH-030 and ORCH-005 support Haiku 5.5 for read-only search (the official code-review plugin uses Haiku for this role); ORCH-033's Sonnet floor applies to agents that write. Combined advice: `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` for general-purpose subagents, plus an `Explore` override on Haiku 5.5 at `medium`, checked after a week. |
 | Sonnet 5.5's default effort | ORCH-026 and TOK-055: `high` on the API. ORCH-028: `medium` in Claude Code. | Not a contradiction: the two surfaces have different defaults, and ORCH-028 says so. Whether that's intentional is an open question in `kb-orchestration.md`. |
 | Does settings `env` keep `AWS_PROFILE` from other processes? | The Amazon Bedrock page: use settings files for "environment variables like `AWS_PROFILE` that you don't want to leak to other processes". The settings reference: `env` values "reach every subprocess Claude Code starts". | The settings reference, which describes the mechanism; the Bedrock line means the value stays out of your shell profile. INFRA-020 quotes both. |
+| Emphasis in instructions | Claude Code best practices (2026-10-12): "add emphasis such as 'IMPORTANT' to that line alone. If you emphasize many lines, none of them stands out." The same page on 2026-01-23 ([Wayback](https://web.archive.org/web/20260123082902/https://code.claude.com/docs/en/best-practices)): "adding emphasis (e.g., 'IMPORTANT' or 'YOU MUST') to improve adherence". Prompting best practices: "dial back any aggressive language" (Opus 4.5 and later over-trigger). | The current pages agree on direction: no blanket emphasis, at most one marked line. PROMPT-004 records both. |
+| Telling the model to verify its work | Prompting Claude Opus 5: remove explicit verification instructions, they "cause over-verification". Sonnet 5.5 and Haiku 5.5 pages: add a "run a real check" paragraph. Claude Code best practices: "Give Claude a way to verify its work". | Model- and effort-specific, not a contradiction: Opus verifies unprompted; Sonnet 5.5 at `low` and Haiku 5.5 at `low`/`medium` skip checks. Whether the Opus 5 advice holds for Opus 5.5 is open. PROMPT-027, PROMPT-030. |
+| Numeric length caps on subagent reports | Effective context engineering: subagents return "often 1,000-2,000 tokens"; Claude Code's delegation prompt: "report in under 200 words". The `prompt-audit` rubric flags "hard word caps" because they "starve reasoning". | Read together: cap the final report, not the work. Inference, recorded in PROMPT-013. |
 
 ## Overlaps kept on purpose
 
@@ -524,6 +575,15 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - MCP servers: TOK-020 to TOK-023 (overhead and output limits), INFRA-003 to INFRA-005 and INFRA-007 (AWS, Kubernetes and Flux servers).
 - Guard hooks: HOOK-028 and HOOK-032 (pattern, collections), INFRA-012 (infrastructure packs).
 - Incidents: REPO-037 (prompt injection in repos and CI), INFRA-022 and INFRA-023 (destroyed infrastructure and data).
+- Emphasis and reasons in instructions: SKILL-020 (skills), PROMPT-004 and PROMPT-005 (all prompts).
+- CLAUDE.md wording: PROMPT-015 and PROMPT-016 (wording, conflicts), REPO-044 and REPO-045 (what goes where, size), SKILL-024.
+- Subagent briefs and returns: ORCH-007 and ORCH-024 (context, decisions), PROMPT-012 and PROMPT-013 (wording), ORCH-034 and ORCH-035 (report protocol).
+- Premature completion: ORCH-037 and ORCH-039 (guardrails, verifiers), PROMPT-027 (prompt lines).
+- Reviewer wording: REPO-047 to REPO-049 (do-not-flag lists, validation, severity), PROMPT-032 (severity bars and recall).
+- Injection: REPO-037 and REPO-039 (untrusted content), PROMPT-033 (our own harness text mistaken for injection), PROMPT-007 (marking pasted text).
+- Other tools' prompts: TOK-085, ORCH-044 and REPO-052 (cost, orchestration, review), PROMPT-034 to PROMPT-036 (instruction wording).
+- Community collections: SKILL-044, SKILL-045 and REPO-051 (skills, agents), PROMPT-037 (prompt wording).
+- Text injected next to tool results: HOOK-007 (wording hook `additionalContext`), PROMPT-033 (harness text mistaken for injection).
 
 ## Merges
 
@@ -585,3 +645,4 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | 2026-10-12 | (recommendations) | Done recommendations cut to one-line pointers in all four topic files; open items, won't-do decisions, measurements and referenced IDs kept. `kb-repo-agents.md` T1 now points to the live `conventions-reviewer` and keeps the shared read-only hook. |
 | 2026-10-12 | (recommendations) | `kb-skills.md` recommendation 12: `morning` and `import-memory` disabled on claude.ai; `docs`, the file skills, `deep-research`, the three browser skills and `skill-creator` kept on purpose; recommendation done. |
 | 2026-10-12 | HOOK-001–HOOK-036 | New topic `kb-hooks.md` (FreekMencke/claude-kb#19): every event, handler types and their cost, timeouts, failure modes, locations and surfaces, matchers and `if`, debugging, security, patterns, community collections and our setup. Answers REPO's open question on `prompt` hook cost (HOOK-010); ORCH-019's unverified TaskCreated, TaskCompleted and TeammateIdle input fields are now in HOOK-002. |
+| 2026-10-12 | PROMPT-001 to PROMPT-038 | New topic `kb-prompting.md`: instructing the 5.x models (FreekMencke/claude-kb#22). 4 Quick answers, 3 Conflicts and 9 Overlaps added; links HOOK-007 and HOOK-031. |
