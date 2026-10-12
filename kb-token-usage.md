@@ -1769,11 +1769,7 @@ Not recommended now:
 - Serena or claude-context (TOK-084): `typescript-lsp` already covers symbol lookup.
 - Raising cache TTLs: rebuilds are only 8% of writes (TOK-034).
 
-**Research tools (TOK-087 to TOK-102, 2026-10-12).** Ranked by impact against effort. R10 and R11 are done (2026-10-12, FreekMencke/claude-kb#50): CLAUDE.md's research rules now say a WebFetch answer is never a quote, keep context7 for third-party libraries, and brief research subagents with source order, what's tested, absence rules, write limits and a quote per claim. Still open:
-
-| # | Change | Why | Effort | Evidence |
-|---|---|---|---|---|
-| R12 | (FreekMencke/claude-kb#51) In unattended research runs (`claude -p`, routines), keep fan-outs small, or set `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION` | The 200-search budget is shared with subagents and doesn't refill in `-p` | 2 min | TOK-092, TOK-099 |
+**Research tools (TOK-087 to TOK-102, 2026-10-12).** Ranked by impact against effort. R10 and R11 are done (2026-10-12, FreekMencke/claude-kb#50): CLAUDE.md's research rules now say a WebFetch answer is never a quote, keep context7 for third-party libraries, and brief research subagents with source order, what's tested, absence rules, write limits and a quote per claim. R12 is done (2026-10-12, FreekMencke/claude-kb#51): the re-verification routine's subagent rules now state the shared 200-search budget and say to curl cited sources instead of searching for them; both routines also open with PROMPT-014's autonomy block.
 
 Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost only names while deferred, but `llms.txt` plus a curled `.md` page already finds and reads a page for fewer tokens. Revisit if lookups keep missing the right page. The AWS docs tools already come with the `aws` server (TOK-097).
 
