@@ -416,18 +416,18 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | 2026-10-12 | REPO-005 | Skill frontmatter hooks stay active for the rest of the session once invoked; agent hooks only while the subagent runs. |
 | 2026-10-12 | REPO-008 | "Project command beats `--add-dir` command" has no source; marked unverified. |
 | 2026-10-12 | REPO-017 | Hard-exclusion count no longer stated (source numbering repeats 16); `security-guidance` says stay on the default Opus for precision, not about Sonnet by name. |
-| 2026-10-12 | REPO-027 | `session_id` output isn't documented in usage.md; marked unverified. Flags the CI agents row in `kb-repo-agents.md` recommendations. |
-| 2026-10-12 | REPO-036, REPO-038 | PAT warning applies to `allowed_non_write_users`; `allowed_bots: '*'` is discouraged, not prohibited; action version numbers unverified. Flags the CI agents row in `kb-repo-agents.md` recommendations. |
-| 2026-10-12 | REPO-046 | Docs example `code-reviewer` uses `model: sonnet` and shows no severity scheme. |
-| 2026-10-12 | SKILL-007 | Reserved names now include the `claude-ai` namespace (v2.1.282). |
+| 2026-10-12 | REPO-027 | Checked: `session_id` is an action output (action.yml, added as a source). No change. |
+| 2026-10-12 | REPO-036, REPO-038 | PAT warning applies to `allowed_non_write_users`; `allowed_bots: '*'` is discouraged, not prohibited; v1.0.94 described as its release notes do (the `PATH` fix), release notes added as a source. Flags the CI agents row in `kb-repo-agents.md` recommendations. |
+| 2026-10-12 | REPO-046 | Checked: the docs' "Code reviewer" example is Read, Grep, Glob, Bash on `inherit` with Critical / Warnings / Suggestions. No change. |
+| 2026-10-12 | SKILL-007 | Reserved names: `anthropic-skills` (outside a plugin) added next to `synced`; the v2.1.282 `claude-ai` reservation was reverted in v2.1.283. |
 | 2026-10-12 | SKILL-012 | docx negative-trigger quote completed. |
 | 2026-10-12 | SKILL-021 | "About 30 lines" threshold isn't in the sources; marked unverified. Slash-command merge sourced to the skills docs. |
 | 2026-10-12 | SKILL-022 | "About 100 tokens per description" replaced with the documented 1,536-character cap and 1% listing budget. Flags recommendation 1 in `kb-skills.md`. |
 | 2026-10-12 | SKILL-032 | Quote corrected; it applies to capability-uplift skills. Flags recommendation 7 in `kb-skills.md`. |
 | 2026-10-12 | SKILL-037 | In-session `/plugin validate <path>` is documented. |
-| 2026-10-12 | TOK-015 | Quotes replaced with the support articles' actual wording. |
+| 2026-10-12 | TOK-015 | Quotes replaced with the support articles' actual wording; inactivity expiry quoted from article 9797557. |
 | 2026-10-12 | TOK-020, TOK-022 | MCP description and server-instruction limit is 4,096 characters since v2.1.296 (was 2,048). Flags R9 in `kb-token-usage.md`. Its open question about the cap (2,048 vs 16,384) is partly answered. |
-| 2026-10-12 | TOK-043 | PDF "1,500–3,000 tokens per page" is not in the PDF docs; marked unverified. Quick answers row in `kb-token-usage.md` updated. Flags R5 in `kb-token-usage.md` and the Browser checks row in `kb-repo-agents.md`. |
-| 2026-10-12 | TOK-051, TOK-054 | Unsupported quote replaced; unsupported cookbook claims (speculative caching, "expiry, not an SLA") removed. |
-| 2026-10-12 | TOK-052 | Blog link changed to the claude.com URL (claude.dev did not resolve). |
+| 2026-10-12 | TOK-043 | Checked: the PDF support page states 1,500–3,000 tokens per page. No change. |
+| 2026-10-12 | TOK-051, TOK-054 | Automatic-caching quote replaced with the docs' wording; speculative caching now cites its own cookbook; "expiry, not an SLA" removed (not in the batch cookbook). |
+| 2026-10-12 | TOK-052 | Checked: the blog URL on claude.dev resolves (claude.com redirects to it). No change. |
 | 2026-10-12 | TOK-072 | Cache table row: tool-definition changes invalidate the whole cache, `tool_choice` and thinking only message blocks. |
