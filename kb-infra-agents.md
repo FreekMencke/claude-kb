@@ -203,6 +203,8 @@ Bash rules match text (REPO-034), and cloud CLIs make that worse, because their 
 - **No cloud CLI counts as read-only.** The auto-approved set "includes `ls`, `cat`, `echo`, `pwd`, `head`, `tail`, `grep`, `find`, `wc`, `which`, `diff`, `stat`, `du`, `cd`, and read-only forms of `git`".
 - **MCP tools match by name only.** "When Claude Code loads a settings file, it skips any `mcp__` rule that has parentheses."
 
+Tested 2026-10-12, v2.1.296, terminal (WSL): with `Bash(kubectl * delete *)` in `~/.claude/settings.json` and auto mode on, a Haiku `claude -p` asked to run `kubectl -n default delete pod … --dry-run=client` got "has been denied" without a prompt.
+
 ## [INFRA-009] Auto mode's built-in rules for cloud and cluster actions
 - Type: fact
 - Applies to: Claude Code
@@ -257,6 +259,8 @@ So a production namespace or bucket named after the product is judged as ordinar
 - Keep `"$defaults"`: an array without it "replaces the entire default list for that section".
 - The classifier doesn't read `autoMode` from a repo's `.claude/settings.json`, so it must go in user or managed settings.
 - `/auto-mode-setup` drafts entries from recent sessions (v2.1.228+, Pro, Max or Team). `claude auto-mode config` shows the result.
+
+Tested 2026-10-12, v2.1.296, terminal (WSL): `claude auto-mode config` listed the 21 default environment entries and then our four. The defaults still read "None configured" for the slots we filled, so our entries are added alongside the defaults, not merged into them.
 - Scopes merge "additive, not a hard policy boundary": a user `allow` can override an organization `soft_deny`. For a hard line, use `permissions.deny`.
 
 ## [INFRA-011] The sandbox with cloud CLIs, and AWS credential masking
@@ -553,9 +557,9 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 | # | Change | Impact | Effort | Entries |
 |---|---|---|---|---|
 | 1 | Done 2026-10-12 (FreekMencke/claude-kb#44), without `AWS_PROFILE`: a failing call is the clearer signal. Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
-| 3 | Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
-| 7 | Add `autoMode.environment` entries that name the production namespace, the site buckets, the Lambda functions and the AWS account as protected (keep `"$defaults"`). | Medium | Low | INFRA-010 |
-| 8 | Add deny rules as a backstop: `Read(~/.aws/credentials)`, `Bash(kubectl * delete *)`, `Bash(kubectl delete *)`, `Bash(helm * uninstall *)`, `Bash(aws * --profile default *)`. | Low | Low | INFRA-008 |
+| 3 | Done 2026-10-12 (FreekMencke/claude-kb#46): `kubernetes-mcp-server@0.0.67` and `mcp-proxy-for-aws-cli@1.7.0`, the latest releases that day. Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
+| 7 | Done 2026-10-12 (FreekMencke/claude-kb#46): four entries after `"$defaults"`, with every namespace on the home cluster as a sensitive target, since there is no staging cluster. Add `autoMode.environment` entries that name the production namespace, the site buckets, the Lambda functions and the AWS account as protected (keep `"$defaults"`). | Medium | Low | INFRA-010 |
+| 8 | Done 2026-10-12 (FreekMencke/claude-kb#46), without the `default`-profile rule: #44 deleted that profile, so the rule would match nothing. Add deny rules as a backstop: `Read(~/.aws/credentials)`, `Bash(kubectl * delete *)`, `Bash(kubectl delete *)`, `Bash(helm * uninstall *)`, `Bash(aws * --profile default *)`. | Low | Low | INFRA-008 |
 | 10 | Later: move the agent from a long-term IAM user key to short-lived credentials (an Identity Center permission set, or a role with a session name). | Medium | High | INFRA-020, INFRA-001 |
 
 Not recommended now: running cloud work in a dev container (INFRA-002). The credential is what decides cloud damage, and items 1, 2 and 4 address it directly.
