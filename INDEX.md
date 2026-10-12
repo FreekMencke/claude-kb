@@ -784,6 +784,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-12 | (recommendations) | `kb-token-usage.md` R10 and R11 done: CLAUDE.md's research rules now treat a WebFetch answer as never a quote, keep context7 for third-party libraries, and add a research-subagent brief (FreekMencke/claude-kb#50). `kb-prompting.md` recommendation 1 done for this repo: `/doctor prompt-audit` run, its one in-repo finding (two subagent write rules that disagreed) fixed. |
 | 2026-10-12 | TOK-031 | "What survives" now follows the context-window page's table instead of its walkthrough caption ("System prompt, CLAUDE.md, memory, and MCP tools reload automatically"), which read as if nested CLAUDE.md and `paths:` rules reload too; they reload on demand (MEM-003). Hook-added context is summarized, not dropped. Raised in FreekMencke/claude-kb#28. |
 | 2026-10-12 | (check) | `check_kb.py` warns about possible duplicates across files (near-identical titles, or mostly shared tags), skipping pairs already on one Conflicts, Overlaps, Merges or new "Similar but distinct" line. First run: PROMPT-010, HOOK-032, SKILL-046, MEM-025, HOOK-034, TOK-006 and REPO-010 added to existing overlap clusters; four pairs recorded as similar but distinct. |
 | 2026-10-12 | HOOK-036 | The aws push gate's `git -C` gap is fixed (osrs-tracker/osrs-tracker-aws#79): aws now runs a parsing `pre-push-check.sh` with no `if`, like web and api. Recommendation 1 in `kb-hooks.md` marked done. |
