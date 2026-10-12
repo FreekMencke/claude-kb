@@ -9,9 +9,10 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 ## How the repo works
 
 - `CLAUDE.md` holds the shared research instructions and the entry format. Every session and subagent in this repo loads it, so topic prompts only contain the topic.
+- `INDEX.md` is the entry point: 25 combined Quick answers, every entry by topic, then Conflicts, Overlaps kept on purpose, Merges and a Changelog. It's generated from each file's index table, so edit a file's index row, not INDEX.md, when a title changes, and rebuild or patch INDEX.md to match.
 - `kb-<topic>.md` files: one per research session. Each has a Quick answers table, an index, entries `## [PREFIX-NNN]`, then "Recommendations for our setup" and "Open questions".
 - Prefixes: ORCH (orchestration), TOK (token usage), SKILL (skills), REPO (repo agents).
-- `scripts/check_kb.py` checks every `kb-*.md` against the format: required fields, duplicate IDs, broken `Related` links, entry length, confidence values. Run it with `python3 scripts/check_kb.py` after any step that changes entries.
+- `scripts/check_kb.py` checks every `kb-*.md` against the format: required fields, duplicate IDs, broken `Related` links, entry length, confidence values, and that INDEX.md lists every entry and names no unknown ID. Run it with `python3 scripts/check_kb.py` after any step that changes entries.
 
 ## Status (2026-10-12)
 
@@ -20,24 +21,19 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 | 0 | Repo + `CLAUDE.md` | — | Done |
 | 1 | Sessions 1, 3, 4 → `kb-orchestration.md`, `kb-token-usage.md`, `kb-skills.md` | Opus 5.5 lead, Sonnet research agents, high | Done: 167 entries, all pass the format check |
 | 2 | Session 2 → `kb-repo-agents.md` (osrs-tracker-web) | Opus 5.5 lead, Sonnet research and fact-check agents, high | Done: 52 entries, pass the format check; follow-up work in roadmap osrs-tracker/osrs-tracker-web#220 |
-| 3 | Merge and index → `INDEX.md` | Sonnet 5.5, high | Next, after step 2 |
-| 4 | Librarian skill `claude-kb-lookup` | Sonnet 5.5, medium | After step 3 |
+| 3 | Merge and index → `INDEX.md` | Opus 5.5, high (planned Sonnet; run in the continuation session) | Done: 219 entries indexed, 5 full and 5 partial merges, 5 conflicts recorded; all files pass |
+| 4 | Librarian skill `claude-kb-lookup` | Sonnet 5.5, medium | Next |
 | 5 | Monthly re-verification | Sonnet 5.5, medium | After step 4, as a scheduled task |
 
-## Known issues for the merge step
+## Known issues
 
-Found by the format check after step 1. The first two are fixed (2026-10-12); `python3 scripts/check_kb.py` passes on the three step 1 files.
-
-- Fixed: `kb-skills.md` had 20 Quick answers rows. Overlapping rows were merged down to 15 (testing with measuring, pruning with roster size, the five desktop/WSL rows into two); no answer was dropped.
-- Fixed: 18 entries in `kb-token-usage.md` put a qualifier in Confidence. Each now has one allowed value (the weakest that applies to its main claim), and the qualifier moved to a `Confidence note:` line at the end of the entry.
-- Open: subagent model choice appears in both ORCH-005/ORCH-030 and TOK-036. They agree, so this is a dedupe, not a conflict.
-- Intended: ORCH-047 (the decision table) cites other entries instead of URLs, because it's a synthesis.
+All issues found after steps 1 and 2 are resolved (2026-10-12): the Quick answers row count, the Confidence qualifiers, and the ORCH-005/ORCH-030 vs TOK-036 overlap (TOK-036 now points to ORCH-003/ORCH-005). ORCH-047 citing other entries instead of URLs is intended, because it's a synthesis. What step 3 merged and which conflicts it found are listed at the end of INDEX.md.
 
 ## Next steps and their prompts
 
-### Step 3: merge and index
+### Step 3: merge and index (done)
 
-Start a new session in this repo on Sonnet 5.5 at high effort, after `kb-repo-agents.md` is committed:
+Kept for reference. It ran with this prompt:
 
 ```
 Read all kb-*.md files in this repo. Then:

@@ -216,14 +216,16 @@ The SDK docs warn that Opus 5 "delegates to subagents more readily than earlier 
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Tools reference – Agent tool](https://code.claude.com/docs/en/tools-reference), [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
-- Related: ORCH-008, ORCH-034, ORCH-035
+- Related: ORCH-008, ORCH-034, ORCH-035, REPO-010, TOK-006
 
 **What a non-fork subagent starts with:**
-- its own system prompt and the delegation message;
-- CLAUDE.md, except for Explore and Plan;
-- a git status snapshot;
-- preloaded skills;
+- its own system prompt (the agent body), environment and tools, and the delegation message;
+- the full CLAUDE.md hierarchy (user, project, `CLAUDE.local.md`, managed, and `AGENTS.md` as project instructions), except for Explore and Plan;
+- a git status snapshot, also skipped by Explore and Plan;
+- the full body of preloaded `skills:`;
 - a roster of named sibling agents.
+
+`omitClaudeMd: true` (v2.1.271+) starts a custom agent without the user, project and local CLAUDE.md files, keeping managed ones. It's ignored when the agent runs as the main session (`--agent`).
 
 It does **not** get the parent's history, the files already read, the skills already invoked, the output style or auto memory, so the brief must be self-contained. Its context window is sized by its own model.
 
@@ -439,7 +441,7 @@ All processes share one plan or API rate limit.
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Routines](https://code.claude.com/docs/en/routines), [Desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks)
-- Related: ORCH-016
+- Related: ORCH-016, REPO-030
 
 | | Cloud routines | Desktop scheduled tasks | `/loop` and cron tools |
 |---|---|---|---|
@@ -663,7 +665,7 @@ The Claude Code costs page still says "Sonnet handles most coding tasks well… 
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Model config](https://code.claude.com/docs/en/model-config), [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking)
-- Related: ORCH-004, ORCH-029, ORCH-033
+- Related: ORCH-004, ORCH-029, ORCH-033, TOK-055
 
 Levels are `low`, `medium`, `high`, `xhigh` and `max`, all supported on the Claude 5 models. "Effort is a behavioral signal, not a strict token budget." It changes thinking, tool-call count and verbosity; for a hard ceiling, use `max_tokens`.
 
@@ -782,7 +784,7 @@ Use Haiku for read-only, summarizable work (search, gates, digests), where a mis
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Effective context engineering (2025-09-29)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Best practices](https://code.claude.com/docs/en/best-practices), [Workflows](https://code.claude.com/docs/en/workflows)
-- Related: ORCH-007, ORCH-035, ORCH-036
+- Related: ORCH-007, ORCH-035, ORCH-036, TOK-035
 
 Context is "the most important resource to manage", and "performance degrades as it fills". Ways to keep the orchestrator's context lean:
 - **Summaries.** A subagent may use "tens of thousands of tokens or more, but returns only a condensed, distilled summary of its work (often 1,000-2,000 tokens)."
@@ -904,7 +906,7 @@ Rules:
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Prompt caching](https://code.claude.com/docs/en/prompt-caching), [Workflows – caching](https://code.claude.com/docs/en/workflows), [Settings reference](https://code.claude.com/docs/en/settings-reference)
-- Related: ORCH-011, ORCH-020
+- Related: ORCH-011, ORCH-020, TOK-052
 
 **Cache lifetimes:**
 - On a subscription within plan usage, the main conversation's cache lasts 1 hour.
