@@ -12,20 +12,15 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | What goes in a description? | What it does + when to use it, third person, the words users type, and a "not for X" line for neighbouring skills. Don't summarise a multi-step workflow. | SKILL-011, SKILL-012, SKILL-013 |
 | How big may SKILL.md be? | Under 500 lines / ~5k tokens; push detail into one-level-deep reference files and scripts. | SKILL-016, SKILL-017 |
 | Skill, CLAUDE.md, hook, subagent or MCP? | CLAUDE.md = always-true facts; skill = on-demand procedure; hook = must-happen guarantee; subagent = isolated side task; MCP = access to external systems. | SKILL-021, SKILL-023 |
-| How do I test that a skill triggers? | `claude plugin eval` with a `tool_used: Skill` grader, or skill-creator's `run_loop`; ~20 queries, half near-miss negatives, 3 runs each. | SKILL-026, SKILL-027, SKILL-028 |
-| How do I show a skill helps? | Run the same prompts with and without it in fresh sessions; look at the score delta and the token/time cost. | SKILL-025, SKILL-026, SKILL-032 |
+| How do I test a skill? | Triggering: `claude plugin eval` with a `tool_used: Skill` grader, or skill-creator's `run_loop`; ~20 queries, half near-miss negatives, 3 runs each. Usefulness: run the same prompts with and without it in fresh sessions; compare the score delta and the token/time cost. | SKILL-025 to SKILL-028, SKILL-032 |
 | Should I add a "forced skill evaluation" hook? | Not by default: no official endorsement, evidence is one author with small N, and it raises false positives. | SKILL-029 |
-| How do I find skills that cost context but are never used? | `/skill-doctor`; `claude plugin details <name>` for a plugin's always-on cost. | SKILL-030 |
 | How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. | SKILL-034, SKILL-038 |
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
-| How many skills is too many? | No official number; trigger accuracy measurably drops as the roster grows. Install few, prune with `/skill-doctor`. | SKILL-045, SKILL-005 |
-| Do claude.ai skills load in desktop-app Code sessions? | Local and Cloud: yes, delivered by the app as a plugin. Desktop WSL sessions: no, according to a local test. | SKILL-049, SKILL-050 |
-| Which `~/.claude` does a WSL session use? | The distro's Linux home. Windows and WSL share no skills, plugins, settings or credentials. | SKILL-051 |
-| Do plugins work in desktop WSL sessions? | The docs say no; plugins enabled in the distro's settings load anyway. The plugin UI and app-delivered plugins are missing. | SKILL-052 |
-| How do I see which skills a desktop session really has? | After the first message, ask the model to list its skills. The `/` menu and Customize panel are unreliable. | SKILL-054 |
-| Where should skills live with desktop and WSL? | In a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-056 |
+| How many skills is too many, and how do I prune? | No official number; trigger accuracy measurably drops as the roster grows. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, SKILL-005, SKILL-030 |
+| Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills no (local test); plugins enabled in the distro's settings load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054 |
+| Where should skills live with desktop and WSL? | WSL uses the distro's Linux `~/.claude`; Windows and WSL share no skills, plugins, settings or credentials. Keep skills in a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-051, SKILL-056 |
 
 ## Index
 

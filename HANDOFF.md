@@ -26,12 +26,12 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 
 ## Known issues for the merge step
 
-Found by the format check after step 1:
+Found by the format check after step 1. The first two are fixed (2026-10-12); `python3 scripts/check_kb.py` passes on the three step 1 files.
 
-- `kb-skills.md` has 20 Quick answers rows; the format asks for 10–15.
-- 17 entries in `kb-token-usage.md` put a qualifier in Confidence, e.g. `official-docs; single-source (local measurement)`. Normalize each to one allowed value (the weakest that applies to the entry's main claim) and move the qualifier into the entry text. `scripts/check_kb.py` lists them.
-- Subagent model choice appears in both ORCH-005/ORCH-030 and TOK-036. They agree, so this is a dedupe, not a conflict.
-- ORCH-047 (the decision table) cites other entries instead of URLs. That's intended: it's a synthesis.
+- Fixed: `kb-skills.md` had 20 Quick answers rows. Overlapping rows were merged down to 15 (testing with measuring, pruning with roster size, the five desktop/WSL rows into two); no answer was dropped.
+- Fixed: 18 entries in `kb-token-usage.md` put a qualifier in Confidence. Each now has one allowed value (the weakest that applies to its main claim), and the qualifier moved to a `Confidence note:` line at the end of the entry.
+- Open: subagent model choice appears in both ORCH-005/ORCH-030 and TOK-036. They agree, so this is a dedupe, not a conflict.
+- Intended: ORCH-047 (the decision table) cites other entries instead of URLs, because it's a synthesis.
 
 ## Next steps and their prompts
 

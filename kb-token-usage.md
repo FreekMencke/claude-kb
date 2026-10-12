@@ -115,7 +115,7 @@ The docs' context-window page is an interactive simulation with "representative 
 ## [TOK-002] Fixed overhead per session (measured)
 - Type: fact
 - Applies to: Claude Code
-- Confidence: single-source (local measurement), community-consensus on magnitude
+- Confidence: single-source
 - Last verified: 2026-10-12
 - Sources: local transcripts (`~/.claude/projects/*/*.jsonl`, first assistant turn's `usage`); [Systima/OpenCode vs Claude Code overhead](https://www.kunalganglani.com/blog/opencode-vs-claude-code-token-overhead); [wmedia /context sample](https://wmedia.es/en/tips/claude-code-context-command-token-usage)
 - Related: TOK-001, TOK-006, TOK-009
@@ -130,6 +130,8 @@ Community figures agree on the magnitude:
 - `/context` samples show system prompt about 3–4k and system tools about 17–21k.
 
 This overhead is cached, so it costs cache-read rates each turn. It is re-written when a session's cache goes cold.
+
+Confidence note: the figures are our local measurement; community captures (Systima, `/context` samples) agree on the magnitude.
 
 ## [TOK-003] CLAUDE.md loading rules and size target
 - Type: fact
@@ -193,7 +195,7 @@ The 2% figure in changelog v2.1.32 is outdated. Community estimates are about 2,
 ## [TOK-006] What a subagent's context starts with
 - Type: fact
 - Applies to: Claude Code
-- Confidence: official-docs; sizes from local measurement
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Sub-agents: what loads at startup](https://code.claude.com/docs/en/sub-agents), [Prompt caching: subagents](https://code.claude.com/docs/en/prompt-caching), local transcripts (`<session>/subagents/*.jsonl`)
 - Related: TOK-035, TOK-036, TOK-052
@@ -213,6 +215,8 @@ Cache behavior:
 - Parallel siblings can share a prefix: workflow fan-outs hold back all but the first agent for up to 5 seconds.
 
 Measured (30 runs): a subagent's first turn is about **27.5k–29.9k tokens**. When six were launched in parallel, five read about 18.7k from the first one's cache.
+
+Confidence note: what a subagent starts with is documented; the sizes are our local measurement (single-source).
 
 ## [TOK-007] Context window sizes and auto-compact thresholds
 - Type: fact
@@ -238,7 +242,7 @@ A large window removes the automatic brake on session length, so cost per turn k
 ## [TOK-008] Cost grows with context length on every turn
 - Type: fact
 - Applies to: Claude Code, Claude API
-- Confidence: official-docs (mechanism); single-source (local measurement) for our numbers
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Costs: why usage climbs in a long session](https://code.claude.com/docs/en/costs), local transcripts
 - Related: TOK-009, TOK-030, TOK-032
@@ -260,10 +264,12 @@ Other figures:
 - Only 3 compactions in 30 days: on a 1M window, auto-compact almost never fires.
 - Cost split: cache reads 52%, cache writes 31%, output 17%, uncached input about 0%. That is roughly $1,089 list-price equivalent over 30 days. On a subscription this is plan usage, not billing.
 
+Confidence note: the mechanism is documented; the 30-day table is our local measurement (single-source).
+
 ## [TOK-009] A token entering context costs about as much as an output token
 - Type: fact
 - Applies to: Claude Code
-- Confidence: single-source (local measurement, derived)
+- Confidence: single-source
 - Last verified: 2026-10-12
 - Sources: local transcripts; [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-008, TOK-042, TOK-043
@@ -277,6 +283,8 @@ At Opus 5.5 subscription rates, a token that enters the main context costs:
 which totals about **$19.60/MTok**. That's the same as the output price ($20). With an API key (5-minute writes at $5) it's about $16.60/MTok.
 
 The practical upshot: a 5k-token `git diff` or screenshot read early in a long session costs about as much as Claude writing 5k tokens. Trimming tool output pays off more the earlier in a session it happens. Moving verbose work into a subagent caps the multiplier at the subagent's own, usually short, lifetime.
+
+Confidence note: derived from our local 30-day measurement and list prices.
 
 ## [TOK-010] `/usage`, `/context` and other built-in meters
 - Type: tool
@@ -346,7 +354,7 @@ The docs call OTel "the only option that streams per-user token and cost metrics
 ## [TOK-013] Local transcripts as a usage data source
 - Type: tool
 - Applies to: Claude Code
-- Confidence: official-docs (location); single-source (schema observed locally)
+- Confidence: single-source
 - Last verified: 2026-10-12
 - Sources: [.claude directory](https://code.claude.com/docs/en/claude-directory), local inspection
 - Related: TOK-080, TOK-008
@@ -365,6 +373,8 @@ Assistant lines carry `message.usage`. The fields are not a documented contract:
 Pitfall: one API message can appear on several lines (streamed chunks). **Deduplicate by `message.id` and keep the last line.** Summing every line inflates totals; a claim of about 2.87x inflation in claude-code#41346 is unverified. Taking the first line under-counts output.
 
 All our local measurements in this file use last-line-per-id.
+
+Confidence note: the transcript location is documented (official-docs); the `usage` schema is observed locally and not a documented contract.
 
 ## [TOK-014] claude.ai plan limits: 5-hour and weekly windows
 - Type: fact
@@ -507,7 +517,7 @@ History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases sw
 ## [TOK-021] MCP overhead without deferral
 - Type: fact
 - Applies to: Claude API, Claude Code (when tool search is off)
-- Confidence: official-docs; community numbers single-source
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use), [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [PolicyLayer GitHub MCP cost](https://policylayer.com/token-cost/github), [Unblocked MCP budget](https://getunblocked.com/blog/mcp-token-budget-autopsy/)
 - Related: TOK-020, TOK-024
@@ -528,6 +538,8 @@ Cheap places to defer:
 - In Claude Code, deferral makes this mostly an API-builder concern.
 - On the API, use tool search when you have 10+ tools or more than 10k tokens of definitions, and keep the 3–5 most-used tools non-deferred.
 - `defer_loading` keeps definitions out of context and preserves the cache, but you still send them on every request.
+
+Confidence note: the Anthropic figures are official; the per-server community numbers are single-source.
 
 ## [TOK-022] Prefer CLIs and scope MCP servers narrowly
 - Type: recommendation
@@ -623,7 +635,7 @@ Cost: compaction is itself a request over the whole history. While the cache is 
 ## [TOK-032] Tuning auto-compact
 - Type: recommendation
 - Applies to: Claude Code
-- Confidence: official-docs (knobs); single-source (local simulation) for savings
+- Confidence: single-source
 - Last verified: 2026-10-12
 - Sources: [Model config: set the auto-compact window](https://code.claude.com/docs/en/model-config), [Env vars](https://code.claude.com/docs/en/env-vars)
 - Related: TOK-007, TOK-008, TOK-031
@@ -647,6 +659,8 @@ Simulation on our 30 days. It replays each session's per-turn context growth and
 
 A lower window trades lossy summaries for cost. Pair it with compact instructions (TOK-031) and a handoff habit (R3).
 
+Confidence note: the knobs are documented (official-docs); the savings come from our local simulation.
+
 ## [TOK-033] Rewind, partial summarize and `/btw`
 - Type: tool
 - Applies to: Claude Code
@@ -668,7 +682,7 @@ Rewinding truncates to an already-cached prefix, so it's cheaper than `/compact`
 ## [TOK-034] Resuming and idle gaps
 - Type: fact
 - Applies to: Claude Code
-- Confidence: official-docs; single-source (local measurement) for share
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Sessions: resume from a summary](https://code.claude.com/docs/en/sessions#resume-from-a-summary), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-052, TOK-086
@@ -680,6 +694,8 @@ Rewinding truncates to an already-cached prefix, so it's cheaper than `/compact`
 Idle sessions can still spend: scheduled tasks, cross-session messages and goal check-ins each send the full context. Background helpers (titles, resume summaries) cost under $0.04 per session.
 
 In our data, full rebuilds after the first turn (cache writes over 40k) were rare: 11 turns, 8% of main-session cache writes. Idle gaps are a minor cost driver for us; context length dominates (TOK-008).
+
+Confidence note: the cache and resume behavior is documented; the share of rebuilds is our local measurement (single-source).
 
 ## [TOK-035] Delegate verbose work to subagents
 - Type: pattern
@@ -707,7 +723,7 @@ Ask for a specific return format with a word cap, to keep the summary small.
 ## [TOK-036] Subagent model selection
 - Type: recommendation
 - Applies to: Claude Code
-- Confidence: official-docs; single-source (local measurement) for our numbers
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Sub-agents: choose a model](https://code.claude.com/docs/en/sub-agents), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-006, TOK-035
@@ -729,6 +745,8 @@ Our 30 days:
 - 206 runs on Sonnet cost about $26 (about $0.13 per run).
 - The tasks differ, so this is not like-for-like.
 - Subagents were 19% of total cost.
+
+Confidence note: the resolution order and Explore behavior are documented; our numbers are local measurement (single-source).
 
 ## [TOK-037] Multi-agent and agent teams multiply tokens
 - Type: fact
@@ -812,7 +830,7 @@ A "codebase-overview" skill (official suggestion) or a small repo map (TOK-085) 
 ## [TOK-042] Bash output limits and output-filtering hooks
 - Type: pattern
 - Applies to: Claude Code
-- Confidence: official-docs; single-source (local measurement) for our numbers
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference#output-limits), [Costs: offload processing to hooks](https://code.claude.com/docs/en/costs), [Hooks](https://code.claude.com/docs/en/hooks)
 - Related: TOK-009, TOK-083, TOK-023
@@ -833,10 +851,12 @@ Habits beat hooks here:
 - `gh … --json <fields>`.
 - `rg -n` before `sed -n`.
 
+Confidence note: the limits and hook pattern are documented; the 30-day numbers are our local measurement (single-source).
+
 ## [TOK-043] Pastes, images and PDFs
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
-- Confidence: official-docs; single-source (local measurement) for our counts
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Terminal config: paste large content](https://code.claude.com/docs/en/terminal-config#paste-large-content), [Vision](https://platform.claude.com/docs/en/build-with-claude/vision), [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support)
 - Related: TOK-009, TOK-040
@@ -852,6 +872,8 @@ Habits beat hooks here:
 **PDFs:** 1,500–3,000 tokens per page of text, plus image cost per page. Use the Files API (`file_id`) rather than re-sending base64.
 
 We had 995 image reads in 30 days, mostly UI screenshots. At 1.5–4.8k tokens each, that's roughly 1.5–4.8M tokens entering context, each re-read many times (TOK-009).
+
+Confidence note: the paste, image and PDF rules are documented; our counts are local measurement (single-source).
 
 ## [TOK-044] Blocking reads of large or irrelevant files
 - Type: fact
@@ -1054,7 +1076,7 @@ Three levels:
 ## [TOK-061] Writing skill descriptions
 - Type: recommendation
 - Applies to: Claude Code, general
-- Confidence: official-docs; community-consensus on length
+- Confidence: community-consensus
 - Last verified: 2026-10-12
 - Sources: [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [anthropics/skills skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator), [obra/superpowers writing-skills](https://github.com/obra/superpowers), [Vercel: AGENTS.md vs skills](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
 - Related: TOK-005, TOK-064
@@ -1075,6 +1097,8 @@ Community practice (superpowers):
 Vercel's eval found a skill wasn't invoked in 56% of cases, and a compact AGENTS.md index scored 100%. So knowledge that is always needed belongs in passive context, not a skill.
 
 Our default: about 150–400 characters, triggers first, and `claude plugin eval` with a `tool_used: Skill` grader to check triggering after edits.
+
+Confidence note: the limits and third-person rule are documented (official-docs); the length guidance is community practice, and the superpowers finding is single-source.
 
 ## [TOK-062] SKILL.md size and reference files
 - Type: recommendation
@@ -1188,7 +1212,7 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 ## [TOK-070] Anti-patterns: sessions and workflow
 - Type: anti-pattern
 - Applies to: Claude Code
-- Confidence: official-docs unless noted
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-030, TOK-032, TOK-035, TOK-053
@@ -1209,10 +1233,12 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 | Plan mode for one-sentence diffs (single-source) | Skip plan mode when the diff is obvious | — |
 | Large agent teams on Opus | Small teams, Sonnet teammates | TOK-037 |
 
+Confidence note: each row's detail and confidence is in the linked entry; rows marked single-source are not documented.
+
 ## [TOK-071] Anti-patterns: configuration
 - Type: anti-pattern
 - Applies to: Claude Code
-- Confidence: official-docs unless noted
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Skills](https://code.claude.com/docs/en/skills), [Costs](https://code.claude.com/docs/en/costs), [Permissions](https://code.claude.com/docs/en/permissions)
 - Related: TOK-003, TOK-005, TOK-022, TOK-036
@@ -1231,6 +1257,8 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 | `.claudeignore` (has no effect) | `Read(...)` deny rules | TOK-044 |
 | `ANTHROPIC_API_KEY` set on a subscription machine | Unset it; check with `/status` | TOK-014 |
 | Bloated MEMORY.md | Index plus topic files | TOK-004 |
+
+Confidence note: each row's detail and confidence is in the linked entry.
 
 ## [TOK-072] Anti-patterns: API apps
 - Type: anti-pattern
@@ -1321,7 +1349,7 @@ No popular hook warns at a context threshold; feature requests are open. The sta
 ## [TOK-083] Output-compression tools (RTK, context-mode)
 - Type: tool
 - Applies to: Claude Code
-- Confidence: unverified (vendor claims)
+- Confidence: unverified
 - Last verified: 2026-10-12
 - Sources: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), [mksglu/context-mode](https://github.com/mksglu/context-mode)
 - Related: TOK-042, TOK-009
@@ -1338,10 +1366,12 @@ No popular hook warns at a context threshold; feature requests are open. The sta
 
 Neither has independent session-level measurement of cost or task success. Both follow the official hook-filtering pattern (TOK-042). Try one only where Bash output really dominates. For us, large outputs were `git diff`/`gh` dumps, which habits fix (TOK-042).
 
+Confidence note: the savings figures are the vendors' own claims.
+
 ## [TOK-084] Code-index MCP servers (Serena, claude-context, code-review-graph)
 - Type: tool
 - Applies to: Claude Code
-- Confidence: unverified (vendor claims)
+- Confidence: unverified
 - Last verified: 2026-10-12
 - Sources: [oraios/serena](https://github.com/oraios/serena), [zilliztech/claude-context](https://github.com/zilliztech/claude-context), [tirth8205/code-review-graph](https://github.com/tirth8205/code-review-graph)
 - Related: TOK-041, TOK-085
@@ -1359,10 +1389,12 @@ Neither has independent session-level measurement of cost or task success. Both 
 
 All three add MCP tools and dependencies. The official alternative is an LSP code-intelligence plugin (TOK-041); we already run `typescript-lsp`. Don't adopt these for token savings without measuring on our own tasks.
 
+Confidence note: the savings figures are the vendors' own claims.
+
 ## [TOK-085] Ideas from other coding agents
 - Type: comparison
 - Applies to: general
-- Confidence: official-docs (each tool's own docs); Codex items unverified
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Aider repo map](https://aider.chat/docs/repomap.html), [Aider commands](https://aider.chat/docs/usage/commands.html), [Cline auto-compact](https://docs.cline.bot/features/auto-compact), [Cline new_task](https://docs.cline.bot/exploring-clines-tools/new-task-tool), [Gemini CLI commands](https://google-gemini.github.io/gemini-cli/docs/cli/commands.html)
 - Related: TOK-041, TOK-030, TOK-032
@@ -1377,10 +1409,12 @@ That handoff idea transfers directly as a user-invoked handoff skill plus `/clea
 
 **Gemini CLI** (`/compress`, `/stats`) and **Codex** (`model_auto_compact_token_limit`, custom compact prompt; defaults unverified) add nothing beyond `/compact`, compact instructions and `autoCompactWindow`.
 
+Confidence note: each tool's behavior is from its own docs; Cline's quality figure is a vendor claim and the Codex defaults are unverified.
+
 ## [TOK-086] The April 2026 usage-drain incident
 - Type: fact
 - Applies to: Claude Code
-- Confidence: official-docs (postmortem); community (issue reports)
+- Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [April 23 postmortem](https://www.anthropic.com/engineering/april-23-postmortem), [claude-code#41930](https://github.com/anthropics/claude-code/issues/41930), [claude-code#38335](https://github.com/anthropics/claude-code/issues/38335)
 - Related: TOK-052, TOK-053, TOK-034
@@ -1397,6 +1431,8 @@ Lessons:
 - Upgrade deliberately: the first turn after an upgrade rebuilds the cache.
 
 ---
+
+Confidence note: the timeline is from Anthropic's postmortem; the drain reports are community issue reports.
 
 ## Recommendations for our setup
 
