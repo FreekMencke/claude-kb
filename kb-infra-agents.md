@@ -25,7 +25,7 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 | How do I debug an incident without flooding context? | Filtered MCP reads (Flux `since`/`grep`/`limit`, Logs Insights aggregates), done by a read-only subagent that returns a short summary. | INFRA-018, INFRA-019 |
 | Do credentials end up in transcripts? | Yes, anything a tool prints is written to the plaintext `.jsonl` and sent to the model. Settings `env` reaches every subprocess. | INFRA-021, INFRA-020 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
-| What should we change in our setup first? | Remove the root access keys from `~/.aws/credentials`, give the agent a non-admin kubeconfig, and pin the MCP servers. | INFRA-024, Recommendations |
+| What should we change in our setup first? | Give the agent a non-admin kubeconfig and pin the MCP servers; the root keys are gone and the agent policy is tightened (2026-10-12). | INFRA-024, Recommendations |
 
 ## Index
 
@@ -540,11 +540,11 @@ Mapping INFRA-022 to controls, most-recurring first:
 Read from local config (structure only) and read-only AWS calls through the MCP server. Names are left out on purpose.
 
 **AWS:**
-- `~/.aws/credentials` holds two long-term key pairs: `default` is the **root user**, `claude` a dedicated IAM user. No `AWS_PROFILE` is set, so any `aws`, SDK or Terraform call without `--profile` runs as root. Only a CLAUDE.md rule and auto mode stand in the way.
-- The `claude` policy allows Lambda code and config updates and invokes on two function prefixes, writes to **all** EventBridge rules, S3 object put and delete on four site buckets, and `logs:PutRetentionPolicy` on **all** log groups. It denies IAM, billing, `sts:AssumeRole`, bucket policies, function deletes and Route 53.
-- Its `aws-mcp:*` statement has had "no effect" since GA (INFRA-003).
-- Two of the four granted buckets don't exist. The other two have versioning "Never enabled", so a delete is permanent.
-- **No CloudTrail trail**: object deletes and Lambda invokes leave no record, other changes last 90 days (INFRA-016).
+Updated after FreekMencke/claude-kb#44 (2026-10-12); CHANGELOG.md has the state before.
+- `~/.aws/credentials` holds one long-term key pair, for the `claude` IAM user. The root user's keys are deleted and there is no `default` profile, so an `aws` call without `--profile` fails.
+- The `claude` policy allows Lambda code and config updates and invokes on two function prefixes; writes to the two existing EventBridge rules and to rules with those prefixes; S3 object put and delete on the two site buckets; and `logs:PutRetentionPolicy` on those functions' log groups. It denies IAM, billing, `sts:AssumeRole`, bucket policies and versioning, object-version deletes, function deletes, Route 53, stopping or changing CloudTrail, and log-group deletes. Tested: retention outside the Lambda log groups and `cloudtrail:StopLogging` are refused. Removing the no-op `aws-mcp:*` statement (INFRA-003) didn't affect the MCP server.
+- The site buckets keep versioning off: they hold a site rebuilt from git on each deploy, and it is moving to the cluster.
+- One multi-region CloudTrail trail records management events, read and write, without data events, so object deletes and Lambda invokes still leave no record (INFRA-016).
 
 **Kubernetes:** both MCP servers and Bash `kubectl` use the default kubeconfig, which holds the **cluster-admin** client certificate. The kubernetes server is read-only with Secrets denied; Flux runs `--read-only` with masking on. Both flags are client-side (INFRA-006). The kubernetes server and the AWS proxy run as `@latest`.
 
@@ -556,12 +556,12 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 
 | # | Change | Impact | Effort | Entries |
 |---|---|---|---|---|
-| 1 | Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
+| 1 | Done 2026-10-12 (FreekMencke/claude-kb#44), without `AWS_PROFILE`: a failing call is the clearer signal. Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
 | 2 | Give the agent a non-admin cluster identity: a ServiceAccount bound to `view` (plus read on Flux resources), with its own kubeconfig for both MCP servers and `KUBECONFIG` in Claude Code's `env`. Keep the admin kubeconfig out of the default path. Alternative for Flux only: `--kube-as`. | High | Medium | INFRA-006, INFRA-004, INFRA-005 |
 | 3 | Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
-| 4 | Clean up the agent policy: remove the `aws-mcp:*` statement and the two grants for missing buckets; scope EventBridge to the agent's rule-name prefixes and `PutRetentionPolicy` to the functions' log groups; add `cloudtrail:StopLogging`, `cloudtrail:DeleteTrail` and `logs:DeleteLogGroup` to the deny statement. Then update the "Cluster and AWS access" section of `~/.claude/CLAUDE.md`, which says the agent may change only prefixed rules. | Medium | Low | INFRA-003, INFRA-024 |
-| 5 | Turn on S3 versioning (with a noncurrent-version expiry) on the site buckets the agent can delete from. | Medium | Low | INFRA-023 |
-| 6 | Create one CloudTrail trail for management events. The first copy is free; add S3 and Lambda data events if the cost is acceptable. | Medium | Low | INFRA-016 |
+| 4 | Done 2026-10-12 (FreekMencke/claude-kb#44), with versioning, lifecycle and object-version deletes and CloudTrail changes also denied; the two existing rules have no prefix, so they are named. Clean up the agent policy: remove the `aws-mcp:*` statement and the two grants for missing buckets; scope EventBridge to the agent's rule-name prefixes and `PutRetentionPolicy` to the functions' log groups; add `cloudtrail:StopLogging`, `cloudtrail:DeleteTrail` and `logs:DeleteLogGroup` to the deny statement. Then update the "Cluster and AWS access" section of `~/.claude/CLAUDE.md`, which says the agent may change only prefixed rules. | Medium | Low | INFRA-003, INFRA-024 |
+| 5 | Skipped 2026-10-12 (FreekMencke/claude-kb#44): the buckets hold a site rebuilt from git, which moves to the cluster. Turn on S3 versioning (with a noncurrent-version expiry) on the site buckets the agent can delete from. | Medium | Low | INFRA-023 |
+| 6 | Done 2026-10-12 (FreekMencke/claude-kb#44), management events only. Create one CloudTrail trail for management events. The first copy is free; add S3 and Lambda data events if the cost is acceptable. | Medium | Low | INFRA-016 |
 | 7 | Add `autoMode.environment` entries that name the production namespace, the site buckets, the Lambda functions and the AWS account as protected (keep `"$defaults"`). | Medium | Low | INFRA-010 |
 | 8 | Add deny rules as a backstop: `Read(~/.aws/credentials)`, `Bash(kubectl * delete *)`, `Bash(kubectl delete *)`, `Bash(helm * uninstall *)`, `Bash(aws * --profile default *)`. | Low | Low | INFRA-008 |
 | 9 | Decide between Bash `aws` and the AWS MCP server. The global CLAUDE.md asks for `--profile claude` on every CLI call, while the AWS server's instructions say not to use the CLI. Routing writes through MCP makes `aws:ViaAWSMCPService` conditions usable. | Low | Low | INFRA-003, INFRA-006 |
@@ -571,7 +571,7 @@ Not recommended now: running cloud work in a dev container (INFRA-002). The cred
 
 ## Open questions
 
-- **Leaked keys in our transcripts.** A count found AWS-key-shaped strings in 1 of 698 local transcripts (2026-10-06 to 2026-10-12, `rg -l -e 'AKIA[0-9A-Z]{16}' -e 'ASIA[0-9A-Z]{16}' ~/.claude/projects`). The follow-up that would show whether they are real keys was blocked by auto mode as Credential Exploration. The user should check by hand, and rotate the key if it is real.
+- **Leaked keys in our transcripts.** Resolved 2026-10-12: the user's check found two distinct `ASIA` strings (temporary keys, which expire within 36 hours) in three research-subagent transcripts that had read AWS docs, and no `AKIA` key. Nothing needed rotating.
 - **`run_script` under `--read-only`.** Does the AWS proxy's read-only flag keep or hide `aws___run_script`? Not documented; list the tools with the flag to check.
 - **Lambda execution roles.** `lambda:UpdateFunctionCode` lets the agent run code as a function's role. What those roles can do wasn't checked (the agent's policy denies `iam:*` reads).
 - **Agent key age.** The IAM user's key age and last rotation couldn't be read with the agent's own identity.
