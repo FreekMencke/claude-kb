@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check every kb-*.md file against the entry format in CLAUDE.md, and INDEX.md against the entries.
+"""Check every kb-*.md file against the entry format in CLAUDE.md, and INDEX.md, OVERLAPS.md and CHANGELOG.md against the entries.
 
 Usage: python3 scripts/check_kb.py
 Exits with status 1 when it finds a problem, so it can run in CI. Possible duplicates across files are printed as
@@ -23,8 +23,10 @@ SYNTHESIS_SOURCE = re.compile(r"synthesis of", re.I)
 # Possible duplicates across files: titles this similar (difflib ratio), or this share of tags (Jaccard, at least 2).
 TITLE_SIMILAR = 0.72
 TAGS_SHARED = 0.6
-# INDEX.md sections where IDs on one line count as already reviewed together.
-REVIEWED_SECTIONS = ["Conflicts", "Overlaps kept on purpose", "Merges", "Similar but distinct"]
+# Sections where IDs on one line count as already reviewed together.
+REVIEWED_SECTIONS = {"INDEX.md": ["Conflicts"], "OVERLAPS.md": ["Overlaps kept on purpose", "Merges", "Similar but distinct"]}
+# Files that name entry IDs, checked for IDs that don't exist.
+ID_FILES = ["INDEX.md", "OVERLAPS.md", "CHANGELOG.md"]
 
 
 def entries(text):
@@ -44,11 +46,11 @@ def quick_answer_rows(text):
     return max(len(rows) - 2, 0)  # minus header and separator
 
 
-def reviewed_pairs(index_text):
-    """Pairs of IDs named on the same line (ranges like X-001 to X-005 expanded) in the REVIEWED_SECTIONS of INDEX.md."""
+def reviewed_pairs(texts):
+    """Pairs of IDs named on the same line (ranges like X-001 to X-005 expanded) in the REVIEWED_SECTIONS."""
     pairs = set()
-    for name in REVIEWED_SECTIONS:
-        m = re.search(r"^## " + re.escape(name) + r"\s*$(.*?)(?=^## |\Z)", index_text, re.M | re.S)
+    for fname, name in ((f, n) for f, names in REVIEWED_SECTIONS.items() for n in names):
+        m = re.search(r"^## " + re.escape(name) + r"\s*$(.*?)(?=^## |\Z)", texts.get(fname, ""), re.M | re.S)
         for line in m.group(1).splitlines() if m else []:
             ids = set(re.findall(r"\b[A-Z]+-\d+\b", line))
             for prefix, start, end in re.findall(r"\b([A-Z]+)-(\d+) to (?:[A-Z]+-)?(\d+)\b", line):
@@ -130,8 +132,10 @@ def main():
         issues = [f"{eid} is missing from the index" for eid in sorted(set(where) - listed)]
         # Prefixes come from the entries themselves, so a new kb-*.md file is checked without editing this script.
         prefixes = "|".join(sorted({eid.split("-")[0] for eid in where}))
-        mentioned = set(re.findall(r"\b(?:" + prefixes + r")-\d+\b", it))
-        issues += [f"mentions unknown {ref}" for ref in sorted(mentioned - set(where))]
+        others = {n: (ROOT / n).read_text(encoding="utf-8") for n in ID_FILES if (ROOT / n).exists()}
+        for name, text in others.items():
+            mentioned = set(re.findall(r"\b(?:" + prefixes + r")-\d+\b", text))
+            issues += [f"{name} mentions unknown {ref}" for ref in sorted(mentioned - set(where))]
         # The file table at the top: every kb-*.md file listed, with its current entry count.
         table = {m.group(1): int(m.group(2)) for m in re.finditer(r"^\| `(kb-[\w-]+\.md)` \| [A-Z]+ \| .*? \| (\d+)", it, re.M)}
         for f, t in texts.items():
@@ -151,10 +155,10 @@ def main():
                 titles[m.group(1)] = (f.name, m.group(2).strip())
         tags = {m.group(1): {x.strip() for x in m.group(2).split(",") if x.strip()}
                 for m in re.finditer(r"^\| ([A-Z]+-\d+) \| .*? \| [\w-]+ \| (.*?) \|$", it, re.M)}
-        warnings = possible_duplicates(titles, tags, reviewed_pairs(it))
+        warnings = possible_duplicates(titles, tags, reviewed_pairs(others))
         if warnings:
             print(f"\nPossible duplicates across files ({len(warnings)}, warnings only). Merge or cross-link them,"
-                  " or list the pair under 'Similar but distinct' in INDEX.md:")
+                  " or list the pair under 'Similar but distinct' in OVERLAPS.md:")
             for w in warnings:
                 print(f"  - {w}")
 

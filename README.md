@@ -31,7 +31,9 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 
 | File | What it holds |
 |---|---|
-| [INDEX.md](INDEX.md) | Entry point: combined Quick answers, every entry by topic, then Conflicts, Overlaps kept on purpose, Merges and a Changelog |
+| [INDEX.md](INDEX.md) | Entry point: combined Quick answers, every entry by topic, and Conflicts |
+| [OVERLAPS.md](OVERLAPS.md) | Curation records: overlaps kept on purpose, merges, and pairs checked as similar but distinct |
+| [CHANGELOG.md](CHANGELOG.md) | What changed, newest first |
 | [kb-orchestration.md](kb-orchestration.md) | `ORCH`: orchestration, parallelization and model selection |
 | [kb-token-usage.md](kb-token-usage.md) | `TOK`: token usage and context efficiency, and the cost of research tools (WebFetch, WebSearch, docs MCP servers, research subagents) |
 | [kb-skills.md](kb-skills.md) | `SKILL`: writing, testing and distributing skills |
@@ -63,7 +65,7 @@ they go stale faster.
 
 A cloud routine, [claude-kb monthly re-verification](https://claude.ai/code/routines/trig_01HDV9ENf7vGtyTF52Lb4qTW),
 runs at 06:00 UTC on the 1st of each month on Sonnet 5.5. It re-checks every official-docs and official-example entry
-against its sources, sets Last verified, logs corrections in INDEX.md's Changelog, checks new and changed entries for
+against its sources, sets Last verified, logs corrections in CHANGELOG.md, checks new and changed entries for
 overlap with other files, and opens a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in this repo.
 
 - **Why a PR, not a push to main:** a wrong correction to an entry every agent trusts should be reviewed first.
@@ -72,7 +74,7 @@ overlap with other files, and opens a PR from `claude/reverify-<YYYY-MM>`. Its p
   claim it can't find stays and is listed as "not found"; only a contradicting quote changes it.
 - **Why it looks for overlap, and only in new and changed entries:** the per-file subagents can't see other files, and
   the topic files were reconciled once in full (FreekMencke/claude-kb#28). The lead resolves each overlap and each
-  `check_kb.py` duplicate warning as an Overlaps line, a merge, or a "Similar but distinct" line in INDEX.md, and lists
+  `check_kb.py` duplicate warning as an Overlaps line, a merge, or a "Similar but distinct" line in OVERLAPS.md, and lists
   them under "Overlaps" in the PR body.
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`. Pause or delete it at https://claude.ai/code/routines.
@@ -93,10 +95,12 @@ overlap with other files, and opens a PR from `claude/reverify-<YYYY-MM>`. Its p
   and when it loads) are separate files because agents look them up separately; research-tool cost is a section of
   `kb-token-usage.md`, not a file, because it's a handful of entries (FreekMencke/claude-kb#18).
 - **Link, don't repeat.** Each topic file opens with what it links to instead of covering; neighbouring entries that
-  stay separate are listed in INDEX.md's "Overlaps kept on purpose", and duplicates are merged with a pointer (never
+  stay separate are listed in OVERLAPS.md's "Overlaps kept on purpose", and duplicates are merged with a pointer (never
   renumbered).
 - **One home per open question.** When two files raise the same question, one keeps it and the other points there.
   Cross-file pointers name entry IDs, not the issue that created a topic.
+- **INDEX.md holds only what answers a lookup.** The lookup skill reads it in full on every question, so the curation
+  records and the change history live in OVERLAPS.md and CHANGELOG.md; Conflicts stay because they decide an answer.
 - **INDEX.md's Quick answers stay near 30 rows** across all topics; each topic file keeps its own 10–15.
 
 How the knowledge base was built (the prompts for each research, merge and skill step, and their test results) is in
