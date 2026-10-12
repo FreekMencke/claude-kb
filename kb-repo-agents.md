@@ -589,7 +589,7 @@ Both are workflow plus command, not repo subagents. For a solo repo where every 
 - Applies to: Claude Code
 - Confidence: unverified
 - Last verified: 2026-10-12
-- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline); [wshobson ui-visual-validator](https://github.com/wshobson/agents)
+- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline), local test in osrs-tracker-web 2026-10-12 (osrs-tracker/osrs-tracker-web#223); [wshobson ui-visual-validator](https://github.com/wshobson/agents)
 - Related: template T3, TOK-043
 
 **Purpose:** run a Playwright check of a change locally or in production and return a short report: pass or fail, request count, failed requests, console errors, the path of the saved screenshot. The screenshots themselves stay in the subagent's context.
@@ -1716,7 +1716,8 @@ Keep it under 300 words.
 
 Notes:
 - **Shared browser.** One Playwright browser serves the session, so never run two checkers at once (REPO-021).
-- **Unconfirmed.** Whether subagents can use the plugin MCP tools when they are listed by name has not been tested here. Check it on the first run. If they can't, omit `tools` and add `disallowedTools: Edit, Write, NotebookEdit, Bash`.
+- **Plugin MCP tools by name work.** Tested 2026-10-12 in osrs-tracker-web (osrs-tracker/osrs-tracker-web#223): a subagent with the `mcp__plugin_playwright_playwright__*` tools listed in `tools` ran the check, so the `disallowedTools` fallback isn't needed.
+- **Two fixes from the first runs.** Give `Read` and tell the agent to read each screenshot: run 1 never looked at the image, so it checked no design rules. Spell out the screenshot path (`.playwright-mcp/<page>-<mode>.png`): a bare `filename` landed in the checkout's root. One run with the image read cost about 37k subagent tokens and 8 tool calls.
 
 ---
 
@@ -1725,7 +1726,7 @@ Notes:
 - **Scoped Bash in agent `tools`.** Does `tools: Bash(git diff *)` get rejected, ignored, or treated as plain `Bash`? The docs show no such form, and `disallowedTools` with a specifier removes all of Bash. Untested.
 - **Named subagents in `claude-code-action`.** Does `.claude/agents/` load in the action, and does `claude_args: --agent <name>` work there? Only skills and plugins are documented.
 - **#80988.** Is the Opus 5 "Do not call the AgentTool unless the user requested it" prompt section still shipped in v2.1.296, and does it affect repo agents named in a skill procedure? Our 160 runs in five days suggest named delegation still works.
-- **Plugin MCP tools by name.** Do they work in subagent `tools` lists (T3)? Not tested here.
+- **Plugin MCP tools by name.** Answered 2026-10-12: they work in a subagent's `tools` list (template T3 notes, osrs-tracker/osrs-tracker-web#223).
 - **Copilot instruction files.** Copilot's 4,000-character limit and its reading of `REVIEW.md` were each found on at most one GitHub page.
 - **Reviewer model.** There is no published comparison of Opus and Sonnet as bug reviewers on the 5.5 generation. Official plugins use both.
 - **Cost of `agent` and `prompt` hooks.** Not documented.
