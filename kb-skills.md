@@ -222,7 +222,7 @@ How to write for this:
 
 - When names collide: enterprise beats personal, which beats project. A skill beats a `.claude/commands/` file with the same name. Plugin skills are namespaced and never collide.
 - Edits to skill directories reload live. A newly created top-level `skills/` folder needs `/reload-skills`.
-- Reserved names: `synced`, and the `anthropic-skills` and `claude-ai` namespaces (skill folders and command files in those namespaces no longer load since v2.1.282).
+- Reserved names: `synced`, and outside a plugin `anthropic-skills` or a name starting `anthropic-skills:`. v2.1.282 also reserved `claude-ai`; v2.1.283 reverted that.
 - Cloud sessions don't see personal `~/.claude/skills`.
 
 ## [SKILL-008] Arguments, variables and `!` context injection
