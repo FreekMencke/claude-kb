@@ -14,7 +14,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | Skill, CLAUDE.md, hook, subagent or MCP? | CLAUDE.md = always-true facts; skill = on-demand procedure; hook = must-happen guarantee; subagent = isolated side task; MCP = access to external systems. | SKILL-021, SKILL-023 |
 | How do I test a skill? | Triggering: `claude plugin eval` with a `tool_used: Skill` grader, or skill-creator's `run_loop`; ~20 queries, half near-miss negatives, 3 runs each. Usefulness: run the same prompts with and without it in fresh sessions; compare the score delta and the token/time cost. | SKILL-025 to SKILL-028, SKILL-032 |
 | Should I add a "forced skill evaluation" hook? | Not by default: no official endorsement, evidence is one author with small N, and it raises false positives. | SKILL-029 |
-| How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. A personal Git marketplace added on claude.ai reaches chat, Cowork and Claude Code. | SKILL-034, SKILL-038, SKILL-059 |
+| How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. A personal Git marketplace added on claude.ai reaches chat, Cowork and local Claude Code, but not cloud sessions or routines. | SKILL-034, SKILL-038, SKILL-059, SKILL-060 |
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
@@ -85,6 +85,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | SKILL-057 | Skill features that behave differently in the desktop app | fact | desktop, permissions |
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
+| SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 
 ---
 
@@ -1134,7 +1135,7 @@ For a **WSL** session, the app copies a Linux CLI build into the distro under `~
 | Desktop Local | yes (that OS's home) | yes | yes | yes, delivered by the app as a plugin |
 | Desktop WSL | yes (the distro's home) | yes | docs say no; observed yes (SKILL-052) | **no** (local test, SKILL-050) |
 | Desktop SSH | the remote host's | yes | yes | not documented |
-| Desktop Cloud | no | yes (from the clone) | no | yes |
+| Desktop Cloud, routines | no | yes (from the clone) | no | skills enabled one by one only; marketplace plugins don't load (SKILL-060) |
 | Cowork | no | n/a | from Customize | yes |
 | Desktop scheduled tasks | yes | yes | n/a | n/a |
 
@@ -1369,7 +1370,7 @@ Context-cost consequence: on the desktop, account skills you never use in code s
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Plugins (claude.com docs)](https://claude.com/docs/plugins/overview), [Install plugins in Cowork](https://claude.com/docs/cowork/guide/plugins), [Plugin loading: synced plugins](https://code.claude.com/docs/en/plugins/loading)
-- Related: SKILL-038, SKILL-034, SKILL-036, SKILL-050
+- Related: SKILL-038, SKILL-034, SKILL-036, SKILL-050, SKILL-060
 
 An individual can add a Git repo as a plugin marketplace on claude.ai, and the plugins installed from it reach chat, Cowork and Claude Code. This replaces ZIP uploads (SKILL-038) for skills kept in git.
 
@@ -1380,6 +1381,22 @@ An individual can add a Git repo as a plugin marketplace on claude.ai, and the p
 **In Claude Code**: an account plugin downloads as `<name>@synced` the next time a session signed in with claude.ai starts (v2.1.273+); `/reload-plugins` loads it mid-session. Not in sessions authenticated by `ANTHROPIC_AUTH_TOKEN`, `CLAUDE_CODE_OAUTH_TOKEN` or `apiKeyHelper`, nor bare or `--safe-mode` sessions. `"<name>@synced": false` in `enabledPlugins` turns one off; `syncClaudeAiPlugins: false` turns them all off. A plugin with the same name from another origin wins over the synced copy.
 
 **The other way**: plugins installed from the Claude Code command line stay on that machine and aren't added to the account.
+
+**Not in cloud sessions**: synced plugins don't load in cloud sessions or routines (SKILL-060).
+
+## [SKILL-060] Cloud sessions and routines don't load claude.ai marketplace plugins
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Plugin loading: synced plugins](https://code.claude.com/docs/en/plugins/loading), [Skills: Cowork and cloud sessions](https://code.claude.com/docs/en/skills), [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Routines](https://code.claude.com/docs/en/routines), local test (routine runs 2026-10-12)
+- Related: SKILL-048, SKILL-059, REPO-012, REPO-030, ORCH-017
+
+A plugin installed from a claude.ai marketplace (SKILL-059) loads as `<name>@synced` only in Cowork and in terminal sessions signed in with claude.ai: "Synced plugins load in Cowork sessions and in terminal sessions where you sign in with your claude.ai account". Cloud sessions, which include every routine run, load only "the skills enabled for your claude.ai account" (enabled one by one) and the cloned repo's `.claude/skills/`. They also skip plugins from the repo's `enabledPlugins`/`extraKnownMarketplaces` and your user settings.
+
+Observed: a routine whose prompt named `refresh-md-files` (shipped only in the `freek-skills` marketplace plugin) reported the skill unavailable. Its session config listed `account_plugins: []` and `account_skills: []`.
+
+**Workaround that keeps one source of truth:** add the skills repo as an extra repository on the routine. The prompt then tells the run to read `skills/<name>/SKILL.md` from that clone, follow it exactly, and stop if the file is missing. Tested 2026-10-12: a private repo cloned fine through the Claude GitHub App, the run followed the skill's output format, and the prompt can ask the run to confirm it read the file. The alternatives are uploading the skill to claude.ai one by one (a second copy that drifts) or committing it to each target repo.
 
 ## Recommendations for our setup
 
@@ -1404,7 +1421,7 @@ Ranked by impact versus effort. Done through roadmap [FreekMencke/claude-skills#
 
    Add a "not for…" line on each side of every pair, or set the one you don't use to `skillOverrides: off`. (SKILL-012, SKILL-045)
 4. **High impact, medium effort: move the skills' source into git and add evals.** Done 2026-10-12: FreekMencke/claude-skills is a private repo and marketplace with CI running `claude plugin validate --strict` and `evals/` trigger cases per skill (FreekMencke/claude-skills#8). It holds two plugins:
-   - `freek-skills` (`skills/`): installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so every merge to `main` reaches chat and Cowork; no ZIP uploads (FreekMencke/claude-skills#11). Keep to standard frontmatter here until it's known whether claude.ai accepts Claude Code-only fields (Open questions).
+   - `freek-skills` (`skills/`): installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so every merge to `main` reaches chat, Cowork and signed-in local Claude Code, but not cloud sessions or routines (SKILL-060); no ZIP uploads (FreekMencke/claude-skills#11). Keep to standard frontmatter here until it's known whether claude.ai accepts Claude Code-only fields (Open questions).
    - `freek-local-skills` (`local-skills/skills/`): Claude Code-only skills, never installed on claude.ai, so `context: fork`, `disable-model-invocation` and the like are fine (FreekMencke/claude-skills#12). (SKILL-026, SKILL-028, SKILL-037, SKILL-038, SKILL-041)
 5. **Medium impact, low effort: update `skill-workshop` to the current tooling.** Specific changes:
    - Its "For measured test runs… use skill-creator" should also name `claude plugin eval` and `/skill-doctor`.
