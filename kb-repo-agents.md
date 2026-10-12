@@ -739,7 +739,7 @@ Official example, which blocks finishing until tests pass:
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-12
-- Sources: [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action usage.md](https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples)
+- Sources: [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action usage.md](https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [action.yml](https://github.com/anthropics/claude-code-action/blob/main/action.yml)
 - Related: ORCH-016, REPO-028, REPO-038
 
 **Modes** are detected from the workflow:
@@ -754,7 +754,7 @@ Official example, which blocks finishing until tests pass:
 - `allowed_bots`, `allowed_non_write_users` (REPO-038).
 - `use_sticky_comment`, `track_progress`, `use_commit_signing`/`ssh_signing_key`.
 - `show_full_output` (off; public in public repos).
-- Outputs include `structured_output` (with `--json-schema`) (`session_id` as an output is not documented in usage.md; unverified).
+- Outputs include `structured_output` (with `--json-schema`) and `session_id` (action.yml).
 
 **Auth:**
 - `anthropic_api_key`.
@@ -1040,7 +1040,7 @@ A ready hook script is in template T1.
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-12
-- Sources: [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [PromptPwnd](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents)
+- Sources: [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [PromptPwnd](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents), [action releases](https://github.com/anthropics/claude-code-action/releases)
 - Related: REPO-027, REPO-037
 
 **Defaults to keep:**
@@ -1054,7 +1054,7 @@ A ready hook script is in template T1.
 6. **Don't run PR code in privileged jobs.** Config is restored from base, but `package.json` scripts are not (REPO-028).
 
 **Maintenance:**
-7. **Pin and update the action.** Unverified: v1.0.74+ for the config restore, v1.0.94+ for the bot and env fixes (not on security.md). Leave `show_full_output` off.
+7. **Pin and update the action.** v1.0.74+ restores `.claude/` and `.mcp.json` from the PR's base branch; v1.0.94+ prepends system bin dirs to `PATH` when `allowed_non_write_users` is set (release notes). Leave `show_full_output` off.
 8. **Use the repo's fork approval setting.** `anthropics/claude-code-security-review` recommends "Require approval for all external contributors" and is "not hardened against prompt injection".
 9. **Cap cost:** `--max-turns`, `timeout-minutes`, `concurrency`.
 
@@ -1262,7 +1262,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 | pr-review-toolkit `pr-test-analyzer` | none | inherit | Criticality 1–10 |
 | code-review **command** | `gh pr` reads, `gh pr comment`, inline-comment MCP | Haiku, Sonnet, Opus subagents | No score; per-finding validator subagents (REPO-048) |
 | claude-security `scan-verifier` | Read, Glob, Grep, Bash, `Agent(claude-security:explore)` | inherit, `effort: xhigh` | Adversarial verdicts (REPO-048) |
-| Docs example `code-reviewer` | Read, Grep, Glob, Bash (CLI `--agents` JSON) or Read, Glob, Grep (file example) | sonnet | No severity scheme or filter shown |
+| Docs example `code-reviewer` | Read, Grep, Glob, Bash | inherit | Critical / Warnings / Suggestions, no filter |
 
 **Observations:**
 1. There is **no official consensus on the model**: Opus, Sonnet and `inherit` all appear for the same job.

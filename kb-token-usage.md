@@ -19,7 +19,7 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 | How much do batches save? | 50% on input and output, and it stacks with caching. Most finish within 1 hour, max 24 hours. | TOK-054 |
 | How big can a skill description be, and what does it cost? | Every skill's name + description is in context on every turn, within a budget of 1% of the window. Each entry is capped at 1,536 characters. Keep it short and front-load triggers. | TOK-005, TOK-061 |
 | How long should CLAUDE.md be? | Under 200 lines per file. `@imports` don't reduce cost. Move procedures to skills or `paths:`-scoped rules. | TOK-003, TOK-065 |
-| What do images and PDFs cost? | An image costs ⌈w/28⌉×⌈h/28⌉ tokens (max 1,568 standard, 4,784 high-res). A PDF page is processed as text plus an image; the per-page range is unverified. | TOK-043 |
+| What do images and PDFs cost? | An image costs ⌈w/28⌉×⌈h/28⌉ tokens (max 1,568 standard, 4,784 high-res). A PDF costs 1,500–3,000 tokens per page plus image cost. | TOK-043 |
 | Which community tracker should I use? | `ccusage` for history (reads the JSONL). For live use, the built-in status line JSON is enough, or use `claude-hud` or `ccstatusline`. | TOK-080, TOK-082 |
 
 ## Index
@@ -406,7 +406,7 @@ How to reduce it:
 - "Longer conversations that trigger automatic context management consume more of your usage limit. Try starting a new conversation if you're approaching your usage limit in a longer chat."
 - Lower effort or turn off extended thinking when it isn't needed.
 - Turn off unused connectors and web search.
-- Keep project instructions short and prune project files. "Content in projects is cached and counts less against your limits when reused." Cache expiry with inactivity is unverified.
+- Keep project instructions short and prune project files. "Content in projects is cached and counts less against your limits when reused." "Caches expire after a period of inactivity."
 - Batch related questions into one message instead of many short ones.
 
 Check Settings → Usage for the 5-hour and weekly bars.
@@ -851,7 +851,7 @@ Confidence note: the limits and hook pattern are documented; the 30-day numbers 
 - Downsample or crop before sending.
 - In Claude Code, the oldest images are dropped in batches, which breaks the cache (TOK-053).
 
-**PDFs:** each page is processed as text plus an image. The PDF support page gives no per-page range (the 1,500–3,000 figure is unverified). Use the Files API (`file_id`) rather than re-sending base64.
+**PDFs:** 1,500–3,000 tokens per page of text ("depending on content density"), plus image cost per page. Use the Files API (`file_id`) rather than re-sending base64.
 
 We had 995 image reads in 30 days, mostly UI screenshots. At 1.5–4.8k tokens each, that's roughly 1.5–4.8M tokens entering context, each re-read many times (TOK-009).
 
@@ -904,7 +904,7 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - Applies to: Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-12
-- Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics), [Cookbook: prompt caching](https://github.com/anthropics/claude-cookbooks/blob/main/misc/prompt_caching.ipynb)
+- Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics), [Cookbook: prompt caching](https://github.com/anthropics/claude-cookbooks/blob/main/misc/prompt_caching.ipynb), [Cookbook: speculative prompt caching](https://github.com/anthropics/claude-cookbooks/blob/main/misc/speculative_prompt_caching.ipynb)
 - Related: TOK-050
 
 **Automatic caching:**
@@ -917,14 +917,14 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - The response gives `cache_miss_reason`: `model_changed`, `system_changed`, `tools_changed`, `messages_changed` and others, with `cache_missed_input_tokens`.
 - Use it when hit rates drop instead of guessing.
 
-**Pre-warming:** a `max_tokens: 0` request with a breakpoint writes the cache and returns no content. It's not allowed in batches.
+**Pre-warming:** a `max_tokens: 0` request with a breakpoint writes the cache and returns no content. It's not allowed in batches. The speculative prompt caching cookbook warms the cache while the user is still typing.
 
 ## [TOK-052] Prompt caching in Claude Code: TTLs and settings
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-12
-- Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching), [Costs](https://code.claude.com/docs/en/costs), [Lessons from building Claude Code: prompt caching is everything](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)
+- Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching), [Costs](https://code.claude.com/docs/en/costs), [Lessons from building Claude Code: prompt caching is everything](https://claude.dev/blog/lessons-from-building-claude-code-prompt-caching-is-everything/)
 - Related: TOK-053, TOK-034, TOK-006, ORCH-040
 
 Claude Code caches automatically. Default TTLs:
