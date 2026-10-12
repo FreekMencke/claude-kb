@@ -1,8 +1,10 @@
 # claude-kb
 
 A Markdown knowledge base on using Claude efficiently, written for agents to query: model and effort choice,
-subagents and orchestration, agents in repos, token usage and caching, writing skills, and prompting the current
-models. Every entry carries its sources, a confidence level and a last-verified date.
+subagents and orchestration, agents in repos, token usage, caching and research-tool cost, writing skills, hooks,
+parallel sessions, agents with cloud and cluster access, prompting the current models, session workflows, memory and
+instruction files, and the desktop app, artifacts and remote surfaces. Every entry carries its sources, a confidence
+level and a last-verified date.
 
 ## Querying it
 
@@ -31,7 +33,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 |---|---|
 | [INDEX.md](INDEX.md) | Entry point: combined Quick answers, every entry by topic, then Conflicts, Overlaps kept on purpose, Merges and a Changelog |
 | [kb-orchestration.md](kb-orchestration.md) | `ORCH`: orchestration, parallelization and model selection |
-| [kb-token-usage.md](kb-token-usage.md) | `TOK`: token usage and context efficiency |
+| [kb-token-usage.md](kb-token-usage.md) | `TOK`: token usage and context efficiency, and the cost of research tools (WebFetch, WebSearch, docs MCP servers, research subagents) |
 | [kb-skills.md](kb-skills.md) | `SKILL`: writing, testing and distributing skills |
 | [kb-repo-agents.md](kb-repo-agents.md) | `REPO`: agents in repositories (osrs-tracker-web) |
 | [kb-sessions.md](kb-sessions.md) | `SESS`: several sessions in one repo (worktrees, shared state, messaging, keeping branches current) |
@@ -42,7 +44,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [kb-memory.md](kb-memory.md) | `MEM`: memory and instruction files (where they live, load order, auto memory, keeping them current, surfaces, memory servers) |
 | [kb-surfaces.md](kb-surfaces.md) | `SURF`: desktop app, artifacts, Remote Control and mobile, cloud sessions, IDE extensions and Chrome, and which surface for which job |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
-| [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage |
+| [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage, unknown IDs in INDEX.md and its file table's entry counts. ID prefixes come from the files, so a new topic file needs no script change |
 
 Each topic file ends with "Recommendations for our setup" and "Open questions", kept apart from the facts because
 they go stale faster.
@@ -83,6 +85,15 @@ against its sources, sets Last verified, logs corrections in INDEX.md's Changelo
   knowledge base every agent trusts.
 - **Only the lead writes files.** Research subagents return findings with source URLs ([CLAUDE.md](CLAUDE.md)).
 - **Facts apart from recommendations.** Recommendations are specific to our setup and go stale faster.
+- **A file per kind of question, not per feature.** Prompting (how to word an instruction) and memory (where it lives
+  and when it loads) are separate files because agents look them up separately; research-tool cost is a section of
+  `kb-token-usage.md`, not a file, because it's a handful of entries (FreekMencke/claude-kb#18).
+- **Link, don't repeat.** Each topic file opens with what it links to instead of covering; neighbouring entries that
+  stay separate are listed in INDEX.md's "Overlaps kept on purpose", and duplicates are merged with a pointer (never
+  renumbered).
+- **One home per open question.** When two files raise the same question, one keeps it and the other points there.
+  Cross-file pointers name entry IDs, not the issue that created a topic.
+- **INDEX.md's Quick answers stay near 30 rows** across all topics; each topic file keeps its own 10–15.
 
 How the knowledge base was built (the prompts for each research, merge and skill step, and their test results) is in
 the git history up to `786847b`, in the former `HANDOFF.md`.

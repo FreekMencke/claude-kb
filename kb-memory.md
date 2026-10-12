@@ -816,7 +816,7 @@ Other repos' issues this needs: osrs-tracker/osrs-tracker-web (recommendation 2)
 3. **Auto-dream and the recall selector** are in the v2.1.296 binary but undocumented. Is consolidation on for our account, does `autoDreamEnabled` work, and does the "up to 5" selector run for every recall? MEM-014, MEM-018.
 4. **Auto memory in cloud sessions, routines and `claude-code-action`.** No page says whether it is on; a cloud session would start with an empty folder anyway. Test with a routine that saves and recalls a word. MEM-026.
 5. **Concurrent writes to one MEMORY.md** from parallel worktree sessions: no locking is documented, and nothing merges conflicting index edits. MEM-027, SESS-009.
-6. **Desktop with WSL:** which `~/.claude` is read is implied (the distro's), not stated. MEM-026.
+6. **Desktop with WSL:** which `~/.claude` is read is implied (the distro's), not stated. MEM-026. Local tests point the same way: the app runs its CLI from the distro's `~/.claude/remote/ccd-cli/` (SURF-004) and loads personal skills from the distro's home (SKILL-048).
 7. **Is the 25KB limit bytes or UTF-16 code units?** anthropics/claude-code#97453 says code units (single-source). TOK-004.
 8. **The claude-mem measurement** (MEM-033) came from an earlier session whose command wasn't kept; a re-run needs a new script.
 9. **Background memory extraction**: strings suggest a pass over recent turns besides Claude's own saves; when it runs, and whether in `-p`, is unknown. MEM-013.

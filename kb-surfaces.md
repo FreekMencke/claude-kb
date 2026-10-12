@@ -805,7 +805,7 @@ Ranked by impact against effort.
 2. **Use artifacts for review hand-offs that a person reads, not for knowledge** (low effort). PR walkthroughs, option comparisons and progress boards go into an org-shared or private artifact; anything an agent reads later (KB entries, ADRs, issues) stays a file, because another session reads an artifact back only as a summary. SURF-008, SURF-011, SURF-013.
 3. **Keep secrets and identifiers out of artifacts** (no effort, a habit). A publish from a typed prompt doesn't ask first, and pages live on claude.ai. For a repo whose code must not be published, commit `"enableArtifact": false` to its `.claude/settings.json`. SURF-011, SURF-017.
 4. **Put cloud-session setup in the repo** (medium effort, per repo used in the cloud). A SessionStart hook guarded by `CLAUDE_CODE_REMOTE` for `npm ci`, and an environment setup script only for missing toolchains, kept under five minutes so it caches. SURF-026, HOOK-017.
-5. **Don't turn on desktop "Auto-merge when ready"** where repos merge with merge commits: it squashes. Auto-fix CI is fine to try. SURF-002.
+5. **Don't turn on desktop "Auto-merge when ready"** where repos merge with merge commits: it squashes. Auto-fix CI is fine to try. SURF-002, FLOW-029 (same decision as `kb-workflows.md` recommendation 6).
 6. **Use the terminal, not desktop WSL, when you need connectors, plugins' UI, `-p` or agent teams**, and the desktop when you want panes and diff comments. SURF-004, SURF-034, SURF-033.
 7. **Check the desktop's own Claude Code version** with `/status` after a fix lands in the CLI changelog; update the app, not just `claude`. SURF-004, SKILL-047.
 
@@ -817,5 +817,5 @@ Ranked by impact against effort.
 - **Desktop CI status bar cost and cadence:** does polling use tokens, how often does it poll, and does Auto-fix run in WSL sessions? SURF-002.
 - **Why the desktop denies its own MCP servers in WSL sessions** (`deniedMcpServers` in the launch settings), and whether the Browser pane and app preview work in WSL sessions; the WSL page doesn't say. SURF-034.
 - **Does `agentPushNotifEnabled` fire for a desktop WSL session with Remote Control on?** Not tested: no pushes were sent in this research. SURF-020.
-- **`artifact-design` by name:** the docs call it "a built-in design skill"; whether it can be overridden or disabled per project is undocumented. SURF-016.
+- **`artifact-design` by name:** the docs call it "a built-in design skill"; whether it can be overridden or disabled per project is undocumented. SURF-016. This is the one home for the question; `kb-skills.md` points here.
 - **Claude in Chrome in the desktop Code tab:** the desktop page points to the extension for logged-in browsing, but the Chrome page lists only the CLI and VS Code. SURF-032.

@@ -1640,7 +1640,7 @@ Notes:
 - **Plugin MCP tools by name.** Answered 2026-10-12: they work in a subagent's `tools` list (template T3 notes, osrs-tracker/osrs-tracker-web#223).
 - **Copilot instruction files.** Copilot's 4,000-character limit and its reading of `REVIEW.md` were each found on at most one GitHub page.
 - **Reviewer model.** There is no published comparison of Opus and Sonnet as bug reviewers on the 5.5 generation. Official plugins use both.
-- **Cost of `agent` and `prompt` hooks.** Not documented.
+- **Cost of `agent` and `prompt` hooks.** Not documented. Measured for `prompt` hooks in HOOK-010 (one Haiku call per match; on Stop it re-reads the conversation uncached). Where `agent` hook tokens are billed stays open in `kb-hooks.md`.
 - **Our reviewer's precision.** We counted findings but not how many the main session acted on or dismissed. A follow-up measurement could match findings to later commits.
 - **Personal vs project commands.** Precedence between `~/.claude/commands/x.md` and `.claude/commands/x.md` is not stated.
 - **Submodule or symlinked `.claude/`.** It is undocumented, and its behaviour under trust and desktop worktrees is unknown.

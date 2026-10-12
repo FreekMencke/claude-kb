@@ -1085,6 +1085,6 @@ Ranked by impact against effort.
 - **Haiku 5.5 as a code-writing worker.** It is days old (launched 2026-10-07), and Anthropic pitches it as a coding subagent. There is no independent evidence yet on its retry rate versus Sonnet 5.5 for mechanical edits, so ORCH-033's "Sonnet floor for writers" may be too conservative.
 - **Fable and the weekly cap.** Not tested: whether Claude Code's `fable` alias draws from the Max 50% Fable cap exactly as the support article describes.
 - **Managed Agents billing.** Not known: whether multi-agent runtime is billed per session or per child thread.
-- **Session limits.** Agent view and cloud sessions document no cap on simultaneous sessions beyond the shared usage limit.
+- **Session limits.** Agent view and cloud sessions document no cap on simultaneous sessions beyond the shared usage limit. SESS-032 records user reports of 429s at 6 or more sessions (`kb-sessions.md` open question 6).
 - **Unverified community claims:** Cursor's parallel-agent details, best-of-N paper numbers (ORCH-046), and the performance claims of claude-flow/ruflo.
-- **Truncated pages.** The sub-agents, hooks and model-config pages were longer than one fetch. A few details (hook input fields for team events) were not read in full.
+- **Truncated pages.** The sub-agents, hooks and model-config pages were longer than one fetch. A few details were not read in full. The hook input fields for team events (TaskCreated, TaskCompleted, TeammateIdle) are now in HOOK-002.
