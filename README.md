@@ -29,7 +29,6 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [kb-skills.md](kb-skills.md) | `SKILL`: writing, testing and distributing skills |
 | [kb-repo-agents.md](kb-repo-agents.md) | `REPO`: agents in repositories (osrs-tracker-web) |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
-| [HANDOFF.md](HANDOFF.md) | Project status, the prompts each step ran with, and the decisions behind them |
 | [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage |
 
 Each topic file ends with "Recommendations for our setup" and "Open questions", kept apart from the facts because
@@ -45,6 +44,32 @@ they go stale faster.
   python3 scripts/check_kb.py
   ```
 
-- A monthly cloud routine re-verifies official-docs and official-example entries against their sources and opens a PR
-  from `claude/reverify-<YYYY-MM>`. Spot-check its removals and "unverified" marks before merging; see
-  [HANDOFF.md](HANDOFF.md#step-5-monthly-re-verification-done).
+## Monthly re-verification
+
+A cloud routine, [claude-kb monthly re-verification](https://claude.ai/code/routines/trig_01HDV9ENf7vGtyTF52Lb4qTW),
+runs at 06:00 UTC on the 1st of each month on Sonnet 5.5. It re-checks every official-docs and official-example entry
+against its sources, sets Last verified, logs corrections in INDEX.md's Changelog, and opens a PR from
+`claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in this repo.
+
+- **Why a PR, not a push to main:** a wrong correction to an entry every agent trusts should be reviewed first.
+- **Why its subagents curl and grep sources for exact wording:** the first run ([FreekMencke/claude-kb#1](https://github.com/FreekMencke/claude-kb/pull/1)) changed 25 entries and 8 of
+  those were wrong, 6 of them claims it couldn't find in a truncated fetch and then removed or marked unverified. Now a
+  claim it can't find stays and is listed as "not found"; only a contradicting quote changes it.
+- **Reviewing it:** spot-check the removals and "unverified" marks before merging.
+- **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`. Pause or delete it at https://claude.ai/code/routines.
+- It opens the PR with the cloud session's GitHub tool, because `gh pr create` uses GraphQL, which returns 403 in
+  cloud sessions.
+
+## Design decisions
+
+- **Plain Markdown in git, no memory connector or vector search.** At this size an index plus grep beats semantic
+  search, files stay reviewable, and no tool definitions are added to every session. Revisit if lookups start failing
+  or the knowledge base sprawls.
+- **Opus leads, Sonnet readers.** New research sessions ran with an Opus 5.5 lead at high effort and Sonnet subagents
+  (or a workflow) reading sources. The hard part is judging and reconciling sources; Haiku readers risk errors in a
+  knowledge base every agent trusts.
+- **Only the lead writes files.** Research subagents return findings with source URLs ([CLAUDE.md](CLAUDE.md)).
+- **Facts apart from recommendations.** Recommendations are specific to our setup and go stale faster.
+
+How the knowledge base was built (the prompts for each research, merge and skill step, and their test results) is in
+the git history up to `786847b`, in the former `HANDOFF.md`.
