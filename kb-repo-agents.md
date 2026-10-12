@@ -16,7 +16,7 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 | Which agents are worth having in a repo? | A conventions reviewer that reads the repo's rules and a fresh-context bug reviewer. For UI-heavy repos, a browser checker. Most other roles duplicate built-ins (`/code-review`, `/security-review`, `/simplify`, Explore) or belong in skills. | REPO-013, REPO-022 |
 | What does osrs-tracker-web have today? | One `conventions-reviewer`, two hooks (Prettier after edit, lint before push), CLAUDE.md plus a repo skill, and no Claude in CI. The reviewer runs about 30× a day across three repos on Sonnet. 56% of runs come back clean. | REPO-001–REPO-004 |
 | How do I make a reviewer truly read-only? | Use an explicit `tools: Read, Grep, Glob, Bash`, a frontmatter `PreToolUse` hook that allows only git and gh reads, and no `memory:`. A `permissionMode` setting and "never edit" in the prompt aren't enough. | REPO-033, REPO-031, REPO-032 |
-| Can I scope Bash per agent, e.g. `Bash(git diff *)`? | No documented way. `disallowedTools: Bash(git push *)` removes **all** of Bash. Use a hook, a `permissions.deny` rule (which affects the whole session) or the sandbox. | REPO-031, REPO-034 |
+| Can I scope Bash per agent, e.g. `Bash(git diff *)`? | No. `tools: Bash(git diff *)` gives all of Bash (tested), and `disallowedTools: Bash(git push *)` removes **all** of Bash. Use a hook, a `permissions.deny` rule (which affects the whole session) or the sandbox. | REPO-031, REPO-034 |
 | Does `permissionMode: plan` on an agent hold? | Only when the parent is in default, `dontAsk` or plan mode. Auto, `acceptEdits` and bypass parents override it. | REPO-032 |
 | How do user, project and plugin levels combine? | Scalars: managed > `--settings` > local > project > user. Permission lists and hooks **merge**, and deny wins. Agents: managed > `--agents` > project > user > plugin. Skills: enterprise > personal > project; plugins are namespaced. | REPO-005, REPO-006 |
 | How do I make sure a review actually runs? | Name it in a procedure the session follows (skill or orchestrator), or `@agent-<name>`. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
@@ -283,7 +283,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Personal beats project.
 - Unverified: a project command beating an `--add-dir` command. The slash-commands page states no such rule.
 - Your own skill can replace a built-in command, but not its aliases.
-- Unverified: whether personal `~/.claude/commands/x.md` beats project `.claude/commands/x.md`. Presumably it follows the skill order, but the docs don't say.
+- Unverified: whether personal `~/.claude/commands/x.md` beats project `.claude/commands/x.md`. Presumably it follows the skill order, but the docs don't say. A 2026-10-12 probe was blocked by auto mode (see Open questions).
 
 **Docs advice:** "Prefer a skill for new work" (supporting files, `paths`, invocation controls). For plugins: "Prefer `skills/` for new plugins."
 
@@ -879,8 +879,10 @@ There is no official dependency-update or flaky-test routine.
 - **`disallowedTools`** is "removed from inherited or specified list". MCP servers can be removed whole with `mcp__<server>` or `mcp__<server>__*`.
 - **Bash is all or nothing in frontmatter.**
   - "A `disallowedTools` entry with a specifier, such as `Bash(git push *)`, still removes the whole tool from the subagent, not only the matching commands."
-  - No documented `tools` form scopes Bash to commands either. This is inferred from the docs' examples; untested.
+  - No documented `tools` form scopes Bash to commands either, and a specifier in `tools` is ignored: `Bash(git diff *)` gives plain Bash (tested below).
   - The only documented specifier in `tools` is `Agent(type)`.
+
+Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff *)` was accepted without a warning, reported its tools as `Bash` and `SubagentHandback` only, and ran `git diff --stat`, `git log --oneline -1` and `echo hi` with no refusal, with and without a session-wide `Bash` allow rule. So the specifier is dropped and the agent gets all of Bash.
 - **Docs' workaround:** a `permissions.deny` rule such as `Bash(git push *)`, which "applies to the main conversation and to subagents". It applies to *your* session too, so it only suits commands nobody should run in that repo.
 - **Skills and commands** *do* take scoped `allowed-tools` (`Bash(git diff:*)`), but that pre-approves without restricting (SKILL-010).
 
@@ -1634,7 +1636,7 @@ Notes:
 
 ## Open questions
 
-- **Scoped Bash in agent `tools`.** Does `tools: Bash(git diff *)` get rejected, ignored, or treated as plain `Bash`? The docs show no such form, and `disallowedTools` with a specifier removes all of Bash. Untested.
+- **Scoped Bash in agent `tools`.** Answered 2026-10-12: treated as plain `Bash`; the specifier is silently dropped (REPO-031).
 - **Named subagents in `claude-code-action`.** Does `.claude/agents/` load in the action, and does `claude_args: --agent <name>` work there? Only skills and plugins are documented.
 - **#80988.** Is the Opus 5 "Do not call the AgentTool unless the user requested it" prompt section still shipped in v2.1.296, and does it affect repo agents named in a skill procedure? Our 160 runs in five days suggest named delegation still works.
 - **Plugin MCP tools by name.** Answered 2026-10-12: they work in a subagent's `tools` list (template T3 notes, osrs-tracker/osrs-tracker-web#223).
@@ -1642,5 +1644,5 @@ Notes:
 - **Reviewer model.** There is no published comparison of Opus and Sonnet as bug reviewers on the 5.5 generation. Official plugins use both.
 - **Cost of `agent` and `prompt` hooks.** Not documented. Measured for `prompt` hooks in HOOK-010 (one Haiku call per match; on Stop it re-reads the conversation uncached). Where `agent` hook tokens are billed stays open in `kb-hooks.md`.
 - **Our reviewer's precision.** We counted findings but not how many the main session acted on or dismissed. A follow-up measurement could match findings to later commits.
-- **Personal vs project commands.** Precedence between `~/.claude/commands/x.md` and `.claude/commands/x.md` is not stated.
+- **Personal vs project commands.** Precedence between `~/.claude/commands/x.md` and `.claude/commands/x.md` is not stated. The 2026-10-12 probe (FreekMencke/claude-kb#27) was blocked: auto mode refused writing the test command to `~/.claude/commands/` as `[Self-Modification]`. Run it by hand: a same-named command in both places, each replying a different word, then `claude -p --model haiku --max-turns 1 --max-budget-usd 0.50 "/<name>"` in the repo.
 - **Submodule or symlinked `.claude/`.** It is undocumented, and its behaviour under trust and desktop worktrees is unknown.

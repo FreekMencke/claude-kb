@@ -267,7 +267,7 @@ A fork "inherits the entire conversation so far instead of starting fresh", alon
 
 Ways to get a worktree:
 - **Session:** `claude --worktree <name>` (`-w`) creates `.claude/worktrees/<name>/` on branch `worktree-<name>`. `--worktree "#1234"` or a PR URL starts from that PR's head.
-- **Subagent:** `isolation: worktree` in frontmatter, or on a fork's Agent call. Per-call `isolation` for non-fork subagents is only implied by the docs (see Open questions).
+- **Subagent:** `isolation: worktree` in frontmatter, or `isolation: "worktree"` on the Agent call. The docs document the per-call form only for forks, but it works for named subagents too (tested below).
 - **Background session:** each dispatched session moves into its own worktree at its first edit.
 
 Base and copied files:
@@ -283,6 +283,8 @@ Gotchas:
 - A subagent in a default-location worktree loads CLAUDE.md and `.claude/rules/` from the main checkout, not from the worktree's branch.
 - `-p` runs never clean up their worktrees.
 - Agent-team teammates are **not** isolated in worktrees.
+
+Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an Agent call with `subagent_type: "whereami"` (a project agent without `isolation` in its frontmatter) and `isolation: "worktree"` ran in `<repo>/.claude/worktrees/agent-<id>`; `pwd` and `git rev-parse --show-toplevel` both returned that path. The worktree, which had no changes, was gone after the run.
 
 ## [ORCH-010] Agent teams (experimental)
 - Type: tool
@@ -1078,7 +1080,7 @@ Ranked by impact against effort.
 
 ## Open questions
 
-- **Per-call `isolation` for non-fork subagents.** The Agent tool schema has it and the agent-teams docs imply it, but the docs explicitly document it only for forks. It is unclear whether it is supported, or ignored, for named non-fork subagents.
+- **Per-call `isolation` for non-fork subagents.** Answered 2026-10-12: supported; a named non-fork subagent called with `isolation: "worktree"` ran in its own worktree (ORCH-009).
 - **Sonnet 5.5's default effort** is `high` on the API and `medium` in Claude Code. It's not known whether this is intentional or one of the pages is stale.
 - **A general cost multiplier for agent teams.** The 7× figure applies only "when teammates run in plan mode".
 - **Benchmarks for the 5.5 generation.** No SWE-bench figures are published. The tier comparisons rest on Terminal-Bench, FrontierCode and CursorBench, which Anthropic itself calls "a less reliable guide".
