@@ -24,7 +24,7 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 | 3 | Merge and index → `INDEX.md` | Opus 5.5, high (planned Sonnet; run in the continuation session) | Done: 219 entries indexed, 5 full and 5 partial merges, 5 conflicts recorded; all files pass |
 | — | Fix SKILL-050: custom skills missing in desktop WSL sessions | Opus 5.5, high | Done 2026-10-12: skills moved to FreekMencke/claude-skills and symlinked; see below |
 | 4 | Librarian skill `claude-kb-lookup` | Opus 5.5, high (planned Sonnet; run in the continuation session) | Done 2026-10-12: in FreekMencke/claude-skills, linked by `install.sh`; see below |
-| 5 | Monthly re-verification | Sonnet 5.5, medium | Next, as a scheduled task |
+| 5 | Monthly re-verification | Sonnet 5.5 (the routine API has no effort field) | Done 2026-10-12: cloud routine, 1st of each month 06:00 UTC, first run 2026-11-01; delivers a PR; see below |
 
 ## Known issues
 
@@ -68,9 +68,11 @@ It ran with this prompt, `<path>` being `/home/fremen/repos`:
 
 Put it in `~/repos/claude-skills/skills/claude-kb-lookup/`, commit it there, and run that repo's `install.sh` so it's linked into `~/.claude/skills/` and every repo gets it. Don't write it straight into `~/.claude/skills/`: it wouldn't be in git and wouldn't reach other machines.
 
-### Step 5: monthly re-verification
+### Step 5: monthly re-verification (done)
 
-Set up as a monthly scheduled task on this repo, Sonnet 5.5 at medium effort:
+Result: cloud routine "claude-kb monthly re-verification" (https://claude.ai/code/routines/trig_01HDV9ENf7vGtyTF52Lb4qTW), cron `0 6 1 * *` (UTC), Sonnet 5.5, on FreekMencke/claude-kb, no MCP connectors. Its prompt is the one below with two changes: it opens a PR from `claude/reverify-<YYYY-MM>` instead of pushing to main, so a wrong correction to an entry every agent trusts gets reviewed first; and it falls back to the Agent tool when workflows aren't available in the cloud. Review and merge that PR each month. Debug a run with RemoteTrigger `list_runs` and `get_run_log`; delete or pause the routine at https://claude.ai/code/routines.
+
+The planned prompt:
 
 ```
 Re-verify this knowledge base. For every entry in kb-*.md with Confidence official-docs or official-example: fetch its Sources, check the entry still matches them, and set Last verified to today. If something changed, correct the entry and add a line to a "Changelog" section at the end of INDEX.md (date, ID, what changed). Mark entries whose source no longer exists as unverified. Use a workflow with Sonnet agents, one per file or per ~15 entries; they return proposed edits and you apply them. Leave "Recommendations for our setup" alone, except to flag in the changelog any recommendation whose cited entry changed. Run python3 scripts/check_kb.py at the end, then commit and push.
