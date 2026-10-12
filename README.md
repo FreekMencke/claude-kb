@@ -44,7 +44,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [kb-memory.md](kb-memory.md) | `MEM`: memory and instruction files (where they live, load order, auto memory, keeping them current, surfaces, memory servers) |
 | [kb-surfaces.md](kb-surfaces.md) | `SURF`: desktop app, artifacts, Remote Control and mobile, cloud sessions, IDE extensions and Chrome, and which surface for which job |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
-| [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage, unknown IDs in INDEX.md and its file table's entry counts. ID prefixes come from the files, so a new topic file needs no script change |
+| [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage, unknown IDs in INDEX.md and its file table's entry counts; warns (without failing) about entries in different files with near-identical titles or mostly shared tags, unless INDEX.md already records the pair. ID prefixes come from the files, so a new topic file needs no script change |
 
 Each topic file ends with "Recommendations for our setup" and "Open questions", kept apart from the facts because
 they go stale faster.
