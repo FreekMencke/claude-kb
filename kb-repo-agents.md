@@ -317,18 +317,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Sources: [Subagents: what loads at startup](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-007, TOK-006, template T1
 
-**A non-fork custom subagent starts with:**
-- its own system prompt (the agent body);
-- the delegation message the caller wrote;
-- the full CLAUDE.md hierarchy: user, project, `CLAUDE.local.md`, managed, and `AGENTS.md` loaded as project instructions;
-- a git status snapshot;
-- preloaded `skills:`.
-
-**It does not get:**
-- the conversation history;
-- the main session's auto memory.
-
-Explore and Plan skip CLAUDE.md and git status. `omitClaudeMd: true` (v2.1.271+) launches a custom agent "without the user, project, and local CLAUDE.md files", keeping managed ones. It's ignored when the agent runs as the main session (`--agent`).
+What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged there 2026-10-12). This entry keeps what that means for repo agents.
 
 **Consequences:**
 1. **Don't make an agent `Read` CLAUDE.md.** It is already in context, so the second copy costs tokens and a turn.

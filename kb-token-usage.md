@@ -56,7 +56,7 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 | TOK-034 | Resuming and idle gaps | fact | cache, resume |
 | TOK-035 | Delegate verbose work to subagents | pattern | subagents, context |
 | TOK-036 | Subagent model selection | recommendation | subagents, model |
-| TOK-037 | Multi-agent and agent teams multiply tokens | fact | subagents, teams |
+| TOK-037 | Multi-agent and agent teams multiply tokens (merged into ORCH-020) | fact | subagents, teams |
 | TOK-038 | API context management: compaction, context editing, memory tool | tool | api, context |
 | TOK-040 | Read tool limits and partial reads | fact | files |
 | TOK-041 | Search before reading; code intelligence | pattern | files, lsp |
@@ -70,13 +70,13 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 | TOK-054 | Message Batches API | fact | batch, api |
 | TOK-055 | Effort and thinking as cost levers | fact | effort, thinking |
 | TOK-056 | Order of cost levers (official cookbook) | recommendation | api, cost |
-| TOK-060 | Skill progressive disclosure | fact | skills |
+| TOK-060 | Skill progressive disclosure (merged into SKILL-004) | fact | skills |
 | TOK-061 | Writing skill descriptions | recommendation | skills, descriptions |
 | TOK-062 | SKILL.md size and reference files | recommendation | skills |
-| TOK-063 | Scripts and dynamic injection instead of prose | pattern | skills, scripts |
+| TOK-063 | Scripts and dynamic injection instead of prose (merged into SKILL-018, SKILL-008) | pattern | skills, scripts |
 | TOK-064 | Frontmatter that cuts skill cost | tool | skills, frontmatter |
 | TOK-065 | CLAUDE.md vs rules vs skills vs hooks | comparison | claude-md, skills, hooks |
-| TOK-066 | Invoked skills stay in context | fact | skills, compaction |
+| TOK-066 | Invoked skills stay in context (merged into SKILL-006) | fact | skills, compaction |
 | TOK-067 | Plugin and subagent-definition overhead | fact | plugins, subagents |
 | TOK-070 | Anti-patterns: sessions and workflow | anti-pattern | consolidated |
 | TOK-071 | Anti-patterns: configuration | anti-pattern | consolidated |
@@ -139,7 +139,7 @@ Confidence note: the figures are our local measurement; community captures (Syst
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs), [Best practices](https://code.claude.com/docs/en/best-practices)
-- Related: TOK-065, TOK-031
+- Related: TOK-065, TOK-031, SKILL-024, REPO-045
 
 Target: "under 200 lines per CLAUDE.md file. Longer files consume more context and reduce adherence." Test each line with "Would removing this cause Claude to make mistakes?"
 
@@ -173,8 +173,8 @@ What loads at the start of each conversation:
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-12
-- Sources: [Skills: descriptions are cut short](https://code.claude.com/docs/en/skills), [Env vars](https://code.claude.com/docs/en/env-vars), [Settings reference](https://code.claude.com/docs/en/settings-reference)
-- Related: TOK-061, TOK-064, TOK-067
+- Sources: [Skills: descriptions are cut short](https://code.claude.com/docs/en/skills), [Env vars](https://code.claude.com/docs/en/env-vars), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Related: TOK-061, TOK-064, TOK-067, SKILL-003, SKILL-014, SKILL-030, SKILL-045
 
 "Every skill in the skill listing adds to your context on every turn, whether or not Claude ever uses it."
 
@@ -189,6 +189,9 @@ Diagnostics:
 - `/doctor` estimates listing cost.
 - `/skill-doctor` (v2.1.252+) gives per-skill cost and usage and flags never-invoked skills.
 - `/context` shows the post-budget size.
+- `--debug` warns on overflow.
+
+Every installed skill makes the others less likely to trigger. Front-load the key use case, because truncation cuts the end first.
 
 The 2% figure in changelog v2.1.32 is outdated. Community estimates are about 2,000 tokens (roughly 15–25 skills) at 200K and about 10,000 at 1M; these are unverified.
 
@@ -198,16 +201,9 @@ The 2% figure in changelog v2.1.32 is outdated. Community estimates are about 2,
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Sub-agents: what loads at startup](https://code.claude.com/docs/en/sub-agents), [Prompt caching: subagents](https://code.claude.com/docs/en/prompt-caching), local transcripts (`<session>/subagents/*.jsonl`)
-- Related: TOK-035, TOK-036, TOK-052
+- Related: TOK-035, TOK-036, TOK-052, ORCH-007
 
-What a non-fork subagent gets:
-- Its own system prompt and environment, its tools, and the task message.
-- The full CLAUDE.md hierarchy and a git status snapshot. Built-in Explore and Plan skip both. `omitClaudeMd: true` (v2.1.271+) skips CLAUDE.md for custom agents.
-- The full body of any skills named in its `skills:` field.
-
-It does **not** get conversation history, files already read, invoked skills, or the parent's auto memory.
-
-Only the final text and a small metadata trailer return to the parent. A fork, by contrast, inherits the parent's history and cache.
+What a subagent starts with and what it returns: see ORCH-007 (merged there 2026-10-12). This entry keeps the token cost.
 
 Cache behavior:
 - The first request doesn't read the parent's cache.
@@ -216,7 +212,7 @@ Cache behavior:
 
 Measured (30 runs): a subagent's first turn is about **27.5k–29.9k tokens**. When six were launched in parallel, five read about 18.7k from the first one's cache.
 
-Confidence note: what a subagent starts with is documented; the sizes are our local measurement (single-source).
+Confidence note: the cache behavior is documented; the sizes are our local measurement (single-source).
 
 ## [TOK-007] Context window sizes and auto-compact thresholds
 - Type: fact
@@ -586,7 +582,7 @@ Raising `MAX_MCP_OUTPUT_TOKENS` is rarely the right fix. Prefer tools with filte
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp), [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use), [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context)
-- Related: TOK-021, TOK-063
+- Related: TOK-021, SKILL-018
 
 Intermediate tool results don't need to pass through the model:
 - **Code execution with MCP** presents tools as files under `./servers/`. The agent writes code that calls them and filters results. One example workflow went "from 150,000 tokens to 2,000 tokens" (−98.7%), but that was the post's own example, not a benchmark.
@@ -617,7 +613,7 @@ Instructions given only in conversation are lost on `/clear` and compaction. Put
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Context window](https://code.claude.com/docs/en/context-window), [Costs](https://code.claude.com/docs/en/costs), [Skills](https://code.claude.com/docs/en/skills), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
-- Related: TOK-032, TOK-066
+- Related: TOK-032, SKILL-006
 
 Steering the summary:
 - `/compact Focus on code samples and API usage` tells the summarizer what to keep.
@@ -703,7 +699,7 @@ Confidence note: the cache and resume behavior is documented; the share of rebui
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Sub-agents: isolate high-volume operations](https://code.claude.com/docs/en/sub-agents#isolate-high-volume-operations), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-- Related: TOK-006, TOK-009, TOK-036, TOK-037
+- Related: TOK-006, TOK-009, TOK-036, ORCH-020, ORCH-034
 
 What the docs say:
 - "Since context is your fundamental constraint, use subagents to keep research out of it."
@@ -726,17 +722,9 @@ Ask for a specific return format with a word cap, to keep the summary small.
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Sub-agents: choose a model](https://code.claude.com/docs/en/sub-agents), [Costs](https://code.claude.com/docs/en/costs)
-- Related: TOK-006, TOK-035
+- Related: TOK-006, TOK-035, ORCH-003, ORCH-005, ORCH-030
 
-Model resolution order:
-1. The per-invocation `model` parameter.
-2. The agent's `model:` frontmatter.
-3. `CLAUDE_CODE_SUBAGENT_MODEL`.
-4. The main model.
-
-`CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` (v2.1.257+) forces one model for all subagents.
-
-**Built-in Explore uses the main conversation's model.** The docs' only Haiku example is overriding it: a user or project agent named `Explore` with `model: haiku`. Older notes saying "Explore runs on Haiku" are wrong for current versions.
+Resolution order, `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` and built-in Explore's model: see ORCH-003 and ORCH-005 (merged there 2026-10-12). Tier per role: ORCH-030.
 
 Official advice: "For simple subagent tasks, specify `model: haiku`". Sonnet handles most coding; reserve Opus for hard reasoning. A switch to Opus also applies to subagents that inherit.
 
@@ -746,7 +734,7 @@ Our 30 days:
 - The tasks differ, so this is not like-for-like.
 - Subagents were 19% of total cost.
 
-Confidence note: the resolution order and Explore behavior are documented; our numbers are local measurement (single-source).
+Confidence note: the official advice is documented; our numbers are local measurement (single-source).
 
 ## [TOK-037] Multi-agent and agent teams multiply tokens
 - Type: fact
@@ -754,15 +742,9 @@ Confidence note: the resolution order and Explore behavior are documented; our n
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Costs: agent teams](https://code.claude.com/docs/en/costs)
-- Related: TOK-035, TOK-036
+- Related: ORCH-020, ORCH-025, ORCH-010
 
-From Anthropic's research-system post (2025, with old model names):
-- Agents use about 4x the tokens of chat. Multi-agent systems use "about 15x more tokens than chats".
-- "Token usage by itself explains 80% of the variance" in their BrowseComp results.
-- Multi-agent suits broad, parallelizable research. It's a poor fit where agents share context, "such as most coding tasks".
-- Their scaling rules: 1 agent with 3–10 calls for a fact lookup, 2–4 subagents for comparisons, 10+ for complex research.
-
-Claude Code agent teams use "approximately 7x more tokens than standard sessions when teammates run in plan mode." Use Sonnet teammates, keep teams small, and shut them down when done.
+Merged into ORCH-020 (kb-orchestration.md) on 2026-10-12. Token multipliers are in ORCH-020, scaling rules in ORCH-025 and agent-team cost in ORCH-010.
 
 ## [TOK-038] API context management: compaction, context editing, memory tool
 - Type: tool
@@ -943,7 +925,7 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching), [Costs](https://code.claude.com/docs/en/costs), [Lessons from building Claude Code: prompt caching is everything](https://claude.dev/blog/lessons-from-building-claude-code-prompt-caching-is-everything/)
-- Related: TOK-053, TOK-034, TOK-006
+- Related: TOK-053, TOK-034, TOK-006, ORCH-040
 
 Claude Code caches automatically. Default TTLs:
 
@@ -1013,7 +995,7 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Thinking cost](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking), [Costs](https://code.claude.com/docs/en/costs)
-- Related: TOK-017, TOK-053
+- Related: TOK-017, TOK-053, ORCH-028
 
 **Effort** (`output_config.effort`):
 - Levels: low, medium, high, xhigh, max. It affects all output tokens: text, tool calls and thinking.
@@ -1061,17 +1043,9 @@ Tool-search rule of thumb: "once your schemas run past ~10K tokens… tool searc
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
-- Related: TOK-005, TOK-062, TOK-063
+- Related: SKILL-004
 
-Three levels:
-
-| Level | When it loads | Cost |
-|---|---|---|
-| Metadata (name + description) | Always, at startup | "~100 tokens per Skill" |
-| SKILL.md body | When triggered | "Under 5k tokens" |
-| Reference files, scripts | As needed | "None until accessed". Script code never enters context, only its output. |
-
-"A Skill can include dozens of reference files, but if your task only needs the sales schema, that's the one file Claude loads." The overview says you can "install many Skills without context penalty"; in Claude Code, every listing entry costs every turn (TOK-005), so trust the Claude Code docs there.
+Merged into SKILL-004 (kb-skills.md) on 2026-10-12. Read that entry for the three loading levels and their cost.
 
 ## [TOK-061] Writing skill descriptions
 - Type: recommendation
@@ -1079,26 +1053,19 @@ Three levels:
 - Confidence: community-consensus
 - Last verified: 2026-10-12
 - Sources: [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [anthropics/skills skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator), [obra/superpowers writing-skills](https://github.com/obra/superpowers), [Vercel: AGENTS.md vs skills](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
-- Related: TOK-005, TOK-064
+- Related: TOK-005, TOK-064, SKILL-011, SKILL-012, SKILL-013
 
-Official rules:
-- Max 1,024 characters on the API, 1,536 in the Claude Code listing.
-- Third person ("Processes Excel files…", not "I can help…").
-- Say **what** it does and **when** to use it, with trigger keywords. Vague descriptions ("Helps with documents") don't trigger.
+Limits and content rules (what + when, third person, negative triggers, no workflow summary): see SKILL-003, SKILL-011, SKILL-012 and SKILL-013 (merged there 2026-10-12). This entry keeps the cost side.
 
 The tension:
 - Anthropic's skill-creator says make descriptions "a little bit 'pushy'" because Claude tends to undertrigger. Its docx, xlsx and pptx descriptions are 750–970 characters.
 - Every character is paid on every turn, and an overflowing listing drops descriptions.
 
-Community practice (superpowers):
-- Start with "Use when…", stay under 500 characters, and never summarize the workflow.
-- Their finding: agents followed a workflow summary in the description instead of reading the skill. This is single-source.
-
 Vercel's eval found a skill wasn't invoked in 56% of cases, and a compact AGENTS.md index scored 100%. So knowledge that is always needed belongs in passive context, not a skill.
 
 Our default: about 150–400 characters, triggers first, and `claude plugin eval` with a `tool_used: Skill` grader to check triggering after edits.
 
-Confidence note: the limits and third-person rule are documented (official-docs); the length guidance is community practice, and the superpowers finding is single-source.
+Confidence note: the per-turn cost is documented (official-docs); the length guidance is community practice, and Vercel's eval is single-source.
 
 ## [TOK-062] SKILL.md size and reference files
 - Type: recommendation
@@ -1106,15 +1073,9 @@ Confidence note: the limits and third-person rule are documented (official-docs)
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Skills (Claude Code)](https://code.claude.com/docs/en/skills), [anthropics/skills](https://github.com/anthropics/skills)
-- Related: TOK-060, TOK-066
+- Related: SKILL-004, SKILL-006, SKILL-016, SKILL-017
 
-Official rules:
-- "Keep SKILL.md body under 500 lines". Split as you approach it.
-- Keep references **one level deep**. Nested ones get partially read: "Claude might use commands like `head -100`".
-- Add a table of contents to reference files over 100 lines. skill-creator says over 300; use 100.
-- Use descriptive file names, organized by domain (`reference/finance.md`, `reference/sales.md`), so only the relevant one loads.
-- Write conditional pointers: "If you need to fill out a PDF form, read FORMS.md."
-- "Default assumption: Claude is already very smart. Only add context Claude doesn't already have." Ask of every paragraph: "Does this paragraph justify its token cost?"
+Size and structure rules (under 500 lines, references one level deep, a TOC over 100 lines, descriptive names, conditional pointers, "Claude is already very smart"): see SKILL-016 and SKILL-017 (merged there 2026-10-12). This entry keeps the measured sizes.
 
 Official skill sizes (SKILL.md lines): xlsx 99, docx 91, pdf 314 plus 8 scripts, skill-creator 485. claude-api is 616 lines and 105 KB, breaking its own guidance, but it loads only the detected language's directory.
 
@@ -1126,15 +1087,9 @@ Community: one superpowers proposal (#832) cut 14 skills from 3,150 to 977 lines
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Skill best practices: utility scripts](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Skills: dynamic context injection](https://code.claude.com/docs/en/skills), [Equipping agents](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
-- Related: TOK-024, TOK-060
+- Related: SKILL-018, SKILL-008
 
-Scripts:
-- They are "more reliable than generated code; save tokens (no need to include code in context)". "Sorting a list via token generation is far more expensive than simply running a sorting algorithm."
-- Be explicit about whether Claude should **run** a script ("Run `analyze_form.py`") or **read** it ("See `analyze_form.py` for the algorithm").
-- Scripts should handle their own errors and print specific, short messages.
-- skill-creator's signal: if every test run has Claude writing the same helper, bundle that script.
-
-Dynamic injection: the `` !`command` `` syntax in SKILL.md runs before the skill is sent, and only the output enters context. Example: `` !`git diff --stat origin/main` `` instead of an instruction to "first run git diff…". A failing command aborts the invocation. It's subject to the 2-minute Bash timeout, and `disableSkillShellExecution` turns it off.
+Merged on 2026-10-12: scripts into SKILL-018 and `!` dynamic injection into SKILL-008 (both kb-skills.md). Read those entries.
 
 ## [TOK-064] Frontmatter that cuts skill cost
 - Type: tool
@@ -1142,7 +1097,7 @@ Dynamic injection: the `` !`command` `` syntax in SKILL.md runs before the skill
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Skills](https://code.claude.com/docs/en/skills), [Features overview](https://code.claude.com/docs/en/features-overview)
-- Related: TOK-005, TOK-035, TOK-066
+- Related: TOK-005, TOK-035, SKILL-006, SKILL-014
 
 | Frontmatter | Effect on tokens |
 |---|---|
@@ -1161,7 +1116,7 @@ A subagent's `skills:` field preloads full bodies at spawn (max 32), so list onl
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Features overview](https://code.claude.com/docs/en/features-overview), [Memory: rules](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs)
-- Related: TOK-003, TOK-064
+- Related: TOK-003, TOK-064, SKILL-021, SKILL-022
 
 | Put it in | When | Context cost |
 |---|---|---|
@@ -1181,16 +1136,9 @@ Costs page: "If it contains detailed instructions for specific workflows (like P
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Skills: skill content lifecycle](https://code.claude.com/docs/en/skills)
-- Related: TOK-031, TOK-062
+- Related: SKILL-006
 
-Once invoked, a skill's body "stays there across later turns". It isn't re-read, and "every line is a recurring token cost" for the rest of the session. A 400-line skill invoked at turn 5 of a 200-turn session is read about 195 times.
-
-Re-invoking an unchanged skill adds only a short "already loaded" note. After compaction, the latest invocation of each skill is re-attached, keeping its first 5,000 tokens, within 25,000 for all skills.
-
-Implications:
-- Put the essential instructions at the top of SKILL.md.
-- Move rarely needed detail to reference files that are read only when required.
-- Prefer `context: fork` for long, self-contained procedures, so the body lives in the subagent instead.
+Merged into SKILL-006 (kb-skills.md) on 2026-10-12. Read that entry for how an invoked skill stays in context and what compaction keeps.
 
 ## [TOK-067] Plugin and subagent-definition overhead
 - Type: fact
@@ -1453,7 +1401,7 @@ Ranked by expected savings ÷ effort:
 | R1 | **Lower the auto-compact window to 400K** (`"autoCompactWindow": 400000` in `~/.claude/settings.json`) and add a `# Compact instructions` section to global CLAUDE.md ("preserve modified files, open issue/PR numbers, test commands, decisions made") | Compaction fires at 400K instead of about 967K | About 16–30% of input tokens (simulated at 500K and 300K), so about $90–170 per 30 days. Costs about 20 compactions a month, each lossy. | 5 min | TOK-008, TOK-031, TOK-032 |
 | R2 | **Context status line**: a DIY `~/.claude/statusline.sh` (jq) showing context % and absolute k, 5h/7d `used_percentage`, and `prompt_cache.warm`/TTL; or `claude-hud` | Always visible; makes R1/R3 decisions visible and shows cache regressions early | Indirect: enables R1/R3, catches incidents like TOK-086 | 15 min | TOK-011, TOK-082 |
 | R3 | **`handoff` skill** (user-only: `disable-model-invocation: true`, zero listing cost). It writes goal, state, changed files, next steps and open questions to the issue/PR or a scratch file, then tells me to `/clear` and start with "continue from <link>". | `/handoff` when the status line passes about 250K, or when switching task within a repo | Same pool as R1, without auto-summary loss. Each handoff at 250K instead of drifting to 500K halves later per-turn cost. | 30 min | TOK-030, TOK-085, TOK-064 |
-| R4 | **Cheaper subagent default**: `"env": {"CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"}` in user settings. The main agent can still pass `model: opus` for hard tasks; per-invocation beats env. Alternatively, a user agent `~/.claude/agents/Explore.md` with `model: sonnet`, read-only tools and `omitClaudeMd: true`. | All subagents without an explicit model, including built-in Explore, which currently inherits Opus | About $50–90 of $115 Opus-subagent spend per 30 days (5–8% total). Check against the KB's model-selection section first. | 5 min | TOK-036, TOK-006 |
+| R4 | **Cheaper subagent default**: `"env": {"CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"}` in user settings. The main agent can still pass `model: opus` for hard tasks; per-invocation beats env. Alternatively, a user agent `~/.claude/agents/Explore.md` with `model: sonnet`, read-only tools and `omitClaudeMd: true`. | All subagents without an explicit model, except built-in Explore and Plan: the env var doesn't reach them (ORCH-005), so use the `Explore` override for those | About $50–90 of $115 Opus-subagent spend per 30 days (5–8% total). Check against the KB's model-selection section first. | 5 min | TOK-036, TOK-006 |
 | R5 | **Screenshot hygiene** for `osrs-tracker-web` (cross-repo, so open an issue there): prefer Playwright `browser_snapshot` (about 200 tokens) for structure checks; screenshot elements or a ≤1280px viewport; run visual review loops in a subagent that returns findings | Any UI verification task | Roughly 1–3M image tokens per 30 days that are later re-read about 58x (TOK-009). Likely the largest single tool-output saving for that repo. | 20 min plus an issue | TOK-043, TOK-023, TOK-035 |
 | R6 | **`token-audit` skill** (user-only) with a script that runs the analyses in this file over `~/.claude/projects`: cost split, context-size buckets, re-read multiplier, subagent cost by model, tool-output by tool, largest Bash commands. Dedups by `message.id`. | `/token-audit` monthly, or after a config change, to check R1–R5 worked | None directly; it measures the others. Fills gaps ccusage doesn't cover. | 45 min | TOK-013, TOK-080 |
 | R7 | **Output habits in global CLAUDE.md** (2 lines, about 60 tokens a turn): "`git diff --stat` before full diffs; `gh … --json <fields>`; `rg -n` before `sed -n`/`cat`." Optionally a PreToolUse hook for `npm test`/lint per the official example. | Every git/gh/read command | About 1–2M tokens per 30 days of large Bash output (32% of Bash volume came from 3.5% of calls) | 10 min | TOK-042, TOK-083 |
@@ -1471,7 +1419,7 @@ Not recommended now:
 2. **Compaction quality versus window size.** The R1 simulation ignores compaction cost and lost detail. Re-measure with R6 a month after R1.
 3. **How plan usage is weighted.** Are cache reads weighted like API prices (0.05x on Opus 5.5) when counting against 5-hour and weekly limits? Not documented. Our dollar figures are list-price equivalents, not plan percentages.
 4. **MCP description cap.** The docs say 2,048 characters; changelog v2.1.295 says 16,384 for descriptions loaded via tool search. Unresolved.
-5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. Unresolved.
+5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
 6. **Skill descriptions and triggering.** No Anthropic benchmark relates description length to trigger rate. The evidence is skill-creator's "pushy" advice, superpowers' anecdotes and Vercel's eval.
 7. **Unverified plan changes.** The May 2026 limit doubling and peak-hour changes, and whether per-model weekly meters other than Fable still exist on some plans, are reported only by secondary sources.
 8. **Token savers.** No independent session-level measurement of any community token saver (RTK, context-mode, Serena, claude-context) including task success.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check every kb-*.md file against the entry format in CLAUDE.md.
+"""Check every kb-*.md file against the entry format in CLAUDE.md, and INDEX.md against the entries.
 
 Usage: python3 scripts/check_kb.py
 Exits with status 1 when it finds a problem, so it can run in CI.
@@ -83,6 +83,17 @@ def main():
                 issues.append(f"{eid}: about {words} words (want 50-250)")
 
         print(f"{f.name}: {count} entries, {len(issues)} issue(s)")
+        for issue in issues:
+            print(f"  - {issue}")
+        problems += len(issues)
+
+    index = ROOT / "INDEX.md"
+    if index.exists():
+        it = index.read_text(encoding="utf-8")
+        listed = set(re.findall(r"^\| ([A-Z]+-\d+) \|", it, re.M))
+        issues = [f"{eid} is missing from the index" for eid in sorted(set(where) - listed)]
+        issues += [f"mentions unknown {ref}" for ref in sorted(set(re.findall(r"\b(?:ORCH|TOK|SKILL|REPO)-\d+\b", it)) - set(where))]
+        print(f"INDEX.md: {len(listed)} entries listed, {len(issues)} issue(s)")
         for issue in issues:
             print(f"  - {issue}")
         problems += len(issues)

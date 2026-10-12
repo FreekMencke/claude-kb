@@ -7,8 +7,8 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | Question | Answer | Entries |
 |---|---|---|
 | What does Claude see of a skill before using it? | Only `name` + `description` (≈100 tokens each) in the skill listing; the body loads when the skill is invoked, bundled files only when read. | SKILL-004 |
-| How long may a description be? | 1,024 chars on claude.ai, the API and the open spec. Claude Code truncates `description` + `when_to_use` at 1,536 chars in its listing. | SKILL-003, SKILL-005 |
-| Why doesn't my skill trigger? | Vague description, no user-vocabulary keywords, listing budget overflow dropped it, broken YAML, or the task was too simple to need a skill. | SKILL-015, SKILL-005 |
+| How long may a description be? | 1,024 chars on claude.ai, the API and the open spec. Claude Code truncates `description` + `when_to_use` at 1,536 chars in its listing. | SKILL-003, TOK-005 |
+| Why doesn't my skill trigger? | Vague description, no user-vocabulary keywords, listing budget overflow dropped it, broken YAML, or the task was too simple to need a skill. | SKILL-015, TOK-005 |
 | What goes in a description? | What it does + when to use it, third person, the words users type, and a "not for X" line for neighbouring skills. Don't summarise a multi-step workflow. | SKILL-011, SKILL-012, SKILL-013 |
 | How big may SKILL.md be? | Under 500 lines / ~5k tokens; push detail into one-level-deep reference files and scripts. | SKILL-016, SKILL-017 |
 | Skill, CLAUDE.md, hook, subagent or MCP? | CLAUDE.md = always-true facts; skill = on-demand procedure; hook = must-happen guarantee; subagent = isolated side task; MCP = access to external systems. | SKILL-021, SKILL-023 |
@@ -18,7 +18,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
-| How many skills is too many, and how do I prune? | No official number; trigger accuracy measurably drops as the roster grows. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, SKILL-005, SKILL-030 |
+| How many skills is too many, and how do I prune? | No official number; trigger accuracy measurably drops as the roster grows. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
 | Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills no (local test); plugins enabled in the distro's settings load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054 |
 | Where should skills live with desktop and WSL? | WSL uses the distro's Linux `~/.claude`; Windows and WSL share no skills, plugins, settings or credentials. Keep skills in a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-051, SKILL-056 |
 
@@ -30,7 +30,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | SKILL-002 | Frontmatter fields: open standard vs Claude Code extensions | fact | anatomy, frontmatter, portability |
 | SKILL-003 | Name and description limits per surface | fact | frontmatter, limits |
 | SKILL-004 | How Claude decides to load a skill (three levels) | fact | loading, progressive-disclosure |
-| SKILL-005 | Claude Code skill-listing budget and truncation | fact | loading, context-cost |
+| SKILL-005 | Claude Code skill-listing budget and truncation (merged into TOK-005) | fact | loading, context-cost |
 | SKILL-006 | A loaded skill stays in context; compaction keeps 5k tokens of it | fact | loading, compaction |
 | SKILL-007 | Where Claude Code finds skills, precedence and reload | fact | anatomy, locations |
 | SKILL-008 | Arguments, variables and `!` context injection | fact | anatomy, commands |
@@ -142,7 +142,7 @@ Fields from the open standard work everywhere. Claude Code adds many more, which
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Agent Skills specification](https://agentskills.io/specification), [Claude Code skills](https://code.claude.com/docs/en/skills)
-- Related: SKILL-002, SKILL-005
+- Related: SKILL-002, TOK-005
 
 The limits differ by surface, so write to the strictest: a name of up to 64 characters and a description of up to 1,024.
 
@@ -159,7 +159,7 @@ History: Claude Code's per-entry listing cap was 250 characters at v2.1.86 and b
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills), [Claude Code skills](https://code.claude.com/docs/en/skills), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
-- Related: SKILL-005, SKILL-011, SKILL-017
+- Related: TOK-005, SKILL-011, SKILL-017
 
 Skills load progressively, in three levels. Claude chooses a skill from its description alone.
 
@@ -171,6 +171,7 @@ Consequences:
 - Everything about *when* to use the skill must be in the description, because the body is unseen until the skill fires.
 - According to skill-creator, Claude "only consults skills for tasks it can't easily handle on its own", so a one-step request ("read this PDF") may not trigger even a well-described skill.
 - In Claude Code, typing `/name` at the start of a message invokes the skill directly. Permission rules use `Skill(name)` or `Skill(name *)`.
+- The API overview says you can "install many Skills without context penalty". In Claude Code every listing entry costs context on every turn (TOK-005), so trust the Claude Code docs there.
 
 ## [SKILL-005] Claude Code skill-listing budget and truncation
 - Type: fact
@@ -178,19 +179,9 @@ Consequences:
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Claude Code skills: "Skill descriptions are cut short"](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
-- Related: SKILL-003, SKILL-014, SKILL-030, SKILL-045
+- Related: TOK-005
 
-All skill descriptions share one listing budget, and a skill whose description is cut cannot be matched to a request. The budget "scales at 1% of the model's context window" (it was 2% at v2.1.32).
-
-- The listing always keeps every skill name. On overflow, Claude Code drops descriptions, starting with the skills you invoke least.
-- Each entry's `description` + `when_to_use` is capped at 1,536 chars whatever the budget.
-- Settings:
-  - `skillListingBudgetFraction` (e.g. `0.02`) raises the budget.
-  - `SLASH_COMMAND_TOOL_CHAR_BUDGET` sets a fixed character budget.
-  - `skillListingMaxDescChars` changes the per-entry cap.
-- Diagnostics: `/context` shows the size after the budget is applied, `/doctor` estimates the listing cost, `--debug` warns on overflow, and `/skill-doctor` lists unused skills.
-
-Practical upshot: every installed skill makes the others less likely to trigger. Front-load the key use case so truncation cuts the least useful words. The default value of `skillListingBudgetFraction`, and whether the 1% is counted in characters or tokens, were not confirmed (see Open questions).
+Merged into TOK-005 (kb-token-usage.md) on 2026-10-12. Read that entry for the listing budget, the per-entry cap, the settings that change them and the diagnostics.
 
 ## [SKILL-006] A loaded skill stays in context; compaction keeps 5k tokens of it
 - Type: fact
@@ -198,9 +189,9 @@ Practical upshot: every installed skill makes the others less likely to trigger.
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills)
-- Related: SKILL-016, SKILL-023
+- Related: SKILL-016, SKILL-023, SKILL-009
 
-An invoked SKILL.md enters the conversation as one message and stays there on every later turn. It is not re-read, so "every line is a recurring token cost". Invoking an unchanged skill again only adds a short "already loaded" note.
+An invoked SKILL.md enters the conversation as one message and stays there on every later turn. It is not re-read, so "every line is a recurring token cost". Invoking an unchanged skill again only adds a short "already loaded" note. A 400-line skill invoked at turn 5 of a 200-turn session is read about 195 times.
 
 At auto-compaction, Claude Code re-attaches the most recent invocation of each skill:
 - It keeps the first 5,000 tokens of each skill.
@@ -210,6 +201,7 @@ How to write for this:
 - Put the rules that matter most in the first part of the body. A long skill loses its tail after compaction.
 - Write standing instructions ("run the tests after every edit") rather than one-off steps you expect Claude to re-read.
 - In long sessions, invoke the skill again after a compaction if behaviour drifts.
+- Move rarely needed detail to reference files, and run long self-contained procedures with `context: fork` (SKILL-009), so the body lives in a subagent.
 
 ## [SKILL-007] Where Claude Code finds skills, precedence and reload
 - Type: fact
@@ -254,6 +246,7 @@ Custom slash commands were merged into skills in v2.1.3. `.claude/commands/x.md`
 - **Injection**: !`git status` at line start, or a fenced block opened with ```` ```! ````, runs *before* Claude sees the skill and pastes its output in as plain text.
   - A non-zero exit aborts the invocation; append `|| true` to tolerate failure.
   - Commands go through permission rules, so pre-approve them in `allowed-tools`.
+  - Commands are subject to the 2-minute Bash timeout.
   - The `disableSkillShellExecution` setting turns injection off.
   - Skills synced from claude.ai never run `!` commands.
 
@@ -355,7 +348,7 @@ This conflicts with Anthropic's "what + when" (SKILL-011). Reconciliation, which
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Extend Claude Code](https://code.claude.com/docs/en/features-overview)
-- Related: SKILL-005, SKILL-015
+- Related: TOK-005, SKILL-015, TOK-064
 
 | Control | Effect | Use for |
 |---|---|---|
@@ -373,7 +366,7 @@ These are Claude Code-only fields. Skills synced from claude.ai cannot carry the
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Claude Code skills: Troubleshooting](https://code.claude.com/docs/en/skills), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
-- Related: SKILL-005, SKILL-023, SKILL-026
+- Related: TOK-005, SKILL-023, SKILL-026
 
 **Doesn't trigger**
 1. Ask "What skills are available?" or check `/skills`. If the skill is missing, check for YAML errors (`claude plugin validate <dir>`, `--debug`) and the folder location.
@@ -450,7 +443,7 @@ Anthropic frames this as "degrees of freedom": a narrow bridge needs guard rails
 - **Medium (pseudocode or parameterised scripts)** when a pattern is preferred.
 - **Low (an exact script, "do not add flags")** for fragile or destructive operations.
 
-Scripts are more reliable than generated code and cheaper: only their output enters context.
+Scripts are more reliable than generated code and cheaper: only their output enters context. "Sorting a list via token generation is far more expensive than simply running a sorting algorithm."
 
 - **Say whether to execute or read**: "Run `scripts/analyze_form.py`" or "See `analyze_form.py` for the algorithm".
 - **"Solve, don't defer."** Handle errors in the script and justify every constant.
@@ -501,7 +494,7 @@ skill-creator calls heavy-handed ALWAYS/NEVER "a yellow flag". Explain *why* a r
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [Skills explained](https://claude.com/blog/skills-explained), [Steering Claude Code](https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more), [Output styles](https://code.claude.com/docs/en/output-styles)
-- Related: SKILL-022, SKILL-023, SKILL-024
+- Related: SKILL-022, SKILL-023, SKILL-024, TOK-065
 
 | Mechanism | Is | Signal that you need it (official "build over time" table) |
 |---|---|---|
@@ -524,7 +517,7 @@ skill-creator calls heavy-handed ALWAYS/NEVER "a yellow flag". Explain *why* a r
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [Subagents](https://code.claude.com/docs/en/sub-agents), [Memory](https://code.claude.com/docs/en/memory), local CLI `claude plugin details`
-- Related: SKILL-005, SKILL-006, SKILL-030
+- Related: TOK-005, SKILL-006, SKILL-030, TOK-065
 
 | Mechanism | When it loads | Recurring cost |
 |---|---|---|
@@ -558,7 +551,7 @@ Skills, CLAUDE.md and output styles are advisory: "'never edit .env' in CLAUDE.m
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Steering Claude Code](https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more)
-- Related: SKILL-021, SKILL-022
+- Related: SKILL-021, SKILL-022, TOK-003, REPO-045
 
 Target under 200 lines per CLAUDE.md: "Longer files consume more context and reduce adherence."
 
@@ -688,7 +681,7 @@ Judgement: official docs neither endorse nor reject hooks that force skill evalu
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Claude Code skills: Find unused skills](https://code.claude.com/docs/en/skills), [Monitoring usage](https://code.claude.com/docs/en/monitoring-usage), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), local CLI
-- Related: SKILL-005, SKILL-022, SKILL-032
+- Related: TOK-005, SKILL-022, SKILL-032
 
 - **`/skill-doctor`** (docs: v2.1.252+; the CHANGELOG lists it under 2.1.261) shows each loaded skill's context cost and how often it is invoked. It also lists plugins you haven't used recently and tells you where to switch skills off (`skillOverrides`). The interactive report is in `/plugin` › Stats.
   - It measures usage and cost only, not trigger accuracy or quality.
@@ -1067,7 +1060,7 @@ Common to the best collections: a validator in CI, examples by complexity tier, 
 - Confidence: community-consensus
 - Last verified: 2026-10-12
 - Sources: [Claude Code skills (listing budget)](https://code.claude.com/docs/en/skills), [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Lung: plugin eval on 89 skills](https://dev.to/dexterlung/i-ran-claude-plugin-eval-on-89-skills-the-trigger-rate-fell-from-100-to-556-n29), [RoboRhythms: best Claude Code skills 2026](https://www.roborhythms.com/best-claude-code-skills-2026/)
-- Related: SKILL-005, SKILL-030, SKILL-032
+- Related: TOK-005, SKILL-030, SKILL-032
 
 Every installed skill makes the others less likely to trigger and adds to the cost of every session. There are three sources of evidence:
 - **Official.** The listing budget drops descriptions of rarely used skills, and overlapping descriptions mean "Claude may load the wrong skill or miss one that would help". Enterprise guidance says to "limit the number of Skills loaded simultaneously" and to stop adding skills when recall degrades.
@@ -1418,7 +1411,7 @@ Ranked by impact versus effort:
 
 ## Open questions
 
-- **Listing budget.** Is the 1% of the context window counted in characters or tokens, and what is the default `skillListingBudgetFraction`? The detailed settings entries weren't read.
+- **Listing budget.** Is the 1% of the context window counted in characters or tokens, and what is the default `skillListingBudgetFraction`? The detailed settings entries weren't read. Answered in TOK-005 (from the settings and env-vars references): a character budget, `skillListingBudgetFraction: 0.01`, with an 8,000-character fallback; see INDEX.md, Conflicts.
 - **Desktop WSL mechanism.** Which launch factor stops desktop WSL sessions from loading `~/.claude/skills/synced/`: the host-brokered auth, or something in the app's inline `--settings`? The bisect (SKILL-050) ruled out the CLI version, the entrypoint variable and `--setting-sources`. The inline settings could not be inspected, because reading the process command line was blocked as credential exploration.
 - **Plugins in desktop WSL sessions.** Is it intended that they load (SKILL-052) when the docs say they don't, or will a later app build stop them loading?
 - **Skill commands in the desktop Code tab.** Do `/skills`, `/context` and `/skill-doctor` work there? It's undocumented and wasn't tested.
