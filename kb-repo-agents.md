@@ -96,7 +96,7 @@ Templates T1–T3 (changed `conventions-reviewer`, new `bug-reviewer`, new `brow
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-12
-- Sources: local repo `~/repos/osrs-tracker-web` at `3c76cc2` (2026-10-10), read 2026-10-12
+- Sources: [CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/CLAUDE.md), [.claude/settings.json](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/settings.json), [SKILL.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/skills/osrs-tracker-web/SKILL.md), [workflows](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.github/workflows), [dependabot.yml](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.github/dependabot.yml) at `3c76cc2` (2026-10-10); untracked `settings.local.json` and user settings read locally 2026-10-12
 - Related: REPO-002, REPO-004
 
 Repo-level Claude configuration as committed on 2026-10-12. It was added between 2026-10-02 and 2026-10-09.
@@ -121,7 +121,7 @@ The sibling repos `osrs-tracker-api` and `osrs-tracker-aws` have the same shape:
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-12
-- Sources: `osrs-tracker-web/.claude/agents/conventions-reviewer.md`, read 2026-10-12
+- Sources: [conventions-reviewer.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/agents/conventions-reviewer.md) at `3c76cc2`, read 2026-10-12
 - Related: REPO-001, REPO-003
 
 ```yaml
@@ -149,7 +149,7 @@ model: sonnet
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-12
-- Sources: local transcripts in `~/.claude/projects/` (all repos), analysed 2026-10-12; `osrs-tracker-web` SKILL.md "Release" step 2
+- Sources: local transcripts in `~/.claude/projects/` (all repos), analysed 2026-10-12; [SKILL.md "Release" step 2](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/skills/osrs-tracker-web/SKILL.md)
 - Related: REPO-002, REPO-024, REPO-026
 
 **Triggers in use:**
@@ -628,7 +628,7 @@ Template: template T3.
 - Applies to: Claude Code
 - Confidence: community-consensus
 - Last verified: 2026-10-12
-- Sources: REPO-013 to REPO-021, ORCH-030, [Subagents](https://code.claude.com/docs/en/sub-agents)
+- Sources: Synthesis of REPO-013 to REPO-021 and ORCH-030; [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-030, REPO-013
 
 | Agent | Worth a repo file? | Trigger | Tools | Model / effort |
@@ -1168,7 +1168,7 @@ Applied to Claude Code repo agents:
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-12
-- Sources: `diff` of `.claude/agents/conventions-reviewer.md` in osrs-tracker-web, -api and -aws, 2026-10-12
+- Sources: `diff` of [web](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/agents/conventions-reviewer.md), [api](https://github.com/osrs-tracker/osrs-tracker-api/blob/a7d7c79c2fcad054b5030c108ae8a23660f98b17/.claude/agents/conventions-reviewer.md) and [aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/8b01209a8c19ffccfdf7234ac33119ae1b9f731c/.claude/agents/conventions-reviewer.md) `conventions-reviewer.md`, 2026-10-12
 - Related: REPO-040, REPO-042
 
 The three files share structure and most sentences: report-only, rules read at runtime, scope against `origin/main`, path:line + Rule + Fix, and **breaks / violates / check**.
