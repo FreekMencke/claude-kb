@@ -15,6 +15,10 @@ Record the source and access date for every claim. If official docs and communit
 ## Output format
 Write a single Markdown file named as given in the topic section.
 
+If you are a subagent or workflow agent doing part of the research, don't write any files: return your findings with source URLs to the agent that started you.
+
+If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit.
+
 Start the file with:
 1. A "Quick answers" table: the 10–15 questions an agent is most likely to ask about this topic, each with a one-line answer and the entry ID(s) holding the detail.
 2. An index: one line per entry — ID, title, type, tags.
