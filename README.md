@@ -63,13 +63,17 @@ they go stale faster.
 
 A cloud routine, [claude-kb monthly re-verification](https://claude.ai/code/routines/trig_01HDV9ENf7vGtyTF52Lb4qTW),
 runs at 06:00 UTC on the 1st of each month on Sonnet 5.5. It re-checks every official-docs and official-example entry
-against its sources, sets Last verified, logs corrections in INDEX.md's Changelog, and opens a PR from
-`claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in this repo.
+against its sources, sets Last verified, logs corrections in INDEX.md's Changelog, checks new and changed entries for
+overlap with other files, and opens a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in this repo.
 
 - **Why a PR, not a push to main:** a wrong correction to an entry every agent trusts should be reviewed first.
 - **Why its subagents curl and grep sources for exact wording:** the first run ([FreekMencke/claude-kb#1](https://github.com/FreekMencke/claude-kb/pull/1)) changed 25 entries and 8 of
   those were wrong, 6 of them claims it couldn't find in a truncated fetch and then removed or marked unverified. Now a
   claim it can't find stays and is listed as "not found"; only a contradicting quote changes it.
+- **Why it looks for overlap, and only in new and changed entries:** the per-file subagents can't see other files, and
+  the topic files were reconciled once in full (FreekMencke/claude-kb#28). The lead resolves each overlap and each
+  `check_kb.py` duplicate warning as an Overlaps line, a merge, or a "Similar but distinct" line in INDEX.md, and lists
+  them under "Overlaps" in the PR body.
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`. Pause or delete it at https://claude.ai/code/routines.
 - It opens the PR with the cloud session's GitHub tool, because `gh pr create` uses GraphQL, which returns 403 in
