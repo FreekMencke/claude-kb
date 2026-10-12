@@ -23,8 +23,8 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 | 2 | Session 2 → `kb-repo-agents.md` (osrs-tracker-web) | Opus 5.5 lead, Sonnet research and fact-check agents, high | Done: 52 entries, pass the format check; follow-up work in roadmap osrs-tracker/osrs-tracker-web#220 |
 | 3 | Merge and index → `INDEX.md` | Opus 5.5, high (planned Sonnet; run in the continuation session) | Done: 219 entries indexed, 5 full and 5 partial merges, 5 conflicts recorded; all files pass |
 | — | Fix SKILL-050: custom skills missing in desktop WSL sessions | Opus 5.5, high | Done 2026-10-12: skills moved to FreekMencke/claude-skills and symlinked; see below |
-| 4 | Librarian skill `claude-kb-lookup` | Sonnet 5.5, medium | Next |
-| 5 | Monthly re-verification | Sonnet 5.5, medium | After step 4, as a scheduled task |
+| 4 | Librarian skill `claude-kb-lookup` | Opus 5.5, high (planned Sonnet; run in the continuation session) | Done 2026-10-12: in FreekMencke/claude-skills, linked by `install.sh`; see below |
+| 5 | Monthly re-verification | Sonnet 5.5, medium | Next, as a scheduled task |
 
 ## Known issues
 
@@ -54,9 +54,13 @@ Read all kb-*.md files in this repo. Then:
 Don't rewrite entries beyond this. Run python3 scripts/check_kb.py at the end and fix what it reports.
 ```
 
-### Step 4: librarian skill
+### Step 4: librarian skill (done)
 
-Sonnet 5.5 at medium effort. Replace `<path>` with where this repo is cloned locally (`/home/fremen/repos`):
+Result: `~/repos/claude-skills/skills/claude-kb-lookup/SKILL.md` (56 lines, about 520 words). It pulls the main checkout (`git -C /home/fremen/repos/claude-kb pull --ff-only`), reads INDEX.md, prints only the needed entries with an `awk` one-liner, follows merge pointers and the Conflicts table, and flags entries whose Last verified is more than 60 days old as "due for re-check" (not "stale", which the sibling skills use for "doesn't match the code"). It isn't uploaded to claude.ai, because it needs the local clone. The main checkout at `~/repos/claude-kb` was 13 commits behind before this step; the skill's pull keeps it current.
+
+Not tested yet: whether it triggers on its own in a fresh session. First test: in a fresh session in another repo, ask "which model should a reviewer subagent use?" and check that it loads the skill and cites ORCH-030.
+
+It ran with this prompt, `<path>` being `/home/fremen/repos`:
 
 ```
 /skill-workshop Write a user-level skill named claude-kb-lookup. It triggers when an agent needs information about using Claude efficiently (models, subagents, skills, repo agents, token usage). It tells the agent to read <path>/claude-kb/INDEX.md first, then read only the entries it needs by ID, cite entry IDs in its answer, and flag any entry whose Last verified date is more than 60 days old.
