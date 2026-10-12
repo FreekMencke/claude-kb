@@ -440,8 +440,8 @@ All processes share one plan or API rate limit.
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-12
-- Sources: [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Routines](https://code.claude.com/docs/en/routines), [Desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks)
-- Related: ORCH-016, REPO-030
+- Sources: [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Routines](https://code.claude.com/docs/en/routines), [Desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks), local test (routine runs 2026-10-12)
+- Related: ORCH-016, REPO-030, SKILL-060
 
 | | Cloud routines | Desktop scheduled tasks | `/loop` and cron tools |
 |---|---|---|---|
@@ -453,6 +453,7 @@ All processes share one plan or API rate limit.
 
 Notes:
 - Routines (research preview) are created with `/schedule` or at claude.ai/code/routines. Their triggers are a schedule, an API POST, or GitHub `pull_request`/`release` events. All connectors are attached by default, so trim them. Runs use subscription usage.
+- Cloud sessions, routines included, block GitHub's GraphQL API: `gh pr list`, `gh pr create` and `gh pr view` fail with "GitHub GraphQL is not available from Claude Code sessions; use the REST API". Write routine prompts with `gh api repos/<owner>/<repo>/…` (observed 2026-10-12). Marketplace plugins don't load there either (SKILL-060).
 - `/loop` without an interval self-paces between 1 minute and 1 hour. Prefer the Monitor tool over polling.
 
 Docs: "Use cloud tasks for work that should run reliably without your machine. Use Desktop tasks when you need access to local files and tools. Use `/loop` for quick polling during a session."

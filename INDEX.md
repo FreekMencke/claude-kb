@@ -264,6 +264,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-057 | Skill features that behave differently in the desktop app | fact | desktop, permissions |
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
+| SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 
 ### Agents in repositories (osrs-tracker-web) (`kb-repo-agents.md`, REPO)
 
@@ -437,3 +438,4 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | 2026-10-12 | SKILL-008, TOK-013 | `$0`/`$N` substitution also hits literal text when arguments are passed; `cost-state` transcript lines added as a second usage source (FreekMencke/claude-kb#5). |
 | 2026-10-12 | SKILL-030, SKILL-031 | `/skill-doctor` in a desktop WSL session replies "Skill usage reports are not available on this connection"; `claude -p "/skill-doctor"` in the terminal prints the report. Open question on Code-tab skill commands narrowed. |
 | 2026-10-12 | (recommendations) | `kb-token-usage.md`: measured starting context with `claude -p "/context all"` (29.4k per turn); open question 1 answered; R8 measured and R9 downgraded. |
+| 2026-10-12 | SKILL-060, SKILL-048, SKILL-059, ORCH-017, REPO-012 | New SKILL-060: cloud sessions and routines don't load claude.ai marketplace plugins; read the skill from a cloned repo instead (tested in the docs-drift routine). ORCH-017: GraphQL is blocked in cloud sessions, use `gh api`. `kb-repo-agents.md` recommendation 6 status updated. |
