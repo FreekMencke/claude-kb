@@ -22,12 +22,21 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 | 1 | Sessions 1, 3, 4 → `kb-orchestration.md`, `kb-token-usage.md`, `kb-skills.md` | Opus 5.5 lead, Sonnet research agents, high | Done: 167 entries, all pass the format check |
 | 2 | Session 2 → `kb-repo-agents.md` (osrs-tracker-web) | Opus 5.5 lead, Sonnet research and fact-check agents, high | Done: 52 entries, pass the format check; follow-up work in roadmap osrs-tracker/osrs-tracker-web#220 |
 | 3 | Merge and index → `INDEX.md` | Opus 5.5, high (planned Sonnet; run in the continuation session) | Done: 219 entries indexed, 5 full and 5 partial merges, 5 conflicts recorded; all files pass |
+| — | Fix SKILL-050: custom skills missing in desktop WSL sessions | Opus 5.5, high | Done 2026-10-12: skills moved to FreekMencke/claude-skills and symlinked; see below |
 | 4 | Librarian skill `claude-kb-lookup` | Sonnet 5.5, medium | Next |
 | 5 | Monthly re-verification | Sonnet 5.5, medium | After step 4, as a scheduled task |
 
 ## Known issues
 
 All issues found after steps 1 and 2 are resolved (2026-10-12): the Quick answers row count, the Confidence qualifiers, and the ORCH-005/ORCH-030 vs TOK-036 overlap (TOK-036 now points to ORCH-003/ORCH-005). ORCH-047 citing other entries instead of URLs is intended, because it's a synthesis. What step 3 merged and which conflicts it found are listed at the end of INDEX.md.
+
+## Personal skills setup (2026-10-12)
+
+Desktop WSL sessions don't load claude.ai account skills (SKILL-050), so the custom skills now live in git:
+
+- Source of truth: FreekMencke/claude-skills (private), cloned at `~/repos/claude-skills`. `install.sh` symlinks each `skills/<name>` into `~/.claude/skills/`; edits are live in the next session.
+- The repo is also a marketplace (plugin `freek-skills`) for other machines. Don't install the plugin on a machine that uses the symlinks, or every skill is listed twice.
+- Open decisions, tracked in `kb-skills.md` recommendation 9: whether to remove `roadmap-issues`, `parallel-code-orchestrator` and `refresh-md-files` from claude.ai (cloud sessions and routines only see claude.ai copies), and whether to set `syncClaudeAiSkills: false`. The terminal CLI's `/login` had expired, so the terminal duplicates weren't checked.
 
 ## Next steps and their prompts
 
@@ -47,13 +56,13 @@ Don't rewrite entries beyond this. Run python3 scripts/check_kb.py at the end an
 
 ### Step 4: librarian skill
 
-Sonnet 5.5 at medium effort. Replace `<path>` with where this repo is cloned locally:
+Sonnet 5.5 at medium effort. Replace `<path>` with where this repo is cloned locally (`/home/fremen/repos`):
 
 ```
 /skill-workshop Write a user-level skill named claude-kb-lookup. It triggers when an agent needs information about using Claude efficiently (models, subagents, skills, repo agents, token usage). It tells the agent to read <path>/claude-kb/INDEX.md first, then read only the entries it needs by ID, cite entry IDs in its answer, and flag any entry whose Last verified date is more than 60 days old.
 ```
 
-Put it in the user skills folder (`~/.claude/skills/`) so every repo gets it.
+Put it in `~/repos/claude-skills/skills/claude-kb-lookup/`, commit it there, and run that repo's `install.sh` so it's linked into `~/.claude/skills/` and every repo gets it. Don't write it straight into `~/.claude/skills/`: it wouldn't be in git and wouldn't reach other machines.
 
 ### Step 5: monthly re-verification
 
