@@ -19,7 +19,7 @@ Prefix: HOOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296
 | My hook "does nothing". Why? | Shell profile echoes before the JSON, a field outside `hookSpecificOutput`, wrong matcher case, exit 1 instead of 2, or one invalid matcher dropping the whole file's hooks. | HOOK-024 |
 | Is a hook a security boundary? | No. Hooks run with your full permissions and parse text the model wrote. Hard limits belong in deny rules and the sandbox. | HOOK-025, HOOK-026 |
 | Which proven hooks should I copy? | Format after edit, block dangerous commands or protected files, context at SessionStart, notifications, a Stop gate with a loop guard. | HOOK-027–HOOK-031 |
-| What hooks do we run? | Prettier after edit and a lint-before-push gate in the three osrs-tracker repos; none at user level. The aws repo's push gate misses `git -C <path> push`. | HOOK-036 |
+| What hooks do we run? | Prettier after edit and a lint-before-push gate in the three osrs-tracker repos, each parsing the command in `pre-push-check.sh` with no `if`; none at user level. | HOOK-036 |
 
 ## Index
 
@@ -857,7 +857,7 @@ Confidence note: from the hooks and permissions pages; the mods docs themselves 
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-12
-- Sources: local files read 2026-10-12: `~/.claude/settings.json`, `osrs-tracker-{web,api,aws}/.claude/settings.json`, `.claude/hooks/pre-push-check.sh`; [Permissions: Bash rule limits](https://code.claude.com/docs/en/permissions)
+- Sources: local files read 2026-10-12: `~/.claude/settings.json`, `osrs-tracker-{web,api,aws}/.claude/settings.json`, `.claude/hooks/pre-push-check.sh`; [osrs-tracker/osrs-tracker-aws#79](https://github.com/osrs-tracker/osrs-tracker-aws/pull/79); [Permissions: Bash rule limits](https://code.claude.com/docs/en/permissions)
 - Related: REPO-001, REPO-033, REPO-043, HOOK-019, HOOK-015
 
 **User level:** no hooks in `~/.claude/settings.json` or `settings.local.json`; none of the enabled plugins ship `hooks.json`. Default mode is `auto`, with no deny rules.
@@ -869,7 +869,8 @@ Confidence note: from the hooks and permissions pages; the mods docs themselves 
 
 **osrs-tracker-aws:**
 - Same Prettier hook.
-- PreToolUse `Bash` with `"if": "Bash(git push*)"` and an inline lint script run from `git rev-parse --show-toplevel` of the hook's working directory. The `if` **misses `git -C <path> push`** and `git -c … push` (HOOK-019), exactly the case web's script comment warns about. It has no `pre-push-check.sh`.
+- PreToolUse `Bash`, **no `if`**: `pre-push-check.sh` with web's push parsing and `-C` resolution, running `prettier:ci` and then `lint` in each `lambda/*/`. Same exit-2 block and fail-open behaviour as web.
+- Until 2026-10-12 it used `"if": "Bash(git push*)"` and an inline script that linted the hook's working directory, so `git -C <path> push` and `git -c … push` skipped the gate (HOOK-019). Fixed in osrs-tracker/osrs-tracker-aws#79 (issue #78).
 
 All three gates are backed by CI lint, so a miss costs a red CI run, not a bad merge.
 
@@ -879,8 +880,8 @@ All three gates are backed by CI lint, so a miss costs a red CI run, not a bad m
 
 Ranked by impact against effort.
 
-1. **Fix the aws push gate's `git -C` gap** (medium impact, low effort). Change its `if` to `Bash(git *)` and move the logic to a `pre-push-check.sh` that parses `-C`/`-c` like web's (adapted to `prettier:ci` plus per-Lambda lint). Needs an issue in osrs-tracker/osrs-tracker-aws; this session didn't open it (cross-repo changes go through an issue). HOOK-036, HOOK-019.
-2. **Add `"if": "Bash(git *)"` to the web and api push gate** (low impact, trivial effort). Keeps the script's `-C` parsing but skips the spawn on the roughly 13,000 non-git Bash calls a week (TOK-042's count). Same issue pattern, one per repo, or fold into item 1's issue as a follow-up. HOOK-015, HOOK-019.
+1. **Fix the aws push gate's `git -C` gap.** Done 2026-10-12 in osrs-tracker/osrs-tracker-aws#79. HOOK-036.
+2. **Add `"if": "Bash(git *)"` to the web and api push gate** (low impact, trivial effort). Keeps the script's `-C` parsing but skips the spawn on the roughly 13,000 non-git Bash calls a week (TOK-042's count). Would need an issue per repo; aws now has the same script, so all three. HOOK-015, HOOK-019.
 3. **Keep the push gates fail-open; don't add `onFailure: "block"`** (decision). A broken script would then block every Bash call, and CI lints anyway. HOOK-013.
 4. **No `prompt` or `agent` hooks on tool events** (decision). Use `/goal` for ad-hoc "keep going until X", and the reviewer agents for judgement. HOOK-010, HOOK-031, REPO-025.
 5. **When scripting `claude -p` over a repo we didn't write, pass `--settings '{"disableAllHooks": true}'` or `--bare`** (high impact if it ever happens, trivial effort). Our repos' hooks are ours, so this only matters for third-party clones. HOOK-025.
