@@ -25,6 +25,7 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 | How do I debug an incident without flooding context? | Filtered MCP reads (Flux `since`/`grep`/`limit`, Logs Insights aggregates), done by a read-only subagent that returns a short summary. | INFRA-018, INFRA-019 |
 | Do credentials end up in transcripts? | Yes, anything a tool prints is written to the plaintext `.jsonl` and sent to the model. Settings `env` reaches every subprocess. | INFRA-021, INFRA-020 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
+| What should we change in our setup first? | Done 2026-10-12: read-only cluster identity, pinned MCP servers, `autoMode.environment`, deny rules, root keys gone, agent policy tightened. Left: short-lived AWS credentials (rec 10) and the Bash-vs-MCP decision (rec 9). | INFRA-024, Recommendations |
 
 ## Index
 
@@ -165,7 +166,8 @@ From weakest to strongest:
 3. **A server's read-only flag** removes write tools from the list, so a request from the model can't bring them back. But the flag is client-side code running with your credentials, and MCP servers run outside the sandbox.
 4. **The credential.** IAM policy and Kubernetes RBAC are enforced by AWS and the API server, whatever tool or command made the call. The `view` ClusterRole "does not allow viewing Secrets, since reading the contents of Secrets enables access to ServiceAccount credentials".
 
-A read-only flag is only as strong as the agent's other paths. If Bash can run `kubectl` or `aws` with the same kubeconfig or profile, the agent has the credential's full rights, whatever the server is set to. So the identity the agent can reach should carry only the rights you want it to have. Server flags and rules are defense in depth on top.
+
+Tested 2026-10-12, v2.1.296, terminal (WSL): with `~/.kube/config` as a `view`-bound ServiceAccount token, `kubectl auth can-i` gave `no` for `delete pods -A`, `get secrets -A` and `create pods/exec`, and `yes` for `list pods -A`. Both MCP servers still connected.
 
 ## [INFRA-007] Output size: MCP filters versus CLI output
 - Type: recommendation
@@ -540,15 +542,14 @@ Mapping INFRA-022 to controls, most-recurring first:
 - Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html)
 - Related: INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-010, INFRA-016
 
-Read from local config (structure only) and read-only AWS calls through the MCP server. Names are left out on purpose.
+Read from local config (structure only) and read-only AWS and cluster calls. Names are left out on purpose. Updated after #44, #45 and #46 (2026-10-12); CHANGELOG.md has the earlier state.
 
 **AWS:**
-Updated after FreekMencke/claude-kb#44 (2026-10-12); CHANGELOG.md has the state before.
-- The site buckets keep versioning off: they hold a site rebuilt from git on each deploy, and it is moving to the cluster.
 
-**Kubernetes:** both MCP servers and Bash `kubectl` use the default kubeconfig, which holds the **cluster-admin** client certificate. The kubernetes server is read-only with Secrets denied; Flux runs `--read-only` with masking on. Both flags are client-side (INFRA-006). The kubernetes server and the AWS proxy run as `@latest`.
+**Kubernetes:**
+- Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
+- Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
 
-**Claude Code:** auto mode by default, no `autoMode.environment`, no deny rules, no sandbox. Allow rules cover `kubectl get`, `logs` and `diff` in one namespace.
 
 ## Recommendations for our setup
 
