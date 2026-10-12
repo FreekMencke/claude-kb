@@ -8,11 +8,7 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 
 ## How the repo works
 
-- `CLAUDE.md` holds the shared research instructions and the entry format. Every session and subagent in this repo loads it, so topic prompts only contain the topic.
-- `INDEX.md` is the entry point: 25 combined Quick answers, every entry by topic, then Conflicts, Overlaps kept on purpose, Merges and a Changelog. It's generated from each file's index table, so edit a file's index row, not INDEX.md, when a title changes, and rebuild or patch INDEX.md to match.
-- `kb-<topic>.md` files: one per research session. Each has a Quick answers table, an index, entries `## [PREFIX-NNN]`, then "Recommendations for our setup" and "Open questions".
-- Prefixes: ORCH (orchestration), TOK (token usage), SKILL (skills), REPO (repo agents).
-- `scripts/check_kb.py` checks every `kb-*.md` against the format: required fields, duplicate IDs, broken `Related` links, entry length, confidence values, and that INDEX.md lists every entry and names no unknown ID. Run it with `python3 scripts/check_kb.py` after any step that changes entries.
+See [README.md](README.md) for the layout, how to query the knowledge base and how to change it. Prefixes: ORCH (orchestration), TOK (token usage), SKILL (skills), REPO (repo agents). INDEX.md is generated from each file's index table, so edit a file's index row, not INDEX.md, when a title changes, and rebuild or patch INDEX.md to match.
 
 ## Status (2026-10-12)
 
