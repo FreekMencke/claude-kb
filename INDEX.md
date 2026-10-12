@@ -13,6 +13,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-infra-agents.md` | INFRA | Agents with cloud and cluster access | 24 (0 merged into other entries) |
 | `kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 38 (0 merged into other entries) |
 | `kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
+| `kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -62,6 +63,10 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | Is plan mode read-only, and what do checkpoints not undo? | Plan mode blocks edits until you approve, but shell commands still run (auto-mode classifier). Checkpoints miss Bash side effects, most subagent edits and other sessions' edits; git is the permanent net. | FLOW-006, FLOW-017, FLOW-018 |
 | My session is stuck in a loop. What now? | After two failed corrections: rewind to before the wrong turn, or `/clear` with a better prompt or a handoff. Raise effort if Claude skipped steps; switch model if it tried and still failed. | FLOW-020, FLOW-021, FLOW-022 |
 | What's the cheapest way to wait on CI or a deploy? | A background command that exits when the state changes (one wake-up). Monitor for event streams. `/loop` and cron spend a full-context turn per wake-up. | FLOW-024, FLOW-025, FLOW-028 |
+| What loads at launch, what loads later, and what survives `/compact`? | Ancestor CLAUDE.md files, unscoped rules, imports and the first 200 lines/25KB of MEMORY.md at launch; subdirectory CLAUDE.md and `paths:` rules when a matching file is read, written or edited. After compaction only project-root CLAUDE.md, unscoped rules and auto memory are re-read. | MEM-003, MEM-004 |
+| Auto memory or CLAUDE.md: where does a lesson go? | Auto memory is machine-local, per repo, and unseen by cloud sessions, routines and the GitHub action. Keep it for personal preferences and in-flight state; put anything teammates, reviewers or other repos need in CLAUDE.md, a skill or `docs/`. | MEM-017, MEM-026 |
+| How do I keep CLAUDE.md and memory current? | Add a line when Claude repeats a mistake; `/doctor` (trim) and `/doctor prompt-audit` (stale paths, conflicts); `/revise-claude-md` after a session; delete finished-work memories. Nothing expires memory for you. | MEM-018, MEM-021, MEM-022, MEM-023 |
+| Is a memory server (mem0, claude-mem) better than plain files? | No evidence for coding work; our claude-mem trial was net-negative and removed. Stay on CLAUDE.md plus auto memory. | MEM-033 |
 
 ## Index
 
@@ -573,6 +578,46 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | FLOW-032 | `/btw`, `/model` and `/effort` while Claude works | fact | steering, btw, model, effort |
 | FLOW-033 | Our setup against these findings | comparison | our-setup, global-claude-md, skills |
 
+### Memory and instruction files (`kb-memory.md`, MEM)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| MEM-001 | Every place instructions and memory live | comparison | locations, claude-md, rules, auto-memory |
+| MEM-002 | Load order: concatenated, broad to specific, no overrides | fact | load-order, precedence, conflicts |
+| MEM-003 | What loads at launch, on demand, and after compaction | fact | lazy-loading, compaction, nested |
+| MEM-004 | `.claude/rules/`: unscoped, `paths:`-scoped, user-level, symlinked | fact | rules, paths, globs |
+| MEM-005 | `@` imports: paths, depth and the external-import dialog | fact | imports, approval |
+| MEM-006 | `CLAUDE.local.md` and personal instructions across worktrees | pattern | claude-local, worktrees, personal |
+| MEM-007 | Managed policy CLAUDE.md and `claudeMd` | fact | managed, org |
+| MEM-008 | AGENTS.md: when Claude Code reads it | fact | agents-md, interop |
+| MEM-009 | Switches: settings and env vars that change what loads | fact | settings, env-vars, bare |
+| MEM-010 | How instructions and memory are delivered to the model | fact | system-prompt, delivery, user-message |
+| MEM-011 | What subagents and forks get | fact | subagents, fork, explore, omitclaudemd |
+| MEM-012 | Version history of memory and instruction loading | fact | changelog, versions |
+| MEM-013 | Auto memory: what gets saved and in what format | fact | auto-memory, types, frontmatter |
+| MEM-014 | Auto memory recall: index at start, topic files on demand | fact | auto-memory, recall, limits |
+| MEM-015 | `/memory` and auditing what was saved | tool | memory-command, audit |
+| MEM-016 | Turning auto memory off or moving it | fact | auto-memory, settings, disable |
+| MEM-017 | What auto memory should and shouldn't hold | recommendation | auto-memory, placement |
+| MEM-018 | Stale memories | anti-pattern | staleness, maintenance |
+| MEM-019 | Memory as a prompt-injection vector | fact | security, poisoning |
+| MEM-020 | `/init` and `CLAUDE_CODE_NEW_INIT` | tool | init, bootstrap |
+| MEM-021 | `/doctor` trim and prompt audit for instruction files | tool | doctor, audit |
+| MEM-022 | The `claude-md-management` plugin | tool | plugin, audit, revise |
+| MEM-023 | When to update CLAUDE.md: Anthropic's triggers | recommendation | maintenance, triggers |
+| MEM-024 | Community practice for keeping instruction files current | comparison | community, maintenance, drift |
+| MEM-025 | Memory ideas from other coding tools | comparison | cline, cursor, copilot, windsurf, codex |
+| MEM-026 | What each surface loads | comparison | surfaces, cloud, desktop, wsl, routines, github-actions |
+| MEM-027 | Worktrees and instruction files | fact | worktrees, claude-md, auto-memory |
+| MEM-028 | Agent SDK and `claude -p`: setting sources and memory | fact | agent-sdk, headless, setting-sources |
+| MEM-029 | Cloud Projects memory is a separate store | fact | projects, cloud, memory |
+| MEM-030 | The API memory tool | tool | api, memory-tool |
+| MEM-031 | API memory tool, Managed Agents memory stores and auto memory compared | comparison | api, managed-agents, auto-memory |
+| MEM-032 | Community memory servers and plugins | comparison | community, mcp, mem0, claude-mem, basic-memory |
+| MEM-033 | Do memory servers beat plain files? | recommendation | community, evidence, cost |
+| MEM-034 | Our instruction files and memory, measured | fact | our-setup, measurement |
+| MEM-035 | Our auto memory: misplaced and stale entries | comparison | our-setup, auto-memory, staleness |
+
 ## Conflicts
 
 Places where entries, or an entry and another file's recommendations or open questions, disagree. Checked 2026-10-12 against the sources the entries cite; the pages were not re-fetched.
@@ -590,6 +635,9 @@ Places where entries, or an entry and another file's recommendations or open que
 | Numeric length caps on subagent reports | Effective context engineering: subagents return "often 1,000-2,000 tokens"; Claude Code's delegation prompt: "report in under 200 words". The `prompt-audit` rubric flags "hard word caps" because they "starve reasoning". | Read together: cap the final report, not the work. Inference, recorded in PROMPT-013. |
 | Is `TaskOutput` deprecated or removed? (FLOW-025) | Tools reference: "Deprecated in favor of `Read` on the task's output file path." CHANGELOG 2.1.277: "Removed the deprecated TaskOutput tool." | The CHANGELOG, which is newer than the page's wording. Either way, Claude reads background output with `Read`. |
 | Version of the `/usage` Loops row (FLOW-028) | Costs page: "Requires Claude Code v2.1.242 or later." CHANGELOG: "Added a Loops breakdown to `/usage`" under 2.1.243. | Unresolved; one release apart. Quote 2.1.243 as the safe minimum. |
+| Where auto memory is delivered (MEM-010) | Agent SDK page: auto memory is "Loaded into the system prompt at session start". Cisco (2026-04-01): Anthropic "pushed a change to Claude Code v2.1.50 that removes this capability from the system prompt". Our v2.1.296 transcript: MEMORY.md arrives in the same user-role `instructions` attachment as CLAUDE.md. | The test and Cisco; the SDK wording looks older. Unresolved until the SDK page changes or a request capture shows otherwise. |
+| Do non-fork subagents get the main auto memory? (MEM-011, TOK-004) | Memory and sub-agents pages, and TOK-004: no, only forks. One v2.1.296 `claude -p` probe: a `general-purpose` subagent had an `AutoMem` attachment and answered from it; Explore did not. | Unresolved; one probe against two pages. Re-test interactively (`kb-memory.md` open question 1). |
+| What auto memory saves (MEM-013) | Memory page: "Claude skips anything it can derive from the codebase, such as architecture, file paths, or debugging fixes." `.claude` directory page: "Claude saves notes as it works: build commands, debugging insights, architecture notes." | The memory page, which matches the v2.1.296 prompt's "What NOT to save" list. |
 
 ## Overlaps kept on purpose
 
@@ -636,6 +684,13 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Notifications: SESS-034 and HOOK-030 (watching sessions, notification hooks), FLOW-029 (as a way to wait on CI).
 - Browser checks: REPO-021 (browser-checker agent), SESS-013 (one browser per workspace), FLOW-014 (Chrome vs Playwright vs computer use).
 - Model and effort: ORCH-028 and ORCH-029 (levels, escalation), FLOW-009 (for planning), FLOW-022 (to get unstuck).
+- CLAUDE.md loading and size: TOK-003 (loading rules, size target), MEM-001 to MEM-005 (every location, order, lazy loading, compaction), REPO-045 (size and AGENTS.md interop), MEM-008 (AGENTS.md loading).
+- Auto memory: TOK-004 (load limits), MEM-013 to MEM-018 (saving, recall, `/memory`, switches, staleness), REPO-011 (agent `memory:`).
+- What a subagent starts with: ORCH-007 (everything), MEM-011 (instructions and memory only, with a contradicting probe).
+- Worktrees and memory: SESS-004 and SESS-009 (shared state), MEM-006 and MEM-027 (CLAUDE.local.md, instruction files per worktree).
+- API memory tool: TOK-038 (context management overview), MEM-030 and MEM-031 (the tool, compared with auto memory and Managed Agents stores).
+- Instruction file audits: PROMPT-017 (`/doctor prompt-audit` for wording), MEM-021 and MEM-022 (trim, stale paths, `claude-md-management`).
+- Our global CLAUDE.md and repos: SESS-035, FLOW-033 and HOOK-036 (other rules), MEM-034 and MEM-035 (instruction files and auto memory).
 
 ## Merges
 
@@ -660,6 +715,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-12 | MEM-001 to MEM-035 | New topic file `kb-memory.md` (FreekMencke/claude-kb#24): every instruction and memory location, load order, lazy loading and compaction, rules and imports, AGENTS.md, what subagents and each surface see, auto memory (saving, recall, switches, staleness, security), `/init`, `/doctor`, `claude-md-management`, the API memory tool and Managed Agents stores, community memory servers, and a review of our files and memory. 4 Quick answers, 3 conflicts and 7 overlap clusters added. |
 | 2026-10-12 | INFRA-001 to INFRA-024 | New topic file `kb-infra-agents.md` (FreekMencke/claude-kb#21): cloud identities and isolation, AWS/Kubernetes/Flux MCP servers versus CLIs, permission rules, auto mode and the sandbox for infrastructure commands, plan and apply, GitOps, audit trails, incident debugging, credential leaks, published incidents, and a review of our AWS, cluster and MCP access. 3 Quick answers, 1 conflict and 6 overlap clusters added. |
 | 2026-10-12 | SESS-001 to SESS-035 | New topic file `kb-sessions.md` (FreekMencke/claude-kb#20): worktrees and shared git state, shared `~/.claude` state, cross-session messaging, keeping branches current on GitHub, hand-offs, and usage limits. 3 Quick answers and 5 overlap clusters added. |
 | 2026-10-12 | all | INDEX.md created (step 3: merge and index). 5 full and 5 partial merges, 5 conflicts recorded, 10 cross-links added; see Merges and Conflicts. `kb-token-usage.md` R4 corrected per ORCH-005. |
