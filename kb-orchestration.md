@@ -1067,7 +1067,7 @@ So spending N× tokens on parallel attempts pays only when you have an executabl
 
 ## Recommendations for our setup
 
-Ranked by impact against effort. The first group reviews `parallel-code-orchestrator` (the user-level synced skill, `SKILL.md`) against the findings above.
+Ranked by impact against effort. The first group reviews `parallel-code-orchestrator` (a user-level skill; since 2026-10-12 its source is `skills/parallel-code-orchestrator/SKILL.md` in FreekMencke/claude-skills, see SKILL-050) against the findings above.
 
 ### Improvements to `parallel-code-orchestrator`
 

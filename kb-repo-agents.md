@@ -1474,7 +1474,7 @@ Tracked in roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-t
    - The agent bodies then differ only in the repo name, and `diff` shows drift (REPO-042, REPO-043).
    - Don't package them as a plugin: plugin agents drop `hooks`, and cloud sessions don't install repo-enabled plugins (REPO-041).
 5. **Tell callers not to pass `model`** to repo agents *(low effort)*. This belongs in `parallel-code-orchestrator`'s reviewer step. Today's logs show none do, so this only keeps it that way (ORCH-003, REPO-026).
-6. **Optional: weekly docs-drift run** *(low impact, 15 min)*. Use a desktop scheduled task or a cloud routine whose prompt is the `refresh-md-files` skill on CLAUDE.md, the skill and `docs/`. It opens a PR only for drift it can show (REPO-018, REPO-030). Skip it if the docs audits stay rare.
+6. **Optional: weekly docs-drift run** *(low impact, 15 min)*. Use a desktop scheduled task (or a cloud routine, which only sees claude.ai account skills, so keep `refresh-md-files` uploaded there) whose prompt is the `refresh-md-files` skill on CLAUDE.md, the skill and `docs/`. It opens a PR only for drift it can show (REPO-018, REPO-030). Skip it if the docs audits stay rare.
 
 **Not recommended now:**
 - A Claude review job in CI or managed Code Review. Managed review needs Team or Enterprise, and local review already covers every PR. If ever added, follow REPO-038.
