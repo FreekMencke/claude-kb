@@ -8,19 +8,19 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 |---|---|---|
 | What costs the most in a Claude Code session? | Re-reading the whole context on every turn. For us, cache reads are 52% of list-price cost, and turns over 200k context use 54% of input tokens. | TOK-008, TOK-009 |
 | How big is the fixed overhead before I type anything? | About 25–27k tokens of system prompt + tool definitions, about 37–42k on our first turn including CLAUDE.md, skills and the prompt. A subagent starts at about 28.5k. | TOK-002, TOK-006 |
-| How do I see what fills my context? | `/context` (or `/context all`). For spend, `/usage` (`/cost` and `/stats` are aliases). | TOK-010 |
+| How do I see what fills my context, and what I spent? | `/context` (or `/context all`); `/usage` for spend (`/cost` and `/stats` are aliases). For history, `ccusage`; live, the status line JSON, `claude-hud` or `ccstatusline`. | TOK-010, TOK-080, TOK-082 |
 | How do plan limits work? | A 5-hour session window plus a weekly limit, shared by claude.ai, Claude Code and Desktop. Max is 5x or 20x Pro per session. | TOK-014 |
 | Do many MCP servers still bloat context? | Much less: Claude Code defers MCP tool schemas by default, so only names and server instructions load. CLIs (`gh`, `aws`) are still cheaper. | TOK-020, TOK-022 |
-| When should I `/clear` vs `/compact`? | `/clear` between unrelated tasks, or after two failed corrections. `/compact <focus>` at a natural break inside one long task. | TOK-030, TOK-031 |
-| When does auto-compact fire? | At about 967K tokens on native-1M models, and at 200K on 4.6 models without `[1m]`. Lower it with `/autocompact` or `autoCompactWindow`. | TOK-007, TOK-032 |
+| When should I `/clear` vs `/compact`, and when does auto-compact fire? | `/clear` between unrelated tasks or after two failed corrections; `/compact <focus>` at a natural break. Auto-compact fires at about 967K on native-1M models (200K on 4.6 without `[1m]`); lower it with `autoCompactWindow`. | TOK-030, TOK-031, TOK-007, TOK-032 |
 | Which model should subagents use? | Built-in Explore inherits the main model (Opus, if that's what you run). Set `model:` per agent or `CLAUDE_CODE_SUBAGENT_MODEL` for cheaper defaults. | TOK-036 |
-| How long does the prompt cache live in Claude Code? | 1 hour for the main conversation on a subscription, 5 minutes for subagents, on an API key, or when drawing usage credits. | TOK-052 |
-| What breaks the cache mid-session? | Switching model, fast mode, effort on older models, upgrading Claude Code, and MCP changes when tool search is off. Editing CLAUDE.md does not break it (but doesn't apply until `/clear`). | TOK-053 |
+| How long does the prompt cache live, and what breaks it? | 1 hour for the main conversation on a subscription; 5 minutes for subagents, on an API key, or on usage credits. Switching model, fast mode, effort on older models, upgrading Claude Code, and MCP changes with tool search off break it; editing CLAUDE.md doesn't. | TOK-052, TOK-053 |
 | How much do batches save? | 50% on input and output, and it stacks with caching. Most finish within 1 hour, max 24 hours. | TOK-054 |
 | How big can a skill description be, and what does it cost? | Every skill's name + description is in context on every turn, within a budget of 1% of the window. Each entry is capped at 1,536 characters. Keep it short and front-load triggers. | TOK-005, TOK-061 |
 | How long should CLAUDE.md be? | Under 200 lines per file. `@imports` don't reduce cost. Move procedures to skills or `paths:`-scoped rules. | TOK-003, TOK-065 |
 | What do images and PDFs cost? | An image costs ⌈w/28⌉×⌈h/28⌉ tokens (max 1,568 standard, 4,784 high-res). A PDF costs 1,500–3,000 tokens per page plus image cost. | TOK-043 |
-| Which community tracker should I use? | `ccusage` for history (reads the JSONL). For live use, the built-in status line JSON is enough, or use `claude-hud` or `ccstatusline`. | TOK-080, TOK-082 |
+| Does WebFetch give Claude the whole page? | No: 100,000 characters per call (an `offset` reads on), usually answered by a small model that may cut quotes. Preapproved docs pages under that come back raw. For exact wording, `curl` the `.md` page and grep. | TOK-087, TOK-088, TOK-089 |
+| WebSearch `standard` or `extended`? | `standard` first. `extended` is "several times the cost and latency" (tool schema only); in our one test it was broader, not more authoritative. 200 searches per session, shared with subagents. | TOK-093, TOK-092 |
+| context7, a docs MCP server or web search for docs? | The source's own channel first: the `.md` page plus grep, or the docs' MCP server (both Claude docs sites have one). context7 costs about 2k tokens a lookup but can be weeks stale. | TOK-095, TOK-096, TOK-098 |
 
 ## Index
 
@@ -88,6 +88,22 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 | TOK-084 | Code-index MCP servers (Serena, claude-context, code-review-graph) | tool | community, search |
 | TOK-085 | Ideas from other coding agents | comparison | aider, cline, codex |
 | TOK-086 | The April 2026 usage-drain incident | fact | cache, incident |
+| TOK-087 | WebFetch reads 100,000 characters and answers through a second model | fact | webfetch, truncation, research |
+| TOK-088 | Preapproved docs pages come back raw, and big results go to a file | fact | webfetch, docs, research |
+| TOK-089 | Getting full text: `curl` the `.md` page and grep | pattern | webfetch, curl, research |
+| TOK-090 | `llms.txt` is an index; `llms-full.txt` is too big to read | fact | llms-txt, docs, research |
+| TOK-091 | WebFetch settings: cache, deadline, permissions, turning it off | fact | webfetch, settings |
+| TOK-092 | WebSearch returns titles, URLs and a synthesized answer, within a session budget | fact | websearch, limits, research |
+| TOK-093 | WebSearch `standard` against `extended` | comparison | websearch, research |
+| TOK-094 | API web search and web fetch tools: prices and token effects | fact | api, websearch, webfetch, pricing |
+| TOK-095 | context7: cost per lookup, freshness and limits | tool | mcp, docs, context7 |
+| TOK-096 | Anthropic's docs MCP servers | tool | mcp, docs |
+| TOK-097 | Other docs and search MCP servers | tool | mcp, docs, search, community |
+| TOK-098 | Picking a research tool by question | recommendation | research, cost |
+| TOK-099 | How many research subagents, on which model | recommendation | research, subagents |
+| TOK-100 | What a research subagent's brief adds | pattern | research, subagents, briefs |
+| TOK-101 | Getting sources back from research subagents | pattern | research, subagents, citations |
+| TOK-102 | Anti-patterns: research tools | anti-pattern | consolidated, research |
 
 ---
 
@@ -1384,6 +1400,318 @@ Lessons:
 
 Confidence note: the timeline is from Anthropic's postmortem; the drain reports are community issue reports.
 
+---
+
+## Research tools: WebSearch, WebFetch, docs MCP servers and research subagents
+
+TOK-087 onwards (FreekMencke/claude-kb#26): what the tools this knowledge base is built with cost, where they cut content, and how to brief the subagents that use them. Tests ran on 2026-10-12 in a Claude Code v2.1.296 subagent session on WSL; each entry names its test. Deep-research workflows are in ORCH-011 and code-index MCP servers in TOK-084.
+
+## [TOK-087] WebFetch reads 100,000 characters and answers through a second model
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.1.290), [Inside Claude Code's web tools (mikhail.io)](https://mikhail.io/2025/10/claude-code-web-tools/), [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127)
+- Related: TOK-088, TOK-089, TOK-102
+
+WebFetch converts the page to Markdown, then "for most fetches, it then runs the prompt against the content in a separate model call, and Claude receives the result of that call rather than the raw page". It is "lossy by design": "a result that says a page doesn't mention something may only mean the prompt didn't ask about it."
+
+- **Window:** "WebFetch reads up to 100,000 characters of a page's content per call." Since v2.1.290 the result says how much went unread and takes an `offset`; before, the rest was "silently" dropped.
+- **The extraction model** sees only the cut text, ending in "[Content truncated due to length...]"; the offset note is added after its answer.
+- **Which model, and quote limits (single-source):** the tool says "a small fast model". A 2025-10 runtime inspection (mikhail.io) found a Haiku pass told to "Enforce a strict 125-character maximum for quotes from any source document" on non-preapproved domains, so never cite a WebFetch "quote" as exact wording. [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127) (open, no maintainer reply) reports the truncation invisible to the extraction step.
+
+Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): WebFetch of the raw `CHANGELOG.md` (986,110 characters by `curl`) answered from characters 0–100,000 only (2.1.296 to 2.1.287, 714 of 8,789 lines), missed a variable further down, and ended with "the final 886110 were not read — to read on, call WebFetch again with the same url and offset: 100000".
+
+## [TOK-088] Preapproved docs pages come back raw, and big results go to a file
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.0.60), [MCP output limits](https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings)
+- Related: TOK-087, TOK-089, TOK-023
+
+For a "built-in set of preapproved documentation domains" WebFetch fetches without a permission prompt, and since v2.0.60 it can "skip summarization for pre-approved websites" (CHANGELOG). WebFetch also sends an `Accept` header "that prefers Markdown over HTML", and `code.claude.com` answers it with `text/markdown`. The docs don't list the preapproved domains or say when summarization is skipped.
+
+Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session):
+- `code.claude.com/docs/en/settings` (57,985 bytes as `.md`): WebFetch ignored the prompt and returned the page byte-for-byte identical to `curl …/settings.md`. `tools-reference` (81,007 bytes) did the same.
+- Both results were over Claude Code's inline limit, so the conversation got "Output too large (56.6KB). Full output saved to: …" with a 2KB preview; the rest costs tokens only if Claude reads the file. MCP results over 50,000 characters are documented to work the same way.
+- `env-vars` (169,065 bytes, over the 100,000-character window) was summarized: it answered the prompt from the first 100,000 characters.
+
+So on Claude docs, WebFetch under 100,000 characters already gives full text, and the size check is what decides whether you get the page or a summary.
+
+## [TOK-089] Getting full text: `curl` the `.md` page and grep
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
+- Related: TOK-087, TOK-088, TOK-090, TOK-040, TOK-042
+
+The docs' own fix for a lossy fetch: "use `curl` via Bash for the unprocessed page." For an exact limit, default, price or version (CLAUDE.md's research rule), save the page and grep it instead of reading it whole:
+
+```bash
+curl -sL https://code.claude.com/docs/en/env-vars.md -o env-vars.md
+grep -n 'WEB_SEARCH\|WEBFETCH' env-vars.md
+```
+
+- **Markdown versions:** append `.md` to a `code.claude.com/docs/en/…` or `platform.claude.com/docs/en/…` URL, or send `Accept: text/markdown`. Every docs page starts with a pointer to `llms.txt`.
+- **Cost:** only the grep hits enter context, so a 169 KB page costs a few hundred tokens instead of about 42k (at about 4 characters per token, an estimate). Reading the saved file with `Read` and `offset`/`limit` is the fallback when context matters (TOK-040).
+- **GitHub:** `raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>` or `gh api` for READMEs and CHANGELOGs; WebFetch reads only the first 100,000 characters of the 986 KB claude-code CHANGELOG (TOK-087).
+- **Limits:** curl runs under Bash permissions and the sandbox network allowlist, which don't inherit WebFetch's preapproved domains (tools reference). Pages that need JavaScript to render return a shell; use a browser tool for those.
+
+## [TOK-090] `llms.txt` is an index; `llms-full.txt` is too big to read
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
+- Related: TOK-089, TOK-096
+
+Both Anthropic docs sites publish the llms.txt pair, and each docs page's response carries `Link` headers to them (`rel="llms-txt"`, `rel="llms-full-txt"`). Measured with `curl -sL <url> | wc -c` on 2026-10-12:
+
+| File | Size | Use |
+|---|---|---|
+| `code.claude.com/docs/llms.txt` | 61,893 bytes, 268 page links | Find the right page; fits in one WebFetch |
+| `platform.claude.com/llms.txt` | 82,905 bytes | Same, for API docs |
+| `code.claude.com/docs/llms-full.txt` | 9,458,535 bytes | grep only |
+| `platform.claude.com/llms-full.txt` | 43,216,345 bytes | grep only |
+
+At about 4 characters per token, the Claude Code `llms-full.txt` is roughly 2.4M tokens: bigger than any context window, and 95 WebFetch windows. Download it once and grep it, or better, use `llms.txt` to pick the page and fetch that page's `.md`.
+
+## [TOK-091] WebFetch settings: cache, deadline, permissions, turning it off
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Environment variables](https://code.claude.com/docs/en/env-vars), [Permissions](https://code.claude.com/docs/en/permissions), [Data usage: WebFetch domain safety check](https://code.claude.com/docs/en/data-usage)
+- Related: TOK-087, TOK-088, REPO-033
+
+| Setting | Default | Since |
+|---|---|---|
+| `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` | `900000` (15 minutes) per URL | v2.1.233 |
+| `CLAUDE_CODE_WEBFETCH_DEADLINE_MS` | `300000` (five minutes) per download; `0` removes it | v2.1.268 |
+| `CLAUDE_CODE_DISABLE_WEB_FETCH=1` | WebFetch off; "The WebSearch tool stays available" | v2.1.285 |
+| `skipWebFetchPreflight: true` | Skips the hostname safety check | — |
+
+- **Cache:** a repeat fetch of the same URL within 15 minutes returns quickly, so re-asking with a sharper prompt is cheap in time, but each answer still enters context.
+- **Redirects** to another host come back as a text result; Claude fetches the target with a second call.
+- **Safety check:** before a fetch, the hostname (not the URL) goes to `api.anthropic.com`; a passing host is cached for five minutes.
+- **Permissions:** Manual and `acceptEdits` modes prompt per fetch except for allowed domains and the preapproved docs set. `WebFetch(domain:*.example.com)` covers subdomains only, not `example.com`.
+- **Surfaces:** Team and Enterprise sessions withhold WebFetch until the organization policy loads (`/status` shows why).
+
+## [TOK-092] WebSearch returns titles, URLs and a synthesized answer, within a session budget
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Tools reference: WebSearch tool behavior](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior), [Environment variables](https://code.claude.com/docs/en/env-vars), [Securely deploying AI agents](https://code.claude.com/docs/en/agent-sdk/secure-deployment), [LLM gateway](https://code.claude.com/docs/en/llm-gateway), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.1.212, 2.1.290)
+- Related: TOK-093, TOK-094, TOK-099
+
+WebSearch "runs a query against Anthropic's web search backend and returns result titles and URLs. It doesn't fetch the result pages", so reading a source costs a second call (WebFetch or curl). It "may issue up to eight backend searches per call". `allowed_domains` or `blocked_domains` scope results. The backend isn't configurable. Not on Amazon Bedrock or gateway sessions.
+
+**Budget:**
+- An interactive terminal session has a limit of 200 calls (v2.1.212+). "Searches from the main conversation and from subagents, such as a parallel research fan-out, count against the same limit."
+- It refills at about 100 calls per hour in an interactive session (v2.1.290+); in a non-interactive (`-p`) session the refill default is `0`.
+- Raise the cap with `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION` (it can't be turned off); `/clear` resets the count.
+- At the cap, searches do nothing and Claude is told to continue with what it has.
+
+"Search results are summarized rather than passing raw content directly into the context" (secure-deployment page).
+
+Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): each result held a link list plus a few hundred words of answer written by the search side, with caveats such as "I couldn't retrieve that page". Treat that prose as a lead: the links are the evidence.
+
+## [TOK-093] WebSearch `standard` against `extended`
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: unverified
+- Last verified: 2026-10-12
+- Sources: WebSearch tool schema in Claude Code v2.1.296 (no docs page); [Tools reference: WebSearch tool behavior](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior)
+- Related: TOK-092, TOK-094, TOK-099
+
+WebSearch takes a required `mode`. The tool's own description, the only source: `standard` is "the normal web search: quick and cheap; right for straightforward lookups (reference facts, official pages, documentation, well-known people, places and topics) and simple follow-up lookups"; `extended` is "a thorough, fresh search at several times the cost and latency." Neither the tools reference, the env-vars page nor the CHANGELOG mentions the modes (grepped 2026-10-12), so "several times" is unquantified and it isn't documented whether an extended call counts as one call against the session budget.
+
+Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session), one call each, query "context7 MCP server free tier rate limits API key 2026":
+- `standard`: 9 links, 6 of them duplicates of two articles; said it couldn't find the numbers and pointed to the official plans page.
+- `extended`: 10 distinct, more on-topic links, and more figures, which disagreed with each other (100 requests a day, 1,000 calls a month, "unlimited") and all came from third-party pages.
+
+Neither reached the official page. Extended bought breadth, not authority.
+
+**When extended pays off:** when a standard result is thin or stale (CLAUDE.md's rule), for recent events, or for a survey of community practice. For a fact with an official home, go to the source instead: `llms.txt`, the `.md` page, or a docs MCP server (TOK-089, TOK-096).
+
+## [TOK-094] API web search and web fetch tools: prices and token effects
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool), [Web fetch tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
+- Related: TOK-092, TOK-017, TOK-024, TOK-050
+
+**Web search** (`web_search_20250305`, `_20260209` with dynamic filtering, `_20260318` with response inclusion):
+- "$10 per 1,000 searches, plus standard token costs for search-generated content."
+- "Web search results retrieved throughout a conversation are counted as input tokens, in search iterations executed during a single turn and in subsequent conversation turns": results are re-read every later turn, like any tool output (TOK-008).
+- "Each web search counts as one use, regardless of the number of results returned"; failed searches aren't billed. Citation fields "do not count toward input or output token usage".
+- `max_uses` caps searches per request: "Simple factual queries typically use 1–3 searches; comparative or multientity research can use 10 or more."
+
+**Web fetch** (`web_fetch_20250910` up to `_20260318`): "no additional cost. You only pay standard token costs for the fetched content". The docs' estimates: "Average web page (10 kB): ~2,500 tokens", "Large documentation page (100 kB): ~25,000 tokens", "Research paper PDF (500 kB): ~125,000 tokens". `max_content_tokens` truncates text (approximately; PDFs excluded); there's no default `max_uses`.
+
+**Dynamic filtering** (`_20260209` and later, Claude 4.6+): Claude writes code that filters results "before they reach the context window"; code execution with these tools adds no charge beyond tokens. This is the API's answer to WebFetch's extraction model: filter before the context pays for it.
+
+Neither tool is on Amazon Bedrock; web fetch isn't on Google Cloud.
+
+How Claude Code's WebSearch is metered on a subscription isn't documented (Open questions).
+
+## [TOK-095] context7: cost per lookup, freshness and limits
+- Type: tool
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-12
+- Sources: [upstash/context7](https://github.com/upstash/context7), [Context7 plans](https://context7.com/plans), [Library updates](https://context7.com/docs/library-updates), [Data privacy](https://context7.com/docs/security/data-privacy), [Upstash benchmark](https://upstash.com/blog/context7-vs-web-search-benchmark)
+- Related: TOK-096, TOK-097, TOK-098, TOK-020
+
+context7 (about 62.9k stars, `@upstash/context7-mcp@4.3.0` on 2026-10-09) serves indexed snippets of library docs through two tools: `resolve-library-id`, then `query-docs`. Both descriptions say "Do not call this tool more than 3 times per question". The old `tokens` parameter is gone from the current schema.
+
+- **Plan limits:** both calls are API calls. Free: "blocked after reaching the monthly limit of 1,000 API calls", plus "20 bonus API calls each day while you're blocked". Pro: "$10 per seat per month", 2,000 calls per seat, "then $5 per 1,000 additional calls". Without a key: "Low rate limits".
+- **Freshness:** a request triggers a background refresh when docs are older than a popularity threshold ("Top 100: 1 day", Top 1,000: 15 days, Top 5,000: 30 days, others 45 days), and only for libraries "requested recently". The request that triggers it gets the old docs.
+- **Privacy:** only the query and library name are sent; queries are stored anonymously.
+- **Vendor benchmark (Upstash, 2026-05-27):** "reduced cost by 34.56% and total token usage by 36.81%" against WebSearch/WebFetch over 100 queries; no accuracy data.
+
+Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): a lookup on `/websites/code_claude` cost two calls and about 2k tokens (about 2.5k characters to resolve, about 5k returned). Its WebFetch section predated v2.1.290 ("truncated to a fixed character limit", no 100,000 figure or `offset`), and an irrelevant Read-tool block came first. WebFetch of the same page returned the current text (TOK-088).
+
+## [TOK-096] Anthropic's docs MCP servers
+- Type: tool
+- Applies to: Claude Code, Claude API
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [Claude Code docs server card](https://code.claude.com/docs/.well-known/mcp/server-card.json), [MCP in Claude Code](https://code.claude.com/docs/en/mcp)
+- Related: TOK-090, TOK-095, TOK-097, TOK-020
+
+Both Anthropic docs sites expose a search MCP server, so neither needs context7:
+
+- **Claude Platform docs:** `llms.txt` says "Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP transport) to search and read these docs." Its own instructions scope it to the API, SDKs and Managed Agents, "not Claude Code or the Agent SDK". Tools include `search_docs` (`limit` default 10), `get_navigation` and `get_doc`.
+- **Claude Code docs:** not in `llms.txt`, but every page's `Link` header points to `/docs/.well-known/mcp/server-card.json`. That card names a Mintlify server, "Claude Code Docs Docs MCP", with `search_claude_code_docs` and `query_docs_filesystem_claude_code_docs` (shell-like `head`/`cat` on page paths), no authentication.
+
+Tested 2026-10-12 with `curl` JSON-RPC from Claude Code v2.1.296 on WSL (no MCP client): `search_claude_code_docs` for "WebFetch offset 100,000 characters unread" returned 10 page sections, 39,969 characters (roughly 10k tokens), led by the current WebFetch section with the 100,000-character text that context7 lacked (TOK-095). A research subagent's `initialize` on the platform server returned `claude-platform-docs`.
+
+**Cost:** added to Claude Code, each costs only its tool names and server instructions until used, because MCP tools are deferred (TOK-020). A search returns whole sections, so it's fresher but larger than a context7 snippet; results count against MCP output limits: a warning above 10,000 tokens, a 25,000-token default cap, and text over 50,000 characters saved to a file (TOK-023).
+
+## [TOK-097] Other docs and search MCP servers
+- Type: tool
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-12
+- Sources: [MicrosoftDocs/mcp](https://github.com/MicrosoftDocs/mcp), [AWS Knowledge MCP](https://github.com/awslabs/mcp/tree/main/src/aws-knowledge-mcp-server), [idosal/git-mcp](https://github.com/idosal/git-mcp), [DeepWiki MCP](https://cognition.com/blog/deepwiki-mcp-server), [ref-tools-mcp](https://github.com/ref-tools/ref-tools-mcp), [fetch server](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch), [Exa pricing](https://exa.ai/pricing), [Brave Search API](https://brave.com/search/api/), [Perplexity pricing](https://docs.perplexity.ai/guides/pricing)
+- Related: TOK-095, TOK-096, TOK-022, TOK-084
+
+Sources are the vendors' READMEs and pricing pages.
+
+| Server | What it reads | Cost and size controls |
+|---|---|---|
+| Microsoft Learn MCP | First-party Microsoft docs, live | Free, no key; `?maxTokenBudget=2000` caps a result |
+| AWS Knowledge MCP | AWS docs and skills (`search_documentation`, `read_documentation`) | Free, no auth, "subject to rate limits". We already have it as the `aws` server |
+| GitMCP | Any GitHub repo's `llms.txt`, else README, live from the default branch | Free; no token figures |
+| DeepWiki MCP | Generated wikis of indexed repos (`ask_question`) | Free; content can lag the repo |
+| Ref | Docs search; vendor claims "the most relevant 5k tokens" per read against "20k+" for a plain fetch | API key; price not in README |
+| `fetch` reference server | Any URL as Markdown | `max_length` "default: 5000" characters, `start_index` to page |
+| Exa, Brave, Perplexity search APIs | Web search with your own key | Exa "From $4 /1k requests"; Brave "$5 per 1,000 requests"; Perplexity Search "$5.00" per 1K |
+
+For docs with a first-party server (Microsoft, AWS, Anthropic, TOK-096), prefer it over a general index: it is the source. A third-party search API pays off mainly where WebSearch isn't available, such as gateway or Bedrock sessions (TOK-092).
+
+## [TOK-098] Picking a research tool by question
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-12
+- Sources: synthesis of TOK-087 to TOK-097; [Tools reference](https://code.claude.com/docs/en/tools-reference); tests listed in those entries
+- Related: TOK-087, TOK-089, TOK-092, TOK-093, TOK-095, TOK-096
+
+Rough cost per lookup from our 2026-10-12 tests (4 characters per token, one sample each):
+
+| Question | Tool | Tokens into context |
+|---|---|---|
+| Exact limit, default, price or version in Claude docs | `curl` the `.md` + `grep -n` | A few hundred |
+| Which page covers X (Claude docs) | `llms.txt` (62–83 KB) or a docs MCP search | About 10k (MCP search returns whole sections) |
+| How to use library X | context7 | About 2k over two calls; may be weeks stale |
+| Read a page under 100,000 characters | WebFetch (raw on preapproved docs, else a summary) | Summary: hundreds; raw: up to 25k, or a file pointer |
+| Find sources on an open question | WebSearch `standard` | Under 1k per call, plus a fetch per source read |
+| Survey community practice, or a thin standard result | WebSearch `extended` | Somewhat more; "several times the cost and latency" |
+
+Rules that follow:
+- **Quote only from full text.** A WebFetch summary or a search answer is a lead, not a source (TOK-087, TOK-092).
+- **Search finds, fetch reads.** WebSearch never reads the page; budget one fetch or curl per source you cite.
+- **Prefer the source's own channel** (`.md` page, docs MCP, raw GitHub) over an index of it (context7, DeepWiki) when freshness matters: our context7 snapshot of the Claude Code docs predated v2.1.290.
+
+## [TOK-099] How many research subagents, on which model
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-10-12
+- Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [claude-agent-sdk-demos research-agent](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/research-agent), [Tools reference: session search limit](https://code.claude.com/docs/en/tools-reference#session-search-limit), [README: Design decisions](https://github.com/FreekMencke/claude-kb/blob/main/README.md#design-decisions)
+- Related: ORCH-020, ORCH-025, ORCH-030, TOK-092, TOK-100
+
+Anthropic's research system scales by query: "Simple fact-finding requires just 1 agent with 3-10 tool calls, direct comparisons might need 2-4 subagents with 10-15 calls each, and complex research might use more than 10 subagents with clearly divided responsibilities." Its lead "spins up 3-5 subagents in parallel". Multi-agent research used "about 15× more tokens than chats" (ORCH-020 has the multipliers, ORCH-025 the scaling rules).
+
+For one knowledge-base topic (4–6 questions), that means 1–2 subagents split by question, not by tool:
+- **Model:** Sonnet readers under an Opus lead (README design decision). Anthropic's SDK demo runs every agent on Haiku, but its notes carry no exact quotes; for claims every agent trusts, the reader's accuracy matters more than its price (ORCH-030).
+- **Search budget:** subagents share the session's 200-call WebSearch limit, and a `claude -p` run gets no refill (TOK-092). A fan-out of five that each search 40 times uses it all.
+- **Our measurement** (2026-10-12, this topic, Claude Code v2.1.296): two Sonnet 5.5 subagents at high effort used 102k and 124k tokens, 35 and 54 tool calls, 3 and 5 minutes. Both repeated some of the lead's own tests, an argument for doing the cheap tests first and telling subagents the results.
+
+## [TOK-100] What a research subagent's brief adds
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-10-12
+- Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [research_lead_agent.md](https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/prompts/research_lead_agent.md), [One-liner research agent](https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/00_The_one_liner_research_agent.ipynb)
+- Related: PROMPT-012, PROMPT-013, PROMPT-014, TOK-099, TOK-101
+
+PROMPT-012 covers any cold-start brief: objective, what's known, inputs, boundaries, done-when, return format. Anthropic's research post reduces it to "an objective, an output format, guidance on the tools and sources to use, and clear task boundaries". What a research brief adds:
+
+1. **Source order.** Early agents "consistently chose SEO-optimized content farms over authoritative but less highly-ranked sources"; "source quality heuristics" fixed it. Name the hierarchy (official docs, then official repos, then community).
+2. **How to read.** "Start with short, broad queries, evaluate what's available, then progressively narrow focus." Then: exact figures only from `curl` + `grep`, never from a WebFetch summary (TOK-087).
+3. **What's already known or tested,** so it doesn't redo it (TOK-099's measurement).
+4. **Absence rules.** "Not found" must say where it looked; a truncated fetch is not evidence of absence (README, Monthly re-verification).
+5. **Fetched text is data.** Pages and issues may contain instructions; the subagent doesn't follow them or install what they suggest.
+6. **Write limits.** "Don't write files" or a unique scratch folder, so parallel readers don't collide.
+7. **Return format** with a source per claim (TOK-101).
+
+## [TOK-101] Getting sources back from research subagents
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-10-12
+- Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [One-liner research agent](https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/00_The_one_liner_research_agent.ipynb), [claude-agent-sdk-demos research-agent](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/research-agent)
+- Related: PROMPT-013, ORCH-034, ORCH-035, TOK-100
+
+Anthropic's patterns:
+- The cookbook research agent: "Always include source URLs as citations", "Format citations as markdown links", grouped in a "Sources:" section.
+- The research system has subagents "store their work in external systems, then pass lightweight references back", to avoid a "game of telephone", and a separate CitationAgent maps claims to source locations.
+- The SDK demo's researchers save notes ending in "## Sources" to files.
+
+What to ask for, per claim: the URL, the exact quoted wording for any number, default or version, how it was read (curl + grep, or a fetch), and "not verified" where it couldn't. Access dates are our rule (CLAUDE.md), not Anthropic's. Keep the report under about 1,500 words; bulky downloads stay in the subagent's scratch folder, where the lead can grep them.
+
+**The lead re-checks the claims it publishes.** In this topic's research (2026-10-12) the lead spot-checked about ten quotes with `grep` on the curled pages: all held. But one subagent reported "code.claude.com has no MCP server card (404)" from the wrong path, while the page's `Link` header named one that works (TOK-096). Absence claims and claims that change an entry are the ones to verify first.
+
+## [TOK-102] Anti-patterns: research tools
+- Type: anti-pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [README: Monthly re-verification](https://github.com/FreekMencke/claude-kb/blob/main/README.md#monthly-re-verification)
+- Related: TOK-087, TOK-089, TOK-092, TOK-093, TOK-098, TOK-101
+
+| Anti-pattern | Instead | Entry |
+|---|---|---|
+| Citing a WebFetch answer as the page's wording | `curl` the page and grep for the quote | TOK-087, TOK-089 |
+| "The page doesn't mention X" after one fetch | Check its length; read on with `offset`, or grep the curled page | TOK-087 |
+| Reading `llms-full.txt` (9–43 MB) | `llms.txt` to find the page, then its `.md` | TOK-090 |
+| WebFetch for a GitHub CHANGELOG | Raw URL + grep; WebFetch sees the first 10% | TOK-089 |
+| `extended` by default | `standard` first; `extended` for thin or stale results | TOK-093 |
+| Treating search-result prose as findings | Open the links that matter | TOK-092 |
+| Trusting context7 for a just-released feature | The docs' own page or MCP server | TOK-095, TOK-096 |
+| A wide fan-out in `claude -p` | Few subagents; the search budget doesn't refill there | TOK-099 |
+| One-line briefs to parallel researchers | Distinct questions, source order, absence rules | TOK-100 |
+| Publishing a subagent's "not found" unchecked | Re-check absence claims before they change an entry | TOK-101 |
+
+Confidence note: each row's detail and confidence is in the linked entry.
+
 ## Recommendations for our setup
 
 Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first labelled "30 days", corrected 2026-10-12). Dollar and token totals below are for those 6 days, about a fifth of a month; percentages are unaffected:
@@ -1434,6 +1762,16 @@ Not recommended now:
 - Serena or claude-context (TOK-084): `typescript-lsp` already covers symbol lookup.
 - Raising cache TTLs: rebuilds are only 8% of writes (TOK-034).
 
+**Research tools (TOK-087 to TOK-102, 2026-10-12).** Ranked by impact against effort. The first two change this repo's CLAUDE.md, which a research session doesn't edit, so they wait for a decision:
+
+| # | Change | Why | Effort | Evidence |
+|---|---|---|---|---|
+| R10 | Sharpen CLAUDE.md's research rules: "a WebFetch answer is never a quote: `curl` the `.md` page and grep"; for Claude docs use the `.md` page or the docs MCP server, and keep context7 for third-party libraries | The current rule says to try context7 before web search; our context7 snapshot of the Claude Code docs predated v2.1.290, and WebFetch's extraction model may cut quotes to 125 characters | 5 min | TOK-087, TOK-089, TOK-095, TOK-098 |
+| R11 | Add a research-brief block to CLAUDE.md or a research skill: source order, start wide then narrow, curl rule, what's already tested, absence rules, write limits, a URL and quote per claim | Both subagents in this session redid tests the lead had run, and one reported a wrong "not found" | 15 min | TOK-100, TOK-101 |
+| R12 | In unattended research runs (`claude -p`, routines), keep fan-outs small, or set `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION` | The 200-search budget is shared with subagents and doesn't refill in `-p` | 2 min | TOK-092, TOK-099 |
+
+Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost only names while deferred, but `llms.txt` plus a curled `.md` page already finds and reads a page for fewer tokens. Revisit if lookups keep missing the right page. The AWS docs tools already come with the `aws` server (TOK-097).
+
 ## Open questions
 
 1. **Real system prompt and tool sizes.** Answered 2026-10-12: `claude -p "/context all"` in a fresh terminal session in this repo measured a 29.4k starting prefix, close to the 24–27k inferred from `usage`. See "Measured starting context" above.
@@ -1446,3 +1784,8 @@ Not recommended now:
 8. **Token savers.** No independent session-level measurement of any community token saver (RTK, context-mode, Serena, claude-context) including task success.
 9. **Compact instructions.** Is the `# Compact instructions` heading special-cased by the summarizer, or just context it sees?
 10. **Resume cache bug.** Is `-p --resume` cache breakage (#78720) still present in v2.1.296?
+11. **WebSearch `extended`.** What it does differently, what "several times the cost" means on a subscription, and whether one extended call counts as one against the 200-call budget. Only the tool schema mentions the modes (TOK-093). One test is not a latency or freshness measurement.
+12. **Metering of web tools on a subscription.** How WebSearch calls and WebFetch's extraction-model calls count against plan usage, and which model does the extraction today (TOK-087, TOK-094).
+13. **When WebFetch skips summarization.** The preapproved domain list isn't published; our tests fit "preapproved and under 100,000 characters", but the rule isn't documented (TOK-088). The size at which a WebFetch result goes to a file instead of inline (seen at 56.6 KB) isn't documented either.
+14. **Accuracy of docs tools.** No independent benchmark compares context7, docs MCP servers, `llms.txt` and web search on answer accuracy; Upstash's benchmark covers tokens only (TOK-095).
+15. **Search budget outside the terminal.** The docs give the 200-call limit for "an interactive terminal session"; whether cloud sessions, routines and the desktop app apply the same limit is untested (TOK-092).
