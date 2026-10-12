@@ -245,7 +245,7 @@ A large window removes the automatic brake on session length, so cost per turn k
 
 Claude Code re-sends the full conversation with every request; the cached part is billed at cache-read rates. A 300-turn session at 300k context reads about 90M tokens. Performance also degrades as context fills ("context rot", [Best practices](https://code.claude.com/docs/en/best-practices)).
 
-Our 30 days (list-price equivalent at Opus 5.5 rates):
+Our 2026-10-07 to 2026-10-12, 6 days (list-price equivalent at Opus 5.5 rates). Correction 2026-10-12: this was first labelled "30 days", but the transcripts only start on 2026-10-06; shares are unaffected, totals are for 6 days. Re-measure with the `token-audit` skill (FreekMencke/claude-skills `local-skills/skills/token-audit/`), whose baseline for 2026-10-07 to 10-11 is 186 USD a day, 0.059 USD per API message, subagents 13% of cost.
 
 | Bucket of context size per turn | Share of turns | Share of input tokens |
 |---|---|---|
@@ -257,10 +257,10 @@ Our 30 days (list-price equivalent at Opus 5.5 rates):
 Other figures:
 - Peak context per session: p50 101k, p90 308k, max 759k.
 - 68 of 209 sessions passed 150k.
-- Only 3 compactions in 30 days: on a 1M window, auto-compact almost never fires.
-- Cost split: cache reads 52%, cache writes 31%, output 17%, uncached input about 0%. That is roughly $1,089 list-price equivalent over 30 days. On a subscription this is plan usage, not billing.
+- Only 3 compactions in 6 days: on a 1M window, auto-compact almost never fires.
+- Cost split: cache reads 52%, cache writes 31%, output 17%, uncached input about 0%. That is roughly $1,089 list-price equivalent over the 6 days, about $180 a day. On a subscription this is plan usage, not billing.
 
-Confidence note: the mechanism is documented; the 30-day table is our local measurement (single-source).
+Confidence note: the mechanism is documented; the table is our local 6-day measurement (single-source).
 
 ## [TOK-009] A token entering context costs about as much as an output token
 - Type: fact
@@ -270,7 +270,7 @@ Confidence note: the mechanism is documented; the 30-day table is our local meas
 - Sources: local transcripts; [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-008, TOK-042, TOK-043
 
-Over our 30 days, 2.83B cache-read tokens against 48.6M cache-write tokens means each token written to context was re-read about **58 times** on average.
+Over our 6 days (2026-10-07 to 2026-10-12, TOK-008), 2.83B cache-read tokens against 48.6M cache-write tokens means each token written to context was re-read about **58 times** on average.
 
 At Opus 5.5 subscription rates, a token that enters the main context costs:
 - one 1-hour cache write ($8/MTok), plus
@@ -280,7 +280,7 @@ which totals about **$19.60/MTok**. That's the same as the output price ($20). W
 
 The practical upshot: a 5k-token `git diff` or screenshot read early in a long session costs about as much as Claude writing 5k tokens. Trimming tool output pays off more the earlier in a session it happens. Moving verbose work into a subagent caps the multiplier at the subagent's own, usually short, lifetime.
 
-Confidence note: derived from our local 30-day measurement and list prices.
+Confidence note: derived from our local 6-day measurement and list prices.
 
 ## [TOK-010] `/usage`, `/context` and other built-in meters
 - Type: tool
@@ -369,6 +369,8 @@ Assistant lines carry `message.usage`. The fields are not a documented contract:
 Pitfall: one API message can appear on several lines (streamed chunks). **Deduplicate by `message.id` and keep the last line.** Summing every line inflates totals; a claim of about 2.87x inflation in claude-code#41346 is unverified. Taking the first line under-counts output.
 
 All our local measurements in this file use last-line-per-id.
+
+Second source: each session file also has `type: "cost-state"` lines with `modelUsage.<model>` (`inputTokens`, `outputTokens`, `cacheReadInputTokens`, `cacheCreationInputTokens`, `costUSD`, …). `costUSD` is exactly list price for its own token counts, but it counts about 10% more cache reads than the deduplicated `message.usage`, so transcript-based Opus cost comes out about 6% lower (median over 146 sessions, 2026-10-12). Use it as the closer total; `message.usage` for per-turn analysis.
 
 Confidence note: the transcript location is documented (official-docs); the `usage` schema is observed locally and not a documented contract.
 
@@ -645,9 +647,9 @@ Knobs:
 - Subagent frontmatter `autoCompactWindow` (v2.1.296).
 - Raising `CLAUDE_CODE_MAX_OUTPUT_TOKENS` shrinks the effective window.
 
-Simulation on our 30 days. It replays each session's per-turn context growth and resets to 60k at the window; it ignores the cost of the compaction request and any quality loss:
+Simulation on our 6 days (2026-10-07 to 2026-10-12; first labelled "30 days", corrected 2026-10-12). It replays each session's per-turn context growth and resets to 60k at the window; it ignores the cost of the compaction request and any quality loss:
 
-| Window | Input tokens vs. 967K default | Compactions/30 days |
+| Window | Input tokens vs. 967K default | Compactions in the 6 days (about 5× that a month) |
 |---|---|---|
 | 500K | −16% | 12 |
 | 300K | −30% | 31 |
@@ -728,7 +730,7 @@ Resolution order, `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` and built-in Explore's mode
 
 Official advice: "For simple subagent tasks, specify `model: haiku`". Sonnet handles most coding; reserve Opus for hard reasoning. A switch to Opus also applies to subagents that inherit.
 
-Our 30 days:
+Our 6 days (2026-10-07 to 2026-10-12, TOK-008):
 - 54 subagent runs on Opus cost about $115 list-equivalent (about $2.13 per run).
 - 206 runs on Sonnet cost about $26 (about $0.13 per run).
 - The tasks differ, so this is not like-for-like.
@@ -788,7 +790,7 @@ Habits:
 - Grep for the symbol, then Read with `offset`/`limit` around the hit.
 - For reference docs, put a table of contents at the top so a partial read shows scope.
 
-Our 30 days: 428 text reads, median about 700 tokens, p90 about 6.4k. 171 (40%) already used offset/limit, and only 16 were over 10k. Text file reads aren't our problem; images and Bash output are (TOK-042, TOK-043).
+Our 6 days (2026-10-07 to 2026-10-12): 428 text reads, median about 700 tokens, p90 about 6.4k. 171 (40%) already used offset/limit, and only 16 were over 10k. Text file reads aren't our problem; images and Bash output are (TOK-042, TOK-043).
 
 ## [TOK-041] Search before reading; code intelligence
 - Type: pattern
@@ -823,7 +825,7 @@ Limits:
 
 Official hook pattern: a `PreToolUse` hook on Bash rewrites `npm test` and `pytest` via `updatedInput` to `… 2>&1 | grep -A 5 -E '(FAIL|ERROR|error:)' | head -100`. The docs say this cuts a 10,000-line log "from tens of thousands of tokens to hundreds". `PostToolUse` can replace output with `updatedToolOutput`.
 
-Our 30 days:
+Our 6 days (2026-10-07 to 2026-10-12, TOK-008):
 - Bash output was about 6.9M tokens over 13,350 calls (average about 520).
 - Outputs over 3k tokens were 3.5% of calls but 32% of the volume.
 - The top sources were `git diff` (72 large calls), `gh issue/pr view`, `git fetch`, and `sed -n`/`cat` reads, not test runs.
@@ -833,7 +835,7 @@ Habits beat hooks here:
 - `gh … --json <fields>`.
 - `rg -n` before `sed -n`.
 
-Confidence note: the limits and hook pattern are documented; the 30-day numbers are our local measurement (single-source).
+Confidence note: the limits and hook pattern are documented; the 6-day numbers are our local measurement (single-source).
 
 ## [TOK-043] Pastes, images and PDFs
 - Type: fact
@@ -853,7 +855,7 @@ Confidence note: the limits and hook pattern are documented; the 30-day numbers 
 
 **PDFs:** 1,500–3,000 tokens per page of text ("depending on content density"), plus image cost per page. Use the Files API (`file_id`) rather than re-sending base64.
 
-We had 995 image reads in 30 days, mostly UI screenshots. At 1.5–4.8k tokens each, that's roughly 1.5–4.8M tokens entering context, each re-read many times (TOK-009).
+We had 995 image reads in 6 days (2026-10-07 to 2026-10-12), mostly UI screenshots. At 1.5–4.8k tokens each, that's roughly 1.5–4.8M tokens entering context, each re-read many times (TOK-009).
 
 Confidence note: the paste, image and PDF rules are documented; our counts are local measurement (single-source).
 
@@ -1384,8 +1386,8 @@ Confidence note: the timeline is from Anthropic's postmortem; the drain reports 
 
 ## Recommendations for our setup
 
-Baseline (local measurement, 30 days to 2026-10-12, TOK-008):
-- About $1,089 list-price equivalent, on a subscription.
+Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first labelled "30 days", corrected 2026-10-12). Dollar and token totals below are for those 6 days, about a fifth of a month; percentages are unaffected:
+- About $1,089 list-price equivalent (about $180 a day), on a subscription.
 - 97% of tokens on Opus 5.5.
 - Cache reads 52% of cost, cache writes 31%, output 17%.
 - 54% of input tokens from turns above 200k context.
@@ -1394,19 +1396,19 @@ Baseline (local measurement, 30 days to 2026-10-12, TOK-008):
 
 Setup today: Claude Code v2.1.296, no status line, no custom agents. Four user-scope MCP servers (context7, kubernetes, flux, aws) and four plugins. Global CLAUDE.md is 79 lines.
 
-Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are tracked in FreekMencke/claude-skills#5 and #6 (roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223; R8 and R9 are open.
+Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are done as the `handoff` and `token-audit` skills (FreekMencke/claude-skills#13 and #14, roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223; R8 and R9 are open.
 
 | # | Change | What it does / when it triggers | Est. savings | Effort | Evidence |
 |---|---|---|---|---|---|
-| R1 | **Lower the auto-compact window to 400K** (`"autoCompactWindow": 400000` in `~/.claude/settings.json`) and add a `# Compact instructions` section to global CLAUDE.md ("preserve modified files, open issue/PR numbers, test commands, decisions made") | Compaction fires at 400K instead of about 967K | About 16–30% of input tokens (simulated at 500K and 300K), so about $90–170 per 30 days. Costs about 20 compactions a month, each lossy. | 5 min | TOK-008, TOK-031, TOK-032 |
+| R1 | **Lower the auto-compact window to 400K** (`"autoCompactWindow": 400000` in `~/.claude/settings.json`) and add a `# Compact instructions` section to global CLAUDE.md ("preserve modified files, open issue/PR numbers, test commands, decisions made") | Compaction fires at 400K instead of about 967K | About 16–30% of input tokens (simulated at 500K and 300K), so about $90–170 over the 6 days (about $15–28 a day). Costs about 20 compactions per 6 days (about 100 a month), each lossy. | 5 min | TOK-008, TOK-031, TOK-032 |
 | R2 | **Context status line**: a DIY `~/.claude/statusline.sh` (jq) showing context % and absolute k, 5h/7d `used_percentage`, and `prompt_cache.warm`/TTL; or `claude-hud` | Always visible; makes R1/R3 decisions visible and shows cache regressions early | Indirect: enables R1/R3, catches incidents like TOK-086 | 15 min | TOK-011, TOK-082 |
 | R3 | **`handoff` skill** (user-only: `disable-model-invocation: true`, zero listing cost). It writes goal, state, changed files, next steps and open questions to the issue/PR or a scratch file, then tells me to `/clear` and start with "continue from <link>". | `/handoff` when the status line passes about 250K, or when switching task within a repo | Same pool as R1, without auto-summary loss. Each handoff at 250K instead of drifting to 500K halves later per-turn cost. | 30 min | TOK-030, TOK-085, TOK-064 |
-| R4 | **Cheaper subagent default**: `"env": {"CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"}` in user settings. The main agent can still pass `model: opus` for hard tasks; per-invocation beats env. Alternatively, a user agent `~/.claude/agents/Explore.md` with `model: sonnet`, read-only tools and `omitClaudeMd: true`. | All subagents without an explicit model, except built-in Explore and Plan: the env var doesn't reach them (ORCH-005), so use the `Explore` override for those | About $50–90 of $115 Opus-subagent spend per 30 days (5–8% total). Check against the KB's model-selection section first. | 5 min | TOK-036, TOK-006 |
-| R5 | **Screenshot hygiene** for `osrs-tracker-web` (cross-repo, so open an issue there): prefer Playwright `browser_snapshot` (about 200 tokens) for structure checks; screenshot elements or a ≤1280px viewport; run visual review loops in a subagent that returns findings | Any UI verification task | Roughly 1–3M image tokens per 30 days that are later re-read about 58x (TOK-009). Likely the largest single tool-output saving for that repo. | 20 min plus an issue | TOK-043, TOK-023, TOK-035 |
+| R4 | **Cheaper subagent default**: `"env": {"CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"}` in user settings. The main agent can still pass `model: opus` for hard tasks; per-invocation beats env. Alternatively, a user agent `~/.claude/agents/Explore.md` with `model: sonnet`, read-only tools and `omitClaudeMd: true`. | All subagents without an explicit model, except built-in Explore and Plan: the env var doesn't reach them (ORCH-005), so use the `Explore` override for those | About $50–90 of $115 Opus-subagent spend over the 6 days (5–8% total). Check against the KB's model-selection section first. | 5 min | TOK-036, TOK-006 |
+| R5 | **Screenshot hygiene** for `osrs-tracker-web` (cross-repo, so open an issue there): prefer Playwright `browser_snapshot` (about 200 tokens) for structure checks; screenshot elements or a ≤1280px viewport; run visual review loops in a subagent that returns findings | Any UI verification task | Roughly 1–3M image tokens over the 6 days that are later re-read about 58x (TOK-009). Likely the largest single tool-output saving for that repo. | 20 min plus an issue | TOK-043, TOK-023, TOK-035 |
 | R6 | **`token-audit` skill** (user-only) with a script that runs the analyses in this file over `~/.claude/projects`: cost split, context-size buckets, re-read multiplier, subagent cost by model, tool-output by tool, largest Bash commands. Dedups by `message.id`. | `/token-audit` monthly, or after a config change, to check R1–R5 worked | None directly; it measures the others. Fills gaps ccusage doesn't cover. | 45 min | TOK-013, TOK-080 |
-| R7 | **Output habits in global CLAUDE.md** (2 lines, about 60 tokens a turn): "`git diff --stat` before full diffs; `gh … --json <fields>`; `rg -n` before `sed -n`/`cat`." Optionally a PreToolUse hook for `npm test`/lint per the official example. | Every git/gh/read command | About 1–2M tokens per 30 days of large Bash output (32% of Bash volume came from 3.5% of calls) | 10 min | TOK-042, TOK-083 |
+| R7 | **Output habits in global CLAUDE.md** (2 lines, about 60 tokens a turn): "`git diff --stat` before full diffs; `gh … --json <fields>`; `rg -n` before `sed -n`/`cat`." Optionally a PreToolUse hook for `npm test`/lint per the official example. | Every git/gh/read command | About 1–2M tokens over the 6 days of large Bash output (32% of Bash volume came from 3.5% of calls) | 10 min | TOK-042, TOK-083 |
 | R8 | **Skill/plugin audit**: run `/skill-doctor` and `/context all`. Check that `frontend-design` and `playwright` aren't loaded in repos that don't use them (disable per project). Keep custom skill descriptions under about 400 characters. | Once now, then after adding skills or plugins | Small: hundreds to low thousands of tokens per turn | 15 min | TOK-005, TOK-067 |
-| R9 | **Project-scope the cluster MCP servers**: move `kubernetes` and `flux` to `home-cluster` (and `aws` to the repos that use it) with `--scope local/project`. Only if the always-on user scope isn't deliberate; our global CLAUDE.md lists them as user-wide on purpose. | Sessions in unrelated repos | Low: about 1–2k tokens per turn of names and server instructions, roughly $4 per 30 days | 10 min | TOK-020, TOK-022 |
+| R9 | **Project-scope the cluster MCP servers**: move `kubernetes` and `flux` to `home-cluster` (and `aws` to the repos that use it) with `--scope local/project`. Only if the always-on user scope isn't deliberate; our global CLAUDE.md lists them as user-wide on purpose. | Sessions in unrelated repos | Low: about 1–2k tokens per turn of names and server instructions, roughly $4 over the 6 days | 10 min | TOK-020, TOK-022 |
 
 Not recommended now:
 - RTK or context-mode (TOK-083): our big outputs aren't test runs, the claims are unverified, and context-mode is ELv2.
