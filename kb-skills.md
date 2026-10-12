@@ -14,7 +14,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | Skill, CLAUDE.md, hook, subagent or MCP? | CLAUDE.md = always-true facts; skill = on-demand procedure; hook = must-happen guarantee; subagent = isolated side task; MCP = access to external systems. | SKILL-021, SKILL-023 |
 | How do I test a skill? | Triggering: `claude plugin eval` with a `tool_used: Skill` grader, or skill-creator's `run_loop`; ~20 queries, half near-miss negatives, 3 runs each. Usefulness: run the same prompts with and without it in fresh sessions; compare the score delta and the token/time cost. | SKILL-025 to SKILL-028, SKILL-032 |
 | Should I add a "forced skill evaluation" hook? | Not by default: no official endorsement, evidence is one author with small N, and it raises false positives. | SKILL-029 |
-| How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. | SKILL-034, SKILL-038 |
+| How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. A personal Git marketplace added on claude.ai reaches chat, Cowork and Claude Code. | SKILL-034, SKILL-038, SKILL-059 |
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
@@ -84,6 +84,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | SKILL-056 | Setup for someone using both the desktop app and WSL | recommendation | desktop, wsl, distribution |
 | SKILL-057 | Skill features that behave differently in the desktop app | fact | desktop, permissions |
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
+| SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
 
 ---
 
@@ -238,6 +239,7 @@ Custom slash commands were merged into skills in v2.1.3. `.claude/commands/x.md`
 - **Arguments**:
   - `$ARGUMENTS` is the whole argument string.
   - `$ARGUMENTS[0]` or `$0` is a 0-based positional argument, split with shell-style quoting.
+  - Substitution hits literal text too, whenever arguments are passed (`/name args`, or the model's Skill call with `args`): `$0` in a code block, in `awk '$0 ~ …'` or in a dollar amount like `$0.05` becomes the first argument. Without arguments they stay literal. Write `$(0)` in awk and amounts as "USD". Local test, 2026-10-12, v2.1.296 (FreekMencke/claude-kb#5).
   - `$name` maps to the `arguments:` list.
   - If nothing consumes the arguments, `ARGUMENTS: <value>` is appended to the body.
 - **Variables**:
@@ -885,7 +887,7 @@ The agentskills.io reference validator is `skills-ref validate ./my-skill`. In-s
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude), [Provision skills for your organization](https://support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization), [Claude Code skills: synced skills](https://code.claude.com/docs/en/skills), [Plugin loading](https://code.claude.com/docs/en/plugins/loading)
-- Related: SKILL-002, SKILL-007
+- Related: SKILL-002, SKILL-007, SKILL-059
 
 **Upload**: Customize › Skills › + › Upload a skill, as a ZIP. The folder must match `name`, and only standard frontmatter fields are allowed.
 
@@ -1361,6 +1363,24 @@ Context-cost consequence: on the desktop, account skills you never use in code s
 
 ---
 
+## [SKILL-059] Personal Git marketplaces on claude.ai, synced into Claude Code
+- Type: fact
+- Applies to: claude.ai
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Plugins (claude.com docs)](https://claude.com/docs/plugins/overview), [Install plugins in Cowork](https://claude.com/docs/cowork/guide/plugins), [Plugin loading: synced plugins](https://code.claude.com/docs/en/plugins/loading)
+- Related: SKILL-038, SKILL-034, SKILL-036, SKILL-050
+
+An individual can add a Git repo as a plugin marketplace on claude.ai, and the plugins installed from it reach chat, Cowork and Claude Code. This replaces ZIP uploads (SKILL-038) for skills kept in git.
+
+**Adding it**: Customize › Plugins › Add › Add marketplace, with a URL or `owner/repo`. GitHub and GitHub Enterprise work, plus public GitLab and Bitbucket repos. A private GitHub repo needs the Claude GitHub App to have access to it. Limits: 25 marketplaces, 500 plugins each, 512 MB repo archive.
+
+**Updates**: **Check for updates** pulls the latest; for a github.com marketplace you can turn on **Sync automatically**.
+
+**In Claude Code**: an account plugin downloads as `<name>@synced` the next time a session signed in with claude.ai starts (v2.1.273+); `/reload-plugins` loads it mid-session. Not in sessions authenticated by `ANTHROPIC_AUTH_TOKEN`, `CLAUDE_CODE_OAUTH_TOKEN` or `apiKeyHelper`, nor bare or `--safe-mode` sessions. `"<name>@synced": false` in `enabledPlugins` turns one off; `syncClaudeAiPlugins: false` turns them all off. A plugin with the same name from another origin wins over the synced copy.
+
+**The other way**: plugins installed from the Claude Code command line stay on that machine and aren't added to the account.
+
 ## Recommendations for our setup
 
 Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. All four are claude.ai skills synced to `~/.claude/skills/synced/`. All pass `claude plugin validate --strict`.
@@ -1374,7 +1394,7 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 
 **What they already do well.** All four are under 500 lines and have descriptions under 1,024 chars. They give output templates and say what to output when there is nothing to report. They gate anything public or irreversible behind a go-ahead, name their sibling skill for out-of-scope work, and share one vocabulary (finding, proof, blocks/slows/minor). Keep all of this in any rewrite (SKILL-016, SKILL-019).
 
-Ranked by impact versus effort. Tracked in roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), opened 2026-10-12: recommendation 2, 3 and 5 are FreekMencke/claude-skills#3, 4 is #2, 6 and 7 are #4. Recommendations 8 and 12 are manual (claude.ai UI and `/skill-doctor`).
+Ranked by impact versus effort. Done through roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), opened and closed 2026-10-12: recommendation 2, 3 and 5 are FreekMencke/claude-skills#3, 4 is #2, 6 and 7 are #4. Recommendations 8 and 12 are manual (claude.ai UI and `/skill-doctor`).
 
 1. **Done 2026-10-12. High impact, low effort: replace the roadmap section of the global `~/.claude/CLAUDE.md` with a pointer to the skill.** The section "Roadmap issues (work split over several issues)" restates the `roadmap-issues` workflow: creation order, sub-issues, blocked-by links and labels. That costs tokens in every session and gives the two copies a chance to drift. Keep one line ("Split work over several issues with the `roadmap-issues` skill") and any rule that must apply even when the skill doesn't load. (SKILL-024, SKILL-022)
 2. **High impact, low effort: make `roadmap-issues` trigger on single follow-up issues.** The skill already covers "a single follow-up in another repo", but its description only mentions roadmaps and tracking issues. Add "or to open a follow-up issue in another repo". CLAUDE.md's "Cross-repo work becomes an issue" section could then shrink to the rule plus that pointer. (SKILL-011, SKILL-015)
@@ -1383,11 +1403,9 @@ Ranked by impact versus effort. Tracked in roadmap [FreekMencke/claude-skills#1]
    - `skill-workshop` and `skill-creator`. skill-workshop already names skill-creator; skill-creator is the one without a boundary.
 
    Add a "not for…" line on each side of every pair, or set the one you don't use to `skillOverrides: off`. (SKILL-012, SKILL-045)
-4. **High impact, medium effort: move the skills' source into git and add evals.** Started 2026-10-12: FreekMencke/claude-skills is a private repo laid out as a skills-dir plugin (plugin name `freek-skills`, since names can't start with `claude-`), and it passes `claude plugin validate --strict` (recommendation 9). Still to add:
-   - `claude plugin validate --strict` in CI.
-   - `evals/` cases for `claude plugin eval`: 3 positive and 3 near-miss negative prompts per skill, the negatives drawn from the sibling skills, with a `tool_used: Skill` grader.
-
-   Keep uploading the ZIP to claude.ai for the other surfaces. Constraint: anything synced through claude.ai must use standard frontmatter only, so `when_to_use`, `paths` and `disable-model-invocation` are not available while claude.ai is the distribution channel. (SKILL-026, SKILL-028, SKILL-037, SKILL-038, SKILL-041)
+4. **High impact, medium effort: move the skills' source into git and add evals.** Done 2026-10-12: FreekMencke/claude-skills is a private repo and marketplace with CI running `claude plugin validate --strict` and `evals/` trigger cases per skill (FreekMencke/claude-skills#8). It holds two plugins:
+   - `freek-skills` (`skills/`): installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so every merge to `main` reaches chat and Cowork; no ZIP uploads (FreekMencke/claude-skills#11). Keep to standard frontmatter here until it's known whether claude.ai accepts Claude Code-only fields (Open questions).
+   - `freek-local-skills` (`local-skills/skills/`): Claude Code-only skills, never installed on claude.ai, so `context: fork`, `disable-model-invocation` and the like are fine (FreekMencke/claude-skills#12). (SKILL-026, SKILL-028, SKILL-037, SKILL-038, SKILL-041)
 5. **Medium impact, low effort: update `skill-workshop` to the current tooling.** Specific changes:
    - Its "For measured test runs… use skill-creator" should also name `claude plugin eval` and `/skill-doctor`.
    - Step 6 should say that 1,024 chars is the upload limit, while Claude Code's listing truncates at 1,536 and can drop descriptions under budget pressure, so front-load the use case.
@@ -1400,8 +1418,7 @@ Ranked by impact versus effort. Tracked in roadmap [FreekMencke/claude-skills#1]
 8. **Low effort: audit listing pressure.** The 26 synced skills alone carry about 14.7k characters of descriptions. Seven of them (docs, terminal, pptx, xlsx, computer-health-check, computer-use, docx) are each about 940–1,010 chars. Run `/skill-doctor` and `/context`, and set unused ones to `name-only` or `off`. (SKILL-005, SKILL-030)
 9. **Done 2026-10-12: make our custom skills reachable in desktop WSL sessions** (SKILL-050). `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop` now live in the private repo FreekMencke/claude-skills (`~/repos/claude-skills`). Its `install.sh` symlinks each one into `~/.claude/skills/` (SKILL-056), and all four appeared in a running desktop WSL session.
    - Left open: `syncClaudeAiSkills: false` would stop the terminal CLI listing each skill twice, but it also drops every other account skill there. Decide once the terminal CLI is signed in again and the duplicates can be seen.
-   - Keep the claude.ai copies for chat, Cowork and Local sessions. Upload a ZIP after each change in the repo so they don't drift.
-   - The repo is also a marketplace: on another machine, `claude plugin install freek-skills --marketplace FreekMencke/claude-skills` installs all four (tested in a clean config dir; set `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` without a GitHub SSH key). Skills are then named `freek-skills:<name>`. Use either that or the symlinks on one machine, not both.
+   - Update 2026-10-12: chat, Cowork and other machines now get `freek-skills` from the claude.ai marketplace (recommendation 4, SKILL-059); signed-in Claude Code sessions download it as `freek-skills@synced`. On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice. The CLI install (`claude plugin install … --marketplace FreekMencke/claude-skills`) still works for a machine that isn't signed in with claude.ai.
 10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). The same applies to this repo's `CLAUDE.md` when worktrees change it.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
 12. **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like), not in Claude Code settings. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
@@ -1420,5 +1437,7 @@ Ranked by impact versus effort. Tracked in roadmap [FreekMencke/claude-skills#1]
 - **`.agents/skills`.** Does Claude Code read the cross-tool `.agents/skills` directory? Not documented.
 - **Trigger-only descriptions.** Does superpowers' finding (SKILL-013) hold on current models? It is single-source, with no controlled replication.
 - **Forcing hooks.** Do hooks that force skill evaluation still help on current models (Opus 5.x, Sonnet 5.x)? All published measurements are on 4.5-era models or small N.
+- **Claude Code-only frontmatter on claude.ai.** Does claude.ai accept, ignore or reject fields such as `context`, `agent` or `disable-model-invocation` in a skill that arrives through a marketplace plugin (SKILL-059) rather than a ZIP upload? Until tested, `freek-skills` keeps to standard frontmatter.
+- **Synced plugins in desktop WSL sessions.** Do `<name>@synced` plugins load there, when synced account skills don't (SKILL-050)? Not tested: this machine turns `freek-skills@synced` off.
 - **ZIP size.** The claude.ai skill ZIP size limit is not stated anywhere found.
 - **TOC threshold.** Anthropic's best-practices page says reference files over 100 lines need a TOC; skill-creator says over 300.
