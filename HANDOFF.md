@@ -19,7 +19,7 @@ A Markdown knowledge base on using Claude efficiently that other agents can quer
 |---|---|---|---|
 | 0 | Repo + `CLAUDE.md` | — | Done |
 | 1 | Sessions 1, 3, 4 → `kb-orchestration.md`, `kb-token-usage.md`, `kb-skills.md` | Opus 5.5 lead, Sonnet research agents, high | Done: 167 entries, all pass the format check |
-| 2 | Session 2 → `kb-repo-agents.md` (osrs-tracker-web) | Opus 5.5, high | Running |
+| 2 | Session 2 → `kb-repo-agents.md` (osrs-tracker-web) | Opus 5.5 lead, Sonnet research and fact-check agents, high | Done: 52 entries, pass the format check; follow-up work in roadmap osrs-tracker/osrs-tracker-web#220 |
 | 3 | Merge and index → `INDEX.md` | Sonnet 5.5, high | Next, after step 2 |
 | 4 | Librarian skill `claude-kb-lookup` | Sonnet 5.5, medium | After step 3 |
 | 5 | Monthly re-verification | Sonnet 5.5, medium | After step 4, as a scheduled task |
