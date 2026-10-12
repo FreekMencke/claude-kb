@@ -539,7 +539,8 @@ Mapping INFRA-022 to controls, most-recurring first:
 Read from local config (structure only) and read-only AWS calls through the MCP server. Names are left out on purpose.
 
 **AWS:**
-- Its `aws-mcp:*` statement has had "no effect" since GA (INFRA-003).
+Updated after FreekMencke/claude-kb#44 (2026-10-12); CHANGELOG.md has the state before.
+- The site buckets keep versioning off: they hold a site rebuilt from git on each deploy, and it is moving to the cluster.
 
 **Kubernetes:** both MCP servers and Bash `kubectl` use the default kubeconfig, which holds the **cluster-admin** client certificate. The kubernetes server is read-only with Secrets denied; Flux runs `--read-only` with masking on. Both flags are client-side (INFRA-006). The kubernetes server and the AWS proxy run as `@latest`.
 
@@ -551,10 +552,8 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 
 | # | Change | Impact | Effort | Entries |
 |---|---|---|---|---|
-| 1 | Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
+| 1 | Done 2026-10-12 (FreekMencke/claude-kb#44), without `AWS_PROFILE`: a failing call is the clearer signal. Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
 | 3 | Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
-| 5 | Turn on S3 versioning (with a noncurrent-version expiry) on the site buckets the agent can delete from. | Medium | Low | INFRA-023 |
-| 6 | Create one CloudTrail trail for management events. The first copy is free; add S3 and Lambda data events if the cost is acceptable. | Medium | Low | INFRA-016 |
 | 7 | Add `autoMode.environment` entries that name the production namespace, the site buckets, the Lambda functions and the AWS account as protected (keep `"$defaults"`). | Medium | Low | INFRA-010 |
 | 8 | Add deny rules as a backstop: `Read(~/.aws/credentials)`, `Bash(kubectl * delete *)`, `Bash(kubectl delete *)`, `Bash(helm * uninstall *)`, `Bash(aws * --profile default *)`. | Low | Low | INFRA-008 |
 | 10 | Later: move the agent from a long-term IAM user key to short-lived credentials (an Identity Center permission set, or a role with a session name). | Medium | High | INFRA-020, INFRA-001 |
@@ -563,7 +562,7 @@ Not recommended now: running cloud work in a dev container (INFRA-002). The cred
 
 ## Open questions
 
-- **Leaked keys in our transcripts.** A count found AWS-key-shaped strings in 1 of 698 local transcripts (2026-10-06 to 2026-10-12, `rg -l -e 'AKIA[0-9A-Z]{16}' -e 'ASIA[0-9A-Z]{16}' ~/.claude/projects`). The follow-up that would show whether they are real keys was blocked by auto mode as Credential Exploration. The user should check by hand, and rotate the key if it is real.
+- **Leaked keys in our transcripts.** Resolved 2026-10-12: the user's check found two distinct `ASIA` strings (temporary keys, which expire within 36 hours) in three research-subagent transcripts that had read AWS docs, and no `AKIA` key. Nothing needed rotating.
 - **`run_script` under `--read-only`.** Does the AWS proxy's read-only flag keep or hide `aws___run_script`? Not documented; list the tools with the flag to check.
 - **Agent key age.** The IAM user's key age and last rotation couldn't be read with the agent's own identity.
 - **Cluster RBAC as code.** Whether the cluster's RBAC lives in a GitOps repo wasn't checked (a scan of the user's repos was blocked by auto mode). If it does, recommendation 2 becomes an issue in that repo.
