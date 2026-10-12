@@ -1400,45 +1400,18 @@ Observed: a routine whose prompt named `refresh-md-files` (shipped only in the `
 
 ## Recommendations for our setup
 
-Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. All four are claude.ai skills synced to `~/.claude/skills/synced/`. All pass `claude plugin validate --strict`.
+Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. Their source is now FreekMencke/claude-skills (SKILL-050, SKILL-056, SKILL-059).
 
-| Skill | Lines | Words | Description chars |
-|---|---|---|---|
-| roadmap-issues | 203 | 1,757 | 295 |
-| parallel-code-orchestrator | 211 | 2,846 | 259 |
-| refresh-md-files | 49 | 556 | 306 |
-| skill-workshop | 121 | 1,431 | 389 |
+**Done.** Recommendations 1–9 were applied on 2026-10-12: 1 in the global `~/.claude/CLAUDE.md`; 2–7 through roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1) (#2, #3, #4, #8); 8 and 12 for WSL Claude Code (`/skill-doctor` and `skillOverrides`, see kb-token-usage R8). Decisions from them that still hold:
+- `freek-skills` (`skills/`) is installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so it keeps to standard frontmatter until it's known whether claude.ai accepts Claude Code-only fields (Open questions). Claude Code-only skills go in `freek-local-skills` (`local-skills/skills/`), which is never installed on claude.ai.
+- On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice.
+- Don't set `syncClaudeAiSkills: false`. The only synced skills left are the 12 set to `name-only` (under 20 tokens each), so turning sync off saves almost nothing and drops the account skills from the terminal.
 
-**What they already do well.** All four are under 500 lines and have descriptions under 1,024 chars. They give output templates and say what to output when there is nothing to report. They gate anything public or irreversible behind a go-ahead, name their sibling skill for out-of-scope work, and share one vocabulary (finding, proof, blocks/slows/minor). Keep all of this in any rewrite (SKILL-016, SKILL-019).
+Still open:
 
-Ranked by impact versus effort. Done through roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), opened and closed 2026-10-12: recommendation 2, 3 and 5 are FreekMencke/claude-skills#3, 4 is #2, 6 and 7 are #4. Recommendations 8 and 12 are manual: both are done for WSL Claude Code (`/skill-doctor` run and `skillOverrides`, 2026-10-12); pruning the account skills on claude.ai itself is still open.
-
-1. **Done 2026-10-12. High impact, low effort: replace the roadmap section of the global `~/.claude/CLAUDE.md` with a pointer to the skill.** The section "Roadmap issues (work split over several issues)" restates the `roadmap-issues` workflow: creation order, sub-issues, blocked-by links and labels. That costs tokens in every session and gives the two copies a chance to drift. Keep one line ("Split work over several issues with the `roadmap-issues` skill") and any rule that must apply even when the skill doesn't load. (SKILL-024, SKILL-022)
-2. **High impact, low effort: make `roadmap-issues` trigger on single follow-up issues.** The skill already covers "a single follow-up in another repo", but its description only mentions roadmaps and tracking issues. Add "or to open a follow-up issue in another repo". CLAUDE.md's "Cross-repo work becomes an issue" section could then shrink to the rule plus that pointer. (SKILL-011, SKILL-015)
-3. **High impact, low effort: separate overlapping descriptions.** The pairs that collide:
-   - `refresh-md-files` ("audit or refresh a README or CLAUDE.md") and the installed `claude-md-management:claude-md-improver` ("Audit and improve CLAUDE.md files").
-   - `skill-workshop` and `skill-creator`. skill-workshop already names skill-creator; skill-creator is the one without a boundary.
-
-   Add a "not for…" line on each side of every pair, or set the one you don't use to `skillOverrides: off`. (SKILL-012, SKILL-045)
-4. **High impact, medium effort: move the skills' source into git and add evals.** Done 2026-10-12: FreekMencke/claude-skills is a private repo and marketplace with CI running `claude plugin validate --strict` and `evals/` trigger cases per skill (FreekMencke/claude-skills#8). It holds two plugins:
-   - `freek-skills` (`skills/`): installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so every merge to `main` reaches chat, Cowork and signed-in local Claude Code, but not cloud sessions or routines (SKILL-060); no ZIP uploads (FreekMencke/claude-skills#11). Keep to standard frontmatter here until it's known whether claude.ai accepts Claude Code-only fields (Open questions).
-   - `freek-local-skills` (`local-skills/skills/`): Claude Code-only skills, never installed on claude.ai, so `context: fork`, `disable-model-invocation` and the like are fine (FreekMencke/claude-skills#12). (SKILL-026, SKILL-028, SKILL-037, SKILL-038, SKILL-041)
-5. **Medium impact, low effort: update `skill-workshop` to the current tooling.** Specific changes:
-   - Its "For measured test runs… use skill-creator" should also name `claude plugin eval` and `/skill-doctor`.
-   - Step 6 should say that 1,024 chars is the upload limit, while Claude Code's listing truncates at 1,536 and can drop descriptions under budget pressure, so front-load the use case.
-   - Add an overlap check against sibling skills' descriptions, and a warning not to summarise workflow steps in the description.
-   - Add a note that synced skills can only carry standard frontmatter.
-
-   (SKILL-003, SKILL-005, SKILL-013, SKILL-026, SKILL-030)
-6. **Medium impact, low effort: trim the workflow out of the `parallel-code-orchestrator` description.** "…then integrate, verify and run the repo's reviewer agent" is the kind of step summary superpowers found agents follow instead of the body. Keep the outcome and the triggers. Then measure triggering and compliance before and after. (SKILL-013)
-7. **Medium impact, medium effort: protect `parallel-code-orchestrator` against compaction.** At about 2,850 words (an estimated 3.8k tokens) it fits the 5k tokens kept per skill after compaction. But it shares the 25k re-attach budget with other skills, and it runs in the longest sessions. Keep the hard rules (one repo per run, model table, when to stop and ask) in the first screen. Consider moving the brief template, triage and handoff format to `references/` files that are read when those steps start. Check for staleness at each model release: the model-tier table names specific models. (SKILL-006, SKILL-017, SKILL-019, SKILL-032)
-8. **Done for WSL Claude Code 2026-10-12** (see recommendation 12 and kb-token-usage R8). **Low effort: audit listing pressure.** The 26 synced skills alone carry about 14.7k characters of descriptions. Seven of them (docs, terminal, pptx, xlsx, computer-health-check, computer-use, docx) are each about 940–1,010 chars. Run `/skill-doctor` and `/context`, and set unused ones to `name-only` or `off`. (SKILL-005, SKILL-030)
-9. **Done 2026-10-12: make our custom skills reachable in desktop WSL sessions** (SKILL-050). `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop` now live in the private repo FreekMencke/claude-skills (`~/repos/claude-skills`). Its `install.sh` symlinks each one into `~/.claude/skills/` (SKILL-056), and all four appeared in a running desktop WSL session.
-   - Decided 2026-10-12: don't set `syncClaudeAiSkills: false`. With the terminal CLI signed in through claude.ai, `claude -p "/context all"` lists each custom skill once (as User, from `install.sh`), because `"freek-skills@synced": false` already keeps the marketplace copy out. The only claude.ai synced skills left are the 12 set to `name-only`, under 20 tokens each, so turning sync off would save almost nothing and drop the account skills from the terminal.
-   - Update 2026-10-12: chat, Cowork and other machines now get `freek-skills` from the claude.ai marketplace (recommendation 4, SKILL-059); signed-in Claude Code sessions download it as `freek-skills@synced`. On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice. The CLI install (`claude plugin install … --marketplace FreekMencke/claude-skills`) still works for a machine that isn't signed in with claude.ai.
 10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). The same applies to this repo's `CLAUDE.md` when worktrees change it.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
-12. **Done for WSL Claude Code 2026-10-12** (`skillOverrides: name-only` for all 12, see kb-token-usage R8). **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like), not in Claude Code settings. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
+12. **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like). Done for WSL Claude Code; claude.ai itself is still open. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
 
 ## Open questions
 
