@@ -1431,7 +1431,7 @@ The common principles: only issues introduced by the diff, an exclusion list, a 
 
 Scope: `osrs-tracker-web` as inspected on 2026-10-12 (REPO-001 to REPO-004). Where a change also applies to `osrs-tracker-api` and `osrs-tracker-aws`, the entry says so. Per the global CLAUDE.md, changes to those repos go in as issues opened there, not edits from this repo.
 
-Tracked in roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-tracker/osrs-tracker-web/issues/220), opened 2026-10-12. Status 2026-10-12: changes 1, 4 and 5 are done (web#221, api#134 and aws#75 closed; the three `conventions-reviewer` copies now differ only in the repo name and description). Change 2 is web#222 and change 3 is web#223, both open. Change 6 is untracked and optional.
+Tracked in roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-tracker/osrs-tracker-web/issues/220), opened 2026-10-12. Status 2026-10-12: changes 1, 4 and 5 are done (web#221, api#134 and aws#75 closed; the three `conventions-reviewer` copies now differ only in the repo name and description). Change 2 is web#222 and change 3 is web#223, both open. Change 6 is done as a weekly cloud routine.
 
 ### Gap analysis for osrs-tracker-web
 
@@ -1474,7 +1474,7 @@ Tracked in roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-t
    - The agent bodies then differ only in the repo name, and `diff` shows drift (REPO-042, REPO-043).
    - Don't package them as a plugin: plugin agents drop `hooks`, and cloud sessions don't install repo-enabled plugins (REPO-041).
 5. **Done 2026-10-12** (the review step of `parallel-code-orchestrator` in FreekMencke/claude-skills says to spawn the reviewer "without `model`"). **Tell callers not to pass `model`** to repo agents *(low effort)*. This belongs in `parallel-code-orchestrator`'s reviewer step. Today's logs show none do, so this only keeps it that way (ORCH-003, REPO-026).
-6. **Optional: weekly docs-drift run** *(low impact, 15 min)*. Use a desktop scheduled task (or a cloud routine, which only sees claude.ai account skills, so keep `refresh-md-files` uploaded there) whose prompt is the `refresh-md-files` skill on CLAUDE.md, the skill and `docs/`. It opens a PR only for drift it can show (REPO-018, REPO-030). Skip it if the docs audits stay rare.
+6. **Done 2026-10-12** as the cloud routine "osrs-tracker weekly docs drift" (Mondays 05:00 UTC, Sonnet 5.5, all three repos, connectors removed). Each run audits the docs against the PRs merged that week with `refresh-md-files` and opens at most one PR per repo, only for drift it can prove. **Optional: weekly docs-drift run** *(low impact, 15 min)*. Use a desktop scheduled task (or a cloud routine, which only sees claude.ai account skills, so keep `refresh-md-files` uploaded there) whose prompt is the `refresh-md-files` skill on CLAUDE.md, the skill and `docs/`. It opens a PR only for drift it can show (REPO-018, REPO-030). Skip it if the docs audits stay rare.
 
 **Not recommended now:**
 - A Claude review job in CI or managed Code Review. Managed review needs Team or Enterprise, and local review already covers every PR. If ever added, follow REPO-038.
