@@ -19,7 +19,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
 | How many skills is too many, and how do I prune? | No official number; trigger accuracy measurably drops as the roster grows. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
-| Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills no (local test); plugins enabled in the distro's settings load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054 |
+| Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills no (local test), so symlink the ones you need into the distro's `~/.claude/skills`; plugins enabled in the distro's settings load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054, SKILL-056 |
 | Where should skills live with desktop and WSL? | WSL uses the distro's Linux `~/.claude`; Windows and WSL share no skills, plugins, settings or credentials. Keep skills in a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-051, SKILL-056 |
 
 ## Index
@@ -1188,9 +1188,9 @@ Bisect:
 
 So the cause is how the desktop app launches the session, not the CLI version.
 
-Likely mechanism (inference): the documented desktop path (SKILL-049) is "passing plugins to the session", and the docs say plugins aren't passed to WSL sessions. Meanwhile the file sync doesn't apply, presumably because the app supplies credentials to the session (the session's env shows host-brokered auth) rather than a `/login` sign-in.
+Likely mechanism (inference): the desktop path (SKILL-049) passes plugins, which WSL sessions don't get, and the file sync doesn't apply because the app brokers auth instead of a `/login` sign-in.
 
-Consequence: put any skill you need in desktop WSL sessions in the distro's `~/.claude/skills` or the repo's `.claude/skills`, not only on claude.ai.
+Fix (verified): put the skill in the distro's `~/.claude/skills` or the repo's `.claude/skills`. Per-skill symlinks from a git repo into `~/.claude/skills/` appeared in a running desktop WSL session's listing without a restart (SKILL-056).
 
 ## [SKILL-051] Windows and WSL keep separate `~/.claude` homes
 - Type: fact
@@ -1306,7 +1306,7 @@ Most of this is general Linux behaviour that no Claude doc confirms for skills s
 ln -s ~/repos/my-skills/skills/roadmap-issues ~/.claude/skills/roadmap-issues
 ```
 
-- Per-skill symlinks are documented. They have also been reported working in desktop WSL sessions, with 33 skills.
+- Per-skill symlinks are documented, and they work in desktop WSL sessions: reported with 33 skills, and confirmed in the local test.
 - Linking each skill rather than the whole folder keeps `~/.claude/skills/synced/` separate.
 
 **3. Put repo-specific skills in the repo's `.claude/skills/`.** That is the one path that behaves the same in every session type: CLI, desktop Local and WSL, and cloud.
@@ -1383,8 +1383,7 @@ Ranked by impact versus effort:
    - `skill-workshop` and `skill-creator`. skill-workshop already names skill-creator; skill-creator is the one without a boundary.
 
    Add a "not for…" line on each side of every pair, or set the one you don't use to `skillOverrides: off`. (SKILL-012, SKILL-045)
-4. **High impact, medium effort: move the skills' source into git and add evals.** Today their source of truth is claude.ai: there is no history and no review, and the sync is one-way, so local edits are lost. A private repo laid out as a skills-dir plugin (`claude plugin init`) would add three things:
-   - History and review.
+4. **High impact, medium effort: move the skills' source into git and add evals.** Started 2026-10-12: FreekMencke/claude-skills is a private repo laid out as a skills-dir plugin (plugin name `freek-skills`, since names can't start with `claude-`), and it passes `claude plugin validate --strict` (recommendation 9). Still to add:
    - `claude plugin validate --strict` in CI.
    - `evals/` cases for `claude plugin eval`: 3 positive and 3 near-miss negative prompts per skill, the negatives drawn from the sibling skills, with a `tool_used: Skill` grader.
 
@@ -1399,12 +1398,9 @@ Ranked by impact versus effort:
 6. **Medium impact, low effort: trim the workflow out of the `parallel-code-orchestrator` description.** "…then integrate, verify and run the repo's reviewer agent" is the kind of step summary superpowers found agents follow instead of the body. Keep the outcome and the triggers. Then measure triggering and compliance before and after. (SKILL-013)
 7. **Medium impact, medium effort: protect `parallel-code-orchestrator` against compaction.** At about 2,850 words (an estimated 3.8k tokens) it fits the 5k tokens kept per skill after compaction. But it shares the 25k re-attach budget with other skills, and it runs in the longest sessions. Keep the hard rules (one repo per run, model table, when to stop and ask) in the first screen. Consider moving the brief template, triage and handoff format to `references/` files that are read when those steps start. Check for staleness at each model release: the model-tier table names specific models. (SKILL-006, SKILL-017, SKILL-019, SKILL-032)
 8. **Low effort: audit listing pressure.** The 26 synced skills alone carry about 14.7k characters of descriptions. Seven of them (docs, terminal, pptx, xlsx, computer-health-check, computer-use, docx) are each about 940–1,010 chars. Run `/skill-doctor` and `/context`, and set unused ones to `name-only` or `off`. (SKILL-005, SKILL-030)
-9. **High impact, low effort: make our custom skills reachable in desktop WSL sessions.** This is now confirmed and explained (SKILL-050). Desktop sessions in the Ubuntu distro load none of the claude.ai account skills, even though the files are synced to disk. So `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop` are missing exactly where most of our work runs. Fix:
-   - Put them in a git repo on the distro filesystem and symlink each one into `~/.claude/skills/` (SKILL-056). This is recommendation 4 with a second reason.
-   - Set `syncClaudeAiSkills: false` in the distro's `~/.claude/settings.json`, so the terminal CLI doesn't list each skill twice.
-   - Keep the claude.ai copies only if chat or Cowork use them.
-
-   Until then, the terminal CLI in WSL does have them.
+9. **Done 2026-10-12: make our custom skills reachable in desktop WSL sessions** (SKILL-050). `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop` now live in the private repo FreekMencke/claude-skills (`~/repos/claude-skills`). Its `install.sh` symlinks each one into `~/.claude/skills/` (SKILL-056), and all four appeared in a running desktop WSL session.
+   - Left open: `syncClaudeAiSkills: false` would stop the terminal CLI listing each skill twice, but it also drops every other account skill there. Decide once the terminal CLI is signed in again and the duplicates can be seen.
+   - Keep the claude.ai copies for chat, Cowork and Local sessions. Upload a ZIP after each change in the repo so they don't drift.
 10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). The same applies to this repo's `CLAUDE.md` when worktrees change it.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
 12. **Low effort: prune unused account skills on claude.ai** (pdf, docx, pptx, xlsx, computer-use, chrome-browser and the like), not in Claude Code settings. In desktop Local sessions they arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).

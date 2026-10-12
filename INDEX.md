@@ -407,3 +407,4 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | Date | IDs | Change |
 |---|---|---|
 | 2026-10-12 | all | INDEX.md created (step 3: merge and index). 5 full and 5 partial merges, 5 conflicts recorded, 10 cross-links added; see Merges and Conflicts. `kb-token-usage.md` R4 corrected per ORCH-005. |
+| 2026-10-12 | SKILL-050, SKILL-056 | Fix for missing account skills in desktop WSL sessions verified: per-skill symlinks from a git repo into `~/.claude/skills/` load there, without a restart. Recommendation 9 in `kb-skills.md` marked done (FreekMencke/claude-skills), recommendation 4 started. |
