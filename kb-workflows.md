@@ -19,7 +19,7 @@ Prefix: FLOW. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296
 | What happens to a message I send while Claude works? | It's queued and handed to Claude as soon as the current tool calls finish, inside the same turn. `Ctrl+Enter` sends now. `Esc` interrupts and keeps the work done so far. | FLOW-030, FLOW-031 |
 | How do I ask something without polluting context? | `/btw <question>`: sees the conversation, has no tools, never enters history, and runs while Claude works. Press `f` to fork it into a subagent with tools. | FLOW-032, TOK-033 |
 | Does Claude Code detect loops by itself? | Only narrow guards: the Stop-hook block cap (8), `/goal`'s no-progress stop, auto mode pausing after 3 blocks in a row or 20 in total, and the autocompact thrash stop. Nothing catches the same failed fix repeated. | FLOW-023 |
-| How does our setup compare? | Strong on verify commands, handoffs and PR polling. Gaps: no `verify` skill in aws yet, no rule for showing evidence or for stopping after two failed fixes, and blocking CI waits instead of background ones. | FLOW-033 |
+| How does our setup compare? | Strong on verify commands, handoffs and PR polling. Gaps: no rule for showing evidence or for stopping after two failed fixes, and blocking CI waits instead of background ones. | FLOW-033 |
 
 ## Index
 
@@ -708,7 +708,7 @@ Read 2026-10-12: global CLAUDE.md, user settings, claude-skills at `ed6c8ba`, an
 | Finding | Ours | Gap |
 |---|---|---|
 | Verify command (FLOW-011) | Each repo's CLAUDE.md has one; roadmap issues carry `## Verify`; orchestrator's "done-when is a command" | None |
-| `verify` skill (FLOW-013) | web and api since 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139) | None in aws yet (osrs-tracker/osrs-tracker-aws#80) |
+| `verify` skill (FLOW-013) | All three repos since 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81); each runs every check, cheapest first, and reports all failures at once | None |
 | Evidence (FLOW-015) | Compact instructions keep verify results | No rule to show the command and output when claiming done |
 | Stuck (FLOW-021) | `handoff` skill: state, dead ends, `/clear` | No "two failed fixes → stop" rule |
 | Plan mode (FLOW-006–009) | `defaultMode: auto`; Opus at `high` for research | `showClearContextOnPlanAccept` unset |
@@ -722,7 +722,7 @@ Read 2026-10-12: global CLAUDE.md, user settings, claude-skills at `ed6c8ba`, an
 
 Ranked by impact against effort. Changes in other repos need an issue there (global CLAUDE.md rule); this session opened none, so they are listed in the PR.
 
-1. **A `verify` skill in each osrs-tracker repo** (high impact, low effort). `.claude/skills/verify/SKILL.md` that runs the repo's verify command (or per-Lambda verify in aws) and reports the output, without `disable-model-invocation`. Since v2.1.286 Claude's commit instructions then run it before every non-docs, non-test commit. Optionally run `/run-skill-generator` once in osrs-tracker-web for `/verify` against the running app. Done for web and api 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139); aws is osrs-tracker/osrs-tracker-aws#80. FLOW-013.
+1. **A `verify` skill in each osrs-tracker repo** (high impact, low effort). `.claude/skills/verify/SKILL.md` that runs the repo's verify command (or per-Lambda verify in aws) and reports the output, without `disable-model-invocation`. Since v2.1.286 Claude's commit instructions then run it before every non-docs, non-test commit. Optionally run `/run-skill-generator` once in osrs-tracker-web for `/verify` against the running app. Done in all three repos 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81). Each skill runs every check even after a failure, cheapest first, so one fix round covers all failures (osrs-tracker/osrs-tracker-web#236, osrs-tracker/osrs-tracker-api#141). FLOW-013.
 2. **Two lines in `~/.claude/CLAUDE.md`** (medium impact, trivial effort):
    - A reporting rule, not an extra verification step: "When reporting work done, name the verify command you ran in this session and its result; say which check you didn't run and why." Opus over-verifies when told to add verification passes (PROMPT-030), but evidence-based reporting holds for every tier (PROMPT-027).
    - "After two failed attempts at the same fix, stop, list the hypotheses and suggest a rewind or `/handoff`."
