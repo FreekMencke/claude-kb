@@ -226,6 +226,7 @@ How to write for this:
 - Edits to skill directories reload live. A newly created top-level `skills/` folder needs `/reload-skills`.
 - Reserved names: `synced`, and outside a plugin `anthropic-skills` or a name starting `anthropic-skills:`. v2.1.282 also reserved `claude-ai`; v2.1.283 reverted that.
 - Cloud sessions don't see personal `~/.claude/skills`.
+- The cross-tool `.agents/skills/` directory isn't in the docs' list. A 2026-10-12 probe was blocked by auto mode, so whether Claude Code reads it is still untested (see Open questions).
 
 ## [SKILL-008] Arguments, variables and `!` context injection
 - Type: fact
@@ -1424,7 +1425,7 @@ Still open:
 - **`/skill-doctor` version.** The docs say v2.1.252+; the CHANGELOG lists it under 2.1.261.
 - **Official marketplace submission.** The claude-plugins-official README points to a form; the Claude Code docs say the official marketplace takes no portal submissions and to use a partner contact.
 - **Skills API beta header.** Is `skills-2025-10-02` still needed? One agent read it is not; another couldn't confirm.
-- **`.agents/skills`.** Does Claude Code read the cross-tool `.agents/skills` directory? Not documented.
+- **`.agents/skills`.** Does Claude Code read the cross-tool `.agents/skills` directory? Not documented. The 2026-10-12 probe (FreekMencke/claude-kb#27) was blocked: auto mode refused writing a test `SKILL.md` under `.agents/skills/` in a scratch repo as `[Self-Modification]`. Run it by hand: a skill there that replies one word, then `claude -p --model haiku --max-turns 1 --max-budget-usd 0.50 "/<name>"`.
 - **Trigger-only descriptions.** Does superpowers' finding (SKILL-013) hold on current models? It is single-source, with no controlled replication.
 - **Forcing hooks.** Do hooks that force skill evaluation still help on current models (Opus 5.x, Sonnet 5.x)? All published measurements are on 4.5-era models or small N.
 - **Claude Code-only frontmatter on claude.ai.** Does claude.ai accept, ignore or reject fields such as `context`, `agent` or `disable-model-invocation` in a skill that arrives through a marketplace plugin (SKILL-059) rather than a ZIP upload? Until tested, `freek-skills` keeps to standard frontmatter.
