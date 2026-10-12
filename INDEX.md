@@ -10,6 +10,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 52 (0 merged into other entries) |
 | `kb-sessions.md` | SESS | Several sessions in one repo | 35 (0 merged into other entries) |
 | `kb-hooks.md` | HOOK | Hooks: events, handler types, cost, debugging, security, patterns | 36 (0 merged into other entries) |
+| `kb-infra-agents.md` | INFRA | Agents with cloud and cluster access | 24 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -48,6 +49,9 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | How do I write a hook that blocks something? | A `PreToolUse` command hook that exits 2 with the reason on stderr, or exits 0 with `permissionDecision: "deny"` JSON. Exit 1 doesn't block, and a crashing or timed-out hook lets the action through unless it sets `onFailure: "block"` (v2.1.295+). | HOOK-004, HOOK-006, HOOK-013 |
 | What does a hook cost? | A command hook costs a few ms per call and no tokens unless it returns text. A `prompt` hook is a Haiku call per match; on Stop it re-reads the conversation uncached. Filter with `if` (e.g. `Bash(git *)`) and use `async` for slow checks. | HOOK-015, HOOK-010, HOOK-019 |
 | How do I debug a hook that does nothing? | Pipe sample JSON into the script and check the exit code, then run with `claude --debug-file <path>` and grep `Hooks:` lines. Usual causes: exit 1, text before the JSON, a field outside `hookSpecificOutput`, matcher case, one invalid matcher dropping the file. | HOOK-022, HOOK-023, HOOK-024 |
+| Is a read-only MCP server enough to keep an agent read-only on AWS or Kubernetes? | No. The flag is client-side, and Bash can run `aws` or `kubectl` with the same profile or kubeconfig. Only the credential's IAM policy or RBAC binds every path; scope the identity the agent can reach. | INFRA-006, INFRA-004, INFRA-005 |
+| How should an agent change infrastructure? | It plans or opens a PR; a human or CI applies. Preview first (`terraform plan -out`, `kubectl diff`, `flux diff`). Auto mode blocks an apply with no visible plan, but misses about 17% of overeager actions. | INFRA-013, INFRA-014, INFRA-009 |
+| Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of the agent's reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
 
 ## Index
 
@@ -449,6 +453,35 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | HOOK-035 | Plugin mods versus settings hooks | fact | mods, plugins |
 | HOOK-036 | Our hooks today (osrs-tracker repos, user settings) | fact | our-setup, osrs-tracker |
 
+### Agents with cloud and cluster access (`kb-infra-agents.md`, INFRA)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| INFRA-001 | What Anthropic and AWS say about cloud credentials for agents | fact | least-privilege, identity, aws |
+| INFRA-002 | Isolation for infrastructure work: dev containers, cloud sessions, the sandbox | comparison | devcontainer, cloud-sessions, sandbox |
+| INFRA-003 | The AWS MCP Server: tools, read-only mode and IAM context keys | tool | aws, mcp, iam |
+| INFRA-004 | kubernetes-mcp-server: read-only, denied resources and output | tool | kubernetes, mcp, read-only |
+| INFRA-005 | Flux MCP server: read-only, secret masking and filters | tool | flux, mcp, gitops |
+| INFRA-006 | What a server or a credential enforces that Bash rules can't | fact | mcp, rbac, iam, permissions |
+| INFRA-007 | Output size: MCP filters versus CLI output | recommendation | mcp, tokens, output |
+| INFRA-008 | Permission rules for `aws`, `kubectl`, `helm` and `terraform` | fact | permissions, bash, cloud-cli |
+| INFRA-009 | Auto mode's built-in rules for cloud and cluster actions | fact | auto-mode, classifier, infra |
+| INFRA-010 | Telling auto mode which infrastructure is production | recommendation | auto-mode, environment, settings |
+| INFRA-011 | The sandbox with cloud CLIs, and AWS credential masking | tool | sandbox, credentials, sigv4 |
+| INFRA-012 | Guard hooks for destructive infrastructure commands | pattern | hooks, pretooluse, safety |
+| INFRA-013 | Plan and apply split with human approval | pattern | terraform, approval, ci |
+| INFRA-014 | GitOps: the agent opens a PR, Flux applies it | pattern | gitops, flux, pr |
+| INFRA-015 | Dry-run and diff commands before any change | fact | dry-run, diff, kubectl, terraform |
+| INFRA-016 | AWS audit trail: CloudTrail and attributing agent actions | fact | cloudtrail, audit, aws |
+| INFRA-017 | Kubernetes audit logs and Claude Code's own records | fact | audit, kubernetes, otel, hooks |
+| INFRA-018 | Reading logs and events with filters during an incident | pattern | logs, incidents, mcp |
+| INFRA-019 | A read-only subagent that digests logs | pattern | subagents, logs, incidents |
+| INFRA-020 | AWS credentials: profiles, short-lived sessions and Claude Code's AWS settings | fact | credentials, sso, sts, settings |
+| INFRA-021 | How credentials leak into transcripts, environments and telemetry | fact | credentials, transcripts, otel, env |
+| INFRA-022 | Published incidents: agents that destroyed infrastructure or data | fact | incidents, terraform, databases |
+| INFRA-023 | Which guardrail would have stopped each incident | recommendation | incidents, guardrails |
+| INFRA-024 | Our setup: AWS, Kubernetes and MCP access as of 2026-10-12 | fact | our-setup, aws, kubernetes, mcp |
+
 ## Conflicts
 
 Places where entries, or an entry and another file's recommendations or open questions, disagree. Checked 2026-10-12 against the sources the entries cite; the pages were not re-fetched.
@@ -460,6 +493,7 @@ Places where entries, or an entry and another file's recommendations or open que
 | Does `CLAUDE_CODE_SUBAGENT_MODEL` move built-in Explore? | `kb-token-usage.md` recommendation R4 said the env var covers "all subagents… including built-in Explore". ORCH-005 quotes the docs: plain `CLAUDE_CODE_SUBAGENT_MODEL` doesn't change Explore or Plan; a user agent named `Explore` does. | ORCH-005. R4 is corrected to say so. |
 | Which model for the `Explore` override? | `kb-orchestration.md` recommendation 13 and REPO-022: Haiku 5.5 at `medium`. `kb-token-usage.md` R4 offers an `Explore` override with `model: sonnet` as its alternative. | ORCH-030 and ORCH-005 support Haiku 5.5 for read-only search (the official code-review plugin uses Haiku for this role); ORCH-033's Sonnet floor applies to agents that write. Combined advice: `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` for general-purpose subagents, plus an `Explore` override on Haiku 5.5 at `medium`, checked after a week. |
 | Sonnet 5.5's default effort | ORCH-026 and TOK-055: `high` on the API. ORCH-028: `medium` in Claude Code. | Not a contradiction: the two surfaces have different defaults, and ORCH-028 says so. Whether that's intentional is an open question in `kb-orchestration.md`. |
+| Does settings `env` keep `AWS_PROFILE` from other processes? | The Amazon Bedrock page: use settings files for "environment variables like `AWS_PROFILE` that you don't want to leak to other processes". The settings reference: `env` values "reach every subprocess Claude Code starts". | The settings reference, which describes the mechanism; the Bedrock line means the value stays out of your shell profile. INFRA-020 quotes both. |
 
 ## Overlaps kept on purpose
 
@@ -484,6 +518,12 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Hook events: HOOK-001 and HOOK-002 (every event), ORCH-019 (orchestration events and uses).
 - Blocking hooks: HOOK-028 (dangerous commands, protected files), REPO-033 (read-only reviewer), TOK-042 and TOK-044 (output and large-read hooks).
 - Our osrs-tracker hooks: HOOK-036 (hook details and the aws `git -C` gap), REPO-001 (repo baseline).
+- Sandboxing and credentials: REPO-035 and REPO-036 (repo agents), INFRA-011 (cloud CLIs, AWS credential masking) and INFRA-021 (transcripts, env, telemetry).
+- Permission rules and their limits: REPO-034 (Bash rules are text matches), INFRA-008 (cloud CLI flag order), INFRA-006 (server flags versus credentials).
+- Auto mode: REPO-032 (modes, subagents, fallback), INFRA-009 and INFRA-010 (infrastructure rules, environment entries).
+- MCP servers: TOK-020 to TOK-023 (overhead and output limits), INFRA-003 to INFRA-005 and INFRA-007 (AWS, Kubernetes and Flux servers).
+- Guard hooks: HOOK-028 and HOOK-032 (pattern, collections), INFRA-012 (infrastructure packs).
+- Incidents: REPO-037 (prompt injection in repos and CI), INFRA-022 and INFRA-023 (destroyed infrastructure and data).
 
 ## Merges
 
@@ -508,6 +548,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-12 | INFRA-001 to INFRA-024 | New topic file `kb-infra-agents.md` (FreekMencke/claude-kb#21): cloud identities and isolation, AWS/Kubernetes/Flux MCP servers versus CLIs, permission rules, auto mode and the sandbox for infrastructure commands, plan and apply, GitOps, audit trails, incident debugging, credential leaks, published incidents, and a review of our AWS, cluster and MCP access. 3 Quick answers, 1 conflict and 6 overlap clusters added. |
 | 2026-10-12 | SESS-001 to SESS-035 | New topic file `kb-sessions.md` (FreekMencke/claude-kb#20): worktrees and shared git state, shared `~/.claude` state, cross-session messaging, keeping branches current on GitHub, hand-offs, and usage limits. 3 Quick answers and 5 overlap clusters added. |
 | 2026-10-12 | all | INDEX.md created (step 3: merge and index). 5 full and 5 partial merges, 5 conflicts recorded, 10 cross-links added; see Merges and Conflicts. `kb-token-usage.md` R4 corrected per ORCH-005. |
 | 2026-10-12 | SKILL-050, SKILL-056 | Fix for missing account skills in desktop WSL sessions verified: per-skill symlinks from a git repo into `~/.claude/skills/` load there, without a restart. Recommendation 9 in `kb-skills.md` marked done (FreekMencke/claude-skills), recommendation 4 started. |
