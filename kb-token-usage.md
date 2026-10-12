@@ -525,6 +525,7 @@ Access and console:
 Other controls:
 - Per server: `alwaysLoad: true` in `.mcp.json` exempts a server from deferral.
 - As of v2.1.296 (2026-10-09) the default limit on MCP tool descriptions sent up front and on server instructions is 4,096 characters, up from 2,048 (`CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH`). The MCP and env-vars pages still say 2,048. Changelog v2.1.295 says descriptions loaded *through tool search* are cut at 16,384.
+- Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), a local stdio MCP server with one 10,000-character description: through ToolSearch the whole description arrived (all 100 position markers in the `deferred_tools_record`). With `ENABLE_TOOL_SEARCH=false` (loaded up front) it was cut after about 4,000 characters, ending `[04… [truncated]`. So 4,096 applies up front and the larger tool-search cap applies to deferred loads; the 2,048 in the docs is stale.
 
 History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases switched to defer-all. Blog posts that describe 10% auto as the default are outdated.
 
@@ -635,7 +636,9 @@ Instructions given only in conversation are lost on `/clear` and compaction. Put
 
 Steering the summary:
 - `/compact Focus on code samples and API usage` tells the summarizer what to keep.
-- A `# Compact instructions` section in CLAUDE.md applies every time. It is advisory; how strictly it's honoured is unverified.
+- A `# Compact instructions` section in CLAUDE.md applies every time. It is advisory: the summarizer sees CLAUDE.md as context, and the heading itself made no difference in our test.
+
+Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), `claude -p --resume <id> "/compact"` (compaction works in `-p`), one run per cell: "When summarizing: start the summary with the exact line `MARKER: …`" was followed under both `# Compact instructions` and a neutral `# Notes` heading. The bare "Start with the exact line `MARKER: …`" was ignored under both. Write compact instructions that say they are for the summary; the heading alone doesn't scope them.
 
 What survives:
 - "System prompt, CLAUDE.md, memory, and MCP tools reload automatically."
@@ -703,7 +706,11 @@ Rewinding truncates to an already-cached prefix, so it's cheaper than `/compact`
 
 "Your first message after a break longer than the cache lifetime misses the cache and reprocesses your full context." The lifetime is 1 hour on a subscription and 5 minutes on an API key.
 
-`--resume` and `--continue` re-send the full history. On Pro and Max, for sessions idle more than about 1 hour and over 100k tokens, Claude Code offers "Resume from summary", which runs `/compact`.
+`--resume` and `--continue` re-send the full history.
+
+Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), anthropics/claude-code#78720: a fresh `-p` run read 25,180 cached tokens and wrote about 13,460 (repeated identically on two more fresh runs). Of three `-p --resume` runs within minutes, two read the whole prior prefix (38,646 and 38,652 read, 112–128 written), including one after an untracked file changed `git status`, the issue's trigger. One resume wrote 11,120 tokens again (27,579 read), a partial miss we couldn't reproduce. The bug is not reliably present; expect an occasional rebuild.
+
+On Pro and Max, for sessions idle more than about 1 hour and over 100k tokens, Claude Code offers "Resume from summary", which runs `/compact`.
 
 Idle sessions can still spend: scheduled tasks, cross-session messages and goal check-ins each send the full context. Background helpers (titles, resume summaries) cost under $0.04 per session.
 
@@ -1390,7 +1397,7 @@ Anthropic's postmortem:
 - The default effort dropped to medium on 2026-03-04 and was reverted 2026-04-07.
 - Usage limits were reset on 2026-04-23.
 
-Community reports in #38335 (877 comments) and #41930 include a 5-hour window gone in 19 minutes on Max 20x. Other suspected causes, such as `--resume` breaking the cache, were partly fixed. #78720 (`-p --resume` after a git status change) is still open.
+Community reports in #38335 (877 comments) and #41930 include a 5-hour window gone in 19 minutes on Max 20x. Other suspected causes, such as `--resume` breaking the cache, were partly fixed. #78720 (`-p --resume` after a git status change) is still open, but our v2.1.296 test didn't reproduce it reliably (TOK-034).
 
 Lessons:
 - Watch the `Prompt cache (main)` line in `/usage` and `prompt_cache` in the status line, so a cache regression shows within a session, not at the weekly limit.
@@ -1723,7 +1730,7 @@ Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first la
 - Tool output entering context: Bash about 6.9M tokens, about 995 screenshots, text file reads about 0.9M.
 
 Ranked by expected savings ÷ effort. Done on 2026-10-12, now in `~/.claude` or FreekMencke/claude-skills (re-measure with R6 a month later, Open question 2):
-- R1: `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md (TOK-031, TOK-032).
+- R1: `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md whose lines say they're for the summary ("When summarizing, keep…"; TOK-031, TOK-032).
 - R2: a context status line (TOK-011, TOK-082).
 - R3: the user-only `handoff` skill: write state to the issue/PR or a scratch file, then `/clear` (FreekMencke/claude-skills#13; TOK-030, TOK-085).
 - R4: `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`, plus the Haiku `Explore` override (ORCH recommendation 13), because the env var doesn't reach built-in Explore and Plan (ORCH-005, TOK-036).
@@ -1777,13 +1784,13 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 1. **Real system prompt and tool sizes.** Answered 2026-10-12: `claude -p "/context all"` in a fresh terminal session in this repo measured a 29.4k starting prefix, close to the 24–27k inferred from `usage`. See "Measured starting context" above.
 2. **Compaction quality versus window size.** The R1 simulation ignores compaction cost and lost detail. Re-measure with R6 a month after R1: tracked as [FreekMencke/claude-kb#13](https://github.com/FreekMencke/claude-kb/issues/13), due 2026-11-12.
 3. **How plan usage is weighted.** Are cache reads weighted like API prices (0.05x on Opus 5.5) when counting against 5-hour and weekly limits? Not documented. Our dollar figures are list-price equivalents, not plan percentages.
-4. **MCP description cap.** The docs say 2,048 characters; changelog v2.1.295 says 16,384 for descriptions loaded via tool search. Unresolved.
+4. **MCP description cap.** Answered 2026-10-12: tested, 4,096 characters up front and at least 10,000 (the changelog's 16,384) via tool search; the docs' 2,048 is stale (TOK-020).
 5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
 6. **Skill descriptions and triggering.** No Anthropic benchmark relates description length to trigger rate. The evidence is skill-creator's "pushy" advice, superpowers' anecdotes and Vercel's eval.
 7. **Unverified plan changes.** The May 2026 limit doubling and peak-hour changes, and whether per-model weekly meters other than Fable still exist on some plans, are reported only by secondary sources.
 8. **Token savers.** No independent session-level measurement of any community token saver (RTK, context-mode, Serena, claude-context) including task success.
-9. **Compact instructions.** Is the `# Compact instructions` heading special-cased by the summarizer, or just context it sees?
-10. **Resume cache bug.** Is `-p --resume` cache breakage (#78720) still present in v2.1.296?
+9. **Compact instructions.** Answered 2026-10-12: tested, just context it sees; the same text worked or failed alike under `# Compact instructions` and `# Notes` (TOK-031). One Haiku run per cell; a larger model may read the heading as scoping.
+10. **Resume cache bug.** Answered 2026-10-12: tested, not reliably present in v2.1.296; two of three `-p --resume` runs hit the full cache, including after a `git status` change, and one rewrote 11k tokens (TOK-034).
 11. **WebSearch `extended`.** What it does differently, what "several times the cost" means on a subscription, and whether one extended call counts as one against the 200-call budget. Only the tool schema mentions the modes (TOK-093). One test is not a latency or freshness measurement.
 12. **Metering of web tools on a subscription.** How WebSearch calls and WebFetch's extraction-model calls count against plan usage, and which model does the extraction today (TOK-087, TOK-094).
 13. **When WebFetch skips summarization.** The preapproved domain list isn't published; our tests fit "preapproved and under 100,000 characters", but the rule isn't documented (TOK-088). The size at which a WebFetch result goes to a file instead of inline (seen at 56.6 KB) isn't documented either.
