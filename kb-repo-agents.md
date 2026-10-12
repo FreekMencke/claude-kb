@@ -1442,6 +1442,8 @@ The common principles: only issues introduced by the diff, an exclusion list, a 
 
 Scope: `osrs-tracker-web` as inspected on 2026-10-12 (REPO-001 to REPO-004). Where a change also applies to `osrs-tracker-api` and `osrs-tracker-aws`, the entry says so. Per the global CLAUDE.md, changes to those repos go in as issues opened there, not edits from this repo.
 
+Tracked in roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-tracker/osrs-tracker-web/issues/220), opened 2026-10-12. Its children are web#221 (T1 and the hook), api#134 and aws#75 (T1 in those repos), web#222 (T2) and web#223 (T3).
+
 ### Gap analysis for osrs-tracker-web
 
 | Area | Today | Gap | Fix | Entries |
