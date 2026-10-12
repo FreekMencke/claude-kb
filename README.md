@@ -38,6 +38,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [kb-hooks.md](kb-hooks.md) | `HOOK`: writing, scoping, debugging, securing and pricing hooks |
 | [kb-infra-agents.md](kb-infra-agents.md) | `INFRA`: agents with cloud and cluster access: credentials, MCP servers, rules, auto mode, audit trails, incidents |
 | [kb-prompting.md](kb-prompting.md) | `PROMPT`: instructing the 5.x models: prompt wording, CLAUDE.md and agent bodies, subagent briefs |
+| [kb-workflows.md](kb-workflows.md) | `FLOW`: session workflows (planning, verifying, checkpoints and git, recovering a stuck session, waiting on CI, steering) |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
 | [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage |
 
