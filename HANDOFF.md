@@ -70,7 +70,13 @@ Put it in `~/repos/claude-skills/skills/claude-kb-lookup/`, commit it there, and
 
 ### Step 5: monthly re-verification (done)
 
-Result: cloud routine "claude-kb monthly re-verification" (https://claude.ai/code/routines/trig_01HDV9ENf7vGtyTF52Lb4qTW), cron `0 6 1 * *` (UTC), Sonnet 5.5, on FreekMencke/claude-kb, no MCP connectors. Its prompt is the one below with two changes: it opens a PR from `claude/reverify-<YYYY-MM>` instead of pushing to main, so a wrong correction to an entry every agent trusts gets reviewed first; and it falls back to the Agent tool when workflows aren't available in the cloud. Review and merge that PR each month. Debug a run with RemoteTrigger `list_runs` and `get_run_log`; delete or pause the routine at https://claude.ai/code/routines.
+Result: cloud routine "claude-kb monthly re-verification" (https://claude.ai/code/routines/trig_01HDV9ENf7vGtyTF52Lb4qTW), cron `0 6 1 * *` (UTC), Sonnet 5.5, on FreekMencke/claude-kb, no MCP connectors. Its prompt is the one below with these changes:
+
+- It opens a PR from `claude/reverify-<YYYY-MM>` instead of pushing to main, so a wrong correction to an entry every agent trusts gets reviewed first. It opens the PR with the cloud session's GitHub tool, because `gh pr create` uses GraphQL, which returns 403 in cloud sessions.
+- It falls back to the Agent tool when workflows aren't available in the cloud.
+- Its subagents curl raw sources and grep them for exact wording. A claim they can't find stays unchanged and is listed as "not found" in the PR; only a contradicting quote changes it. Redirecting URLs stay as cited.
+
+Why those rules: the first run (2026-10-12, FreekMencke/claude-kb#1) checked 174 entries in about 5 minutes and changed 25. A manual check against the raw sources found 8 of the 25 wrong, and 6 of those were claims it couldn't find in a truncated fetch, which it then removed or marked unverified. They were corrected before the merge. Review and merge the PR each month, spot-checking the removals and "unverified" marks first. Debug a run with RemoteTrigger `list_runs` and `get_run_log`; delete or pause the routine at https://claude.ai/code/routines.
 
 The planned prompt:
 
