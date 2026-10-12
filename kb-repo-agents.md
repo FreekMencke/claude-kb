@@ -208,7 +208,7 @@ Gaps against this file's findings:
 | Subagents | `.claude/agents/*.md` | Descriptions at start; body when spawned. Watched, live reload. | managed > `--agents` > project > user > plugin (ORCH-002) |
 | Skills | `.claude/skills/<name>/SKILL.md` | Description every turn, body on use (SKILL-004) | enterprise > personal > project; plugin namespaced (SKILL-007) |
 | Commands | `.claude/commands/*.md` | Same as skills; "merged into skills" (REPO-008) | A skill beats a same-named command |
-| Hooks | `hooks` in `.claude/settings.json` / `settings.local.json`; agent or skill frontmatter; plugin `hooks/hooks.json` | At start; frontmatter hooks only while that agent or skill is active | Merge, never override (REPO-006) |
+| Hooks | `hooks` in `.claude/settings.json` / `settings.local.json`; agent or skill frontmatter; plugin `hooks/hooks.json` | At start; agent frontmatter hooks only while that subagent runs, skill frontmatter hooks from invocation to the end of the session | Merge, never override (REPO-006) |
 | Permissions | `permissions` in settings files | At start | Lists merge; deny > ask > allow (REPO-006) |
 | Instructions | `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`, `.claude/rules/*.md` | Ancestors at launch, subdirectories lazily (TOK-003) | Concatenated, not overridden |
 | MCP servers | `.mcp.json` | After a per-server approval | — |
@@ -281,7 +281,7 @@ All of these are plain files, so they work in every surface that clones the repo
 **On collisions:**
 - A skill beats a same-named command.
 - Personal beats project.
-- A project command beats an `--add-dir` command.
+- Unverified: a project command beating an `--add-dir` command. The slash-commands page states no such rule.
 - Your own skill can replace a built-in command, but not its aliases.
 - Unverified: whether personal `~/.claude/commands/x.md` beats project `.claude/commands/x.md`. Presumably it follows the skill order, but the docs don't say.
 
@@ -514,9 +514,9 @@ A repo security agent adds value only for **repo-specific threat rules**, such a
 
 If you write one, copy two official designs:
 - **Tight scope.** The security-review command's allowed tools are `Bash(git diff:*)`, `git status`, `git log`, `git show`, `Read`, `Glob`, `Grep`, `LS` and `Task`. No web, no writes.
-- **Exclusions and a confidence bar.** It flags only findings with ">80% confident of actual exploitability" that are "newly added by this PR". It has 17 hard exclusions (REPO-047), then re-scores each finding in a sub-task and drops those below 8/10.
+- **Exclusions and a confidence bar.** It flags only findings with ">80% confident of actual exploitability" that are "newly added by this PR". It has a numbered hard-exclusions list (REPO-047), then re-scores each finding in a sub-task and drops those below 8/10.
 
-Model: Opus 5.5 `high` for discovery. `security-guidance` warns that dropping to Sonnet costs precision.
+Model: Opus 5.5 `high` for discovery. `security-guidance` runs both reviews on the newest Opus by default and advises staying on the default model if precision is the priority.
 
 ## [REPO-018] Docs-drift checker and docs updater
 - Type: recommendation
@@ -754,7 +754,7 @@ Official example, which blocks finishing until tests pass:
 - `allowed_bots`, `allowed_non_write_users` (REPO-038).
 - `use_sticky_comment`, `track_progress`, `use_commit_signing`/`ssh_signing_key`.
 - `show_full_output` (off; public in public repos).
-- Outputs include `structured_output` (with `--json-schema`) and `session_id`.
+- Outputs include `structured_output` (with `--json-schema`) (`session_id` as an output is not documented in usage.md; unverified).
 
 **Auth:**
 - `anthropic_api_key`.
@@ -1000,7 +1000,7 @@ A ready hook script is in template T1.
 **In the action:**
 - It scrubs Anthropic, cloud and Actions secrets from subprocess environments on a best-effort basis.
 - `show_full_output` logs tool output, which is "publicly visible in GitHub Actions for public repositories". It is auto-on with `ACTIONS_STEP_DEBUG`.
-- Never pass a PAT as `github_token`.
+- With `allowed_non_write_users`, don't pass a personal access token as `github_token`: "a static token does not rotate between runs".
 - The official GitHub App has broad permissions that can't be narrowed at install. A custom App with only Contents, Issues and PRs is the documented alternative.
 
 **Public repos:**
@@ -1044,7 +1044,7 @@ A ready hook script is in template T1.
 - Related: REPO-027, REPO-037
 
 **Defaults to keep:**
-1. **Keep the write-access gate.** Only users with write access trigger the action by default, and bots are blocked unless in `allowed_bots`. Never set `allowed_bots: '*'` on a public repo. `allowed_non_write_users` "is a significant security risk". If used, pair it with `issues: write` only and `--allowedTools "Bash(gh issue view:*)"`.
+1. **Keep the write-access gate.** Only users with write access trigger the action by default, and bots are blocked unless in `allowed_bots`. Prefer an explicit `allowed_bots` list over `'*'`; if you need `'*'`, scope the workflow `permissions:` to the minimum. `allowed_non_write_users` "is a significant security risk". If used, pair it with `issues: write` only and `--allowedTools "Bash(gh issue view:*)"`.
 2. **Least-privilege job tokens.** A review job needs `contents: read`, `pull-requests: write` (to comment) and `id-token: write` only for OIDC. Allow only `gh pr diff`, `gh pr view` and the inline-comment MCP tool.
 
 **What not to do:**
@@ -1054,7 +1054,7 @@ A ready hook script is in template T1.
 6. **Don't run PR code in privileged jobs.** Config is restored from base, but `package.json` scripts are not (REPO-028).
 
 **Maintenance:**
-7. **Pin and update the action.** v1.0.74+ for the config restore, v1.0.94+ for the bot and env fixes. Leave `show_full_output` off.
+7. **Pin and update the action.** Unverified: v1.0.74+ for the config restore, v1.0.94+ for the bot and env fixes (not on security.md). Leave `show_full_output` off.
 8. **Use the repo's fork approval setting.** `anthropics/claude-code-security-review` recommends "Require approval for all external contributors" and is "not hardened against prompt injection".
 9. **Cap cost:** `--max-turns`, `timeout-minutes`, `concurrency`.
 
@@ -1262,7 +1262,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 | pr-review-toolkit `pr-test-analyzer` | none | inherit | Criticality 1–10 |
 | code-review **command** | `gh pr` reads, `gh pr comment`, inline-comment MCP | Haiku, Sonnet, Opus subagents | No score; per-finding validator subagents (REPO-048) |
 | claude-security `scan-verifier` | Read, Glob, Grep, Bash, `Agent(claude-security:explore)` | inherit, `effort: xhigh` | Adversarial verdicts (REPO-048) |
-| Docs example `code-reviewer` | Read, Grep, Glob, Bash | inherit | Critical / Warnings / Suggestions, no filter |
+| Docs example `code-reviewer` | Read, Grep, Glob, Bash (CLI `--agents` JSON) or Read, Glob, Grep (file example) | sonnet | No severity scheme or filter shown |
 
 **Observations:**
 1. There is **no official consensus on the model**: Opus, Sonnet and `inherit` all appear for the same job.

@@ -488,8 +488,9 @@ Use it when you are building a product that needs long-running asynchronous agen
 | `SubagentStop` | Yes (`decision: "block"` + reason) | Refuse to let a worker stop until its verify command passes; receives `last_assistant_message` |
 | `TaskCreated` / `TaskCompleted` | Yes (exit 2) | Gate team tasks on tests |
 | `TeammateIdle` | Yes | Keep a teammate working |
-| `WorktreeCreate` / `WorktreeRemove` | Yes (non-zero exit fails) | Custom VCS, dependency install, port allocation per worktree |
-| `PreCompact` / `PostCompact` | — | Persist a progress file before compaction |
+| `WorktreeCreate` / `WorktreeRemove` | Create: any non-zero exit fails. Remove: fails only if the directory still exists afterward | Custom VCS, dependency install, port allocation per worktree |
+| `PreCompact` | Yes (exit 2 blocks compaction) | Persist a progress file before compaction |
+| `PostCompact` | No (stderr to user only) | Post-compaction logging |
 
 Matchers on `SubagentStart` and `SubagentStop` take the agent type, so you can target one role, such as only `implementer` agents. A `SubagentStop` gate that runs the unit's check turns "a report is a claim" into an enforced rule. Unverified: the exact input fields of `TaskCreated`, `TaskCompleted` and `TeammateIdle`.
 
@@ -597,7 +598,7 @@ A unit can run in parallel when it can finish without knowing how the others tur
 - Sources: [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Agent teams](https://code.claude.com/docs/en/agent-teams), [Workflows](https://code.claude.com/docs/en/workflows)
 - Related: ORCH-020, ORCH-037
 
-Anthropic embeds explicit scaling rules in the lead's prompt, because without them the lead spawned "50 subagents for simple queries":
+Anthropic embeds explicit scaling rules in the lead's prompt, because without them early agents spawned "50 subagents for simple queries":
 
 | Task | Agents |
 |---|---|
@@ -917,7 +918,7 @@ Rules:
 - Resuming a subagent more than 5 minutes after its last turn re-reads its whole context uncached. That happens when you `SendMessage` a fix after a long integration step.
 - Workflow agents share a cache prefix when model, effort, agent type, tools, schema and cwd match. Claude Code staggers matching agents by up to 5 s (`CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS`) so the rest read the first one's cache.
 - Keep worker briefs' shared preamble identical and first, and per-unit details last.
-- Changing effort mid-conversation invalidates the cache.
+- In Claude Code, changing effort mid-session keeps the cache on Opus 5.5, Sonnet 5.5, Haiku 5.5 and Fable 5.1 with an API key or Claude subscription. On other models, and on Bedrock, Google Cloud's Agent Platform or a Claude apps gateway, it still invalidates the cache.
 
 ## [ORCH-041] Superpowers subagent-driven development
 - Type: pattern
@@ -954,7 +955,7 @@ Anthropic's own `code-review` plugin is the clearest official example of matchin
 2. A **Haiku** agent lists the relevant CLAUDE.md paths.
 3. A **Sonnet** agent summarizes the PR.
 4. Four reviewers run in parallel: 2 **Sonnet** agents check CLAUDE.md compliance and 2 **Opus** agents look for bugs.
-5. A validator subagent checks each bug finding (no model is given).
+5. Parallel validator subagents re-check each issue from the bug reviewers: Opus subagents validate bug and logic issues, Sonnet subagents validate CLAUDE.md violations.
 6. Unvalidated issues are dropped. Nothing is posted without `--comment`.
 
 The pattern: cheap models for gates and lookups, mid-tier for rule checking, top tier for bug finding, and a validation pass to cut false positives. The `feature-dev` plugin runs 2–3 parallel explorer agents, 2–3 architect agents with different biases and 3 parallel reviewers, but implementation stays in the main session. That is single writer, parallel readers again (ORCH-023).
