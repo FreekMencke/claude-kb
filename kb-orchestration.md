@@ -1069,43 +1069,11 @@ So spending N× tokens on parallel attempts pays only when you have an executabl
 
 ## Recommendations for our setup
 
-Ranked by impact against effort. The first group reviews `parallel-code-orchestrator` (a user-level skill; since 2026-10-12 its source is `skills/parallel-code-orchestrator/SKILL.md` in FreekMencke/claude-skills, see SKILL-050) against the findings above.
+Ranked by impact against effort.
 
-### Improvements to `parallel-code-orchestrator`
+**Done.** Recommendations 1–12 reviewed `parallel-code-orchestrator` against this file. All twelve were applied in FreekMencke/claude-skills#4 (roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), closed 2026-10-12). The skill's source, `skills/parallel-code-orchestrator/SKILL.md` in FreekMencke/claude-skills (SKILL-050), is now the reference. Recommendation 14 (`--max-budget-usd` and `--max-turns` on every scripted run) lives in the global `~/.claude/CLAUDE.md` as "Scripted Claude runs" ([FreekMencke/claude-kb#7](https://github.com/FreekMencke/claude-kb/issues/7)).
 
-Done through roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), opened and closed 2026-10-12: recommendations 1–12 are FreekMencke/claude-skills#4.
-
-1. **Fix the scouting row: "Haiku" doesn't happen by default.** *(High impact, trivial effort.)* Step 3 says "Use Haiku subagents to search", but the built-in Explore agent runs on the session model (Opus) unless `model: haiku` is passed or an `Explore` override exists. Change the row to: "Scouting: `model: haiku` on every Explore or general-purpose call, effort `medium` (Haiku at `low` skips checks)." Evidence: ORCH-005, ORCH-028.
-2. **Add an effort column and set effort on every spawn.** *(High impact, low effort.)* The skill sets model but never effort. In Claude Code, Opus 5.5 and Sonnet 5.5 default to `medium`, so design and contract units and the integrating reviewer run at `medium` unless told otherwise. Suggested values:
-   - scouting: Haiku `medium`
-   - mechanical units: Sonnet `medium`
-   - design or contract units and reviewers: `high`
-   - Fable: `high`
-
-   Note the per-call `effort` needs v2.1.292+, and `CLAUDE_CODE_EFFORT_LEVEL` overrides everything. Evidence: ORCH-004, ORCH-028.
-3. **Escalate effort before tier.** *(Medium impact, trivial effort.)* In step 7 (BLOCKED, and "after two failed rounds"), make the ladder: same model at higher effort, then one tier up, then Fable only for its row. Anthropic: "Sweep effort on your current model first… most workloads end there." Evidence: ORCH-029.
-4. **Pass `isolation: "worktree"` on the Agent call itself, not only in frontmatter.** *(High impact if agent teams are ever enabled, trivial effort.)* With `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`, any named spawn becomes a teammate in the main checkout unless `isolation` is on the call. Frontmatter isolation doesn't prevent this. Add one line to step 6. Evidence: ORCH-010.
-5. **Tell units not to fan out.** *(Medium impact, trivial effort.)* Subagents can nest 3 levels by default, and Opus 5-class models "delegate more readily", so a unit can silently spawn its own subagents on the session model. Add to the brief's `## Limits`: "Don't spawn subagents except read-only searches with `model: haiku`." Optionally set `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=2` for orchestration runs. Evidence: ORCH-006.
-6. **Name the large-fan-out alternative.** *(Medium impact, low effort.)* The skill caps waves at 3–6 units. For the "same change across 30+ files" or "audit everything" shape, say to use `/batch` or a dynamic workflow ("use a workflow"). These keep results in script variables and can enforce a JSON report `schema`. Evidence: ORCH-011, ORCH-012.
-7. **Add "keep a feature and its tests in one unit" to step 4.** *(Medium impact, trivial effort.)* Anthropic found role-split agents "spent more tokens on coordination than on actual work". The skill's Sonnet row "tests for existing code" is fine. Splitting tests for *new* code into another unit is not. Evidence: ORCH-022.
-8. **Validate review findings before fixing.** *(Medium impact, low effort.)* Step 8 fixes every **breaks** and **violates** finding. Add the code-review plugin's move: for each finding, check it against the code (or spawn a cheap Sonnet validator) before changing code. Also tell reviewers to flag only correctness or requirement gaps. Evidence: ORCH-039, ORCH-042.
-9. **Account for the 5-minute subagent cache.** *(Low–medium impact, trivial effort.)* The step 7 resume budget ("about 50k of room") ignores that a resume after more than 5 minutes re-reads the whole subagent context uncached. Either set `subagentPromptCacheTtl: "1h"` for orchestration runs, or prefer a fresh subagent from a handoff file when the old one has been idle for more than 5 minutes and is large. Evidence: ORCH-040.
-10. **Fable row: add the facts behind "the exception".** *(Low impact, trivial effort.)* Add to the row:
-    - Opus 5.5 matches or beats Fable 5.1 on Anthropic's listed coding benchmarks.
-    - Fable is "Slower" and 2.5× Opus's price.
-    - On Max it is capped at 50% of weekly limits.
-    - With a Fable session, Explore runs on Opus.
-
-    This makes the existing rule self-justifying for future editors. Evidence: ORCH-026, ORCH-027, ORCH-031.
-11. **Note a worktree CLAUDE.md caveat in step 5's Rules.** *(Low impact, trivial effort.)* A subagent in a default-location worktree loads CLAUDE.md and `.claude/rules/` from the main checkout, not its branch. If wave 1 changed CLAUDE.md, the brief must say so. Evidence: ORCH-009.
-12. **Optional: gate DONE with a `SubagentStop` hook.** *(Medium impact, medium effort.)* For repos with a fast verify command, a project hook matched to implementer agent types can block stopping until the check passes. That turns "a report is a claim" into enforcement. Evidence: ORCH-019.
-
-What the skill already does well, confirmed by the research: the threshold for when to orchestrate, one owner per file, shared files kept by the orchestrator, decide-once in briefs, done-when as a command, explicit models on every spawn, status codes, file-based handoffs, a capped fix loop with escalation, reviewer-agent pins, and a fresh-context issue check. These match ORCH-024, ORCH-035, ORCH-036, ORCH-039 and ORCH-041.
-
-### Other setup changes
-
-13. **Done 2026-10-12. Add a user-level `Explore` override on Haiku.** *(High impact, trivial effort.)* Create `~/.claude/agents/explore.md` with `name: Explore`, read-only tools, `model: haiku` and `effort: medium`, so every exploration, in every repo, stops running on Opus. Check the result after a week: if searches start missing things, drop the override. Evidence: ORCH-005, ORCH-033.
-14. **Done 2026-10-12. Set `--max-budget-usd` and `--max-turns` on every scripted `claude -p` and GitHub Action.** *(Medium impact, trivial effort.)* None exist in our repos as of 2026-10-12, so the rule is in the global `~/.claude/CLAUDE.md` ("Scripted Claude runs") for when the first one is added ([FreekMencke/claude-kb#7](https://github.com/FreekMencke/claude-kb/issues/7)). Both flags work together in v2.1.296; `--max-turns` is missing from `claude --help` but accepted. Evidence: ORCH-014, ORCH-038.
+13. **Done 2026-10-12, check pending: user-level `Explore` override on Haiku.** `~/.claude/agents/explore.md` has `name: Explore`, read-only tools, `model: haiku` and `effort: medium`, so explorations in every repo stop running on Opus. Check from 2026-10-19: if searches start missing things, drop the override. Evidence: ORCH-005, ORCH-033.
 15. **Don't enable agent teams globally.** *(Risk avoidance.)* Enabling them changes what named subagent spawns do. Turn them on per session, only for research and review work. Evidence: ORCH-010.
 
 ## Open questions
