@@ -1396,7 +1396,7 @@ Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first la
 
 Setup today: Claude Code v2.1.296, no status line, no custom agents. Four user-scope MCP servers (context7, kubernetes, flux, aws) and four plugins. Global CLAUDE.md is 79 lines.
 
-Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are done as the `handoff` and `token-audit` skills (FreekMencke/claude-skills#13 and #14, roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223. R8 was measured and the 12 unused synced skills set to `name-only` on 2026-10-12 (below the table); disabling `frontend-design` and `playwright` per project is still open. R9 is won't-do: the measurement shows it saves little and the always-on access is deliberate.
+Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are done as the `handoff` and `token-audit` skills (FreekMencke/claude-skills#13 and #14, roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223. R8 was measured and the 12 unused synced skills set to `name-only` on 2026-10-12 (below the table); disabling `frontend-design` and `playwright` per project is won't-do (measured below). R9 is won't-do: the measurement shows it saves little and the always-on access is deliberate.
 
 | # | Change | What it does / when it triggers | Est. savings | Effort | Evidence |
 |---|---|---|---|---|---|
@@ -1426,6 +1426,7 @@ Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Ha
 - Deferred tools (65–70k of MCP tools, 20.8k of built-in tools) are not in that total: only their names are listed until tool search loads one (TOK-020).
 - The deferred MCP tools include claude.ai connectors (MongoDB Atlas, Google Calendar, Claude Docs) that reach terminal sessions from the account. They cost names only while deferred.
 - Skills: 2.8k of the 6.3k listing is the 12 claude.ai-synced skills that `/skill-doctor` shows were never invoked in the last 7 days; about 2.8k more is built-in skills. Done 2026-10-12: all 12 set to `"name-only"` in `skillOverrides` in WSL `~/.claude/settings.json` (no use found in any local transcript since 2026-10-06). Re-measured, the skill listing dropped from 6.3k to 3.6k. claude.ai chat and desktop Local sessions are unaffected (SKILL-058).
+- R8, per-project plugins: won't-do. `/context all` on 2026-10-12 lists the 25 Playwright tools at about 7.8k tokens, all deferred, so a turn carries only their names (roughly 300 tokens); `frontend-design` is about 80 tokens of listing. Together about 1.3% of the starting context, against settings changes in every repo that uses them.
 - R9: `kubernetes`, `flux` and `aws` tools are deferred, so moving them out of user scope saves only their share of the 2.1k server instructions plus their names. Not worth losing the always-on access.
 
 Not recommended now:
