@@ -1,6 +1,6 @@
 # Session workflows
 
-Prefix: FLOW. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 and the docs live that day. This file covers how one session gets a correct result: the recommended workflows, plan mode, verifying inside the loop, safety nets, recovering a stuck session, waiting on external work, and steering mid-task. Linked, not repeated: multi-agent patterns (ORCH), session cost levers (TOK-030 to TOK-034), scheduled runs (ORCH-017), verification by a separate reviewer (ORCH-039), CI on conflicting PRs (SESS-021, SESS-022), Stop hooks that keep Claude working (HOOK-031). The desktop app's notifications and CI monitor are covered as features in the surfaces topic (FreekMencke/claude-kb#25); here only as ways to wait.
+Prefix: FLOW. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 and the docs live that day. This file covers how one session gets a correct result: the recommended workflows, plan mode, verifying inside the loop, safety nets, recovering a stuck session, waiting on external work, and steering mid-task. Linked, not repeated: multi-agent patterns (ORCH), session cost levers (TOK-030 to TOK-034), scheduled runs (ORCH-017), verification by a separate reviewer (ORCH-039), CI on conflicting PRs (SESS-021, SESS-022), Stop hooks that keep Claude working (HOOK-031). The desktop app's notifications and CI monitor are covered as features in `kb-surfaces.md` (SURF-002, SURF-020); here only as ways to wait.
 
 ## Quick answers
 
@@ -618,9 +618,9 @@ Cheapest first: a background command that exits on the condition, then Monitor w
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Desktop: monitor pull request status](https://code.claude.com/docs/en/desktop), [Remote Control: mobile push notifications](https://code.claude.com/docs/en/remote-control), [Settings reference: agentPushNotifEnabled](https://code.claude.com/docs/en/settings-reference), [Channels](https://code.claude.com/docs/en/channels), [Claude Code on the web: auto-fix](https://code.claude.com/docs/en/claude-code-on-the-web)
-- Related: SESS-034, HOOK-030, FLOW-024
+- Related: SESS-034, HOOK-030, FLOW-024, SURF-002, SURF-020, SURF-029
 
-Ways to be told, or to let Claude act, when external work changes. The desktop and mobile features themselves are covered in the surfaces topic (FreekMencke/claude-kb#25).
+Ways to be told, or to let Claude act, when external work changes. The desktop and mobile features themselves are SURF-002 (CI bar, auto-merge, desktop notifications), SURF-020 (phone pushes) and SURF-029 (cloud auto-fix).
 
 - **Desktop CI status bar:** after a PR opens, "Claude Code uses the GitHub CLI to poll check results and surface failures." Toggles: **Auto-fix CI & address comments**, and **Auto-merge when ready**, which squash-merges and needs repo auto-merge enabled.
 - **Cloud auto-fix** (`/autofix-pr`): subscribes to the PR's GitHub activity. GitHub sends no webhook when `main` moves and causes a conflict, so it can't react to conflicts.
@@ -730,7 +730,7 @@ Ranked by impact against effort. Changes in other repos need an issue there (glo
 3. **Wait on CI in the background in the repos' release steps** (medium impact, low effort). Replace the foreground `gh pr checks <n> --watch` with the same command run with `run_in_background` (or a Monitor that emits each finished check). Claude is woken once on exit and can work or answer meanwhile; never `/loop` or `sleep` for CI. Keep the mergeability poll first (SESS-022). Needs an issue per osrs-tracker repo, since the steps live in their skills. FLOW-024, FLOW-025, FLOW-028.
 4. **Try `showClearContextOnPlanAccept: true` in user settings** (low–medium impact, trivial effort). Gives the "approve and start from the plan alone" option after long planning. Keep it off if it's never picked after a week. FLOW-007.
 5. **Keep planning on Opus 5.5 at `high`; don't adopt `opusplan`** (decision). Our design-heavy sessions implement on Opus anyway, and the switch costs a cache rebuild. FLOW-009.
-6. **Don't turn on desktop "Auto-merge when ready"** (decision): it squash-merges, while our repos merge with `--merge`. "Auto-fix CI" is fine to try. FLOW-029.
+6. **Don't turn on desktop "Auto-merge when ready"** (decision): it squash-merges, while our repos merge with `--merge`. "Auto-fix CI" is fine to try. FLOW-029, SURF-002; the same decision is `kb-surfaces.md` recommendation 5.
 7. **`handoff` skill: mention `/branch` and rewind as cheaper alternatives** when the problem is one bad detour rather than a full context (low impact, trivial effort). Change in FreekMencke/claude-skills via an issue there. FLOW-019, FLOW-021.
 
 ## Open questions
@@ -744,4 +744,4 @@ Ranked by impact against effort. Changes in other repos need an issue there (glo
 - **Is a "step back and list hypotheses" prompt measurably better** than `/clear` with a better prompt? No source compares them (FLOW-021).
 - **Does `/plan open` (CHANGELOG 2.1.119) still exist?** The commands page documents only `/plan [description]`.
 - **Does the Plan subagent run on Opus under `opusplan`?** It "inherits from the main conversation"; not tested.
-- **Playwright MCP's default profile** (SESS-013's open question) still decides whether parallel browser checks need `--isolated`.
+- **Playwright MCP's default profile** still decides whether parallel browser checks (FLOW-014) need `--isolated`. Tracked once, as `kb-sessions.md` open question 8 (SESS-013).
