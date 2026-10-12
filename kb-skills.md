@@ -222,7 +222,7 @@ How to write for this:
 
 - When names collide: enterprise beats personal, which beats project. A skill beats a `.claude/commands/` file with the same name. Plugin skills are namespaced and never collide.
 - Edits to skill directories reload live. A newly created top-level `skills/` folder needs `/reload-skills`.
-- Reserved folder names: `synced` and `anthropic-skills`.
+- Reserved names: `synced`, and the `anthropic-skills` and `claude-ai` namespaces (skill folders and command files in those namespaces no longer load since v2.1.282).
 - Cloud sessions don't see personal `~/.claude/skills`.
 
 ## [SKILL-008] Arguments, variables and `!` context injection
@@ -319,7 +319,7 @@ Evidence: in a single-author test on Claude Code 2.1.273, "Helps with git stuff.
 
 Anthropic's skill-creator says Claude "tends to undertrigger" skills, so descriptions should be "a little bit pushy". For example: "Make sure to use this skill whenever the user mentions dashboards, data visualization, internal metrics…".
 
-The counterweight is a **negative trigger** for neighbouring skills. Anthropic's docx skill ends its description with "Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks."
+The counterweight is a **negative trigger** for neighbouring skills. Anthropic's docx skill ends its description with "Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."
 
 - Anthropic's enterprise guidance names the failure this prevents: a new skill whose description "is too broad, stealing triggers" from others. It says to test coexistence, not just the skill alone.
 - Keep pushiness to *coverage* (more situations and synonyms). Capitalised commands are not the way (see SKILL-020).
@@ -507,8 +507,8 @@ skill-creator calls heavy-handed ALWAYS/NEVER "a yellow flag". Explain *why* a r
 | Plugin | Packaging for all of the above | A second repo needs the same setup |
 
 - "MCP connects Claude to data; Skills teach Claude what to do with that data."
-- Slash commands are now skills.
-- A procedure longer than about 30 lines belongs in a skill, not in CLAUDE.md.
+- Slash commands are now skills ("Custom commands have been merged into skills", Claude Code skills docs).
+- Procedures belong in skills, not CLAUDE.md. The "about 30 lines" threshold is not in the official sources (unverified).
 - They combine: a skill can teach an MCP server's query patterns, a subagent can preload skills, and a skill can register hooks.
 
 ## [SKILL-022] Context cost of each extension type
@@ -523,7 +523,7 @@ skill-creator calls heavy-handed ALWAYS/NEVER "a yellow flag". Explain *why* a r
 |---|---|---|
 | CLAUDE.md (+ `@imports`) | Session start, in full | Every request; imports don't save anything |
 | Output style | Session start | Every request |
-| Skill | Description at start; body when invoked | About 100 tokens per description; the body stays once loaded |
+| Skill | Description at start; body when invoked | Name and description listed every request; each description plus `when_to_use` is capped at 1,536 characters and the listing has a 1% context budget (`skillListingBudgetFraction`); the body stays once loaded |
 | MCP | Tool names at start; schemas deferred (tool search) | Low until used |
 | Subagent | Its own fresh context | Isolated, but it counts toward usage limits |
 | Hook | On its event | Zero unless it returns output |
@@ -725,7 +725,7 @@ Anthropic distinguishes two kinds of skill:
 - **Capability uplift** teaches something the model can't yet do well. These can become unnecessary.
 - **Encoded preference** captures your workflow and formats. These stay useful.
 
-"If a base model passes evals without the skill loaded… the skill isn't broken, just no longer necessary."
+"If the base model starts passing your evals without the skill loaded… The skill isn't broken; it's just no longer necessary." The blog applies this to capability-uplift skills.
 
 Routine:
 - **On each model release**, rerun the with/without evals unpinned. If `W/OUT` is already near 1.0, the skill is dead weight: delete it or set it to `off`.
@@ -877,7 +877,7 @@ Other rules:
 2. Install from a local marketplace.
 3. Run `claude plugin eval`.
 
-The agentskills.io reference validator is `skills-ref validate ./my-skill`. In-session `/plugin validate` is not documented.
+The agentskills.io reference validator is `skills-ref validate ./my-skill`. In-session `/plugin validate <path>` is documented and prints the same report as `claude plugin validate`.
 
 ## [SKILL-038] claude.ai skills: upload, sharing, org provisioning, sync into Claude Code
 - Type: fact
