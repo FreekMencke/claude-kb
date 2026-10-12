@@ -571,4 +571,4 @@ Not recommended now: running cloud work in a dev container (INFRA-002). The cred
 - **CloudTrail attribution.** Is there a distinctive user agent for Claude Code or for MCP-forwarded calls, and does the downstream event record `aws:CalledViaAWSMCP`?
 - **Source identity length.** The STS API reference says 64 characters; the IAM user guide says 256.
 - **Classifier error rates.** The 17% false-negative figure is from the March 2026 post (n=52, Sonnet 4.6 classifier). No newer figure for the Sonnet 5 classifier has been published.
-- **Hooks in bypass mode.** The docs say deny rules apply in `bypassPermissions`; whether a `PreToolUse` deny does too isn't stated.
+- **Hooks in bypass mode.** Answered in HOOK-006: the hooks reference says a `PreToolUse` `"deny"` blocks "even in `bypassPermissions` mode or with `--dangerously-skip-permissions`", because the hook fires before any permission-mode check.

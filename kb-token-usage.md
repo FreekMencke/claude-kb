@@ -1599,14 +1599,14 @@ Tested 2026-10-12 with `curl` JSON-RPC from Claude Code v2.1.296 on WSL (no MCP 
 - Confidence: single-source
 - Last verified: 2026-10-12
 - Sources: [MicrosoftDocs/mcp](https://github.com/MicrosoftDocs/mcp), [AWS Knowledge MCP](https://github.com/awslabs/mcp/tree/main/src/aws-knowledge-mcp-server), [idosal/git-mcp](https://github.com/idosal/git-mcp), [DeepWiki MCP](https://cognition.com/blog/deepwiki-mcp-server), [ref-tools-mcp](https://github.com/ref-tools/ref-tools-mcp), [fetch server](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch), [Exa pricing](https://exa.ai/pricing), [Brave Search API](https://brave.com/search/api/), [Perplexity pricing](https://docs.perplexity.ai/guides/pricing)
-- Related: TOK-095, TOK-096, TOK-022, TOK-084
+- Related: TOK-095, TOK-096, TOK-022, TOK-084, INFRA-003
 
 Sources are the vendors' READMEs and pricing pages.
 
 | Server | What it reads | Cost and size controls |
 |---|---|---|
 | Microsoft Learn MCP | First-party Microsoft docs, live | Free, no key; `?maxTokenBudget=2000` caps a result |
-| AWS Knowledge MCP | AWS docs and skills (`search_documentation`, `read_documentation`) | Free, no auth, "subject to rate limits". We already have it as the `aws` server |
+| AWS Knowledge MCP | AWS docs and skills (`search_documentation`, `read_documentation`) | Free, no auth, "subject to rate limits". Our `aws` server is the managed AWS MCP Server instead (SigV4 credentials, INFRA-003), which has the same docs tools |
 | GitMCP | Any GitHub repo's `llms.txt`, else README, live from the default branch | Free; no token figures |
 | DeepWiki MCP | Generated wikis of indexed repos (`ask_question`) | Free; content can lag the repo |
 | Ref | Docs search; vendor claims "the most relevant 5k tokens" per read against "20k+" for a plain fetch | API key; price not in README |
