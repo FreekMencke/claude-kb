@@ -56,9 +56,9 @@ Don't rewrite entries beyond this. Run python3 scripts/check_kb.py at the end an
 
 ### Step 4: librarian skill (done)
 
-Result: `~/repos/claude-skills/skills/claude-kb-lookup/SKILL.md` (56 lines, about 520 words). It pulls the main checkout (`git -C /home/fremen/repos/claude-kb pull --ff-only`), reads INDEX.md, prints only the needed entries with an `awk` one-liner, follows merge pointers and the Conflicts table, and flags entries whose Last verified is more than 60 days old as "due for re-check" (not "stale", which the sibling skills use for "doesn't match the code"). It isn't uploaded to claude.ai, because it needs the local clone. The main checkout at `~/repos/claude-kb` was 13 commits behind before this step; the skill's pull keeps it current.
+Result: `~/repos/claude-skills/skills/claude-kb-lookup/SKILL.md` (56 lines, about 520 words). It updates the main checkout (`git fetch` then `git merge --ff-only origin/main`; `git pull` fails when two sessions run it at once), reads INDEX.md, prints only the needed entries with an `awk` one-liner, follows merge pointers and the Conflicts table, and flags entries whose Last verified is more than 60 days old as "due for re-check" (not "stale", which the sibling skills use for "doesn't match the code"). It isn't uploaded to claude.ai, because it needs the local clone. The main checkout at `~/repos/claude-kb` was 13 commits behind before this step; the skill's pull keeps it current.
 
-Not tested yet: whether it triggers on its own in a fresh session. First test: in a fresh session in another repo, ask "which model should a reviewer subagent use?" and check that it loads the skill and cites ORCH-030.
+Tested 2026-10-12 with three fresh `claude -p` sessions from osrs-tracker-web (Opus 5.5): "Which model and effort should a code-reviewer subagent use?" and "How much context does a subagent start with?" each loaded the skill on their own, read two or three entries and cited them (ORCH-030, ORCH-042, REPO-022; ORCH-007, TOK-006, ORCH-008). A TypeScript rename didn't load it. A lookup cost about $0.11 more than the no-skill run (about $0.48 against $0.37 in total), mostly for reading INDEX.md.
 
 It ran with this prompt, `<path>` being `/home/fremen/repos`:
 
