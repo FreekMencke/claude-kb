@@ -1396,7 +1396,7 @@ Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first la
 
 Setup today: Claude Code v2.1.296, no status line, no custom agents. Four user-scope MCP servers (context7, kubernetes, flux, aws) and four plugins. Global CLAUDE.md is 79 lines.
 
-Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are done as the `handoff` and `token-audit` skills (FreekMencke/claude-skills#13 and #14, roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223; R8 and R9 are open.
+Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Haiku `Explore` override, ORCH recommendation 13) and R7 are done in `~/.claude`; R3 and R6 are done as the `handoff` and `token-audit` skills (FreekMencke/claude-skills#13 and #14, roadmap FreekMencke/claude-skills#1); R5 is osrs-tracker/osrs-tracker-web#223. R8 was measured on 2026-10-12 (below the table); its pruning step is open. R9 is open but worth little (see the measurement).
 
 | # | Change | What it does / when it triggers | Est. savings | Effort | Evidence |
 |---|---|---|---|---|---|
@@ -1410,6 +1410,24 @@ Ranked by expected savings ÷ effort. Status 2026-10-12: R1, R2, R4 (with the Ha
 | R8 | **Skill/plugin audit**: run `/skill-doctor` and `/context all`. Check that `frontend-design` and `playwright` aren't loaded in repos that don't use them (disable per project). Keep custom skill descriptions under about 400 characters. | Once now, then after adding skills or plugins | Small: hundreds to low thousands of tokens per turn | 15 min | TOK-005, TOK-067 |
 | R9 | **Project-scope the cluster MCP servers**: move `kubernetes` and `flux` to `home-cluster` (and `aws` to the repos that use it) with `--scope local/project`. Only if the always-on user scope isn't deliberate; our global CLAUDE.md lists them as user-wide on purpose. | Sessions in unrelated repos | Low: about 1–2k tokens per turn of names and server instructions, roughly $4 over the 6 days | 10 min | TOK-020, TOK-022 |
 
+**Measured starting context (2026-10-12).** `claude -p "/context all"` and `claude -p "/skill-doctor"` print their reports as text from the terminal; the desktop Code tab doesn't offer `/skill-doctor` (SKILL-031). In a fresh terminal session in this repo (v2.1.296, Opus 5.5, 400k window):
+
+| Loaded every turn | Tokens |
+|---|---|
+| System prompt | 2.4k |
+| Built-in tools | 14.4k |
+| MCP tools loaded up front | 1.5k |
+| MCP server instructions | 2.1k |
+| Memory files (global 1.6k, project 1k) | 2.6k |
+| Skill listing | 6.3k |
+| Custom agents (`Explore`) | 0.1k |
+| **Total** | **29.4k** |
+
+- Deferred tools (65–70k of MCP tools, 20.8k of built-in tools) are not in that total: only their names are listed until tool search loads one (TOK-020).
+- The deferred MCP tools include claude.ai connectors (MongoDB Atlas, Google Calendar, Claude Docs) that reach terminal sessions from the account. They cost names only while deferred.
+- Skills: 2.8k of the 6.3k listing is the 12 claude.ai-synced skills that `/skill-doctor` shows were never invoked in the last 7 days; about 2.8k more is built-in skills. Done 2026-10-12: all 12 set to `"name-only"` in `skillOverrides` in WSL `~/.claude/settings.json` (no use found in any local transcript since 2026-10-06). Re-measured, the skill listing dropped from 6.3k to 3.6k. claude.ai chat and desktop Local sessions are unaffected (SKILL-058).
+- R9: `kubernetes`, `flux` and `aws` tools are deferred, so moving them out of user scope saves only their share of the 2.1k server instructions plus their names. Not worth losing the always-on access.
+
 Not recommended now:
 - RTK or context-mode (TOK-083): our big outputs aren't test runs, the claims are unverified, and context-mode is ELv2.
 - Serena or claude-context (TOK-084): `typescript-lsp` already covers symbol lookup.
@@ -1417,7 +1435,7 @@ Not recommended now:
 
 ## Open questions
 
-1. **Real system prompt and tool sizes.** Anthropic doesn't publish them. Our 24–27k cached prefix is inferred from `usage`, not from `/context`. Run `/context all` in a fresh session to split system prompt from tools.
+1. **Real system prompt and tool sizes.** Answered 2026-10-12: `claude -p "/context all"` in a fresh terminal session in this repo measured a 29.4k starting prefix, close to the 24–27k inferred from `usage`. See "Measured starting context" above.
 2. **Compaction quality versus window size.** The R1 simulation ignores compaction cost and lost detail. Re-measure with R6 a month after R1.
 3. **How plan usage is weighted.** Are cache reads weighted like API prices (0.05x on Opus 5.5) when counting against 5-hour and weekly limits? Not documented. Our dollar figures are list-price equivalents, not plan percentages.
 4. **MCP description cap.** The docs say 2,048 characters; changelog v2.1.295 says 16,384 for descriptions loaded via tool search. Unresolved.
