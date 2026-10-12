@@ -696,7 +696,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 
 - Where to put something, and what it costs: SKILL-021 (decision), SKILL-022 and TOK-065 (context cost), REPO-044 (repos with agents).
 - CLAUDE.md size: SKILL-024 (authoring), TOK-003 (loading rules), REPO-045 (research and agents).
-- Effort: ORCH-028 (levels and defaults), TOK-055 (as a cost lever, plus thinking).
+- Effort: ORCH-028 (levels and defaults), TOK-055 (as a cost lever, plus thinking), PROMPT-010 (what prompts still move once effort sets thinking).
 - Keeping the orchestrator's context lean: ORCH-034 (results), TOK-035 (when to delegate).
 - Caching: ORCH-040 (in fan-outs), TOK-052 (TTLs and settings).
 - Skill frontmatter: SKILL-014 (invocation controls), TOK-064 (token effects).
@@ -725,8 +725,8 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Premature completion: ORCH-037 and ORCH-039 (guardrails, verifiers), PROMPT-027 (prompt lines).
 - Reviewer wording: REPO-047 to REPO-049 (do-not-flag lists, validation, severity), PROMPT-032 (severity bars and recall).
 - Injection: REPO-037 and REPO-039 (untrusted content), PROMPT-033 (our own harness text mistaken for injection), PROMPT-007 (marking pasted text).
-- Other tools' prompts: TOK-085, ORCH-044 and REPO-052 (cost, orchestration, review), PROMPT-034 to PROMPT-036 (instruction wording).
-- Community collections: SKILL-044, SKILL-045 and REPO-051 (skills, agents), PROMPT-037 (prompt wording).
+- Other tools' prompts and ideas: TOK-085, ORCH-044 and REPO-052 (cost, orchestration, review), SKILL-046, MEM-025 and HOOK-034 (skills, memory, hooks), PROMPT-034 to PROMPT-036 (instruction wording).
+- Community collections: SKILL-044, SKILL-045 and REPO-051 (skills, agents), PROMPT-037 (prompt wording), HOOK-032 (hooks).
 - Text injected next to tool results: HOOK-007 (wording hook `additionalContext`), PROMPT-033 (harness text mistaken for injection).
 - Rewind and `/btw`: TOK-033 (as context and cost tools), FLOW-016, FLOW-017 (what checkpoints keep and miss) and FLOW-032 (`/btw` for steering).
 - `/clear` and recovering a session: TOK-030 (cost, handoff before clearing), FLOW-020 and FLOW-021 (signs of a stuck session, recovery ladder).
@@ -735,7 +735,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Model and effort: ORCH-028 and ORCH-029 (levels, escalation), FLOW-009 (for planning), FLOW-022 (to get unstuck).
 - CLAUDE.md loading and size: TOK-003 (loading rules, size target), MEM-001 to MEM-005 (every location, order, lazy loading, compaction), REPO-045 (size and AGENTS.md interop), MEM-008 (AGENTS.md loading).
 - Auto memory: TOK-004 (load limits), MEM-013 to MEM-018 (saving, recall, `/memory`, switches, staleness), REPO-011 (agent `memory:`).
-- What a subagent starts with: ORCH-007 (everything), MEM-011 (instructions and memory only, with a contradicting probe).
+- What a subagent starts with: ORCH-007 (everything), MEM-011 (instructions and memory only, with a contradicting probe), TOK-006 and REPO-010 (partial merges into ORCH-007; keep cache sizes and repo-agent consequences).
 - Worktrees and memory: SESS-004 and SESS-009 (shared state), MEM-006 and MEM-027 (CLAUDE.local.md, instruction files per worktree).
 - API memory tool: TOK-038 (context management overview), MEM-030 and MEM-031 (the tool, compared with auto memory and Managed Agents stores).
 - Instruction file audits: PROMPT-017 (`/doctor prompt-audit` for wording), MEM-021 and MEM-022 (trim, stale paths, `claude-md-management`).
@@ -771,10 +771,20 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 `Related:` lines and Quick answers that named a fully merged entry now name the entry it went into.
 
+## Similar but distinct
+
+`scripts/check_kb.py` warns about entries in different files with very similar titles or mostly shared tags. These pairs were checked and cover different things; listing a pair here (or together on one Overlaps or Merges line) silences the warning.
+
+- HOOK-020 and TOK-064: hooks declared in skill and agent frontmatter, against frontmatter fields that make a skill cheaper to load.
+- MEM-031 and ORCH-018: memory stores in the API and Managed Agents, against Managed Agents' multi-agent setup.
+- REPO-034 and FLOW-006: what Bash permission rules can match, against what plan mode blocks.
+- SESS-018 and SKILL-010: a message from another session grants nothing, against `allowed-tools` pre-approving without restricting.
+
 ## Changelog
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-12 | (check) | `check_kb.py` warns about possible duplicates across files (near-identical titles, or mostly shared tags), skipping pairs already on one Conflicts, Overlaps, Merges or new "Similar but distinct" line. First run: PROMPT-010, HOOK-032, SKILL-046, MEM-025, HOOK-034, TOK-006 and REPO-010 added to existing overlap clusters; four pairs recorded as similar but distinct. |
 | 2026-10-12 | HOOK-036 | The aws push gate's `git -C` gap is fixed (osrs-tracker/osrs-tracker-aws#79): aws now runs a parsing `pre-push-check.sh` with no `if`, like web and api. Recommendation 1 in `kb-hooks.md` marked done. |
 | 2026-10-12 | REPO-031, ORCH-009, TOK-020, TOK-031, TOK-034, REPO-008, SKILL-007 | Harness probes (FreekMencke/claude-kb#27), `claude -p` on Haiku 5.5, v2.1.296: scoped `tools: Bash(git diff *)` gives plain Bash; per-call `isolation: "worktree"` works for named subagents; MCP descriptions are cut at about 4,000 characters up front and arrive whole (10,000) via tool search; the `# Compact instructions` heading isn't special, explicit "when summarizing" text is; `-p --resume` hit the cache in 2 of 3 runs (#78720 not reliably present). The personal-vs-project command and `.agents/skills` probes were blocked by auto mode. Answered open questions in `kb-repo-agents.md`, `kb-orchestration.md` and `kb-token-usage.md` (4, 9, 10); 2 conflicts added. |
 | 2026-10-12 | all (reconcile) | Reconcile pass over the seven new topics and TOK-087 to TOK-102 (FreekMencke/claude-kb#28): combined Quick answers trimmed from 54 to 32 rows (the four research-tool rows folded into two); duplicate overlap clusters (browser checks, notifications) folded and four added; FLOW-029 names SURF-002, SURF-020 and SURF-029 instead of the issue; SKILL-048 and the `artifact-design` open question point to SURF-016; the Playwright default-profile question kept once in `kb-sessions.md`; open questions answered or narrowed by other topics in `kb-infra-agents.md` (HOOK-006), `kb-repo-agents.md` (HOOK-010), `kb-orchestration.md` (HOOK-002, SESS-032), `kb-sessions.md` (SURF-002, SURF-018, the index check) and `kb-memory.md` (SURF-004, SKILL-048). One conflict recorded and fixed (TOK-097 against INFRA-003 on the `aws` server); TOK-101's report length added to the report-caps conflict. `scripts/check_kb.py` takes ID prefixes from the files and checks the file table's entry counts. SKILL count corrected to 60. |
