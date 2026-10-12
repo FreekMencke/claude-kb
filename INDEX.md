@@ -8,6 +8,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-token-usage.md` | TOK | Token usage and context efficiency | 62 (4 merged into other entries) |
 | `kb-skills.md` | SKILL | Writing, testing and distributing skills | 59 (1 merged into other entries) |
 | `kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 52 (0 merged into other entries) |
+| `kb-sessions.md` | SESS | Several sessions in one repo | 35 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -40,6 +41,9 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | How do I make a reviewer agent truly read-only? | An explicit `tools: Read, Grep, Glob, Bash`, a frontmatter `PreToolUse` hook that allows only git and gh reads, and no `memory:`. A `permissionMode` setting and "never edit" in the prompt aren't enough. | REPO-033, REPO-031, REPO-032 |
 | How do I make sure a review actually runs? | Name it in a procedure the session follows (a skill or orchestrator), or `@agent-<name>`. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
 | How do I share agents and skills across repos or a team? | Committed copies work everywhere, including cloud sessions and the GitHub action. Plugins are versioned, but they drop agent `hooks` and `permissionMode`, cloud sessions don't install them, and a fixed `version` pins users. Keep agent bodies generic and the rules in each repo. | REPO-040, REPO-041, REPO-042, SKILL-034, SKILL-035 |
+| What do parallel sessions in worktrees share, and can I `git stash`? | All of `refs/` (including the stash), `.git/config` and hooks, plus Claude Code's project plugins and "don't ask again" approvals. Never use bare `git stash`: another session can pop it. | SESS-001, SESS-002, SESS-004 |
+| Why doesn't CI start on my PR when other sessions keep merging? | GitHub runs no `pull_request` workflow on a conflicting PR. Poll `gh pr view <n> --json mergeable,mergeStateStatus`, rebase on `CONFLICTING`, and force-push with `--force-with-lease --force-if-includes`. A merge queue removes the loop, but only in org-owned repos. | SESS-021, SESS-022, SESS-024, SESS-025 |
+| Can one session message or hand off to another? | `SendMessage` delivers plain text to your other sessions (v2.1.224+), but it never counts as your consent. For state, resume (`--resume <name>` works across worktrees), teleport from the cloud, or write an issue or progress file. | SESS-017, SESS-018, SESS-029, SESS-031 |
 
 ## Index
 
@@ -360,6 +364,46 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | REPO-051 | Community agent collections: what to copy and what to avoid | anti-pattern | community, collections |
 | REPO-052 | Ideas from other review tools | comparison | codex, bugbot, copilot, coderabbit |
 
+### Several sessions in one repo (`kb-sessions.md`, SESS)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| SESS-001 | What git worktrees share and keep apart | fact | git, worktrees, refs, config |
+| SESS-002 | The stash is shared across worktrees | anti-pattern | git, stash, worktrees |
+| SESS-003 | Lock contention on shared `.git` files | fact | git, locks, worktrees |
+| SESS-004 | What Claude Code worktrees share with the main checkout | fact | worktrees, plugins, permissions, hooks, desktop |
+| SESS-005 | Worktree lifecycle on each surface | comparison | worktrees, cleanup, desktop, cloud |
+| SESS-006 | Fresh bases and reusing a worktree name | fact | worktrees, baseRef, staleness |
+| SESS-007 | The worktree isolation checks | fact | worktrees, isolation, guard |
+| SESS-008 | Gitignored files, dependencies and ports in worktrees | pattern | worktrees, node_modules, env, ports |
+| SESS-009 | `~/.claude` state that concurrent sessions share | fact | config, settings, history, memory, plugins |
+| SESS-010 | `~/.claude.json` under concurrent sessions | fact | config, corruption, backups |
+| SESS-011 | `/model` and `/effort` leak into other sessions | anti-pattern | settings, model, effort |
+| SESS-012 | OAuth refresh races across sessions | fact | auth, credentials, locks |
+| SESS-013 | MCP servers and browser profiles across sessions | fact | mcp, playwright, processes |
+| SESS-014 | `CLAUDE_CONFIG_DIR`: what it isolates | fact | config, isolation, env-vars |
+| SESS-015 | The prompt cache is per directory | fact | cache, worktrees |
+| SESS-016 | Sessions share one dev-server port space | pattern | ports, dev-server |
+| SESS-017 | Cross-session messaging: `ListAgents` and `SendMessage` | tool | messaging, sendmessage, listagents |
+| SESS-018 | A message from another session carries no authority | fact | messaging, permissions, security |
+| SESS-019 | Inbound message controls and defaults | fact | messaging, settings, headless |
+| SESS-020 | Remote Control and several sessions | tool | remote-control, mobile, server-mode |
+| SESS-021 | No `pull_request` CI on a conflicting PR | fact | github, ci, conflicts |
+| SESS-022 | Reading `mergeable` and `mergeStateStatus` | fact | github, gh, polling |
+| SESS-023 | Strict "up to date" checks and Update branch | fact | github, branch-protection, ci |
+| SESS-024 | Merge queue vs auto-merge | comparison | github, merge-queue, auto-merge |
+| SESS-025 | Rebasing and force-pushing from worktrees | pattern | git, rebase, force-with-lease, rerere |
+| SESS-026 | `merge=union` for CHANGELOG.md works only locally | fact | changelog, gitattributes, github |
+| SESS-027 | Changelog fragments avoid the shared file | comparison | changelog, changesets, towncrier, scriv |
+| SESS-028 | What Claude's GitHub integrations do about conflicts | fact | claude-code-action, cloud, conflicts |
+| SESS-029 | Resuming sessions across worktrees | fact | resume, continue, worktrees |
+| SESS-030 | Moving sessions between cloud, terminal and desktop | comparison | teleport, cloud, desktop |
+| SESS-031 | Choosing a hand-off channel | recommendation | handoff, issues, messaging, progress-files |
+| SESS-032 | Parallel sessions share one plan allowance | fact | usage-limits, quota, usage |
+| SESS-033 | How many sessions practitioners run, and what limits them | comparison | sizing, review, community |
+| SESS-034 | Watching many sessions | tool | notifications, statusline, monitoring |
+| SESS-035 | Our setup against these findings | comparison | our-setup, global-claude-md |
+
 ## Conflicts
 
 Places where entries, or an entry and another file's recommendations or open questions, disagree. Checked 2026-10-12 against the sources the entries cite; the pages were not re-fetched.
@@ -384,6 +428,11 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Skill frontmatter: SKILL-014 (invocation controls), TOK-064 (token effects).
 - Scheduling: ORCH-017 (mechanisms), REPO-030 (for repo agents).
 - Subagent definitions: ORCH-002 (fields), REPO-005 and REPO-009 (locations, reload), TOK-067 (description budget).
+- Worktrees: ORCH-009 (subagent and session isolation mechanics), SESS-001 and SESS-004 (what worktrees share), SESS-005 (lifecycle per surface), SKILL-053 (desktop config root).
+- Parallel sessions and quota: ORCH-013 and ORCH-020 (agent view, multipliers), SESS-032 and SESS-033 (plan allowance, how many sessions), ORCH-043 (session managers).
+- Hand-offs: ORCH-036 (progress files in long runs), SESS-031 (choosing a channel between sessions), TOK-030 (handoff before `/clear`).
+- Cloud and teleport: ORCH-016 (cloud sessions), SESS-030 (moving sessions between surfaces).
+- Cache scope: TOK-052 (TTLs and scope), SESS-015 (worktrees split the cache).
 
 ## Merges
 
@@ -408,6 +457,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-12 | SESS-001 to SESS-035 | New topic file `kb-sessions.md` (FreekMencke/claude-kb#20): worktrees and shared git state, shared `~/.claude` state, cross-session messaging, keeping branches current on GitHub, hand-offs, and usage limits. 3 Quick answers and 5 overlap clusters added. |
 | 2026-10-12 | all | INDEX.md created (step 3: merge and index). 5 full and 5 partial merges, 5 conflicts recorded, 10 cross-links added; see Merges and Conflicts. `kb-token-usage.md` R4 corrected per ORCH-005. |
 | 2026-10-12 | SKILL-050, SKILL-056 | Fix for missing account skills in desktop WSL sessions verified: per-skill symlinks from a git repo into `~/.claude/skills/` load there, without a restart. Recommendation 9 in `kb-skills.md` marked done (FreekMencke/claude-skills), recommendation 4 started. |
 | 2026-10-12 | all (official-docs / official-example entries) | Monthly re-verification: 174 entries checked against their sources; Last verified set to 2026-10-12 except SKILL-040, SKILL-046 and TOK-085 (sources unfetchable, dates left as they were). No source was gone, so none was marked unverified. |
