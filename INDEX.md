@@ -5,7 +5,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | File | Prefix | Topic | Entries |
 |---|---|---|---|
 | `kb-orchestration.md` | ORCH | Orchestration, parallelization and model selection | 47 (0 merged into other entries) |
-| `kb-token-usage.md` | TOK | Token usage and context efficiency | 62 (4 merged into other entries) |
+| `kb-token-usage.md` | TOK | Token usage and context efficiency, and the cost of research tools | 78 (4 merged into other entries) |
 | `kb-skills.md` | SKILL | Writing, testing and distributing skills | 59 (1 merged into other entries) |
 | `kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 52 (0 merged into other entries) |
 | `kb-sessions.md` | SESS | Several sessions in one repo | 35 (0 merged into other entries) |
@@ -37,6 +37,10 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | When should I `/clear` vs `/compact`? | `/clear` between unrelated tasks or after two failed corrections. `/compact <focus>` at a natural break inside one long task. | TOK-030, TOK-031 |
 | When does auto-compact fire, and should I lower it? | At about 967K tokens on native-1M models (200K on 4.6 models without `[1m]`). A lower window (`/autocompact`, `autoCompactWindow`) trades lossy summaries for cost: 300K cut input tokens by about 30% in our simulation. | TOK-007, TOK-032, TOK-008 |
 | How long does the prompt cache live, and what breaks it? | 1 hour for the main conversation on a subscription; 5 minutes for subagents, forks and teammates, and on an API key. Switching model, fast mode, effort on older models, upgrading Claude Code, and MCP changes with tool search off all break it. | TOK-052, TOK-053, ORCH-040 |
+| Does WebFetch give Claude the whole page? | No: it reads 100,000 characters per call (an `offset` reads on) and usually answers through a small model that may cut quotes; preapproved docs pages under that come back raw. For exact wording, `curl` the `.md` page and grep. | TOK-087, TOK-088, TOK-089 |
+| WebSearch `standard` or `extended`? | `standard` first; `extended` is "several times the cost and latency" (tool schema only, undocumented), and in our one test was broader, not more authoritative. 200 searches per session, shared with subagents. | TOK-093, TOK-092 |
+| context7, a docs MCP server or web search for docs? | The source's own channel first: the `.md` page plus grep, or the docs' MCP server (both Claude docs sites have one). context7 costs about 2k tokens a lookup but can be weeks stale. | TOK-095, TOK-096, TOK-098 |
+| How many research subagents, and what should they return? | 1 agent for fact-finding, 2–4 subagents for comparisons, more only for broad research; Sonnet readers under an Opus lead. Ask for the URL and exact quote per claim, read with curl and grep, and re-check "not found" claims. | TOK-099, TOK-100, TOK-101 |
 | Do many MCP servers still bloat context? | Much less than before: Claude Code defers MCP tool schemas by default, so only names and server instructions load. CLIs (`gh`, `aws`) are still cheaper. | TOK-020, TOK-022 |
 | How long should CLAUDE.md be? | Under 200 lines per file. `@imports` don't reduce cost, and every custom subagent loads it too. Move procedures to skills and path-specific rules to `paths:`-scoped rules. | TOK-003, SKILL-024, REPO-045 |
 | Skill, CLAUDE.md, hook, subagent or MCP? | CLAUDE.md for always-true facts; a skill for an on-demand procedure; a hook for a must-happen guarantee; a subagent for an isolated side task; MCP for access to external systems. | SKILL-021, SKILL-023, TOK-065, REPO-044 |
@@ -195,6 +199,22 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TOK-084 | Code-index MCP servers (Serena, claude-context, code-review-graph) | tool | community, search |
 | TOK-085 | Ideas from other coding agents | comparison | aider, cline, codex |
 | TOK-086 | The April 2026 usage-drain incident | fact | cache, incident |
+| TOK-087 | WebFetch reads 100,000 characters and answers through a second model | fact | webfetch, truncation, research |
+| TOK-088 | Preapproved docs pages come back raw, and big results go to a file | fact | webfetch, docs, research |
+| TOK-089 | Getting full text: `curl` the `.md` page and grep | pattern | webfetch, curl, research |
+| TOK-090 | `llms.txt` is an index; `llms-full.txt` is too big to read | fact | llms-txt, docs, research |
+| TOK-091 | WebFetch settings: cache, deadline, permissions, turning it off | fact | webfetch, settings |
+| TOK-092 | WebSearch returns titles, URLs and a synthesized answer, within a session budget | fact | websearch, limits, research |
+| TOK-093 | WebSearch `standard` against `extended` | comparison | websearch, research |
+| TOK-094 | API web search and web fetch tools: prices and token effects | fact | api, websearch, webfetch, pricing |
+| TOK-095 | context7: cost per lookup, freshness and limits | tool | mcp, docs, context7 |
+| TOK-096 | Anthropic's docs MCP servers | tool | mcp, docs |
+| TOK-097 | Other docs and search MCP servers | tool | mcp, docs, search, community |
+| TOK-098 | Picking a research tool by question | recommendation | research, cost |
+| TOK-099 | How many research subagents, on which model | recommendation | research, subagents |
+| TOK-100 | What a research subagent's brief adds | pattern | research, subagents, briefs |
+| TOK-101 | Getting sources back from research subagents | pattern | research, subagents, citations |
+| TOK-102 | Anti-patterns: research tools | anti-pattern | consolidated, research |
 
 ### Writing, testing and distributing skills (`kb-skills.md`, SKILL)
 
@@ -744,6 +764,8 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Cloud sessions: ORCH-016 (overview, VM size), ORCH-017 (GraphQL block in routines), INFRA-002 (isolation for credentials), SURF-023 to SURF-029 (environments, network, GitHub proxy, setup scripts, limits, auto-fix).
 - Notifications and waiting: SESS-034 (watching many sessions), HOOK-030 (Notification hooks), FLOW-024 and FLOW-029 (ways to wait, CI monitor), SURF-002 and SURF-020 (desktop CI bar and OS notifications, phone pushes).
 - Browser checks: REPO-021 (browser-checker agent), SESS-013 (one browser per workspace), FLOW-014 (as verification), SURF-006 and SURF-032 (desktop Browser pane, Claude in Chrome).
+- Research subagents: PROMPT-012 and PROMPT-013 (any subagent's brief and return format), ORCH-020 and ORCH-025 (multipliers, scaling rules), TOK-099 to TOK-101 (what research adds: source order, curl rule, sources back, the shared search budget).
+- MCP output and docs servers: TOK-023 (output limits), TOK-088 (WebFetch results saved to a file), TOK-095 to TOK-097 (docs MCP servers), INFRA-003 (the AWS server, which TOK-097 lists for its docs tools).
 
 ## Merges
 
@@ -768,6 +790,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-12 | TOK-087 to TOK-102 | New section in `kb-token-usage.md` on the cost of research tools (FreekMencke/claude-kb#26): WebFetch's 100,000-character window, extraction model and raw docs pages, full text with `curl` and `llms.txt`, WebSearch budget and `standard` against `extended`, API web tool prices, context7 and docs MCP servers (both Claude docs sites have one), and briefing research subagents. Tests recorded per entry. 4 Quick answers and 2 overlap clusters added; TOK Quick answers merged to make room. |
 | 2026-10-12 | SURF-001 to SURF-035 | New topic file `kb-surfaces.md` (FreekMencke/claude-kb#25): the desktop Code tab and its WSL gaps, Dispatch, artifacts (availability, sharing, permissions, capabilities, comments, database, templates, turning them off), Remote Control and mobile, push notifications, cloud environments, network, GitHub proxy, setup scripts and limits, auto-fix, VS Code, JetBrains, Chrome, `SendUserFile`, and a surface decision table. 4 Quick answers, 3 conflicts and 5 overlap clusters added. |
 | 2026-10-12 | MEM-001 to MEM-035 | New topic file `kb-memory.md` (FreekMencke/claude-kb#24): every instruction and memory location, load order, lazy loading and compaction, rules and imports, AGENTS.md, what subagents and each surface see, auto memory (saving, recall, switches, staleness, security), `/init`, `/doctor`, `claude-md-management`, the API memory tool and Managed Agents stores, community memory servers, and a review of our files and memory. 4 Quick answers, 3 conflicts and 7 overlap clusters added. |
 | 2026-10-12 | INFRA-001 to INFRA-024 | New topic file `kb-infra-agents.md` (FreekMencke/claude-kb#21): cloud identities and isolation, AWS/Kubernetes/Flux MCP servers versus CLIs, permission rules, auto mode and the sandbox for infrastructure commands, plan and apply, GitOps, audit trails, incident debugging, credential leaks, published incidents, and a review of our AWS, cluster and MCP access. 3 Quick answers, 1 conflict and 6 overlap clusters added. |
