@@ -92,7 +92,18 @@ def main():
         it = index.read_text(encoding="utf-8")
         listed = set(re.findall(r"^\| ([A-Z]+-\d+) \|", it, re.M))
         issues = [f"{eid} is missing from the index" for eid in sorted(set(where) - listed)]
-        issues += [f"mentions unknown {ref}" for ref in sorted(set(re.findall(r"\b(?:ORCH|TOK|SKILL|REPO)-\d+\b", it)) - set(where))]
+        # Prefixes come from the entries themselves, so a new kb-*.md file is checked without editing this script.
+        prefixes = "|".join(sorted({eid.split("-")[0] for eid in where}))
+        mentioned = set(re.findall(r"\b(?:" + prefixes + r")-\d+\b", it))
+        issues += [f"mentions unknown {ref}" for ref in sorted(mentioned - set(where))]
+        # The file table at the top: every kb-*.md file listed, with its current entry count.
+        table = {m.group(1): int(m.group(2)) for m in re.finditer(r"^\| `(kb-[\w-]+\.md)` \| [A-Z]+ \| .*? \| (\d+)", it, re.M)}
+        for f, t in texts.items():
+            count = sum(1 for _ in entries(t))
+            if f.name not in table:
+                issues.append(f"{f.name} is missing from the file table")
+            elif table[f.name] != count:
+                issues.append(f"file table says {table[f.name]} entries for {f.name}, the file has {count}")
         print(f"INDEX.md: {len(listed)} entries listed, {len(issues)} issue(s)")
         for issue in issues:
             print(f"  - {issue}")

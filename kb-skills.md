@@ -1127,7 +1127,7 @@ For a **WSL** session, the app copies a Linux CLI build into the distro under `~
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Claude Code on desktop: Use skills](https://code.claude.com/docs/en/desktop), [Claude Code skills: Cowork and cloud sessions](https://code.claude.com/docs/en/skills), [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [#88432](https://github.com/anthropics/claude-code/issues/88432), local test
-- Related: SKILL-049, SKILL-050, SKILL-052
+- Related: SKILL-049, SKILL-050, SKILL-052, SURF-016
 
 | Session | Personal `~/.claude/skills` | Project `.claude/skills` | Installed plugins | claude.ai account skills |
 |---|---|---|---|---|
@@ -1141,7 +1141,7 @@ For a **WSL** session, the app copies a Linux CLI build into the distro under `~
 
 Other skills that depend on the surface:
 - Bundled skills that need artifacts (`artifact-capabilities`, `artifact-diagramming`) appear only where artifacts are available.
-- `artifact-design` appeared in the desktop session but not in the terminal CLI. The docs don't list it.
+- `artifact-design` appeared in the desktop session but not in the terminal CLI. It is the built-in design skill bundled with the `Artifact` tool, so it appears only where artifacts are available; the docs describe it but don't name it (SURF-016, SURF-009).
 - `dataviz` appeared in both.
 
 Verify each surface rather than assuming parity (SKILL-054).
@@ -1420,7 +1420,7 @@ Still open:
 - **Plugins in desktop WSL sessions.** Is it intended that they load (SKILL-052) when the docs say they don't, or will a later app build stop them loading?
 - **Skill commands in the desktop Code tab.** Do `/skills` and `/context` work there? It's undocumented and wasn't tested. `/skill-doctor` doesn't, at least in desktop WSL sessions (SKILL-031).
 - **Sync version.** The docs and the support article give v2.1.273 for terminal sync of claude.ai skills; the CHANGELOG entry is under 2.1.275.
-- **`artifact-design`.** Where does this skill, present only in desktop sessions, come from? It is undocumented.
+- **`artifact-design`.** Where does this skill, present only in desktop sessions, come from? Partly answered in SURF-016: it is the built-in design skill bundled with the `Artifact` tool, present wherever artifacts are. Whether it can be overridden or disabled per project is tracked in `kb-surfaces.md` open questions.
 - **`/skill-doctor` version.** The docs say v2.1.252+; the CHANGELOG lists it under 2.1.261.
 - **Official marketplace submission.** The claude-plugins-official README points to a form; the Claude Code docs say the official marketplace takes no portal submissions and to use a partner contact.
 - **Skills API beta header.** Is `skills-2025-10-02` still needed? One agent read it is not; another couldn't confirm.
