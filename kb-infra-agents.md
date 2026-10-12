@@ -204,6 +204,8 @@ Bash rules match text (REPO-034), and cloud CLIs make that worse, because their 
 - **No cloud CLI counts as read-only.** The auto-approved set "includes `ls`, `cat`, `echo`, `pwd`, `head`, `tail`, `grep`, `find`, `wc`, `which`, `diff`, `stat`, `du`, `cd`, and read-only forms of `git`".
 - **MCP tools match by name only.** "When Claude Code loads a settings file, it skips any `mcp__` rule that has parentheses."
 
+Tested 2026-10-12, v2.1.296, terminal (WSL): with `Bash(kubectl * delete *)` in `~/.claude/settings.json` and auto mode on, a Haiku `claude -p` asked to run `kubectl -n default delete pod … --dry-run=client` got "has been denied" without a prompt.
+
 ## [INFRA-009] Auto mode's built-in rules for cloud and cluster actions
 - Type: fact
 - Applies to: Claude Code
@@ -258,6 +260,8 @@ So a production namespace or bucket named after the product is judged as ordinar
 - Keep `"$defaults"`: an array without it "replaces the entire default list for that section".
 - The classifier doesn't read `autoMode` from a repo's `.claude/settings.json`, so it must go in user or managed settings.
 - `/auto-mode-setup` drafts entries from recent sessions (v2.1.228+, Pro, Max or Team). `claude auto-mode config` shows the result.
+
+Tested 2026-10-12, v2.1.296, terminal (WSL): `claude auto-mode config` listed the 21 default environment entries and then our four. The defaults still read "None configured" for the slots we filled, so our entries are added alongside the defaults, not merged into them.
 - Scopes merge "additive, not a hard policy boundary": a user `allow` can override an organization `soft_deny`. For a hard line, use `permissions.deny`.
 
 ## [INFRA-011] The sandbox with cloud CLIs, and AWS credential masking
@@ -558,12 +562,12 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 |---|---|---|---|---|
 | 1 | Done 2026-10-12 (FreekMencke/claude-kb#44), without `AWS_PROFILE`: a failing call is the clearer signal. Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
 | 2 | Give the agent a non-admin cluster identity: a ServiceAccount bound to `view` (plus read on Flux resources), with its own kubeconfig for both MCP servers and `KUBECONFIG` in Claude Code's `env`. Keep the admin kubeconfig out of the default path. Alternative for Flux only: `--kube-as`. | High | Medium | INFRA-006, INFRA-004, INFRA-005 |
-| 3 | Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
+| 3 | Done 2026-10-12 (FreekMencke/claude-kb#46): `kubernetes-mcp-server@0.0.67` and `mcp-proxy-for-aws-cli@1.7.0`, the latest releases that day. Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
 | 4 | Done 2026-10-12 (FreekMencke/claude-kb#44), with versioning, lifecycle and object-version deletes and CloudTrail changes also denied; the two existing rules have no prefix, so they are named. Clean up the agent policy: remove the `aws-mcp:*` statement and the two grants for missing buckets; scope EventBridge to the agent's rule-name prefixes and `PutRetentionPolicy` to the functions' log groups; add `cloudtrail:StopLogging`, `cloudtrail:DeleteTrail` and `logs:DeleteLogGroup` to the deny statement. Then update the "Cluster and AWS access" section of `~/.claude/CLAUDE.md`, which says the agent may change only prefixed rules. | Medium | Low | INFRA-003, INFRA-024 |
 | 5 | Skipped 2026-10-12 (FreekMencke/claude-kb#44): the buckets hold a site rebuilt from git, which moves to the cluster. Turn on S3 versioning (with a noncurrent-version expiry) on the site buckets the agent can delete from. | Medium | Low | INFRA-023 |
 | 6 | Done 2026-10-12 (FreekMencke/claude-kb#44), management events only. Create one CloudTrail trail for management events. The first copy is free; add S3 and Lambda data events if the cost is acceptable. | Medium | Low | INFRA-016 |
-| 7 | Add `autoMode.environment` entries that name the production namespace, the site buckets, the Lambda functions and the AWS account as protected (keep `"$defaults"`). | Medium | Low | INFRA-010 |
-| 8 | Add deny rules as a backstop: `Read(~/.aws/credentials)`, `Bash(kubectl * delete *)`, `Bash(kubectl delete *)`, `Bash(helm * uninstall *)`, `Bash(aws * --profile default *)`. | Low | Low | INFRA-008 |
+| 7 | Done 2026-10-12 (FreekMencke/claude-kb#46): four entries after `"$defaults"`, with every namespace on the home cluster as a sensitive target, since there is no staging cluster. Add `autoMode.environment` entries that name the production namespace, the site buckets, the Lambda functions and the AWS account as protected (keep `"$defaults"`). | Medium | Low | INFRA-010 |
+| 8 | Done 2026-10-12 (FreekMencke/claude-kb#46), without the `default`-profile rule: #44 deleted that profile, so the rule would match nothing. Add deny rules as a backstop: `Read(~/.aws/credentials)`, `Bash(kubectl * delete *)`, `Bash(kubectl delete *)`, `Bash(helm * uninstall *)`, `Bash(aws * --profile default *)`. | Low | Low | INFRA-008 |
 | 9 | Decide between Bash `aws` and the AWS MCP server. The global CLAUDE.md asks for `--profile claude` on every CLI call, while the AWS server's instructions say not to use the CLI. Routing writes through MCP makes `aws:ViaAWSMCPService` conditions usable. | Low | Low | INFRA-003, INFRA-006 |
 | 10 | Later: move the agent from a long-term IAM user key to short-lived credentials (an Identity Center permission set, or a role with a session name). | Medium | High | INFRA-020, INFRA-001 |
 
