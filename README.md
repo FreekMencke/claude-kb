@@ -36,6 +36,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [kb-repo-agents.md](kb-repo-agents.md) | `REPO`: agents in repositories (osrs-tracker-web) |
 | [kb-sessions.md](kb-sessions.md) | `SESS`: several sessions in one repo (worktrees, shared state, messaging, keeping branches current) |
 | [kb-hooks.md](kb-hooks.md) | `HOOK`: writing, scoping, debugging, securing and pricing hooks |
+| [kb-infra-agents.md](kb-infra-agents.md) | `INFRA`: agents with cloud and cluster access: credentials, MCP servers, rules, auto mode, audit trails, incidents |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
 | [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage |
 
