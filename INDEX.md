@@ -12,6 +12,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-hooks.md` | HOOK | Hooks: events, handler types, cost, debugging, security, patterns | 36 (0 merged into other entries) |
 | `kb-infra-agents.md` | INFRA | Agents with cloud and cluster access | 24 (0 merged into other entries) |
 | `kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 38 (0 merged into other entries) |
+| `kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -57,6 +58,10 @@ Each topic file also ends with "Recommendations for our setup" (what we should a
 | What goes in a subagent or `claude -p` brief? | Objective and why, what you already know or ruled out, exact inputs, boundaries, done-when, return format and length. For unattended runs, say nobody is watching and when to stop. | PROMPT-012, PROMPT-013, PROMPT-014 |
 | How do I stop "done" without a check, or unrequested extra work? | Ask for a real check that exercises the change and for claims backed by this session's results; name the extras to leave out and send them to the summary. | PROMPT-027, PROMPT-031 |
 | Which old prompt lines hurt the current models? | Forced verification and "double-check" (Opus), progress-every-N-calls, anti-markdown blocks (Fable 5.1), "minimize tool calls", and show-your-reasoning (may be refused). `/doctor prompt-audit` finds them. | PROMPT-030, PROMPT-011, PROMPT-017 |
+| How do I make Claude verify before saying it's done? | Give it a check it can run and ask for evidence (command plus output). Gate harder with `/goal <condition>`, a Stop hook, or a separate reviewer. A repo skill named `verify` is run before each commit (v2.1.286+). | FLOW-011, FLOW-012, FLOW-013, FLOW-015 |
+| Is plan mode read-only, and what do checkpoints not undo? | Plan mode blocks edits until you approve, but shell commands still run (auto-mode classifier). Checkpoints miss Bash side effects, most subagent edits and other sessions' edits; git is the permanent net. | FLOW-006, FLOW-017, FLOW-018 |
+| My session is stuck in a loop. What now? | After two failed corrections: rewind to before the wrong turn, or `/clear` with a better prompt or a handoff. Raise effort if Claude skipped steps; switch model if it tried and still failed. | FLOW-020, FLOW-021, FLOW-022 |
+| What's the cheapest way to wait on CI or a deploy? | A background command that exits when the state changes (one wake-up). Monitor for event streams. `/loop` and cron spend a full-context turn per wake-up. | FLOW-024, FLOW-025, FLOW-028 |
 
 ## Index
 
@@ -530,6 +535,44 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | INFRA-023 | Which guardrail would have stopped each incident | recommendation | incidents, guardrails |
 | INFRA-024 | Our setup: AWS, Kubernetes and MCP access as of 2026-10-12 | fact | our-setup, aws, kubernetes, mcp |
 
+### Session workflows (`kb-workflows.md`, FLOW)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| FLOW-001 | Explore, plan, implement, commit | pattern | workflow, plan-mode, official |
+| FLOW-002 | Test-driven workflow with Claude | pattern | tdd, tests, workflow |
+| FLOW-003 | Interview, write a spec, run it in a fresh session | pattern | spec, interview, askuserquestion |
+| FLOW-004 | UI work from a screenshot or design mock | pattern | ui, screenshots, design |
+| FLOW-005 | Choosing a workflow by task size | recommendation | decision, workflow |
+| FLOW-006 | Plan mode: what it blocks and what still runs | fact | plan-mode, permissions, bash |
+| FLOW-007 | Approving a plan | fact | plan-mode, exitplanmode, approval |
+| FLOW-008 | Plan files and `plansDirectory` | fact | plan-mode, plans, settings |
+| FLOW-009 | Model and effort for planning | recommendation | plan-mode, model-selection, effort, opusplan |
+| FLOW-010 | Planning beyond the terminal: desktop, cloud, Ultraplan removed | fact | plan-mode, desktop, cloud, ultraplan |
+| FLOW-011 | Give Claude a check it can run | recommendation | verification, tests, official |
+| FLOW-012 | `/goal`: keep working until a condition holds | tool | goal, verification, stop-hook |
+| FLOW-013 | `/run`, `/verify` and a repo `verify` skill | tool | verify, skills, commit |
+| FLOW-014 | Browser and GUI checks: Chrome, Playwright MCP, computer use | comparison | browser, playwright, chrome, ui |
+| FLOW-015 | Evidence before claims: instructions that make Claude verify | pattern | verification, claude-md, superpowers |
+| FLOW-016 | How checkpoints work | fact | checkpoints, rewind, retention |
+| FLOW-017 | What checkpoints don't cover | fact | checkpoints, bash, subagents, limits |
+| FLOW-018 | Git as the permanent safety net | recommendation | git, commits, worktrees |
+| FLOW-019 | Branching a conversation: `/branch`, `--fork-session`, `/fork` | fact | sessions, branch, fork |
+| FLOW-020 | Signs a session is stuck | anti-pattern | stuck, corrections, context-rot |
+| FLOW-021 | Recovery ladder for a stuck session | recommendation | stuck, rewind, clear, handoff |
+| FLOW-022 | Changing model or effort to get unstuck | recommendation | model-selection, effort, recovery |
+| FLOW-023 | Built-in loop guards | fact | loops, limits, stop-hook, auto-mode |
+| FLOW-024 | Ways to wait on external work | comparison | waiting, ci, polling, monitor, loop |
+| FLOW-025 | Background Bash: limits and completion notices | fact | background, bash, timeouts |
+| FLOW-026 | Monitor tool | tool | monitor, events, polling |
+| FLOW-027 | `/loop`, `ScheduleWakeup` and the cron tools | tool | loop, schedulewakeup, cron |
+| FLOW-028 | What polling costs | fact | cost, cache, polling |
+| FLOW-029 | Push notifications, desktop CI monitor and channels | fact | notifications, desktop, channels, ci |
+| FLOW-030 | Interrupting with `Esc` | fact | steering, interrupt |
+| FLOW-031 | Queued messages and send-now | fact | steering, queue |
+| FLOW-032 | `/btw`, `/model` and `/effort` while Claude works | fact | steering, btw, model, effort |
+| FLOW-033 | Our setup against these findings | comparison | our-setup, global-claude-md, skills |
+
 ## Conflicts
 
 Places where entries, or an entry and another file's recommendations or open questions, disagree. Checked 2026-10-12 against the sources the entries cite; the pages were not re-fetched.
@@ -545,6 +588,8 @@ Places where entries, or an entry and another file's recommendations or open que
 | Emphasis in instructions | Claude Code best practices (2026-10-12): "add emphasis such as 'IMPORTANT' to that line alone. If you emphasize many lines, none of them stands out." The same page on 2026-01-23 ([Wayback](https://web.archive.org/web/20260123082902/https://code.claude.com/docs/en/best-practices)): "adding emphasis (e.g., 'IMPORTANT' or 'YOU MUST') to improve adherence". Prompting best practices: "dial back any aggressive language" (Opus 4.5 and later over-trigger). | The current pages agree on direction: no blanket emphasis, at most one marked line. PROMPT-004 records both. |
 | Telling the model to verify its work | Prompting Claude Opus 5: remove explicit verification instructions, they "cause over-verification". Sonnet 5.5 and Haiku 5.5 pages: add a "run a real check" paragraph. Claude Code best practices: "Give Claude a way to verify its work". | Model- and effort-specific, not a contradiction: Opus verifies unprompted; Sonnet 5.5 at `low` and Haiku 5.5 at `low`/`medium` skip checks. Whether the Opus 5 advice holds for Opus 5.5 is open. PROMPT-027, PROMPT-030. |
 | Numeric length caps on subagent reports | Effective context engineering: subagents return "often 1,000-2,000 tokens"; Claude Code's delegation prompt: "report in under 200 words". The `prompt-audit` rubric flags "hard word caps" because they "starve reasoning". | Read together: cap the final report, not the work. Inference, recorded in PROMPT-013. |
+| Is `TaskOutput` deprecated or removed? (FLOW-025) | Tools reference: "Deprecated in favor of `Read` on the task's output file path." CHANGELOG 2.1.277: "Removed the deprecated TaskOutput tool." | The CHANGELOG, which is newer than the page's wording. Either way, Claude reads background output with `Read`. |
+| Version of the `/usage` Loops row (FLOW-028) | Costs page: "Requires Claude Code v2.1.242 or later." CHANGELOG: "Added a Loops breakdown to `/usage`" under 2.1.243. | Unresolved; one release apart. Quote 2.1.243 as the safe minimum. |
 
 ## Overlaps kept on purpose
 
@@ -584,6 +629,13 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Other tools' prompts: TOK-085, ORCH-044 and REPO-052 (cost, orchestration, review), PROMPT-034 to PROMPT-036 (instruction wording).
 - Community collections: SKILL-044, SKILL-045 and REPO-051 (skills, agents), PROMPT-037 (prompt wording).
 - Text injected next to tool results: HOOK-007 (wording hook `additionalContext`), PROMPT-033 (harness text mistaken for injection).
+- Rewind and `/btw`: TOK-033 (as context and cost tools), FLOW-016, FLOW-017 (what checkpoints keep and miss) and FLOW-032 (`/btw` for steering).
+- `/clear` and recovering a session: TOK-030 (cost, handoff before clearing), FLOW-020 and FLOW-021 (signs of a stuck session, recovery ladder).
+- Verification: ORCH-039 (separate reviewer), HOOK-031 (Stop-hook gates, `/goal` as a hook), PROMPT-027 and PROMPT-030 (prompt wording per model), FLOW-011 to FLOW-015 (checks inside one session, `/goal`, `/verify`, evidence).
+- Scheduling and waiting: ORCH-017 (routines, desktop tasks, `/loop` compared), FLOW-024 to FLOW-028 (waiting inside a session and what polling costs).
+- Notifications: SESS-034 and HOOK-030 (watching sessions, notification hooks), FLOW-029 (as a way to wait on CI).
+- Browser checks: REPO-021 (browser-checker agent), SESS-013 (one browser per workspace), FLOW-014 (Chrome vs Playwright vs computer use).
+- Model and effort: ORCH-028 and ORCH-029 (levels, escalation), FLOW-009 (for planning), FLOW-022 (to get unstuck).
 
 ## Merges
 
@@ -646,3 +698,4 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 | 2026-10-12 | (recommendations) | `kb-skills.md` recommendation 12: `morning` and `import-memory` disabled on claude.ai; `docs`, the file skills, `deep-research`, the three browser skills and `skill-creator` kept on purpose; recommendation done. |
 | 2026-10-12 | HOOK-001–HOOK-036 | New topic `kb-hooks.md` (FreekMencke/claude-kb#19): every event, handler types and their cost, timeouts, failure modes, locations and surfaces, matchers and `if`, debugging, security, patterns, community collections and our setup. Answers REPO's open question on `prompt` hook cost (HOOK-010); ORCH-019's unverified TaskCreated, TaskCompleted and TeammateIdle input fields are now in HOOK-002. |
 | 2026-10-12 | PROMPT-001 to PROMPT-038 | New topic `kb-prompting.md`: instructing the 5.x models (FreekMencke/claude-kb#22). 4 Quick answers, 3 Conflicts and 9 Overlaps added; links HOOK-007 and HOOK-031. |
+| 2026-10-12 | FLOW-001 to FLOW-033 | New topic file `kb-workflows.md` (FreekMencke/claude-kb#23): recommended workflows, plan mode, verification inside the loop, checkpoints and git, recovering a stuck session, waiting on external work and its cost, steering mid-task, and our setup. 4 Quick answers, 7 overlap clusters and 2 conflicts (`TaskOutput`, the `/usage` Loops version) added. FLOW-015 and recommendation 2 follow PROMPT-027 and PROMPT-030: ask for evidence in reports, not extra verification passes. |
