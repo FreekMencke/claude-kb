@@ -368,7 +368,7 @@ These are Claude Code-only fields. Skills synced from claude.ai cannot carry the
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-13
 - Sources: [Claude Code skills: Troubleshooting](https://code.claude.com/docs/en/skills), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
 - Related: TOK-005, SKILL-023, SKILL-026
 
@@ -379,6 +379,8 @@ These are Claude Code-only fields. Skills synced from claude.ai cannot carry the
 4. Measure the effect of a change with `claude plugin eval` and a `tool_used: Skill` grader.
 
 **Triggers too often**: make the description more specific, add a "not for X" line, use `paths:`, or set `disable-model-invocation: true`.
+
+Tested 2026-10-13, v2.1.296, CLI (`claude-kb-lookup` trigger evals, Opus 5.5, FreekMencke/claude-skills#40): adding "or adding an MCP server" to the description's "Use before …" clause made the near miss "Add a new entry to claude-kb about prompt caching" load the skill in 3 of 6 runs, against 0 of 6 without it. A broad "use before doing X" trigger catches neighbouring tasks; adding the topic to the list alone loaded the new case 3 of 3.
 
 **Loads but isn't followed**:
 - Move rules that must always hold into a hook. The skill's own `hooks:` frontmatter works for this.
