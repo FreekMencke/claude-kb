@@ -555,6 +555,7 @@ Read from local config (structure only) and read-only AWS and cluster calls. Nam
 - Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
 - The admin kubeconfig is `~/.kube/admin.yaml`, behind a Read deny rule.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
+- GA4: `analytics-mcp@0.7.0` since 2026-10-13 (WEB-006).
 - **Gap:** the server keeps an admin kubeconfig, reachable over `ssh`, which the cluster repo uses to apply. Auto mode and approvals cover that path.
 
 **Claude Code:** auto mode, with `autoMode.environment` naming the production resources (INFRA-010). Deny rules for `kubectl` deletes, `helm uninstall`, the AWS credentials and the admin kubeconfig. No sandbox.

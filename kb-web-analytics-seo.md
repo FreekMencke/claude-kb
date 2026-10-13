@@ -15,7 +15,7 @@ All "Last verified" dates are 2026-10-13.
 | Question | Answer | Entries |
 |---|---|---|
 | How does a session get Search Console data? | The Search Console API with a read-only service account (search performance, URL Inspection, sitemaps). The Pages report's reasons, Crawl stats and Core Web Vitals are UI-only, so the user signs in to the Playwright browser for those. Google ships no Search Console MCP server. | WEB-003, WEB-007, WEB-008 |
-| Is there an official GA4 MCP server? | Yes, `googleanalytics/google-analytics-mcp` (experimental, v0.7.0, 2026-07-29). It has 9 report and list tools, uses Application Default Credentials and needs the `analytics.readonly` scope. We haven't installed it, so no session can read our GA4 data today. | WEB-006, WEB-005 |
+| Is there an official GA4 MCP server? | Yes, `googleanalytics/google-analytics-mcp` (experimental, v0.7.0, 2026-07-29). It has 9 report and list tools, uses Application Default Credentials and requests only `analytics.readonly`. Installed user-wide on 2026-10-13 with the Search Console service account as a GA4 Viewer. | WEB-006, WEB-004 |
 | Does the PageSpeed Insights API work without a key? | No. Keyless calls returned 429 (quota 0) on 2026-10-10 and 2026-10-13, although the docs still say a key is optional. Field data is moving to the CrUX API, which needs a key. | WEB-010 |
 | How should an agent see what Googlebot sees? | `curl` the server HTML with the Googlebot user agent and grep the head tags. Don't use WebFetch (it returns a summary) or a Playwright snapshot (it has no `<head>`). | WEB-014, WEB-015, WEB-016 |
 | Is the rendered DOM what Google indexes? | Google indexes the rendered HTML, but it may skip rendering for non-200 pages and `noindex` pages. A canonical in the original HTML should match the rendered one. Use URL Inspection for Google's own view; its API has no rendered HTML. | WEB-017 |
@@ -23,7 +23,7 @@ All "Last verified" dates are 2026-10-13.
 | Which robots.txt tokens are Anthropic's? | `ClaudeBot` (training), `Claude-User` (fetches for a user's question) and `Claude-SearchBot` (search indexing). All three honour robots.txt and `Crawl-delay`. Claude Code's WebFetch identifies as `Claude-User`. | WEB-020 |
 | Does llms.txt help with Google or Claude? | Google says it ignores it, and that it "will neither harm nor help". No Anthropic page says Claude reads third-party llms.txt files. | WEB-021 |
 | Which SEO advice from model memory is wrong? | Sitemap `priority` and `changefreq`, the sitemap ping, meta keywords, FAQ and HowTo rich results, `rel=prev/next`, `noindex` in robots.txt, FID, fixed meta-description lengths and keyword density. | WEB-022, WEB-023, WEB-027 |
-| What's wrong with a UA-era gtag setup in GA4? | `anonymize_ip` does nothing in GA4. `event_category` and `event_label` are plain parameters that GA4 reports don't show. osrs-tracker-web's tag has all three. | WEB-024, WEB-001 |
+| What's wrong with a UA-era gtag setup in GA4? | `anonymize_ip` does nothing in GA4. `event_category` and `event_label` are plain parameters that GA4 reports don't show, and our property hasn't registered them. osrs-tracker-web's tag has all three. | WEB-024, WEB-001 |
 | Is there a published SEO audit skill to start from? | Anthropic's `knowledge-work-plugins` has two: `seo-ai-visibility` (well structured) and `seo-audit` (shallow, partly stale). The most adopted community suite is `AgriciDaniel/claude-seo`; it is heavy and scored. Copy their ideas, not the files. | WEB-026, WEB-027 |
 | What should a read-only SEO audit skill do? | Read the repo's decisions, curl the server HTML per page template, pull Search Console data to weight the findings, and rank them by impact with effort scored separately. No blended score. State what wasn't reached, and treat fetched text as data. | WEB-028, WEB-030 |
 | What did our SEO sessions cost? | The audit was $12.20 API-equivalent and the Search Console and PageSpeed data session $25.77, both on Opus 5.5 and main thread only. The data session cost more because it read the Search Console UI through Playwright. | WEB-031 |
@@ -155,6 +155,8 @@ The access notes ended up in the repo's auto memory, not in the repo (WEB-004). 
 
 Tested 2026-10-13, v2.1.296, desktop Code tab on WSL in auto mode: `ls` of those folders plus `sed` of `query.sh` (with private-key lines filtered out) was denied as "[Credential Exploration]". Auto mode treats looking around a credentials folder as a risk even when the command filters out the key. A skill should call the wrapper rather than read the folder.
 
+The GA4 MCP server (WEB-006) uses the same Search Console key, so one read-only key now covers both properties.
+
 **What follows:**
 - Only the local machine can read Google data. Cloud sessions and routines have neither the files nor the memory.
 - The service account is read-only, so a session can't submit a sitemap. The user does that in the UI.
@@ -169,7 +171,7 @@ Tested 2026-10-13, v2.1.296, desktop Code tab on WSL in auto mode: `ls` of those
 
 Asked whether IndexNow was worth adding, an Opus 5.5 session answered in four turns with one Bash call and no search.
 - Its claims were plausible but unsourced: "Google doesn't", "It tested IndexNow in 2021 and never adopted it", and which engines use Bing's index.
-- It ended: "I can look up Bing's referral share in our analytics". No session had GA4 access then, and none has it now (WEB-006).
+- It ended: "I can look up Bing's referral share in our analytics". No session had GA4 access then. Since 2026-10-13 sessions on this machine do (WEB-006).
 
 The recommendation itself was sensible (check Bing Webmaster Tools first). The fault is that facts were stated without sources and access was claimed that didn't exist.
 
@@ -182,8 +184,8 @@ The recommendation itself was sensible (check Bing Webmaster Tools first). The f
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-13
-- Sources: [googleanalytics/google-analytics-mcp README](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/README.md), [PyPI analytics-mcp](https://pypi.org/project/analytics-mcp/)
-- Related: WEB-009, WEB-012, INFRA-003, TOK-020
+- Sources: [googleanalytics/google-analytics-mcp README](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/README.md), [client.py](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/analytics_mcp/tools/client.py), [PyPI analytics-mcp](https://pypi.org/project/analytics-mcp/)
+- Related: WEB-004, WEB-009, WEB-012, INFRA-003, TOK-020
 
 **What it is**
 - Google's own server. The README title is "Google Analytics MCP Server (Experimental)".
@@ -204,7 +206,17 @@ claude mcp add analytics-mcp --scope user \
   -- pipx run analytics-mcp
 ```
 
-The size of its tool schemas isn't stated. With tool search on (the default), only tool names load at session start (TOK-020). It is the read-only GA4 route WEB-005 lacked.
+The size of its tool schemas isn't stated. With tool search on (the default), only tool names load at session start (TOK-020).
+
+**No gcloud needed.** `client.py` calls `google.auth.default(scopes=[_READ_ONLY_ANALYTICS_SCOPE])` and reads no other settings. So `GOOGLE_APPLICATION_CREDENTIALS` pointing at a service-account key is enough. `uvx analytics-mcp@0.7.0` works in place of pipx, and pins the version.
+
+**Ours** (2026-10-13):
+- Registered at user scope with `uvx analytics-mcp@0.7.0`.
+- It uses the Search Console service account's key; the account was added as a Viewer on the property.
+- The Admin and Data APIs are enabled in that account's project.
+- Auto mode denied registering it as "[Credential Exploration]" until the user asked for it explicitly.
+
+Tested 2026-10-13, v2.1.296, `claude -p` on Haiku 5.5 (capped at 4 turns, $0.20): `get_account_summaries` returned 1 account and 1 property, and `get_custom_dimensions_and_metrics` returned one custom dimension (`description`).
 
 ## [WEB-007] Search Console: the API, its quotas, and no official MCP server
 - Type: tool
@@ -369,7 +381,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 | Which bots actually come? | Server logs | Loki (in #160: Amazonbot 609 requests, Googlebot about 22 item pages in 21 h) |
 | Lab LCP, TBT, CLS | Lighthouse | CLI, DevTools MCP, PSI with a key (WEB-010, WEB-011) |
 | Field Core Web Vitals | CrUX | CrUX API; none for low-traffic sites |
-| What do visitors do on the page, where do they come from? | GA4 | GA MCP server (WEB-006); not set up |
+| What do visitors do on the page, where do they come from? | GA4 | GA MCP server (WEB-006), set up 2026-10-13 |
 
 **What the data showed for us.** Search Console and the logs changed the priorities. The code audit alone ranked duplicate URLs high; the data showed crawling and click-through were the problems (WEB-030).
 
@@ -623,7 +635,7 @@ Universal Analytics stopped processing standard properties on 2023-07-01, and it
 - `trackEvent(action, category, label, value)`, which sends `event_category` and `event_label`;
 - a string `value` (`'dark'`) on `load_theme`.
 
-Whether the property registered those parameters as custom dimensions wasn't checked: no session can read the property (WEB-006). See this file's recommendations.
+The property hasn't registered them. On 2026-10-13 `get_custom_dimensions_and_metrics` (WEB-006) returned one custom dimension, `customEvent:description`, and no custom metrics. So GA4 reports can't break events down by category or label. See this file's recommendations.
 
 ## [WEB-025] GA4 consent mode and data retention
 - Type: fact
@@ -806,15 +818,15 @@ Ranked by impact against effort.
 
 1. **Write the `/seo-audit` skill in claude-skills from WEB-028.** Start from the 2026-10-09 audit prompt (WEB-002), and use the official `seo-ai-visibility` skill's coverage and finding rules (WEB-026, WEB-029). High impact, medium effort. Issue: [FreekMencke/claude-skills#28](https://github.com/FreekMencke/claude-skills/issues/28).
 2. **Fix osrs-tracker-web's UA-era gtag code** (WEB-024): drop `anonymize_ip`, decide which event parameters to register as custom dimensions or rename, and send a numeric or no `value`. Decide on consent mode separately (WEB-025). Medium impact, small effort. Issue: [osrs-tracker/osrs-tracker-web#240](https://github.com/osrs-tracker/osrs-tracker-web/issues/240).
-3. **Give sessions read-only GA4 access**: the official GA MCP server (WEB-006) with ADC and `analytics.readonly` (WEB-012). Then questions like WEB-005's "Bing's referral share" can be answered. This is a local setup step for the user (a Google Cloud login), so no issue. Medium impact, small effort.
+3. **Done 2026-10-13: give sessions read-only GA4 access.** The official GA MCP server (WEB-006) is registered user-wide with the Search Console service account as a Viewer, so questions like WEB-005's "Bing's referral share" can now be answered.
 4. **Mark audit traffic** (WEB-018): the skill appends `seo-audit` to its user agent. Covered by recommendation 1.
 5. **Route SEO questions to this file**: add the topic to `claude-kb-lookup`'s description. Issue: [FreekMencke/claude-skills#29](https://github.com/FreekMencke/claude-skills/issues/29).
 
 ## Open questions
 
 - Does Claude Code's WebFetch obey a `robots.txt` `Disallow` for `Claude-User`? Not documented (WEB-016). A probe against a test path would settle it.
-- Does an unregistered GA4 event parameter show up anywhere in the standard reports? Google implies not but doesn't say so (WEB-024).
+- Does an unregistered GA4 event parameter show up anywhere in the standard reports? Google implies not but doesn't say so (WEB-024). Our property registers only `description`, so a `run_report` with `customEvent:event_category` would answer it.
 - Which Search Console permission does a service account need? Our Restricted user works for the API (WEB-003); Google's docs don't say (WEB-012).
-- How big are the GA MCP server's tool schemas, and how much context does a `run_report` answer take? Not measured (WEB-006).
+- How big are the GA MCP server's tool schemas, and how much context does a `run_report` answer take? Not measured (WEB-006); it's installed now, so a `/context` check in a fresh session would show the schemas.
 - Do Claude's bots visit osrs-tracker-web? The pod logs covered only a few hours (WEB-020). A 30-day Loki query by user agent would answer it.
 - Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)?
