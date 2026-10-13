@@ -12,6 +12,34 @@ Then read only the entries you need: `grep -n '^## \[TOK-036\]' topics/kb-*.md` 
 
 Merged entries keep their ID and a pointer, so old references still resolve.
 
+## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| DOC-001 | Keep a Changelog 2.0.0: what changed from 1.1.0 | fact | changelog, keep-a-changelog, spec |
+| DOC-002 | Curate, don't accumulate: notable changes only | fact | changelog, curation, dependencies |
+| DOC-003 | The brief for an LLM-drafted changelog belongs in CLAUDE.md | recommendation | changelog, claude-md, llm |
+| DOC-004 | Changelogs without version numbers | fact | changelog, dates, continuous-deploy |
+| DOC-005 | Common Changelog: a stricter subset | comparison | changelog, common-changelog, style |
+| DOC-006 | Generated changelogs and host release notes | comparison | changelog, conventional-commits, release-please, release-notes |
+| DOC-007 | How Anthropic writes its own changelogs | fact | changelog, anthropic, examples |
+| DOC-008 | Enforcing changelog entries in CI | comparison | changelog, ci, github-actions, hooks |
+| DOC-009 | What Anthropic's docs say about repo docs beyond CLAUDE.md | fact | readme, docs, claude-md, official |
+| DOC-010 | Official skills and plugins for documentation | tool | skills, plugins, doc-coauthoring |
+| DOC-011 | Decision records: Nygard, MADR and one log or many files | comparison | adr, madr, decisions |
+| DOC-012 | What a README should contain | fact | readme, standard-readme, github, diataxis |
+| DOC-013 | Google's rules: same change, small and fresh, delete dead docs | recommendation | freshness, drift, google |
+| DOC-014 | Mechanical checks: Markdown lint, link check, Prettier, Vale | comparison | markdownlint, lychee, prettier, vale, ci |
+| DOC-015 | Agents that detect or fix doc drift | pattern | drift, routines, claude-code-action, refresh-md-files |
+| DOC-016 | Writing docs that agents retrieve | recommendation | retrieval, headings, agents |
+| DOC-017 | Our repos' docs on 2026-10-13 | fact | our-setup, inventory, survey |
+| DOC-018 | Our changelog conventions and where they deviate | comparison | our-setup, changelog, deviations |
+| DOC-019 | One rule in three files drifts apart | anti-pattern | our-setup, changelog, reviewer, duplication |
+| DOC-020 | Cross-file rules keep paired docs current | pattern | our-setup, reviewer, drift |
+| DOC-021 | A dated decision log in one file | pattern | our-setup, decisions, adr |
+| DOC-022 | Plan docs with a dated status and a delete condition | pattern | our-setup, plans, expiry |
+| DOC-023 | Runbooks in `docs/` or in a skill | comparison | our-setup, runbooks, skills |
+
 ## Hooks (`topics/kb-hooks.md`, HOOK)
 
 | ID | Title | Type | Tags |
