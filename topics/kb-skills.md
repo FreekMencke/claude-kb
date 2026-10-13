@@ -380,7 +380,11 @@ These are Claude Code-only fields. Skills synced from claude.ai cannot carry the
 
 **Triggers too often**: make the description more specific, add a "not for X" line, use `paths:`, or set `disable-model-invocation: true`.
 
-Tested 2026-10-13, v2.1.296, CLI (`claude-kb-lookup` trigger evals, Opus 5.5, FreekMencke/claude-skills#40): adding "or adding an MCP server" to the description's "Use before …" clause made the near miss "Add a new entry to claude-kb about prompt caching" load the skill in 3 of 6 runs, against 0 of 6 without it. A broad "use before doing X" trigger catches neighbouring tasks; adding the topic to the list alone loaded the new case 3 of 3.
+Tested 2026-10-13, v2.1.296, CLI (`claude-kb-lookup` trigger evals, Opus 5.5), two near misses:
+- "or adding an MCP server" in the "Use before …" clause loaded the skill for "Add a new entry to claude-kb about prompt caching" in 3 of 6 runs, against 0 of 6 without it. Listing the topic alone was enough (FreekMencke/claude-skills#40).
+- "READMEs" in the topic list loaded it for "Write the README for this repo" in 1 of 3 runs. "Not for writing a repo's docs" fixed it, and should-load cases stayed 54/54 (FreekMencke/claude-skills#44).
+
+A topic word draws in tasks that do that thing; name them in the exclusion.
 
 **Loads but isn't followed**:
 - Move rules that must always hold into a hook. The skill's own `hooks:` frontmatter works for this.
