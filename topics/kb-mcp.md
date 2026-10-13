@@ -654,6 +654,7 @@ Ranked by impact against effort. Items 1, 3 and 4 change user config or another 
 4. **Give Playwright to the browser-checker subagent only** (low-medium impact, medium effort). Disable the plugin and declare the server inline in the agent's `mcpServers`. Main sessions then lose 25 tool names and a Node process, and the server can be pinned instead of `@latest`. This needs an osrs-tracker-web change to its `browser-checker` agent (REPO-021), and the agent must be a project or user agent, not a plugin agent. MCP-008, MCP-019.
 5. **Re-read a server's tool list after upgrading it** (low impact, trivial effort). Claude Code doesn't re-approve changed tools (MCP-014). Do this for `kubernetes-mcp-server` and `analytics-mcp` when their pins move. MCP-019.
 6. **Don't add `deniedMcpServers` or `allowedMcpServers` for a solo setup beyond item 1**. Without a managed source they are guards, not boundaries, and a blocked server disappears silently. MCP-016, MCP-003.
+7. **Done 2026-10-13: route MCP questions to this file.** `claude-kb-lookup`'s description now lists "MCP servers" ([FreekMencke/claude-skills#40](https://github.com/FreekMencke/claude-skills/pull/40), from [#39](https://github.com/FreekMencke/claude-skills/issues/39)). Its new trigger case (scoping a server to one subagent) loaded the skill 3 of 3 runs. The optional "adding an MCP server" in the "Use before …" clause was left out: it made a KB-editing near miss load the skill (SKILL-015).
 
 ## Open questions
 
