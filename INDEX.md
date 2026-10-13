@@ -15,6 +15,7 @@ Start here. Find your question in Quick answers, or an entry by ID, title or tag
 | `kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 | `kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
 | `kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 35 (0 merged into other entries) |
+| `kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO work: Google data access, crawler view, retired advice, SEO skills | 31 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
@@ -58,6 +59,9 @@ The questions agents ask most, across all topics. Each topic file's own Quick an
 | What's the cheapest way to wait on CI or a deploy? | A background command that exits when the state changes (one wake-up). Monitor for event streams. `/loop` and cron spend a full-context turn per wake-up. Phone pushes (`agentPushNotifEnabled`, off by default) need Remote Control. | FLOW-024, FLOW-025, FLOW-028, SURF-020 |
 | Which surface for which job: terminal, desktop, cloud, Remote Control, IDE? | Terminal for scripts, `-p` and every command; desktop for parallel sessions, visual diff review and PR watching; cloud for long tasks that run with the laptop shut; Remote Control to steer a local session from the phone; IDE for editor selection and diagnostics. | SURF-033, SURF-001, SURF-003 |
 | When should output be an artifact rather than a Markdown file? | An artifact (a private claude.ai page, shareable in the org or by link) when a person must see it rendered, click it or comment; a file in the repo for anything agents read later, since another session reads an artifact back only as a summary. | SURF-008, SURF-010, SURF-011 |
+| How does a session get Search Console, GA4 or PageSpeed data? | Search Console: the API with a read-only service account, plus a signed-in Playwright browser for the UI-only reports (no official MCP server). GA4: Google's official `analytics-mcp` server with `analytics.readonly`. PSI: an API key, since keyless calls get 429. | WEB-007, WEB-006, WEB-010 |
+| How should an SEO audit see a page as Googlebot does? | `curl` the server HTML with a marked Googlebot UA and grep the head tags. Not WebFetch (it returns a summary) and not a Playwright snapshot (it has no `<head>`). Then compare the canonical and `noindex` with the rendered DOM. | WEB-014, WEB-015, WEB-016, WEB-017 |
+| What should an `/seo-audit` skill do, and which SEO advice from memory is stale? | Read-only: repo decisions first, search data to weight the findings, impact and effort scored separately, no blended score. Stale: sitemap `priority`/`changefreq`, meta keywords, FAQ/HowTo rich results, FID, fixed description lengths, keyword density. | WEB-028, WEB-022, WEB-023 |
 
 ## Index
 
@@ -664,6 +668,42 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SURF-033 | Which surface for which job | comparison | decision-table, surfaces |
 | SURF-034 | Surfaces in our setup: desktop WSL and WSL terminal | comparison | our-setup, wsl, desktop |
 | SURF-035 | Sending files to your device: `SendUserFile` | tool | remote-control, cloud, files, mobile |
+
+### Claude for web analytics and SEO work (`kb-web-analytics-seo.md`, WEB)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| WEB-001 | osrs-tracker-web's SEO and analytics setup (2026-10-13) | fact | baseline, osrs-tracker-web, gtag |
+| WEB-002 | How the 2026-10-09 SEO audit ran | fact | baseline, audit, prompt |
+| WEB-003 | How the Search Console and PageSpeed data was gathered (#160) | fact | baseline, search-console, playwright |
+| WEB-004 | Google credentials live outside the repo, and auto mode guards them | fact | credentials, auto-mode, our-setup |
+| WEB-005 | Anti-pattern: SEO answers from memory and offers of data the session can't reach | anti-pattern | memory, hallucination, indexnow |
+| WEB-006 | The official Google Analytics MCP server | tool | ga4, mcp, read-only |
+| WEB-007 | Search Console: the API, its quotas, and no official MCP server | tool | search-console, api, mcp, quotas |
+| WEB-008 | What the Search Console API can't give you | fact | search-console, url-inspection, ui |
+| WEB-009 | GA4 Data API quotas and the BigQuery exports | fact | ga4, api, bigquery, quotas |
+| WEB-010 | PageSpeed Insights needs a key; field data moves to CrUX | fact | pagespeed, crux, core-web-vitals |
+| WEB-011 | Lab audits: Lighthouse CLI and Chrome DevTools MCP | tool | lighthouse, chrome-devtools-mcp, lab |
+| WEB-012 | Read-only scopes and project-scoped config for Google data | recommendation | credentials, scopes, mcp-json |
+| WEB-013 | Which source answers which SEO question | comparison | data-sources, search-console, ga4, logs |
+| WEB-014 | Judge pages by the server HTML: curl and grep the head | pattern | curl, ssr, crawler-view, tokens |
+| WEB-015 | A Playwright snapshot has no `<head>` (tested) | fact | playwright, snapshot, crawler-view |
+| WEB-016 | WebFetch and the API web fetch tool are wrong for SEO checks | anti-pattern | webfetch, web-fetch-tool, claude-user |
+| WEB-017 | What Google renders and indexes | fact | rendering, javascript, canonical, noindex |
+| WEB-018 | Audit requests show up as bots in the server logs | fact | logs, user-agent, measurement |
+| WEB-019 | Structured data has no validation API | fact | structured-data, json-ld, validator |
+| WEB-020 | Anthropic's three crawlers and their robots.txt tokens | fact | crawlers, robots-txt, claude-user |
+| WEB-021 | llms.txt and AI search features | fact | llms-txt, ai-overviews, geo |
+| WEB-022 | Retired crawl and indexing advice models still give | anti-pattern | stale-advice, sitemaps, robots-txt |
+| WEB-023 | Retired rich results, metrics and tools | anti-pattern | stale-advice, structured-data, core-web-vitals |
+| WEB-024 | Universal Analytics habits in a GA4 tag | anti-pattern | ga4, gtag, stale-advice |
+| WEB-025 | GA4 consent mode and data retention | fact | ga4, consent-mode, retention |
+| WEB-026 | Anthropic's official SEO skills | tool | official-example, skills, seo-audit |
+| WEB-027 | Community SEO skills and agents | comparison | community, skills, agents |
+| WEB-028 | What a read-only SEO audit skill should do | recommendation | seo-audit, skill-design, read-only |
+| WEB-029 | One audit finding: evidence, impact, effort, fix | pattern | findings, output, severity |
+| WEB-030 | Let search data order the fixes | pattern | search-console, prioritising |
+| WEB-031 | What our SEO sessions cost (measured) | fact | cost, measurement, opus |
 
 ## Conflicts
 
