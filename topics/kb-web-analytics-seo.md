@@ -22,12 +22,12 @@ All "Last verified" dates are 2026-10-13.
 | Can an agent validate structured data through an API? | No public API for the Rich Results Test or the Schema Markup Validator. Check the JSON-LD in the server HTML, then validate by hand. URL Inspection's `richResultsResult` covers indexed URLs only. | WEB-019 |
 | Which robots.txt tokens are Anthropic's? | `ClaudeBot` (training), `Claude-User` (fetches for a user's question) and `Claude-SearchBot` (search indexing). All three honour robots.txt and `Crawl-delay`. Claude Code's WebFetch identifies as `Claude-User`. | WEB-020 |
 | Does llms.txt help with Google or Claude? | Google says it ignores it, and that it "will neither harm nor help". No Anthropic page says Claude reads third-party llms.txt files. | WEB-021 |
-| Which SEO advice from model memory is wrong? | Sitemap `priority` and `changefreq`, the sitemap ping, meta keywords, FAQ and HowTo rich results, `rel=prev/next`, `noindex` in robots.txt, FID, fixed meta-description lengths and keyword density. | WEB-022, WEB-023, WEB-027 |
-| What's wrong with a UA-era gtag setup in GA4? | `anonymize_ip` does nothing in GA4. `event_category` and `event_label` are plain parameters that GA4 reports don't show, and our property hasn't registered them. osrs-tracker-web's tag has all three. | WEB-024, WEB-001 |
+| Which SEO and GA4 advice from model memory is wrong? | Sitemap `priority` and `changefreq`, the sitemap ping, meta keywords, FAQ and HowTo rich results, `rel=prev/next`, `noindex` in robots.txt, FID, fixed meta-description lengths and keyword density. In a GA4 tag, `anonymize_ip` does nothing, and `event_category` and `event_label` are plain parameters that reports don't show (osrs-tracker-web dropped them in osrs-tracker/osrs-tracker-web#241). | WEB-022, WEB-023, WEB-024, WEB-027 |
 | Is there a published SEO audit skill to start from? | Anthropic's `knowledge-work-plugins` has two: `seo-ai-visibility` (well structured) and `seo-audit` (shallow, partly stale). The most adopted community suite is `AgriciDaniel/claude-seo`; it is heavy and scored. Copy their ideas, not the files. | WEB-026, WEB-027 |
 | What should a read-only SEO audit skill do? | Read the repo's decisions, curl the server HTML per page template, pull Search Console data to weight the findings, and rank them by impact with effort scored separately. No blended score. State what wasn't reached, and treat fetched text as data. | WEB-028, WEB-030 |
 | What did our SEO sessions cost? | The audit was $12.20 API-equivalent and the Search Console and PageSpeed data session $25.77, both on Opus 5.5 and main thread only. The data session cost more because it read the Search Console UI through Playwright. | WEB-031 |
-| Search Console says a new sitemap "could not be read". Is it broken? | Not necessarily. Check `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), the server logs for Googlebot's fetch, and URL Inspection's live test. On 2026-10-13 a valid sitemap showed the error while the API said pending with 0 errors, and the logs showed 200s. | WEB-032 |
+| Search Console says a new sitemap "could not be read". Is it broken? | Not necessarily. Check `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), the server logs for Googlebot's fetch, and URL Inspection's live test. On 2026-10-13 valid child sitemaps showed the error and cleared on their own within hours. A resubmitted sitemap index stayed pending for days: submit the children directly instead. | WEB-032 |
+| Why does Google show my `Brand: phrase` title as `phrase - Brand`? | On 2026-10-13 Google flipped two osrs-tracker-web titles whose phrase after the colon started in lowercase. Start the phrase with a capital, or write `Phrase - Site name` yourself. | WEB-033 |
 | Do audit curls distort the server's bot counts? | Yes. A Googlebot-UA curl is logged as Googlebot. The 2026-10-10 analysis had to remove its own requests by hand. Add a marker to the audit's user agent. | WEB-018 |
 
 ## Index
@@ -65,7 +65,8 @@ All "Last verified" dates are 2026-10-13.
 | WEB-029 | One audit finding: evidence, impact, effort, fix | pattern | findings, output, severity |
 | WEB-030 | Let search data order the fixes | pattern | search-console, prioritising |
 | WEB-031 | What our SEO sessions cost (measured) | fact | cost, measurement, opus |
-| WEB-032 | "Sitemap could not be read" on a fresh submit can mean not processed yet | fact | search-console, sitemaps, logs |
+| WEB-032 | A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending | fact | search-console, sitemaps, sitemap-index, logs |
+| WEB-033 | Google rewrote `Brand: phrase` titles whose phrase starts in lowercase | fact | title-links, titles, search-results |
 
 ## [WEB-001] osrs-tracker-web's SEO and analytics setup (2026-10-13)
 - Type: fact
@@ -814,26 +815,50 @@ Main-thread usage summed from each transcript's assistant `usage` fields. Prices
 
 **To re-run:** for each `.jsonl`, sum `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens` and `input_tokens` over the `assistant` lines, then multiply by the prices above. The script used is in this session's transcript; a later session can reproduce it in a dozen lines.
 
-## [WEB-032] "Sitemap could not be read" on a fresh submit can mean not processed yet
+## [WEB-032] A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending
 - Type: fact
 - Applies to: general
 - Confidence: single-source
 - Last verified: 2026-10-13
-- Sources: [Manage your sitemaps using the Sitemaps report](https://support.google.com/webmasters/answer/7451001), [Search Console API: Sitemaps resource](https://developers.google.com/webmaster-tools/v1/sitemaps), osrs-tracker-web's app and Traefik logs and `sitemaps.list`, read 2026-10-13
+- Sources: [Manage your sitemaps using the Sitemaps report](https://support.google.com/webmasters/answer/7451001), [Search Console API: Sitemaps resource](https://developers.google.com/webmaster-tools/v1/sitemaps), osrs-tracker-web's app and Traefik logs and `sitemaps.list`, read 2026-10-10 to 2026-10-13 ([FreekMencke/claude-kb#89](https://github.com/FreekMencke/claude-kb/issues/89))
 - Related: WEB-007, WEB-008, WEB-013, WEB-018, WEB-029
 
-Minutes after a submit, the Sitemaps report can show "Couldn't fetch" (details page: a "Last read" date, 0 pages, "Sitemap could not be read", nothing to expand) for a sitemap Google fetched without trouble. Check the API and the server logs before calling it a finding.
+Minutes after a submit, the Sitemaps report can show "Couldn't fetch" (details: 0 pages, "Sitemap could not be read") for a sitemap Google fetched fine. On osrs-tracker-web it cleared on its own within hours. A resubmitted sitemap index stayed pending for days although Googlebot fetched it: submit the children directly, and don't keep resubmitting the index.
 
-**What we saw (2026-10-13, UTC).** Three child sitemaps were submitted between 10:21 and 10:23.
-- Googlebot fetched each within seconds. App and Traefik logs show 200 every time; the players sitemap (536 URLs, valid XML) was fetched twice.
-- Only `sitemap-items.xml` was processed: `lastDownloaded` 10:21:22, `isPending: false`, Success.
-- `sitemap-players.xml`: `lastDownloaded: null`, `isPending: true`, `errors: 0`, while the UI showed "could not be read".
-- `sitemap-site.xml`, a static file with another `lastmod` format, stayed pending as well. That makes a problem in the players file unlikely.
-- URL Inspection's live test on the sitemap URL passed ("URL is available to Google"). The non-live view shows "URL is unknown to Google" for any sitemap, which means nothing.
+**Child sitemaps (2026-10-13, UTC).** Three were submitted between 10:21 and 10:23.
+- Googlebot fetched each within seconds, 200 every time (app and Traefik logs). At first only `sitemap-items.xml` was processed (`isPending: false`, Success). `sitemap-players.xml` (536 URLs, valid XML) had `lastDownloaded: null`, `isPending: true`, `errors: 0` while the UI said "could not be read". `sitemap-site.xml`, a static file with another `lastmod` format, was pending too.
+- By about 14:00 all three were `isPending: false`, Success, 0 errors.
+- URL Inspection's live test on the sitemap URL passed. Its non-live view says "URL is unknown to Google" for any sitemap, which means nothing.
 
-**Field meanings.** The API reference says `isPending`: "If true, the sitemap has not been processed." `errors`: "issues with the sitemap itself that need to be fixed before it can be processed". Google's help page says "could not be read" means "the fetch failed for one of these reasons, as shown in the details page"; here the details page showed none.
+**The index.** `/sitemap.xml` was resubmitted 2026-10-10 17:21 UTC. Googlebot fetched it within a second and again at 17:54 (200s in the app logs). On 2026-10-13 `sitemaps.list` still said `isPending: true` with `lastDownloaded` 2026-09-18, and 4,696 pages: the old read, without the players sitemap added since. The children, submitted on their own, were read, so the stale row blocks nothing.
 
-**Check, in order:** `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), server logs for Googlebot's fetch and its status, then URL Inspection → Test live URL. If all three are clean, wait and don't resubmit. Whether the status clears on its own wasn't verified yet (Open questions).
+**Google's docs.** `isPending`: "If true, the sitemap has not been processed." The help page says "The sitemap should be fetched immediately" but not how long processing takes.
+
+**Check, in order:** `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), the server logs for Googlebot's fetch and its status, then URL Inspection → Test live URL. If all three are clean, wait.
+
+## [WEB-033] Google rewrote `Brand: phrase` titles whose phrase starts in lowercase
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-13
+- Sources: [Influencing your title links in search results](https://developers.google.com/search/docs/appearance/title-link) (last updated 2025-12-10, read 2026-10-13), Google results and URL Inspection for osrs-tracker-web, 2026-10-13 ([FreekMencke/claude-kb#89](https://github.com/FreekMencke/claude-kb/issues/89), fixed in [osrs-tracker/osrs-tracker-web@6c4937f](https://github.com/osrs-tracker/osrs-tracker-web/commit/6c4937f))
+- Related: WEB-001, WEB-014, WEB-022, WEB-029
+
+In a `Brand: phrase` title whose phrase starts in lowercase, Google showed `phrase - Brand`, or `phrase - Site name`. Start the phrase with a capital, or write `Phrase - Site name` yourself.
+
+**What we saw (screenshots by the user, 2026-10-13):**
+
+| `<title>` | Shown by Google |
+|---|---|
+| `OSRS XP Tracker: daily gains, boss kills and clues` | `daily gains, boss kills and clues - OSRS XP Tracker` |
+| `OSRS Price Tracker: live Grand Exchange prices` | `live Grand Exchange prices - OSRS Tracker` (the site name, not the cut brand) |
+| `OSRS Tracker: XP tracker and Grand Exchange prices` (Home) | unchanged |
+
+The titles shipped 2026-10-10 and `/trackers/xp` was last crawled 2026-10-11 20:15 UTC, so they weren't stale. Home, which starts with the site name itself, was kept.
+
+**What Google says.** Title links are "completely automated", from sources including `<title>`, the "Main visual title", headings, `og:title` and "WebSite structured data". "If we've detected an issue on the page, we may try to generate an improved title link". Google "may omit the site name from the title link, if it's repetitive with the site name that's already shown in the search result". Its branded example has a capital after the colon: `ExampleSocialSite: Sign up for a new account.` Changes show after a recrawl, which "may take a few days to a few weeks".
+
+Google names no lowercase rule: the cause is our inference from one site.
 
 ## Recommendations for our setup
 
@@ -855,5 +880,6 @@ Ranked by impact against effort.
 - Does an unregistered GA4 event parameter show up anywhere in the standard reports? Google implies not but doesn't say so (WEB-024). Our property registers only `description`, so a `run_report` with `customEvent:event_category` would answer it.
 - Which Search Console permission does a service account need? Our Restricted user works for the API (WEB-003); Google's docs don't say (WEB-012).
 - How big are the GA MCP server's tool schemas, and how much context does a `run_report` answer take? Not measured (WEB-006); it's installed now, so a `/context` check in a fresh session would show the schemas.
-- Does a fresh sitemap's "Sitemap could not be read" clear on its own? `sitemaps.list` on or after 2026-10-16 will show whether `sitemap-players.xml` and `sitemap-site.xml` were processed (WEB-032).
+- How long does a resubmitted sitemap index stay pending? `sitemaps.list` for `/sitemap.xml` was still pending three days after the 2026-10-10 resubmit (WEB-032); a check on or after 2026-10-20 would show whether it is processed.
+- Does Google keep the capitalised `Brand: Phrase` titles as written? osrs-tracker-web shipped them in 6c4937f on 2026-10-13; a search-results check after the next crawl of `/trackers/xp` and `/trackers/price` would confirm WEB-033's rule.
 - Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)?

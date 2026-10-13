@@ -602,7 +602,8 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | WEB-029 | One audit finding: evidence, impact, effort, fix | pattern | findings, output, severity |
 | WEB-030 | Let search data order the fixes | pattern | search-console, prioritising |
 | WEB-031 | What our SEO sessions cost (measured) | fact | cost, measurement, opus |
-| WEB-032 | "Sitemap could not be read" on a fresh submit can mean not processed yet | fact | search-console, sitemaps, logs |
+| WEB-032 | A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending | fact | search-console, sitemaps, sitemap-index, logs |
+| WEB-033 | Google rewrote `Brand: phrase` titles whose phrase starts in lowercase | fact | title-links, titles, search-results |
 
 ## Session workflows (`topics/kb-workflows.md`, FLOW)
 
