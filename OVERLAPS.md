@@ -108,3 +108,4 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 - REPO-034 and FLOW-006: what Bash permission rules can match, against what plan mode blocks.
 - SESS-018 and SKILL-010: a message from another session grants nothing, against `allowed-tools` pre-approving without restricting.
 - REPO-001 and WEB-001: osrs-tracker-web's Claude Code setup (agents, hooks, skills), against its SEO and analytics code.
+- WEB-022 and WEB-033: retired title-length advice, against how Google rewrites a `Brand: phrase` title.
