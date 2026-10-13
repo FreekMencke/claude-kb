@@ -354,9 +354,9 @@ Open issues (#88947, single-source) still report weekly forced re-logins with 10
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-13
 - Sources: [MCP](https://code.claude.com/docs/en/mcp), [CHANGELOG 2.1.154](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [#45880](https://github.com/anthropics/claude-code/issues/45880), [#28860](https://github.com/anthropics/claude-code/issues/28860), [playwright-mcp README](https://github.com/microsoft/playwright-mcp)
-- Related: TOK-020, SESS-009
+- Related: TOK-020, SESS-009, MCP-012, MCP-028
 
 **Stdio servers.** The docs say only that "Stdio servers run as local processes on your machine" and that Claude Code doesn't reconnect them automatically. They don't say whether sessions share them. The evidence points to one process per server per session:
 - v2.1.154 passes `CLAUDE_CODE_SESSION_ID` into each stdio server's environment.
@@ -364,6 +364,8 @@ Open issues (#88947, single-source) still report weekly forced re-logins with 10
 - #28860 counts about 42 processes and 1.9 GB for 4 sessions with 6 servers.
 
 Neither issue has a maintainer reply. Budget memory as sessions × stdio servers.
+
+Tested 2026-10-13, desktop WSL sessions (CLI 2.1.295), `ps -eo pid,ppid,rss,args` summed per session's process tree: each of four open sessions ran its own copy of every stdio server (kubernetes, flux, the AWS proxy, analytics, Playwright, plus `ng mcp` in osrs-tracker-web sessions), 12–19 processes and 0.78–0.97 GB RSS per session (one at 1.77 GB), Chrome excluded. RSS counts shared pages per process, so the true total is lower. The one open Playwright browser used `--user-data-dir` under `~/.cache/ms-playwright-mcp/mcp-chrome-<hash>`. Startup and context cost per `-p` run: MCP-012; moving servers off user scope: MCP-001, MCP-008.
 
 **HTTP and SSE servers** run once, outside Claude Code. Their OAuth tokens sit in the shared credential store, which had concurrent-refresh fixes in v2.1.59, v2.1.118 and v2.1.271.
 
@@ -913,7 +915,7 @@ Ranked by impact against effort. None is applied yet.
 
 ## Open questions
 
-1. **Do stdio MCP servers start once per session?** The docs don't say. User issues (#45880, #28860) report one process per session. A `ps` check with two sessions open would settle it for our setup (SESS-013).
+1. **Do stdio MCP servers start once per session?** Answered 2026-10-13: yes, one full set per session, about 0.8 GB RSS each in our setup (SESS-013's Tested line).
 2. **Do Linux and macOS sessions still lose `~/.claude.json` state after v2.1.259?** Only Windows and desktop reports (#92908) are open. Does `CLAUDE_CONFIG_DIR` also move `~/.claude.json` (SESS-010, SESS-014)?
 3. **Does GitHub honour `.gitattributes` merge drivers today?** The only staff statement is a second-hand reply from about 2017. Test on a throwaway repo before relying on SESS-026.
 4. **Does a `push` workflow run on a conflicting PR branch?** Inferred yes from the docs; not confirmed (SESS-021).
