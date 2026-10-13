@@ -3,7 +3,7 @@
 A Markdown knowledge base on using Claude efficiently, written for agents to query: model and effort choice,
 subagents and orchestration, agents in repos, token usage, caching and research-tool cost, writing skills, hooks,
 parallel sessions, agents with cloud and cluster access, prompting the current models, session workflows, memory and
-instruction files, and the desktop app, artifacts and remote surfaces. Every entry carries its sources, a confidence
+instruction files, the desktop app, artifacts and remote surfaces, and web analytics and SEO work. Every entry carries its sources, a confidence
 level and a last-verified date.
 
 ## Querying it
@@ -45,6 +45,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [kb-workflows.md](kb-workflows.md) | `FLOW`: session workflows (planning, verifying, checkpoints and git, recovering a stuck session, waiting on CI, steering) |
 | [kb-memory.md](kb-memory.md) | `MEM`: memory and instruction files (where they live, load order, auto memory, keeping them current, surfaces, memory servers) |
 | [kb-surfaces.md](kb-surfaces.md) | `SURF`: desktop app, artifacts, Remote Control and mobile, cloud sessions, IDE extensions and Chrome, and which surface for which job |
+| [kb-web-analytics-seo.md](kb-web-analytics-seo.md) | `WEB`: Claude for web analytics and SEO work (GA4, Search Console and PageSpeed access, crawler view, retired advice, SEO skills, session cost) |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
 | [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, INDEX.md coverage, unknown IDs in INDEX.md and its file table's entry counts; warns (without failing) about entries in different files with near-identical titles or mostly shared tags, unless INDEX.md already records the pair. ID prefixes come from the files, so a new topic file needs no script change |
 

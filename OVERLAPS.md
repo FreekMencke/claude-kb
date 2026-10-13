@@ -58,13 +58,17 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Remote Control: SESS-020 (starting it, several sessions), SURF-018 to SURF-022 (what a device can do, connection, pushes, mobile, desktop visibility).
 - Cloud sessions: ORCH-016 (overview, VM size), ORCH-017 (GraphQL block in routines), INFRA-002 (isolation for credentials), SURF-023 to SURF-029 (environments, network, GitHub proxy, setup scripts, limits, auto-fix).
 - Notifications and waiting: SESS-034 (watching many sessions), HOOK-030 (Notification hooks), FLOW-024 and FLOW-029 (ways to wait, CI monitor), SURF-002 and SURF-020 (desktop CI bar and OS notifications, phone pushes), SURF-029 (cloud auto-fix).
-- Browser checks: REPO-021 (browser-checker agent), SESS-013 (one browser per workspace; owns the Playwright default-profile open question), FLOW-014 (Chrome vs Playwright vs computer use, as verification), SURF-006 and SURF-032 (desktop Browser pane, Claude in Chrome).
+- Browser checks: REPO-021 (browser-checker agent), SESS-013 (one browser per workspace; owns the Playwright default-profile open question), FLOW-014 (Chrome vs Playwright vs computer use, as verification), SURF-006 and SURF-032 (desktop Browser pane, Claude in Chrome), WEB-015 (a Playwright snapshot has no `<head>`, for SEO checks).
 - Desktop "Auto-merge when ready": SURF-002 (the feature) and FLOW-029 (as a way to wait). Both say it squash-merges and needs repo auto-merge on; the "don't turn it on" decision is in both files' recommendations (SURF 5, FLOW 6).
 - `artifact-design`: SKILL-048 (which session types list it), SURF-016 (what it is). The open question lives in `kb-surfaces.md`.
 - Hooks and permission modes: HOOK-006 (a `PreToolUse` deny holds in `bypassPermissions`), INFRA-012 (infrastructure guard hooks), REPO-032 (modes).
 - Remote Control approvals: SESS-020 (starting it), SURF-018 (a device answers permission prompts; never Bypass mode).
 - Research subagents: PROMPT-012 and PROMPT-013 (any subagent's brief and return format), ORCH-020 and ORCH-025 (multipliers, scaling rules), TOK-099 to TOK-101 (what research adds: source order, curl rule, sources back, the shared search budget). ORCH-030 puts codebase search on Haiku; TOK-099 keeps research readers on Sonnet because they judge sources, not because the advice differs.
 - MCP output and docs servers: TOK-023 (output limits), TOK-088 (WebFetch results saved to a file), TOK-095 to TOK-097 (docs MCP servers), INFRA-003 (the AWS server, which TOK-097 lists for its docs tools).
+- Raw pages instead of WebFetch: TOK-087 and TOK-089 (reading docs for research), WEB-016 and WEB-014 (inspecting the page under test in an SEO audit).
+- llms.txt: TOK-090 (reading Anthropic's to find docs), WEB-021 (publishing one, and what Google and Anthropic say it does for search).
+- The credential is the control: INFRA-006 (AWS and Kubernetes), WEB-012 (Google read-only scopes).
+- Report formats: REPO-049 and REPO-050 (reviewer severity and findings), WEB-029 (audit findings ranked by impact and effort).
 
 ## Merges
 
@@ -93,3 +97,4 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 - MEM-031 and ORCH-018: memory stores in the API and Managed Agents, against Managed Agents' multi-agent setup.
 - REPO-034 and FLOW-006: what Bash permission rules can match, against what plan mode blocks.
 - SESS-018 and SKILL-010: a message from another session grants nothing, against `allowed-tools` pre-approving without restricting.
+- REPO-001 and WEB-001: osrs-tracker-web's Claude Code setup (agents, hooks, skills), against its SEO and analytics code.
