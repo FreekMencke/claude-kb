@@ -125,7 +125,7 @@ Unset `allowedMcpServers` allows everything; `[]` allows nothing but built-ins a
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-13
-- Sources: [Permissions: MCP](https://code.claude.com/docs/en/permissions#mcp), [Permissions: tool name wildcards](https://code.claude.com/docs/en/permissions#tool-name-wildcards), [Permissions: match by input parameter](https://code.claude.com/docs/en/permissions#match-by-input-parameter), [MCP: plugin MCP tool names](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers)
+- Sources: [Permissions: MCP](https://code.claude.com/docs/en/permissions#mcp), [Permission modes: auto mode](https://code.claude.com/docs/en/permission-modes), [Permissions: tool name wildcards](https://code.claude.com/docs/en/permissions#tool-name-wildcards), [Permissions: match by input parameter](https://code.claude.com/docs/en/permissions#match-by-input-parameter), [MCP: plugin MCP tool names](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers)
 - Related: MCP-009, MCP-010, MCP-015, HOOK-018, REPO-033, INFRA-006
 
 Tool names are `mcp__<server>__<tool>`; plugin tools are `mcp__plugin_<plugin>_<server>__<tool>`; connectors Claude Code fetches are `mcp__claude_ai_<name>__<tool>` (spaces become `_`, e.g. `mcp__claude_ai_MongoDB_Atlas__drop-database`).
@@ -139,6 +139,8 @@ Rule forms:
 Rules use the canonical name, not the display label. A hook matcher on the bare server key (`mcp__database-tools__.*`) "never fires for a plugin-bundled server"; same trap for permission rules and a subagent's `tools`.
 
 Prompts that no allow rule skips: tools a server marks `_meta["anthropic/requiresUserInteraction"]: true`, and connector tools an organization set to `ask`. Both prompt "even in `acceptEdits`, `auto`, and `bypassPermissions`"; `dontAsk` denies them.
+
+An explicit `ask` rule "still force[s] a prompt" in auto mode, so allowing a server's reads and listing its write tools under `ask` gives unattended reads and an approval per write (MCP-028).
 
 Deny rules decide what the model may call; what the server can do with its credential is set by the credential (INFRA-006).
 
@@ -610,7 +612,7 @@ For us, a channel is a way to wake a session on a CI result without polling; the
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-13
-- Sources: [MCP: installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes), local config (`~/.claude.json`, `~/.claude/settings.json`), `claude -p` init message, `ps`
+- Sources: [MCP: installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes), [mongodb-mcp-server README](https://raw.githubusercontent.com/mongodb-js/mongodb-mcp-server/main/README.md), [Atlas cloud backups](https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/), local config (`~/.claude.json`, `~/.claude/settings.json`), `claude -p` init message, `ps`
 - Related: INFRA-024, MCP-010, MCP-012, SESS-013, TOK-020
 
 Read from local config and a `claude -p --output-format stream-json` init message on v2.1.296 in the WSL terminal.
@@ -631,7 +633,7 @@ Outside a repo: 8 servers, 120 MCP tools, about 6,600 tokens per request and abo
 Permission rules: `~/.claude/settings.json` allows nine named tools (three `angular-cli`, six Playwright) and has no MCP deny rules, no `deniedMcpServers` and no `disableClaudeAiConnectors`. Auto mode decides the rest.
 
 Gaps:
-- The Atlas connector's write tools (`drop-database`, `delete-many`, `atlas-create-db-user`) are in every session, and osrs-tracker-api uses MongoDB. What they can do is set by the role the connector signed in with, not by Claude Code.
+- The Atlas connector's write tools (`drop-database`, `delete-many`, `atlas-create-db-user`) are in every session. It is the "MongoDB MCP server" the osrs-tracker-api skill uses to check live data, and that skill says its "writes are blocked in auto mode", which nothing configures. What it can do is set by the Atlas account it signed in with. Planned replacement (osrs-tracker/osrs-tracker-api#148): the official `mongodb-mcp-server`, pinned, in that repo's `.mcp.json`, on a database user with `readWrite` on one database, `--disabledTools atlas`, `ask` rules on every write tool, a dump or preview before multi-document writes (the free cluster has no cloud backups), then the connector disconnected.
 - `npx`-run servers use `@latest` (Playwright) and `kubernetes-mcp-server@0.0.67` is pinned; a `@latest` server can change its tools on any start (MCP-019).
 
 ---
@@ -640,10 +642,13 @@ Gaps:
 
 Ranked by impact against effort. Items 1, 3 and 4 change user config or another repo, so each needs your decision before an issue or change.
 
-1. **Contain the MongoDB Atlas connector** (high impact, low effort). Its 42 tools, including `drop-database`, `delete-many` and `atlas-create-db-user`, reach every session, and auto mode decides on them. Pick one:
-   - If sessions don't need Atlas: disconnect it at claude.ai/customize/connectors. That is the only switch that also covers desktop-delivered connectors.
-   - If they do: check that the Atlas identity it signed in with has a read-only role, which binds on every surface. Optionally add deny rules for the write tools (`mcp__claude_ai_MongoDB_Atlas__drop-*` and the like) to `~/.claude/settings.json`; those only match in the terminal, not the UUID-named desktop copies.
-   MCP-010, MCP-028, MCP-004, INFRA-006.
+1. **Replace the MongoDB Atlas connector with a scoped local server that can write** (high impact, low effort). Decided 2026-10-13: Claude should do Atlas writes too, so read-only isn't the goal. The connector's 42 tools, including `drop-database` and `atlas-create-db-user`, reach every session on your Atlas account, and its desktop copies ignore every MCP setting. Opened as osrs-tracker/osrs-tracker-api#148:
+   - a database user with `readWrite` on the one database, which bounds every path;
+   - the official server pinned in that repo's `.mcp.json`, with `--disabledTools atlas` and its default confirmations for drops and `delete-many`;
+   - `ask` rules on each write tool, which still prompt in auto mode;
+   - a `mongodump` or preview `find` before multi-document writes, because free clusters have no cloud backups;
+   - then the connector disconnected at claude.ai.
+   MCP-010, MCP-028, MCP-004, MCP-019, INFRA-006.
 2. **Pass `--strict-mcp-config` in scripted `claude -p` runs that don't need MCP** (medium impact, trivial effort). This saves about 6,600 tokens per request and about 2 s per run, and drops connector write tools from unattended runs. Add `--mcp-config` with only the servers a run needs. KB research probes should use it too. MCP-012, ORCH-014.
 3. **Move rarely used stdio servers out of user scope** (medium impact, low effort). Each desktop session starts its own copy of every user-scope stdio server, about 0.8 GB RSS per session (SESS-013). `analytics-mcp` serves only web-analytics work and could become a project `.mcp.json` server in the repos that use it, or an inline server on a WEB agent. MCP-001, MCP-008.
 4. **Give Playwright to the browser-checker subagent only** (low-medium impact, medium effort). Disable the plugin and declare the server inline in the agent's `mcpServers`. Main sessions then lose 25 tool names and a Node process, and the server can be pinned instead of `@latest`. This needs an osrs-tracker-web change to its `browser-checker` agent (REPO-021), and the agent must be a project or user agent, not a plugin agent. MCP-008, MCP-019.
