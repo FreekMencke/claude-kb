@@ -15,7 +15,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | `topics/kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 | `topics/kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
 | `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 35 (0 merged into other entries) |
-| `topics/kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO work: Google data access, crawler view, retired advice, SEO skills | 31 (0 merged into other entries) |
+| `topics/kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO work: Google data access, crawler view, retired advice, SEO skills | 32 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
