@@ -549,6 +549,7 @@ Read from local config (structure only) and read-only AWS and cluster calls. Nam
 **Kubernetes:**
 - Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
+- GA4: `analytics-mcp@0.7.0` since 2026-10-13 (WEB-006).
 
 
 ## Recommendations for our setup
