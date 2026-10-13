@@ -85,6 +85,39 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | INFRA-026 | Before changing a config value, read the code that consumes it | pattern | config, lambda, retries, issues |
 | INFRA-027 | Change one Lambda environment variable without printing the others | pattern | lambda, env, credentials, transcripts |
 
+## MCP servers: configuration, access control, surfaces and vetting (`topics/kb-mcp.md`, MCP)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| MCP-001 | Installation scopes and which definition wins | fact | scopes, mcp-json, precedence |
+| MCP-002 | Project `.mcp.json`: approval, workspace trust and headless runs | fact | mcp-json, trust, headless, approval |
+| MCP-003 | Turning a server off: four different switches | fact | disable, deny, connectors |
+| MCP-004 | Permission rules for MCP tools | fact | permissions, rules, tool-names |
+| MCP-005 | Secrets in MCP config: `${VAR}` expansion and what reads as empty | fact | secrets, env, mcp-json |
+| MCP-006 | Signing in to remote servers: OAuth from `/mcp` or the shell | fact | oauth, auth, remote |
+| MCP-007 | `headersHelper`: short-lived tokens without OAuth | pattern | auth, headers-helper, trust |
+| MCP-008 | Scope a server to one subagent with inline `mcpServers` | pattern | subagents, scoping, context |
+| MCP-009 | Plugin-bundled MCP servers | fact | plugins, tool-names |
+| MCP-010 | claude.ai connectors in Claude Code | fact | connectors, claude-ai, desktop |
+| MCP-011 | Timeouts, reconnection and backgrounded tool calls | fact | timeouts, reconnect, background |
+| MCP-012 | MCP startup and context cost in scripted runs | recommendation | headless, startup, tokens, strict-mcp-config |
+| MCP-013 | Resources, prompts and elicitation | fact | resources, prompts, elicitation |
+| MCP-014 | Client runtimes, protocol 2026-07-28 and supported features | fact | protocol, spec, list-changed |
+| MCP-015 | Server-side knobs Claude Code reads | fact | server-authors, meta, schemas |
+| MCP-016 | Managed MCP patterns and what a solo user can use | fact | managed, allowlist, denylist |
+| MCP-017 | CLI, skill or MCP server? | comparison | architecture, cli, build-vs-adopt |
+| MCP-018 | Designing a server: rules from `mcp-builder` | recommendation | server-authors, mcp-builder, tool-design |
+| MCP-019 | Vetting a third-party server | recommendation | security, supply-chain, rug-pull |
+| MCP-020 | Finding servers: Anthropic Directory and the MCP Registry | fact | discovery, registry, directory |
+| MCP-021 | MCP in `claude-code-action` | fact | github-actions, ci, allowed-tools |
+| MCP-022 | MCP in cloud sessions and routines | fact | cloud, routines, connectors |
+| MCP-023 | Desktop app: which MCP config reaches a Code tab session | fact | desktop, wsl, claude-desktop-config |
+| MCP-024 | Agent SDK: MCP servers, in-process tools and defaults | fact | agent-sdk, in-process, setting-sources |
+| MCP-025 | Claude API MCP connector (`mcp_servers`) | fact | api, mcp-connector, beta |
+| MCP-026 | `claude mcp serve`: Claude Code as an MCP server | tool | mcp-serve, desktop |
+| MCP-027 | Channels: servers that push events into a session | fact | channels, push, research-preview |
+| MCP-028 | Our MCP setup as of 2026-10-13 | fact | our-setup, connectors, inventory |
+
 ## Memory and instruction files (`topics/kb-memory.md`, MEM)
 
 | ID | Title | Type | Tags |
