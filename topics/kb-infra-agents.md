@@ -25,8 +25,8 @@ All "Last verified" dates are 2026-10-12 unless an entry gives a later one. Docs
 | How do I debug an incident without flooding context? | Filtered MCP reads (Flux `since`/`grep`/`limit`, Logs Insights aggregates), done by a read-only subagent that returns a short summary. | INFRA-018, INFRA-019 |
 | Do credentials end up in transcripts? | Yes, anything a tool prints is written to the plaintext `.jsonl` and sent to the model. Settings `env` reaches every subprocess. | INFRA-021, INFRA-020 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
-| Can a session query Loki, or only pod logs? | Only pod logs. The `claude-agent` identity lacks `get` on `services/proxy`, so the Loki gateway is forbidden; `kubectl logs` and the MCP servers reach only the current containers. Loki is the user's step. | INFRA-024, INFRA-025 |
-| How do I check a subresource permission with `kubectl auth can-i`? | With `--subresource`: `can-i get services --subresource=proxy`. `can-i get services/proxy` checks a service named `proxy`, and gave a false `yes` here. | INFRA-025 |
+| Can a session query Loki, or only pod logs? | Loki too, since 2026-10-13: `claude-agent` has `get` on the gateway's service proxy only, so `kubectl get --raw '/api/v1/namespaces/grafana-loki/services/loki-gateway:80/proxy/loki/api/v1/query_range?query=...'` works for queries, labels and series (GET). Push, delete and other services' proxies stay forbidden. | INFRA-024, INFRA-025 |
+| How do I check a subresource permission with `kubectl auth can-i`? | With `--subresource`: `can-i get services --subresource=proxy`. `can-i get services/proxy` checks a service named `proxy`, and gave a false `yes` here. Against a grant limited by `resourceNames`, add the name (`services/loki-gateway:80 --subresource=proxy`): without it the answer is `no`. | INFRA-025 |
 | What should we change in our setup first? | Done 2026-10-12: read-only cluster identity, pinned MCP servers, `autoMode.environment`, deny rules, root keys gone, agent policy tightened. Left: short-lived AWS credentials (rec 10) and the Bash-vs-MCP decision (rec 9). | INFRA-024, Recommendations |
 
 ## Index
@@ -545,13 +545,13 @@ Mapping INFRA-022 to controls, most-recurring first:
 - Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html), [FreekMencke/claude-kb#69](https://github.com/FreekMencke/claude-kb/issues/69)
 - Related: INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-010, INFRA-016, INFRA-025, WEB-013
 
-Read from local config and read-only AWS and cluster calls; names left out on purpose. Updated after #44 to #46 (2026-10-12) and #69 (2026-10-13); CHANGELOG.md has earlier states.
+Read from local config and read-only AWS and cluster calls; names left out on purpose. Updated through #75 (2026-10-13); CHANGELOG.md has earlier states.
 
 **AWS:**
 
 **Kubernetes:**
-- Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward, `nodes/proxy` or `services/proxy`.
-- So no Loki (tested 2026-10-13, INFRA-025): sessions get only pod logs since the last restart. Loki is the user's step.
+- Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
+- Loki since 2026-10-13 (FreekMencke/home-cluster#5): `get` on `services/proxy` for `resourceNames: ['loki-gateway:80']`, so `kubectl get --raw` runs Loki's GET queries; push and delete (POST) stay forbidden. Tested in INFRA-025.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
 - GA4: `analytics-mcp@0.7.0` since 2026-10-13 (WEB-006).
 
@@ -576,6 +576,10 @@ kubectl auth can-i create pods --subresource=exec -n grafana-loki
 ```
 
 Tested 2026-10-13, kubectl v1.36.5, desktop Code tab (WSL), as the `view`-bound `claude-agent` ServiceAccount: `can-i get services/proxy` and `can-i get services/no-such-name` both gave `yes`; `can-i get services --subresource=proxy` gave `no`, matching the `Forbidden` on the real request. An agent verifying its own permissions should confirm a `can-i` answer with one real read-only request where it matters.
+
+The reverse trap, once a grant is limited by `resourceNames`: the unnamed `--subresource` check asks about every service and says `no`. Name the resource when you know it.
+
+Tested 2026-10-13, v2.1.296, kubectl v1.36.5, desktop Code tab (WSL), as `claude-agent` after the Loki Role (INFRA-024): `can-i get services/loki-gateway:80 --subresource=proxy -n grafana-loki` gave `yes`; `can-i create` on the same, `can-i get services/loki --subresource=proxy` and the unnamed `can-i get services --subresource=proxy` gave `no`. The real requests matched: `/loki/api/v1/labels` returned `"status":"success"`, and a 7-day `count_over_time` over `{namespace="osrs-tracker"} |= "Googlebot"` returned in about 1 s (`execTime` 0.14 s). Per the home-cluster session, the bare name and the port name `http` weren't needed in `resourceNames`.
 
 ## Recommendations for our setup
 
