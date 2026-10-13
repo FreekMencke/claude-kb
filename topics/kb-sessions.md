@@ -236,13 +236,14 @@ Each refusal said to split the command into plain, separate commands. Putting `-
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Settings reference: worktree.symlinkDirectories](https://code.claude.com/docs/en/settings-reference), [pnpm motivation](https://pnpm.io/motivation), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md)
-- Related: SESS-004, SESS-016, ORCH-043
+- Related: SESS-004, SESS-016, ORCH-043, INFRA-021
 
 "A worktree is a fresh checkout": `node_modules`, `.env` and build output aren't there.
 
 Options:
 - **`.worktreeinclude`** at the repo root, in gitignore syntax, copies matching gitignored files such as `.env`. It applies to `--worktree`, subagent and desktop worktrees. A `WorktreeCreate` hook replaces it.
 - **`worktree.symlinkDirectories`**: "Symlink large directories into each worktree instead of duplicating them". The docs example is `["node_modules", ".cache"]`.
+- **Symlink one file**, such as `.env`, from the main checkout: `ln -s ../../../.env .env` after `git check-ignore .env` confirms it's ignored, and remove the link when done. Unlike a `.worktreeinclude` copy, it follows later edits. A session used it for a local dry invoke in osrs-tracker/osrs-tracker-aws#89; that repo then added a `.worktreeinclude` with `lambda/*/.env` (2026-10-13), so new worktrees get the files without the manual step.
 - **Install per worktree.** pnpm's store hard-links files ("consuming no additional disk space"), so per-worktree installs are cheap. With npm, a typical install costs hundreds of MB per worktree; that figure is from a single blog, so treat it as unverified.
 - **Our repos' approach.** Node resolves `node_modules` from a parent folder, so a worktree under `.claude/worktrees/<name>/` uses the main checkout's copy. Run `npm ci` in the worktree only when `diff -q package-lock.json ../../../package-lock.json` differs (osrs-tracker-web CLAUDE.md).
 

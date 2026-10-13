@@ -58,6 +58,8 @@ All "Last verified" dates are 2026-10-12 unless an entry gives a later one. Docs
 | INFRA-023 | Which guardrail would have stopped each incident | recommendation | incidents, guardrails |
 | INFRA-024 | Our setup: AWS, Kubernetes and MCP access as of 2026-10-12 | fact | our-setup, aws, kubernetes, mcp |
 | INFRA-025 | `kubectl auth can-i` reads `resource/x` as a resource name, not a subresource | anti-pattern | kubernetes, rbac, kubectl, testing |
+| INFRA-026 | Before changing a config value, read the code that consumes it | pattern | config, lambda, retries, issues |
+| INFRA-027 | Change one Lambda environment variable without printing the others | pattern | lambda, env, credentials, transcripts |
 
 ## Identities and isolation
 
@@ -580,6 +582,52 @@ Tested 2026-10-13, kubectl v1.36.5, desktop Code tab (WSL), as the `view`-bound 
 The reverse trap, once a grant is limited by `resourceNames`: the unnamed `--subresource` check asks about every service and says `no`. Name the resource when you know it.
 
 Tested 2026-10-13, v2.1.296, kubectl v1.36.5, desktop Code tab (WSL), as `claude-agent` after the Loki Role (INFRA-024): `can-i get services/loki-gateway:80 --subresource=proxy -n grafana-loki` gave `yes`; `can-i create` on the same, `can-i get services/loki --subresource=proxy` and the unnamed `can-i get services --subresource=proxy` gave `no`. The real requests matched: `/loki/api/v1/labels` returned `"status":"success"`, and a 7-day `count_over_time` over `{namespace="osrs-tracker"} |= "Googlebot"` returned in about 1 s (`execTime` 0.14 s). Per the home-cluster session, the bare name and the port name `http` weren't needed in `resourceNames`.
+
+## Changing configuration
+
+## [INFRA-026] Before changing a config value, read the code that consumes it
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-13
+- Sources: [Lambda: errors and retries with asynchronous invocation](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-error-handling.html), [Lambda: invoking with events from other services](https://docs.aws.amazon.com/lambda/latest/dg/lambda-services.html), [osrs-tracker/osrs-tracker-aws#89](https://github.com/osrs-tracker/osrs-tracker-aws/issues/89)
+- Related: INFRA-013, INFRA-015, INFRA-027
+
+An issue's "Do" steps can name a valid value and still miss what the value does on the first runs. Before an env or config change, read the code that consumes it and ask what a different value does on the next runs, then multiply by retries and alerts.
+
+The case (osrs-tracker/osrs-tracker-aws#89, 2026-10-13): the issue said to set the clean-up Lambda's `MAX_AGE_IN_DAYS` from 60 to 90. The handler alerted on Discord and threw when it found no entries older than the limit (`throw new Error(\`No hiscores older than ${maxAgeInDays} days were found.\`)`, before commit `e940f59`). After the raise nothing is that old for 30 nights, so it would have alerted and failed every night. Reading the handler first caught it; the fix moved the alert to "nothing scraped for days".
+
+The multiplier is AWS's default, not the code's:
+- EventBridge rules invoke Lambda asynchronously ("Event-driven; asynchronous invocation (event buses and rules)").
+- "If the function returns an error, by default Lambda attempts to run it two more times". A function with no event invoke config of its own throws three times a night, and alerts three times.
+
+The global CLAUDE.md's "The session that picks an issue up checks its steps against the current code first" covers the issue side; this adds the consumer and retry side.
+
+## [INFRA-027] Change one Lambda environment variable without printing the others
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-13
+- Sources: [Lambda environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html), [UpdateFunctionConfiguration API](https://docs.aws.amazon.com/lambda/latest/api/API_UpdateFunctionConfiguration.html), [osrs-tracker/osrs-tracker-aws#89](https://github.com/osrs-tracker/osrs-tracker-aws/issues/89)
+- Related: INFRA-021, INFRA-026, INFRA-013, INFRA-024
+
+`update-function-configuration --environment` replaces the whole map: "the entire contents of the Variables structure is replaced. To retain existing environment variables when you add a new one, include all existing values in your request." So a one-key change has to read the map, which holds secrets, and the response echoes it back (`Environment`: "The function's environment variables"). Anything printed lands in the transcript (INFRA-021).
+
+The pattern used in osrs-tracker/osrs-tracker-aws#89 (2026-10-13):
+
+```bash
+f="$SCRATCH/env.json"; fn=<function>
+(umask 077; aws lambda get-function-configuration --function-name "$fn" --query Environment --profile claude \
+  | jq '.Variables.MAX_AGE_IN_DAYS = "90"' > "$f")
+jq -r '.Variables | keys[]' "$f"; jq -r '.Variables.MAX_AGE_IN_DAYS' "$f"   # names and the changed value only
+aws lambda update-function-configuration --function-name "$fn" --environment "file://$f" \
+  --profile claude --query 'keys(Environment.Variables)'                     # the response holds every value
+rm "$f"
+```
+
+Afterwards re-read the key list and check that none went missing.
+
+Asking for approval: the session showed the exact command and its rollback (the same command with the old value), then asked one `AskUserQuestion` that combined how to ship with the approval ("PR, then release: deploy, run the env command above, merge"). One answer covered the release; single-source.
 
 ## Recommendations for our setup
 
