@@ -81,6 +81,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | INFRA-022 | Published incidents: agents that destroyed infrastructure or data | fact | incidents, terraform, databases |
 | INFRA-023 | Which guardrail would have stopped each incident | recommendation | incidents, guardrails |
 | INFRA-024 | Our setup: AWS, Kubernetes and MCP access as of 2026-10-12 | fact | our-setup, aws, kubernetes, mcp |
+| INFRA-025 | `kubectl auth can-i` reads `resource/x` as a resource name, not a subresource | anti-pattern | kubernetes, rbac, kubectl, testing |
 
 ## Memory and instruction files (`topics/kb-memory.md`, MEM)
 
