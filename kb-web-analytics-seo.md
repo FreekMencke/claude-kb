@@ -804,11 +804,11 @@ Main-thread usage summed from each transcript's assistant `usage` fields. Prices
 
 Ranked by impact against effort.
 
-1. **Write the `/seo-audit` skill in claude-skills from WEB-028.** Start from the 2026-10-09 audit prompt (WEB-002), and use the official `seo-ai-visibility` skill's coverage and finding rules (WEB-026, WEB-029). High impact, medium effort. Issue: pending (FreekMencke/claude-skills).
-2. **Fix osrs-tracker-web's UA-era gtag code** (WEB-024): drop `anonymize_ip`, decide which event parameters to register as custom dimensions or rename, and send a numeric or no `value`. Decide on consent mode separately (WEB-025). Medium impact, small effort. Issue: pending (osrs-tracker/osrs-tracker-web).
+1. **Write the `/seo-audit` skill in claude-skills from WEB-028.** Start from the 2026-10-09 audit prompt (WEB-002), and use the official `seo-ai-visibility` skill's coverage and finding rules (WEB-026, WEB-029). High impact, medium effort. Issue: [FreekMencke/claude-skills#28](https://github.com/FreekMencke/claude-skills/issues/28).
+2. **Fix osrs-tracker-web's UA-era gtag code** (WEB-024): drop `anonymize_ip`, decide which event parameters to register as custom dimensions or rename, and send a numeric or no `value`. Decide on consent mode separately (WEB-025). Medium impact, small effort. Issue: [osrs-tracker/osrs-tracker-web#240](https://github.com/osrs-tracker/osrs-tracker-web/issues/240).
 3. **Give sessions read-only GA4 access**: the official GA MCP server (WEB-006) with ADC and `analytics.readonly` (WEB-012). Then questions like WEB-005's "Bing's referral share" can be answered. This is a local setup step for the user (a Google Cloud login), so no issue. Medium impact, small effort.
 4. **Mark audit traffic** (WEB-018): the skill appends `seo-audit` to its user agent. Covered by recommendation 1.
-5. **Route SEO questions to this file**: add the topic to `claude-kb-lookup`'s description. Issue: pending (FreekMencke/claude-skills).
+5. **Route SEO questions to this file**: add the topic to `claude-kb-lookup`'s description. Issue: [FreekMencke/claude-skills#29](https://github.com/FreekMencke/claude-skills/issues/29).
 
 ## Open questions
 
