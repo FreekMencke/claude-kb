@@ -133,7 +133,7 @@ Issue #160 collected the data the audit couldn't see.
 1. The user signed in to Search Console in the Playwright MCP browser, and the session read the reports there: 13 navigations, 27 `browser_evaluate` and 17 clicks.
 2. Lab scores came from pagespeed.web.dev in the same browser, because the keyless PSI API returned 429.
 3. Mid-session the user set up a PSI API key and a Search Console service account (a Restricted user, read-only). The session then redid #160 through the API.
-4. Server logs came from Loki. The session predates the read-only `claude-agent` identity, which can't reach Loki (INFRA-024).
+4. Server logs came from Loki, run with the admin identity: the session predates the read-only `claude-agent` identity. Since 2026-10-13 that identity can query Loki too (INFRA-024).
 
 **What the data changed.** It reordered the roadmap:
 - Item pages were 91% of search impressions and 98% of indexed pages.
@@ -379,8 +379,8 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 | Does the page work after hydration? | Rendered DOM | Playwright `browser_evaluate` |
 | Is it indexed, and why not? | Pages report, URL Inspection | UI in a signed-in browser; the API for single URLs (WEB-008) |
 | Which pages and queries get impressions and clicks? | Search Analytics | Search Console API (WEB-007) |
-| How often does Google crawl, and how fast do we answer? | Crawl stats, server logs | UI; pod logs through `kubectl logs` or the flux MCP server, filtered by user agent (current pods only). Loki needs the admin identity, so it's the user's step (INFRA-024) |
-| Which bots actually come? | Server logs | Loki, run by the user: sessions can't reach it, and pod logs cover only the current pods (INFRA-024). In #160: Amazonbot 609 requests, Googlebot about 22 item pages in 21 h |
+| How often does Google crawl, and how fast do we answer? | Crawl stats, server logs | UI; Loki through `kubectl get --raw` on the gateway's service proxy, filtered by user agent (since 2026-10-13; INFRA-024). Pod logs cover the current pods only |
+| Which bots actually come? | Server logs | Loki from the session, e.g. `sum(count_over_time({namespace="osrs-tracker"} \|= "ClaudeBot" [30d]))` through `kubectl get --raw '.../loki-gateway:80/proxy/loki/api/v1/query?query=...'` (INFRA-024). In #160: Amazonbot 609 requests, Googlebot about 22 item pages in 21 h. 2026-10-13, over the logs held (from 2026-10-05): Googlebot 3,780 lines, ClaudeBot 63, no `Claude-User` or `Claude-SearchBot` |
 | Lab LCP, TBT, CLS | Lighthouse | CLI, DevTools MCP, PSI with a key (WEB-010, WEB-011) |
 | Field Core Web Vitals | CrUX | CrUX API; none for low-traffic sites |
 | What do visitors do on the page, where do they come from? | GA4 | GA MCP server (WEB-006), set up 2026-10-13 |
@@ -844,8 +844,8 @@ Ranked by impact against effort.
 3. **Done 2026-10-13: give sessions read-only GA4 access.** The official GA MCP server (WEB-006) is registered user-wide with the Search Console service account as a Viewer, so questions like WEB-005's "Bing's referral share" can now be answered.
 4. **Done 2026-10-13: mark audit traffic** (WEB-018): the skill's `probe.sh` appends `seo-audit` to the Googlebot user agent.
 5. **Route SEO questions to this file**: add the topic to `claude-kb-lookup`'s description. Issue: [FreekMencke/claude-skills#29](https://github.com/FreekMencke/claude-skills/issues/29).
-6. **Decide how sessions get historical server logs** (WEB-013, INFRA-024, INFRA-025). The `claude-agent` identity can't reach Loki, so crawl and bot questions get only the current pods' logs (about 10 minutes in the 2026-10-13 `seo-audit` run). Decided 2026-10-13: option a, in [FreekMencke/home-cluster#5](https://github.com/FreekMencke/home-cluster/issues/5).
-   - a. A Role in the Loki namespace with `get` on `services/proxy`, limited by `resourceNames` to the gateway. RBAC maps `GET` to `get`, and Loki's query endpoints are `GET` while push and delete requests are `POST`. The denial named the resource `loki-gateway:80`, so `resourceNames` likely needs that string (not tested). The RBAC lives in the cluster's config repo, so applying it is a cross-repo issue there.
+6. **Done 2026-10-13: sessions read historical server logs from Loki** (WEB-013, INFRA-024, INFRA-025), with option a, in [FreekMencke/home-cluster#5](https://github.com/FreekMencke/home-cluster/issues/5): `resourceNames: ['loki-gateway:80']` was enough. Before, the `claude-agent` identity couldn't reach Loki, so crawl and bot questions got only the current pods' logs (about 10 minutes in the 2026-10-13 `seo-audit` run). The options were:
+   - a. A Role in the Loki namespace with `get` on `services/proxy`, limited by `resourceNames` to the gateway. RBAC maps `GET` to `get`, and Loki's query endpoints are `GET` while push and delete requests are `POST`. The denial named the resource `loki-gateway:80`, and `resourceNames` with that string worked (INFRA-024). The RBAC lives in the cluster's config repo, so applying it is a cross-repo issue there.
    - b. A read-only Loki or Grafana MCP server.
    - c. Keep Loki a manual step: the user runs the query and pastes the result.
 
@@ -855,6 +855,5 @@ Ranked by impact against effort.
 - Does an unregistered GA4 event parameter show up anywhere in the standard reports? Google implies not but doesn't say so (WEB-024). Our property registers only `description`, so a `run_report` with `customEvent:event_category` would answer it.
 - Which Search Console permission does a service account need? Our Restricted user works for the API (WEB-003); Google's docs don't say (WEB-012).
 - How big are the GA MCP server's tool schemas, and how much context does a `run_report` answer take? Not measured (WEB-006); it's installed now, so a `/context` check in a fresh session would show the schemas.
-- Do Claude's bots visit osrs-tracker-web? The pod logs covered only a few hours (WEB-020). A 30-day Loki query by user agent would answer it; the user has to run it, since sessions can't reach Loki (rec 6).
 - Does a fresh sitemap's "Sitemap could not be read" clear on its own? `sitemaps.list` on or after 2026-10-16 will show whether `sitemap-players.xml` and `sitemap-site.xml` were processed (WEB-032).
 - Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)?
