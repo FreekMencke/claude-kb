@@ -731,7 +731,7 @@ Ranked by impact against effort. Changes in other repos need an issue there (glo
 4. **Try `showClearContextOnPlanAccept: true` in user settings** (low–medium impact, trivial effort). Gives the "approve and start from the plan alone" option after long planning. Keep it off if it's never picked after a week. FLOW-007.
 5. **Keep planning on Opus 5.5 at `high`; don't adopt `opusplan`** (decision). Our design-heavy sessions implement on Opus anyway, and the switch costs a cache rebuild. FLOW-009.
 6. **Don't turn on desktop "Auto-merge when ready"** (decision): it squash-merges, while our repos merge with `--merge`. "Auto-fix CI" is fine to try. FLOW-029, SURF-002; the same decision is `kb-surfaces.md` recommendation 5.
-7. **`handoff` skill: mention `/branch` and rewind as cheaper alternatives** when the problem is one bad detour rather than a full context (low impact, trivial effort). Change in FreekMencke/claude-skills via an issue there. FLOW-019, FLOW-021.
+7. **`handoff` skill: mention `/branch` and rewind as cheaper alternatives** when the problem is one bad detour rather than a full context (low impact, trivial effort). Done 2026-10-13 (FreekMencke/claude-skills#38). FLOW-019, FLOW-021.
 
 ## Open questions
 
