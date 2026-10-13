@@ -860,6 +860,8 @@ The titles shipped 2026-10-10 and `/trackers/xp` was last crawled 2026-10-11 20:
 
 Google names no lowercase rule: the cause is our inference from one site.
 
+Since 2026-10-13 the `seo-audit` skill flags `Brand: phrase` titles whose phrase starts in lowercase (FreekMencke/claude-skills#45, merged in FreekMencke/claude-skills#46).
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
