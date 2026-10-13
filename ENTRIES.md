@@ -377,6 +377,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SESS-033 | How many sessions practitioners run, and what limits them | comparison | sizing, review, community |
 | SESS-034 | Watching many sessions | tool | notifications, statusline, monitoring |
 | SESS-035 | Our setup against these findings | comparison | our-setup, global-claude-md |
+| SESS-036 | Fast-forward a new worktree with a `SessionStart` hook | pattern | worktrees, hooks, sessionstart, staleness |
 
 ## Writing, testing and distributing skills (`topics/kb-skills.md`, SKILL)
 

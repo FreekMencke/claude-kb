@@ -10,6 +10,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 
 - Where to put something, and what it costs: SKILL-021 (decision), SKILL-022 and TOK-065 (context cost), REPO-044 (repos with agents).
 - CLAUDE.md size: SKILL-024 (authoring), TOK-003 (loading rules), REPO-045 (research and agents).
+- Worktree staleness: SESS-006 (what `baseRef: "fresh"` fetches), SESS-036 (a `SessionStart` hook that fast-forwards), SESS-025 (rebase before pushing).
 - Effort: ORCH-028 (levels and defaults), TOK-055 (as a cost lever, plus thinking), PROMPT-010 (what prompts still move once effort sets thinking).
 - Keeping the orchestrator's context lean: ORCH-034 (results), TOK-035 (when to delegate).
 - Caching: ORCH-040 (in fan-outs), TOK-052 (TTLs and settings).
