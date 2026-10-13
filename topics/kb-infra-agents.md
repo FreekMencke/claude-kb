@@ -7,7 +7,7 @@ Research basis:
 - Five Sonnet 5.5 researchers at high effort each took one block of questions and returned findings with sources. The lead re-read every limit, default and version used here on the full page (docs fetched as `.md`, AWS and GitHub pages by curl and grep).
 - Our setup (INFRA-024) was read from local config files and checked with read-only AWS calls. No account, bucket, cluster or IAM names are copied here.
 
-All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/docs/en/`.
+All "Last verified" dates are 2026-10-12 unless an entry gives a later one. Docs base: `https://code.claude.com/docs/en/`.
 
 ## Quick answers
 
@@ -25,6 +25,8 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 | How do I debug an incident without flooding context? | Filtered MCP reads (Flux `since`/`grep`/`limit`, Logs Insights aggregates), done by a read-only subagent that returns a short summary. | INFRA-018, INFRA-019 |
 | Do credentials end up in transcripts? | Yes, anything a tool prints is written to the plaintext `.jsonl` and sent to the model. Settings `env` reaches every subprocess. | INFRA-021, INFRA-020 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
+| Can a session query Loki, or only pod logs? | Only pod logs. The `claude-agent` identity lacks `get` on `services/proxy`, so the Loki gateway is forbidden; `kubectl logs` and the MCP servers reach only the current containers. Loki is the user's step. | INFRA-024, INFRA-025 |
+| How do I check a subresource permission with `kubectl auth can-i`? | With `--subresource`: `can-i get services --subresource=proxy`. `can-i get services/proxy` checks a service named `proxy`, and gave a false `yes` here. | INFRA-025 |
 | What should we change in our setup first? | Done 2026-10-12: read-only cluster identity, pinned MCP servers, `autoMode.environment`, deny rules, root keys gone, agent policy tightened. Left: short-lived AWS credentials (rec 10) and the Bash-vs-MCP decision (rec 9). | INFRA-024, Recommendations |
 
 ## Index
@@ -55,6 +57,7 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 | INFRA-022 | Published incidents: agents that destroyed infrastructure or data | fact | incidents, terraform, databases |
 | INFRA-023 | Which guardrail would have stopped each incident | recommendation | incidents, guardrails |
 | INFRA-024 | Our setup: AWS, Kubernetes and MCP access as of 2026-10-12 | fact | our-setup, aws, kubernetes, mcp |
+| INFRA-025 | `kubectl auth can-i` reads `resource/x` as a resource name, not a subresource | anti-pattern | kubernetes, rbac, kubectl, testing |
 
 ## Identities and isolation
 
@@ -167,7 +170,7 @@ From weakest to strongest:
 4. **The credential.** IAM policy and Kubernetes RBAC are enforced by AWS and the API server, whatever tool or command made the call. The `view` ClusterRole "does not allow viewing Secrets, since reading the contents of Secrets enables access to ServiceAccount credentials".
 
 
-Tested 2026-10-12, v2.1.296, terminal (WSL): with `~/.kube/config` as a `view`-bound ServiceAccount token, `kubectl auth can-i` gave `no` for `delete pods -A`, `get secrets -A` and `create pods/exec`, and `yes` for `list pods -A`. Both MCP servers still connected.
+Tested 2026-10-12, v2.1.296, terminal (WSL): with `~/.kube/config` as a `view`-bound ServiceAccount token, `kubectl auth can-i` gave `no` for `delete pods -A`, `get secrets -A` and `create pods/exec`, and `yes` for `list pods -A`. Both MCP servers still connected. The `pods/exec` check named a pod `exec` rather than the subresource (INFRA-025); retested 2026-10-13, v2.1.296, desktop Code tab (WSL): `can-i create pods --subresource=exec` gives `no`.
 
 ## [INFRA-007] Output size: MCP filters versus CLI output
 - Type: recommendation
@@ -538,19 +541,41 @@ Mapping INFRA-022 to controls, most-recurring first:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
-- Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html)
-- Related: INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-010, INFRA-016
+- Last verified: 2026-10-13
+- Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html), [FreekMencke/claude-kb#69](https://github.com/FreekMencke/claude-kb/issues/69)
+- Related: INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-010, INFRA-016, INFRA-025, WEB-013
 
-Read from local config (structure only) and read-only AWS and cluster calls. Names are left out on purpose. Updated after #44, #45 and #46 (2026-10-12); CHANGELOG.md has the earlier state.
+Read from local config and read-only AWS and cluster calls; names left out on purpose. Updated after #44 to #46 (2026-10-12) and #69 (2026-10-13); CHANGELOG.md has earlier states.
 
 **AWS:**
 
 **Kubernetes:**
-- Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
+- Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward, `nodes/proxy` or `services/proxy`.
+- So no Loki (tested 2026-10-13, INFRA-025): sessions get only pod logs since the last restart. Loki is the user's step.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
 - GA4: `analytics-mcp@0.7.0` since 2026-10-13 (WEB-006).
 
+
+## [INFRA-025] `kubectl auth can-i` reads `resource/x` as a resource name, not a subresource
+- Type: anti-pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-13
+- Sources: [kubectl auth can-i reference](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_auth/kubectl_auth_can-i/), [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/), [FreekMencke/claude-kb#69](https://github.com/FreekMencke/claude-kb/issues/69)
+- Related: INFRA-006, INFRA-024
+
+RBAC rules write a subresource with a slash (`pods/log`, `services/proxy`), but `kubectl auth can-i` reads the same slash as TYPE/NAME. So `can-i get services/proxy` asks about a service named `proxy`, and with `view` it answers `yes` while the real proxy request is forbidden. Check subresources with `--subresource`.
+
+The two pages side by side:
+- RBAC: "use a slash (`/`) to delimit the resource and subresource", as in `resources: ["pods", "pods/log"]`.
+- `can-i`: "Check to see if I can get the job named "bar" in namespace "foo"": `kubectl auth can-i list jobs.batch/bar -n foo`. Its subresource example is `kubectl auth can-i get pods --subresource=log`.
+
+```bash
+kubectl auth can-i get services --subresource=proxy -n grafana-loki   # the real check
+kubectl auth can-i create pods --subresource=exec -n grafana-loki
+```
+
+Tested 2026-10-13, kubectl v1.36.5, desktop Code tab (WSL), as the `view`-bound `claude-agent` ServiceAccount: `can-i get services/proxy` and `can-i get services/no-such-name` both gave `yes`; `can-i get services --subresource=proxy` gave `no`, matching the `Forbidden` on the real request. An agent verifying its own permissions should confirm a `can-i` answer with one real read-only request where it matters.
 
 ## Recommendations for our setup
 
