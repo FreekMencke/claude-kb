@@ -15,7 +15,7 @@ Record the source and access date for every claim. If official docs and communit
 ## Research rules
 
 Before researching:
-- Read INDEX.md and grep the `kb-*.md` files for your topic's key terms. Where an entry already covers an idea, link it in `Related` rather than rewriting it. Add an entry only for what's new or for a different angle, and list the overlap under OVERLAPS.md's "Overlaps kept on purpose".
+- Read INDEX.md and grep ENTRIES.md and the `topics/kb-*.md` files for your topic's key terms. Where an entry already covers an idea, link it in `Related` rather than rewriting it. Add an entry only for what's new or for a different angle, and list the overlap under OVERLAPS.md's "Overlaps kept on purpose".
 - Use the prefix the task gives. IDs are never renumbered or reused; new entries in an existing file continue after its highest number.
 
 Reading sources:
@@ -43,11 +43,11 @@ What goes in:
 - A recommendation that needs a change in another repo becomes an issue there, linked from the recommendation (see the global CLAUDE.md). The research session doesn't make the change.
 
 ## Output format
-Write a single Markdown file named as given in the topic section.
+Write a single Markdown file in `topics/`, named as given in the topic section.
 
 If you are a subagent or workflow agent doing part of the research, don't write or edit any file in the repo: return your findings with source URLs to the agent that started you. Pages you download for grepping go only in your own uniquely named scratchpad folder.
 
-If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit. INDEX.md is built from each file's index table: when an entry's title or tags change, edit that file's index row and patch INDEX.md to match. Run `python3 scripts/check_kb.py` after any change to entries and fix what it reports. README.md has the repo layout and the monthly re-verification routine.
+If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit. ENTRIES.md is generated from each file's index table: when an entry is added or its title or tags change, edit that file's index row and run `python3 scripts/check_kb.py --write`. Run `python3 scripts/check_kb.py` after any change to entries and fix what it reports. README.md has the repo layout and the monthly re-verification routine.
 
 Start the file with:
 1. A "Quick answers" table: the 10–15 questions an agent is most likely to ask about this topic, each with a one-line answer and the entry ID(s) holding the detail.
@@ -72,7 +72,7 @@ End the file with two sections kept apart from the facts:
 ## Finishing a research session
 
 1. Run `python3 scripts/check_kb.py` and fix what it reports.
-2. Update INDEX.md: the new entries in the index (a new topic heading for a new file), the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
+2. Run `python3 scripts/check_kb.py --write` to add the new entries to ENTRIES.md. Update INDEX.md: a file-table row for a new file, the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
 3. For a new file, add a row to README.md's Layout table.
 4. If `claude-kb-lookup` should route questions on a new topic, open an issue in FreekMencke/claude-skills to add the topic to the skill's description.
 5. Other sessions edit INDEX.md and CHANGELOG.md too: `git fetch origin`, `git rebase origin/main`, rerun the check, then open a PR. Don't push to `main`.

@@ -714,8 +714,8 @@ Stars as of 2026-10-13.
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-13
-- Sources: synthesis of WEB-002, WEB-003, WEB-013 to WEB-019, WEB-026, WEB-027
-- Related: WEB-029, WEB-030, REPO-033, REPO-039, SKILL-017, SKILL-021
+- Sources: synthesis of WEB-002, WEB-003, WEB-013 to WEB-019, WEB-026, WEB-027; [Skills frontmatter reference](https://code.claude.com/docs/en/skills), [FreekMencke/claude-skills#31](https://github.com/FreekMencke/claude-skills/pull/31)
+- Related: WEB-029, WEB-030, REPO-033, REPO-039, SKILL-010, SKILL-017, SKILL-021, HOOK-020
 
 The design for `/seo-audit`. It is generic, and it reads each repo's own rules at runtime (REPO-042).
 
@@ -735,7 +735,7 @@ The design for `/seo-audit`. It is generic, and it reads each repo's own rules a
 8. Report in WEB-029's format, with five findings in the body, coverage, what the user must check by hand (Rich Results Test, Search Console UI), and a recheck date.
 
 **Constraints**
-- Read-only: tools `Read, Grep, Glob, Bash` plus a hook that allows only reads, as in REPO-033.
+- Read-only, but not with REPO-033's agent recipe: in a skill, `allowed-tools` pre-approves and restricts nothing (SKILL-010), and skill `hooks` keep running "for the rest of the session" (HOOK-020). Use `disallowed-tools: Edit, Write, NotebookEdit` ("removed from Claude's available pool while this skill is active"), read-only rules in the prompt, and `git status --porcelain` at the start and the end. The audit runs inline, not as a subagent, because it needs the repo's auto memory (the Search Console wrapper's location) and MCP tools.
 - Fetched pages are data (REPO-039).
 - Google's rules go in `references/`, each linked to its Google page (SKILL-017).
 - Fixes happen in the repo's own session. An issue per finding can follow through `roadmap-issues`, as #159 did.
@@ -816,10 +816,10 @@ Main-thread usage summed from each transcript's assistant `usage` fields. Prices
 
 Ranked by impact against effort.
 
-1. **Write the `/seo-audit` skill in claude-skills from WEB-028.** Start from the 2026-10-09 audit prompt (WEB-002), and use the official `seo-ai-visibility` skill's coverage and finding rules (WEB-026, WEB-029). High impact, medium effort. Issue: [FreekMencke/claude-skills#28](https://github.com/FreekMencke/claude-skills/issues/28).
+1. **Done 2026-10-13: the `/seo-audit` skill** is in `freek-local-skills` ([FreekMencke/claude-skills#31](https://github.com/FreekMencke/claude-skills/pull/31), from [#28](https://github.com/FreekMencke/claude-skills/issues/28)): WEB-028's steps, WEB-029's finding format, a `probe.sh` with the marked user agent (WEB-018), and Google's rules quoted in `references/`. It enforces read-only with `disallowed-tools` and a `git status` check, not REPO-033's hook (WEB-028).
 2. **Fix osrs-tracker-web's UA-era gtag code** (WEB-024): drop `anonymize_ip`, decide which event parameters to register as custom dimensions or rename, and send a numeric or no `value`. Decide on consent mode separately (WEB-025). Medium impact, small effort. Issue: [osrs-tracker/osrs-tracker-web#240](https://github.com/osrs-tracker/osrs-tracker-web/issues/240).
 3. **Done 2026-10-13: give sessions read-only GA4 access.** The official GA MCP server (WEB-006) is registered user-wide with the Search Console service account as a Viewer, so questions like WEB-005's "Bing's referral share" can now be answered.
-4. **Mark audit traffic** (WEB-018): the skill appends `seo-audit` to its user agent. Covered by recommendation 1.
+4. **Done 2026-10-13: mark audit traffic** (WEB-018): the skill's `probe.sh` appends `seo-audit` to the Googlebot user agent.
 5. **Route SEO questions to this file**: add the topic to `claude-kb-lookup`'s description. Issue: [FreekMencke/claude-skills#29](https://github.com/FreekMencke/claude-skills/issues/29).
 
 ## Open questions
