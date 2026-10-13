@@ -19,6 +19,7 @@ How to run several Claude Code sessions on the same repositories at once: what t
 | How do I safely force-push after a rebase in a worktree? | `git push --force-with-lease --force-if-includes`. Remote-tracking refs are shared, so another session's `git fetch` can defeat a bare `--force-with-lease`. | SESS-025 |
 | Can I resume a session from another worktree? | Yes. `--resume <name>` resolves across the repo's worktrees, and the picker widens with `Ctrl+W`. `--continue` looks only at the launch directory. | SESS-029 |
 | Can I move a session between cloud and terminal? | Cloud to terminal with `--teleport` (needs a clean tree and a pushed branch). Terminal to cloud only as a new task (`--cloud`). The desktop app can send a local session to the cloud as a summary. | SESS-030 |
+| Can a hook pull `main` before a worktree is made? | There's no pre-creation event: `WorktreeCreate` replaces creation and drops `.worktreeinclude` and subagent cleanup. A `SessionStart` hook that fetches and fast-forwards a clean, commit-less worktree gets the same result right after creation. | SESS-036, SESS-006 |
 | How many parallel sessions pay off? | No official number. All surfaces draw on one plan allowance, roughly linearly. Practitioners run 3–10. Review attention, not quota, is the usual limit. | SESS-032, SESS-033 |
 
 ## Index
@@ -60,6 +61,7 @@ How to run several Claude Code sessions on the same repositories at once: what t
 | SESS-033 | How many sessions practitioners run, and what limits them | comparison | sizing, review, community |
 | SESS-034 | Watching many sessions | tool | notifications, statusline, monitoring |
 | SESS-035 | Our setup against these findings | comparison | our-setup, global-claude-md |
+| SESS-036 | Fast-forward a new worktree with a `SessionStart` hook | pattern | worktrees, hooks, sessionstart, staleness |
 
 ## [SESS-001] What git worktrees share and keep apart
 - Type: fact
@@ -183,7 +185,7 @@ Not documented: the desktop app's default branch name, whether the sweep covers 
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Settings reference](https://code.claude.com/docs/en/settings-reference)
-- Related: SESS-005, SESS-025, ORCH-009
+- Related: SESS-005, SESS-025, SESS-036, ORCH-009
 
 New worktrees start current, but nothing keeps them current afterwards.
 
@@ -192,7 +194,7 @@ New worktrees start current, but nothing keeps them current afterwards.
 - `"head"` branches from your local HEAD.
 - The setting doesn't accept a branch name.
 
-So a fresh worktree can start up to 24 hours behind when the fetch is skipped, and other sessions keep merging after it starts. Run `git fetch origin && git rebase origin/main` before pushing (SESS-025).
+So a fresh worktree can start up to 24 hours behind when the fetch is skipped, and other sessions keep merging after it starts. Run `git fetch origin && git rebase origin/main` before pushing (SESS-025). To start current anyway, see SESS-036.
 
 **Reusing a name.** `claude -w <name>` on an existing worktree reopens it. With `"fresh"`, it resets to the default branch only when all of these hold (v2.1.208+):
 - The worktree is clean.
@@ -897,6 +899,41 @@ The global `~/.claude/CLAUDE.md` and our repos, as read on 2026-10-12, checked a
 | osrs-tracker-web: public org repo, strict required checks (build, lint, test), auto-merge on | Every merge sets the other PRs `BEHIND`; a merge queue is available here (SESS-023, SESS-024) |
 | osrs-tracker-api: non-strict checks; claude-kb: private personal repo | No merge queue for personal-account repos; claude-kb keeps the rebase-before-merge rule |
 
+## [SESS-036] Fast-forward a new worktree with a `SessionStart` hook
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-13
+- Sources: [Hooks reference: WorktreeCreate, SessionStart](https://code.claude.com/docs/en/hooks), [Worktrees: choose the base branch](https://code.claude.com/docs/en/worktrees)
+- Related: SESS-006, SESS-004, SESS-025, HOOK-003, HOOK-008, HOOK-029
+
+Claude Code has no hook that runs before it creates a worktree. To make a new worktree start from the latest `origin/main`, fast-forward it in a `SessionStart` hook instead.
+
+**Why not `WorktreeCreate`.** That hook "replaces default git behavior". Your script would have to run `git worktree add` itself and print the path. You would lose `.worktreeinclude` and the reset-on-reuse logic (SESS-006). Claude Code also keeps the worktrees your hook makes for subagents and doesn't clean them up.
+
+**The hook.** `~/.claude/settings.json`: `"SessionStart": [{"matcher": "startup", "hooks": [{"type": "command", "command": "~/.claude/hooks/ff-worktree.sh", "timeout": 20}]}]`.
+
+```bash
+#!/usr/bin/env bash
+cd "$(jq -r .cwd)" 2>/dev/null || exit 0
+[ "$(git rev-parse --git-dir 2>/dev/null)" != "$(git rev-parse --git-common-dir 2>/dev/null)" ] || exit 0  # worktrees only
+timeout 10 git fetch -q origin 2>/dev/null || exit 0
+base=$(git symbolic-ref -q --short refs/remotes/origin/HEAD) || exit 0
+[ -z "$(git status --porcelain)" ] || exit 0
+[ "$(git rev-list --count "$base..HEAD")" = 0 ] && git merge -q --ff-only "$base" >&2
+exit 0
+```
+
+It reads `cwd` because `$CLAUDE_PROJECT_DIR` stays on the main checkout (SESS-004). It sends output to stderr because SessionStart stdout goes into the context (HOOK-008). It always exits 0. It leaves alone the main checkout, dirty worktrees and worktrees with their own commits. The fetch also refreshes the shared `origin/main`, so the next worktree starts from a recent base.
+
+**Subagents aren't covered.** A worktree-isolated subagent fires `SubagentStart`, not `SessionStart`. Adding the script to `SubagentStart` would also fast-forward a clean parent worktree whenever a non-isolated subagent starts.
+
+Tested 2026-10-13, v2.1.296, terminal (WSL), in a scratch repo:
+- With hooks disabled, `claude -w` started stale: c3, with the remote at c4.
+- With the hook, the worktree was created at c3 and fast-forwarded to c5 before the first prompt. The hook got the worktree path as `cwd`.
+- In a `-p` run, an `isolation: "worktree"` subagent fired only `SubagentStart`, with the worktree as `cwd`. It saw c5, with the remote at c6.
+- Desktop Code tab not tested.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. None is applied yet.
@@ -911,7 +948,8 @@ Ranked by impact against effort. None is applied yet.
 5. **Medium impact, low effort: make the "no checks after a minute" line say why.** Done 2026-10-12 in `~/.claude/CLAUDE.md` (FreekMencke/claude-kb#47). GitHub runs no `pull_request` CI on a conflicting PR. Optionally add `mergeStateStatus` `BEHIND` → update the branch, `DIRTY` → rebase. Evidence: SESS-021, SESS-022.
 6. **Low impact, low effort: keep folding CHANGELOG entries by hand; don't add `merge=union`.** It only helps the local rebase, can duplicate the date heading silently, and GitHub ignores it. Revisit only if a repo moves to versioned releases (changesets). Evidence: SESS-026, SESS-027.
 7. **Low impact, low effort: use cross-session messaging for "landed on main" notices** between sessions on the same repo, instead of relying on each one to discover the conflict. It needs nothing installed. Keep issues for cross-repo and later work. Evidence: SESS-017, SESS-031.
-8. **Watch, don't act: `~/.claude.json` and OAuth collisions.** If trust prompts reappear or sessions log out together, check SESS-010 and SESS-012 before blaming the repo. The 2.1.259 and 2.1.211 fixes cover the known cases on our version (2.1.296).
+8. **Medium impact, low effort: fast-forward new worktrees at session start.** Done 2026-10-13: the SESS-036 hook is in `~/.claude/settings.json`, and the script is at `~/.claude/hooks/ff-worktree.sh`. New sessions start on the latest `origin/main` even when Claude Code skipped its own fetch (SESS-006). Evidence: SESS-036.
+9. **Watch, don't act: `~/.claude.json` and OAuth collisions.** If trust prompts reappear or sessions log out together, check SESS-010 and SESS-012 before blaming the repo. The 2.1.259 and 2.1.211 fixes cover the known cases on our version (2.1.296).
 
 ## Open questions
 
@@ -925,3 +963,4 @@ Ranked by impact against effort. None is applied yet.
 8. **Is Playwright MCP's default profile a persistent per-workspace profile or a temp directory?** The README contradicts itself. Do our parallel browser-checker runs need `--isolated` (SESS-013)? This is the one home for the question; `kb-workflows.md` (FLOW-014) points here.
 9. **Is the stash really shared?** git-stash and git-worktree together imply it (SESS-002), but no page says it outright. A two-worktree test outside an isolated session would confirm it; the isolation guard blocked that test in this session.
 10. **Gap in the index check.** Answered 2026-10-12 (FreekMencke/claude-kb#28): `scripts/check_kb.py` now takes the prefixes for its "mentions unknown" check from the entries, so SESS and every later prefix are checked.
+11. **Does the SESS-036 hook run in desktop Code tab worktree sessions?** Hooks from user settings apply in the desktop app, and desktop hooks get the worktree as `cwd`, so it should. Tested only in the terminal.
