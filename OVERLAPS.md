@@ -1,6 +1,6 @@
 # Overlaps across topic files
 
-How entries in different `kb-*.md` files that cover the same ground were resolved: cross-linked, merged, or checked and found distinct. This is for curating the knowledge base; to answer a question, start at [INDEX.md](INDEX.md). Disagreements between entries are in INDEX.md's Conflicts, because lookups use them.
+How entries in different `topics/kb-*.md` files that cover the same ground were resolved: cross-linked, merged, or checked and found distinct. This is for curating the knowledge base; to answer a question, start at [INDEX.md](INDEX.md). Disagreements between entries are in INDEX.md's Conflicts, because lookups use them.
 
 `scripts/check_kb.py` treats IDs named on one line in these sections (and in INDEX.md's Conflicts) as already reviewed together.
 
