@@ -16,6 +16,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | `topics/kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
 | `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 35 (0 merged into other entries) |
 | `topics/kb-mcp.md` | MCP | MCP servers: scopes, approval, auth, permissions, subagent scoping, surfaces, vetting and writing servers | 28 (0 merged into other entries) |
+| `topics/kb-documentation.md` | DOC | Repo docs: changelogs, READMEs, decision records, runbooks, plan docs and drift, plus a survey of our repos | 23 (0 merged into other entries) |
 | `topics/kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO work: Google data access, crawler view, retired advice, SEO skills | 32 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
@@ -67,6 +68,9 @@ The questions agents ask most, across all topics. Each topic file's own Quick an
 | Which scope should an MCP server use, and does a repo's `.mcp.json` run unasked? | User scope for personal tools everywhere, project `.mcp.json` for what a repo needs, local for credentials in one repo. Interactive sessions ask per `.mcp.json` server and a repo can't approve itself; `claude -p`, the SDK and cloud sessions load it without asking. | MCP-001, MCP-002 |
 | How do I keep an MCP server or its tools away from a session or subagent? | Deny rules (`mcp__server__*`; parameter rules are skipped in settings), `deniedMcpServers`, `disableClaudeAiConnectors`; inline `mcpServers` gives a server to one subagent only; `--strict-mcp-config` drops all servers from a `-p` run (ours: about 6,600 tokens and 2 s each). | MCP-004, MCP-003, MCP-008, MCP-012 |
 | Is a third-party MCP server safe, and should I build one instead? | Treat a stdio server as untrusted code with your privileges: pin it, read its tools, give it its own narrow token; Claude Code accepts changed tool lists without re-approval. Prefer a CLI Claude knows, then MCP for OAuth or no-CLI systems. | MCP-019, MCP-017 |
+| Which changelog spec, and should every change get an entry? | Keep a Changelog 2.0.0 (2026-06-07): same format as 1.1.0, but "It lists the notable ones", ISO `YYYY-MM-DD` dates, a **Breaking:** marker, and never a required CI check. Our repos log every change on purpose, because sessions read the changelog as history. | DOC-001, DOC-002, DOC-018 |
+| How should Claude write changelog entries? | Put Keep a Changelog 2.0's brief in CLAUDE.md, once: notable changes, no git log, the reason in the text, mark breaking changes, read before merging. Make the reviewer's pair point to that rule instead of restating it. | DOC-003, DOC-019 |
+| How do we keep READMEs and other docs from drifting? | Docs change in the same PR. Reviewer rules pair each doc with the code it describes. lychee and Prettier handle form, `refresh-md-files` audits now and then. Docs-sync agents are unproven. | DOC-013, DOC-014, DOC-015, DOC-020 |
 
 
 ## Conflicts
