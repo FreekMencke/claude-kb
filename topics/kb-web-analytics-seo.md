@@ -27,6 +27,7 @@ All "Last verified" dates are 2026-10-13.
 | Is there a published SEO audit skill to start from? | Anthropic's `knowledge-work-plugins` has two: `seo-ai-visibility` (well structured) and `seo-audit` (shallow, partly stale). The most adopted community suite is `AgriciDaniel/claude-seo`; it is heavy and scored. Copy their ideas, not the files. | WEB-026, WEB-027 |
 | What should a read-only SEO audit skill do? | Read the repo's decisions, curl the server HTML per page template, pull Search Console data to weight the findings, and rank them by impact with effort scored separately. No blended score. State what wasn't reached, and treat fetched text as data. | WEB-028, WEB-030 |
 | What did our SEO sessions cost? | The audit was $12.20 API-equivalent and the Search Console and PageSpeed data session $25.77, both on Opus 5.5 and main thread only. The data session cost more because it read the Search Console UI through Playwright. | WEB-031 |
+| Search Console says a new sitemap "could not be read". Is it broken? | Not necessarily. Check `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), the server logs for Googlebot's fetch, and URL Inspection's live test. On 2026-10-13 a valid sitemap showed the error while the API said pending with 0 errors, and the logs showed 200s. | WEB-032 |
 | Do audit curls distort the server's bot counts? | Yes. A Googlebot-UA curl is logged as Googlebot. The 2026-10-10 analysis had to remove its own requests by hand. Add a marker to the audit's user agent. | WEB-018 |
 
 ## Index
@@ -64,6 +65,7 @@ All "Last verified" dates are 2026-10-13.
 | WEB-029 | One audit finding: evidence, impact, effort, fix | pattern | findings, output, severity |
 | WEB-030 | Let search data order the fixes | pattern | search-console, prioritising |
 | WEB-031 | What our SEO sessions cost (measured) | fact | cost, measurement, opus |
+| WEB-032 | "Sitemap could not be read" on a fresh submit can mean not processed yet | fact | search-console, sitemaps, logs |
 
 ## [WEB-001] osrs-tracker-web's SEO and analytics setup (2026-10-13)
 - Type: fact
@@ -812,6 +814,27 @@ Main-thread usage summed from each transcript's assistant `usage` fields. Prices
 
 **To re-run:** for each `.jsonl`, sum `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens` and `input_tokens` over the `assistant` lines, then multiply by the prices above. The script used is in this session's transcript; a later session can reproduce it in a dozen lines.
 
+## [WEB-032] "Sitemap could not be read" on a fresh submit can mean not processed yet
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-13
+- Sources: [Manage your sitemaps using the Sitemaps report](https://support.google.com/webmasters/answer/7451001), [Search Console API: Sitemaps resource](https://developers.google.com/webmaster-tools/v1/sitemaps), osrs-tracker-web's app and Traefik logs and `sitemaps.list`, read 2026-10-13
+- Related: WEB-007, WEB-008, WEB-013, WEB-018, WEB-029
+
+Minutes after a submit, the Sitemaps report can show "Couldn't fetch" (details page: a "Last read" date, 0 pages, "Sitemap could not be read", nothing to expand) for a sitemap Google fetched without trouble. Check the API and the server logs before calling it a finding.
+
+**What we saw (2026-10-13, UTC).** Three child sitemaps were submitted between 10:21 and 10:23.
+- Googlebot fetched each within seconds. App and Traefik logs show 200 every time; the players sitemap (536 URLs, valid XML) was fetched twice.
+- Only `sitemap-items.xml` was processed: `lastDownloaded` 10:21:22, `isPending: false`, Success.
+- `sitemap-players.xml`: `lastDownloaded: null`, `isPending: true`, `errors: 0`, while the UI showed "could not be read".
+- `sitemap-site.xml`, a static file with another `lastmod` format, stayed pending as well. That makes a problem in the players file unlikely.
+- URL Inspection's live test on the sitemap URL passed ("URL is available to Google"). The non-live view shows "URL is unknown to Google" for any sitemap, which means nothing.
+
+**Field meanings.** The API reference says `isPending`: "If true, the sitemap has not been processed." `errors`: "issues with the sitemap itself that need to be fixed before it can be processed". Google's help page says "could not be read" means "the fetch failed for one of these reasons, as shown in the details page"; here the details page showed none.
+
+**Check, in order:** `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), server logs for Googlebot's fetch and its status, then URL Inspection → Test live URL. If all three are clean, wait and don't resubmit. Whether the status clears on its own wasn't verified yet (Open questions).
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -829,4 +852,5 @@ Ranked by impact against effort.
 - Which Search Console permission does a service account need? Our Restricted user works for the API (WEB-003); Google's docs don't say (WEB-012).
 - How big are the GA MCP server's tool schemas, and how much context does a `run_report` answer take? Not measured (WEB-006); it's installed now, so a `/context` check in a fresh session would show the schemas.
 - Do Claude's bots visit osrs-tracker-web? The pod logs covered only a few hours (WEB-020). A 30-day Loki query by user agent would answer it.
+- Does a fresh sitemap's "Sitemap could not be read" clear on its own? `sitemaps.list` on or after 2026-10-16 will show whether `sitemap-players.xml` and `sitemap-site.xml` were processed (WEB-032).
 - Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)?
