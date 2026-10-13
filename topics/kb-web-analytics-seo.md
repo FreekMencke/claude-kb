@@ -67,6 +67,7 @@ All "Last verified" dates are 2026-10-13.
 | WEB-031 | What our SEO sessions cost (measured) | fact | cost, measurement, opus |
 | WEB-032 | A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending | fact | search-console, sitemaps, sitemap-index, logs |
 | WEB-033 | Google rewrote `Brand: phrase` titles whose phrase starts in lowercase | fact | title-links, titles, search-results |
+| WEB-034 | A consent banner rendered after hydration became the LCP element | fact | core-web-vitals, lcp, consent, ssr |
 
 ## [WEB-001] osrs-tracker-web's SEO and analytics setup (2026-10-13)
 - Type: fact
@@ -74,7 +75,7 @@ All "Last verified" dates are 2026-10-13.
 - Confidence: single-source
 - Last verified: 2026-10-13
 - Sources: osrs-tracker-web `main` at `9f8eadc` (`src/index.html`, `src/app/common/seo/`, `src/app/common/analytics/`, `public/robots.txt`, `docs/decisions.md`), [osrs-tracker/osrs-tracker-web#239](https://github.com/osrs-tracker/osrs-tracker-web/pull/239), [osrs-tracker/osrs-tracker-web#159](https://github.com/osrs-tracker/osrs-tracker-web/issues/159)
-- Related: WEB-002, WEB-024, REPO-001
+- Related: WEB-002, WEB-024, WEB-034, REPO-001
 
 The baseline every other entry is measured against. It was read from `main` after the player link-preview cards merged on 2026-10-13.
 
@@ -89,10 +90,10 @@ The baseline every other entry is measured against. It was read from `main` afte
 - Link-preview cards (1200×630) are drawn by the server: items at `/og/item/:id.png` since #218, players at `/og/player/:username.png` since #239 (kept an hour).
 - Server requests send `User-Agent: github:osrs-tracker/osrs-tracker-web`.
 
-**Analytics**
-- gtag.js in `index.html` with `send_page_view: false`, `anonymize_ip: true` and an optional `traffic_type`.
-- `AnalyticsService` sends `page_view` on every `NavigationEnd`, plus events with `event_category`, `event_label` and `value`, and `exception` events.
-- No consent mode calls. The privacy page says using the site means consenting to GA's first-party cookies.
+**Analytics** (changed after the baseline commit, on 2026-10-13)
+- gtag.js loads only after the visitor allows it, from a consent banner (#248). A stored choice sets consent mode's default in `index.html` before the tag. WEB-034 covers the banner's LCP cost.
+- `AnalyticsService` sends `page_view` on every `NavigationEnd`, events with named parameters (#241, WEB-024), and `exception` events.
+- At `9f8eadc` it still loaded gtag for everyone, with `anonymize_ip` and Universal Analytics fields, and no consent calls.
 
 The SEO roadmap (#159, 15 children) closed on 2026-10-10.
 
@@ -861,6 +862,25 @@ The titles shipped 2026-10-10 and `/trackers/xp` was last crawled 2026-10-11 20:
 Google names no lowercase rule: the cause is our inference from one site.
 
 Since 2026-10-13 the `seo-audit` skill flags `Brand: phrase` titles whose phrase starts in lowercase (FreekMencke/claude-skills#45, merged in FreekMencke/claude-skills#46).
+
+## [WEB-034] A consent banner rendered after hydration became the LCP element
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-13
+- Sources: [osrs-tracker/osrs-tracker-web#263](https://github.com/osrs-tracker/osrs-tracker-web/pull/263), [osrs-tracker/osrs-tracker-web#248](https://github.com/osrs-tracker/osrs-tracker-web/pull/248)
+- Related: WEB-001, WEB-010, WEB-025
+
+A cookie banner that renders only in the browser can become the page's Largest Contentful Paint (LCP) element for every first-time visitor. Render it on the server, and hide it before first paint for visitors who already chose.
+
+**What happened.** osrs-tracker-web's banner (#248, 2026-10-13) rendered only after hydration. For a first-time visitor it painted about a second after the page and became the LCP element. Mobile PageSpeed Insights on the player page then gave LCP 3.5–3.8 s, against 2.5 s before #248.
+
+**The fix (#263):**
+- The server renders the banner in every page, cached pages included, so it hydrates in place.
+- For a stored choice, the gtag script in `index.html` adds `<style id="consent-chosen">consent-banner { display: none; }</style>` before first paint. A rule in `styles.css` didn't work.
+- `data-nosnippet` on the banner keeps its text out of search snippets, now that it's in the HTML.
+
+Measured locally (production build, mobile emulation, 4× CPU): first paint of the banner fell from 3,185 ms to 1,248 ms. Returning visitors saw it in 0 frames, before and after. The PR didn't report a production PageSpeed run after the fix (not verified).
 
 ## Recommendations for our setup
 

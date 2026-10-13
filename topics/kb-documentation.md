@@ -17,7 +17,7 @@ Prefix: DOC. Last verified for all entries: 2026-10-13, against the sources live
 | How should we record decisions? | Context, decision, when to revisit, dated, newest first, and read by the reviewer. One file is fine for a few dozen. Split into numbered MADR files once records get superseded. | DOC-011, DOC-021 |
 | Is there an official Anthropic skill for READMEs or changelogs? | No. `doc-coauthoring` is for proposals and specs, and `claude-md-management` covers CLAUDE.md only. The prompt library has a release-notes recipe. | DOC-010, DOC-009 |
 | How do I keep docs from drifting? | Change docs in the same PR. Add cross-file rules for the reviewer ("a new env var and the Lambda README"). Run cheap linters (lychee, Prettier). Audit with `refresh-md-files` now and then. | DOC-013, DOC-014, DOC-020 |
-| Does an agent that syncs docs on merge work? | Unproven. The routines page names "Docs drift" as a use case; nobody has published results. Prefer same-PR updates plus reviewer rules. | DOC-015 |
+| Does an agent that syncs docs on merge work? | We run one: a weekly routine runs `refresh-md-files` on each osrs-tracker repo. Its first runs (2026-10-12) found 2–3 small, real gaps per repo, mostly lists missing a new route or file. Nobody else publishes results. Same-PR updates plus reviewer rules still come first. | DOC-015, DOC-024, REPO-018 |
 | How should a doc be written so agents find things? | Descriptive headings, the key term early, a table of contents over 100 lines, absolute dates, one level of links. Mostly carried over from Anthropic's skill guidance. | DOC-016 |
 | Where do runbooks go: `docs/` or a skill? | A skill when only sessions run it (deploy, release). `docs/` when a person must find it during an incident. | DOC-023 |
 | What happens to a plan doc after the work is done? | Give it a dated status line and "delete this file once every step is done". | DOC-022 |
@@ -49,6 +49,7 @@ Prefix: DOC. Last verified for all entries: 2026-10-13, against the sources live
 | DOC-021 | A dated decision log in one file | pattern | our-setup, decisions, adr |
 | DOC-022 | Plan docs with a dated status and a delete condition | pattern | our-setup, plans, expiry |
 | DOC-023 | Runbooks in `docs/` or in a skill | comparison | our-setup, runbooks, skills |
+| DOC-024 | Our weekly docs-drift routine: first runs | fact | our-setup, drift, routines, refresh-md-files |
 
 ## [DOC-001] Keep a Changelog 2.0.0: what changed from 1.1.0
 - Type: fact
@@ -321,7 +322,7 @@ None of these checks whether a doc is true, only its form and links.
 - Confidence: official-docs
 - Last verified: 2026-10-13
 - Sources: [Routines: use cases](https://code.claude.com/docs/en/routines.md), [claude-code-action: custom automations](https://raw.githubusercontent.com/anthropics/claude-code-action/main/docs/custom-automations.md), [anthropics/claude-code#7103](https://github.com/anthropics/claude-code/issues/7103)
-- Related: DOC-010, DOC-013, REPO-030, ORCH-017
+- Related: DOC-010, DOC-013, DOC-024, REPO-018, REPO-030, ORCH-017
 
 **Official patterns, with no published results.**
 - Routines, "Docs drift": "A schedule trigger runs weekly. The routine scans merged PRs since the last run, flags documentation that references changed APIs, and opens update PRs against the docs repository for an editor to review."
@@ -329,7 +330,7 @@ None of these checks whether a doc is true, only its form and links.
 
 **Community (single-source).** anthropics/claude-code#7103 (closed; not filed by a maintainer) proposes Cursor's approach: commit doc updates to a separate branch and post a compare link for review. Blog guides describe a merged-PR trigger. Nobody publishes measured results.
 
-**Trade-off.** A drift agent starts cold and has to rediscover what the change meant. The session that made the change already knows. Same-PR updates enforced by reviewer rules (DOC-020) cost less and catch the pairs you know about. A periodic audit (`refresh-md-files`, or a routine) catches the pairs nobody wrote down. Cost: a routine reads every doc each run, while an on-demand audit runs only when drift is suspected. Scripted runs need `--max-turns` and `--max-budget-usd` (global CLAUDE.md).
+**Trade-off.** A drift agent starts cold and has to rediscover what the change meant. The session that made the change already knows. Same-PR updates enforced by reviewer rules (DOC-020) catch the pairs you know about. A periodic audit catches the pairs nobody wrote down. We run one weekly (REPO-018). DOC-024 has its first results.
 
 ## [DOC-016] Writing docs that agents retrieve
 - Type: recommendation
@@ -516,6 +517,27 @@ Our repos split operational docs two ways:
 
 By that rule, api's and aws's rollback steps are in the wrong place. Today only sessions roll back, so moving them is low priority (see Recommendations).
 
+## [DOC-024] Our weekly docs-drift routine: first runs
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-13
+- Sources: [osrs-tracker/osrs-tracker-web#231](https://github.com/osrs-tracker/osrs-tracker-web/pull/231), [osrs-tracker/osrs-tracker-api#137](https://github.com/osrs-tracker/osrs-tracker-api/pull/137), [osrs-tracker/osrs-tracker-api#136](https://github.com/osrs-tracker/osrs-tracker-api/pull/136)
+- Related: DOC-015, DOC-020, REPO-018, SKILL-060
+
+**The routine.** "osrs-tracker weekly docs drift" is a cloud routine (REPO-018; REPO recommendations, change 6). It runs Mondays at 05:00 UTC on Sonnet 5.5 across api, web and aws. It runs `refresh-md-files` against the PRs merged that week and opens at most one PR per repo. It clones FreekMencke/claude-skills for the skill, because routines don't load marketplace plugins (SKILL-060).
+
+**First runs (2026-10-12, set-up runs around 15:30 UTC, not the 05:00 schedule):**
+
+| Repo | PR | Result |
+|---|---|---|
+| api | #136 | Closed: ran without the skill ("We'll rerun once the routine loads the skill") |
+| api | #137, merged | 3 findings in 5 files: the skill's `Cache-Control` route list and validation-pipe list, and the README's feature list, all missing what #131 added |
+| web | #231, merged | 2 findings in 9 files: the runbook's log types, and a skill rule that the `.png` link-preview route broke |
+| aws | none | No PR |
+
+**Reading it.** All five findings were real and small: a list in a doc that a PR had extended in code. Three of them fit a cross-file rule (DOC-020), such as "a new route and the skill's `Cache-Control` list". So each finding is also a candidate rule. The first scheduled run is 2026-10-19.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Every item changes another repo, so each becomes an issue there once you decide (global CLAUDE.md).
@@ -527,7 +549,7 @@ Ranked by impact against effort. Every item changes another repo, so each become
 5. **Add `lychee --offline` to CI in web, aws and api, and extend api's `prettier:ci` to Markdown** (low impact, low effort). This catches docs that link to moved files, and the hand-wrapped Markdown in api. DOC-014. Opened 2026-10-13 in the same issues as item 4 (api, web, aws). Note: `lycheeverse/lychee-action`'s `fail` input defaults to `false`, so set it to `true`. Done 2026-10-13: api, web and aws run `lychee --offline --include-fragments --hidden` with `fail: true` on every push, doc-only ones included, and api's `prettier:ci` now covers `**/*.md`. `--hidden` is needed to reach `.claude/` and `.github/`. api's comment notes that a glob input doesn't skip `.gitignore`d paths, so it excludes `node_modules` by hand.
 6. **Replace freek-mencke-web's template README** (low impact, trivial effort). It's the only stale README found. DOC-017. Dropped 2026-10-13: that app is due for an overhaul.
 7. **Give long-lived plan docs a due-date issue** (low impact, trivial effort). Start with home-cluster's Kubernetes 1.37 plan, due when cert-manager 1.22 ships. DOC-022. Opened 2026-10-13 as FreekMencke/home-cluster#8 (check 2026-11-30). It also adds the convention to home-cluster's CLAUDE.md.
-8. **Not now:** a docs-drift routine (unproven, recurring cost; DOC-015), MADR files (the one-file log works at 29 decisions; DOC-021), and a changelog check in CI for PR repos (the reviewer pair is the reminder; DOC-008). Revisit the drift routine if `refresh-md-files` audits keep finding drift that no cross-file rule covers.
+8. **Already running, so not a recommendation:** the weekly docs-drift routine (REPO-018, DOC-024). This file first listed it under "not now", having missed REPO-018; corrected 2026-10-13. Watch whether its findings are pairs that a cross-file rule (DOC-020) should have caught, and add those rules. **Not now:** MADR files (the one-file log works at 29 decisions; DOC-021), and a changelog check in CI for PR repos (the reviewer pair is the reminder; DOC-008). 
 
 ## Open questions
 
@@ -535,4 +557,4 @@ Ranked by impact against effort. Every item changes another repo, so each become
 2. **Should claude-skills have a changelog?** It installs by commit, and its commit subjects already read like entries (`<skill>: <change> (#PR)`). Keep a Changelog says a commit list isn't a changelog. With one user and the claude.ai sync, the reader may not exist.
 3. **Official doc-sync tooling.** A rate limit cut short the GitHub code search across anthropics/skills and claude-code for "update documentation" (DOC-010). Re-run it at the next monthly re-verification.
 4. **Does `/init` read the README?** memory.md doesn't say. Untested.
-5. **Docs-drift routine results.** No published measurement of a docs-sync agent was found (DOC-015).
+5. **Docs-drift routine results.** No published measurement of a docs-sync agent was found (DOC-015). Our own routine has only test runs so far (DOC-024). After a month of scheduled runs, check how many findings were real, and how many a cross-file rule could have prevented.
