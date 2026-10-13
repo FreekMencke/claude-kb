@@ -39,6 +39,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DOC-021 | A dated decision log in one file | pattern | our-setup, decisions, adr |
 | DOC-022 | Plan docs with a dated status and a delete condition | pattern | our-setup, plans, expiry |
 | DOC-023 | Runbooks in `docs/` or in a skill | comparison | our-setup, runbooks, skills |
+| DOC-024 | Our weekly docs-drift routine: first runs | fact | our-setup, drift, routines, refresh-md-files |
 
 ## Hooks (`topics/kb-hooks.md`, HOOK)
 
@@ -604,6 +605,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | WEB-031 | What our SEO sessions cost (measured) | fact | cost, measurement, opus |
 | WEB-032 | A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending | fact | search-console, sitemaps, sitemap-index, logs |
 | WEB-033 | Google rewrote `Brand: phrase` titles whose phrase starts in lowercase | fact | title-links, titles, search-results |
+| WEB-034 | A consent banner rendered after hydration became the LCP element | fact | core-web-vitals, lcp, consent, ssr |
 
 ## Session workflows (`topics/kb-workflows.md`, FLOW)
 

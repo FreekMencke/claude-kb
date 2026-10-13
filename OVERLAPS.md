@@ -39,6 +39,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Changelogs: SESS-026 and SESS-027 (merge conflicts between parallel PRs, fragment tools), DOC-001 to DOC-008 and DOC-018 (what goes in an entry, format, enforcement, our conventions). DOC-004 links SESS-027 for continuously deployed apps instead of repeating it.
 - Overviews and docs outside CLAUDE.md: MEM-021 (`/doctor` trim), MEM-033 (the arXiv context-file study), DOC-009 (where that leaves README and `docs/`).
 - Rules in one place: REPO-044 (what goes in CLAUDE.md, a skill, an agent), DOC-019 (the same rule copied into three files drifts).
+- Docs drift: REPO-018 (the checker and the routine as a repo-agent recommendation), DOC-015 (official and community drift agents), DOC-024 (our routine's first runs).
 - Guard hooks: HOOK-028 and HOOK-032 (pattern, collections), INFRA-012 (infrastructure packs).
 - Incidents: REPO-037 (prompt injection in repos and CI), INFRA-022 and INFRA-023 (destroyed infrastructure and data).
 - Emphasis and reasons in instructions: SKILL-020 (skills), PROMPT-004 and PROMPT-005 (all prompts).
