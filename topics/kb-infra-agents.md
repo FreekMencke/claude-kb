@@ -25,7 +25,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | How do I debug an incident without flooding context? | Filtered MCP reads (Flux `since`/`grep`/`limit`, Logs Insights aggregates), done by a read-only subagent that returns a short summary. | INFRA-018, INFRA-019 |
 | Do credentials end up in transcripts? | Yes, anything a tool prints is written to the plaintext `.jsonl` and sent to the model. Settings `env` reaches every subprocess. | INFRA-021, INFRA-020 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
-| Can a session query Loki, or only pod logs? | Not the local Loki any more: it was removed on 2026-10-14 (home-cluster 50b1a31), with the agent's Loki grant. Logs and metrics history are in Grafana Cloud, through its connector; pod logs through the flux MCP server cover the current pods only. From 2026-10-13 to 2026-10-14, `kubectl get --raw` on the Loki gateway's service proxy worked for GET queries. | INFRA-024, INFRA-025 |
+| Can a session query Loki, or only pod logs? | Not the local Loki any more: it was removed on 2026-10-14 (home-cluster 50b1a31), with the agent's Loki grant. Logs and metrics are in Grafana Cloud, read through the claude.ai Grafana connector (`query_loki_logs` on the `grafanacloud-logs` datasource; history from 2026-10-13 about 20:00 UTC); pod logs through the flux MCP server cover the current pods only. From 2026-10-13 to 2026-10-14, `kubectl get --raw` on the Loki gateway's service proxy worked for GET queries. | INFRA-024, INFRA-025 |
 | How do I check a subresource permission with `kubectl auth can-i`? | With `--subresource`: `can-i get services --subresource=proxy`. `can-i get services/proxy` checks a service named `proxy`, and gave a false `yes` here. Against a grant limited by `resourceNames`, add the name (`services/loki-gateway:80 --subresource=proxy`): without it the answer is `no`. | INFRA-025 |
 | What should we change in our setup first? | Done 2026-10-12: read-only cluster identity, pinned MCP servers, `autoMode.environment`, deny rules, root keys gone, agent policy tightened. Decided 2026-10-13: MCP `run_script` first, the CLI only where MCP can't (rec 9); short-lived AWS credentials dropped for now (rec 10). | INFRA-024, Recommendations |
 
@@ -551,7 +551,7 @@ Mapping INFRA-022 to controls, most-recurring first:
 - Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html), [FreekMencke/claude-kb#69](https://github.com/FreekMencke/claude-kb/issues/69)
 - Related: INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-010, INFRA-016, INFRA-025, WEB-013
 
-Read from local config and read-only AWS and cluster calls; names left out on purpose. Updated through #75 (2026-10-13); CHANGELOG.md has earlier states.
+Read from local config and read-only AWS and cluster calls; names left out on purpose.
 
 **AWS:**
 - `~/.aws/credentials` holds one long-term key, for the `claude` IAM user. Root's keys and the `default` profile are gone, so `aws` without `--profile` fails.
@@ -561,11 +561,10 @@ Read from local config and read-only AWS and cluster calls; names left out on pu
 
 **Kubernetes:**
 - Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
-- Loki access (2026-10-13 to 2026-10-14, FreekMencke/home-cluster#5, tested in INFRA-025) was removed with the local Loki (home-cluster 50b1a31): "Logs and metrics history are in Grafana Cloud, through its connector."
+- Logs and metrics moved to Grafana Cloud on 2026-10-14 (home-cluster 50b1a31), ending the agent's day-old Loki grant (FreekMencke/home-cluster#5, INFRA-025). Tested 2026-10-14 (desktop, WSL) through the claude.ai Grafana connector: logs since 2026-10-13 about 20:00 UTC; not read-only (recommendation 11).
 - The admin kubeconfig is `~/.kube/admin.yaml`, behind a Read deny rule.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
-- GA4: `analytics-mcp@0.7.0` since 2026-10-13 (WEB-006).
-- **Gap:** the server keeps an admin kubeconfig, reachable over `ssh`, which the cluster repo uses to apply. Auto mode and approvals cover that path.
+- **Gap:** an admin kubeconfig on the server, used by the cluster repo to apply, is reachable over `ssh`; auto mode and approvals cover that path.
 
 **Claude Code:** auto mode, with `autoMode.environment` naming the production resources (INFRA-010). Deny rules for `kubectl` deletes, `helm uninstall`, the AWS credentials and the admin kubeconfig. No sandbox.
 
@@ -659,6 +658,8 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 | 9 | Decided 2026-10-13 (FreekMencke/claude-kb#52): MCP `run_script` first for reads and writes, the CLI with `--profile claude` only where MCP can't do the job, and no `aws:ViaAWSMCPService` conditions, since both paths use the same identity. Decide between Bash `aws` and the AWS MCP server. The global CLAUDE.md asks for `--profile claude` on every CLI call, while the AWS server's instructions say not to use the CLI. Routing writes through MCP makes `aws:ViaAWSMCPService` conditions usable. | Low | Low | INFRA-003, INFRA-006 |
 | 10 | Dropped 2026-10-13 (FreekMencke/claude-kb#52): high effort for one user, and since FreekMencke/claude-kb#44 the key is tightly scoped with CloudTrail on. Later: move the agent from a long-term IAM user key to short-lived credentials (an Identity Center permission set, or a role with a session name). | Medium | High | INFRA-020, INFRA-001 |
 
+| 11 | Open 2026-10-14: keep the Grafana connector's writes away from sessions. It signs in as the user (org Admin) and exposes alert-rule, dashboard, datasource, incident and plugin-install tools next to the reads, while `~/.claude/settings.json` has no MCP deny rules. Deny the write tools (desktop sessions name the server by a UUID, MCP-010), or restrict them where the connector is configured on claude.ai. | Medium | Low | INFRA-006, INFRA-024, MCP-028 |
+
 Not recommended now: running cloud work in a dev container (INFRA-002). The credential is what decides cloud damage, and items 1, 2 and 4 address it directly.
 
 ## Open questions
@@ -672,4 +673,5 @@ Not recommended now: running cloud work in a dev container (INFRA-002). The cred
 - **CloudTrail attribution.** Answered 2026-10-14 by observation (INFRA-016): MCP-forwarded calls are told apart by `userAgent` and `userIdentity.invokedBy`; direct CLI calls carry no Claude Code marker; no field records `aws:CalledViaAWSMCP`.
 - **Source identity length.** The STS API reference says 64 characters; the IAM user guide says 256.
 - **Classifier error rates.** The 17% false-negative figure is from the March 2026 post (n=52, Sonnet 4.6 classifier). No newer figure for the Sonnet 5 classifier has been published; it has been the default for external sessions since v2.1.210 (CHANGELOG).
+- **Grafana connector tool limits.** Can the claude.ai connector, or a Grafana service account with the Viewer role, give sessions read-only access? Not checked.
 - **Hooks in bypass mode.** Answered in HOOK-006: the hooks guide says a `PreToolUse` `"deny"` blocks "even in `bypassPermissions` mode or with `--dangerously-skip-permissions`", because the hook fires before any permission-mode check.
