@@ -34,7 +34,7 @@ Briefing research subagents (TOK-100, TOK-101; the general brief is PROMPT-012):
 
 Claims about behaviour:
 - Behaviour differs by surface (terminal, desktop Code tab, desktop WSL, cloud sessions, routines, `claude-code-action`) and by version. Name the surface in the entry, and the `claude --version` for anything tested.
-- Test a cheap behaviour claim rather than leaving it unverified: a `claude -p` probe in your scratchpad with `--max-turns` and `--max-budget-usd`, on Haiku unless the model is what's being tested. Testing doesn't change Confidence, which follows the sources; add `Tested YYYY-MM-DD, vX.Y.Z, <surface>: <result>` to the entry.
+- Test a cheap behaviour claim rather than leaving it unverified: a `claude -p` probe in your scratchpad with `--max-turns`, `--max-budget-usd` and `--strict-mcp-config`, on Haiku unless the model is what's being tested. `--strict-mcp-config` starts no MCP servers, about 6,600 tokens and 2 s less per run (MCP-012). Leave it out when the probe measures the default starting context, and add `--mcp-config <file>` with only the servers under test when it tests MCP. Testing doesn't change Confidence, which follows the sources; add `Tested YYYY-MM-DD, vX.Y.Z, <surface>: <result>` to the entry.
 - A measurement states its window, sample size and the command that produced it, so a later session can re-run it. State the exact window, not a rounded one.
 - Write absolute dates. "New", "recently" and "currently" go stale; "launched 2026-10-07" doesn't.
 
