@@ -7,20 +7,20 @@ Research basis:
 - Research ran as a workflow: four Sonnet 5.5 search agents, then two Sonnet 5.5 fact-checkers that re-read 29 key claims on the live pages. 25 were confirmed. Corrections are folded in.
 - The baseline is `osrs-tracker-web` at commit `3c76cc2`, plus local transcripts.
 
-All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/docs/en/`.
+Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs base: `https://code.claude.com/docs/en/`.
 
 ## Quick answers
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which agents are worth having in a repo? | A conventions reviewer that reads the repo's rules and a fresh-context bug reviewer. For UI-heavy repos, a browser checker. Most other roles duplicate built-ins (`/code-review`, `/security-review`, `/simplify`, Explore) or belong in skills. | REPO-013, REPO-022 |
-| What does osrs-tracker-web have today? | One `conventions-reviewer`, two hooks (Prettier after edit, lint before push), CLAUDE.md plus a repo skill, and no Claude in CI. The reviewer runs about 30× a day across three repos on Sonnet. 56% of runs come back clean. | REPO-001–REPO-004 |
+| Which agents are worth having in a repo? | A conventions reviewer that reads the repo's rules and a fresh-context bug review (in osrs-tracker-web the built-in `/code-review high` in a subagent beat a repo agent, REPO-015). For UI-heavy repos, a browser checker. Most other roles duplicate built-ins (`/code-review`, `/security-review`, `/simplify`, Explore) or belong in skills. | REPO-013, REPO-022 |
+| What does osrs-tracker-web have? | At `3c76cc2` (2026-10-10): one `conventions-reviewer`, two hooks (Prettier after edit, lint before push), CLAUDE.md plus a repo skill, and no Claude in CI. The reviewer ran about 30× a day across three repos on Sonnet; 56% of runs came back clean (2026-10-07 to 10-11). By 2026-10-14 it also has a `browser-checker`, a read-only Bash hook and a `verify` skill; a bug-reviewer agent was tried and dropped. | REPO-001–REPO-004 |
 | How do I make a reviewer truly read-only? | Use an explicit `tools: Read, Grep, Glob, Bash`, a frontmatter `PreToolUse` hook that allows only git and gh reads, and no `memory:`. A `permissionMode` setting and "never edit" in the prompt aren't enough. | REPO-033, REPO-031, REPO-032 |
 | Can I scope Bash per agent, e.g. `Bash(git diff *)`? | No. `tools: Bash(git diff *)` gives all of Bash (tested), and `disallowedTools: Bash(git push *)` removes **all** of Bash. Use a hook, a `permissions.deny` rule (which affects the whole session) or the sandbox. | REPO-031, REPO-034 |
 | Does `permissionMode: plan` on an agent hold? | Only when the parent is in default, `dontAsk` or plan mode. Auto, `acceptEdits` and bypass parents override it. | REPO-032 |
 | How do user, project and plugin levels combine? | Scalars: managed > `--settings` > local > project > user. Permission lists and hooks **merge**, and deny wins. Agents: managed > `--agents` > project > user > plugin. Skills: enterprise > personal > project; plugins are namespaced. | REPO-005, REPO-006 |
 | How do I make sure a review actually runs? | Name it in a procedure the session follows (skill or orchestrator), or `@agent-<name>`. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
-| Can a hook run my repo's reviewer agent? | Not by name. `agent` and `prompt` hooks run an anonymous verifier (experimental). A Stop hook can only return a reason asking Claude to spawn it. | REPO-025 |
+| Can a hook run my repo's reviewer agent? | Not by name. An `agent` hook runs an anonymous verifier (experimental); a `prompt` hook makes one model call. A Stop hook can only return a reason asking Claude to spawn it. | REPO-025 |
 | How do I run a repo agent in GitHub Actions? | Wrap it in a skill or plugin command and pass `prompt: "/name"`. On PRs, `.claude/` and CLAUDE.md are restored from the base branch. Running a named agent via `claude_args` is undocumented. | REPO-027, REPO-028 |
 | How do I keep CI agents safe from prompt injection in PRs and issues? | Keep the write-access gate. Never use `allowed_non_write_users: "*"` or put `${{ …body }}` in prompts. Use read-only job tokens and split triage from action. Pin action v1.0.94+. | REPO-037, REPO-038 |
 | Should reviewers have WebFetch? | No. It isn't sandboxed and is an injection and exfiltration channel. Official security review uses only git reads plus Read, Glob and Grep. | REPO-033, REPO-017 |
@@ -75,7 +75,7 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 | REPO-040 | Ways to share agents, skills and hooks across repos | comparison | sharing, plugins |
 | REPO-041 | What a plugin can't carry for repo agents | fact | plugins, limits |
 | REPO-042 | Pattern: a generic reviewer body, repo-specific rules files | pattern | sharing, rules, review-md |
-| REPO-043 | Our three `conventions-reviewer` copies: what differs | fact | baseline, sharing |
+| REPO-043 | Our three `conventions-reviewer` copies: one shared body since 2026-10-12 | fact | baseline, sharing |
 | REPO-044 | What goes in CLAUDE.md, a skill, an agent, a hook or REVIEW.md | recommendation | CLAUDE.md, design |
 | REPO-045 | Size, instruction count and cross-tool instruction files | fact | CLAUDE.md, AGENTS.md, size |
 | REPO-046 | Official reviewer agents compared | comparison | reviewer, official-example |
@@ -89,17 +89,17 @@ All "Last verified" dates are 2026-10-12. Docs base: `https://code.claude.com/do
 Templates T1–T3 (changed `conventions-reviewer`, new `bug-reviewer`, new `browser-checker`, plus a read-only Bash hook) are under "Recommendations for our setup".
 ---
 
-## Baseline: osrs-tracker-web today
+## Baseline: osrs-tracker-web at `3c76cc2` (2026-10-10)
 
 ## [REPO-001] osrs-tracker-web's Claude Code setup (inventory)
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/CLAUDE.md), [.claude/settings.json](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/settings.json), [SKILL.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/skills/osrs-tracker-web/SKILL.md), [workflows](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.github/workflows), [dependabot.yml](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.github/dependabot.yml) at `3c76cc2` (2026-10-10); untracked `settings.local.json` and user settings read locally 2026-10-12
 - Related: REPO-002, REPO-004
 
-Repo-level Claude configuration as committed on 2026-10-12. It was added between 2026-10-02 and 2026-10-09.
+Repo-level Claude configuration at `3c76cc2` (2026-10-10). It was added between 2026-10-02 and 2026-10-09. REPO-004 lists what changed by 2026-10-14.
 
 | Piece | File | What it does |
 |---|---|---|
@@ -112,7 +112,7 @@ Repo-level Claude configuration as committed on 2026-10-12. It was added between
 | CI | `.github/workflows/nodejs.yml`, `deploy.yml`, `ge-tax.yml` | Lint, build and test on PRs and `main`; deploy on CI success; a monthly GE-tax check. **No Claude in CI.** |
 | Dependabot | `.github/dependabot.yml` | Security updates only (npm, Actions), plus Docker base-image digests. |
 
-At user level: `defaultMode: "auto"`, plugins `typescript-lsp`, `playwright`, `frontend-design` and `claude-md-management`. There are no user-level agents. The repo is **public**, with 0 forks. The `main` ruleset requires a PR and status checks, and the admin can bypass it.
+At user level: `defaultMode: "auto"`, plugins `typescript-lsp`, `playwright`, `frontend-design` and `claude-md-management`. One user-level agent was added on 2026-10-12: an Explore override (`~/.claude/agents/explore.md`: Haiku, `effort: medium`, `omitClaudeMd`). The repo is **public**, with 0 forks. The `main` ruleset requires a PR and status checks, and the admin can bypass it.
 
 The sibling repos `osrs-tracker-api` and `osrs-tracker-aws` have the same shape: a CLAUDE.md, a repo skill, a `conventions-reviewer` and the same two hooks (REPO-043).
 
@@ -120,7 +120,7 @@ The sibling repos `osrs-tracker-api` and `osrs-tracker-aws` have the same shape:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [conventions-reviewer.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/agents/conventions-reviewer.md) at `3c76cc2`, read 2026-10-12
 - Related: REPO-001, REPO-003
 
@@ -144,11 +144,13 @@ model: sonnet
 
 **Strengths.** It matches the official pattern: rules read at runtime from one source and not duplicated in the agent ("keep code rules here or there, not in the agent", per the skill), it reports without editing, every finding cites a quoted rule, and it has an explicit "nothing found" output (REPO-046, REPO-048).
 
+**Superseded 2026-10-12** (c6cef0a, osrs-tracker/osrs-tracker-web#221): the live file sets `effort: medium`, preloads the repo skill with `skills:`, guards Bash with a frontmatter `PreToolUse` hook (`.claude/hooks/read-only-bash.sh`), and adds a do-not-flag list, an untrusted-content section, a `VERDICT:` first line and at most 3 **check** items (template T1).
+
 ## [REPO-003] How the reviewer is triggered and how it performs (measured)
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: local transcripts in `~/.claude/projects/` (all repos), analysed 2026-10-12; [SKILL.md "Release" step 2](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/skills/osrs-tracker-web/SKILL.md)
 - Related: REPO-002, REPO-024, REPO-026
 
@@ -156,6 +158,7 @@ model: sonnet
 - The skill's release procedure, step 2: "Review `gh pr diff` for bugs and leftovers while the `conventions-reviewer` agent checks the PR".
 - The user-level `parallel-code-orchestrator` skill, which runs "the repo's reviewer agent".
 - Auto-delegation from the description ("Use after implementing a change, before opening or merging a PR").
+- Since 2026-10-13 (709574d) release step 2 runs `conventions-reviewer` and a `general-purpose` subagent running `/code-review high <n>` in parallel (REPO-015).
 
 Nothing enforces it. No hook or CI step requires a review.
 
@@ -178,11 +181,11 @@ Caveat: outcomes were counted by regex over report text, and only 63 of the 160 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: REPO-001 to REPO-003; [Best practices](https://code.claude.com/docs/en/best-practices)
 - Related: REPO-015, REPO-031
 
-Gaps against this file's findings:
+Gaps at `3c76cc2`. By 2026-10-13 gaps 1–6 were closed in osrs-tracker-web: `/code-review high` in a subagent (1, REPO-015), the read-only hook (2), a do-not-flag list and at most 3 checks (3), a `VERDICT:` line (4), the skill preloaded and CLAUDE.md treated as already loaded (5), and `browser-checker` (6, REPO-021). Gap 7 now has a weekly docs-drift routine.
 
 1. **No fresh-context bug review.** Release step 2 has the session that wrote the code review its own diff for bugs. Anthropic: "A fresh context improves code review since Claude won't be biased toward code it just wrote." The conventions reviewer explicitly skips "general bugs" (REPO-015).
 2. **Read-only by instruction, not by configuration.** The agent has unscoped `Bash`. It inherits the project's local allow rules (`gh pr *`, `gh pr merge:*`, `git push:*`) and the parent's auto mode, which overrides any `permissionMode` it might set (REPO-031, REPO-032).
@@ -199,13 +202,13 @@ Gaps against this file's findings:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Skills](https://code.claude.com/docs/en/skills), [Slash commands](https://code.claude.com/docs/en/slash-commands), [Hooks](https://code.claude.com/docs/en/hooks), [Settings](https://code.claude.com/docs/en/settings), [Memory](https://code.claude.com/docs/en/memory)
 - Related: ORCH-002, SKILL-007, REPO-006, REPO-009
 
 | Component | Project location | Loads | On collision |
 |---|---|---|---|
-| Subagents | `.claude/agents/*.md` | Descriptions at start; body when spawned. Watched, live reload. | managed > `--agents` > project > user > plugin (ORCH-002) |
+| Subagents | `.claude/agents/*.md` | Descriptions at start; body when spawned. Watched, live reload. | managed > `--agents` > project > user > plugin (ORCH-002); among nested project `.claude/agents/` dirs the one closest to the working directory wins; the same name twice in one directory loads one by filesystem order |
 | Skills | `.claude/skills/<name>/SKILL.md` | Description every turn, body on use (SKILL-004) | enterprise > personal > project; plugin namespaced (SKILL-007) |
 | Commands | `.claude/commands/*.md` | Same as skills; "merged into skills" (REPO-008) | A skill beats a same-named command |
 | Hooks | `hooks` in `.claude/settings.json` / `settings.local.json`; agent or skill frontmatter; plugin `hooks/hooks.json` | At start; agent frontmatter hooks only while that subagent runs, skill frontmatter hooks from invocation to the end of the session | Merge, never override (REPO-006) |
@@ -220,12 +223,12 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Settings: precedence](https://code.claude.com/docs/en/settings), [Permissions](https://code.claude.com/docs/en/permissions), [Hooks](https://code.claude.com/docs/en/hooks)
 - Related: REPO-005, REPO-007, REPO-034
 
 **Order, highest first:**
-1. Managed settings (file, MDM or server-managed). "Nothing in your own settings files or `--settings` overrides a managed key."
+1. Managed settings (file, MDM or server-managed). "Nothing in your own settings files or `--settings` overrides a managed key." Exception: for a few security-sensitive keys a stricter value from a lower level wins over managed (settings.md, "Exceptions to managed settings precedence").
 2. `--settings`.
 3. `.claude/settings.local.json`.
 4. `.claude/settings.json`.
@@ -247,7 +250,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Permissions: what runs before you trust a folder](https://code.claude.com/docs/en/permissions), [Subagents: hooks in frontmatter](https://code.claude.com/docs/en/sub-agents), [Settings](https://code.claude.com/docs/en/settings)
 - Related: REPO-006, SKILL-010, SKILL-034
 
@@ -270,7 +273,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Slash commands](https://code.claude.com/docs/en/slash-commands), [Skills](https://code.claude.com/docs/en/skills), [Plugin manifest](https://code.claude.com/docs/en/plugins/manifest-reference)
 - Related: SKILL-007, SKILL-021
 
@@ -281,7 +284,7 @@ All of these are plain files, so they work in every surface that clones the repo
 **On collisions:**
 - A skill beats a same-named command.
 - Personal beats project.
-- Unverified: a project command beating an `--add-dir` command. The slash-commands page states no such rule.
+- A project command beats a same-named command from an `--add-dir` directory (Permissions page, "additional directories" table; the skills page states no such rule).
 - Your own skill can replace a built-in command, but not its aliases.
 - Unverified: whether personal `~/.claude/commands/x.md` beats project `.claude/commands/x.md`. Presumably it follows the skill order, but the docs don't say. A 2026-10-12 probe was blocked by auto mode (see Open questions).
 
@@ -293,7 +296,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-002, REPO-023
 
@@ -303,6 +306,7 @@ All of these are plain files, so they work in every surface that clones the repo
   - creating the *first* agent file in a new `agents` directory for that scope;
   - editing agents in `--add-dir` directories (loaded, not watched);
   - starting with `--disable-slash-commands`.
+- **Silently skipped files.** A file whose frontmatter doesn't parse (for example `: ` inside a multi-line plain `description`, osrs-tracker/osrs-tracker-web#222), or that lacks `name` or `description`, is skipped without a message in the session; the reason goes to the debug log. Check with `claude plugin validate .claude/agents` (v2.1.233+).
 - **Desktop worktree sessions** read project config from the main checkout, so an agent edited on a branch isn't live there (SKILL-053).
 
 **`/agents` changed.** "Running `/agents` prints a reminder to ask Claude or edit `.claude/agents/` and `~/.claude/agents/` directly." The interactive wizard existed only up to v2.1.197. Older posts that describe the wizard are stale. The documented path is "Ask Claude to create the subagent… Review the file".
@@ -313,7 +317,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents: what loads at startup](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-007, TOK-006, template T1
 
@@ -329,7 +333,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents: persistent memory](https://code.claude.com/docs/en/sub-agents), [Plugin components](https://code.claude.com/docs/en/plugins/components)
 - Related: TOK-004, REPO-052
 
@@ -360,7 +364,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web), [Permissions: additional directories](https://code.claude.com/docs/en/permissions), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)
 - Related: SKILL-048, REPO-028, REPO-040
 
@@ -384,7 +388,7 @@ Notes:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Commands](https://code.claude.com/docs/en/commands), [Code review](https://code.claude.com/docs/en/code-review), [Features overview](https://code.claude.com/docs/en/features-overview), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-022, SKILL-021
 
@@ -415,7 +419,7 @@ Generic role agents from collections duplicate the built-ins and usually lack a 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [Code review](https://code.claude.com/docs/en/code-review), REPO-002
 - Related: REPO-002, REPO-046, template T1
 
@@ -451,7 +455,7 @@ Template: template T1.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [pr-review-toolkit code-reviewer](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/pr-review-toolkit/agents/code-reviewer.md)
 - Related: ORCH-039, ORCH-042, REPO-047, template T2
 
@@ -465,7 +469,7 @@ Template: template T1.
 | Tools | Read, Grep, Glob, plus read-only `git`/`gh`. No web, no edits. |
 | Model | Opus 5.5 at `high`. The official code-review command uses Opus for its bug finders. |
 
-**What official sources do on model choice.** They disagree on this role. The pr-review-toolkit `code-reviewer` is Opus, the feature-dev `code-reviewer` (same prompt) is Sonnet, and the docs' example is `inherit` (REPO-046). Sonnet 5.5 is the floor (ORCH-030).
+**Model choice.** Official sources disagree: pr-review-toolkit's `code-reviewer` is Opus, feature-dev's (same prompt) is Sonnet, and the docs' example is `inherit` (REPO-046). Sonnet 5.5 is the floor (ORCH-030).
 
 **What to flag**, from the official command's "HIGH SIGNAL" gate:
 - code that "will fail to compile or parse";
@@ -475,13 +479,13 @@ Not style, not "potential issues that depend on specific inputs or state". "If y
 
 **Validate before fixing.** The caller, or one Sonnet validator per finding, checks each finding against the code (REPO-048).
 
-**Alternative without a repo file:** the built-in `/code-review` at a chosen effort level. It is maintained by Anthropic and tiered by model, but it can't be pinned or given the repo's do-not-flag list. Template: template T2.
+**Alternative without a repo file:** the built-in `/code-review` at a chosen level, maintained by Anthropic but not pinnable and without the repo's do-not-flag list. It won in osrs-tracker-web (osrs-tracker/osrs-tracker-web#222, 8 PRs, 2026-10-12 to 10-13): 15 fixed findings for `/code-review high`, run inline and so not a fresh context, against 1 for a repo `bug-reviewer` (template T2). The agent was deleted (923c18f); `/code-review high <n>` now runs in a `general-purpose` subagent, 37k–41k tokens and 58–86 s per run (709574d).
 
 ## [REPO-016] Test writer and test-gap analyser
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [pr-test-analyzer](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [code-modernization test-engineer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [wshobson test-automator](https://github.com/wshobson/agents)
 - Related: ORCH-022, ORCH-030
 
@@ -501,7 +505,7 @@ When it pays:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [claude-code-security-review](https://github.com/anthropics/claude-code-security-review), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [security-guidance README](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/security-guidance/README.md), [claude-security agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-security/agents)
 - Related: REPO-047, REPO-048
 
@@ -516,13 +520,13 @@ If you write one, copy two official designs:
 - **Tight scope.** The security-review command's allowed tools are `Bash(git diff:*)`, `git status`, `git log`, `git show`, `Read`, `Glob`, `Grep`, `LS` and `Task`. No web, no writes.
 - **Exclusions and a confidence bar.** It flags only findings with ">80% confident of actual exploitability" that are "newly added by this PR". It has a numbered hard-exclusions list (REPO-047), then re-scores each finding in a sub-task and drops those below 8/10.
 
-Model: Opus 5.5 `high` for discovery. `security-guidance` runs both reviews on the newest Opus by default and advises staying on the default model if precision is the priority.
+Model: Opus 5.5 `high` for discovery. `security-guidance` has three layers (regex warnings on edit, an LLM diff review at turn end, an agentic review on `git commit`). Its README in claude-plugins-official (updated 2026-10-13) says both reviews run "on the newest Claude Opus" and to "stay on the default" if precision is the priority; the docs page and the claude-code repo's copy still say Opus 4.7 by default (INDEX Conflicts).
 
 ## [REPO-018] Docs-drift checker and docs updater
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [comment-analyzer](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [VoltAgent documentation-engineer](https://github.com/VoltAgent/awesome-claude-code-subagents)
 - Related: REPO-030, SKILL-024
 
@@ -540,7 +544,7 @@ Model: Opus 5.5 `high` for discovery. `security-guidance` runs both reviews on t
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [code-modernization agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [Commands: /batch](https://code.claude.com/docs/en/commands), [VoltAgent dependency-manager](https://github.com/VoltAgent/awesome-claude-code-subagents)
 - Related: ORCH-012
 
@@ -565,7 +569,7 @@ The skill costs nothing in the agent listing between upgrades. Turn it into an a
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [claude-code-action examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [Claude Code on the web: auto-fix](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: REPO-027, REPO-037
 
@@ -588,26 +592,26 @@ Both are workflow plus command, not repo subagents. For a solo repo where every 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: unverified
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline), local test in osrs-tracker-web 2026-10-12 (osrs-tracker/osrs-tracker-web#223); [wshobson ui-visual-validator](https://github.com/wshobson/agents)
 - Related: template T3, TOK-043
 
-**Purpose:** run a Playwright check of a change locally or in production and return a short report: pass or fail, request count, failed requests, console errors, the path of the saved screenshot. The screenshots themselves stay in the subagent's context.
+**Purpose:** run a Playwright check of a change and return a short report (pass or fail, failed requests, console errors, screenshot paths). The screenshots stay in the subagent's context.
 
 **Configuration:**
 
 | Setting | Value |
 |---|---|
 | Trigger | The repo skill's "browser check" step: after visible or request-changing work, and after a deploy |
-| Tools | Playwright MCP tools named per tool (`mcp__plugin_playwright_playwright__browser_*`), plus Read and Bash for the server and `curl` |
-| Model | Sonnet 5.5 at `medium`. Following a written checklist and judging layout against a design spec doesn't need Opus. |
+| Tools | Read plus Playwright MCP tools named per tool; the live osrs-tracker-web agent uses its own server from frontmatter `mcpServers` (since 2026-10-13) and has no Bash |
+| Model | Sonnet 5.5 at `medium`: following a checklist doesn't need Opus |
 
-**Why it helps.** Each screenshot costs up to about 1,568 tokens (standard) and is re-read on every later turn of the session that took it (TOK-043, TOK-009). A subagent pays for screenshots once, in a context that is thrown away.
+**Why it helps.** Each screenshot costs up to about 4,784 tokens on Claude 4.7 and later (1,568 on older models) and is re-read on every later turn of the session that took it (TOK-043, TOK-009). A subagent pays for screenshots once, in a context that is thrown away.
 
-**No official precedent.** No official agent does this. Community `ui-visual-validator` agents are generic. Treat the saving as an estimate until it is measured.
+**No official precedent.** No official agent does this. Community `ui-visual-validator` agents are generic. Interim measurement (osrs-tracker/osrs-tracker-web#223): own-app screenshots in main sessions fell from about 23 a day (2026-10-07 to 10-11) to 3 on 2026-10-12, then 32 on 2026-10-13, when sessions needed hover and keyboard tools the agent lacked (added 2026-10-14). The final window is 2026-10-13 to 10-26.
 
 **Constraints:**
-- One shared browser. Don't run two checkers at once, or one alongside a main-session check.
+- With the plugin's tools there is one shared browser: run one checker at a time. An own `--isolated` server in `mcpServers` lifts that, but loads only once the agent file's folder is trusted (REPO-007).
 - The subagent can't send files to the user. It saves the screenshot, and the caller sends it.
 
 Template: template T3.
@@ -616,16 +620,16 @@ Template: template T3.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: Synthesis of REPO-013 to REPO-021 and ORCH-030; [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-030, REPO-013
 
 | Agent | Worth a repo file? | Trigger | Tools | Model / effort |
 |---|---|---|---|---|
 | Conventions reviewer | Yes, if the repo has written rules | Before PR/merge, orchestrator | Read, Grep, Glob, read-only git/gh | Sonnet 5.5 / medium |
-| Bug reviewer | Yes, or use `/code-review` | Before PR/merge, parallel with the above | Same | Opus 5.5 / high |
+| Bug reviewer | Yes, or use `/code-review` (osrs-tracker-web chose `/code-review high`, REPO-015) | Before PR/merge, parallel with the above | Same | Opus 5.5 / high |
 | Finding validator | Inline, not a file | Per finding from a reviewer | Read, Grep, Glob | Sonnet 5.5 / medium |
-| Browser checker | Yes for UI-heavy repos | After UI work or a deploy | Playwright MCP, Read, Bash | Sonnet 5.5 / medium |
+| Browser checker | Yes for UI-heavy repos | After UI work or a deploy | Playwright MCP, Read | Sonnet 5.5 / medium |
 | Docs-drift checker | Yes, if docs are long and drift | Weekly schedule, or after refactors | Read-only | Sonnet 5.5 / medium |
 | Test-gap analyser | Only with repo test rules | Before PR | Read-only | Sonnet 5.5 / medium |
 | Test writer (existing code) | Rarely | On request | Edit, Write, Bash | Sonnet 5.5 / medium |
@@ -644,7 +648,7 @@ Set `effort` in frontmatter, as the official `claude-security` agents do (`low` 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents: invoke explicitly](https://code.claude.com/docs/en/sub-agents), [CLI reference](https://code.claude.com/docs/en/cli-reference), [Plugin components](https://code.claude.com/docs/en/plugins/components)
 - Related: REPO-024, REPO-026
 
@@ -664,7 +668,7 @@ Use `@agent-` when the review must happen. Use `--agent` to run a dedicated sess
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [anthropics/claude-code#80988](https://github.com/anthropics/claude-code/issues/80988), [aident.ai post](https://aident.ai/blog/fix-claude-code-opus-5-not-using-subagents)
 - Related: REPO-023, REPO-025, SKILL-012
 
@@ -684,7 +688,7 @@ Ranked from weakest to strongest:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks](https://code.claude.com/docs/en/hooks), [Hooks guide](https://code.claude.com/docs/en/hooks-guide)
 - Related: ORCH-019, REPO-024
 
@@ -701,7 +705,7 @@ Official example, which blocks finishing until tests pass:
 
 **Limits:**
 - **A hook can't run a named `.claude/agents/` agent.** It can only return a `reason` that makes Claude spawn one ("Run the conventions-reviewer on the diff"). That pattern is unverified.
-- **Stop hooks fire on every turn end.** After eight consecutive continuations Claude Code overrides the next block (`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP`). Keep the checks cheap and narrowly matched.
+- **Stop hooks fire on every turn end.** After eight consecutive continuations Claude Code overrides the next block (`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP`); the count resets each time Claude calls a tool. Keep the checks cheap and narrowly matched.
 - **`PostToolUse` can't block** ("the tool already ran"). It can add context, for example after `Bash` with `"if": "Bash(gh pr create *)"`.
 
 **For reviews:** a `command` hook that *checks* (lint, tests) is robust. A hook that *reviews* with a model adds a model call to every match. Use it only where a missed review is costly.
@@ -710,7 +714,7 @@ Official example, which blocks finishing until tests pass:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [CLI reference](https://code.claude.com/docs/en/cli-reference)
 - Related: ORCH-003, ORCH-035, REPO-010
 
@@ -725,25 +729,25 @@ Official example, which blocks finishing until tests pass:
 - In `-p` and the Agent SDK, fork mode is off, so the caller decides.
 - `background: true` in frontmatter forces background.
 
-**Resume** with `SendMessage` to the agent's ID or name, for example to ask the reviewer to recheck after fixes. Explore and Plan can't be resumed.
+**Resume** with `SendMessage` to the agent's ID or name, for example to ask the reviewer to recheck after fixes. Names given before the last compaction still need the agent ID (v2.1.299). Explore and Plan can't be resumed.
 
 **Spawn limits:**
 - A reviewer shouldn't spawn agents: omit `Agent` from its `tools`.
 - `tools: Agent(name)` allowlists only apply under `claude --agent`.
 - To block an agent everywhere: `permissions.deny: ["Agent(name)"]`.
 
-**Report scanning.** Subagent reports are scanned for instruction-shaped text. Fake `<system-reminder>` tags are neutralised and a `[harness: … matched instruction-shaped pattern(s)]` marker is prepended. Reviewers shouldn't quote such tags verbatim.
+**Report scanning.** Subagent reports are scanned for instruction-shaped text. Fake `<system-reminder>` tags and `Human:`/`Assistant:` lines get a backslash inserted (nothing is removed), and a `[harness: … matched instruction-shaped pattern(s)]` marker is prepended; mentioning settings such as `bypassPermissions` also adds the marker. Reviewers shouldn't quote such tags verbatim.
 
 ## [REPO-027] CI: `claude-code-action@v1` modes and inputs
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action usage.md](https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [action.yml](https://github.com/anthropics/claude-code-action/blob/main/action.yml)
 - Related: ORCH-016, REPO-028, REPO-038
 
 **Modes** are detected from the workflow:
-- **Tag mode:** no `prompt`. Waits for `@claude`.
+- **Tag mode** (the docs page calls it interactive mode): no `prompt`. Waits for `@claude`.
 - **Automation mode:** with `prompt`. Runs immediately.
 - `track_progress: true` forces tag mode with a progress comment.
 - In automation mode, "For a plain-text prompt, Claude has no shell or GitHub API access until you grant the tools": `--allowedTools` in `claude_args`, or `permissions.allow` in `settings`.
@@ -786,7 +790,7 @@ steps:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [GitHub Actions: run a skill](https://code.claude.com/docs/en/github-actions), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [action issues](https://github.com/anthropics/claude-code-action/issues)
 - Related: REPO-012, REPO-027
 
@@ -811,7 +815,7 @@ steps:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Code review](https://code.claude.com/docs/en/code-review)
 - Related: REPO-045, REPO-049
 
@@ -842,7 +846,7 @@ Fork PRs are reviewed only by comment.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-017, REPO-018
 
@@ -851,7 +855,7 @@ Fork PRs are reviewed only by comment.
 | Trigger | `schedule`, `workflow_dispatch`, any event | Schedule (≥ 1 hour), API POST, GitHub **pull request** or **release** events with filters (author, title, labels, draft, merged, branch; regex must match the whole field) |
 | Runs as | The action's App token; billed by API key or OAuth token | Your account and identity; subscription usage; no permission prompts |
 | Repo config | Checked out; base branch on PRs | Fresh clone; repo agents and skills load (REPO-012) |
-| Caveats | Cron only from the default branch. Public repos disable schedules after 60 days of inactivity. `schedule` skips the write-access check. | 100 scheduled runs/hour/account. Needs the Claude GitHub App for GitHub triggers. Pushes go to `claude/` branches by default. |
+| Caveats | Cron only from the default branch. Public repos disable schedules after 60 days of inactivity. `schedule` skips the write-access check, but the bot check still applies: if the user who last edited the cron is a bot, list it in `allowed_bots`. | 100 scheduled runs/hour/account. Needs the Claude GitHub App for GitHub triggers. Pushes go to `claude/` branches by default. |
 
 Official routine examples include:
 - nightly backlog maintenance;
@@ -871,12 +875,12 @@ There is no official dependency-update or flaky-test routine.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents: tools](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-033, SKILL-010
 
 - **`tools`** is an allowlist. If omitted, the agent "Inherits every tool available to subagents", **including the main session's MCP tools**. The pr-review-toolkit reviewers omit it, so they can edit and use every MCP server.
-- **`disallowedTools`** is "removed from inherited or specified list". MCP servers can be removed whole with `mcp__<server>` or `mcp__<server>__*`.
+- **`disallowedTools`** is "removed from inherited or specified list". MCP servers can be removed whole with `mcp__<server>` or `mcp__<server>__*`. Since v2.1.299 `mcp__<server>` reaches only that server; write a server whose name contains `__` as `mcp__<whole name>__*`.
 - **Bash is all or nothing in frontmatter.**
   - "A `disallowedTools` entry with a specifier, such as `Bash(git push *)`, still removes the whole tool from the subagent, not only the matching commands."
   - No documented `tools` form scopes Bash to commands either, and a specifier in `tools` is ignored: `Bash(git diff *)` gives plain Bash (tested below).
@@ -892,7 +896,7 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents: permission modes](https://code.claude.com/docs/en/sub-agents), [Permission modes](https://code.claude.com/docs/en/permission-modes)
 - Related: REPO-031, REPO-033
 
@@ -914,7 +918,7 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents (db-reader hook example)](https://code.claude.com/docs/en/sub-agents), [Permissions](https://code.claude.com/docs/en/permissions), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md)
 - Related: REPO-031, REPO-007, template T1
 
@@ -924,6 +928,7 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff
    - `git` `diff`, `log`, `show`, `status`, `fetch`, `rev-parse`, `merge-base`, `ls-files`, `blame`;
    - `gh pr` `view`, `diff`, `checks`;
    - reject `;`, `&&`, `|`, `>`, `$(`, and backticks.
+   Our live version (`.claude/hooks/read-only-bash.sh` in the three osrs-tracker repos, template T1) also allows `git grep` and plain `grep`, and blocks `<`, newlines, `--output`, `--upload-pack`, `--exec` and the `-O`, `-Q`, `--pager`, `--query`, `--filter` and `--view` options.
    This mirrors the official security-review command's tool scope: `git diff/status/log/show`, Read, Glob, Grep, no web.
 3. **Know where layer 2 doesn't run.** Project frontmatter hooks are skipped until the folder is trusted and in `-p` (REPO-007). In CI, use `--allowedTools` with `dontAsk` instead.
 4. **The sandbox** (REPO-035) is the only layer that stops a script from writing, since "arbitrary subprocesses" escape Read and Edit deny rules.
@@ -940,7 +945,7 @@ A ready hook script is in template T1.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Permissions: Bash](https://code.claude.com/docs/en/permissions)
 - Related: REPO-033, REPO-035
 
@@ -961,7 +966,7 @@ A ready hook script is in template T1.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Sandboxing](https://code.claude.com/docs/en/sandboxing), [Engineering: sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing), [Permissions](https://code.claude.com/docs/en/permissions)
 - Related: REPO-033, REPO-036
 
@@ -989,7 +994,7 @@ A ready hook script is in template T1.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Permissions](https://code.claude.com/docs/en/permissions), [Sandboxing](https://code.claude.com/docs/en/sandboxing), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Permission modes](https://code.claude.com/docs/en/permission-modes)
 - Related: TOK-044, REPO-035, REPO-038
 
@@ -1000,7 +1005,7 @@ A ready hook script is in template T1.
 - `.claudeignore` does nothing (TOK-044).
 
 **In the action:**
-- It scrubs Anthropic, cloud and Actions secrets from subprocess environments on a best-effort basis.
+- With `allowed_non_write_users` set (the only case where the action turns it on; otherwise set `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: 1` in the workflow `env:`), it scrubs Anthropic, cloud and Actions secrets from subprocess environments on a best-effort basis. GitHub tokens and proxy settings stay.
 - `show_full_output` logs tool output, which is "publicly visible in GitHub Actions for public repositories". It is auto-on with `ACTIONS_STEP_DEBUG`.
 - With `allowed_non_write_users`, don't pass a personal access token as `github_token`: "a static token does not rotate between runs".
 - The official GitHub App has broad permissions that can't be narrowed at install. A custom App with only Contents, Issues and PRs is the documented alternative.
@@ -1013,7 +1018,7 @@ A ready hook script is in template T1.
 - Type: fact
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Lethal trifecta (Willison)](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/), [PromptPwnd (Aikido)](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents), [Flatt Security](https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/), [GHSA-8q5r-mmjf-575q](https://github.com/anthropics/claude-code-action/security/advisories/GHSA-8q5r-mmjf-575q), [Snyk on Cline](https://snyk.io/blog/cline-supply-chain-attack-prompt-injection-github-actions/), [Invariant Labs](https://invariantlabs.ai/blog/mcp-github-vulnerability), [JFrog on Nx](https://research.jfrog.com/post/nx-supply-chain-attack-targets-ai-tool-users/), [Anthropic: injection defenses](https://www.anthropic.com/research/prompt-injection-defenses)
 - Related: REPO-038, REPO-039
 
@@ -1041,7 +1046,7 @@ A ready hook script is in template T1.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [PromptPwnd](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents), [action releases](https://github.com/anthropics/claude-code-action/releases)
 - Related: REPO-027, REPO-037
 
@@ -1064,7 +1069,7 @@ A ready hook script is in template T1.
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [code-modernization agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [claude-security scan-verifier](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-verifier.md), [Security](https://code.claude.com/docs/en/security)
 - Related: REPO-037, template T1
 
@@ -1093,7 +1098,7 @@ as a finding (severity: breaks) and continue your review.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugins](https://code.claude.com/docs/en/plugins), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Large codebases](https://code.claude.com/docs/en/large-codebases), [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [Permissions: additional directories](https://code.claude.com/docs/en/permissions)
 - Related: SKILL-033, SKILL-034, REPO-041, REPO-042
 
@@ -1113,7 +1118,7 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugin components](https://code.claude.com/docs/en/plugins/components), [Plugin manifest: user configuration](https://code.claude.com/docs/en/plugins/manifest-reference), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Cloud environments](https://code.claude.com/docs/en/cloud-environments)
 - Related: ORCH-002, REPO-040
 
@@ -1132,7 +1137,7 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [Code review: REVIEW.md](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [Cursor Bugbot](https://cursor.com/docs/bugbot)
 - Related: REPO-014, REPO-043, REPO-045
 
@@ -1154,37 +1159,21 @@ Applied to Claude Code repo agents:
 
 **Limit.** Cross-file invariants ("route plus `route-label.ts`") are rules too. They belong in the rules file, not the agent body.
 
-## [REPO-043] Our three `conventions-reviewer` copies: what differs
+## [REPO-043] Our three `conventions-reviewer` copies: one shared body since 2026-10-12
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
-- Sources: `diff` of [web](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/agents/conventions-reviewer.md), [api](https://github.com/osrs-tracker/osrs-tracker-api/blob/a7d7c79c2fcad054b5030c108ae8a23660f98b17/.claude/agents/conventions-reviewer.md) and [aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/8b01209a8c19ffccfdf7234ac33119ae1b9f731c/.claude/agents/conventions-reviewer.md) `conventions-reviewer.md`, 2026-10-12
+- Last verified: 2026-10-14
+- Sources: `diff` of [web](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/agents/conventions-reviewer.md), [api](https://github.com/osrs-tracker/osrs-tracker-api/blob/a7d7c79c2fcad054b5030c108ae8a23660f98b17/.claude/agents/conventions-reviewer.md) and [aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/8b01209a8c19ffccfdf7234ac33119ae1b9f731c/.claude/agents/conventions-reviewer.md) `conventions-reviewer.md`, 2026-10-12; current files on `main` of [web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/agents/conventions-reviewer.md), [api](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/agents/conventions-reviewer.md) and [aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/agents/conventions-reviewer.md), read 2026-10-14
 - Related: REPO-040, REPO-042
 
-The three files share structure and most sentences: report-only, rules read at runtime, scope against `origin/main`, path:line + Rule + Fix, and **breaks / violates / check**.
+Since 2026-10-12 the web, api and aws `conventions-reviewer.md` files are the shared read-only v2. They differ only in the repo and skill names, and api's description also lists its rule areas (osrs-tracker/osrs-tracker-web#224, osrs-tracker/osrs-tracker-aws#76, osrs-tracker-api commit 7b66993 closing osrs-tracker/osrs-tracker-api#134). The `read-only-bash.sh` hook is the same file in all three.
 
-**What actually differs:**
-- **Description:** the repo name, and api lists its rule areas.
-- **Rules sources:**
-  - web reads the skill, CLAUDE.md and `docs/decisions.md`;
-  - api reads only the skill;
-  - aws reads the skill, CLAUDE.md, and `PACKAGES.md`/`INFRA.md`/`DEPLOY.md`/`DATA-MODEL.md` when relevant.
-- **Cross-file rules** listed in Scope (routes, Mongo indexes and `Cache-Control`, env vars).
-- **What counts as "breaks":**
-  - web: refetch on hydration;
-  - api: corrupts stored data;
-  - aws: a write in a dry run, a leaked secret or resource ID.
-- **aws only:** it forbids mutating `aws`, `npm publish` and `git` writes, except `git fetch origin main`.
+**Shared shape:** `tools: Read, Grep, Glob, Bash`, `model: sonnet`, `effort: medium`, the repo skill preloaded with `skills:`, the frontmatter hook, a do-not-flag list, an untrusted-content rule, a first-line `VERDICT:` and at most 3 **check** items (template T1).
 
-About 60% of each file is shared boilerplate. The differences are rules, which REPO-042 says belong in the repo's rules source.
+**Repo rules moved into each skill's `## Review rules` section:** cross-file rules, extra files to read (web: `docs/decisions.md`; aws: `PACKAGES.md`/`INFRA.md`/`DEPLOY.md`/`DATA-MODEL.md` by diff) and extra **breaks** cases (web: scripts blocked by the CSP, refetch on hydration; api: corrupted stored data; aws: a write to production in a dry run, a leaked secret, account ID or resource ID).
 
-**Options:**
-- **(a) Keep three copies** and sync the shared part by hand.
-- **(b)** Move each repo's specifics into its skill (or a `REVIEW.md`). The three agent files then become byte-identical apart from the repo name, so drift is visible with `diff`.
-- **(c)** Ship the generic body as a user-level or plugin agent.
-
-Given cloud-session support and frontmatter hooks (REPO-041), (b) is the low-risk improvement. (c) loses the hook-based read-only guard.
+**Before** (pinned SHAs above, 2026-10-12): the copies differed in rule sources, scope rules and **breaks** definitions, about 60% of each file was shared, and aws alone forbade mutating `aws`, `npm publish` and git writes in its prompt. Option (b), specifics in the skill so drift shows in a `diff`, was the recommendation; it is what the repos did. Option (c), a user-level or plugin agent, would lose the hook-based read-only guard (REPO-041).
 
 ---
 
@@ -1194,7 +1183,7 @@ Given cloud-session support and frontmatter hooks (REPO-041), (b) is the low-ris
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Memory](https://code.claude.com/docs/en/memory), [Code review](https://code.claude.com/docs/en/code-review), [Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Related: TOK-065, SKILL-021, SKILL-024, REPO-045
 
@@ -1242,7 +1231,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 
 **Other tools read CLAUDE.md:**
 - GitHub Copilot reads agent instructions in "files called `AGENTS.md`, `CLAUDE.md`, or `GEMINI.md`" from the PR head branch.
-- One GitHub page also lists `REVIEW.md` for code review. Single page only.
+- GitHub's Copilot code review page and its custom-instructions support matrix both list `REVIEW.md` (read 2026-10-14).
 - A 4,000-character limit on Copilot instruction files is often quoted. It was not found in the docs checked (unverified).
 ---
 
@@ -1252,7 +1241,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [pr-review-toolkit agents](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [feature-dev agents](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev/agents), [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [claude-security agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-security/agents), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-042, REPO-047, REPO-049
 
@@ -1276,7 +1265,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-039, REPO-048, REPO-049
 
@@ -1297,7 +1286,7 @@ The single most effective noise control in official reviewers is an explicit exc
 - "Do not flag issues that you cannot validate without looking at context outside of the git diff".
 - The closing rule: "If you are not certain an issue is real, do not flag it. False positives erode trust and waste reviewer time."
 
-**security-review** adds 17 hard exclusions, among them DoS, rate limiting, theoretical races, outdated libraries, test-only files, log spoofing, "lack of hardening", and XSS in React or Angular without unsafe HTML APIs. It keeps only issues "newly added by this PR".
+**security-review** adds 17 numbered hard exclusions (two items share number 16), among them DoS, rate limiting, theoretical races, outdated libraries, test-only files, log spoofing and "lack of hardening"; its precedents add XSS in React or Angular without unsafe HTML APIs. It keeps only issues "newly added by this PR".
 
 **Best practices:** tell reviewers to "flag only gaps that affect correctness or the stated requirements", because "A reviewer prompted to find gaps will usually report some, even when the work is sound".
 
@@ -1307,7 +1296,7 @@ The single most effective noise control in official reviewers is an explicit exc
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [claude-security scan-verifier](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-verifier.md), [scan-researcher](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-researcher.md), [Code review](https://code.claude.com/docs/en/code-review), [/dedupe command](https://github.com/anthropics/claude-code/tree/main/.claude/commands)
 - Related: ORCH-039, ORCH-046, REPO-047
 
@@ -1330,7 +1319,7 @@ Four official designs, from cheap to thorough:
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Code review](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [pr-review-toolkit](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [code-modernization architecture-critic](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), REPO-002
 - Related: REPO-047, REPO-050
 
@@ -1345,7 +1334,7 @@ Four official designs, from cheap to thorough:
 What works, across sources:
 - **Define each level by consequence, not adjective.** Our reviewer's "breaks = fails CI, throws, refetches on hydration" is the right form. Community "Critical/High" without definitions isn't (REPO-051).
 - **Cap the low tier.** "report at most five Nits per review… plus N more". Codex drops everything below P1.
-- **Separate "can't confirm" from findings.** Our **check** tier does this, but it needs a cap and a required verification step, or it becomes the bulk of the output (REPO-003).
+- **Separate "can't confirm" from findings.** Our **check** tier does this; since 2026-10-12 it is capped at 3 items, each naming the one command or URL that settles it (osrs-tracker/osrs-tracker-web#221). Without a cap it was the bulk of the output (REPO-003).
 - **Converge on re-review.** "after the first review, suppress new nits and post Important findings only."
 - **Don't block merges on model severity alone.** Managed review's check run is always neutral.
 
@@ -1353,7 +1342,7 @@ What works, across sources:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [wshobson team-reviewer](https://raw.githubusercontent.com/wshobson/agents/main/plugins/agent-teams/agents/team-reviewer.md), [Code review: bughunter-severity](https://code.claude.com/docs/en/code-review), [CLI reference: --json-schema](https://code.claude.com/docs/en/cli-reference)
 - Related: ORCH-035, REPO-049
 
@@ -1378,13 +1367,13 @@ Managed Code Review does the same for machines with its `bughunter-severity: {"n
 - The files reviewed and the commands run, so the caller can tell "clean" from "didn't look".
 - The base ref used.
 
-**Keep the report short.** It enters the caller's context (ORCH-034). Our reviewer's median report is 2.2k characters, which is fine.
+**Keep the report short.** It enters the caller's context (ORCH-034). Our reviewer's median report was 2.2k characters (2026-10-07 to 10-11, before the v2 reviewer of 2026-10-12), which is fine.
 
 ## [REPO-051] Community agent collections: what to copy and what to avoid
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [wshobson/agents](https://github.com/wshobson/agents) (40.4k★), [VoltAgent/awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) (25.7k★), [contains-studio/agents](https://github.com/contains-studio/agents) (12.4k★), [lst97/claude-code-sub-agents](https://github.com/lst97/claude-code-sub-agents) (1.7k★), [iannuttall/claude-agents](https://github.com/iannuttall/claude-agents) (2.0k★), [0xfurai/claude-code-subagents](https://github.com/0xfurai/claude-code-subagents) (1.0k★); stars via GitHub API 2026-10-12
 - Related: SKILL-045, REPO-013, REPO-046
 
@@ -1395,7 +1384,7 @@ Weaknesses seen in about 22 reviewer and specialist files read from these collec
 | 600–1,500-word topic lists instead of decisions | VoltAgent and wshobson code-reviewers |
 | No rules source | Only 1 of 8 community reviewers mentions CLAUDE.md; all Anthropic ones do |
 | Undefined severities | "Critical" with no calibration |
-| Write tools on review roles | VoltAgent code-reviewer has `Write, Edit`; iannuttall security-auditor writes a report into the repo |
+| Write tools on review roles | VoltAgent code-reviewer has `Write, Edit`; iannuttall security-auditor writes a report into the repo (that repo is archived) |
 | Model by habit | wshobson reviewers on Opus, lst97 reviewer on Haiku, 0xfurai pinned to `claude-sonnet-4-20250514` |
 | Missing infrastructure | VoltAgent's reviewer opens with "Query context manager", which doesn't exist in a normal repo |
 | README and frontmatter disagree | VoltAgent README says Opus for security-auditor; the file says `inherit` |
@@ -1410,7 +1399,7 @@ Treat collections as idea sources (SKILL-045), not installs.
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Codex GitHub](https://learn.chatgpt.com/docs/third-party/github), [Cursor Bugbot docs](https://cursor.com/docs/bugbot), [Bugbot learning](https://cursor.com/blog/bugbot-learning), [Greptile nitpickiness](https://www.greptile.com/docs/code-review/controlling-nitpickiness), [CodeRabbit config](https://docs.coderabbit.ai/reference/configuration), [Graphite on false positives](https://graphite.dev/guides/ai-code-review-false-positives)
 - Related: REPO-042, REPO-049, REPO-011
 
@@ -1440,32 +1429,27 @@ Tracked in roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-t
 
 ### Gap analysis for osrs-tracker-web
 
-Open gaps only; convention review, the shared reviewer and docs drift are covered by the done changes above.
+Open gaps only; convention review, the shared reviewer and docs drift are covered by the done changes above. Bug review and finding handling were closed on 2026-10-13 (change 2).
 
 | Area | Today | Gap | Fix | Entries |
 |---|---|---|---|---|
-| Bug review | The session that wrote the code reviews its own `gh pr diff` | No fresh-context reviewer | Template T2, or built-in `/code-review` | REPO-015, ORCH-039 |
-| Finding handling | Fix all **breaks**/**violates** | No validation step; checks pile up | Caller verifies each finding against code before fixing; cap checks at 3 | REPO-048, REPO-049 |
-| Browser checks | Main session takes the screenshots | Screenshots re-read for the rest of the session | Template T3 | REPO-021, TOK-043 |
+| Browser checks | `browser-checker` since 2026-10-12 | Only the screenshot measurement is open | Measure 2026-10-13 to 10-26 (osrs-tracker/osrs-tracker-web#223) | REPO-021, TOK-043 |
 | CI agents | None | Fine for a solo public repo with no outside PRs | Don't add yet; REPO-038 if ever | REPO-027, REPO-038 |
 
 ### Ranked changes (impact ÷ effort)
 
-2. **Add a fresh-context bug reviewer** *(high impact, 15 min)*: [osrs-tracker/osrs-tracker-web#222](https://github.com/osrs-tracker/osrs-tracker-web/issues/222).
-   - Option A: T2 (`bug-reviewer`, Opus 5.5 `high`).
-   - Option B: change release step 2 to run the built-in `/code-review` instead of a self-review.
-
-   Run whichever is cheaper to try on the next 10 PRs. Keep the one whose findings are fixed more often. In release step 2, run it in parallel with `conventions-reviewer`. Then verify each finding against the code before fixing, with at most 2 fix rounds (REPO-015, REPO-048, ORCH-039).
+2. **Fresh-context bug review**: done 2026-10-13, as the built-in `/code-review high`, not as an agent ([osrs-tracker/osrs-tracker-web#222](https://github.com/osrs-tracker/osrs-tracker-web/issues/222), closed). On the same 8 PRs, `bug-reviewer` (T2) had 1 fixed finding and `/code-review high` 15, so `bug-reviewer.md` was deleted (923c18f). Release step 2 now runs `conventions-reviewer` and a `general-purpose` subagent running `/code-review high <n>` in parallel without `model`, checks each finding against the code, and allows at most 2 fix rounds (709574d; REPO-015, REPO-048, ORCH-039).
 3. **Add `browser-checker` (T3)** *(medium–high impact on tokens, 30 min)*: [osrs-tracker/osrs-tracker-web#223](https://github.com/osrs-tracker/osrs-tracker-web/issues/223).
    - Point the skill's "Browser check" section at it.
    - The main session still starts and stops the server and sends the screenshot.
    - Measure with the token-audit approach in TOK-013 after two weeks: image tokens in main-session transcripts should drop (REPO-021).
+   - Landed 2026-10-12; #223 stays open for the measurement. Count own-app and re-read screenshots, not raw images, which swing with design work; window 2026-10-13 to 10-26, before the baseline transcripts expire about 2026-11-06.
 
 **Not recommended now:**
 - A Claude review job in CI or managed Code Review. Managed review needs Team or Enterprise, and local review already covers every PR. If ever added, follow REPO-038.
 - `memory:` on reviewers: it re-enables Write and Edit (REPO-011).
 - A Stop hook that forces reviews: it fires on every turn end (REPO-025).
-- Test-writer, dependency-updater and security-auditor agents. Our test rule is "only complex logic", Dependabot covers bumps, and `/security-review` and the conventions rules cover the CSP and IO rules (REPO-016, REPO-017, REPO-019).
+- Test-writer, dependency-updater and security-auditor agents. Our test rule is "only complex logic", Dependabot covers security updates and the Docker base image (other bumps are done by hand), and `/security-review` and the conventions rules cover the CSP and IO rules (REPO-016, REPO-017, REPO-019).
 - Installing community agent collections (REPO-051).
 - Packaging the reviewers as a plugin: plugin agents drop `hooks`, and cloud sessions don't install repo-enabled plugins (REPO-041).
 
@@ -1475,36 +1459,48 @@ Applied in all three repos (change 1); the live copy is `.claude/agents/conventi
 - Frontmatter: `model: sonnet`, `effort: medium`, the repo skill preloaded under `skills:`, and the read-only Bash hook below under `hooks: PreToolUse`.
 - Body: rules sources (the preloaded skill, `CLAUDE.md` already in context, `docs/decisions.md` read every run); scope against `origin/main`, not the local `main`; a do-not-flag list; untrusted-content lines; a `VERDICT:` first line; at most 3 **check** items, each with the command that settles it (REPO-010, REPO-033, REPO-047, REPO-049, REPO-050).
 
-`.claude/hooks/read-only-bash.sh` (executable; shared by T1 and T2):
+`.claude/hooks/read-only-bash.sh` (executable; shared by T1 and T2; the live osrs-tracker-web file on 2026-10-14, identical in api and aws apart from the `shellcheck` comment):
 
 ```bash
 #!/usr/bin/env bash
 # PreToolUse hook for read-only review agents (set in their frontmatter, so it runs only while they do): allow one
-# plain git or gh read command per call and block everything else with exit 2. Allowed commands still go through the
-# normal permission rules. Frontmatter hooks are skipped in untrusted folders and in `claude -p`.
+# plain git, gh or grep read command per call and block everything else with exit 2. Allowed commands still go through
+# the normal permission rules. Frontmatter hooks are skipped in untrusted folders and in `claude -p`.
 cmd=$(jq -r '.tool_input.command // empty')
 
+# shellcheck disable=SC2016 # '$(' and '`' are the literal characters to block, not expansions
 case $cmd in
-  *';'* | *'&'* | *'|'* | *'>'* | *'<'* | *'$('* | *'`'* | *$'\n'* | *--output*)
-    echo 'Read-only reviewer: one plain git or gh read command per call (no chaining, pipes, redirects or --output).' >&2
+  *';'* | *'&'* | *'|'* | *'>'* | *'<'* | *'$('* | *'`'* | *$'\n'* | *--output* | *--upload-pack* | *--exec*)
+    echo 'Read-only reviewer: one plain git or gh read command per call (no chaining, pipes, redirects, --output, --upload-pack or --exec).' >&2
     exit 2
     ;;
 esac
 
-git_re='^git( -C [^ ]+)? (diff|log|show|status|fetch|rev-parse|merge-base|ls-files|blame)( |$)'
-gh_re='^gh pr (view|diff|checks)( |$)'
-[[ $cmd =~ $git_re || $cmd =~ $gh_re ]] && exit 0
+# Options that run a command or open an interactive UI: git grep -O / --open-files-in-pager, and ugrep's -Q / --query,
+# --filter, --pager and --view (Claude Code's grep is ugrep). A short option may be bundled (-nO).
+if [[ $cmd =~ (^|\ )-[A-Za-z]*[OQ] || $cmd =~ --(open-files-in-pager|query|filter|pager|view) ]]; then
+  echo 'Read-only reviewer: no -O, -Q, --open-files-in-pager, --query, --filter, --pager or --view.' >&2
+  exit 2
+fi
 
-echo 'Read-only reviewer: allowed are git diff/log/show/status/fetch/rev-parse/merge-base/ls-files/blame and gh pr view/diff/checks.' >&2
+git_re='^git( -C [^ ]+)? (diff|log|show|status|fetch|rev-parse|merge-base|ls-files|blame|grep)( |$)'
+gh_re='^gh pr (view|diff|checks)( |$)'
+grep_re='^grep( |$)'
+[[ $cmd =~ $git_re || $cmd =~ $gh_re || $cmd =~ $grep_re ]] && exit 0
+
+echo 'Read-only reviewer: allowed are git diff/log/show/status/fetch/rev-parse/merge-base/ls-files/blame/grep, gh pr view/diff/checks and grep.' >&2
 exit 2
 ```
 
 Notes:
 - **Leading whitespace.** The regexes are anchored, so a command with leading spaces is blocked, not allowed. That fails safe.
-- **What `git fetch` writes.** It writes refs, which is the one write the agent needs.
+- **What `git fetch` writes.** It writes refs, which is the one write the agent needs. `--upload-pack` and `--exec` make it run a command, so the hook blocks both (found 2026-10-12, osrs-tracker-web 8b40540).
+- **Search.** Desktop sessions on that build had no `Grep` or `Glob` tools (observed 2026-10-12, osrs-tracker/osrs-tracker-web#220), so the reviewer searches through Bash. The hook allows `git grep` and `grep` and blocks the options that run a command or open a UI.
 - **When the hook doesn't run.** Under `-p` or in an untrusted folder the hook is skipped (REPO-007). The agent still works, just unguarded.
 
-### Template T2: `bug-reviewer` (new)
+### Template T2: `bug-reviewer` (tried 2026-10-12, deleted 2026-10-13)
+
+Kept as a draft for a repo without the built-in `/code-review`. In osrs-tracker-web it had 1 fixed finding to `/code-review high`'s 15 over 8 PRs (osrs-tracker/osrs-tracker-web#222).
 
 `.claude/agents/bug-reviewer.md`:
 
@@ -1513,8 +1509,8 @@ Notes:
 name: bug-reviewer
 description:
   Reviews a diff in osrs-tracker-web for real defects (wrong results, crashes, broken SSR or hydration, security holes),
-  in a fresh context. Not conventions: that's conventions-reviewer. Use before opening or merging a PR, in parallel
-  with conventions-reviewer.
+  in a fresh context. Not conventions, which conventions-reviewer checks. Use before opening or merging a PR, in
+  parallel with conventions-reviewer.
 tools: Read, Grep, Glob, Bash
 model: opus
 effort: high
@@ -1570,9 +1566,9 @@ rare path). Nothing lower. At most 5 findings.
 End with the base ref and the files you read.
 ```
 
-Caller rule for release step 2: run `bug-reviewer` and `conventions-reviewer` in parallel, without passing `model`. Then check each finding against the code before fixing it, and drop the ones that don't hold (REPO-048). The A/B alternative is `/code-review` at its default level.
+Caller rule for release step 2: run `bug-reviewer` and `conventions-reviewer` in parallel, without passing `model`. Then check each finding against the code before fixing it, and drop the ones that don't hold (REPO-048). The A/B alternative is `/code-review high <n>` (with no level it reuses the last level typed).
 
-### Template T3: `browser-checker` (new)
+### Template T3: `browser-checker` (live since 2026-10-12)
 
 `.claude/agents/browser-checker.md`:
 
@@ -1628,7 +1624,7 @@ Keep it under 300 words.
 > Delegate to `browser-checker` with the URLs and what changed. Send the screenshot paths it returns with `SendUserFile`, then delete `.playwright-mcp/`.
 
 Notes:
-- **Shared browser.** One Playwright browser serves the session, so never run two checkers at once (REPO-021).
+- **Own browser.** Since 2026-10-13 (osrs-tracker-web 709cf9d) the live agent declares its own headless, isolated Playwright server in `mcpServers` instead of the plugin's tools, so checks can run in parallel and beside the session's browser. With the plugin tools below, never run two checkers at once (REPO-021).
 - **Plugin MCP tools by name work.** Tested 2026-10-12 in osrs-tracker-web (osrs-tracker/osrs-tracker-web#223): a subagent with the `mcp__plugin_playwright_playwright__*` tools listed in `tools` ran the check, so the `disallowedTools` fallback isn't needed.
 - **Two fixes from the first runs.** Give `Read` and tell the agent to read each screenshot: run 1 never looked at the image, so it checked no design rules. Spell out the screenshot path (`.playwright-mcp/<page>-<mode>.png`): a bare `filename` landed in the checkout's root. One run with the image read cost about 37k subagent tokens and 8 tool calls.
 
@@ -1638,11 +1634,11 @@ Notes:
 
 - **Scoped Bash in agent `tools`.** Answered 2026-10-12: treated as plain `Bash`; the specifier is silently dropped (REPO-031).
 - **Named subagents in `claude-code-action`.** Does `.claude/agents/` load in the action, and does `claude_args: --agent <name>` work there? Only skills and plugins are documented.
-- **#80988.** Is the Opus 5 "Do not call the AgentTool unless the user requested it" prompt section still shipped in v2.1.296, and does it affect repo agents named in a skill procedure? Our 160 runs in five days suggest named delegation still works.
+- **#80988.** Is the Opus 5 "Do not call the AgentTool unless the user requested it" prompt section still shipped in v2.1.296, and does it affect repo agents named in a skill procedure? Our 160 runs in five days suggest named delegation still works, as did `bug-reviewer` and `conventions-reviewer` when named in release step 2 on 2026-10-12 to 10-13 (osrs-tracker/osrs-tracker-web#222).
 - **Plugin MCP tools by name.** Answered 2026-10-12: they work in a subagent's `tools` list (template T3 notes, osrs-tracker/osrs-tracker-web#223).
-- **Copilot instruction files.** Copilot's 4,000-character limit and its reading of `REVIEW.md` were each found on at most one GitHub page.
+- **Copilot instruction files.** Copilot's 4,000-character limit was found on no GitHub page read on 2026-10-14; `REVIEW.md` is now on two (REPO-045).
 - **Reviewer model.** There is no published comparison of Opus and Sonnet as bug reviewers on the 5.5 generation. Official plugins use both.
 - **Cost of `agent` and `prompt` hooks.** Not documented. Measured for `prompt` hooks in HOOK-010 (one Haiku call per match; on Stop it re-reads the conversation uncached). Where `agent` hook tokens are billed stays open in `kb-hooks.md`.
-- **Our reviewer's precision.** We counted findings but not how many the main session acted on or dismissed. A follow-up measurement could match findings to later commits.
+- **Our reviewer's precision.** We counted findings but not how many the main session acted on or dismissed. Partly measured 2026-10-13 (osrs-tracker/osrs-tracker-web#222): over 3 PRs `conventions-reviewer` raised 2 findings (both **check** items, on #274) and none was fixed; too small for a rate.
 - **Personal vs project commands.** Precedence between `~/.claude/commands/x.md` and `.claude/commands/x.md` is not stated. The 2026-10-12 probe (FreekMencke/claude-kb#27) was blocked: auto mode refused writing the test command to `~/.claude/commands/` as `[Self-Modification]`. Run it by hand: a same-named command in both places, each replying a different word, then `claude -p --model haiku --max-turns 1 --max-budget-usd 0.50 "/<name>"` in the repo.
 - **Submodule or symlinked `.claude/`.** It is undocumented, and its behaviour under trust and desktop worktrees is unknown.

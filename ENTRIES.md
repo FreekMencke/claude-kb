@@ -328,7 +328,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | REPO-040 | Ways to share agents, skills and hooks across repos | comparison | sharing, plugins |
 | REPO-041 | What a plugin can't carry for repo agents | fact | plugins, limits |
 | REPO-042 | Pattern: a generic reviewer body, repo-specific rules files | pattern | sharing, rules, review-md |
-| REPO-043 | Our three `conventions-reviewer` copies: what differs | fact | baseline, sharing |
+| REPO-043 | Our three `conventions-reviewer` copies: one shared body since 2026-10-12 | fact | baseline, sharing |
 | REPO-044 | What goes in CLAUDE.md, a skill, an agent, a hook or REVIEW.md | recommendation | CLAUDE.md, design |
 | REPO-045 | Size, instruction count and cross-tool instruction files | fact | CLAUDE.md, AGENTS.md, size |
 | REPO-046 | Official reviewer agents compared | comparison | reviewer, official-example |

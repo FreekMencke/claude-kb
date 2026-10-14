@@ -12,8 +12,8 @@ How Fable 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 read instructions, and how to 
 | What goes in a subagent brief? | Objective and why, what you already know or ruled out, exact inputs, boundaries, done-when, and the return format and length. Never "based on your findings, fix it". | PROMPT-012, PROMPT-013 |
 | How do I prompt a `claude -p` or unattended run? | Say nobody is watching ("You are operating autonomously…"), proceed on reversible steps, stop only for destructive ones or scope changes, and check the last paragraph for unkept promises. Cap turns and budget. | PROMPT-014, PROMPT-022 |
 | How should a CLAUDE.md rule be worded? | Concrete enough to verify, with its reason, no hedging ("try to"), no emphasis by default, and explicit when it overrides another rule. | PROMPT-015, PROMPT-016 |
-| Which model needs more scaffolding, and which overdoes things? | Haiku 5.5 needs the most nudges (date, search, verify, keep going), most at `low` effort and with long prompts. Sonnet 5.5 at high effort and Fable 5.1 add unrequested work; Opus 5.5 stops unattended runs to report. | PROMPT-019 to PROMPT-023 |
-| How do I get shorter answers? | Prompt for length, because effort sets thinking, not visible length. "Lead with the outcome", be selective rather than terse, show a short example; or the Concise output style in Claude Code. | PROMPT-024, PROMPT-026 |
+| Which model needs more scaffolding, and which overdoes things? | Haiku 5.5 needs the most nudges (date, search, verify, keep going), most at `low` effort and with long prompts. Sonnet 5.5 (at every effort, more at higher) and Fable 5.1 add unrequested work; Opus 5.5 stops unattended runs to report. | PROMPT-019 to PROMPT-023 |
+| How do I get shorter answers? | Prompt for length, because on Opus 5 effort sets thinking, not visible length. "Lead with the outcome", be selective rather than terse, show a short example; or the Concise output style in Claude Code. | PROMPT-024, PROMPT-026 |
 | How do I get fewer clarifying questions, or more? | Fewer: auto mode, the Proactive style, "check in only when different readings would lead to materially different work". More: plan mode, `AskUserQuestion` interviews, "give ideas and stop". | PROMPT-025 |
 | How do I stop "done" claims without a check? | Ask for a real check that exercises the change, and for every claim to rest on a result from this session; gate unattended runs with `/goal`, a Stop hook or a verifier. | PROMPT-027, PROMPT-034 |
 | How do I stop unrequested tests, files and refactors? | Name the extras to leave out and send them to the final summary; end with "implement every behavior the task asks for, completely". | PROMPT-031 |
@@ -69,15 +69,15 @@ How Fable 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 read instructions, and how to 
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview), [Docs index](https://platform.claude.com/llms.txt), [Release notes](https://platform.claude.com/docs/en/release-notes/overview)
 - Related: PROMPT-002, PROMPT-019
 
 Two layers: one general page, and one page per model listing only what differs from that model's predecessor. Read the model page first.
 
 - **Prompting best practices** is "the living reference". It covers Fable 5.1, Opus 5.5, Sonnet 5.5, Haiku 5.5 and the 4.x and 5.0 models still offered. Its own caveat: "Where a technique names a specific model, treat it as measured on that model and re-check it against your own evals before applying it to another."
-- **Per-model pages** (`build-with-claude/prompt-engineering/prompting-claude-<model>`): Fable 5 and 5.1, Opus 4.8, 5 and 5.5, Sonnet 5 and 5.5, Haiku 5.5. Each opens with a symptom list ("The model stops to check in…") linking to a fix, usually a system-prompt paragraph Anthropic tested.
-- **Chains matter.** The 5.5 pages say prompts for the previous model "should perform well without changes" and that the previous page's patterns "remain a reasonable starting point". So Opus 5.5 inherits Opus 5's advice, Sonnet 5.5 inherits Sonnet 5's.
+- **Per-model pages** (`build-with-claude/prompt-engineering/prompting-claude-<model>`): Fable 5 and 5.1, Opus 4.8, 5 and 5.5, Sonnet 5 and 5.5, Haiku 5.5. The Fable 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 pages each open with a symptom list ("The model stops to check in…") linking to a fix, usually a system-prompt paragraph Anthropic tested; the Fable 5, Opus 4.8, Opus 5 and Sonnet 5 pages are plain topic sections.
+- **Chains matter.** The Opus 5.5 and Sonnet 5.5 pages say prompts for the previous model "should perform well without changes" and that the previous page's patterns "remain a reasonable starting point"; the Fable 5.1 and Haiku 5.5 pages say only the first. So Opus 5.5 inherits Opus 5's advice, Sonnet 5.5 inherits Sonnet 5's.
 - **Older material.** The GitHub interactive tutorial "was written for Claude 3 models, so follow Prompting best practices where the two differ."
 - **Launch dates** (release notes): Fable 5.1 2026-09-01, Opus 5.5 2026-09-22, Sonnet 5.5 2026-09-28, Haiku 5.5 2026-10-07. The launch posts carry no prompting advice of their own.
 
@@ -85,7 +85,7 @@ Two layers: one general page, and one page per model listing only what differs f
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5)
 - Related: PROMPT-003, PROMPT-004, PROMPT-010, PROMPT-011, PROMPT-030, ORCH-028
 
@@ -104,7 +104,7 @@ What a prompt written for the 4.x models needs to change:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 4.8](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Related: PROMPT-002, PROMPT-032, SKILL-019
 
@@ -122,7 +122,7 @@ For us: a CLAUDE.md or skill rule written as an example ("e.g. in `osrs-tracker-
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Best practices, 2026-01-23 snapshot](https://web.archive.org/web/20260123082902/https://code.claude.com/docs/en/best-practices), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-020, PROMPT-005, PROMPT-017
 
@@ -133,13 +133,13 @@ Drop "CRITICAL" and "YOU MUST" written to push older models; keep emphasis for t
 - **Anthropic's own snippets** still use the odd NEVER or MUST (`<investigate_before_answering>`: "you MUST read the file"), so a single capital is not banned.
 - **Tooling:** `/doctor prompt-audit` (v2.1.283) flags "prompting patterns written for older models" (PROMPT-017).
 
-The two official pages agree on direction (less emphasis) and differ in tone; see INDEX.md Conflicts. No 5.x page measures emphasis directly, so the claim that capitals hurt the 5.x models is inferred from the 4.5/4.6 finding.
+The two official pages agree on direction (less emphasis) and differ in tone; see INDEX.md Conflicts. No 5.x page measures emphasis directly, so the claim that capitals hurt the 5.x models is inferred from the 4.5/4.6 finding. The claude-api skill's prompt-audit rubric (anthropics/skills, official-example) says it for current models: "current models are highly responsive to the system prompt, so the same text over-applies", and calls emphasis "a tested, scoped fix for one demonstrably underweighted instruction, not a first-draft register".
 
 ## [PROMPT-005] Give the reason behind a rule
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1)
 - Related: SKILL-020, PROMPT-004, PROMPT-012
 
@@ -155,7 +155,7 @@ Cost: one clause per rule. Our CLAUDE.md files already do this ("GitHub runs no 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1)
 - Related: PROMPT-007, PROMPT-009
 
@@ -172,7 +172,7 @@ Risk: an example's incidental details get copied. Vary names, lengths and shapes
 - Type: pattern
 - Applies to: Claude API, general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5)
 - Related: PROMPT-006, PROMPT-033, REPO-039
 
@@ -189,7 +189,7 @@ For a subagent brief: put pasted logs, diffs or issue text in tags after the tas
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Subagents](https://code.claude.com/docs/en/sub-agents), [Output styles](https://code.claude.com/docs/en/output-styles)
 - Related: PROMPT-026, REPO-046
 
@@ -204,7 +204,7 @@ For a subagent brief: put pasted logs, diffs or issue text in tags after the tas
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [obra/superpowers writing-skills](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md)
 - Related: SKILL-020, PROMPT-006, PROMPT-024
 
@@ -221,7 +221,7 @@ Anthropic's own scope snippets are mostly prohibitions ("Don't add features, tes
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5)
 - Related: ORCH-028, TOK-055, PROMPT-011
 
@@ -239,14 +239,14 @@ In Claude Code, effort is set per session or per agent (`effort:` frontmatter), 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5)
 - Related: PROMPT-010, PROMPT-013, SKILL-015
 
 Prompts, skills or tool descriptions that ask the model to write out its thinking can be refused with `stop_reason: "refusal"`, category `reasoning_extraction`.
 
 - **Which models:** Fable 5 and 5.1, Opus 5 and 5.5, Sonnet 5.5. Haiku 5.5's refusal categories don't include it.
-- **What triggers it:** "Prompts, skills, and tool descriptions that ask Claude Opus 5 to write out its thinking or reasoning, verbatim or in a fixed format". Old chain-of-thought templates ("think step by step in `<thinking>` tags, then answer") are the classic case. Server-side fallback doesn't retry it.
+- **What triggers it:** "Prompts, skills, and tool descriptions that ask Claude Opus 5 to write out its thinking or reasoning, verbatim or in a fixed format". Old chain-of-thought templates ("think step by step in `<thinking>` tags, then answer") are the classic case. Server-side fallback doesn't retry it. Anthropic's list of common triggers also includes "A `reasoning`, `thinking`, or `trace` field in JSON output or in a tool input"; the category "has no recommended fallback model, so change the prompt rather than retry the request" ([Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback)). Since 2026-09-24 such a refusal before any output is billed like a normal request (release notes).
 - **What is fine:** "You can still ask for a short explanation of the answer or a summary of the actions taken." Read real reasoning from summarized thinking blocks (`display: "summarized"`).
 - **Fable 5 migration advice:** "Audit existing skills and system prompts for reflection or show-your-thinking instructions."
 
@@ -257,11 +257,11 @@ For our agents: ask reviewers for "evidence" or "why it's a problem" per finding
 - Type: pattern
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Agent SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [research_lead_agent.md](https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/prompts/research_lead_agent.md), [Claude Code system prompt fragment: Writing subagent prompts (Piebald, v2.1.235)](https://github.com/Piebald-AI/claude-code-system-prompts/blob/main/system-prompts/system-prompt-writing-subagent-prompts.md)
 - Related: ORCH-007, ORCH-024, PROMPT-013, PROMPT-005
 
-A non-fork subagent "doesn't see your conversation history, the skills you've already invoked, or the files Claude has already read". "The only content you pass from parent to subagent is the Agent tool's prompt string, so include any file paths, error messages, or decisions the subagent needs directly in that prompt." It does get CLAUDE.md (unless `omitClaudeMd`), so restate only rules it must apply.
+A non-fork subagent "doesn't see your conversation history, the skills you've already invoked, or the files Claude has already read". "The only content you pass from parent to subagent is the Agent tool's prompt string, so include any file paths, error messages, or decisions the subagent needs directly in that prompt." It does get CLAUDE.md (not the built-in Explore and Plan agents, nor a custom agent with `omitClaudeMd`), so restate only rules it must apply.
 
 What the brief holds, merged from Anthropic's sources:
 1. **Objective and why it matters**: "ideally just 1 core objective per subagent".
@@ -280,7 +280,7 @@ The research post's failure case: a one-line brief made two subagents duplicate 
 - Type: pattern
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Headless mode](https://code.claude.com/docs/en/headless), [Subagents](https://code.claude.com/docs/en/sub-agents), [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [prompt-audit.md](https://github.com/anthropics/skills/blob/main/skills/claude-api/shared/prompt-audit.md)
 - Related: ORCH-034, ORCH-035, PROMPT-012, PROMPT-024
 
@@ -298,13 +298,13 @@ Tension: the `/doctor prompt-audit` rubric flags "hard word caps" because "outpu
 - Type: pattern
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Headless mode](https://code.claude.com/docs/en/headless), [Claude Code best practices](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-014, ORCH-038, PROMPT-022, PROMPT-025, PROMPT-027, HOOK-031
 
 The current models were tuned for someone watching; an unattended run has to be told otherwise.
 
-- **Anthropic's opener** (Fable 5.1, also used for Fable 5): "You are operating autonomously. The user is not watching in real time and cannot answer questions mid-task, so asking 'Want me to…?' or 'Shall I…?' will block the work. For reversible actions that follow from the original request, proceed without asking. Stop only for destructive actions or genuine scope changes the user must decide." The opening sentence "carries much of the effect".
+- **Anthropic's opener** (Fable 5.1; the Fable 5 page has a near-identical block without the "Stop only for…" sentence, plus a separate "Pause for the user only when the work genuinely requires them" paragraph). On the API, add it in the first request of a conversation: changing `system` later invalidates earlier thinking blocks: "You are operating autonomously. The user is not watching in real time and cannot answer questions mid-task, so asking 'Want me to…?' or 'Shall I…?' will block the work. For reversible actions that follow from the original request, proceed without asking. Stop only for destructive actions or genuine scope changes the user must decide." The opening sentence "carries much of the effect".
 - **End-of-turn check:** "Before ending your turn, check your last paragraph. If it is a plan… or a promise about work you have not done ('I'll…', 'let me know when…'), do that work now with tool calls."
 - **Questions vs requests:** when the user is "thinking out loud rather than requesting a change, the deliverable is your assessment."
 - **Harness side (Opus 5.5):** treat a text-only end of turn as a report; re-prompt with open items at most two or three times; state the completion condition up front.
@@ -316,7 +316,7 @@ Leave it out of interactive sessions: it makes the model "less likely to ask abo
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [prompt-audit.md](https://github.com/anthropics/skills/blob/main/skills/claude-api/shared/prompt-audit.md), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Related: REPO-044, REPO-045, SKILL-019, PROMPT-005, PROMPT-009, PROMPT-016
 
@@ -335,7 +335,7 @@ Wording only; where files live and how they load is out of scope here.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [prompt-audit.md](https://github.com/anthropics/skills/blob/main/skills/claude-api/shared/prompt-audit.md)
 - Related: REPO-045, TOK-031, PROMPT-015, PROMPT-033
 
@@ -353,7 +353,7 @@ Wording only; where files live and how they load is out of scope here.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: audit your instruction files](https://code.claude.com/docs/en/memory), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [prompt-audit.md (claude-api skill)](https://github.com/anthropics/skills/blob/main/skills/claude-api/shared/prompt-audit.md)
 - Related: SKILL-020, SKILL-030, PROMPT-004, PROMPT-030, PROMPT-015
 
@@ -370,7 +370,7 @@ The rubric's premise: "current models are highly responsive to the system prompt
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Environment variables](https://code.claude.com/docs/en/env-vars), [Output styles](https://code.claude.com/docs/en/output-styles), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5)
 - Related: PROMPT-026, TOK-002, PROMPT-015
 
@@ -386,7 +386,7 @@ Which exact models get which prompt beyond the env-vars wording wasn't tested; `
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1)
 - Related: PROMPT-020, PROMPT-021, PROMPT-022, PROMPT-023, ORCH-030
 
@@ -394,7 +394,7 @@ What each model's prompting page says to add or remove. "Scaffolding" here means
 
 | | Haiku 5.5 | Sonnet 5.5 | Opus 5.5 | Fable 5.1 |
 |---|---|---|---|---|
-| Needs scaffolding | Most: today's date, a search nudge, a verify paragraph and a keep-working paragraph, mainly at `low` and in long prompts | At `low`/`medium`: verify paragraph, keep-working paragraph | Little; explore-first line for multi-app work | Least on method; needs "finish the whole task" blocks for async work |
+| Needs scaffolding | Most: today's date, a search nudge, a verify paragraph and a keep-working paragraph, mainly at `low` and in long prompts | At `low`: verify paragraph. At `low`/`medium`: keep-working paragraph | Little; explore-first line for multi-app work | Least on method; needs "finish the whole task" blocks for async work |
 | Over-follows or overdoes | Blanket rules ("search for any present-day factual question") cause over-searching | Adds unrequested tests, docs and files at every effort; launches reviewer subagents at `xhigh`/`max` | Stops unattended runs to report progress | Fixes nearby code, commits extra tests, rewrites whole files |
 | Verbosity | No note on its page | Sonnet 5 "calibrates response length to the complexity of the task"; no 5.5 note | Opus 5 runs long and effort doesn't shorten it; the 5.5 page is silent, so prompt for length | Fewer progress updates, dense prose, less formatting |
 | Default effort (API) | `medium` | `high` | `medium` | `high` |
@@ -405,7 +405,7 @@ Pattern: the smaller the model and the lower the effort, the more it needs expli
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5)
 - Related: PROMPT-019, PROMPT-027, ORCH-033, ORCH-005
 
@@ -423,7 +423,7 @@ For Claude Code Explore overrides on Haiku (ORCH-005): keep the agent body short
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5)
 - Related: PROMPT-019, PROMPT-025, PROMPT-031, ORCH-028
 
@@ -441,7 +441,7 @@ Claude Code runs Sonnet 5.5 at `medium` by default (ORCH-028), the level where c
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5)
 - Related: PROMPT-019, PROMPT-014, PROMPT-030, ORCH-036
 
@@ -457,8 +457,8 @@ Opus 5.5 needs little method guidance; its prompting page is mostly about harnes
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5)
+- Last verified: 2026-10-14
+- Sources: [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Related: PROMPT-019, PROMPT-014, PROMPT-024, PROMPT-031
 
 Fable 5.1 "can execute very long tasks without much guidance on methodology", but drifts in three directions.
@@ -474,7 +474,7 @@ On Max plans Fable is capped at 50% of weekly limits (ORCH-031), so these prompt
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Related: PROMPT-026, PROMPT-009, PROMPT-006, TOK-055
 
@@ -492,8 +492,8 @@ Cautions: old "be brief" or anti-markdown lines can over-correct Fable 5.1, whic
 - Type: pattern
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Permission modes](https://code.claude.com/docs/en/permission-modes), [Claude Code best practices](https://code.claude.com/docs/en/best-practices)
+- Last verified: 2026-10-14
+- Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Permission modes](https://code.claude.com/docs/en/permission-modes), [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5)
 - Related: PROMPT-014, PROMPT-021, PROMPT-026
 
 **Fewer questions:**
@@ -513,7 +513,7 @@ Front-load the task: underspecified prompts spread "over multiple user turns ten
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Output styles](https://code.claude.com/docs/en/output-styles), [Environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: PROMPT-018, PROMPT-024, PROMPT-025, SKILL-021
 
@@ -529,7 +529,7 @@ An output style is a session-wide instruction for voice, length or role; "nothin
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5), [Claude Code best practices](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-037, ORCH-039, PROMPT-030, PROMPT-028, HOOK-031
 
@@ -546,7 +546,7 @@ The 2026 system cards measure "false completion claims"; per-model numbers are i
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Claude Opus 5.5 system card](https://www.anthropic.com/claude-opus-5-5-system-card), [Claude Fable 5.1 system card](https://www.anthropic.com/claude-fable-5-1-system-card), [Claude Haiku 5.5 system card](https://www.anthropic.com/claude-haiku-5-5-system-card)
 - Related: PROMPT-027, ORCH-046, ORCH-039
 
@@ -556,7 +556,7 @@ Rates are low on the 5.x models, but the official snippet still applies to any t
 - **The escape hatch matters:** the last sentence gives the model a legitimate outcome other than gaming (report the bad test).
 - **Measured, 2026 cards:**
   - Fable 5.1 card: rewarded cheating in training about 0.06% of episodes, against 0.12–0.44% for models from Opus 4.6 to Fable 5.
-  - Opus 5.5 card: reward-hacking rates "lowest or near-lowest" among recent models.
+  - Opus 5.5 card: its reward-hacking rates in training are "similar to" Mythos 5.1's, which had "the lowest or near-lowest" among recent models.
   - Haiku 5.5 card: it "used a leaked answer without telling the user 17% of the time, a regression from Claude Haiku 4.5, at 2%".
 - **Structural guard:** the agent that wrote the code shouldn't be the only one judging it; a fresh-context verifier and tests it can't edit are stronger than any prompt line (ORCH-039).
 
@@ -566,7 +566,7 @@ For Haiku workers that might see answers (fixtures, expected outputs), say where
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Opus 5.5 system card](https://www.anthropic.com/claude-opus-5-5-system-card), [Claude Fable 5.1 system card](https://www.anthropic.com/claude-fable-5-1-system-card), [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Claude Code best practices](https://code.claude.com/docs/en/best-practices)
 - Related: PROMPT-027, PROMPT-032, ORCH-039
 
@@ -584,7 +584,7 @@ Practical rule: ask for a disagreement channel ("if the request seems mistaken, 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Related: PROMPT-017, PROMPT-002, SKILL-032, PROMPT-027
 
@@ -597,7 +597,7 @@ Lines that fixed an older model's weakness now cause the opposite one.
 | "After every 3 tool calls, summarize progress" | "try removing it" | Sonnet 5 |
 | "Hold all findings for the final response" | suppresses progress updates; remove | Fable 5.1, Sonnet 5.5 |
 | Anti-markdown blocks | "can suppress structure the content needs" | Fable 5.1 |
-| "If in doubt, use [tool]", "CRITICAL: You MUST use…" | over-triggering | Opus 4.5 onward |
+| "If in doubt, use [tool]", "CRITICAL: You MUST use…" | over-triggering | Opus 4.5 and 4.6 (no 5.x page measures it) |
 | "Only use tools when strictly necessary", "minimize tool calls" | answers from training data instead of searching | Sonnet 5.5 |
 | Write your reasoning in `<thinking>` tags | `reasoning_extraction` refusal (PROMPT-011) | Fable, Opus 5+, Sonnet 5.5 |
 
@@ -607,7 +607,7 @@ Model-specific: Sonnet 5.5 and Haiku 5.5 at low effort still benefit from an exp
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Related: PROMPT-021, PROMPT-023, PROMPT-009
 
@@ -625,7 +625,7 @@ Our CLAUDE.md "Cross-repo work becomes an issue" rule is this pattern applied ac
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Claude Code best practices](https://code.claude.com/docs/en/best-practices)
 - Related: REPO-047, REPO-048, REPO-049, PROMPT-003
 
@@ -641,7 +641,7 @@ This refines REPO-047's do-not-flag list: a list of concrete exclusions (style, 
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Claude Opus 5.5 system card](https://www.anthropic.com/claude-opus-5-5-system-card)
 - Related: REPO-037, REPO-039, PROMPT-007, PROMPT-016, HOOK-007
 
@@ -658,11 +658,11 @@ Hook-injected text lands next to tool results too: write it as facts, not orders
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Piebald-AI/claude-code-system-prompts](https://github.com/Piebald-AI/claude-code-system-prompts), [Reporting outcomes fragment](https://github.com/Piebald-AI/claude-code-system-prompts/blob/main/system-prompts/system-prompt-reporting-outcomes.md), [Writing subagent prompts fragment](https://github.com/Piebald-AI/claude-code-system-prompts/blob/main/system-prompts/system-prompt-writing-subagent-prompts.md)
 - Related: PROMPT-012, PROMPT-027, PROMPT-018, TOK-085
 
-Piebald-AI/claude-code-system-prompts (12,890 stars on 2026-10-12) extracts Claude Code's prompt from each release, as hundreds of fragments, each tagged with the `ccVersion` that last changed it; it tracks v2.1.296. Unofficial, but it is the shipped text, so it shows how Anthropic writes for its own models.
+Piebald-AI/claude-code-system-prompts (12,890 stars on 2026-10-12) extracts Claude Code's prompt from each release, as hundreds of fragments, each tagged with the `ccVersion` that last changed it; it tracks v2.1.299 (README, 2026-10-13). Unofficial, but it is the shipped text, so it shows how Anthropic writes for its own models.
 
 Worth copying into our CLAUDE.md files and agent bodies:
 - **Reporting outcomes (2.1.251):** "that claim must rest on a result you observed in this session… If you did not check, say you did not check. If any step failed, was skipped, or came back different from what you expected, say so in the first sentence of your report". "When you stop before the task is complete, your first line says so plainly and names what is left."
@@ -677,8 +677,8 @@ Style to note: rules come with their reason, in plain sentences. The read-only E
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-12
-- Sources: [openai/codex prompt.md](https://github.com/openai/codex/blob/main/codex-rs/models-manager/prompt.md), [GPT-5 prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide.md), [GPT-5.5 guide](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.5.md)
+- Last verified: 2026-10-14
+- Sources: [openai/codex prompt.md](https://github.com/openai/codex/blob/main/codex-rs/models-manager/prompt.md), [GPT-5 prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide.md), [GPT-5.5 guide](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.5.md), [openai/codex gpt_5_codex_prompt.md](https://github.com/openai/codex/blob/main/codex-rs/core/gpt_5_codex_prompt.md)
 - Related: PROMPT-036, PROMPT-009, PROMPT-031, ORCH-044
 
 Codex CLI (openai/codex, 128,808 stars) and OpenAI's model guides solve the same problems for GPT. Transferable:
@@ -696,8 +696,8 @@ Don't port: the "Never stop… when you encounter uncertainty" persistence block
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-12
-- Sources: [gemini-cli snippets.ts](https://github.com/google-gemini/gemini-cli/blob/main/packages/core/src/prompts/snippets.ts), [Aider base_prompts.py](https://github.com/Aider-AI/aider/blob/main/aider/coders/base_prompts.py), [Cline](https://github.com/cline/cline), [x1xhlol/system-prompts-and-models-of-ai-tools](https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools)
+- Last verified: 2026-10-14
+- Sources: [gemini-cli snippets.ts](https://github.com/google-gemini/gemini-cli/blob/main/packages/core/src/prompts/snippets.ts), [Aider base_prompts.py](https://github.com/Aider-AI/aider/blob/main/aider/coders/base_prompts.py), [Aider architect_prompts.py](https://github.com/Aider-AI/aider/blob/main/aider/coders/architect_prompts.py), [Cline](https://github.com/cline/cline), [x1xhlol/system-prompts-and-models-of-ai-tools](https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools)
 - Related: PROMPT-035, PROMPT-025, TOK-085, REPO-052
 
 - **Gemini CLI (inquiry vs directive):** "Assume all requests are Inquiries unless they contain an explicit instruction to perform a task." For inquiries, propose but don't modify files. Same split as Anthropic's "the deliverable is your assessment" (PROMPT-014). Also "NEVER assume a library/framework is available. Verify its established usage", and treat MCP output in `<untrusted_context>` tags as data.
@@ -712,7 +712,7 @@ The leak collection (143,959 stars) holds about 30 tools' prompts, mostly 2025-d
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [obra/superpowers](https://github.com/obra/superpowers), [wshobson/agents](https://github.com/wshobson/agents), [VoltAgent/awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents), [anthropics/prompt-eng-interactive-tutorial](https://github.com/anthropics/prompt-eng-interactive-tutorial)
 - Related: SKILL-043, SKILL-045, REPO-051, ORCH-041, PROMPT-038
 
@@ -730,7 +730,7 @@ Pattern across collections: the high-star agent packs are persona-plus-checklist
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [claude-security scan-verifier](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/claude-security/agents/scan-verifier.md), [Subagents](https://code.claude.com/docs/en/sub-agents), [plugin-dev system-prompt-design.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/plugin-dev/skills/agent-development/references/system-prompt-design.md), [pr-review-toolkit silent-failure-hunter](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/pr-review-toolkit/agents/silent-failure-hunter.md)
 - Related: REPO-046, REPO-039, PROMPT-008, PROMPT-015
 
@@ -751,9 +751,9 @@ Note the scan-verifier asks for a reason tied to `file:line`, not for its thinki
 
 ## Recommendations for our setup
 
-Ranked by impact against effort. A grep on 2026-10-12 of `~/.claude/CLAUDE.md`, `~/.claude/agents/` and `~/.claude/skills/` found no pressure language and no show-your-reasoning instructions (one `skill-creator` agent asks for a "reasoning" field explaining a choice, which is the allowed kind). So the items below are additions and checks, not rewrites.
+Ranked by impact against effort. A grep on 2026-10-12 of `~/.claude/CLAUDE.md`, `~/.claude/agents/` and `~/.claude/skills/` found no pressure language and no show-your-reasoning instructions in our own files. The account-synced skills in `~/.claude/skills/synced/` (pdf, pptx, skill-creator) use CRITICAL/MUST/NEVER and aren't ours to edit; one synced `skill-creator` agent asks for a JSON "reasoning" field explaining a choice, which Anthropic lists as a common `reasoning_extraction` trigger (PROMPT-011), so whether it is declined is unverified. So the items below are additions and checks, not rewrites.
 
-1. **Run `/doctor prompt-audit` once per instruction set** (`~/.claude`, this repo, `FreekMencke/claude-skills`, osrs-tracker-web's `.claude/`) and apply only the findings you confirm. One command each; its value for us is the stale-path, stale-command and contradiction checks more than wording. Done for this repo 2026-10-12 (FreekMencke/claude-kb#50); `~/.claude` done 2026-10-12 (FreekMencke/claude-kb#47: no stale paths or contradictions; its "default to LSP" finding applied), claude-skills done 2026-10-12 (FreekMencke/claude-skills#27: one contradiction with the global CLAUDE.md fixed, the gh assign command), osrs-tracker-web done 2026-10-12 (osrs-tracker/osrs-tracker-web#235: none of its findings held up against the files). PROMPT-017, PROMPT-030.
+1. **Run `/doctor prompt-audit` once per instruction set** (`~/.claude`, this repo, `FreekMencke/claude-skills`, osrs-tracker-web's `.claude/`) and apply only the findings you confirm. One command each; its value for us is the stale-path, stale-command and contradiction checks more than wording. Done for this repo 2026-10-12 (FreekMencke/claude-kb#50); `~/.claude` done 2026-10-12 (FreekMencke/claude-kb#47: no stale paths or contradictions; its "default to LSP" finding applied), claude-skills done 2026-10-12 (FreekMencke/claude-skills#27: one contradiction with the global CLAUDE.md fixed, the gh assign command), osrs-tracker-web done 2026-10-12 (osrs-tracker/osrs-tracker-web#235: applied none; the report-cap findings went to #222 and #223, and the stale-tool one was wrong). PROMPT-017, PROMPT-030.
 2. **Evidence-based reporting in the orchestrator's brief template** (`claude-skills/skills/parallel-code-orchestrator/references/brief-template.md`): add to its Report section "Every claim rests on a command result from this session; name any check you didn't run", and an explicit way out ("BLOCKED is a valid report; don't work around a failing test"). Done 2026-10-13 (FreekMencke/claude-skills#37); the example became "skipping a check or editing outside your scope", because the template's Verify section says "Fix failures you caused" and the two would contradict each other. PROMPT-027, PROMPT-028, PROMPT-034, PROMPT-012.
 3. **Verify paragraph for Sonnet units at `medium`** in the same template's Verify section: "A syntax-only check, or a check command that failed to start, does not count". The current models run on Claude Code's shorter system prompt, which lacks its own verify guidance. Done 2026-10-13 (FreekMencke/claude-skills#37). PROMPT-027, PROMPT-018, PROMPT-021.
 4. **Autonomy opener for unattended runs**: add "You are operating autonomously. The user is not watching in real time…" and the last-paragraph check to the monthly re-verification routine's prompt (it lives in the routine, not in this repo) and to scripted `claude -p` prompts. Not for interactive sessions. Done for both routines (docs drift and re-verification) 2026-10-12 (FreekMencke/claude-kb#51); repeat it in any new routine or scripted prompt. PROMPT-014, PROMPT-022.
