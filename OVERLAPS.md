@@ -17,6 +17,8 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Skill frontmatter: SKILL-014 (invocation controls), TOK-064 (token effects).
 - Scheduling: ORCH-017 (mechanisms), REPO-030 (for repo agents).
 - Subagent definitions: ORCH-002 (fields), REPO-005 and REPO-009 (locations, reload), TOK-067 (description budget).
+- Inline agent MCP servers: MCP-008 (scoping a server to one subagent), REPO-053 (`tools` doesn't limit its tools).
+- Our reviewer's measurements: REPO-003 (v1 baseline and triggers), REPO-054 (v2 against v1).
 - Worktrees: ORCH-009 (subagent and session isolation mechanics), SESS-001 and SESS-004 (what worktrees share), SESS-005 (lifecycle per surface), SKILL-053 (desktop config root).
 - Parallel sessions and quota: ORCH-013 and ORCH-020 (agent view, multipliers), SESS-032 and SESS-033 (plan allowance, how many sessions), ORCH-043 (session managers).
 - Hand-offs: ORCH-036 (progress files in long runs), SESS-031 (choosing a channel between sessions), TOK-030 (handoff before `/clear`).
