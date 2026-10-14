@@ -79,6 +79,8 @@ Same name in two scopes with different endpoints gives a warning in `claude mcp 
 
 Desktop worktree sessions read `.mcp.json` from the main checkout's root (SKILL-053).
 
+Tested 2026-10-14, v2.1.296, WSL terminal: a server added with `--scope local` in osrs-tracker-web's main checkout is stored under that path in `~/.claude.json`. `claude mcp get` from one of its `.claude/worktrees/` worktrees showed `Local config` and connected, and a Haiku `claude -p` there called its tool. A claude-kb checkout didn't see it. Not tested in a desktop session.
+
 ## [MCP-002] Project `.mcp.json`: approval, workspace trust and headless runs
 - Type: fact
 - Applies to: Claude Code
@@ -626,7 +628,7 @@ Read from local config and a `claude -p --output-format stream-json` init messag
 |---|---|---|---|
 | `kubernetes`, `flux` | user | stdio, read-only | 14, 12 |
 | `aws` (via `mcp-proxy-for-aws-cli`, pinned @1.7.0) | user | stdio | 8 |
-| `analytics-mcp` | user | stdio | 9 |
+| `analytics-mcp` | local, osrs-tracker-web (user until 2026-10-14) | stdio | 9 |
 | `context7` | user | http | 2 |
 | `playwright` | plugin | stdio | 25 |
 | `angular-cli` | osrs-tracker-web `.mcp.json` | stdio, `--read-only` | 3 allowed |
@@ -656,7 +658,7 @@ Ranked by impact against effort. Items 1, 3 and 4 change user config or another 
    - then the connector disconnected at claude.ai.
    MCP-010, MCP-028, MCP-004, MCP-019, INFRA-006.
 2. **Done 2026-10-14: pass `--strict-mcp-config` in scripted `claude -p` runs that don't need MCP** (medium impact, trivial effort). This saves about 6,600 tokens per request and about 2 s per run, and drops connector write tools from unattended runs. Add `--mcp-config` with only the servers a run needs. KB research probes should use it too. Done in [FreekMencke/claude-kb#103](https://github.com/FreekMencke/claude-kb/issues/103): no repo has a scripted run, so it went into this repo's probe recipe (CLAUDE.md, "Claims about behaviour") and the global `~/.claude/CLAUDE.md` "Scripted Claude runs" rule. MCP-012, ORCH-014.
-3. **Move rarely used stdio servers out of user scope** (medium impact, low effort). Each desktop session starts its own copy of every user-scope stdio server, about 0.8 GB RSS per session (SESS-013). `analytics-mcp` serves only web-analytics work and could become a project `.mcp.json` server in the repos that use it, or an inline server on a WEB agent. Opened 2026-10-14 as [FreekMencke/claude-kb#104](https://github.com/FreekMencke/claude-kb/issues/104), local scope in osrs-tracker-web, its only user so far: on 2026-10-14 its 6 copies (one per open session) took about 205 MB RSS each. MCP-001, MCP-008.
+3. **Done 2026-10-14: move rarely used stdio servers out of user scope** (medium impact, low effort). Each desktop session starts its own copy of every user-scope stdio server, about 0.8 GB RSS per session (SESS-013). `analytics-mcp` serves only web-analytics work and could become a project `.mcp.json` server in the repos that use it, or an inline server on a WEB agent. Done in [FreekMencke/claude-kb#104](https://github.com/FreekMencke/claude-kb/issues/104): `analytics-mcp` is now local scope in osrs-tracker-web, its only user, and its worktrees get it too (MCP-001). Before, its 6 copies (one per open session) took about 205 MB RSS each. MCP-001, MCP-008.
 4. **Keep the Playwright plugin; pin `browser-checker`'s server** (low impact, low effort). Decided by 2026-10-14: osrs-tracker-web keeps the plugin as the session's headed browser, for sites that need a sign-in and for mocking API responses, and `browser-checker` runs its own headless, isolated server for osrs-tracker page checks (the repo's skill, read 2026-10-14). Disabling the plugin would drop the headed uses. What's left is the agent's `@playwright/mcp@latest`: pin it ([osrs-tracker/osrs-tracker-web#329](https://github.com/osrs-tracker/osrs-tracker-web/issues/329)). The plugin's own `@latest` is in the marketplace's `.mcp.json`, not ours to pin. REPO-021, MCP-019.
 5. **Re-read a server's tool list after upgrading it** (low impact, trivial effort). Claude Code doesn't re-approve changed tools (MCP-014). Do this for `kubernetes-mcp-server` and `analytics-mcp` when their pins move. MCP-019.
 6. **Don't add `deniedMcpServers` or `allowedMcpServers` for a solo setup beyond item 1**. Without a managed source they are guards, not boundaries, and a blocked server disappears silently. MCP-016, MCP-003.
