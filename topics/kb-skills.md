@@ -86,6 +86,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
 | SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
+| SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 
 ---
 
@@ -234,14 +235,14 @@ How to write for this:
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
-- Related: SKILL-002, SKILL-018
+- Related: SKILL-002, SKILL-018, SKILL-061
 
 Custom slash commands were merged into skills in v2.1.3. `.claude/commands/x.md` still creates `/x`, and supports the same frontmatter except `name` and `paths`.
 
 - **Arguments**:
   - `$ARGUMENTS` is the whole argument string.
   - `$ARGUMENTS[0]` or `$0` is a 0-based positional argument, split with shell-style quoting.
-  - Substitution hits literal text too, whenever arguments are passed (`/name args`, or the model's Skill call with `args`): `$0` in a code block, in `awk '$0 ~ …'` or in a dollar amount like `$0.05` becomes the first argument. Without arguments they stay literal. Write `$(0)` in awk and amounts as "USD". Local test, 2026-10-12, v2.1.296 (FreekMencke/claude-kb#5). The docs also give a backslash escape (`\$0.05`, CHANGELOG v2.1.163), not tested here.
+  - Literal text is substituted too when arguments are passed: `$0` in a code block or in `$0.05` becomes the first argument. Escape it as `\$0` (SKILL-061).
   - `$name` maps to the `arguments:` list.
   - If nothing consumes the arguments, `ARGUMENTS: <value>` is appended to the body.
 - **Variables**:
@@ -1409,6 +1410,23 @@ Observed: a routine whose prompt named `refresh-md-files` (shipped only in the `
 **Workaround that keeps one source of truth:** add the skills repo as an extra repository on the routine. The prompt then tells the run to read `skills/<name>/SKILL.md` from that clone, follow it exactly, and stop if the file is missing. Tested 2026-10-12: a private repo cloned fine through the Claude GitHub App, the run followed the skill's output format, and the prompt can ask the run to confirm it read the file. The alternatives are uploading the skill to claude.ai one by one (a second copy that drifts) or committing it to each target repo.
 
 **Better, when the skill can live in a repo's `.claude/skills/`:** every attached repository's project skills load, not just the first one's. Tested 2026-10-14, routine run on Haiku 5.5 with osrs-tracker-web first and claude-kb second: the cwd was `/home/user`, each repo was cloned under it, and claude-kb's `.claude/skills/claude-kb-lookup` was listed at session start. `${CLAUDE_SKILL_DIR}` resolved to the clone, and `context: fork` ran. This is why `claude-kb-lookup` lives in claude-kb.
+
+## Anatomy (continued)
+
+## [SKILL-061] Literal `$` in a skill body: substitution and the backslash escape
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-14
+- Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), local tests 2026-10-12 and 2026-10-14
+- Related: SKILL-008
+
+Argument substitution (SKILL-008) also hits literal text whenever arguments are passed, so a skill that shows `$0` in an example breaks only when it's called with arguments. Put one backslash directly before the dollar sign to keep it literal: `\$0.05`, `\$ARGUMENTS`.
+
+- **What gets substituted:** with arguments (`/name args`, or the model's Skill call with `args`), `$0` in a code block, in `awk '$0 ~ …'` or in a dollar amount like `$0.05` becomes the first argument. Without arguments they stay literal. Local test, 2026-10-12, v2.1.296 (FreekMencke/claude-kb#5).
+- **The escape:** CHANGELOG 2.1.163, "added `\$` escape syntax to include a literal `$` before a digit in command bodies". The docs: "To include a literal `$` before a digit, `ARGUMENTS`, or a declared argument name, such as `$1.00` in prose, escape it with a backslash: `\$1.00`." A backslash before any other `$` is kept, a doubled backslash escapes nothing, and `${CLAUDE_*}` variables still expand.
+- **Tested** 2026-10-14, v2.1.296, `claude -p --model haiku --max-turns 2 --max-budget-usd 0.30`, a project skill asking the model to copy a line verbatim (FreekMencke/claude-skills#50): `` X1=\$ARGUMENTS X2=\$0 X3=$(0) X4=`\$1` `` rendered as `` X1=$ARGUMENTS X2=$0 X3=$(0) X4=`$1` `` for both `/esc-test` and `/esc-test foo bar`. The backslash is removed either way, inside a code span too, so an escaped line reads the same with or without arguments.
+- **In awk**, `$(0)` is the same field and isn't substituted. It reads more plainly than `\$0`; `claude-kb-lookup` uses it.
 
 ## Recommendations for our setup
 
