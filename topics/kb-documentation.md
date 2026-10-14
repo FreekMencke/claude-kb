@@ -1,23 +1,23 @@
 # Repo documentation: changelogs, READMEs, decision records and drift
 
-Prefix: DOC. Last verified for all entries: 2026-10-13, against the sources live that day and the `origin/main` of all eight of our repos (Claude Code v2.1.296, WSL terminal). This file covers the docs Claude writes and maintains for people in a repo: CHANGELOG.md, README.md, decision records, runbooks and plan docs, and how to keep them from drifting. CLAUDE.md, rules and auto memory are in `kb-memory.md` (MEM), their wording in `kb-prompting.md` (PROMPT), and changelog merge conflicts between parallel PRs in `kb-sessions.md` (SESS-026, SESS-027).
+Prefix: DOC. Researched 2026-10-13 against the sources live that day and the `origin/main` of all eight of our repos (Claude Code v2.1.296, WSL terminal); re-verified 2026-10-14 against the docs fetched that day, the claude-code CHANGELOG through 2.1.299 and our repos' `origin/main` (each entry's Last verified date is authoritative). This file covers the docs Claude writes and maintains for people in a repo: CHANGELOG.md, README.md, decision records, runbooks and plan docs, and how to keep them from drifting. CLAUDE.md, rules and auto memory are in `kb-memory.md` (MEM), their wording in `kb-prompting.md` (PROMPT), and changelog merge conflicts between parallel PRs in `kb-sessions.md` (SESS-026, SESS-027).
 
 ## Quick answers
 
 | Question | Answer | Entries |
 |---|---|---|
 | Which changelog spec should we follow? | Keep a Changelog 2.0.0 (2026-06-07), not 1.1.0. The format is unchanged; the guidance is new: curate, write plainly, a brief for LLM drafts, no required CI check. | DOC-001, DOC-002 |
-| Should every change get a changelog entry? | Keep a Changelog 2.0 says no: "It lists the notable ones." Our five changelogs say every change. That's a deliberate difference while sessions also read the changelog as history. | DOC-002, DOC-018 |
+| Should every change get a changelog entry? | Keep a Changelog 2.0 says no: "It lists the notable ones." Our four app and infra changelogs say every change except doc-only ones. That's a deliberate difference while sessions also read the changelog as history. | DOC-002, DOC-018 |
 | How should Claude write changelog entries? | Give it the Keep a Changelog 2.0 brief in CLAUDE.md: notable, user-facing changes; no git log; the reason in the text; mark breaking changes; then read the result. | DOC-003, DOC-007 |
-| How do I head a changelog for an app with no versions? | A date works as the version scheme: `## 2026-10-13`, or dated entries under `Unreleased`. Use ISO `YYYY-MM-DD`; four of our repos use `YYYY/MM/DD`. | DOC-004, DOC-018 |
+| How do I head a changelog for an app with no versions? | A date works as the version scheme: `## 2026-10-13`, or dated entries under `Unreleased`. Use ISO `YYYY-MM-DD`; our four app and infra repos switched to it from `YYYY/MM/DD` on 2026-10-13. | DOC-004, DOC-018 |
 | Generated changelog from Conventional Commits? | Fine for an SDK on release-please (Anthropic's own SDK does it). For readers it's "raw material at best". Don't generate ours. | DOC-006, DOC-007 |
 | Should CI fail a PR without a changelog entry? | Keep a Changelog 2.0: never as a required check on every change. Use a reminder, or a check with a skip label like Anthropic's SDK (`skip-changelog`). | DOC-008 |
-| Where do our repos' changelog rules disagree? | api and web: CLAUDE.md says every change, the reviewer checks only user-visible ones. Doc-only changes, Dependabot, date format, title and package headings differ too. | DOC-018, DOC-019 |
+| Where do our repos' changelog rules disagree? | In few places since 2026-10-13: web has no `# Changelog` title (its page supplies one), api and aws mark breaking changes, references differ. Before that, doc-only changes, Dependabot, date format and the api/web reviewer gap differed. | DOC-018, DOC-019 |
 | What belongs in a README versus CLAUDE.md? | README: what, why, how to run, where to get help, for people. CLAUDE.md: what Claude can't derive. Link docs from CLAUDE.md instead of pasting them. | DOC-009, DOC-012 |
 | How should we record decisions? | Context, decision, when to revisit, dated, newest first, and read by the reviewer. One file is fine for a few dozen. Split into numbered MADR files once records get superseded. | DOC-011, DOC-021 |
 | Is there an official Anthropic skill for READMEs or changelogs? | No. `doc-coauthoring` is for proposals and specs, and `claude-md-management` covers CLAUDE.md only. The prompt library has a release-notes recipe. | DOC-010, DOC-009 |
 | How do I keep docs from drifting? | Change docs in the same PR. Add cross-file rules for the reviewer ("a new env var and the Lambda README"). Run cheap linters (lychee, Prettier). Audit with `refresh-md-files` now and then. | DOC-013, DOC-014, DOC-020 |
-| Does an agent that syncs docs on merge work? | We run one: a weekly routine runs `refresh-md-files` on each osrs-tracker repo. Its first runs (2026-10-12) found 2–3 small, real gaps per repo, mostly lists missing a new route or file. Nobody else publishes results. Same-PR updates plus reviewer rules still come first. | DOC-015, DOC-024, REPO-018 |
+| Does an agent that syncs docs on merge work? | We run one: a weekly routine runs `refresh-md-files` on each osrs-tracker repo. Its first runs (2026-10-12) found 2–3 small, real gaps in api and web (no PR in aws), mostly lists missing a new route or file. Nobody else publishes results. Same-PR updates plus reviewer rules still come first. | DOC-015, DOC-024, REPO-018 |
 | How should a doc be written so agents find things? | Descriptive headings, the key term early, a table of contents over 100 lines, absolute dates, one level of links. Mostly carried over from Anthropic's skill guidance. | DOC-016 |
 | Where do runbooks go: `docs/` or a skill? | A skill when only sessions run it (deploy, release). `docs/` when a person must find it during an incident. | DOC-023 |
 | What happens to a plan doc after the work is done? | Give it a dated status line and "delete this file once every step is done". | DOC-022 |
@@ -55,7 +55,7 @@ Prefix: DOC. Last verified for all entries: 2026-10-13, against the sources live
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), [keep-a-changelog CHANGELOG.md](https://raw.githubusercontent.com/olivierlacan/keep-a-changelog/main/CHANGELOG.md)
 - Related: DOC-002, DOC-003, DOC-004, DOC-008
 
@@ -78,7 +78,7 @@ Read in full with `curl` and grepped (HTML stripped).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-001, DOC-018, DOC-006
 
@@ -92,13 +92,13 @@ Keep a Changelog 2.0 asks for curation, not completeness. It turns down the cate
 
 1.1.0 leaned the other way: "A changelog which only mentions some of the changes can be as dangerous as not having a changelog."
 
-**Where we differ.** Four of our repos log every change, "Behind the scenes" included, and two log Dependabot bumps (DOC-018). It's a defensible audience choice: sessions read the changelog to learn what changed in tooling, reviewers and workflows. That's a second reader the spec doesn't have in mind. osrs-tracker-web's changelog is public, so it's the one place the spec's advice applies fully.
+**Where we differ.** Four of our repos log every change except doc-only ones, "Behind the scenes" included, and log a Dependabot bump only when it changes behaviour (DOC-018; decided 2026-10-13). It's a defensible audience choice: sessions read the changelog to learn what changed in tooling, reviewers and workflows. That's a second reader the spec doesn't have in mind. osrs-tracker-web's changelog is public, so it's the one place the spec's advice applies fully.
 
 ## [DOC-003] The brief for an LLM-drafted changelog belongs in CLAUDE.md
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [anthropic-sdk-python CLAUDE.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CLAUDE.md)
 - Related: DOC-001, DOC-007, DOC-019, PROMPT-015
 
@@ -108,13 +108,13 @@ Keep a Changelog 2.0 names coding agents directly:
 
 Anthropic's own SDK does this in its CLAUDE.md: "**User-visible changes get a changelog note,** even when they fix a bug."
 
-**How we apply it.** Our repos already keep a changelog brief, but each holds it in two or three places (DOC-019). Write it once, in CLAUDE.md or the repo skill, and let the reviewer read it from there. Our briefs add three rules the spec lacks, which are worth keeping: "reread the whole day", "extend an existing entry rather than add a near-duplicate", and the audience ("write for users" in osrs-tracker-web). They lack "the reason in the text" and a breaking-change marker. The API has consumers (osrs-tracker-web) for whom **Breaking:** would mean something.
+**How we apply it.** Since 2026-10-13 each of our four repos states its changelog rule once in CLAUDE.md, keeps the format in the repo skill, and the reviewer's pair points to the rule (DOC-019 has the earlier duplication). Our briefs add three rules the spec lacks, which are worth keeping: "reread the whole day", "extend an existing entry rather than add a near-duplicate", and the audience ("write for users" in osrs-tracker-web). All four now ask for the reason ("say why, not only what"), and api and the aws packages start a consumer-breaking entry with **Breaking:**; web and home-cluster have no such marker.
 
 ## [DOC-004] Changelogs without version numbers
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [Common Changelog](https://raw.githubusercontent.com/vweevers/common-changelog/main/README.md)
 - Related: DOC-001, DOC-018, SESS-027
 
@@ -124,7 +124,7 @@ Keep a Changelog 2.0 covers apps that deploy on every merge:
 
 1.1.0 assumed versions ("There should be an entry for every single version"). Common Changelog requires a semver version and has no `Unreleased` section (DOC-005), so it doesn't fit.
 
-**Two readings for our apps.** "A date" as the version gives `## 2026-10-13` per day, which is what our repos do, but with slashes. "Dated entries under Unreleased" gives one `## Unreleased` with dated entries under it. The first suits a changelog read by day, and it's what four of our repos already have. Either way, use ISO `YYYY-MM-DD`: the spec says it "orders from the largest unit to the smallest, avoids the confusion of regional date formats, and is an ISO standard".
+**Two readings for our apps.** "A date" as the version gives `## 2026-10-13` per day, which is what our four app and infra repos do (since 2026-10-13; slashes before). "Dated entries under Unreleased" gives one `## Unreleased` with dated entries under it. The first suits a changelog read by day, and it's what four of our repos already have. Either way, use ISO `YYYY-MM-DD`: the spec says it "orders from the largest unit to the smallest, avoids the confusion of regional date formats, and is an ISO standard".
 
 A standard WebSearch found no other spec for date-only changelogs (not verified beyond the result summary).
 
@@ -132,7 +132,7 @@ A standard WebSearch found no other spec for date-only changelogs (not verified 
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Common Changelog README](https://raw.githubusercontent.com/vweevers/common-changelog/main/README.md)
 - Related: DOC-001, DOC-004, DOC-006
 
@@ -144,7 +144,7 @@ Common Changelog calls itself "a stricter subset of Keep a Changelog". Where it 
 | Mood | Not specified | "Write a change using the imperative mood. It must start with a present-tense verb" (`Add`, `Fix`, `Bump`) |
 | References | Prose preferred over bare `(#1234)` | "changes must reference relevant commits, and should reference tickets or pull requests" |
 | Unreleased | Kept | None |
-| Heading | `## [1.0.0] - 2017-07-17` | `## 1.0.0 - 2017-07-17`, no brackets, no `v` |
+| Heading | `## [1.0.0] - 2017-07-17` | `## VERSION - DATE`, no `v`; the version "should link", so `## [1.0.0] - 2017-07-17` with reference-style links |
 
 **Why it has no Unreleased section.** A PR can't reference itself before merge, first-time contributors can't be expected to update the changelog, and "writing a changelog requires a bird's-eye view of the project". It argues against the edit-in-every-PR habit our repos use. In our case sessions write the entries, and we don't list commit SHAs, so none of the three reasons applies.
 
@@ -154,7 +154,7 @@ Common Changelog calls itself "a stricter subset of Keep a Changelog". Where it 
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/), [release-please](https://github.com/googleapis/release-please), [semantic-release](https://github.com/semantic-release/semantic-release), [git-cliff](https://github.com/orhun/git-cliff), [GitHub: automatically generated release notes](https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes), [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-002, DOC-007, SESS-027
 
@@ -175,7 +175,7 @@ None of their READMEs say whether the result is a good changelog.
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [claude-code CHANGELOG.md](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [Claude Code changelog page](https://code.claude.com/docs/en/changelog.md), [anthropic-sdk-python CHANGELOG.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CHANGELOG.md), [anthropic-sdk-python CLAUDE.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CLAUDE.md)
 - Related: DOC-003, DOC-006, TOK-089
 
@@ -197,7 +197,7 @@ The Claude Code style, symptom plus trigger plus what's now possible, is the mod
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [dangoslen/changelog-enforcer action.yml](https://github.com/dangoslen/changelog-enforcer), [tarides/changelog-check-action](https://github.com/tarides/changelog-check-action), [anthropic-sdk-python](https://github.com/anthropics/anthropic-sdk-python)
 - Related: DOC-019, HOOK-004, SESS-021
 
@@ -208,13 +208,13 @@ The Claude Code style, symptom plus trigger plus what's now possible, is the mod
 - **tarides/changelog-check-action**: `changelog` defaults to `CHANGES.md`, `labels` to "no changelog".
 - **Anthropic's SDK** runs its own `changelog.yml` check (in the private repo only). Its failure message: "Add your line to CHANGELOG.md, or add the skip-changelog label to this pull request."
 
-**Ours.** home-cluster has the strictest gate: a `PreToolUse` hook on `git push` exits 2 if no commit since upstream touches CHANGELOG.md. The reviewer agents check the pairing in api, aws and web. home-cluster pushes straight to `main` with no PR CI and logs every infra change on purpose, so the spec's noise argument weighs less there. For PR repos, the reviewer check plus a doc-only exemption is the "reminder" the spec allows.
+**Ours.** home-cluster has the strictest gate: a `PreToolUse` hook on `git push` exits 2 if no commit since upstream touches CHANGELOG.md. The reviewer agents check the pairing in api, aws and web. home-cluster pushes straight to `main` with no PR CI and logs every infra change on purpose, so the spec's noise argument weighs less there. For PR repos, the reviewer check plus a doc-only exemption is the "reminder" the spec allows. Since 2026-10-13 home-cluster's hook exempts doc-only pushes too.
 
 ## [DOC-009] What Anthropic's docs say about repo docs beyond CLAUDE.md
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices.md), [Memory](https://code.claude.com/docs/en/memory.md), [Prompt library](https://code.claude.com/docs/en/prompt-library.md), [Common workflows](https://code.claude.com/docs/en/common-workflows.md)
 - Related: MEM-021, MEM-033, REPO-044, SKILL-024, DOC-012
 
@@ -230,7 +230,7 @@ There is little direct guidance. Grepping best-practices, memory and common-work
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [anthropics/skills doc-coauthoring](https://raw.githubusercontent.com/anthropics/skills/main/skills/doc-coauthoring/SKILL.md), [claude-plugins-official](https://github.com/anthropics/claude-plugins-official)
 - Related: DOC-015, MEM-021, SKILL-021
 
@@ -240,7 +240,7 @@ None of them is for README or changelog upkeep.
 - **`claude-md-management`** (official marketplace): "audit quality, capture session learnings, and keep project memory current", for CLAUDE.md only (`claude-md-improver`, `/revise-claude-md`).
 - **`pr-review-toolkit`'s `comment-analyzer` agent**: checks code comments against the code for "comment rot". It doesn't read Markdown docs.
 
-A subagent searched the names and descriptions of all 315 plugins in the official marketplace and found no README, changelog, ADR or doc-sync plugin. A third-party `mintlify` plugin targets Mintlify-hosted docs. claude-code-action's `examples/` has no doc-sync workflow. GitHub code search hit a rate limit partway, so "none" is not fully verified.
+A subagent searched the names and descriptions of all 315 plugins in the official marketplace and found no README, changelog, ADR or doc-sync plugin. A third-party `mintlify` plugin targets Mintlify-hosted docs. claude-code-action's `examples/` has no doc-sync workflow. A GitHub code search on 2026-10-14 for "update documentation" found 0 hits in anthropics/skills and 3 in anthropics/claude-code (the feature-dev README and two plugin-dev examples), none a doc-sync tool.
 
 Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs against the code and reports findings without editing. It covers the gap the official set leaves. Since 2026-10-13 (FreekMencke/claude-skills#43) it also flags one rule restated in several instruction files (DOC-019), expired plans and status lines (DOC-022), and reads a repo's review-rule doc pairs in diff scope (DOC-020).
 
@@ -248,7 +248,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Nygard: Documenting Architecture Decisions (2011, Wayback)](https://web.archive.org/web/2023/https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions), [MADR minimal template](https://raw.githubusercontent.com/adr/madr/main/template/adr-template-minimal.md), [MADR releases](https://github.com/adr/madr/releases), [adr-tools](https://github.com/npryce/adr-tools), [adr.github.io](https://adr.github.io/)
 - Related: DOC-021, DOC-010, REPO-044
 
@@ -266,7 +266,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [GitHub: About READMEs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes), [standard-readme spec](https://raw.githubusercontent.com/RichardLitt/standard-readme/main/spec.md), [Diátaxis](https://diataxis.fr/)
 - Related: DOC-009, DOC-013, DOC-017
 
@@ -282,7 +282,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Google documentation best practices](https://google.github.io/styleguide/docguide/best_practices.html)
 - Related: DOC-014, DOC-020, DOC-022
 
@@ -300,7 +300,7 @@ It also asks that design docs "serve as archives of these decisions, not as half
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2), [lychee](https://github.com/lycheeverse/lychee), [markdown-link-check](https://github.com/tcort/markdown-link-check), [Vale](https://github.com/vale-cli/vale), [Prettier options: proseWrap](https://prettier.io/docs/options#prose-wrap)
 - Related: DOC-013, DOC-015, DOC-020
 
@@ -314,13 +314,13 @@ None of these checks whether a doc is true, only its form and links.
 | markdown-link-check | Broken links | Its common GitHub Action wrapper is archived; prefer lychee |
 | Vale | Prose style and terminology | 6,235 stars; config overhead too high for small repos |
 
-**Ours.** osrs-tracker-web and osrs-tracker-aws run `prettier --check .` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI. osrs-tracker-api's `prettier:ci` checks only `src/**/*.ts`, so its Markdown is wrapped at 120 by hand and unchecked. home-cluster has no Prettier; one changelog line runs to 130. No repo runs a link check. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files.
+**Ours.** osrs-tracker-web, osrs-tracker-aws and osrs-tracker-api run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same three run `lychee --offline --include-fragments --hidden` on every push. home-cluster has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files.
 
 ## [DOC-015] Agents that detect or fix doc drift
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Routines: use cases](https://code.claude.com/docs/en/routines.md), [claude-code-action: custom automations](https://raw.githubusercontent.com/anthropics/claude-code-action/main/docs/custom-automations.md), [anthropics/claude-code#7103](https://github.com/anthropics/claude-code/issues/7103)
 - Related: DOC-010, DOC-013, DOC-024, REPO-018, REPO-030, ORCH-017
 
@@ -336,7 +336,7 @@ None of these checks whether a doc is true, only its form and links.
 - Type: recommendation
 - Applies to: general
 - Confidence: unverified
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: TOK-062, PROMPT-015, DOC-012
 
@@ -359,7 +359,7 @@ Community guides (Fern, Mintlify, Sentry) give the same advice. A subagent saw t
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [osrs-tracker org repos](https://github.com/osrs-tracker), [FreekMencke repos](https://github.com/FreekMencke); read with `git ls-tree origin/main` and `git show origin/main:<file>` in each local checkout after `git fetch`, 2026-10-13
 - Related: DOC-018, DOC-021, DOC-022, DOC-023
 
@@ -369,11 +369,11 @@ All eight active repos: FreekMencke's five, plus the three osrs-tracker repos. T
 |---|---|---|---|
 | claude-kb | Table, ISO dates | Layout, routine, design decisions | INDEX, ENTRIES (generated), OVERLAPS |
 | claude-skills | None (installs track commits) | Install, checks, trigger evals | — |
-| freek-mencke-web | None | Angular CLI template, says CLI 19.0.6; `package.json` has `^21.2.11` | — |
-| home-cluster | `## YYYY/MM/DD` | Overview, usage, "Known differences and decisions", access | `docs/rebuild.md`, `docs/upgrade-plan-kubernetes-1.37.md`, two Lambda READMEs |
-| osrs-tracker-api | `## YYYY/MM/DD`, area subtitles | Provides, fits together, local, checks, built with | — |
+| freek-mencke-web | None | Angular CLI template, says CLI 19.0.6; `package.json` has `@angular/cli` `^22.2.2` (2026-10-14) | — |
+| home-cluster | `## YYYY-MM-DD` | Overview, usage, "Known differences and decisions", access | `docs/rebuild.md`, `docs/upgrade-plan-kubernetes-1.37.md`, two Lambda READMEs |
+| osrs-tracker-api | `## YYYY-MM-DD`, area subtitles | Provides, fits together, local, checks, built with | — |
 | osrs-tracker-aws | Root plus 4 package changelogs | Jobs, packages, fits together | `DATA-MODEL.md`, a README per Lambda, `DEPLOY.md`, `INFRA.md` and `PACKAGES.md` in the skill |
-| osrs-tracker-web | `## YYYY/MM/DD`, public at `/about/changelog` | Features, fits together, local, contributing | `docs/decisions.md` (423 lines), `docs/runbook.md` |
+| osrs-tracker-web | `## YYYY-MM-DD`, public at `/about/changelog` | Features, fits together, local, contributing | `docs/decisions.md` (484 lines on 2026-10-14), `docs/runbook.md` |
 | solix | Versioned with ISO dates, Added/Changed/Fixed | Download, use, build, release, history | — |
 
 A spot check of README version claims against `package.json` and Dockerfiles found them current in api and web. home-cluster's versions table matches its latest changelog entry (Traefik v3.7.14, chart 41.7.1). The only stale README found is freek-mencke-web's (last push 2026-05-06). This was a spot check, not a full `refresh-md-files` audit.
@@ -382,12 +382,12 @@ A spot check of README version claims against `package.json` and Dockerfiles fou
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
-- Sources: each repo's `CHANGELOG.md`, `CLAUDE.md`, repo skill and `conventions-reviewer.md` on `origin/main`, 2026-10-13; [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
+- Last verified: 2026-10-14
+- Sources: each repo's `CHANGELOG.md`, `CLAUDE.md`, repo skill and `conventions-reviewer.md` on `origin/main`, 2026-10-13, re-read 2026-10-14; [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-001, DOC-002, DOC-004, DOC-019, SESS-026
 
 **Shared convention** (api, aws, web, home-cluster):
-- A hand-written entry in the same change, under today's `## YYYY/MM/DD`, newest first.
+- A hand-written entry in the same change, under today's `## YYYY-MM-DD` (slashes until 2026-10-13), newest first. Doc-only changes get none.
 - `###` area subtitles on busy days, with "Behind the scenes" last.
 - Extend an entry rather than add a near-duplicate, and fold parallel PRs' headings on rebase.
 - Effect-first prose, wrapped at 120.
@@ -396,17 +396,16 @@ A spot check of README version claims against `package.json` and Dockerfiles fou
 
 | Point | Deviation |
 |---|---|
-| Doc-only changes | web: no entry. api, aws, home-cluster: an entry (api: "Nothing in the API changes") |
-| Dependabot | api: a follow-up entry committed to `main` after merging. web: no entry at all, although its rule says "entries cover deps and tooling too" |
-| `# Changelog` title | aws, solix, claude-kb have one; api, home-cluster, web don't (web's page supplies its own title) |
-| Package headings (aws) | `## v0.1.1 - 2026/10/09` in three packages, `## 2.4.0 - 2026/10/13` in models; two keep `## Unreleased` |
-| References | api: `(#143)` 14 times. aws: `(issue #88)` and full refs. web: none (public) |
-| "Reread the whole day" | In api, aws, web; not home-cluster |
-| Tense | home-cluster's rule says past tense; its entries mix "Added …" with "The dashboard has …" |
+| Doc-only changes | No entry in all four (decided 2026-10-13) |
+| Dependabot | api, web: a follow-up "Dependency updates" line only when a bump changes behaviour. aws: an entry only then. home-cluster: none configured |
+| `# Changelog` title | All but web (web's page supplies its own title); api, aws and home-cluster have a one-line preamble |
+| Package headings (aws) | `## X.Y.Z - YYYY-MM-DD` in all four; logger and models also keep `## Unreleased` |
+| References | api: `(#N)` 22 times. aws: `(issue #88)` and full refs. web: none (public) |
+| "Reread the whole day" | All four |
+| Tense | home-cluster's rule: past tense for what was done, present for the state it leaves |
 
 **Against Keep a Changelog 2.0:**
-- Slashed dates where the spec says `YYYY-MM-DD`. No script in any repo parses the headings.
-- Every change logged where the spec says notable ones (DOC-002).
+- Every change except doc-only ones logged where the spec says notable ones (DOC-002).
 - Area subtitles where the spec has six types.
 - Bare `(#N)` where the spec prefers prose.
 
@@ -416,7 +415,7 @@ solix follows the spec apart from a seventh "Development" type. claude-kb's tabl
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [osrs-tracker-api CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/CLAUDE.md), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [osrs-tracker-web skill](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/skills/osrs-tracker-web/SKILL.md), read on `origin/main` 2026-10-13
 - Related: DOC-003, DOC-018, REPO-044, MEM-023
 
@@ -432,7 +431,7 @@ The repos already apply this fix to agents: "keep rules here, not in the agent".
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: review rules in the [osrs-tracker-api](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [osrs-tracker-aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/SKILL.md) and [osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/skills/osrs-tracker-web/SKILL.md) skills, [home-cluster conventions-reviewer.md](https://github.com/FreekMencke/home-cluster/blob/main/.claude/agents/conventions-reviewer.md), read on `origin/main` 2026-10-13
 - Related: DOC-013, DOC-015, DOC-019, REPO-044
 
@@ -445,7 +444,7 @@ Our reviewers check pairs of files "against the whole diff". Each pair is a doc 
   - A change and `CHANGELOG.md`.
 - **osrs-tracker-aws.**
   - A Mongo write, query or index and `DATA-MODEL.md` ("its rows must match the change").
-  - A Lambda's trigger or env vars and its README.
+  - A Lambda's trigger or env vars and its README (a CLAUDE.md rule in aws, not in its review-rule pairs).
 - **osrs-tracker-web.** A new route and `route-label.ts`.
 - **home-cluster.** A chart or version change and the README's versions table, `docs/rebuild.md` and `CHARTS`.
 
@@ -457,14 +456,14 @@ Our reviewers check pairs of files "against the whole diff". Each pair is a doc 
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [osrs-tracker-web docs/decisions.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/decisions.md), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [home-cluster README.md](https://github.com/FreekMencke/home-cluster/blob/main/README.md), read on `origin/main` 2026-10-13
 - Related: DOC-011, DOC-020, REPO-044
 
-osrs-tracker-web's `docs/decisions.md` (423 lines, 29 decisions from 2026/10/04 to 2026/10/13) opens: "Choices that look like accidents without their context: what was decided, why, and when to revisit. Newest first."
+osrs-tracker-web's `docs/decisions.md` (484 lines, 33 decisions from 2026-10-04 to 2026-10-13, on 2026-10-14) opens: "Choices that look like accidents without their context: what was decided, why, and when to revisit. Newest first."
 
 Each entry:
-- **Heading:** the decision as a sentence, with its date. Example: "## Item link previews are drawn by the server (2026/10/11)".
+- **Heading:** the decision as a sentence, with its date. Example: "## Item link previews are drawn by the server (2026-10-11)".
 - **Context:** the forces, including rejected alternatives.
 - **Decision:** what was built, naming files.
 - **Revisit:** the condition that would reopen it.
@@ -473,7 +472,7 @@ Compared with MADR, it drops status and numbering and adds the revisit condition
 
 **Elsewhere.**
 - home-cluster keeps the same idea as a README section ("Known differences and decisions", "Host edits kept on purpose").
-- api and aws have no decisions file. Their review rules say so ("No decisions document to read"), and the rationale lives inline in the skills ("Not used on purpose: …").
+- api and aws have no decisions file. api's review rules say so ("No decisions document to read"), and its rationale lives inline in the skill ("Not used on purpose: …").
 
 That's fine at their size. Move the rationale to a decisions file once the skill's inline "on purpose" notes reach a few, or once the reviewer flags a deliberate choice.
 
@@ -481,7 +480,7 @@ That's fine at their size. Move the rationale to a decisions file once the skill
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [home-cluster docs/upgrade-plan-kubernetes-1.37.md](https://github.com/FreekMencke/home-cluster/blob/main/docs/upgrade-plan-kubernetes-1.37.md), read on `origin/main` 2026-10-13
 - Related: DOC-013, FLOW-003
 
@@ -498,7 +497,7 @@ home-cluster's Kubernetes upgrade plan opens with a status line and its own expi
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [osrs-tracker-web docs/runbook.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/runbook.md), [osrs-tracker-aws DEPLOY.md](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/DEPLOY.md), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [home-cluster docs/rebuild.md](https://github.com/FreekMencke/home-cluster/blob/main/docs/rebuild.md), read on `origin/main` 2026-10-13
 - Related: DOC-012, SKILL-021, REPO-044
 
@@ -544,17 +543,17 @@ Ranked by impact against effort. Every item changes another repo, so each become
 
 1. **Make each repo state its changelog rule once, and make the reviewer pair point to it** (high impact, low effort). This closes the api and web gap, where the reviewer checks only user-visible changes but CLAUDE.md requires entries for tooling too. DOC-019, DOC-020. Repos: osrs-tracker-api, osrs-tracker-web.
 2. **Align the changelog brief across the four Claude-maintained repos with Keep a Changelog 2.0** (medium impact, low effort). Add the missing rules: the reason in the text, a **Breaking:** marker (api, and aws packages), and `# Changelog` plus a one-line preamble (api, home-cluster). Keep "every change" and "Behind the scenes" as a deliberate difference, and say so in the preamble ("Every change is logged, including tooling, because sessions read this as history"). DOC-001, DOC-002, DOC-003, DOC-018.
-3. **Decide the Dependabot and doc-only rules once for all four** (medium impact, trivial effort). Decided 2026-10-13: doc-only changes get no entry, and Dependabot bumps get one only when they change behaviour. Items 1–3 were opened as osrs-tracker/osrs-tracker-api#150, osrs-tracker/osrs-tracker-web#264, osrs-tracker/osrs-tracker-aws#94 and FreekMencke/home-cluster#6 (roadmap FreekMencke/claude-kb#43), and all four were done on 2026-10-13: each repo states the rule once in CLAUDE.md, reviewer pairs point to it, and doc-only changes get no entry. api, aws and home-cluster gained a `# Changelog` preamble. api and aws gained a **Breaking:** marker, and home-cluster's push hook exempts doc-only commits. Today web logs neither, and api logs both. Suggestion: doc-only changes get no entry anywhere (Keep a Changelog: not notable, and version control has them). Dependabot gets the api treatment, a follow-up "Dependency updates" line, only where a bump changes behaviour. DOC-002, DOC-018.
+3. **Decide the Dependabot and doc-only rules once for all four** (medium impact, trivial effort). Decided 2026-10-13: doc-only changes get no entry, and Dependabot bumps get one only when they change behaviour. Items 1–3 were opened as osrs-tracker/osrs-tracker-api#150, osrs-tracker/osrs-tracker-web#264, osrs-tracker/osrs-tracker-aws#94 and FreekMencke/home-cluster#6 (roadmap FreekMencke/claude-kb#43), and all four were done on 2026-10-13: each repo states the rule once in CLAUDE.md, reviewer pairs point to it, and doc-only changes get no entry. api, aws and home-cluster gained a `# Changelog` preamble. api and aws gained a **Breaking:** marker, and home-cluster's push hook exempts doc-only commits. DOC-002, DOC-018.
 4. **Switch headings to ISO `YYYY-MM-DD`** (low impact, low effort, needs your call). Nothing parses the headings (DOC-018), so it's a find-and-replace in four changelogs, four packages and four sets of rules, plus home-cluster's push hook message. Do it in one pass with item 2 or not at all. Mixed formats are worse than slashes. DOC-004. Decided 2026-10-13, as a separate pass after item 2, all four repos on the same day: osrs-tracker/osrs-tracker-api#153, osrs-tracker/osrs-tracker-web#265, osrs-tracker/osrs-tracker-aws#95 (also one package heading format, `## X.Y.Z - YYYY-MM-DD`) and FreekMencke/home-cluster#7. All four were done on 2026-10-13: every changelog, aws package changelog and `docs/decisions.md` heading now uses ISO dates, and so does every rule that names the format.
-5. **Add `lychee --offline` to CI in web, aws and api, and extend api's `prettier:ci` to Markdown** (low impact, low effort). This catches docs that link to moved files, and the hand-wrapped Markdown in api. DOC-014. Opened 2026-10-13 in the same issues as item 4 (api, web, aws). Note: `lycheeverse/lychee-action`'s `fail` input defaults to `false`, so set it to `true`. Done 2026-10-13: api, web and aws run `lychee --offline --include-fragments --hidden` with `fail: true` on every push, doc-only ones included, and api's `prettier:ci` now covers `**/*.md`. `--hidden` is needed to reach `.claude/` and `.github/`. api's comment notes that a glob input doesn't skip `.gitignore`d paths, so it excludes `node_modules` by hand.
+5. **Add `lychee --offline` to CI in web, aws and api, and extend api's `prettier:ci` to Markdown** (low impact, low effort). This catches docs that link to moved files, and the hand-wrapped Markdown in api. DOC-014. Opened 2026-10-13 in the same issues as item 4 (api, web, aws). Note: `lycheeverse/lychee-action` v2 fails the job on broken links by default (`fail` defaults to `true` since v2.0.0; v1 defaulted to `false`), so `fail: true` is optional. Done 2026-10-13: api, web and aws run `lychee --offline --include-fragments --hidden` with `fail: true` on every push, doc-only ones included, and api's `prettier:ci` now covers `**/*.md`. `--hidden` is needed to reach `.claude/` and `.github/`. api's comment notes that a glob input doesn't skip `.gitignore`d paths, so it excludes `node_modules` by hand.
 6. **Replace freek-mencke-web's template README** (low impact, trivial effort). It's the only stale README found. DOC-017. Dropped 2026-10-13: that app is due for an overhaul.
 7. **Give long-lived plan docs a due-date issue** (low impact, trivial effort). Start with home-cluster's Kubernetes 1.37 plan, due when cert-manager 1.22 ships. DOC-022. Opened 2026-10-13 as FreekMencke/home-cluster#8 (check 2026-11-30). It also adds the convention to home-cluster's CLAUDE.md.
-8. **Already running, so not a recommendation:** the weekly docs-drift routine (REPO-018, DOC-024). This file first listed it under "not now", having missed REPO-018; corrected 2026-10-13. Watch whether its findings are pairs that a cross-file rule (DOC-020) should have caught, and add those rules. **Not now:** MADR files (the one-file log works at 29 decisions; DOC-021), and a changelog check in CI for PR repos (the reviewer pair is the reminder; DOC-008). 
+8. **Already running, so not a recommendation:** the weekly docs-drift routine (REPO-018, DOC-024). This file first listed it under "not now", having missed REPO-018; corrected 2026-10-13. Watch whether its findings are pairs that a cross-file rule (DOC-020) should have caught, and add those rules. **Not now:** MADR files (the one-file log works at 33 decisions (2026-10-14); DOC-021), and a changelog check in CI for PR repos (the reviewer pair is the reminder; DOC-008). 
 
 ## Open questions
 
-1. **Does "every change" make our changelogs too long for their readers?** web's is 775 lines over 66 days, and api's 425 lines over 10. No measurement says whether sessions or users read past the first screen. A cheap check: how often sessions grep CHANGELOG.md as opposed to `git log`.
+1. **Does "every change" make our changelogs too long for their readers?** web's is 857 lines over 67 days, and api's 502 lines over 10 (2026-10-14). No measurement says whether sessions or users read past the first screen. A cheap check: how often sessions grep CHANGELOG.md as opposed to `git log`.
 2. **Should claude-skills have a changelog?** It installs by commit, and its commit subjects already read like entries (`<skill>: <change> (#PR)`). Keep a Changelog says a commit list isn't a changelog. With one user and the claude.ai sync, the reader may not exist.
-3. **Official doc-sync tooling.** A rate limit cut short the GitHub code search across anthropics/skills and claude-code for "update documentation" (DOC-010). Re-run it at the next monthly re-verification.
+3. **Official doc-sync tooling.** Answered 2026-10-14: a GitHub code search across anthropics/skills and anthropics/claude-code for "update documentation" found no doc-sync skill or plugin (DOC-010). Re-run only if a new official plugin appears.
 4. **Does `/init` read the README?** memory.md doesn't say. Untested.
 5. **Docs-drift routine results.** No published measurement of a docs-sync agent was found (DOC-015). Our own routine has only test runs so far (DOC-024). After a month of scheduled runs, check how many findings were real, and how many a cross-file rule could have prevented.

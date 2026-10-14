@@ -1,6 +1,6 @@
 # Writing, testing and distributing skills
 
-Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last verified" dates are 2026-10-12. "Local CLI" means `--help` output or a command run on Claude Code 2.1.296 on that date.
+Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2026-10-14; each entry's Last verified date is authoritative. "Local CLI" means `--help` output or a command run on Claude Code 2.1.296 on that date.
 
 ## Quick answers
 
@@ -18,7 +18,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
-| How many skills is too many, and how do I prune? | No official number; trigger accuracy measurably drops as the roster grows. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
+| How many skills is too many, and how do I prune? | No official number; one measurement saw a skill's invocation rate drop as the roster grew. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
 | Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills no (local test), so symlink the ones you need into the distro's `~/.claude/skills`; plugins enabled in the distro's settings load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054, SKILL-056 |
 | Where should skills live with desktop and WSL? | WSL uses the distro's Linux `~/.claude`; Windows and WSL share no skills, plugins, settings or credentials. Keep skills in a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-051, SKILL-056 |
 
@@ -95,7 +95,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. All "Last ver
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Agent Skills specification](https://agentskills.io/specification), [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Claude Code skills](https://code.claude.com/docs/en/skills)
 - Related: SKILL-002, SKILL-004, SKILL-017
 
@@ -117,7 +117,7 @@ my-skill/
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Agent Skills specification](https://agentskills.io/specification), [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-003, SKILL-014, SKILL-040
 
@@ -142,7 +142,7 @@ Fields from the open standard work everywhere. Claude Code adds many more, which
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Agent Skills specification](https://agentskills.io/specification), [Claude Code skills](https://code.claude.com/docs/en/skills)
 - Related: SKILL-002, TOK-005
 
@@ -150,7 +150,7 @@ The limits differ by surface, so write to the strictest: a name of up to 64 char
 
 | Limit | claude.ai / API | Open spec | Claude Code |
 |---|---|---|---|
-| `name` | ≤64 chars; lowercase letters, digits and hyphens; no XML tags; must not contain "anthropic" or "claude" | ≤64; no leading, trailing or double hyphen; must match the folder | Defaults to the folder name; names over 256 chars are ignored |
+| `name` | ≤64 chars; lowercase letters, digits and hyphens; no XML tags; must not contain "anthropic" or "claude" | ≤64; no leading, trailing or double hyphen; must match the folder | Defaults to the folder name; names over 256 chars are ignored, and since v2.1.299 so are names with hidden or direction-changing characters, `<` or `>` |
 | `description` | 1–1,024 chars, no XML tags | 1–1,024 | Listing truncates `description` + `when_to_use` at 1,536 chars (`skillListingMaxDescChars`) |
 
 History: Claude Code's per-entry listing cap was 250 characters at v2.1.86 and became 1,536 at v2.1.105. Community posts quoting "250 characters" are out of date.
@@ -159,7 +159,7 @@ History: Claude Code's per-entry listing cap was 250 characters at v2.1.86 and b
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills), [Claude Code skills](https://code.claude.com/docs/en/skills), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
 - Related: TOK-005, SKILL-011, SKILL-017
 
@@ -179,7 +179,7 @@ Consequences:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills: "Skill descriptions are cut short"](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-005
 
@@ -189,7 +189,7 @@ Merged into TOK-005 (kb-token-usage.md) on 2026-10-12. Read that entry for the l
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills)
 - Related: SKILL-016, SKILL-023, SKILL-009
 
@@ -202,14 +202,14 @@ At auto-compaction, Claude Code re-attaches the most recent invocation of each s
 How to write for this:
 - Put the rules that matter most in the first part of the body. A long skill loses its tail after compaction.
 - Write standing instructions ("run the tests after every edit") rather than one-off steps you expect Claude to re-read.
-- In long sessions, invoke the skill again after a compaction if behaviour drifts.
+- In long sessions, invoke the skill again after a compaction if behaviour drifts. Since v2.1.299 `/reload-skills` says it re-sends the full skill list, which is how to get skills back after compaction.
 - Move rarely needed detail to reference files, and run long self-contained procedures with `context: fork` (SKILL-009), so the body lives in a subagent.
 
 ## [SKILL-007] Where Claude Code finds skills, precedence and reload
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-033, SKILL-038
 
@@ -218,7 +218,7 @@ How to write for this:
 | Enterprise | `.claude/skills/` in the managed-settings directory |
 | Personal | `~/.claude/skills/<name>/SKILL.md` |
 | Project | `.claude/skills/<name>/SKILL.md` (committed) |
-| Nested | `<subdir>/.claude/skills/`, loaded once Claude touches files there; invoked as `/subdir:name` |
+| Nested | `<subdir>/.claude/skills/`, loaded at startup when the session starts in or below `<subdir>`, otherwise once Claude touches files there (`/add-dir <subdir>` loads it sooner, v2.1.257+); invoked as `/name`, or as `/<subdir path>:name` (for example `/apps/web:deploy`) when its name clashes with another skill |
 | Plugin | `<plugin>/skills/<name>/`, invoked as `/plugin:name` |
 | claude.ai account | `~/.claude/skills/synced/` (one-way sync; see SKILL-038) |
 
@@ -232,7 +232,7 @@ How to write for this:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-002, SKILL-018
 
@@ -241,14 +241,14 @@ Custom slash commands were merged into skills in v2.1.3. `.claude/commands/x.md`
 - **Arguments**:
   - `$ARGUMENTS` is the whole argument string.
   - `$ARGUMENTS[0]` or `$0` is a 0-based positional argument, split with shell-style quoting.
-  - Substitution hits literal text too, whenever arguments are passed (`/name args`, or the model's Skill call with `args`): `$0` in a code block, in `awk '$0 ~ …'` or in a dollar amount like `$0.05` becomes the first argument. Without arguments they stay literal. Write `$(0)` in awk and amounts as "USD". Local test, 2026-10-12, v2.1.296 (FreekMencke/claude-kb#5).
+  - Substitution hits literal text too, whenever arguments are passed (`/name args`, or the model's Skill call with `args`): `$0` in a code block, in `awk '$0 ~ …'` or in a dollar amount like `$0.05` becomes the first argument. Without arguments they stay literal. Write `$(0)` in awk and amounts as "USD". Local test, 2026-10-12, v2.1.296 (FreekMencke/claude-kb#5). The docs also give a backslash escape (`\$0.05`, CHANGELOG v2.1.163), not tested here.
   - `$name` maps to the `arguments:` list.
   - If nothing consumes the arguments, `ARGUMENTS: <value>` is appended to the body.
 - **Variables**:
   - `${CLAUDE_SKILL_DIR}` (use it to call bundled scripts), `${CLAUDE_PROJECT_DIR}`, `${CLAUDE_SESSION_ID}` and `${CLAUDE_EFFORT}`.
   - In plugins also `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PLUGIN_DATA}`.
 - **Injection**: !`git status` at line start, or a fenced block opened with ```` ```! ````, runs *before* Claude sees the skill and pastes its output in as plain text.
-  - A non-zero exit aborts the invocation; append `|| true` to tolerate failure.
+  - A non-zero exit aborts the invocation, except exit 1 from search and comparison commands (`grep`, `rg`, `find`, `diff`, `test`, `git diff`, `git grep`); append `|| true` for others.
   - Commands go through permission rules, so pre-approve them in `allowed-tools`.
   - Commands are subject to the 2-minute Bash timeout.
   - The `disableSkillShellExecution` setting turns injection off.
@@ -258,7 +258,7 @@ Custom slash commands were merged into skills in v2.1.3. `.claude/commands/x.md`
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: SKILL-021
 
@@ -268,7 +268,8 @@ There are two ways to combine skills and subagents.
 - The body becomes the prompt of a new subagent. `agent:` picks its type (default `general-purpose`).
 - The subagent has no conversation history, so the body must be self-contained.
 - Since v2.1.218 it runs in the background by default; set `background: false` to wait for its result.
-- Use it only for skills with an explicit task. A guideline-only skill forked this way "returns nothing useful".
+- Use it only for skills with an explicit task. A guideline-only skill forked this way "returns without meaningful output".
+- In the background it gets the narrower background-subagent tool set, and its edits aren't covered by `/rewind`; set `background: false` if it needs other tools.
 
 **A subagent that preloads skills** (`skills:` in the agent's frontmatter):
 - It injects the full skill content at startup, up to the first 32 distinct names.
@@ -281,7 +282,7 @@ Use a preloading reviewer agent when a checklist must always apply to that agent
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-041
 
@@ -299,7 +300,7 @@ A common mistake is to treat `allowed-tools` as a sandbox. In Claude Code it onl
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Claude Code skills](https://code.claude.com/docs/en/skills), [Rulestack: 38 runs, seven descriptions](https://dev.to/rulestack/will-claude-code-call-your-skill-on-its-own-38-runs-one-skill-seven-ways-to-describe-it-203m)
 - Related: SKILL-004, SKILL-012, SKILL-013
 
@@ -317,7 +318,7 @@ Evidence: in a single-author test on Claude Code 2.1.273, "Helps with git stuff.
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator), [anthropics/skills docx skill](https://github.com/anthropics/skills/tree/main/skills/docx), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise)
 - Related: SKILL-011, SKILL-028
 
@@ -333,7 +334,7 @@ The counterweight is a **negative trigger** for neighbouring skills. Anthropic's
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [obra/superpowers writing-skills SKILL.md](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md)
 - Related: SKILL-011, SKILL-043
 
@@ -350,7 +351,7 @@ This conflicts with Anthropic's "what + when" (SKILL-011). Reconciliation, which
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Extend Claude Code](https://code.claude.com/docs/en/features-overview)
 - Related: TOK-005, SKILL-015, TOK-064
 
@@ -362,13 +363,13 @@ This conflicts with Anthropic's "what + when" (SKILL-011). Reconciliation, which
 | `skillOverrides` setting: `on` / `name-only` / `user-invocable-only` / `off` | Changes visibility without editing SKILL.md (not for plugin skills) | Silencing bundled or third-party skills you don't use |
 | `disableBundledSkills` / `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS` | Drops Claude Code's own bundled skills | Small listing budgets |
 
-These are Claude Code-only fields. Skills synced from claude.ai cannot carry them (SKILL-002), but the `skillOverrides` setting still works on them.
+These are Claude Code-only fields. Skills synced from claude.ai cannot carry them (SKILL-002), but the `skillOverrides` setting still works on terminal-synced copies (not on the desktop app's plugin-delivered ones, SKILL-058).
 
 ## [SKILL-015] Troubleshooting: not triggering, over-triggering, not followed
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills: Troubleshooting](https://code.claude.com/docs/en/skills), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
 - Related: TOK-005, SKILL-023, SKILL-026
 
@@ -399,7 +400,7 @@ A topic word draws in tasks that do that thing; name them in the exclusion.
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Agent Skills specification](https://agentskills.io/specification), [obra/superpowers writing-skills](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md)
 - Related: SKILL-006, SKILL-017
 
@@ -427,7 +428,7 @@ Several widely used skills exceed 500 lines: superpowers writing-skills (681), p
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
 - Related: SKILL-004, SKILL-016
 
@@ -444,7 +445,7 @@ Treat SKILL.md as a table of contents and move the detail into files that load o
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
 - Related: SKILL-008, SKILL-016
 
@@ -465,7 +466,7 @@ Scripts are more reliable than generated code and cheaper: only their output ent
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
 - Related: SKILL-032
 
@@ -482,7 +483,7 @@ These rules keep a skill correct as things change and stop it confusing the read
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator), [obra/superpowers writing-skills](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md), [Claude Code CHANGELOG (doctor prompt-audit)](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-012, SKILL-016
 
@@ -502,7 +503,7 @@ skill-creator calls heavy-handed ALWAYS/NEVER "a yellow flag". Explain *why* a r
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [Skills explained](https://claude.com/blog/skills-explained), [Steering Claude Code](https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more), [Output styles](https://code.claude.com/docs/en/output-styles)
 - Related: SKILL-022, SKILL-023, SKILL-024, TOK-065
 
@@ -525,7 +526,7 @@ skill-creator calls heavy-handed ALWAYS/NEVER "a yellow flag". Explain *why* a r
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [Subagents](https://code.claude.com/docs/en/sub-agents), [Memory](https://code.claude.com/docs/en/memory), local CLI `claude plugin details`
 - Related: TOK-005, SKILL-006, SKILL-030, TOK-065
 
@@ -544,7 +545,7 @@ Measure instead of guessing: `claude plugin details <plugin>` prints "Always-on"
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [Hooks guide](https://code.claude.com/docs/en/hooks-guide), [Memory](https://code.claude.com/docs/en/memory), [Claude Code skills](https://code.claude.com/docs/en/skills)
 - Related: SKILL-015, SKILL-021
 
@@ -552,14 +553,14 @@ Skills, CLAUDE.md and output styles are advisory: "'never edit .env' in CLAUDE.m
 
 - A skill's outcome "can vary"; a hook "always fires on its event".
 - Hook handlers can be `command`, `http`, `mcp_tool`, `prompt` or `agent`. Exit code 2 blocks a blockable event.
-- A skill can declare `hooks:`. They apply from invocation to the end of the session, not before it.
+- A skill can declare `hooks:`. They apply from invocation to the end of the session, not before it. Since v2.1.299 a skill's own `UserPromptSubmit` hook first runs on the prompt after the one that invoked it.
 - Split the work: put judgement and procedure in the skill, and the invariant (format check, forbidden path, required test run) in a hook.
 
 ## [SKILL-024] CLAUDE.md under 200 lines; move procedures into skills
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Steering Claude Code](https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more)
 - Related: SKILL-021, SKILL-022, TOK-003, REPO-045
 
@@ -579,7 +580,7 @@ Target under 200 lines per CLAUDE.md: "Longer files consume more context and red
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Claude Code skills: Testing](https://code.claude.com/docs/en/skills), [Evaluating skills (agentskills.io)](https://agentskills.io/skill-creation/evaluating-skills)
 - Related: SKILL-026, SKILL-031, SKILL-043
 
@@ -605,7 +606,7 @@ The best-practices page still says "there is not currently a built-in way to run
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugin evals](https://code.claude.com/docs/en/plugin-evals), local CLI `claude plugin eval --help` (2.1.296), [Claude Code CHANGELOG v2.1.269](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-027, SKILL-028, SKILL-031
 
@@ -618,15 +619,16 @@ Added in v2.1.269 (2026-09-11). It runs eval cases against a plugin and reports 
   - `regex`, `tool_used`, `tool_order` and `file_exists` are free.
   - `llm` (2 of 3 judge votes; judge defaults to Haiku) and `baseline` cost judge calls.
 - **Trigger check**: `type: tool_used`, `tool: Skill`, `input_match: '"skill"\s*:\s*"(?:[\w-]+:)?my-skill"'`. In two-arm runs it is an unscored indicator. For a negative case use `min: 0, max: 0, arm: both`.
-- **CI flags**: `--threshold`, `--max-cost-usd`, `--model`, `--trust-plugin`, `--json`. Pin `--model` "so a model rollout isn't mistaken for a plugin regression".
-- **Reports**: the HTML report is published to claude.ai by default; `--no-publish` keeps it local.
+- **Tools**: runs never prompt; `Bash`, `Write`, `Edit`, `WebFetch` and `WebSearch` are removed unless granted with `--allow-tools`. `--disallow-tools` (v2.1.299) keeps others out.
+- **CI flags**: `--threshold`, `--max-cost-usd`, `--model`, `--trust-plugin`, `--json`. Since v2.1.299 a run ending on an API error scores 0 and the suite exits 1. Pin `--model` "so a model rollout isn't mistaken for a plugin regression".
+- **Reports**: published as a private claude.ai artifact when you're signed in with a subscription that has artifacts (not with API-key auth, and not for a run a Claude Code session started unless `--publish-report`); `--no-publish` keeps it local.
 - **Caveat**: it runs real sessions on your plan's usage.
 
 ## [SKILL-027] skill-creator: benchmarks and description optimisation
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [anthropics/skills skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator), [Improving skill-creator (2026-03-03)](https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills), [Optimizing descriptions (agentskills.io)](https://agentskills.io/skill-creation/optimizing-descriptions)
 - Related: SKILL-026, SKILL-028
 
@@ -668,7 +670,7 @@ How to build the query set:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Spence: sandboxed skill-activation evals (2026-02-08)](https://scottspence.com/posts/measuring-claude-code-skill-activation-with-sandboxed-evals), [Spence: make skills activate reliably (2025-11-16)](https://scottspence.com/posts/how-to-make-claude-code-skills-activate-reliably), [Lung: plugin eval on 89 skills](https://dev.to/dexterlung/i-ran-claude-plugin-eval-on-89-skills-the-trigger-rate-fell-from-100-to-556-n29), [Rulestack: 38 runs](https://dev.to/rulestack/will-claude-code-call-your-skill-on-its-own-38-runs-one-skill-seven-ways-to-describe-it-203m)
 - Related: SKILL-028, SKILL-023
 
@@ -689,11 +691,11 @@ Judgement: official docs neither endorse nor reject hooks that force skill evalu
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills: Find unused skills](https://code.claude.com/docs/en/skills), [Monitoring usage](https://code.claude.com/docs/en/monitoring-usage), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), local CLI
 - Related: TOK-005, SKILL-022, SKILL-032
 
-- **`/skill-doctor`** (docs: v2.1.252+; the CHANGELOG lists it under 2.1.261) shows each loaded skill's context cost and how often it is invoked. It also lists plugins you haven't used recently and tells you where to switch skills off (`skillOverrides`). The interactive report is in `/plugin` › Stats. `claude -p "/skill-doctor"` prints the same table without a model turn (tested on v2.1.296, 2026-10-12); the desktop Code tab doesn't offer it (SKILL-031).
+- **`/skill-doctor`** (docs: v2.1.252+; the CHANGELOG lists it under 2.1.261) shows each loaded skill's context cost and how often it is invoked. It also lists plugins you haven't used recently and tells you where to switch skills off (`skillOverrides`). The interactive report is in `/plugin` › Stats. `claude -p "/skill-doctor"` prints the same table without a model turn (tested on v2.1.296, 2026-10-12); the desktop Code tab doesn't offer it (SKILL-031). The docs say it is unavailable in sessions that skip feature-flag fetching and over Remote Control.
   - It measures usage and cost only, not trigger accuracy or quality.
   - It excludes bundled and enterprise skills.
   - Don't confuse it with the community `skill-doctor` plugin.
@@ -701,8 +703,8 @@ Judgement: official docs neither endorse nor reject hooks that force skill evalu
 - **`/doctor`** estimates the cost of the skill listing. **`/doctor prompt-audit`** flags outdated prompting patterns.
 - **OpenTelemetry** (`CLAUDE_CODE_ENABLE_TELEMETRY=1`):
   - The `claude_code.skill_activated` event carries `invocation_trigger` (`user-slash`, `claude-proactive` or `nested-skill`).
-  - `skill.name` is an attribute on the cost and token metrics.
-  - Custom skill names show only with `OTEL_LOG_TOOL_DETAILS=1`.
+  - `skill.name` is an attribute on the cost and token metrics: user-defined skill names appear verbatim, third-party plugin skills as `third-party`. On the `skill_activated` event, user-defined and third-party skills show as `custom_skill`. `OTEL_LOG_TOOL_DETAILS=1` shows the real names (on the metrics since v2.1.273).
+  - `/usage` (Pro, Max, Team, Enterprise) shows each skill's, subagent's, plugin's and MCP server's share of recent usage.
   - The ratio of `claude-proactive` to `user-slash` activations is a cheap production signal for whether a skill triggers on its own.
 
 ## [SKILL-031] Anti-patterns in skill testing
@@ -720,14 +722,14 @@ Judgement: official docs neither endorse nor reject hooks that force skill evalu
 - **Overfitting the description**: pasting failed queries into it as keywords. Use a holdout set.
 - **Assertions that pass in both arms.** They inflate scores without discriminating anything; the analyzer flags them. Assertions that fail in both arms are broken.
 - **Trusting a weak judge.** Prefer `regex` or scripts for checks that can be mechanical, and use `--judge-model sonnet` when the LLM judgement matters.
-- **Unchecked harness artifacts.** Broken YAML, a same-name skill shadowing yours, an expired login, or a different roster size can each swing the numbers.
+- **Unchecked harness artifacts.** Broken YAML, a same-name skill shadowing yours, an expired login, or a different roster size can each swing the numbers. Before v2.1.299 a run that ended on an API error (such as exhausted credit) scored 0 as if the grader failed; now it scores 0 ungraded and the suite exits 1.
 - **Testing only on Opus** when Haiku or Sonnet subagents will run the skill.
 
 ## [SKILL-032] Retire skills the model has outgrown
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Improving skill-creator](https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills), [Plugin evals](https://code.claude.com/docs/en/plugin-evals), [Evaluating skills (agentskills.io)](https://agentskills.io/skill-creation/evaluating-skills)
 - Related: SKILL-030, SKILL-019
 
@@ -750,7 +752,7 @@ Routine:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugin manifest reference](https://code.claude.com/docs/en/plugins/manifest-reference), [Claude Code skills](https://code.claude.com/docs/en/skills), local CLI `claude plugin init --help`
 - Related: SKILL-034, SKILL-037
 
@@ -769,14 +771,14 @@ my-plugin/
 - Plugin skills are invoked as `/plugin:skill`.
 - `${CLAUDE_PLUGIN_ROOT}` changes on every update. Keep state in `${CLAUDE_PLUGIN_DATA}`, which survives updates.
 - A `CLAUDE.md` at the plugin root is **not** loaded; put that guidance in a skill.
-- `claude plugin init <name> --with skills,agents,hooks` scaffolds a plugin in `~/.claude/skills/<name>/`. It loads next session as `<name>@skills-dir`.
-- Name rules: no spaces, `@` or `:`. Names imitating Anthropic (`claude-*`, `anthropic-*`) are rejected.
+- `claude plugin init <name> --with skills agents hooks` scaffolds a plugin in `~/.claude/skills/<name>/`. It loads next session as `<name>@skills-dir`.
+- Name rules: no spaces, `@` or `:`. Names that pass as Anthropic's own (starting `claude-`, `anthropic-`, `anthropics-` or `cc-plugin-`, or exactly `claude`, `anthropic`, `anthropics`, `claude-code`, `claude-mods`) fail `claude plugin validate`, and `plugin init` and `plugin tag` refuse them; Claude Code still loads such a plugin.
 
 ## [SKILL-034] Marketplaces and team rollout
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Marketplace reference](https://code.claude.com/docs/en/plugins/marketplace-reference), [Install plugins](https://code.claude.com/docs/en/plugins/install), [Plugins for organisations](https://code.claude.com/docs/en/plugins/org), [Anthropic marketplaces](https://code.claude.com/docs/en/plugins/anthropic-marketplaces)
 - Related: SKILL-033, SKILL-035, SKILL-036
 
@@ -810,7 +812,7 @@ my-plugin/
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugin loading: versions and updates](https://code.claude.com/docs/en/plugins/loading), [Host a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace), [Publish](https://code.claude.com/docs/en/plugins/publish)
 - Related: SKILL-036, SKILL-037
 
@@ -835,7 +837,7 @@ Other rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Host a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace)
 - Related: SKILL-035
 
@@ -846,7 +848,7 @@ Other rules:
 
 **Manual updates**
 - `claude plugin update <plugin>` updates one plugin. There is no "update all" command.
-- `claude plugin marketplace update` refreshes the listings only.
+- `claude plugin marketplace update` refreshes the listings only. In `/plugin` › Marketplaces, **Update marketplace** also updates the plugins installed from that marketplace.
 
 **Pinning**: a `ref` or `sha` on the plugin source, or `owner/repo#ref` on `marketplace add`.
 
@@ -861,7 +863,7 @@ Other rules:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugin CLI reference](https://code.claude.com/docs/en/plugins/cli-reference), [Publish](https://code.claude.com/docs/en/plugins/publish), local CLI `claude plugin validate --help`, `claude plugin tag --help`
 - Related: SKILL-026, SKILL-035
 
@@ -879,7 +881,7 @@ Other rules:
   - It does not check a root-level SKILL.md.
   - It does not catch `source` fetch errors.
 - Run locally on 2026-10-12, it passed all four of our custom skills.
-- Tested 2026-10-14, v2.1.296, CLI: it reported nothing on a skill with `description: Bad: colon here`, an unknown key or `name: [unclosed`, under the default `skills/` and a custom `skills` path, and only warned about the missing `version`. Claude Code tolerated the unquoted `: `: the skill loaded by name and its description appeared intact in the model's skill list. So "SKILL.md frontmatter" above doesn't cover YAML that fails to parse.
+- Tested 2026-10-14, v2.1.296, CLI: it reported nothing on a skill with `description: Bad: colon here`, an unknown key or `name: [unclosed`, under the default `skills/` and a custom `skills` path, and only warned about the missing `version`. Claude Code tolerated the unquoted `: `: the skill loaded by name and its description appeared intact in the model's skill list. So validate doesn't catch every malformed frontmatter: the docs (v2.1.233+) say it reports SKILL.md files whose YAML fails to parse, and a lead re-run on 2026-10-14, v2.1.296, flagged an unterminated quoted string (`YAML frontmatter failed to parse`, exit 1) but still passed `name: [unclosed` and an unquoted `: `.
 
 **`claude plugin tag [--dry-run] [--push]`** creates a `<name>--v<version>` tag after checking that `plugin.json` and the marketplace entry agree.
 
@@ -894,7 +896,7 @@ The agentskills.io reference validator is `skills-ref validate ./my-skill`. In-s
 - Type: fact
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude), [Provision skills for your organization](https://support.claude.com/en/articles/13119606-provision-and-manage-skills-for-your-organization), [Claude Code skills: synced skills](https://code.claude.com/docs/en/skills), [Plugin loading](https://code.claude.com/docs/en/plugins/loading)
 - Related: SKILL-002, SKILL-007, SKILL-059
 
@@ -902,7 +904,7 @@ The agentskills.io reference validator is `skills-ref validate ./my-skill`. In-s
 
 **Sharing** (Team and Enterprise):
 - Recipients get view-only access.
-- "Publish to org" can require review. Since 2026-10-02 that is the default for Enterprise orgs that hadn't chosen.
+- "Publish to org" can require review. The help article starts Team at "Open" and Enterprise at off, and switches an org that hadn't chosen a setting to "Requires review" on 2026-10-02; it doesn't limit that switch to Enterprise.
 - Security scanning on Enterprise blocks malicious skills and puts a caution banner on risky ones.
 
 **Org provisioning**: Organization settings › Plugins & skills. To target a group, bundle the skills into a plugin.
@@ -922,8 +924,8 @@ The skills overview page still says claude.ai skills "cannot be centrally manage
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Skills guide](https://platform.claude.com/docs/en/build-with-claude/skills-guide), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise)
+- Last verified: 2026-10-14
+- Sources: [Skills guide](https://platform.claude.com/docs/en/build-with-claude/skills-guide), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Platform release notes](https://platform.claude.com/docs/en/release-notes/overview)
 - Related: SKILL-003, SKILL-041
 
 **Requirements**: the code execution tool (`code_execution_20250825`). Pass `container.skills[]` entries of the form `{type: "anthropic"|"custom", skill_id, version}`.
@@ -942,7 +944,7 @@ The skills overview page still says claude.ai skills "cannot be centrally manage
 - Skills are not covered by ZDR.
 - Changing the skill list breaks the prompt cache.
 
-A research agent read that the `skills-2025-10-02` beta header is no longer required. A second agent couldn't confirm it (see Open questions).
+The `skills-2025-10-02` beta header is no longer required: the Skills API left beta on 2026-08-19 (platform release notes). Requests that still send it keep working with the beta response shapes. Without the header, `DELETE /v1/skills/{skill_id}` removes the Skill with all its versions.
 
 ## [SKILL-040] The Agent Skills open standard and portability
 - Type: fact
@@ -973,12 +975,12 @@ Portability rules:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Plugin security](https://code.claude.com/docs/en/plugins/security), [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
 - Related: SKILL-010, SKILL-037
 
 "Only use skills from trusted sources." Installing a skill or plugin is installing software. "A Claude Code plugin you install can execute arbitrary code on your machine with your user privileges."
-- Hooks, monitors, MCP and LSP servers and `bin/` run *outside* the permission sandbox.
+- Hooks, monitors, MCP and LSP servers (and any process a mod starts) run *outside* the sandbox. A `bin/` executable runs as a Claude Bash command, so permission rules apply to it; `bin/` is on the shell's `PATH`, so read every file in it before installing.
 - Auto-update can change files after you reviewed them.
 
 Before installing:
@@ -1002,7 +1004,7 @@ A blog claimed Snyk found that 36% of 3,984 public skills had security issues. T
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [anthropics/skills](https://github.com/anthropics/skills), [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official), GitHub API star counts 2026-10-12
 - Related: SKILL-012, SKILL-027
 
@@ -1025,7 +1027,7 @@ What to copy:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [obra/superpowers](https://github.com/obra/superpowers), [writing-skills SKILL.md](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md), [testing-skills-with-subagents.md](https://github.com/obra/superpowers/blob/main/skills/writing-skills/testing-skills-with-subagents.md)
 - Related: SKILL-013, SKILL-025, SKILL-045
 
@@ -1052,7 +1054,7 @@ Caveats:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [plugin-dev](https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev), [trailofbits/skills AGENTS.md](https://github.com/trailofbits/skills/blob/main/AGENTS.md), [wshobson/agents](https://github.com/wshobson/agents), [wshobson plugin-eval](https://github.com/wshobson/agents/blob/main/docs/plugin-eval.md), [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), [vercel-labs/skills](https://github.com/vercel-labs/skills)
 - Related: SKILL-042, SKILL-043
 
@@ -1069,13 +1071,13 @@ Common to the best collections: a validator in CI, examples by complexity tier, 
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills (listing budget)](https://code.claude.com/docs/en/skills), [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Lung: plugin eval on 89 skills](https://dev.to/dexterlung/i-ran-claude-plugin-eval-on-89-skills-the-trigger-rate-fell-from-100-to-556-n29), [RoboRhythms: best Claude Code skills 2026](https://www.roborhythms.com/best-claude-code-skills-2026/)
 - Related: TOK-005, SKILL-030, SKILL-032
 
 Every installed skill makes the others less likely to trigger and adds to the cost of every session. There are three sources of evidence:
 - **Official.** The listing budget drops descriptions of rarely used skills, and overlapping descriptions mean "Claude may load the wrong skill or miss one that would help". Enterprise guidance says to "limit the number of Skills loaded simultaneously" and to stop adding skills when recall degrades.
-- **Measured.** One author's skill triggered 9 of 9 times with 1 skill installed and 5 of 9 with 89 installed.
+- **Measured.** One author's skill triggered 9 of 9 times with 1 skill installed and 5 of 9 with 89 installed. The author notes this counts invocations only: in the missed runs the model reasoned from the description without invoking the skill, the eval workspace was empty, and he drew no conclusion on pruning.
 - **Anecdotal.** One reviewer uninstalled 20 of 23 marketplace skills within 10 days, because most "restate general best practices Claude already follows".
 
 Practice:
@@ -1088,7 +1090,7 @@ Practice:
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cursor rules](https://cursor.com/docs/context/rules), [Codex skills](https://learn.chatgpt.com/docs/build-skills), [Codex AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [Gemini CLI extensions](https://geminicli.com/docs/extensions/)
 - Related: SKILL-014, SKILL-040
 
@@ -1113,7 +1115,7 @@ Entries SKILL-047 to SKILL-058 were added on 2026-10-12. Where they cite a "loca
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code on desktop](https://code.claude.com/docs/en/desktop), [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [#80089](https://github.com/anthropics/claude-code/issues/80089), local test
 - Related: SKILL-048, SKILL-051
 
@@ -1133,7 +1135,7 @@ For a **WSL** session, the app copies a Linux CLI build into the distro under `~
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code on desktop: Use skills](https://code.claude.com/docs/en/desktop), [Claude Code skills: Cowork and cloud sessions](https://code.claude.com/docs/en/skills), [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [#88432](https://github.com/anthropics/claude-code/issues/88432), local test
 - Related: SKILL-049, SKILL-050, SKILL-052, SURF-016
 
@@ -1158,7 +1160,7 @@ Verify each surface rather than assuming parity (SKILL-054).
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills: synced skills](https://code.claude.com/docs/en/skills), [Settings reference: disableSideloadFlags](https://code.claude.com/docs/en/settings-reference), [#100272](https://github.com/anthropics/claude-code/issues/100272), [#101061](https://github.com/anthropics/claude-code/issues/101061)
 - Related: SKILL-038, SKILL-050, SKILL-058
 
@@ -1181,7 +1183,7 @@ Both paths show the same `anthropic-skills:<name>` names, which hides which path
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: local test, [Claude Code on desktop](https://code.claude.com/docs/en/desktop), [Claude Code skills: where synced skills load](https://code.claude.com/docs/en/skills)
 - Related: SKILL-048, SKILL-049, SKILL-056
 
@@ -1207,7 +1209,7 @@ Fix (verified): put the skill in the distro's `~/.claude/skills` or the repo's `
 - Type: fact
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [Settings](https://code.claude.com/docs/en/settings), [#100742](https://github.com/anthropics/claude-code/issues/100742), [#88432](https://github.com/anthropics/claude-code/issues/88432), [#66303](https://github.com/anthropics/claude-code/issues/66303), [#96790](https://github.com/anthropics/claude-code/issues/96790), local test
 - Related: SKILL-047, SKILL-056
 
@@ -1227,7 +1229,7 @@ Pitfalls:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code on desktop: Install plugins](https://code.claude.com/docs/en/desktop), [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [#88432](https://github.com/anthropics/claude-code/issues/88432), [#97515](https://github.com/anthropics/claude-code/issues/97515), local test
 - Related: SKILL-048, SKILL-050
 
@@ -1247,15 +1249,15 @@ Rely on them, but re-check after app updates, since the documented behaviour say
 ## [SKILL-053] Desktop worktree sessions read project skills from the main checkout
 - Type: fact
 - Applies to: Claude Code
-- Confidence: community-consensus
-- Last verified: 2026-10-12
+- Confidence: official-docs
+- Last verified: 2026-10-14
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [#99145](https://github.com/anthropics/claude-code/issues/99145), [#100497](https://github.com/anthropics/claude-code/issues/100497), local test
 - Related: SKILL-007
 
 The docs say the CLI reads a worktree's own `.claude/skills` and falls back to the main checkout only when the worktree has none (v2.1.277+). The desktop app works differently: it launches worktree sessions with `--project-config-root <main checkout>`.
 - The local test showed this flag pointing at the main repo while the session's working directory was a worktree.
 - Open issues #99145 and #100497 report that project skills, hooks and commands then come from the main checkout.
-- The docs separately state that skills-dir plugins in a desktop worktree load from the main checkout.
+- The worktrees page now states it: a desktop-started worktree session reads settings, hooks, skills, agents, commands and `.mcp.json` from the main checkout's root, while `CLAUDE.md` and `.claude/rules/` still load from the worktree. #100497 dates the change to the desktop app update of 2026-10-07.
 
 Consequence: when a desktop session edits `.claude/skills/` on a worktree branch, that same session keeps running the main checkout's version. To test a skill change, merge it first, or start a CLI session inside the worktree.
 
@@ -1263,14 +1265,14 @@ Consequence: when a desktop session edits `.claude/skills/` on a worktree branch
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code on desktop](https://code.claude.com/docs/en/desktop), [#82676](https://github.com/anthropics/claude-code/issues/82676), [#91210](https://github.com/anthropics/claude-code/issues/91210), [#93339](https://github.com/anthropics/claude-code/issues/93339), [#100272](https://github.com/anthropics/claude-code/issues/100272), local test
 - Related: SKILL-015, SKILL-048
 
 The desktop `/` menu and the Customize panel are built separately from the skill listing the model receives, and several open issues show them disagreeing:
 - **Lazy spawn.** In WSL and SSH sessions the CLI only starts on the first message, so the menu is incomplete before it (#82676).
 - **Missing entries.** Personal skills can be absent from the menu yet invocable (#93339, #91210).
-- **Late account skills.** `anthropic-skills:*` entries appear only after the first message (#100272).
+- **Late account skills.** `anthropic-skills:*` entries appear only after the first message (#100272, closed as completed 2026-10-13; re-check on a current build).
 
 Reliable checks, best first:
 1. **Ask the model.** After the first message, ask it to list its available skills verbatim. That is the listing that decides triggering.
@@ -1283,7 +1285,7 @@ Terminal-dialog commands behave differently in the Code tab. Commands with no ar
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: unverified
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [Troubleshooting: slow search on WSL](https://code.claude.com/docs/en/troubleshooting), [#60580](https://github.com/anthropics/claude-code/issues/60580), [#93845](https://github.com/anthropics/claude-code/issues/93845), [#76973](https://github.com/anthropics/claude-code/issues/76973)
 - Related: SKILL-018, SKILL-056
 
@@ -1293,19 +1295,19 @@ Most of this is general Linux behaviour that no Claude doc confirms for skills s
   - Access across `/mnt/c` or `\\wsl.localhost` "is slow and breaks file watching", so live skill reload may not fire. Run `/reload-skills` if in doubt.
   - Search on `/mnt/c` can return partial results.
 - **Use LF line endings.**
-  - A CRLF `SKILL.md` broke the desktop scheduled-task editor's frontmatter parser (#60580), although the reporter says the skill loader itself tolerates CRLF.
+  - A CRLF `SKILL.md` broke the desktop scheduled-task editor's frontmatter parser (#60580, closed as completed 2026-05-21), although the reporter says the skill loader itself tolerates CRLF.
   - A CRLF shebang breaks bundled scripts under bash.
   - Fix: `.gitattributes` with `* text=auto eol=lf`.
 - **Keep scripts executable in git** (`git update-index --chmod=+x`). Files on `/mnt/c` report mode 0777 and Windows git can drop the exec bit.
 - **Paths.** Use `${CLAUDE_SKILL_DIR}` and forward slashes. `C:\…` paths in a skill don't work in a WSL session.
-- **`!` injection** uses bash by default, which is always present in WSL. `shell: powershell` needs `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` there.
+- **`!` injection** uses bash by default, which is always present in WSL. `shell: powershell` needs `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` and `pwsh` on the PATH there.
 - **Sandbox pitfall.** Don't symlink sensitive directories into `/mnt/c`: deny-read paths that are symlinks into `/mnt/c` break the bwrap sandbox (#93845).
 
 ## [SKILL-056] Setup for someone using both the desktop app and WSL
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code skills (symlinked skill folders)](https://code.claude.com/docs/en/skills), [#82676 comment](https://github.com/anthropics/claude-code/issues/82676), [#66303](https://github.com/anthropics/claude-code/issues/66303), local test
 - Related: SKILL-050, SKILL-051, SKILL-052
 
@@ -1334,7 +1336,7 @@ ln -s ~/repos/my-skills/skills/roadmap-issues ~/.claude/skills/roadmap-issues
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code on desktop: What's not available](https://code.claude.com/docs/en/desktop), [#80696](https://github.com/anthropics/claude-code/issues/80696), [#93987](https://github.com/anthropics/claude-code/issues/93987), [#90460](https://github.com/anthropics/claude-code/issues/90460), [#91053](https://github.com/anthropics/claude-code/issues/91053)
 - Related: SKILL-010, SKILL-054
 
@@ -1357,7 +1359,7 @@ Consequence: test skill behaviour that depends on slash invocation or permission
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Settings reference: disableSideloadFlags](https://code.claude.com/docs/en/settings-reference), [Claude Code skills: restrict skill access](https://code.claude.com/docs/en/skills), [#101061](https://github.com/anthropics/claude-code/issues/101061)
 - Related: SKILL-049, SKILL-014
 
@@ -1376,7 +1378,7 @@ Context-cost consequence: on the desktop, account skills you never use in code s
 - Type: fact
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugins (claude.com docs)](https://claude.com/docs/plugins/overview), [Install plugins in Cowork](https://claude.com/docs/cowork/guide/plugins), [Plugin loading: synced plugins](https://code.claude.com/docs/en/plugins/loading)
 - Related: SKILL-038, SKILL-034, SKILL-036, SKILL-050, SKILL-060
 
@@ -1396,7 +1398,7 @@ An individual can add a Git repo as a plugin marketplace on claude.ai, and the p
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugin loading: synced plugins](https://code.claude.com/docs/en/plugins/loading), [Skills: Cowork and cloud sessions](https://code.claude.com/docs/en/skills), [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Routines](https://code.claude.com/docs/en/routines), local test (routine runs 2026-10-12)
 - Related: SKILL-048, SKILL-059, REPO-012, REPO-030, ORCH-017
 
@@ -1416,11 +1418,11 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 - `freek-skills` (`skills/`) is installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so it keeps to standard frontmatter until it's known whether claude.ai accepts Claude Code-only fields (Open questions). Claude Code-only skills go in `freek-local-skills` (`local-skills/skills/`), which is never installed on claude.ai.
 - `claude-kb-lookup` lives in claude-kb (`.claude/skills/`) since 2026-10-14, not in claude-skills: it is the only skill that reads the KB, so a new topic and its routing land in one PR. As a project skill that finds the KB from `${CLAUDE_SKILL_DIR}`, a cloud session or routine with claude-kb attached can load it (SKILL-048, SKILL-060). Locally it is a personal-skill symlink to the main checkout.
 - On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice.
-- Don't set `syncClaudeAiSkills: false`. The only synced skills left are the 12 set to `name-only` (under 20 tokens each), so turning sync off saves almost nothing and drops the account skills from the terminal.
+- Don't set `syncClaudeAiSkills: false`. The only synced skills left are the 10 set to `name-only` (under 20 tokens each), so turning sync off saves almost nothing and drops the account skills from the terminal.
 
 Still open:
 
-10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). The same applies to this repo's `CLAUDE.md` when worktrees change it.
+10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). `CLAUDE.md` and `.claude/rules/` still load from the worktree, so CLAUDE.md edits do take effect there.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
 12. **Done 2026-10-12: prune unused account skills on claude.ai** (Customize › Skills). Done for WSL Claude Code (`skillOverrides`). On claude.ai, 2026-10-12: `morning` and `import-memory` disabled; kept on purpose: `docs`, `pdf`, `docx`, `pptx`, `xlsx` (used in chat), `deep-research`, `computer-use`, `chrome-browser`, `built-in-browser`, and `skill-creator` (skill-workshop points to it for benchmarks and description tuning). Disabling on claude.ai removes a skill from every surface, chat included, so decide per skill on use anywhere, not just in code. In desktop Local sessions these skills arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
 
@@ -1429,16 +1431,15 @@ Still open:
 - **Listing budget.** Is the 1% of the context window counted in characters or tokens, and what is the default `skillListingBudgetFraction`? The detailed settings entries weren't read. Answered in TOK-005 (from the settings and env-vars references): a character budget, `skillListingBudgetFraction: 0.01`, with an 8,000-character fallback; see INDEX.md, Conflicts.
 - **Desktop WSL mechanism.** Which launch factor stops desktop WSL sessions from loading `~/.claude/skills/synced/`: the host-brokered auth, or something in the app's inline `--settings`? The bisect (SKILL-050) ruled out the CLI version, the entrypoint variable and `--setting-sources`. The inline settings could not be inspected, because reading the process command line was blocked as credential exploration.
 - **Plugins in desktop WSL sessions.** Is it intended that they load (SKILL-052) when the docs say they don't, or will a later app build stop them loading?
-- **Skill commands in the desktop Code tab.** Do `/skills` and `/context` work there? It's undocumented and wasn't tested. `/skill-doctor` doesn't, at least in desktop WSL sessions (SKILL-031).
+- **Skill commands in the desktop Code tab.** Do `/skills` and `/context` work there? It's undocumented and wasn't tested. `/skill-doctor` doesn't, at least in desktop WSL sessions (SKILL-054).
 - **Sync version.** The docs and the support article give v2.1.273 for terminal sync of claude.ai skills; the CHANGELOG entry is under 2.1.275.
 - **`artifact-design`.** Where does this skill, present only in desktop sessions, come from? Partly answered in SURF-016: it is the built-in design skill bundled with the `Artifact` tool, present wherever artifacts are. Whether it can be overridden or disabled per project is tracked in `kb-surfaces.md` open questions.
 - **`/skill-doctor` version.** The docs say v2.1.252+; the CHANGELOG lists it under 2.1.261.
 - **Official marketplace submission.** The claude-plugins-official README points to a form; the Claude Code docs say the official marketplace takes no portal submissions and to use a partner contact.
-- **Skills API beta header.** Is `skills-2025-10-02` still needed? One agent read it is not; another couldn't confirm.
 - **`.agents/skills`.** Does Claude Code read the cross-tool `.agents/skills` directory? Not documented. The 2026-10-12 probe (FreekMencke/claude-kb#27) was blocked: auto mode refused writing a test `SKILL.md` under `.agents/skills/` in a scratch repo as `[Self-Modification]`. Run it by hand: a skill there that replies one word, then `claude -p --model haiku --max-turns 1 --max-budget-usd 0.50 "/<name>"`.
 - **Trigger-only descriptions.** Does superpowers' finding (SKILL-013) hold on current models? It is single-source, with no controlled replication.
 - **Forcing hooks.** Do hooks that force skill evaluation still help on current models (Opus 5.x, Sonnet 5.x)? All published measurements are on 4.5-era models or small N.
 - **Claude Code-only frontmatter on claude.ai.** Does claude.ai accept, ignore or reject fields such as `context`, `agent` or `disable-model-invocation` in a skill that arrives through a marketplace plugin (SKILL-059) rather than a ZIP upload? Until tested, `freek-skills` keeps to standard frontmatter.
 - **Synced plugins in desktop WSL sessions.** Do `<name>@synced` plugins load there, when synced account skills don't (SKILL-050)? Not tested: this machine turns `freek-skills@synced` off.
-- **ZIP size.** The claude.ai skill ZIP size limit is not stated anywhere found.
+- **ZIP size.** The claude.ai skill ZIP size limit is not stated anywhere found. Uploaded plugins may hold up to 5,000 files and 200 MB ([claude.com plugins platform support](https://claude.com/docs/plugins/platform-support), read 2026-10-14).
 - **TOC threshold.** Anthropic's best-practices page says reference files over 100 lines need a TOC; skill-creator says over 300.

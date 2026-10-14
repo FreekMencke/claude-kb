@@ -12,7 +12,7 @@ Out of scope, linked instead: load limits and sizes (TOK-003, TOK-004, SKILL-024
 | In what order do they load, and which wins? | Broad to specific (managed, user, project, local; root down to the working directory) and concatenated. Nothing overrides anything: on a conflict Claude may follow either. | MEM-002 |
 | What loads at launch and what loads later? | Ancestor CLAUDE.md files, unscoped rules, imports and the first 200 lines/25KB of MEMORY.md at launch. Subdirectory CLAUDE.md and `paths:` rules when Claude reads, writes or edits a matching file. Memory topic files when Claude opens them. | MEM-003, MEM-004 |
 | What survives `/compact`? | Project-root CLAUDE.md, unscoped rules and auto memory are re-read from disk. Nested CLAUDE.md and `paths:` rules are summarized away until a matching file is touched again. | MEM-003 |
-| Do subagents get CLAUDE.md and auto memory? | CLAUDE.md yes, except Explore, Plan and agents with `omitClaudeMd`. Auto memory: the docs say no (forks only), but our v2.1.296 probe showed a general-purpose subagent receiving the main MEMORY.md. | MEM-011 |
+| Do subagents get CLAUDE.md and auto memory? | CLAUDE.md yes, except Explore, Plan and agents with `omitClaudeMd` (nested CLAUDE.md and `paths:` rules still load on demand). Auto memory: the docs say no (forks only), but our v2.1.296 probe showed a general-purpose subagent receiving the main MEMORY.md. | MEM-011 |
 | How does auto memory decide what to save? | Claude saves `user`, `feedback`, `project` and `reference` notes it judges useful later, one file each plus a line in MEMORY.md; "remember X" always saves. It skips what the code or CLAUDE.md already says. | MEM-013, MEM-014 |
 | What belongs in auto memory and what in CLAUDE.md? | Memory: personal preferences, corrections, short-lived project state, pointers. CLAUDE.md, a skill or `docs/`: anything a teammate, cloud session or reviewer subagent also needs. | MEM-017 |
 | How do I turn auto memory off or move it? | `/memory` toggle or `autoMemoryEnabled: false` (any settings file), `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` (wins both ways), or `--bare`. `autoMemoryDirectory` moves it. | MEM-016 |
@@ -21,7 +21,7 @@ Out of scope, linked instead: load limits and sizes (TOK-003, TOK-004, SKILL-024
 | How do I keep CLAUDE.md current? | Add a line when Claude repeats a mistake; run `/doctor` (trim) and `/doctor prompt-audit` (stale paths, conflicts); `/claude-md-management:revise-claude-md` at the end of a session; review changes in PRs. | MEM-020 to MEM-024 |
 | API memory tool or Claude Code auto memory? | Same idea (a directory of files the model reads and writes). The API tool is client-side, loads nothing by itself and needs your path checks; Claude Code's auto memory is built in and preloads the index. | MEM-030, MEM-031 |
 | Do memory servers (mem0, claude-mem, basic-memory) beat plain files? | No controlled evidence for coding work; published numbers are chat-recall benchmarks. Our own claude-mem trial was net-negative and removed. | MEM-032, MEM-033 |
-| Can memory be a prompt-injection vector? | Yes: planted memory files steer later sessions. Since v2.1.50 Claude Code no longer puts MEMORY.md in the system prompt, and v2.1.284 neutralizes markup in it; guard what writes there. | MEM-019 |
+| Can memory be a prompt-injection vector? | Yes: planted memory files steer later sessions. Since v2.1.50, per Cisco, Claude Code no longer puts MEMORY.md in the system prompt, and v2.1.284 neutralizes markup in it; guard what writes there. | MEM-019 |
 
 ## Index
 
@@ -67,7 +67,7 @@ Out of scope, linked instead: load limits and sizes (TOK-003, TOK-004, SKILL-024
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Subagents](https://code.claude.com/docs/en/sub-agents), [CLI reference](https://code.claude.com/docs/en/cli-reference)
 - Related: MEM-002, MEM-003, REPO-005, REPO-011, TOK-065
 
@@ -89,7 +89,7 @@ Not memory, but often confused with it: skills load on demand (SKILL-004), and h
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: how CLAUDE.md files load](https://code.claude.com/docs/en/memory)
 - Related: MEM-001, MEM-003, MEM-004, MEM-007, PROMPT-016
 
@@ -108,7 +108,7 @@ Tested 2026-10-12, v2.1.296, `claude -p`: the transcript's `instructions` attach
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Context window: what survives compaction](https://code.claude.com/docs/en/context-window), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: MEM-004, TOK-003, TOK-031, MEM-010
 
@@ -116,7 +116,7 @@ Tested 2026-10-12, v2.1.296, `claude -p`: the transcript's `instructions` attach
 
 **On demand:** a subdirectory's CLAUDE.md loads "once Claude reads, writes, or edits another file in that subdirectory", including single-file `cat` or `head` in Bash. Write and Edit triggers arrived in v2.1.288, Bash views in v2.1.293; before that, only Read. A `Loaded` line shows in the terminal; it doesn't appear under Memory files. Memory topic files load only when Claude opens them.
 
-**After `/compact` or auto-compaction:**
+**After `/compact` or auto-compaction** (since v2.1.299 also idle compaction: a terminal conversation of 200K+ tokens left idle for about 54 minutes):
 
 | Content | After compaction |
 |---|---|
@@ -134,7 +134,7 @@ Tested 2026-10-12, v2.1.296, `claude -p` on Haiku: a `sub/CLAUDE.md` and a `path
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: organize rules](https://code.claude.com/docs/en/memory), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: MEM-003, TOK-065, SKILL-014, REPO-044
 
@@ -154,7 +154,7 @@ Tested 2026-10-12, v2.1.296, `claude -p` on Haiku: a `sub/CLAUDE.md` and a `path
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: import additional files](https://code.claude.com/docs/en/memory), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: MEM-006, TOK-003, MEM-019
 
@@ -173,7 +173,7 @@ Use imports to share one file between tools (`@AGENTS.md`, MEM-008) or to pull a
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Worktrees](https://code.claude.com/docs/en/worktrees), [Desktop](https://code.claude.com/docs/en/desktop)
 - Related: MEM-005, MEM-008, MEM-027, SESS-008
 
@@ -196,7 +196,7 @@ For personal rules across all repos, use `~/.claude/CLAUDE.md` or `~/.claude/rul
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: deploy organization-wide CLAUDE.md](https://code.claude.com/docs/en/memory), [Settings reference](https://code.claude.com/docs/en/settings-reference), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: MEM-001, MEM-002, MEM-009
 
@@ -212,11 +212,11 @@ Not relevant to a single developer's machine; recorded so an agent doesn't mista
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: AGENTS.md](https://code.claude.com/docs/en/memory), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: REPO-045, MEM-006, MEM-005
 
-Since v2.1.277, Claude Code reads `AGENTS.md` and `.claude/AGENTS.md` as project instructions, but by default only when no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` exists in the working directory or above. `~/.claude/CLAUDE.md`, managed CLAUDE.md and `.claude/rules/` don't count and keep loading. `AGENTS.local.md`, `AGENTS.override.md` and `.agents/` are never read.
+Since v2.1.277, Claude Code reads `AGENTS.md` and `.claude/AGENTS.md` as project instructions, but by default only when no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` exists in the working directory or above. `~/.claude/CLAUDE.md`, managed CLAUDE.md and `.claude/rules/` don't count and keep loading. `AGENTS.local.md`, `AGENTS.override.md` and `.agents/` are never read. Before v2.1.281, sessions on Amazon Bedrock, Google Vertex AI, Microsoft Foundry, an LLM gateway or with telemetry disabled read CLAUDE.md only; an `@AGENTS.md` import in a CLAUDE.md works there.
 
 **Project instructions** in `/config`: `claude-md-or-agents-md` (default), `claude-md-and-agents-md`, `claude-md`, `managed-only`. In a settings file it is `pluginConfigs["cc-plugin-agents-md@builtin"].options.instructionFiles` (named `agents-md@builtin` before v2.1.285), read from user, `--settings` or managed settings and ignored in project and local files.
 
@@ -230,7 +230,7 @@ Which other tools read CLAUDE.md is in REPO-045.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Settings reference](https://code.claude.com/docs/en/settings-reference), [Environment variables](https://code.claude.com/docs/en/env-vars), [Memory](https://code.claude.com/docs/en/memory), [Headless](https://code.claude.com/docs/en/headless)
 - Related: MEM-016, MEM-028, SESS-014
 
@@ -253,7 +253,7 @@ Which other tools read CLAUDE.md is in REPO-045.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: troubleshoot](https://code.claude.com/docs/en/memory), [Agent SDK: Claude Code features](https://code.claude.com/docs/en/agent-sdk/claude-code-features), [Agent SDK: modifying system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts), [Cisco: persistent memory compromise in Claude Code](https://blogs.cisco.com/ai/identifying-and-remediating-a-persistent-memory-compromise-in-claude-code)
 - Related: MEM-019, TOK-052, SESS-015, PROMPT-016
 
@@ -266,15 +266,15 @@ Which other tools read CLAUDE.md is in REPO-045.
 - Cisco (2026-04-01): MEMORY.md used to load "directly into the AI's system prompt"; Anthropic "pushed a change to Claude Code v2.1.50 that removes this capability from the system prompt."
 - Tested 2026-10-12, v2.1.296, `claude -p`: the transcript holds MEMORY.md in the same `instructions` attachment as the CLAUDE.md files, rendered as a user-role system reminder ("user's auto-memory, persists across conversations").
 
-So in current Claude Code, memory arrives like CLAUDE.md: as context, not system-prompt instructions. The SDK page's wording looks out of date (INDEX.md Conflicts).
+So in current Claude Code, the MEMORY.md index arrives like CLAUDE.md: as context, not system-prompt instructions. The Agent SDK system-prompt page adds that the `claude_code` preset embeds the auto-memory location, "and often the whole auto memory section", in the system prompt; `--exclude-dynamic-system-prompt-sections` moves it into the first user message. Which of the two holds the index text is untested (INDEX.md Conflicts).
 
-**Cache:** the prefix embeds the auto-memory path and working directory, so different directories don't share a cache (SESS-015).
+**Cache:** the system prompt embeds the auto-memory location (an absolute path under `~/.claude/projects/` by default), so sessions in different checkouts don't share a system-prompt cache entry. The working directory and CLAUDE.md content arrive in the conversation and don't affect the system-prompt cache (SESS-015).
 
 ## [MEM-011] What subagents and forks get
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Subagents: what loads at startup](https://code.claude.com/docs/en/sub-agents), [Memory](https://code.claude.com/docs/en/memory)
 - Related: ORCH-007, REPO-010, REPO-011, MEM-010
 
@@ -285,8 +285,10 @@ The full starting context is in ORCH-007. For instructions and memory:
 | Fork | Inherits the parent's context | Inherited |
 | Explore, Plan | Skipped | Not loaded |
 | general-purpose and custom | Loaded ("every level… including `~/.claude/CLAUDE.md`, project rules, `CLAUDE.local.md`, managed policy files" and AGENTS.md) | Docs: "isn't loaded" |
-| Custom with `omitClaudeMd: true` (v2.1.271) | Managed policy only | Not loaded |
+| Custom with `omitClaudeMd: true` (v2.1.271) | Managed policy only (none when the agent is defined in managed settings) | Not loaded |
 | Custom with `memory:` | As above | Its own directory instead (REPO-011) |
+
+Explore, Plan and `omitClaudeMd` subagents still load a subdirectory's CLAUDE.md and matching `paths:` rules once they work with files there.
 
 The docs advise restating in the delegation prompt any rule a subagent must keep, since the main conversation still has the full CLAUDE.md when it reads results.
 
@@ -296,7 +298,7 @@ The docs advise restating in the delegation prompt any rule a subagent must keep
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: MEM-003, MEM-013, MEM-008
 
@@ -307,11 +309,14 @@ Condensed from the CHANGELOG, to judge whether old advice still applies.
 | 0.2.107 | CLAUDE.md `@path` imports |
 | 2.0.64 | `.claude/rules/` |
 | 2.0.70 | "Removed # shortcut for quick memory entry (tell Claude to edit your CLAUDE.md instead)" |
+| 2.1.32 | "Claude now automatically records and recalls memories as it works" |
 | 2.1.33 | Agent `memory:` frontmatter |
 | 2.1.59 | "Claude automatically saves useful context to auto-memory. Manage with /memory" |
 | 2.1.63 | Auto memory shared across worktrees of a repo |
 | 2.1.69 | `InstructionsLoaded` hook; `includeGitInstructions`; `paths:` rules and nested CLAUDE.md fixed in `-p` |
+| 2.1.72 | CLAUDE.md HTML comments hidden from Claude when auto-injected |
 | 2.1.74 | `autoMemoryDirectory` |
+| 2.1.75 | Last-modified timestamps on memory files |
 | 2.1.81 | `--bare` |
 | 2.1.83 | MEMORY.md truncates at 25KB as well as 200 lines |
 | 2.1.206 | `/doctor` proposes CLAUDE.md trims |
@@ -330,7 +335,7 @@ Guides that mention the `#` shortcut, MEMORY.md in the system prompt, or rules l
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: auto memory](https://code.claude.com/docs/en/memory), [Claude directory](https://code.claude.com/docs/en/claude-directory), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: MEM-014, MEM-017, TOK-004
 
@@ -350,7 +355,7 @@ Tested 2026-10-12, v2.1.296, `claude -p` on Haiku: "Remember for future sessions
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: how it works](https://code.claude.com/docs/en/memory), [Errors: memory index over its read limit](https://code.claude.com/docs/en/errors)
 - Related: TOK-004, MEM-013, MEM-003, MEM-018
 
@@ -369,7 +374,7 @@ Our transcripts show how often recall happens in practice: in osrs-tracker-web, 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: view and edit with /memory](https://code.claude.com/docs/en/memory), [Hooks: InstructionsLoaded](https://code.claude.com/docs/en/hooks)
 - Related: MEM-016, MEM-018, MEM-003
 
@@ -389,7 +394,7 @@ Nothing in Claude Code reviews memory for you. The only automatic hygiene is the
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: enable or disable](https://code.claude.com/docs/en/memory), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Environment variables](https://code.claude.com/docs/en/env-vars)
 - Related: MEM-009, SESS-014, MEM-019
 
@@ -410,7 +415,7 @@ Tested 2026-10-12, v2.1.296, `claude -p`: `--settings` with `autoMemoryDirectory
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-044, TOK-065, MEM-013, MEM-026, MEM-035
 
@@ -433,7 +438,7 @@ Auto memory is the narrowest channel. It is machine-local ("not shared across ma
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Managed Agents: dreams](https://platform.claude.com/docs/en/managed-agents/dreams), [anthropics/claude-code#85075](https://github.com/anthropics/claude-code/issues/85075), local v2.1.296 binary strings
 - Related: MEM-014, MEM-015, MEM-035, MEM-023
 
@@ -457,7 +462,7 @@ Mitigation (our practice, not documented guidance): when a piece of work ends, d
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cisco: persistent memory compromise in Claude Code](https://blogs.cisco.com/ai/identifying-and-remediating-a-persistent-memory-compromise-in-claude-code), [Bad Memory, arXiv 2607.14611](https://arxiv.org/abs/2607.14611), [Memory cookbook](https://github.com/anthropics/claude-cookbooks/blob/main/tool_use/memory_cookbook.ipynb), [Managed Agents memory](https://platform.claude.com/docs/en/managed-agents/memory), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: MEM-010, MEM-016, REPO-037, HOOK-025
 
@@ -475,7 +480,7 @@ Practical reading: the write path is the risk (install scripts, other tools, a s
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: set up a project CLAUDE.md](https://code.claude.com/docs/en/memory), [Commands](https://code.claude.com/docs/en/commands), [Environment variables](https://code.claude.com/docs/en/env-vars)
 - Related: MEM-021, MEM-024, REPO-045
 
@@ -485,13 +490,13 @@ Practical reading: the write path is the risk (install scripts, other tools, a s
 
 **Migration:** `/init` folds in `.cursor/rules/`, `.cursorrules` and `.github/copilot-instructions.md`; with the new flow also `AGENTS.md`, `.devin/rules/`, `.windsurf/rules/`, `.windsurfrules` and `.clinerules`. `/import` (v2.1.213+) appends a one-time copy of another agent's instruction files plus its MCP servers, commands, subagents and skills.
 
-**Caution:** a generated file is a starting point. Anthropic says to refine it "with instructions Claude wouldn't discover on its own", and an ICLR 2026 study found LLM-generated context files slightly lowered task success while raising cost by about 20% (MEM-033). Run `/init` on a new repo, then cut what the code already says.
+**Caution:** a generated file is a starting point. Anthropic says to refine it "with instructions Claude wouldn't discover on its own", and a paper shown at ICLR 2026 workshops found LLM-generated context files had a marginal, not statistically significant, negative effect on task success while raising cost by about 20% (MEM-033). Run `/init` on a new repo, then cut what the code already says.
 
 ## [MEM-021] `/doctor` trim and prompt audit for instruction files
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory: audit your instruction files](https://code.claude.com/docs/en/memory), [Commands](https://code.claude.com/docs/en/commands), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-003, MEM-022, MEM-023, SKILL-030, PROMPT-017
 
@@ -507,7 +512,7 @@ Neither looks at auto memory. Nothing built in audits MEMORY.md for duplicates o
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [claude-md-management plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-md-management), [Memory](https://code.claude.com/docs/en/memory)
 - Related: MEM-021, MEM-023, SKILL-022, MEM-012
 
@@ -529,8 +534,8 @@ Anthropic's plugin in `claude-plugins-official` (v1.0.0) has two parts:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Memory: when to add to CLAUDE.md](https://code.claude.com/docs/en/memory), [Best practices](https://code.claude.com/docs/en/best-practices), [Large codebases](https://code.claude.com/docs/en/large-codebases), [Commands: /verify](https://code.claude.com/docs/en/commands)
+- Last verified: 2026-10-14
+- Sources: [Memory: when to add to CLAUDE.md](https://code.claude.com/docs/en/memory), [Best practices](https://code.claude.com/docs/en/best-practices), [Large codebases](https://code.claude.com/docs/en/large-codebases), [Skills: run and verify your app](https://code.claude.com/docs/en/skills)
 - Related: REPO-044, REPO-045, MEM-021, MEM-024, PROMPT-015
 
 **Add a line when** (memory page):
@@ -543,7 +548,7 @@ Anthropic's plugin in `claude-plugins-official` (v1.0.0) has two parts:
 
 **Review for conflicts** across CLAUDE.md, nested files and `.claude/rules/` "periodically" (memory page), now automated by `/doctor prompt-audit` (MEM-021).
 
-**Don't fold every session's learnings in:** Anthropic changed its own `/verify` skill (v2.1.205) to edit the recorded file "only when it steered a run wrong", because folding in "anything a run learned… caused frequent merge conflicts".
+**Don't fold every session's learnings in:** Anthropic's `/verify` skill edits its recorded file "only when it steered a run wrong, such as a command that failed or a missing step, so you can commit the file without per-session diffs" (Skills page); v2.1.205 fixed project verify skills "being rewritten on every session instead of only when a documented command changed".
 
 **Revisit after major model releases** (large-codebases page): "instructions that worked around an older model's limitation may become overhead once a newer model handles the case on its own". `/doctor prompt-audit` looks for exactly these.
 
@@ -551,7 +556,7 @@ Anthropic's plugin in `claude-plugins-official` (v1.0.0) has two parts:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Evaluating AGENTS.md, arXiv 2602.11988](https://arxiv.org/abs/2602.11988), [Self-improving CLAUDE.md hook (claudefa.st)](https://claudefa.st/blog/tools/hooks/self-improving-claude-md), [ctxharness](https://github.com/FlorianBruniaux/ctxharness), [Auditing Claude Code auto memory (aident.ai)](https://aident.ai/blog/audit-claude-code-auto-memory)
 - Related: MEM-021, MEM-022, MEM-023, HOOK-031
 
@@ -563,7 +568,7 @@ Approaches in use, roughly from cheapest to dearest:
 | End-of-session "revise" command, approval required | Missing gotchas | `/revise-claude-md` (MEM-022); Cline's "update memory bank" is the same ritual |
 | Stop hook that runs `claude -p` on the diff and writes proposed CLAUDE.md edits to a review file | Drift as it happens | Costs a model call per stop; keep it non-blocking (HOOK-031) |
 | Periodic memory audit: back up, `wc` the index, trace each fact to a canonical source | Duplicates, rot | Vendor blog; manual |
-| Docs-drift routine on a schedule | Stale docs in general | We run one (SKILL-060) |
+| Docs-drift routine on a schedule | Stale docs in general | We run one (REPO-018, DOC-024) |
 
 The measured caution: context files help mainly for "non-standard coding practices"; generated overviews add cost without success (MEM-033). So prune toward gotchas and commands, not toward completeness.
 
@@ -573,8 +578,8 @@ Common thread worth adopting: proposals, not silent edits, and a check that ever
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-12
-- Sources: [GitHub Copilot memory](https://docs.github.com/en/copilot/concepts/agents/copilot-memory), [Codex memories](https://learn.chatgpt.com/docs/customization/memories.md?surface=app), [Cline Memory Bank](https://docs.cline.bot/features/memory-bank), [Cursor forum: memories gone in 2.1](https://forum.cursor.com/t/custom-modes-and-memories-gone-in-2-1/143744)
+- Last verified: 2026-10-14
+- Sources: [GitHub Copilot memory](https://docs.github.com/en/copilot/concepts/agents/copilot-memory), [Codex memories](https://learn.chatgpt.com/docs/customization/memories.md?surface=app), [Cline Memory Bank](https://docs.cline.bot/features/memory-bank), [Cursor forum: memories gone in 2.1](https://forum.cursor.com/t/custom-modes-and-memories-gone-in-2-1/143744), [Cursor forum: are my memories gone?](https://forum.cursor.com/t/are-my-memories-gone/144057)
 - Related: MEM-018, MEM-017, REPO-045, HOOK-034
 
 | Tool | Memory design | Idea worth taking |
@@ -591,7 +596,7 @@ Claude Code already has the Codex split (MEM-017) and a `modified` timestamp. It
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Desktop](https://code.claude.com/docs/en/desktop), [Desktop WSL](https://code.claude.com/docs/en/desktop-wsl), [Routines](https://code.claude.com/docs/en/routines), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Headless](https://code.claude.com/docs/en/headless), [Memory](https://code.claude.com/docs/en/memory)
 - Related: MEM-027, MEM-028, ORCH-016, SKILL-060, MEM-029
 
@@ -613,7 +618,7 @@ Consequence: any rule a cloud run, routine or CI job must follow belongs in the 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Memory: storage location](https://code.claude.com/docs/en/memory), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SESS-004, SESS-009, MEM-006, ORCH-009
 
@@ -630,7 +635,7 @@ Consequence: an edit to CLAUDE.md on a branch affects only sessions on that bran
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Agent SDK: Claude Code features](https://code.claude.com/docs/en/agent-sdk/claude-code-features), [Agent SDK: modifying system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts), [Headless](https://code.claude.com/docs/en/headless)
 - Related: ORCH-014, ORCH-015, MEM-009, MEM-016
 
@@ -643,13 +648,13 @@ Consequence: an edit to CLAUDE.md on a branch affects only sessions on that bran
 - **Not controlled by `settingSources`:** managed policy, `~/.claude.json` and auto memory. The agent writes memories "with the standard `Write` and `Edit` tools rather than a dedicated memory tool". The docs warn: "Do not rely on default `query()` options for multi-tenant isolation"; use `settingSources: []` plus `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`.
 - `AgentDefinition.memory` takes `user`, `project` or `local`, like agent frontmatter.
 
-For our scripted runs: a `claude -p` probe in a scratch folder creates a new `~/.claude/projects/<folder>/memory/` (20 empty ones from earlier probes, MEM-034) and can save memories there.
+For our scripted runs: a `claude -p` probe in a scratch folder creates a new `~/.claude/projects/<folder>/memory/` (34 empty ones on 2026-10-14, mostly from probes, MEM-034) and can save memories there.
 
 ## [MEM-029] Cloud Projects memory is a separate store
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Projects](https://code.claude.com/docs/en/claude-projects), [Claude chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)
 - Related: MEM-026, ORCH-001, MEM-031
 
@@ -666,7 +671,7 @@ claude.ai chat memory is a third system: "Claude saves memory as a set of indivi
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference), [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing), [Memory cookbook](https://github.com/anthropics/claude-cookbooks/blob/main/tool_use/memory_cookbook.ipynb), [Managing context on the Claude Developer Platform](https://www.anthropic.com/news/context-management)
 - Related: TOK-038, MEM-031, MEM-019, ORCH-036
 
@@ -683,7 +688,7 @@ Detail beyond TOK-038:
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), [Managed Agents memory](https://platform.claude.com/docs/en/managed-agents/memory), [Memory (Claude Code)](https://code.claude.com/docs/en/memory)
 - Related: MEM-030, MEM-014, TOK-038, ORCH-018
 
@@ -706,7 +711,7 @@ Choosing: inside Claude Code, use auto memory and CLAUDE.md, as there is no way 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [MCP memory server](https://github.com/modelcontextprotocol/servers/tree/main/src/memory), [mem0](https://github.com/mem0ai/mem0), [claude-mem](https://github.com/thedotmack/claude-mem), [basic-memory](https://github.com/basicmachines-co/basic-memory), [Serena](https://github.com/oraios/serena), [claude-subconscious](https://github.com/letta-ai/claude-subconscious), [Graphiti MCP](https://github.com/getzep/graphiti/tree/main/mcp_server), [MCP tool search](https://code.claude.com/docs/en/mcp)
 - Related: MEM-033, TOK-020, TOK-084, HOOK-015
 
@@ -714,7 +719,7 @@ Stars and activity from the GitHub API, 2026-10-12. Each project describes itsel
 
 | Project | Stars | Storage | How it reaches Claude Code |
 |---|---|---|---|
-| claude-mem | ~100k | SQLite + Chroma behind a local worker | Hooks on SessionStart, UserPromptSubmit, PostToolUse, Stop; an injected index each session; MCP search tools; a background "observer" model call |
+| claude-mem | ~100k | SQLite + Chroma behind a local worker | Hooks on SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SessionEnd; an injected index each session; MCP search tools; a background "observer" model call, which the installer now offers as a hosted service (30-day trial after a browser sign-in), on your own OpenRouter or Gemini key, or on your Anthropic plan |
 | mem0 / OpenMemory | ~67k | Extracted facts in a vector store | SDK, API or MCP |
 | MCP reference `memory` | monorepo | Knowledge graph in a JSONL file | Nine MCP tools, nothing automatic; aimed at chat personalization |
 | Serena | ~30k | Memory files beside a code-intelligence server | MCP; "can easily be disabled" |
@@ -730,7 +735,7 @@ Also seen: agentmemory, supermemory, cognee, mcp-memory-service; cipher (byterov
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Letta: is a filesystem all you need?](https://www.letta.com/blog/benchmarking-ai-agent-memory), [Evaluating AGENTS.md, arXiv 2602.11988](https://arxiv.org/abs/2602.11988), [mem0 README benchmarks](https://github.com/mem0ai/mem0), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: MEM-032, REPO-045, MEM-034, TOK-008
 
@@ -738,7 +743,7 @@ No controlled study shows a memory server beating CLAUDE.md plus auto memory on 
 
 - **Vendor chat-recall benchmarks:** mem0 reports LoCoMo 92.5 and LongMemEval 94.4 for its managed platform ("proprietary optimizations not available in the open-source SDK"). These measure recall of conversation facts, not coding success.
 - **Files as a baseline:** Letta got 74.0% on LoCoMo "by simply storing conversation histories in files", above mem0's then-reported 68.5%, and concluded memory "is more about how agents manage context than the exact retrieval mechanism used". Vendor post, older mem0 version.
-- **More context isn't free:** context files "do not generally improve task success rates, while increasing inference cost by over 20% on average" (Gloaguen et al., ICLR 2026; static files, not servers).
+- **More context isn't free:** context files "do not generally improve task success rates, while increasing inference cost by over 20% on average" (Gloaguen et al., ICLR 2026 workshops; static files, not servers).
 - **Anthropic:** structured note-taking "provides persistent memory with minimal overhead"; "do the simplest thing that works".
 - **Ours:** claude-mem, measured over 104 sessions (2026-10-06 to 2026-10-09), added about 4k tokens to every model call, made about 7.5k Haiku observer calls on the plan (42% no-ops), and its memory was searched in 2 sessions. It was removed (MEM-034). The command that produced these numbers wasn't kept.
 
@@ -748,15 +753,15 @@ No controlled study shows a memory server beating CLAUDE.md plus auto memory on 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: local files and transcripts read 2026-10-12; [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [osrs-tracker-api CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/CLAUDE.md), [osrs-tracker-aws CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/CLAUDE.md)
 - Related: MEM-035, SESS-035, HOOK-036, REPO-001, TOK-003
 
-**Instruction files** (GitHub `main`, 2026-10-12): `~/.claude/CLAUDE.md` 78 lines (4.7 KB); osrs-tracker-web 52 lines, -api 55, -aws 63 (4.1–4.8 KB each). All well under 200 lines. Each repo CLAUDE.md holds commands, hard rules and where things live, and points to its repo skill for detail, which is the split REPO-044 recommends. None of the three repos, nor `~/.claude`, uses `.claude/rules/`, `CLAUDE.local.md` or AGENTS.md. The local osrs-tracker-aws checkout's CLAUDE.md differed from `main` (not pulled).
+**Instruction files** (GitHub `main`, 2026-10-14; 2026-10-12 in parentheses): `~/.claude/CLAUDE.md` 123 lines (78), 7.4 KB, after the global rules added through FreekMencke/claude-kb#47 and #48; osrs-tracker-web 57 lines (52), -api 60 (55), -aws 71 (63), 4.5–5.7 KB each. All under 200 lines. Each repo CLAUDE.md holds commands, hard rules and where things live, and points to its repo skill for detail, which is the split REPO-044 recommends. None of the three repos, nor `~/.claude`, uses `.claude/rules/`, `CLAUDE.local.md` or AGENTS.md.
 
 **Settings:** no auto-memory keys, so auto memory is on everywhere; `claude-md-management` is enabled at user level.
 
-**Auto memory** (`~/.claude/projects/*/memory/`): osrs-tracker-web 25 topic files (index 25 lines, 3.9 KB, far below 200 lines/25 KB); osrs-tracker-aws 3; -api 1; home-cluster 2; solix 2; claude-kb and claude-skills none. Of 33 topic files: 17 `feedback`, 10 `project`, 5 `reference`, 1 `user`; 29 carry `modified`. 20 empty memory folders belong to `claude -p` probe directories.
+**Auto memory** (`~/.claude/projects/*/memory/`): osrs-tracker-web 25 topic files (index 25 lines, 3.9 KB, far below 200 lines/25 KB); osrs-tracker-aws 3; -api 1; home-cluster 2; solix 2; claude-kb and claude-skills none. Of 33 topic files: 17 `feedback`, 10 `project`, 5 `reference`, 1 `user`; 29 carry `modified`. 20 empty memory folders belong to `claude -p` probe directories. Re-read 2026-10-14, after FreekMencke/claude-kb#48 and osrs-tracker/osrs-tracker-web#234: osrs-tracker-web 6 topic files (index 6 lines, 1.1 KB), home-cluster, -aws and -api 1 each, the rest none; 9 topic files in all (4 `reference`, 3 `project`, 2 `feedback`); 34 empty memory folders.
 
 **Use** (main-session transcripts, worktree folders counted with their repo, 2026-10-06 to 2026-10-12; counted Read, Bash reads and Write/Edit tool calls on paths under `~/.claude/projects/*/memory/`):
 
@@ -774,7 +779,7 @@ Memory matters in osrs-tracker-web (a quarter of sessions recall a topic, a fift
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: synthesis of MEM-017, MEM-018, MEM-026, MEM-034; local memory files read 2026-10-12; [osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web)
 - Related: MEM-017, MEM-018, MEM-034, REPO-044
 
@@ -792,22 +797,24 @@ Each memory checked against where MEM-017 says it belongs. Keyword checks agains
 
 Only 5 of osrs-tracker-web's 25 memories clearly fit where they are; the rest are rules other sessions, reviewers or repos also need.
 
+Status 2026-10-14: actioned. The cross-repo and machine-level memories were moved or deleted (FreekMencke/claude-kb#48); the web duplicates, trade-offs, release rules and finished work left through osrs-tracker/osrs-tracker-web#234 (closed 2026-10-12). Only the "Fits auto memory" rows remain, plus `trace-long-tasks-cdp` (web) and `grafana-cloud-migration` (home-cluster). The table shows the audit as of 2026-10-12.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. This session changed none of the files below: `~/.claude/` is yours to edit, and the osrs-tracker changes need issues in those repos (listed, not opened).
 
 1. **Move cross-repo preferences out of per-repo memory into `~/.claude/CLAUDE.md`** (done 2026-10-12, FreekMencke/claude-kb#48, plus `prefer-vitest` from aws; the two solix ones were deleted, since the `parallel-code-orchestrator` skill holds them) (or a `~/.claude/rules/` file): assign the issue before starting, check a fetched issue body before PATCHing it, no speculative safeguards, Fable only for hard work, hand off before resuming a large subagent. Today each loads in one repo only. A few lines, high impact. MEM-035, MEM-017.
-2. **Sort osrs-tracker-web's memories** into the repo: deliberate trade-offs to `docs/decisions.md`, release rules to the skill, then delete the duplicates and `redesign-migration`. The reviewer agents and any cloud run see repo files, not your memory. Needs an issue in osrs-tracker/osrs-tracker-web. MEM-035, MEM-017, REPO-044.
+2. **Sort osrs-tracker-web's memories** into the repo: deliberate trade-offs to `docs/decisions.md`, release rules to the skill, then delete the duplicates and `redesign-migration`. The reviewer agents and any cloud run see repo files, not your memory. Done 2026-10-12 in osrs-tracker/osrs-tracker-web#234. MEM-035, MEM-017, REPO-044.
 3. **Add one hygiene line to `~/.claude/CLAUDE.md`** (done 2026-10-12, FreekMencke/claude-kb#47), e.g. "Save a preference that holds in every repo to `~/.claude/CLAUDE.md`, not auto memory; when a memory duplicates CLAUDE.md or a skill, or its work is done, delete it." Auto memory's own rule ("skips anything your CLAUDE.md files already say") isn't holding in our files. MEM-018, MEM-035.
 4. **Run `/doctor prompt-audit` once per instruction set** for stale paths, stale commands and contradictions (`kb-prompting.md` recommendation 1 covers the wording side). MEM-021, PROMPT-017. Done for `~/.claude` 2026-10-12 (FreekMencke/claude-kb#47): no stale paths, stale commands or contradictions.
 5. **End sessions that hit a gotcha with `/claude-md-management:revise-claude-md`** (already installed) instead of letting the fix sit in memory; use `/doctor` rather than the improver's rubric to decide what to cut. MEM-022, MEM-023.
 6. **Rules that routines or cloud sessions need go in the repo or the routine's prompt.** Our global rules (cross-repo issues, rebase before merge, attribution) don't reach the monthly re-verification routine; it relies on this repo's CLAUDE.md, which is the right place. Check any new routine against this. MEM-026.
 7. **Move machine-level notes** (done 2026-10-12, FreekMencke/claude-kb#48: deleted, not moved. `synced-skills-location` and the skills half of `plugins-local-not-synced` were stale, since own skills are now symlinks from `~/repos/claude-skills`; the plugin half shows in `settings.json`, SKILL-050 holds the why, MEM-033 holds claude-mem and INFRA-024 `infra-mcps-setup`) (`claude-mem-removed`, `plugins-local-not-synced`, `synced-skills-location`) out of repo memory, after re-checking the plugin and skill ones against SKILL-050 and SKILL-059. Low effort. MEM-035.
 8. **Keep plain files; don't add a memory server.** claude-mem was measured net-negative and removed; nothing published shows a server beating files for coding. Done; recorded so nobody reinstalls one. MEM-033.
-9. **Won't do now: `.claude/rules/` with `paths:`.** Our CLAUDE.md files are 52–78 lines and detail already lives in repo skills; revisit when a file passes about 150 lines. MEM-004, TOK-003.
+9. **Won't do now: `.claude/rules/` with `paths:`.** Our CLAUDE.md files are 57–123 lines (2026-10-14; `~/.claude/CLAUDE.md` is the longest) and detail already lives in repo skills; revisit when a file passes about 150 lines. MEM-004, TOK-003.
 10. **Probe hygiene:** for memory probes, point `autoMemoryDirectory` at the scratchpad with `--settings` (MEM-016), so `~/.claude/projects/` gets no test memories. Done in this session.
 
-Other repos' issues this needs: osrs-tracker/osrs-tracker-web (recommendation 2). Recommendations 1, 3 and 7 are edits to `~/.claude`, which only you make.
+Other repos' issues this needs: none open (osrs-tracker/osrs-tracker-web#234, for recommendation 2, is closed). Recommendations 1, 3 and 7 are edits to `~/.claude`, which only you make.
 
 ## Open questions
 
@@ -819,4 +826,4 @@ Other repos' issues this needs: osrs-tracker/osrs-tracker-web (recommendation 2)
 6. **Desktop with WSL:** which `~/.claude` is read is implied (the distro's), not stated. MEM-026. Local tests point the same way: the app runs its CLI from the distro's `~/.claude/remote/ccd-cli/` (SURF-004) and loads personal skills from the distro's home (SKILL-048).
 7. **Is the 25KB limit bytes or UTF-16 code units?** anthropics/claude-code#97453 says code units (single-source). TOK-004.
 8. **The claude-mem measurement** (MEM-033) came from an earlier session whose command wasn't kept; a re-run needs a new script.
-9. **Background memory extraction**: strings suggest a pass over recent turns besides Claude's own saves; when it runs, and whether in `-p`, is unknown. MEM-013.
+9. **Background memory extraction**: strings suggest a pass over recent turns besides Claude's own saves, and the CHANGELOG mentions "memory extraction" (v2.1.77, v2.1.273); when it runs, and whether in `-p`, is unknown. MEM-013.

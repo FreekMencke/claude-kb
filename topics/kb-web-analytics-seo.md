@@ -8,7 +8,7 @@ Research basis:
 - The baseline is `osrs-tracker-web` at `main` `9f8eadc` (2026-10-13, after #239's player link-preview cards), plus local transcripts of its SEO sessions from 2026-10-09 to 2026-10-13.
 - No measurement IDs, property IDs, project numbers or key paths are copied here.
 
-All "Last verified" dates are 2026-10-13.
+Re-verified 2026-10-14; each entry's Last verified date is authoritative.
 
 ## Quick answers
 
@@ -23,9 +23,9 @@ All "Last verified" dates are 2026-10-13.
 | Which robots.txt tokens are Anthropic's? | `ClaudeBot` (training), `Claude-User` (fetches for a user's question) and `Claude-SearchBot` (search indexing). All three honour robots.txt and `Crawl-delay`. Claude Code's WebFetch identifies as `Claude-User`. | WEB-020 |
 | Does llms.txt help with Google or Claude? | Google says it ignores it, and that it "will neither harm nor help". No Anthropic page says Claude reads third-party llms.txt files. | WEB-021 |
 | Which SEO and GA4 advice from model memory is wrong? | Sitemap `priority` and `changefreq`, the sitemap ping, meta keywords, FAQ and HowTo rich results, `rel=prev/next`, `noindex` in robots.txt, FID, fixed meta-description lengths and keyword density. In a GA4 tag, `anonymize_ip` does nothing, and `event_category` and `event_label` are plain parameters that reports don't show (osrs-tracker-web dropped them in osrs-tracker/osrs-tracker-web#241). | WEB-022, WEB-023, WEB-024, WEB-027 |
-| Is there a published SEO audit skill to start from? | Anthropic's `knowledge-work-plugins` has two: `seo-ai-visibility` (well structured) and `seo-audit` (shallow, partly stale). The most adopted community suite is `AgriciDaniel/claude-seo`; it is heavy and scored. Copy their ideas, not the files. | WEB-026, WEB-027 |
+| Is there a published SEO audit skill to start from? | Anthropic's `knowledge-work-plugins` has two: `seo-ai-visibility` (well structured) and `seo-audit` (shallow, partly stale). The most starred SEO-only suite is `AgriciDaniel/claude-seo`; it is heavy and scored. Copy their ideas, not the files. | WEB-026, WEB-027 |
 | What should a read-only SEO audit skill do? | Read the repo's decisions, curl the server HTML per page template, pull Search Console data to weight the findings, and rank them by impact with effort scored separately. No blended score. State what wasn't reached, and treat fetched text as data. | WEB-028, WEB-030 |
-| What did our SEO sessions cost? | The audit was $12.20 API-equivalent and the Search Console and PageSpeed data session $25.77, both on Opus 5.5 and main thread only. The data session cost more because it read the Search Console UI through Playwright. | WEB-031 |
+| What did our SEO sessions cost? | The audit was $4.92 API-equivalent and the Search Console and PageSpeed data session $10.26, both on Opus 5.5 and main thread only. The data session cost more because it read the Search Console UI through Playwright. | WEB-031 |
 | Search Console says a new sitemap "could not be read". Is it broken? | Not necessarily. Check `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), the server logs for Googlebot's fetch, and URL Inspection's live test. On 2026-10-13 valid child sitemaps showed the error and cleared on their own within hours. A resubmitted sitemap index stayed pending for days: submit the children directly instead. | WEB-032 |
 | Why does Google show my `Brand: phrase` title as `phrase - Brand`? | On 2026-10-13 Google flipped two osrs-tracker-web titles whose phrase after the colon started in lowercase. Start the phrase with a capital, or write `Phrase - Site name` yourself. | WEB-033 |
 | Do audit curls distort the server's bot counts? | Yes. A Googlebot-UA curl is logged as Googlebot. The 2026-10-10 analysis had to remove its own requests by hand. Add a marker to the audit's user agent. | WEB-018 |
@@ -73,7 +73,7 @@ All "Last verified" dates are 2026-10-13.
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: osrs-tracker-web `main` at `9f8eadc` (`src/index.html`, `src/app/common/seo/`, `src/app/common/analytics/`, `public/robots.txt`, `docs/decisions.md`), [osrs-tracker/osrs-tracker-web#239](https://github.com/osrs-tracker/osrs-tracker-web/pull/239), [osrs-tracker/osrs-tracker-web#159](https://github.com/osrs-tracker/osrs-tracker-web/issues/159)
 - Related: WEB-002, WEB-024, WEB-034, REPO-001
 
@@ -95,13 +95,13 @@ The baseline every other entry is measured against. It was read from `main` afte
 - `AnalyticsService` sends `page_view` on every `NavigationEnd`, events with named parameters (#241, WEB-024), and `exception` events.
 - At `9f8eadc` it still loaded gtag for everyone, with `anonymize_ip` and Universal Analytics fields, and no consent calls.
 
-The SEO roadmap (#159, 15 children) closed on 2026-10-10.
+The SEO roadmap (#159, 19 sub-issues: 17 in osrs-tracker-web and 2 in osrs-tracker-api) closed on 2026-10-10.
 
 ## [WEB-002] How the 2026-10-09 SEO audit ran
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: local transcript of the `seo-audit-report` worktree session (2026-10-09), [osrs-tracker/osrs-tracker-web#159](https://github.com/osrs-tracker/osrs-tracker-web/issues/159)
 - Related: WEB-014, WEB-028, WEB-031, FLOW-014
 
@@ -125,7 +125,7 @@ The audit was one Opus 5.5 session driven by a long prompt the user wrote. That 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: local transcript of the `roadmap-skill-location` worktree session (2026-10-10), [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235), osrs-tracker-web auto memory `search-console-pagespeed-access`
 - Related: WEB-007, WEB-008, WEB-010, WEB-030, WEB-031
 
@@ -135,7 +135,7 @@ Issue #160 collected the data the audit couldn't see.
 1. The user signed in to Search Console in the Playwright MCP browser, and the session read the reports there: 13 navigations, 27 `browser_evaluate` and 17 clicks.
 2. Lab scores came from pagespeed.web.dev in the same browser, because the keyless PSI API returned 429.
 3. Mid-session the user set up a PSI API key and a Search Console service account (a Restricted user, read-only). The session then redid #160 through the API.
-4. Server logs came from Loki, run with the admin identity: the session predates the read-only `claude-agent` identity. Since 2026-10-13 that identity can query Loki too (INFRA-024).
+4. Server logs came from Loki, run with the admin identity: the session predates the read-only `claude-agent` identity. From 2026-10-13 to 2026-10-14 that identity could query Loki too (INFRA-024); the local Loki was removed on 2026-10-14 and logs are now in Grafana Cloud.
 
 **What the data changed.** It reordered the roadmap:
 - Item pages were 91% of search impressions and 98% of indexed pages.
@@ -148,7 +148,7 @@ The access notes ended up in the repo's auto memory, not in the repo (WEB-004). 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: osrs-tracker-web auto memory `search-console-pagespeed-access` and this session's denied tool call, read 2026-10-13; [Auto mode](https://code.claude.com/docs/en/permission-modes)
 - Related: WEB-012, INFRA-021, INFRA-024, REPO-036
 
@@ -169,11 +169,11 @@ The GA4 MCP server (WEB-006) uses the same Search Console key, so one read-only 
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: local transcript of the `indexnow-evaluation` worktree session (2026-10-11), in [osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web)
 - Related: WEB-006, WEB-022, PROMPT-012
 
-Asked whether IndexNow was worth adding, an Opus 5.5 session answered in four turns with one Bash call and no search.
+Asked whether IndexNow was worth adding, an Opus 5.5 session answered in two model responses (one Bash call, then the answer) with no search.
 - Its claims were plausible but unsourced: "Google doesn't", "It tested IndexNow in 2021 and never adopted it", and which engines use Bing's index.
 - It ended: "I can look up Bing's referral share in our analytics". No session had GA4 access then. Since 2026-10-13 sessions on this machine do (WEB-006).
 
@@ -187,7 +187,7 @@ The recommendation itself was sensible (check Bing Webmaster Tools first). The f
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [googleanalytics/google-analytics-mcp README](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/README.md), [client.py](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/analytics_mcp/tools/client.py), [PyPI analytics-mcp](https://pypi.org/project/analytics-mcp/)
 - Related: WEB-004, WEB-009, WEB-012, INFRA-003, TOK-020
 
@@ -226,7 +226,7 @@ Tested 2026-10-13, v2.1.296, `claude -p` on Haiku 5.5 (capped at 4 turns, $0.20)
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Search Console API limits](https://developers.google.com/webmaster-tools/limits), [searchanalytics.query](https://developers.google.com/webmaster-tools/v1/searchanalytics/query), [Getting all your data](https://developers.google.com/webmaster-tools/v1/how-tos/all-your-data), [Authorizing requests](https://developers.google.com/webmaster-tools/v1/how-tos/authorizing), [AminForou/mcp-gsc](https://github.com/AminForou/mcp-gsc)
 - Related: WEB-008, WEB-012, WEB-013
 
@@ -253,7 +253,7 @@ The 16-month retention is stated only on a GA help page ("Search Console keeps d
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [urlInspection.index.inspect](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect), [URL Inspection tool help](https://support.google.com/webmasters/answer/9012289), osrs-tracker-web auto memory `search-console-pagespeed-access`
 - Related: WEB-003, WEB-007, WEB-017
 
@@ -276,7 +276,7 @@ The API covers search performance, URL Inspection and sitemaps. The read-only se
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Data API quotas](https://developers.google.com/analytics/devguides/reporting/data/v1/quotas), [runReport](https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runReport), [BigQuery Export limits](https://support.google.com/analytics/answer/9358801), [Search Console bulk export](https://support.google.com/webmasters/answer/12917675)
 - Related: WEB-006, WEB-013
 
@@ -303,7 +303,7 @@ The API covers search performance, URL Inspection and sitemaps. The read-only se
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [PSI API get started](https://developers.google.com/speed/docs/insights/v5/get-started), [CrUX API](https://developer.chrome.com/docs/crux/api), [CrUX History API](https://developer.chrome.com/docs/crux/history-api), [CrUX methodology](https://developer.chrome.com/docs/crux/methodology)
 - Related: WEB-003, WEB-011
 
@@ -325,7 +325,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Lighthouse readme](https://raw.githubusercontent.com/GoogleChrome/lighthouse/main/readme.md), [chrome-devtools-mcp tool reference](https://raw.githubusercontent.com/ChromeDevTools/chrome-devtools-mcp/main/docs/tool-reference.md), [chrome-devtools-mcp README](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 - Related: WEB-010, WEB-014, FLOW-014, SURF-032
 
@@ -333,8 +333,8 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - "Lighthouse requires Node 22 (LTS) or later" and a local Chrome.
 - `lighthouse <url> --only-categories=seo,performance --output=json --output-path=stdout --chrome-flags="--headless"` gives JSON that `jq` can cut down before it reaches the context.
 - The SEO category checks crawlability, title, description, HTTP status, link text, crawlable anchors, robots.txt, image alt, hreflang and canonical. Structured data is a manual audit with no weight.
-- `main` also defines an `agentic-browsing` category with an `llms-txt` audit. Not checked whether 13.5.0 can select it.
-- Not installed on this machine.
+- The v13.5.0 tag defines an `agentic-browsing` category (with an `llms-txt` audit) and its CLI help lists it, so `--only-categories=agentic-browsing` should select it (readme.md still lists four categories; not run).
+- Not installed globally; `npx lighthouse` works. Under WSL it leaves Windows-style `lighthouse.XXXX` Chrome-profile folders in the working directory: start Chromium yourself and pass `--port` (osrs-tracker-web memory `lighthouse-wsl-temp-dir`).
 
 **Chrome DevTools MCP** (v1.10.1, 2026-09-23)
 - `lighthouse_audit`: "Get Lighthouse score and reports for accessibility, SEO, best practices, and agentic browsing. This excludes performance."
@@ -349,7 +349,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Claude Code MCP](https://code.claude.com/docs/en/mcp), [Search Console authorizing](https://developers.google.com/webmaster-tools/v1/how-tos/authorizing), [GA MCP README](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/README.md)
 - Related: WEB-004, WEB-006, WEB-007, INFRA-001, INFRA-006, INFRA-021
 
@@ -371,7 +371,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: synthesis of WEB-003, WEB-007 to WEB-011, WEB-014 and the [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235)
 - Related: WEB-028, WEB-030, INFRA-018, INFRA-024
 
@@ -381,8 +381,8 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 | Does the page work after hydration? | Rendered DOM | Playwright `browser_evaluate` |
 | Is it indexed, and why not? | Pages report, URL Inspection | UI in a signed-in browser; the API for single URLs (WEB-008) |
 | Which pages and queries get impressions and clicks? | Search Analytics | Search Console API (WEB-007) |
-| How often does Google crawl, and how fast do we answer? | Crawl stats, server logs | UI; Loki through `kubectl get --raw` on the gateway's service proxy, filtered by user agent (since 2026-10-13; INFRA-024). Pod logs cover the current pods only |
-| Which bots actually come? | Server logs | Loki from the session, e.g. `sum(count_over_time({namespace="osrs-tracker"} \|= "ClaudeBot" [30d]))` through `kubectl get --raw '.../loki-gateway:80/proxy/loki/api/v1/query?query=...'` (INFRA-024). In #160: Amazonbot 609 requests, Googlebot about 22 item pages in 21 h. 2026-10-13, over the logs held (from 2026-10-05): Googlebot 3,780 lines, ClaudeBot 63, no `Claude-User` or `Claude-SearchBot` |
+| How often does Google crawl, and how fast do we answer? | Crawl stats, server logs | UI; Grafana Cloud's logs through the Grafana connector (the local Loki was removed on 2026-10-14; from 2026-10-13 it was `kubectl get --raw` on the Loki gateway's service proxy, INFRA-024). Pod logs through the flux MCP server cover the current pods only |
+| Which bots actually come? | Server logs | Grafana Cloud's logs through the Grafana connector, e.g. `sum(count_over_time({namespace="osrs-tracker"} \|= "ClaudeBot" [30d]))`; the same form with `Googlebot` over 24 h returned 207 on 2026-10-14, and history starts 2026-10-13 about 20:00 UTC (until 2026-10-14 through `kubectl get --raw` on the local Loki gateway, INFRA-024). In #160: Amazonbot 609 requests, Googlebot about 22 item pages in 21 h. 2026-10-13, over the logs held (from 2026-10-05): Googlebot 3,780 lines, ClaudeBot 63, no `Claude-User` or `Claude-SearchBot` |
 | Lab LCP, TBT, CLS | Lighthouse | CLI, DevTools MCP, PSI with a key (WEB-010, WEB-011) |
 | Field Core Web Vitals | CrUX | CrUX API; none for low-traffic sites |
 | What do visitors do on the page, where do they come from? | GA4 | GA MCP server (WEB-006), set up 2026-10-13 |
@@ -393,7 +393,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Google common crawlers](https://developers.google.com/search/docs/crawling-indexing/google-common-crawlers), [Spam policies](https://developers.google.com/search/docs/essentials/spam-policies), WEB-002's `probe.sh`
 - Related: WEB-015, WEB-016, WEB-018, TOK-089
 
@@ -422,7 +422,7 @@ Record per page: status, time, bytes, title, description, canonical, h1 count, `
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [microsoft/playwright-mcp README](https://github.com/microsoft/playwright-mcp)
 - Related: WEB-014, FLOW-014, REPO-021
 
@@ -444,14 +444,14 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - Type: anti-pattern
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Claude Code CHANGELOG 2.1.83](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [Web fetch tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool)
 - Related: TOK-087, TOK-089, WEB-014, WEB-020
 
 **Claude Code's WebFetch**
 - It converts the page to Markdown and answers through a second model. The docs call it "lossy by design … use `curl` via Bash for the unprocessed page".
 - It doesn't report the status code, headers, head tags or JSON-LD. An audit can't trust it for any of them.
-- It identifies itself: "WebFetch sets a `User-Agent` header beginning with `Claude-User`". The 2.1.83 changelog says: "Improved `WebFetch` to identify as `Claude-User` so site operators can recognize and allowlist Claude Code traffic via `robots.txt`".
+- It identifies itself: "WebFetch sets a `User-Agent` header beginning with `Claude-User`". The 2.1.83 changelog says: "Improved `WebFetch` to identify as `Claude-User` so site operators can recognize and allowlist Claude Code traffic via `robots.txt`". It also sends an `Accept` header that prefers Markdown, so a server doing content negotiation can answer with Markdown instead of the HTML a crawler gets, and it caches each response for 15 minutes by default.
 - Whether it obeys a `Disallow` isn't documented.
 
 **The API web fetch tool**
@@ -465,7 +465,7 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [Dynamic rendering](https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering), [Search Central documentation updates](https://developers.google.com/search/updates)
 - Related: WEB-008, WEB-014, WEB-022
 
@@ -487,7 +487,7 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: osrs-tracker-web server logs read through the flux MCP server (2026-10-13), [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235)
 - Related: WEB-013, WEB-014, INFRA-018
 
@@ -505,7 +505,7 @@ The same applies to `/trackers/*` render timings: audit fetches are cache misses
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [schemaorg discussion #3261](https://github.com/schemaorg/schemaorg/discussions/3261), [urlInspection.index.inspect](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect), [Search Console API reference](https://developers.google.com/webmaster-tools/v1/api_reference_index)
 - Related: WEB-017, WEB-023
 
@@ -526,7 +526,7 @@ Community skills point out that curl misses JSON-LD that JavaScript injects (WEB
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Does Anthropic crawl data from the web?](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler), [Tools reference](https://code.claude.com/docs/en/tools-reference)
 - Related: WEB-016, WEB-021
 
@@ -554,7 +554,7 @@ The support article (modified 2026-04-07): "Below is information on the three ro
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [AI features and your website](https://developers.google.com/search/docs/appearance/ai-features), [Google's AI optimization guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide), [llmstxt.org](https://llmstxt.org/)
 - Related: WEB-020, TOK-090
 
@@ -613,7 +613,7 @@ osrs-tracker-web dropped `priority` and `changefreq` on 2026-10-10 (#166). The a
 - Good values: LCP within 2.5 s, INP under 200 ms, CLS under 0.1, at the 75th percentile.
 
 **Tools and indexing**
-- The Mobile-Friendly Test and the Mobile Usability report were retired 2023-12-01.
+- The Mobile-Friendly Test and the Mobile Usability report went away from 2023-12-01 (Google removed them from its docs that day).
 - Mobile-first indexing has been complete since 2023-10-31.
 
 The type list keeps changing. A skill should link to the documentation updates page rather than copy the list.
@@ -622,7 +622,7 @@ The type list keeps changing. A skill should link to the documentation updates p
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [IP masking in GA](https://support.google.com/analytics/answer/2763052), [UA versus GA4 events](https://support.google.com/analytics/answer/9964640), [Custom dimensions](https://support.google.com/analytics/answer/14240153), [UA sunset](https://support.google.com/analytics/answer/11583528)
 - Related: WEB-001, WEB-025, WEB-022
 
@@ -634,18 +634,18 @@ Universal Analytics stopped processing standard properties on 2023-07-01, and it
 | `event_category`, `event_label` | "Google Analytics 4 events have no notion of Category, Action, and Label and … Google Analytics 4 reports do not display Category, Action, and Label." They become ordinary event parameters. |
 | Parameters show up in reports | Register a custom dimension; "After 24-48 hours, you can start to report on" it. The docs imply an unregistered parameter isn't reportable, but don't say it outright. |
 
-**osrs-tracker-web's tag (WEB-001) has all three:**
+**osrs-tracker-web's tag (WEB-001) had all three until osrs-tracker/osrs-tracker-web#241 (2026-10-13), which replaced them with named parameters (`theme`, `source`, …):**
 - `anonymize_ip: true`;
-- `trackEvent(action, category, label, value)`, which sends `event_category` and `event_label`;
+- `trackEvent(action, category, label, value)`, which sent `event_category` and `event_label`;
 - a string `value` (`'dark'`) on `load_theme`.
 
-The property hasn't registered them. On 2026-10-13 `get_custom_dimensions_and_metrics` (WEB-006) returned one custom dimension, `customEvent:description`, and no custom metrics. So GA4 reports can't break events down by category or label. See this file's recommendations.
+The property never registered them. On 2026-10-13 `get_custom_dimensions_and_metrics` (WEB-006) returned one custom dimension, `customEvent:description`, and no custom metrics, so GA4 reports couldn't break events down by category or label. See this file's recommendations.
 
 ## [WEB-025] GA4 consent mode and data retention
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Consent mode guide](https://developers.google.com/tag-platform/security/guides/consent), [Consent mode concepts](https://developers.google.com/tag-platform/security/concepts/consent-mode), [EU user consent policy](https://support.google.com/tagmanager/answer/13695607), [Data retention](https://support.google.com/analytics/answer/7667196)
 - Related: WEB-024, WEB-001
 
@@ -669,7 +669,7 @@ The property hasn't registered them. On 2026-10-13 `get_custom_dimensions_and_me
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [knowledge-work-plugins seo-audit](https://github.com/anthropics/knowledge-work-plugins/blob/main/marketing/skills/seo-audit/SKILL.md), [knowledge-work-plugins seo-ai-visibility](https://github.com/anthropics/knowledge-work-plugins/tree/main/small-business/skills/seo-ai-visibility)
 - Related: WEB-027, WEB-028, SKILL-001
 
@@ -717,7 +717,7 @@ Stars as of 2026-10-13.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: synthesis of WEB-002, WEB-003, WEB-013 to WEB-019, WEB-026, WEB-027; [Skills frontmatter reference](https://code.claude.com/docs/en/skills), [FreekMencke/claude-skills#31](https://github.com/FreekMencke/claude-skills/pull/31)
 - Related: WEB-029, WEB-030, REPO-033, REPO-039, SKILL-010, SKILL-017, SKILL-021, HOOK-020
 
@@ -739,7 +739,7 @@ The design for `/seo-audit`. It is generic, and it reads each repo's own rules a
 8. Report in WEB-029's format, with five findings in the body, coverage, what the user must check by hand (Rich Results Test, Search Console UI), and a recheck date.
 
 **Constraints**
-- Read-only, but not with REPO-033's agent recipe: in a skill, `allowed-tools` pre-approves and restricts nothing (SKILL-010), and skill `hooks` keep running "for the rest of the session" (HOOK-020). Use `disallowed-tools: Edit, Write, NotebookEdit` ("removed from Claude's available pool while this skill is active"), read-only rules in the prompt, and `git status --porcelain` at the start and the end. The audit runs inline, not as a subagent, because it needs the repo's auto memory (the Search Console wrapper's location) and MCP tools.
+- Read-only, but not with REPO-033's agent recipe: in a skill, `allowed-tools` pre-approves and restricts nothing (SKILL-010), and skill `hooks` keep running "for the rest of the session" (HOOK-020). Use `disallowed-tools: Edit, Write, NotebookEdit` ("removed from Claude's available pool while this skill is active"; the restriction clears when the user sends their next message), read-only rules in the prompt, and `git status --porcelain` at the start and the end. The audit runs inline, not as a subagent, because it needs the repo's auto memory (the Search Console wrapper's location) and MCP tools.
 - Fetched pages are data (REPO-039).
 - Google's rules go in `references/`, each linked to its Google page (SKILL-017).
 - Fixes happen in the repo's own session. An issue per finding can follow through `roadmap-issues`, as #159 did.
@@ -748,7 +748,7 @@ The design for `/seo-audit`. It is generic, and it reads each repo's own rules a
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [seo-ai-visibility audit checklist](https://github.com/anthropics/knowledge-work-plugins/tree/main/small-business/skills/seo-ai-visibility), [Hainrixz/claude-seo-ai](https://github.com/Hainrixz/claude-seo-ai), WEB-002's report
 - Related: WEB-028, REPO-049, REPO-050
 
@@ -776,7 +776,7 @@ REPO-049 and REPO-050 compare reviewers' severity schemes and output formats. An
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235), [#159 roadmap](https://github.com/osrs-tracker/osrs-tracker-web/issues/159), [marketingskills rankings-push](https://github.com/coreyhaines31/marketingskills)
 - Related: WEB-003, WEB-013, WEB-028
 
@@ -799,28 +799,28 @@ The roadmap first scheduled a Search Console check of #162 for "about 4-6 weeks 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: local transcripts under `~/.claude/projects/` for osrs-tracker-web worktrees, read 2026-10-13; prices from TOK-017's table ([Pricing](https://platform.claude.com/docs/en/about-claude/pricing))
 - Related: WEB-002, WEB-003, WEB-015, TOK-017, ORCH-029
 
-Main-thread usage summed from each transcript's assistant `usage` fields. Prices are Opus 5.5 API rates: $8/MTok for 1-hour cache writes, $0.20 for reads, $20 for output. Subagent transcripts are not included. Measured 2026-10-13.
+Main-thread usage from each transcript's assistant `usage` fields, counted once per `message.id` (a message sits on one line per content block; TOK-013). Corrected 2026-10-14: the first version summed every line, which inflated each figure 2.1–2.5×. Prices are Opus 5.5 API rates: $8/MTok for 1-hour cache writes, $0.20 for reads, $20 for output. Subagent transcripts are not included. Measured 2026-10-13.
 
-| Session | Date | Turns | Cache read | Output | API-equivalent |
+| Session | Date | API messages | Cache read | Output | API-equivalent |
 |---|---|---|---|---|---|
-| SEO audit → #159 | 2026-10-09 | 142 | 20.0M | 228k | $12.20 |
-| #160 data (Search Console UI, then API) | 2026-10-10 | — | 74.5M | 280k | $25.77 |
-| PageSpeed follow-up | 2026-10-10 | — | 7.3M | 57k | $4.36 |
-| Player OG cards (#239) | 2026-10-13 | 283 | 48.0M | 233k | $17.90 |
+| SEO audit → #159 | 2026-10-09 | 64 | 8.8M | 77k | $4.92 |
+| #160 data (Search Console UI, then API) | 2026-10-10 | 152 | 29.7M | 109k | $10.26 |
+| PageSpeed follow-up | 2026-10-10 | 37 | 3.7M | 26k | $2.08 |
+| Player OG cards (#239) | 2026-10-13 | 146 | 24.6M | 99k | $8.73 |
 
-**Why the data session cost the most.** Its 57 Playwright calls on Search Console pages put DOM reads into a growing context, and every later turn re-read that context from cache. The API route from WEB-007 returns compact JSON.
+**Why the data session cost the most.** Its 73 Playwright calls (57 of them navigations, evaluations and clicks) on Search Console pages put DOM reads into a growing context, and every later turn re-read that context from cache. The API route from WEB-007 returns compact JSON.
 
-**To re-run:** for each `.jsonl`, sum `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens` and `input_tokens` over the `assistant` lines, then multiply by the prices above. The script used is in this session's transcript; a later session can reproduce it in a dozen lines.
+**To re-run:** for each `.jsonl`, sum `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens` and `input_tokens` over the `assistant` lines, keeping the last line per `message.id`, then multiply by the prices above. The script used is in this session's transcript; a later session can reproduce it in a dozen lines.
 
 ## [WEB-032] A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Manage your sitemaps using the Sitemaps report](https://support.google.com/webmasters/answer/7451001), [Search Console API: Sitemaps resource](https://developers.google.com/webmaster-tools/v1/sitemaps), osrs-tracker-web's app and Traefik logs and `sitemaps.list`, read 2026-10-10 to 2026-10-13 ([FreekMencke/claude-kb#89](https://github.com/FreekMencke/claude-kb/issues/89))
 - Related: WEB-007, WEB-008, WEB-013, WEB-018, WEB-029
 
@@ -841,7 +841,7 @@ Minutes after a submit, the Sitemaps report can show "Couldn't fetch" (details: 
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Influencing your title links in search results](https://developers.google.com/search/docs/appearance/title-link) (last updated 2025-12-10, read 2026-10-13), Google results and URL Inspection for osrs-tracker-web, 2026-10-13 ([FreekMencke/claude-kb#89](https://github.com/FreekMencke/claude-kb/issues/89), fixed in [osrs-tracker/osrs-tracker-web@6c4937f](https://github.com/osrs-tracker/osrs-tracker-web/commit/6c4937f))
 - Related: WEB-001, WEB-014, WEB-022, WEB-029
 
@@ -867,7 +867,7 @@ Since 2026-10-13 the `seo-audit` skill flags `Brand: phrase` titles whose phrase
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [osrs-tracker/osrs-tracker-web#263](https://github.com/osrs-tracker/osrs-tracker-web/pull/263), [osrs-tracker/osrs-tracker-web#248](https://github.com/osrs-tracker/osrs-tracker-web/pull/248)
 - Related: WEB-001, WEB-010, WEB-025
 
@@ -887,11 +887,11 @@ Measured locally (production build, mobile emulation, 4× CPU): first paint of t
 Ranked by impact against effort.
 
 1. **Done 2026-10-13: the `/seo-audit` skill** is in `freek-local-skills` ([FreekMencke/claude-skills#31](https://github.com/FreekMencke/claude-skills/pull/31), from [#28](https://github.com/FreekMencke/claude-skills/issues/28)): WEB-028's steps, WEB-029's finding format, a `probe.sh` with the marked user agent (WEB-018), and Google's rules quoted in `references/`. It enforces read-only with `disallowed-tools` and a `git status` check, not REPO-033's hook (WEB-028).
-2. **Done 2026-10-13: osrs-tracker-web's UA-era gtag code is fixed** (WEB-024), in [osrs-tracker/osrs-tracker-web#241](https://github.com/osrs-tracker/osrs-tracker-web/pull/241) (from [#240](https://github.com/osrs-tracker/osrs-tracker-web/issues/240)): `anonymize_ip` is gone, and events send named parameters (`load_theme` sends `theme`) instead of `event_category`, `event_label` and a string `value`. Not checked: which new parameters are registered as custom dimensions in the property. Consent mode is still undecided (WEB-025).
+2. **Done 2026-10-13: osrs-tracker-web's UA-era gtag code is fixed** (WEB-024), in [osrs-tracker/osrs-tracker-web#241](https://github.com/osrs-tracker/osrs-tracker-web/pull/241) (from [#240](https://github.com/osrs-tracker/osrs-tracker-web/issues/240)): `anonymize_ip` is gone, and events send named parameters (`load_theme` sends `theme`) instead of `event_category`, `event_label` and a string `value`. Not checked: which new parameters are registered as custom dimensions in the property. Consent mode followed the same day in osrs-tracker/osrs-tracker-web#248 (WEB-001, WEB-034).
 3. **Done 2026-10-13: give sessions read-only GA4 access.** The official GA MCP server (WEB-006) is registered user-wide with the Search Console service account as a Viewer, so questions like WEB-005's "Bing's referral share" can now be answered.
 4. **Done 2026-10-13: mark audit traffic** (WEB-018): the skill's `probe.sh` appends `seo-audit` to the Googlebot user agent.
-5. **Done 2026-10-13: route SEO questions to this file.** `claude-kb-lookup`'s description now lists the topic ([FreekMencke/claude-skills#30](https://github.com/FreekMencke/claude-skills/pull/30), from [#29](https://github.com/FreekMencke/claude-skills/issues/29)).
-6. **Done 2026-10-13: sessions read historical server logs from Loki** (WEB-013, INFRA-024, INFRA-025), with option a, in [FreekMencke/home-cluster#5](https://github.com/FreekMencke/home-cluster/issues/5): `resourceNames: ['loki-gateway:80']` was enough. Before, the `claude-agent` identity couldn't reach Loki, so crawl and bot questions got only the current pods' logs (about 10 minutes in the 2026-10-13 `seo-audit` run). The options were:
+5. **Done 2026-10-13: route SEO questions to this file.** `claude-kb-lookup`'s description now lists the topic ([FreekMencke/claude-skills#30](https://github.com/FreekMencke/claude-skills/pull/30), from [#29](https://github.com/FreekMencke/claude-skills/issues/29)); the skill has since moved to this repo (FreekMencke/claude-kb#95).
+6. **Done 2026-10-13, superseded 2026-10-14: sessions read historical server logs from Loki.** On 2026-10-14 the local Loki and the agent's Loki grant were removed (home-cluster 50b1a31); logs and metrics are now in Grafana Cloud, read through the claude.ai Grafana connector (tested 2026-10-14). That is option b, with write tools for dashboards and alerts kept on purpose (INFRA recommendation 11). It was done (WEB-013, INFRA-024, INFRA-025) with option a, in [FreekMencke/home-cluster#5](https://github.com/FreekMencke/home-cluster/issues/5): `resourceNames: ['loki-gateway:80']` was enough. Before, the `claude-agent` identity couldn't reach Loki, so crawl and bot questions got only the current pods' logs (about 10 minutes in the 2026-10-13 `seo-audit` run). The options were:
    - a. A Role in the Loki namespace with `get` on `services/proxy`, limited by `resourceNames` to the gateway. RBAC maps `GET` to `get`, and Loki's query endpoints are `GET` while push and delete requests are `POST`. The denial named the resource `loki-gateway:80`, and `resourceNames` with that string worked (INFRA-024). The RBAC lives in the cluster's config repo, so applying it is a cross-repo issue there.
    - b. A read-only Loki or Grafana MCP server.
    - c. Keep Loki a manual step: the user runs the query and pastes the result.
@@ -904,4 +904,4 @@ Ranked by impact against effort.
 - How big are the GA MCP server's tool schemas, and how much context does a `run_report` answer take? Not measured (WEB-006); it's installed now, so a `/context` check in a fresh session would show the schemas.
 - How long does a resubmitted sitemap index stay pending? `sitemaps.list` for `/sitemap.xml` was still pending three days after the 2026-10-10 resubmit (WEB-032); a check on or after 2026-10-20 would show whether it is processed.
 - Does Google keep the capitalised `Brand: Phrase` titles as written? osrs-tracker-web shipped them in 6c4937f on 2026-10-13; a search-results check after the next crawl of `/trackers/xp` and `/trackers/price` would confirm WEB-033's rule.
-- Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)?
+- Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)? Answered 2026-10-14: its CLI help lists it among the available categories (`cli/cli-flags.js` at v13.5.0); not run.

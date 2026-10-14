@@ -1,6 +1,6 @@
 # Token usage and context efficiency
 
-Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 and the docs live that day. Model names and prices are those on the docs that day (Fable 5.1, Opus 5.5, Sonnet 5.5, Haiku 5.5). `docs.claude.com` now redirects to `platform.claude.com/docs`. Entries marked "local measurement" come from our own transcripts in `~/.claude/projects/` (30 days, 209 main sessions, 482 transcript files, one machine), analysed on 2026-10-12.
+Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live that day; re-verified 2026-10-14 against the docs fetched that day, the claude-code CHANGELOG through 2.1.299 and our repos' `origin/main` (each entry's Last verified date is authoritative). Model names and prices are those on the docs that day (Fable 5.1, Opus 5.5, Sonnet 5.5, Haiku 5.5). `docs.claude.com` now redirects to `platform.claude.com/docs`. Entries marked "local measurement" come from our own transcripts in `~/.claude/projects/` (6 days, 2026-10-07 to 2026-10-12, 209 main sessions, 482 transcript files, one machine), analysed on 2026-10-12.
 
 ## Quick answers
 
@@ -12,13 +12,13 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 | How do plan limits work? | A 5-hour session window plus a weekly limit, shared by claude.ai, Claude Code and Desktop. Max is 5x or 20x Pro per session. | TOK-014 |
 | Do many MCP servers still bloat context? | Much less: Claude Code defers MCP tool schemas by default, so only names and server instructions load. CLIs (`gh`, `aws`) are still cheaper. | TOK-020, TOK-022 |
 | When should I `/clear` vs `/compact`, and when does auto-compact fire? | `/clear` between unrelated tasks or after two failed corrections; `/compact <focus>` at a natural break. Auto-compact fires at about 967K on native-1M models (200K on 4.6 without `[1m]`); lower it with `autoCompactWindow`. | TOK-030, TOK-031, TOK-007, TOK-032 |
-| Which model should subagents use? | Built-in Explore inherits the main model (Opus, if that's what you run). Set `model:` per agent or `CLAUDE_CODE_SUBAGENT_MODEL` for cheaper defaults. | TOK-036 |
+| Which model should subagents use? | Built-in Explore inherits the main model (Opus, if that's what you run). Set `model:` per agent, or `CLAUDE_CODE_SUBAGENT_MODEL` for cheaper defaults; it doesn't move built-in Explore or Plan, so define your own `Explore` agent or also set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`. | TOK-036 |
 | How long does the prompt cache live, and what breaks it? | 1 hour for the main conversation on a subscription; 5 minutes for subagents, on an API key, or on usage credits. Switching model, fast mode, effort on older models, upgrading Claude Code, and MCP changes with tool search off break it; editing CLAUDE.md doesn't. | TOK-052, TOK-053 |
 | How much do batches save? | 50% on input and output, and it stacks with caching. Most finish within 1 hour, max 24 hours. | TOK-054 |
 | How big can a skill description be, and what does it cost? | Every skill's name + description is in context on every turn, within a budget of 1% of the window. Each entry is capped at 1,536 characters. Keep it short and front-load triggers. | TOK-005, TOK-061 |
 | How long should CLAUDE.md be? | Under 200 lines per file. `@imports` don't reduce cost. Move procedures to skills or `paths:`-scoped rules. | TOK-003, TOK-065 |
 | What do images and PDFs cost? | An image costs ⌈w/28⌉×⌈h/28⌉ tokens (max 1,568 standard, 4,784 high-res). A PDF costs 1,500–3,000 tokens per page plus image cost. | TOK-043 |
-| Does WebFetch give Claude the whole page? | No: 100,000 characters per call (an `offset` reads on), usually answered by a small model that may cut quotes. Preapproved docs pages under that come back raw. For exact wording, `curl` the `.md` page and grep. | TOK-087, TOK-088, TOK-089 |
+| Does WebFetch give Claude the whole page? | No: 100,000 characters per call (an `offset` reads on), usually answered by a small model that may cut quotes (since v2.1.299 the extraction can run on the caller's own model and effort). Preapproved docs pages under that come back raw. For exact wording, `curl` the `.md` page and grep. | TOK-087, TOK-088, TOK-089 |
 | WebSearch `standard` or `extended`? | `standard` first. `extended` is "several times the cost and latency" (tool schema only); in our one test it was broader, not more authoritative. 200 searches per session, shared with subagents. | TOK-093, TOK-092 |
 | context7, a docs MCP server or web search for docs? | The source's own channel first: the `.md` page plus grep, or the docs' MCP server (both Claude docs sites have one). context7 costs about 2k tokens a lookup but can be weeks stale. | TOK-095, TOK-096, TOK-098 |
 
@@ -111,7 +111,7 @@ Prefix: TOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Features overview: context costs](https://code.claude.com/docs/en/features-overview#understand-context-costs), [Context window](https://code.claude.com/docs/en/context-window)
 - Related: TOK-002, TOK-005, TOK-020, TOK-065
 
@@ -123,7 +123,7 @@ Each request sends, in this order: system prompt and tool definitions, then proj
 | Skills | Name + description every request. Body only once invoked, then stays. |
 | MCP | Tool names + server instructions. Schemas only when loaded via tool search. |
 | Subagents | Isolated. Only the final summary returns. |
-| Hooks | Zero, unless they return `additionalContext` (plain stdout on exit 0 doesn't enter) |
+| Hooks | Zero, unless they return `additionalContext` (plain stdout on exit 0 doesn't enter, except on `UserPromptSubmit`, `UserPromptExpansion`, `SessionStart` and `PostModelSwitch`) |
 | File reads, tool output, messages | Everything, every request after it arrives |
 
 The docs' context-window page is an interactive simulation with "representative numbers": system prompt 4,200, project CLAUDE.md 1,800, file reads 1,100–2,400 each, a subagent summary of 420 tokens after the subagent read 6,100 tokens. It doesn't show built-in tool definitions, which are the biggest fixed item (TOK-002). Use `/context` for real figures.
@@ -132,7 +132,7 @@ The docs' context-window page is an interactive simulation with "representative 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: local transcripts (`~/.claude/projects/*/*.jsonl`, first assistant turn's `usage`); [Systima/OpenCode vs Claude Code overhead](https://www.kunalganglani.com/blog/opencode-vs-claude-code-token-overhead); [wmedia /context sample](https://wmedia.es/en/tips/claude-code-context-command-token-usage)
 - Related: TOK-001, TOK-006, TOK-009
 
@@ -153,7 +153,7 @@ Confidence note: the figures are our local measurement; community captures (Syst
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs), [Best practices](https://code.claude.com/docs/en/best-practices)
 - Related: TOK-065, TOK-031, SKILL-024, REPO-045
 
@@ -173,7 +173,7 @@ Loading rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-003, TOK-006
 
@@ -188,7 +188,7 @@ What loads at the start of each conversation:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skills: descriptions are cut short](https://code.claude.com/docs/en/skills), [Env vars](https://code.claude.com/docs/en/env-vars), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-061, TOK-064, TOK-067, SKILL-003, SKILL-014, SKILL-030, SKILL-045
 
@@ -215,7 +215,7 @@ The 2% figure in changelog v2.1.32 is outdated. Community estimates are about 2,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Sub-agents: what loads at startup](https://code.claude.com/docs/en/sub-agents), [Prompt caching: subagents](https://code.claude.com/docs/en/prompt-caching), local transcripts (`<session>/subagents/*.jsonl`)
 - Related: TOK-035, TOK-036, TOK-052, ORCH-007
 
@@ -234,7 +234,7 @@ Confidence note: the cache behavior is documented; the sizes are our local measu
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Model config: extended context, auto-compact](https://code.claude.com/docs/en/model-config), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)
 - Related: TOK-032, TOK-008
 
@@ -255,11 +255,11 @@ A large window removes the automatic brake on session length, so cost per turn k
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Costs: why usage climbs in a long session](https://code.claude.com/docs/en/costs), local transcripts
 - Related: TOK-009, TOK-030, TOK-032
 
-Claude Code re-sends the full conversation with every request; the cached part is billed at cache-read rates. A 300-turn session at 300k context reads about 90M tokens. Performance also degrades as context fills ("context rot", [Best practices](https://code.claude.com/docs/en/best-practices)).
+Claude Code re-sends the full conversation with every request; the cached part is billed at cache-read rates. A 300-turn session at 300k context reads about 90M tokens. Performance also degrades as context fills ([Best practices](https://code.claude.com/docs/en/best-practices); the API's [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows) page calls it "context rot").
 
 Our 2026-10-07 to 2026-10-12, 6 days (list-price equivalent at Opus 5.5 rates). Correction 2026-10-12: this was first labelled "30 days", but the transcripts only start on 2026-10-06; shares are unaffected, totals are for 6 days. Re-measure with the `token-audit` skill (FreekMencke/claude-skills `local-skills/skills/token-audit/`), whose baseline for 2026-10-07 to 10-11 is 186 USD a day, 0.059 USD per API message, subagents 13% of cost.
 
@@ -282,7 +282,7 @@ Confidence note: the mechanism is documented; the table is our local 6-day measu
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: local transcripts; [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-008, TOK-042, TOK-043
 
@@ -302,7 +302,7 @@ Confidence note: derived from our local 6-day measurement and list prices.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Commands](https://code.claude.com/docs/en/commands), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-011, TOK-013
 
@@ -326,7 +326,7 @@ Help-center articles still mention `/status` for remaining allocation. In curren
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Status line](https://code.claude.com/docs/en/statusline)
 - Related: TOK-082, TOK-032
 
@@ -348,7 +348,7 @@ A minimal one-liner: `jq -r '"[\(.model.display_name)] \(.context_window.used_pe
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Monitoring usage](https://code.claude.com/docs/en/monitoring-usage), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-018
 
@@ -367,7 +367,7 @@ The docs call OTel "the only option that streams per-user token and cost metrics
 - Type: tool
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [.claude directory](https://code.claude.com/docs/en/claude-directory), local inspection
 - Related: TOK-080, TOK-008
 
@@ -394,8 +394,8 @@ Confidence note: the transcript location is documented (official-docs); the `usa
 - Type: fact
 - Applies to: claude.ai, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Usage limit best practices](https://support.claude.com/en/articles/11647753), [Using Claude Code with Pro/Max](https://support.claude.com/en/articles/11145838), [Max plan](https://support.claude.com/en/articles/11049741), [Pro plan](https://support.claude.com/en/articles/8325606), [Team plan](https://support.claude.com/en/articles/9266767), [Fable usage](https://support.claude.com/en/articles/15424964), [Usage credits](https://support.claude.com/en/articles/12429409)
+- Last verified: 2026-10-14
+- Sources: [Usage and length limits](https://support.claude.com/en/articles/11647753), [Using Claude Code with Pro/Max](https://support.claude.com/en/articles/11145838), [Max plan](https://support.claude.com/en/articles/11049741), [Pro plan](https://support.claude.com/en/articles/8325606), [Team plan](https://support.claude.com/en/articles/9266767), [Fable usage](https://support.claude.com/en/articles/15424964), [Usage credits](https://support.claude.com/en/articles/12429409)
 - Related: TOK-015, TOK-011
 
 How the limits work:
@@ -414,8 +414,8 @@ Unverified: reported May 2026 limit doubling and peak-hour changes, and per-mode
 - Type: recommendation
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Usage limit best practices](https://support.claude.com/en/articles/11647753), [Usage and length limits](https://support.claude.com/en/articles/9797557)
+- Last verified: 2026-10-14
+- Sources: [Usage and length limits](https://support.claude.com/en/articles/11647753), [Usage limit best practices](https://support.claude.com/en/articles/9797557)
 - Related: TOK-014, TOK-030
 
 What increases usage: message length, attachment size, current conversation length, tool use (Research, web search, connectors), model choice, effort or extended thinking, artifacts, and multi-step agentic tasks.
@@ -433,7 +433,7 @@ Check Settings → Usage for the 5-hour and weekly bars.
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting), [Thinking cost](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Rate limits](https://platform.claude.com/docs/en/api/rate-limits)
 - Related: TOK-017, TOK-050
 
@@ -454,7 +454,7 @@ Claude 4.7+, Fable and Mythos use a tokenizer that produces **about 30% more tok
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode)
 - Related: TOK-050, TOK-054, TOK-055
 
@@ -482,7 +482,7 @@ All multipliers stack. Opus 5.5 is 2x Sonnet 5.5 per token; a model switch mid-s
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Usage & Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api), [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-012
 
@@ -499,7 +499,7 @@ Claude Code report, `GET /v1/organizations/usage_report/claude_code`:
 - Covers the Claude API only, not Bedrock or Vertex. Lags up to 1 hour.
 
 Access and console:
-- All three need an Admin key and aren't available to individual accounts.
+- All three need an Admin API credential (an Admin key, an `org:admin` OAuth token, or a key not scoped to a workspace) and aren't available to individual accounts. Claude Enterprise organizations use an Analytics API key and a different API.
 - The Console has usage and cost pages, workspace spend limits and rate limits; Claude Code gets an auto-created workspace.
 - The docs give per-user TPM recommendations, from 200–300k for 1–5 users down to 10–15k for 500+.
 
@@ -507,7 +507,7 @@ Access and console:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [MCP: scale with tool search](https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search), [Env vars](https://code.claude.com/docs/en/env-vars), [Changelog](https://code.claude.com/docs/en/changelog)
 - Related: TOK-021, TOK-022, TOK-053
 
@@ -524,8 +524,8 @@ Access and console:
 
 Other controls:
 - Per server: `alwaysLoad: true` in `.mcp.json` exempts a server from deferral.
-- As of v2.1.296 (2026-10-09) the default limit on MCP tool descriptions sent up front and on server instructions is 4,096 characters, up from 2,048 (`CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH`). The MCP and env-vars pages still say 2,048. Changelog v2.1.295 says descriptions loaded *through tool search* are cut at 16,384.
-- Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), a local stdio MCP server with one 10,000-character description: through ToolSearch the whole description arrived (all 100 position markers in the `deferred_tools_record`). With `ENABLE_TOOL_SEARCH=false` (loaded up front) it was cut after about 4,000 characters, ending `[04… [truncated]`. So 4,096 applies up front and the larger tool-search cap applies to deferred loads; the 2,048 in the docs is stale.
+- As of v2.1.296 (2026-10-09) the default limit on MCP tool descriptions sent up front and on server instructions is 4,096 characters, up from 2,048 (`CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH`). Descriptions loaded *through tool search* are cut at 16,384 (v2.1.295). The MCP and env-vars pages say both figures as of 2026-10-14. Since v2.1.299, descriptions and instructions from Anthropic's first-party MCP servers at `api.anthropic.com` reach Claude in full.
+- Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), a local stdio MCP server with one 10,000-character description: through ToolSearch the whole description arrived (all 100 position markers in the `deferred_tools_record`). With `ENABLE_TOOL_SEARCH=false` (loaded up front) it was cut after about 4,000 characters, ending `[04… [truncated]`. So 4,096 applies up front and the larger tool-search cap applies to deferred loads, as the docs now say.
 
 History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases switched to defer-all. Blog posts that describe 10% auto as the default are outdated.
 
@@ -533,7 +533,7 @@ History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases sw
 - Type: fact
 - Applies to: Claude API, Claude Code (when tool search is off)
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use), [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [PolicyLayer GitHub MCP cost](https://policylayer.com/token-cost/github), [Unblocked MCP budget](https://getunblocked.com/blog/mcp-token-budget-autopsy/)
 - Related: TOK-020, TOK-024
 
@@ -546,7 +546,7 @@ Anthropic figures:
 
 Community per-server numbers, measured with a GPT tokenizer:
 - GitHub MCP is about 14k tokens for 86 tools (PolicyLayer).
-- Median server about 1.1k, p90 about 6.1k.
+- Median server about 1.9k, p90 about 14k (PolicyLayer, 11,886 servers, read 2026-10-14; the figures move with each build).
 - Others cite about 42k for GitHub MCP. Older versions vary.
 
 Cheap places to defer:
@@ -560,7 +560,7 @@ Confidence note: the Anthropic figures are official; the per-server community nu
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Costs](https://code.claude.com/docs/en/costs), [MCP: scopes](https://code.claude.com/docs/en/mcp), [Sub-agents](https://code.claude.com/docs/en/sub-agents)
 - Related: TOK-020, TOK-071
 
@@ -584,7 +584,7 @@ With tool search active, toggling a server mid-session doesn't break the cache. 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [MCP](https://code.claude.com/docs/en/mcp), [Env vars](https://code.claude.com/docs/en/env-vars)
 - Related: TOK-042
 
@@ -599,7 +599,7 @@ Raising `MAX_MCP_OUTPUT_TOKENS` is rarely the right fix. Prefer tools with filte
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp), [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use), [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context)
 - Related: TOK-021, SKILL-018
 
@@ -613,7 +613,7 @@ In Claude Code the equivalents are a skill script that processes data and prints
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-008, TOK-031, TOK-070
 
@@ -630,7 +630,7 @@ Instructions given only in conversation are lost on `/clear` and compaction. Put
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Context window](https://code.claude.com/docs/en/context-window), [Costs](https://code.claude.com/docs/en/costs), [Skills](https://code.claude.com/docs/en/skills), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-032, SKILL-006, MEM-003
 
@@ -653,7 +653,7 @@ Cost: compaction is itself a request over the whole history. While the cache is 
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Model config: set the auto-compact window](https://code.claude.com/docs/en/model-config), [Env vars](https://code.claude.com/docs/en/env-vars)
 - Related: TOK-007, TOK-008, TOK-031
 
@@ -682,7 +682,7 @@ Confidence note: the knobs are documented (official-docs); the savings come from
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Interactive mode: /btw](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-030, TOK-031
 
@@ -700,7 +700,7 @@ Rewinding truncates to an already-cached prefix, so it's cheaper than `/compact`
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Sessions: resume from a summary](https://code.claude.com/docs/en/sessions#resume-from-a-summary), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-052, TOK-086
 
@@ -712,17 +712,19 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), anthropics/claude-code#78720: a fre
 
 On Pro and Max, for sessions idle more than about 1 hour and over 100k tokens, Claude Code offers "Resume from summary", which runs `/compact`.
 
+Idle compaction (v2.1.290+, announced in the 2.1.299 CHANGELOG): in an interactive terminal session on the one-hour TTL, a conversation of 200K+ tokens (`CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS`, floor 100K) idle for about 54 minutes is compacted just before its cache expires, so the next message sends a summary instead of reprocessing the history. `"idleCompaction": false` or turning auto-compact off disables it. Sessions on the five-minute TTL don't get it ([settings reference: `idleCompaction`](https://code.claude.com/docs/en/settings-reference)).
+
 Idle sessions can still spend: scheduled tasks, cross-session messages and goal check-ins each send the full context. Background helpers (titles, resume summaries) cost under $0.04 per session.
 
 In our data, full rebuilds after the first turn (cache writes over 40k) were rare: 11 turns, 8% of main-session cache writes. Idle gaps are a minor cost driver for us; context length dominates (TOK-008).
 
-Confidence note: the cache and resume behavior is documented; the share of rebuilds is our local measurement (single-source).
+Confidence note: the share of rebuilds is our local measurement (single-source).
 
 ## [TOK-035] Delegate verbose work to subagents
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Sub-agents: isolate high-volume operations](https://code.claude.com/docs/en/sub-agents#isolate-high-volume-operations), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: TOK-006, TOK-009, TOK-036, ORCH-020, ORCH-034
 
@@ -745,7 +747,7 @@ Ask for a specific return format with a word cap, to keep the summary small.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Sub-agents: choose a model](https://code.claude.com/docs/en/sub-agents), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-006, TOK-035, ORCH-003, ORCH-005, ORCH-030
 
@@ -765,7 +767,7 @@ Confidence note: the official advice is documented; our numbers are local measur
 - Type: fact
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Costs: agent teams](https://code.claude.com/docs/en/costs)
 - Related: ORCH-020, ORCH-025, ORCH-010
 
@@ -775,7 +777,7 @@ Merged into ORCH-020 (kb-orchestration.md) on 2026-10-12. Token multipliers are 
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction), [Compaction threshold](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold), [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing), [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)
 - Related: TOK-050, TOK-055
 
@@ -798,7 +800,7 @@ Merged into ORCH-020 (kb-orchestration.md) on 2026-10-12. Token multipliers are 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference: Read](https://code.claude.com/docs/en/tools-reference#read-tool-behavior), [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
 - Related: TOK-041, TOK-062
 
@@ -819,7 +821,7 @@ Our 6 days (2026-10-07 to 2026-10-12): 428 text reads, median about 700 tokens, 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Costs](https://code.claude.com/docs/en/costs), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: TOK-040, TOK-084
 
@@ -838,12 +840,12 @@ A "codebase-overview" skill (official suggestion) or a small repo map (TOK-085) 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference#output-limits), [Costs: offload processing to hooks](https://code.claude.com/docs/en/costs), [Hooks](https://code.claude.com/docs/en/hooks)
 - Related: TOK-009, TOK-083, TOK-023
 
 Limits:
-- Successful output is inline up to about 30k characters (`BASH_MAX_OUTPUT_LENGTH`, max 150k; setting `bashOutputMaxChars`). Beyond that Claude gets a file path plus a 2k preview.
+- Successful output is inline up to about 30,000 characters. The `bashOutputMaxChars` setting (4,000–128,000, v2.1.261+) raises that ceiling and makes Claude Code ignore `BASH_MAX_OUTPUT_LENGTH`, which (default 30,000, max 150,000) only widens the read-back window. Beyond the inline ceiling Claude gets a file path plus a 2k preview.
 - Failing commands get about 10k characters, head and tail.
 
 Official hook pattern: a `PreToolUse` hook on Bash rewrites `npm test` and `pytest` via `updatedInput` to `… 2>&1 | grep -A 5 -E '(FAIL|ERROR|error:)' | head -100`. The docs say this cuts a 10,000-line log "from tens of thousands of tokens to hundreds". `PostToolUse` can replace output with `updatedToolOutput`.
@@ -864,11 +866,11 @@ Confidence note: the limits and hook pattern are documented; the 6-day numbers a
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Terminal config: paste large content](https://code.claude.com/docs/en/terminal-config#paste-large-content), [Vision](https://platform.claude.com/docs/en/build-with-claude/vision), [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support)
 - Related: TOK-009, TOK-040
 
-**Pastes:** pastes over 800 characters collapse to `[Pasted text #N]`, but the full text is still sent. "Write the content to a file and ask Claude to read it instead of pasting." Piping works too: `cat log | claude -p "…"`.
+**Pastes:** pastes over 800 characters or more than three lines collapse to `[Pasted text #N]`, but the full text is still sent. "Write the content to a file and ask Claude to read it instead of pasting." Piping works too: `cat log | claude -p "…"`.
 
 **Images:** cost is ⌈w/28⌉ × ⌈h/28⌉ tokens. The old w×h/750 rule is outdated.
 - Standard tier caps at 1,568 px long edge and 1,568 tokens. High-res (4.7+) caps at 2,576 px and 4,784 tokens, "up to roughly three times more".
@@ -886,7 +888,7 @@ Confidence note: the paste, image and PDF rules are documented; our counts are l
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Permissions: read and edit](https://code.claude.com/docs/en/permissions#read-and-edit)
 - Related: TOK-040, TOK-071
 
@@ -901,7 +903,7 @@ Limits of deny rules:
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-017, TOK-051, TOK-054
 
@@ -912,8 +914,9 @@ Basics:
 - Pay-off: after 1 read for 5m writes (1.25x), after 2 reads for 1h writes (2x).
 
 Minimum cacheable length varies by model:
-- 512 tokens: Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable.
-- 1,024: Sonnet 5, Opus 4.8.
+- 512 tokens: Opus 5.5, Opus 5, Sonnet 5.5, Haiku 5.5, Fable 5/5.1, Mythos 5/5.1.
+- 1,024: Sonnet 5, Sonnet 4.6, Opus 4.8.
+- 2,048: Opus 4.7.
 - 4,096: Opus 4.5/4.6, Haiku 4.5.
 - Below the minimum, nothing is cached and no error is returned.
 
@@ -928,7 +931,7 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics), [Cookbook: prompt caching](https://github.com/anthropics/claude-cookbooks/blob/main/misc/prompt_caching.ipynb), [Cookbook: speculative prompt caching](https://github.com/anthropics/claude-cookbooks/blob/main/misc/speculative_prompt_caching.ipynb)
 - Related: TOK-050
 
@@ -948,7 +951,7 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching), [Costs](https://code.claude.com/docs/en/costs), [Lessons from building Claude Code: prompt caching is everything](https://claude.dev/blog/lessons-from-building-claude-code-prompt-caching-is-everything/)
 - Related: TOK-053, TOK-034, TOK-006, ORCH-040
 
@@ -963,6 +966,8 @@ Settings:
 - `promptCacheTtl` / `CLAUDE_CODE_PROMPT_CACHE_TTL` for the main conversation, and `subagentPromptCacheTtl` / `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL` for the rest. Each takes `5m` or `1h` (v2.1.242+).
 - `FORCE_PROMPT_CACHING_5M=1` and `ENABLE_PROMPT_CACHING_1H=1`.
 - `DISABLE_PROMPT_CACHING` and its per-model variants; leave caching on for normal use.
+- A subagent's `experimental.cacheTtl` frontmatter (v2.1.248+) sets the TTL for its requests.
+- Idle compaction (v2.1.290+) compacts a 200K+ token terminal conversation idle for about 54 minutes before its one-hour cache expires (TOK-034).
 
 Scope: the cache is "effectively scoped to one machine and directory". Parallel sessions in one directory share it.
 
@@ -972,13 +977,13 @@ Verify with `claude -p "hi" --output-format json` and look at `usage.cache_creat
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-052, TOK-020, TOK-070
 
 **Breaks the cache:**
 - `/model` switches: each model has its own cache. `opusplan` toggles and skills with a different `model:` count too.
-- Effort changes on older models. On Opus, Sonnet and Haiku 5.5 and Fable 5.1, effort changes are cache-safe with an API key or subscription, but not on Bedrock or Vertex.
+- Effort changes on older models. On Opus, Sonnet and Haiku 5.5 and Fable 5.1, effort changes are cache-safe with an API key or subscription, but not on Bedrock, Google Cloud's Agent Platform or a Claude apps gateway, with `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` set, or under a HIPAA configuration. Automatic model fallback is also a model switch.
 - Turning on fast mode.
 - MCP connects or disconnects and tool denies, only when tool search is off.
 - `/compact` (the conversation layer).
@@ -998,7 +1003,7 @@ Rule of thumb: pick model and effort at the start of a session, not in the middl
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing), [Rate limits](https://platform.claude.com/docs/en/api/rate-limits), [Cookbook: batch processing](https://github.com/anthropics/claude-cookbooks/blob/main/misc/batch_processing.ipynb)
 - Related: TOK-017, TOK-050
 
@@ -1010,7 +1015,7 @@ Pricing and limits:
 
 **With caching:** the discounts stack, but hits are best-effort because requests run concurrently. Typical hit rates are 30–98%. Use identical `cache_control` blocks and consider the 1h TTL.
 
-Not available: fast mode and mid-batch tool loops.
+Rejected in a batch: `stream: true`, `speed` (fast mode) and `max_tokens: 0`. Server tools and their server-side loop do work in batches (a `pause_turn` is continued in a follow-up request); a client-side tool loop needs a new batch per round.
 
 Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying this KB's sources. Not for interactive work. The docs also suggest batch for thinking budgets above 32k, to avoid timeouts.
 
@@ -1018,13 +1023,13 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 - Type: fact
 - Applies to: Claude API, Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Thinking cost](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-017, TOK-053, ORCH-028
 
 **Effort** (`output_config.effort`):
 - Levels: low, medium, high, xhigh, max. It affects all output tokens: text, tool calls and thinking.
-- Defaults: "high" on most models, **medium on Opus 5.5 and Haiku 5.5**.
+- Defaults: "high" on most models, **medium on Opus 5.5 and Haiku 5.5** (API). In Claude Code, Opus 5.5, Sonnet 5.5 and Haiku 5.5 default to `medium` and Opus 4.7 to `xhigh`.
 - "low" suits simple tasks "such as subagents". "max adds significant cost for relatively small quality gains."
 - Per-message effort (beta `mid-conversation-output-config-2026-07-01`) changes effort without breaking the cache.
 
@@ -1038,7 +1043,7 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 - Type: recommendation
 - Applies to: Claude API
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cookbook: cost optimization](https://github.com/anthropics/claude-cookbooks/blob/main/cost_optimization/cost_optimization.ipynb)
 - Related: TOK-050, TOK-054, TOK-055, TOK-021
 
@@ -1066,7 +1071,7 @@ Tool-search rule of thumb: "once your schemas run past ~10K tokens… tool searc
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
 - Related: SKILL-004
 
@@ -1076,14 +1081,14 @@ Merged into SKILL-004 (kb-skills.md) on 2026-10-12. Read that entry for the thre
 - Type: recommendation
 - Applies to: Claude Code, general
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [anthropics/skills skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator), [obra/superpowers writing-skills](https://github.com/obra/superpowers), [Vercel: AGENTS.md vs skills](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
 - Related: TOK-005, TOK-064, SKILL-011, SKILL-012, SKILL-013
 
 Limits and content rules (what + when, third person, negative triggers, no workflow summary): see SKILL-003, SKILL-011, SKILL-012 and SKILL-013 (merged there 2026-10-12). This entry keeps the cost side.
 
 The tension:
-- Anthropic's skill-creator says make descriptions "a little bit 'pushy'" because Claude tends to undertrigger. Its docx, xlsx and pptx descriptions are 750–970 characters.
+- Anthropic's skill-creator says make descriptions "a little bit 'pushy'" because Claude tends to undertrigger. Its docx, xlsx and pptx descriptions are about 730–950 characters.
 - Every character is paid on every turn, and an overflowing listing drops descriptions.
 
 Vercel's eval found a skill wasn't invoked in 56% of cases, and a compact AGENTS.md index scored 100%. So knowledge that is always needed belongs in passive context, not a skill.
@@ -1096,7 +1101,7 @@ Confidence note: the per-turn cost is documented (official-docs); the length gui
 - Type: recommendation
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Skills (Claude Code)](https://code.claude.com/docs/en/skills), [anthropics/skills](https://github.com/anthropics/skills)
 - Related: SKILL-004, SKILL-006, SKILL-016, SKILL-017
 
@@ -1110,7 +1115,7 @@ Community: one superpowers proposal (#832) cut 14 skills from 3,150 to 977 lines
 - Type: pattern
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skill best practices: utility scripts](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Skills: dynamic context injection](https://code.claude.com/docs/en/skills), [Equipping agents](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
 - Related: SKILL-018, SKILL-008
 
@@ -1120,7 +1125,7 @@ Merged on 2026-10-12: scripts into SKILL-018 and `!` dynamic injection into SKIL
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skills](https://code.claude.com/docs/en/skills), [Features overview](https://code.claude.com/docs/en/features-overview)
 - Related: TOK-005, TOK-035, SKILL-006, SKILL-014
 
@@ -1139,7 +1144,7 @@ A subagent's `skills:` field preloads full bodies at spawn (max 32), so list onl
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Features overview](https://code.claude.com/docs/en/features-overview), [Memory: rules](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-003, TOK-064, SKILL-021, SKILL-022
 
@@ -1159,7 +1164,7 @@ Costs page: "If it contains detailed instructions for specific workflows (like P
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Skills: skill content lifecycle](https://code.claude.com/docs/en/skills)
 - Related: SKILL-006
 
@@ -1169,7 +1174,7 @@ Merged into SKILL-006 (kb-skills.md) on 2026-10-12. Read that entry for how an i
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Plugins](https://code.claude.com/docs/en/plugins), [Plugins: measure](https://code.claude.com/docs/en/plugins/measure), [Sub-agents](https://code.claude.com/docs/en/sub-agents)
 - Related: TOK-005, TOK-061
 
@@ -1186,7 +1191,7 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-030, TOK-032, TOK-035, TOK-053
 
@@ -1197,22 +1202,22 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 | Running a 1M window to 400k+ for routine work | Lower `autoCompactWindow`, hand off | TOK-032 |
 | Unscoped "investigate X" in the main context | Delegate to a subagent with a return-format cap | TOK-035 |
 | Switching `/model` or effort mid-task | Choose at session start | TOK-053 |
-| Resuming a big session after hours away | "Resume from summary" or start fresh | TOK-034 |
+| Resuming a big session after hours away | "Resume from summary" or start fresh; in the terminal, idle compaction (v2.1.290+, default on) already compacts a 200K+ token conversation after about 54 idle minutes | TOK-034 |
 | Pasting large logs | Save to a file and Read or grep it | TOK-043 |
 | Full `git diff` or `gh pr view` dumps | `--stat`, `--json <fields>`, path filters | TOK-042 |
 | Raw test output | Filter hook or subagent | TOK-042 |
 | Many full-resolution screenshots in the main context | Accessibility snapshot, crop or downscale, or a subagent | TOK-043 |
 | Vague prompts ("improve this codebase") | Name the file and the function | TOK-041 |
-| Plan mode for one-sentence diffs (single-source) | Skip plan mode when the diff is obvious | — |
+| Plan mode for a diff you could describe in one sentence | Skip the plan (best practices) | FLOW-005 |
 | Large agent teams on Opus | Small teams, Sonnet teammates | TOK-037 |
 
-Confidence note: each row's detail and confidence is in the linked entry; rows marked single-source are not documented.
+Confidence note: each row's detail and confidence is in the linked entry.
 
 ## [TOK-071] Anti-patterns: configuration
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Skills](https://code.claude.com/docs/en/skills), [Costs](https://code.claude.com/docs/en/costs), [Permissions](https://code.claude.com/docs/en/permissions)
 - Related: TOK-003, TOK-005, TOK-022, TOK-036
 
@@ -1237,7 +1242,7 @@ Confidence note: each row's detail and confidence is in the linked entry.
 - Type: anti-pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Batch](https://platform.claude.com/docs/en/build-with-claude/batch-processing), [Cookbook: cost optimization](https://github.com/anthropics/claude-cookbooks/blob/main/cost_optimization/cost_optimization.ipynb)
 - Related: TOK-050, TOK-054, TOK-056
 
@@ -1247,7 +1252,7 @@ Confidence note: each row's detail and confidence is in the linked entry.
 | Breakpoint on a block that changes each request | Put it on the last stable block |
 | Prompt under the model's minimum, assumed cached | Check `cache_creation_input_tokens` > 0 |
 | Unstable JSON key order in tool inputs | Serialize deterministically |
-| Changing tools, `tool_choice` or thinking mid-conversation | Changing tool definitions invalidates the whole cache; `tool_choice` and thinking changes invalidate message blocks. Keep them fixed; use per-message effort |
+| Changing tools, `tool_choice` or thinking mid-conversation | Changing tool definitions invalidates the whole cache; `tool_choice` and thinking changes invalidate message blocks. Keep them fixed; use per-message effort. The beta `inline-tools-2026-09-15` adds or changes a tool through a mid-conversation system message without invalidating the cache |
 | All tools loaded upfront with 10+ tools | Tool search, `defer_loading` |
 | Interactive calls for offline jobs | Batch API (−50%) |
 | Comparing token counts across tokenizers | Recount per model (4.7+ is about 30% more) |
@@ -1258,7 +1263,7 @@ Confidence note: each row's detail and confidence is in the linked entry.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [ccusage/ccusage](https://github.com/ccusage/ccusage), [ccusage guide](https://ccusage.com/guide/claude), [Blocks reports](https://ccusage.com/guide/blocks-reports), [Statusline](https://ccusage.com/guide/statusline)
 - Related: TOK-013, TOK-082
 
@@ -1282,7 +1287,7 @@ Limits:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Maciek-roboblog/Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor)
 - Related: TOK-080, TOK-014
 
@@ -1301,7 +1306,7 @@ Now that the status line exposes official `rate_limits` (TOK-011), most of this 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [jarrodwatts/claude-hud](https://github.com/jarrodwatts/claude-hud), [sirmalloc/ccstatusline](https://github.com/sirmalloc/ccstatusline), [Status line docs](https://code.claude.com/docs/en/statusline)
 - Related: TOK-011, TOK-080
 
@@ -1345,7 +1350,7 @@ Confidence note: the savings figures are the vendors' own claims.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: unverified
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [oraios/serena](https://github.com/oraios/serena), [zilliztech/claude-context](https://github.com/zilliztech/claude-context), [tirth8205/code-review-graph](https://github.com/tirth8205/code-review-graph)
 - Related: TOK-041, TOK-085
 
@@ -1354,7 +1359,7 @@ Confidence note: the savings figures are the vendors' own claims.
 - Says it is "much more token-efficient" but gives no numbers.
 
 **claude-context** (Zilliz, about 12.6k stars):
-- Vector semantic search. Claims "~40% token reduction" with no method.
+- Vector semantic search. Claims "~40% token reduction": its own evaluation (30 SWE-bench Verified instances, 3 runs, a retrieval task against a grep-only baseline: 73,373 to 44,449 tokens, −39.4%, same F1) is vendor-run, not an end-to-end task measurement.
 - Needs Milvus or Zilliz Cloud plus an embedding API key.
 
 **code-review-graph** (about 32k stars):
@@ -1368,15 +1373,15 @@ Confidence note: the savings figures are the vendors' own claims.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Aider repo map](https://aider.chat/docs/repomap.html), [Aider commands](https://aider.chat/docs/usage/commands.html), [Cline auto-compact](https://docs.cline.bot/features/auto-compact), [Cline new_task](https://docs.cline.bot/exploring-clines-tools/new-task-tool), [Gemini CLI commands](https://google-gemini.github.io/gemini-cli/docs/cli/commands.html)
+- Last verified: 2026-10-14
+- Sources: [Aider repo map](https://aider.chat/docs/repomap.html), [Aider commands](https://aider.chat/docs/usage/commands.html), [Cline auto-compact](https://docs.cline.bot/features/auto-compact), [Cline new_task (blog)](https://cline.bot/blog/unlocking-persistent-memory-how-clines-new_task-tool-eliminates-context-window-limitations), [Cline commands](https://docs.cline.bot/core-workflows/using-commands), [Gemini CLI commands](https://google-gemini.github.io/gemini-cli/docs/cli/commands.html)
 - Related: TOK-041, TOK-030, TOK-032
 
 **Aider repo map.** A token-budgeted map (default 1k tokens) of files and key symbol signatures, ranked by a dependency-graph algorithm. It transfers as a generated `docs/repo-map.md`, or a `codebase-overview` skill read on demand, instead of re-exploring each session. Aider's `/drop` frees context, the equivalent of rewind-summarize here.
 
 **Cline.** Two ideas:
 - A context progress bar. Cline's blog claims quality dips past about 50% (vendor claim).
-- A `new_task` tool that ends the session and starts a new one preloaded with a summary, files and next steps.
+- A `new_task` tool that ends the session and starts a new one preloaded with a summary, files and next steps (the blog; on 2026-10-14 the docs describe a `/newtask` command instead and no longer list the tool).
 
 That handoff idea transfers directly as a user-invoked handoff skill plus `/clear` (R3).
 
@@ -1388,7 +1393,7 @@ Confidence note: each tool's behavior is from its own docs; Cline's quality figu
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [April 23 postmortem](https://www.anthropic.com/engineering/april-23-postmortem), [claude-code#41930](https://github.com/anthropics/claude-code/issues/41930), [claude-code#38335](https://github.com/anthropics/claude-code/issues/38335)
 - Related: TOK-052, TOK-053, TOK-034
 
@@ -1425,7 +1430,7 @@ WebFetch converts the page to Markdown, then "for most fetches, it then runs the
 
 - **Window:** "WebFetch reads up to 100,000 characters of a page's content per call." Since v2.1.290 the result says how much went unread and takes an `offset`; before, the rest was "silently" dropped.
 - **The extraction model** sees only the cut text, ending in "[Content truncated due to length...]"; the offset note is added after its answer.
-- **Which model, and quote limits (single-source):** the tool says "a small fast model". A 2025-10 runtime inspection (mikhail.io) found a Haiku pass told to "Enforce a strict 125-character maximum for quotes from any source document" on non-preapproved domains, so never cite a WebFetch "quote" as exact wording. [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127) (open, no maintainer reply) reports the truncation invisible to the extraction step.
+- **Which model, and quote limits (single-source):** the tool says "a small fast model". A 2025-10 runtime inspection (mikhail.io) found a Haiku pass told to "Enforce a strict 125-character maximum for quotes from any source document" on non-preapproved domains, so never cite a WebFetch "quote" as exact wording. Since v2.1.299, page reads "pick their effort as web searches do: the caller's level on the caller's own model, otherwise the level settings give the small model" (CHANGELOG). [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127) (open, no maintainer reply) reports the truncation invisible to the extraction step.
 
 Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): WebFetch of the raw `CHANGELOG.md` (986,110 characters by `curl`) answered from characters 0–100,000 only (2.1.296 to 2.1.287, 714 of 8,789 lines), missed a variable further down, and ended with "the final 886110 were not read — to read on, call WebFetch again with the same url and offset: 100000".
 
@@ -1433,7 +1438,7 @@ Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): WebFetch of 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.0.60), [MCP output limits](https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings)
 - Related: TOK-087, TOK-089, TOK-023
 
@@ -1450,7 +1455,7 @@ So on Claude docs, WebFetch under 100,000 characters already gives full text, an
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
 - Related: TOK-087, TOK-088, TOK-090, TOK-040, TOK-042
 
@@ -1461,7 +1466,7 @@ curl -sL https://code.claude.com/docs/en/env-vars.md -o env-vars.md
 grep -n 'WEB_SEARCH\|WEBFETCH' env-vars.md
 ```
 
-- **Markdown versions:** append `.md` to a `code.claude.com/docs/en/…` or `platform.claude.com/docs/en/…` URL, or send `Accept: text/markdown`. Every docs page starts with a pointer to `llms.txt`.
+- **Markdown versions:** append `.md` to a `code.claude.com/docs/en/…` or `platform.claude.com/docs/en/…` URL, or send `Accept: text/markdown`. Every code.claude.com docs page starts with a pointer to `llms.txt`; platform.claude.com pages start with front matter and don't.
 - **Cost:** only the grep hits enter context, so a 169 KB page costs a few hundred tokens instead of about 42k (at about 4 characters per token, an estimate). Reading the saved file with `Read` and `offset`/`limit` is the fallback when context matters (TOK-040).
 - **GitHub:** `raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>` or `gh api` for READMEs and CHANGELOGs; WebFetch reads only the first 100,000 characters of the 986 KB claude-code CHANGELOG (TOK-087).
 - **Limits:** curl runs under Bash permissions and the sandbox network allowlist, which don't inherit WebFetch's preapproved domains (tools reference). Pages that need JavaScript to render return a shell; use a browser tool for those.
@@ -1470,11 +1475,11 @@ grep -n 'WEB_SEARCH\|WEBFETCH' env-vars.md
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
 - Related: TOK-089, TOK-096
 
-Both Anthropic docs sites publish the llms.txt pair, and each docs page's response carries `Link` headers to them (`rel="llms-txt"`, `rel="llms-full-txt"`). Measured with `curl -sL <url> | wc -c` on 2026-10-12:
+Both Anthropic docs sites publish the llms.txt pair. Each code.claude.com page's response carries `Link` headers to them (`rel="llms-txt"`, `rel="llms-full-txt"`); platform.claude.com pages link only their `.md` version (`rel="alternate"`, checked 2026-10-14). Measured with `curl -sL <url> | wc -c` on 2026-10-12:
 
 | File | Size | Use |
 |---|---|---|
@@ -1489,7 +1494,7 @@ At about 4 characters per token, the Claude Code `llms-full.txt` is roughly 2.4M
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Environment variables](https://code.claude.com/docs/en/env-vars), [Permissions](https://code.claude.com/docs/en/permissions), [Data usage: WebFetch domain safety check](https://code.claude.com/docs/en/data-usage)
 - Related: TOK-087, TOK-088, REPO-033
 
@@ -1514,7 +1519,7 @@ At about 4 characters per token, the Claude Code `llms-full.txt` is roughly 2.4M
 - Sources: [Tools reference: WebSearch tool behavior](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior), [Environment variables](https://code.claude.com/docs/en/env-vars), [Securely deploying AI agents](https://code.claude.com/docs/en/agent-sdk/secure-deployment), [LLM gateway](https://code.claude.com/docs/en/llm-gateway), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.1.212, 2.1.290)
 - Related: TOK-093, TOK-094, TOK-099
 
-WebSearch "runs a query against Anthropic's web search backend and returns result titles and URLs. It doesn't fetch the result pages", so reading a source costs a second call (WebFetch or curl). It "may issue up to eight backend searches per call". `allowed_domains` or `blocked_domains` scope results. The backend isn't configurable. Not on Amazon Bedrock or gateway sessions.
+WebSearch "runs a query against Anthropic's web search backend and returns result titles and URLs. It doesn't fetch the result pages", so reading a source costs a second call (WebFetch or curl). It "may issue up to eight backend searches per call". `allowed_domains` or `blocked_domains` scope results. The backend isn't configurable. Not on Amazon Bedrock or Claude apps gateway sessions ([Claude apps gateway](https://code.claude.com/docs/en/claude-apps-gateway)).
 
 **Budget:**
 - An interactive terminal session has a limit of 200 calls (v2.1.212+). "Searches from the main conversation and from subagents, such as a parallel research fan-out, count against the same limit."
@@ -1530,7 +1535,7 @@ Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): each result 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: unverified
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: WebSearch tool schema in Claude Code v2.1.296 (no docs page); [Tools reference: WebSearch tool behavior](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior)
 - Related: TOK-092, TOK-094, TOK-099
 
@@ -1548,7 +1553,7 @@ Neither reached the official page. Extended bought breadth, not authority.
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool), [Web fetch tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-092, TOK-017, TOK-024, TOK-050
 
@@ -1570,7 +1575,7 @@ How Claude Code's WebSearch is metered on a subscription isn't documented (Open 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [upstash/context7](https://github.com/upstash/context7), [Context7 plans](https://context7.com/plans), [Library updates](https://context7.com/docs/library-updates), [Data privacy](https://context7.com/docs/security/data-privacy), [Upstash benchmark](https://upstash.com/blog/context7-vs-web-search-benchmark)
 - Related: TOK-096, TOK-097, TOK-098, TOK-020
 
@@ -1587,7 +1592,7 @@ Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): a lookup on 
 - Type: tool
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [Claude Code docs server card](https://code.claude.com/docs/.well-known/mcp/server-card.json), [MCP in Claude Code](https://code.claude.com/docs/en/mcp)
 - Related: TOK-090, TOK-095, TOK-097, TOK-020
 
@@ -1604,7 +1609,7 @@ Tested 2026-10-12 with `curl` JSON-RPC from Claude Code v2.1.296 on WSL (no MCP 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [MicrosoftDocs/mcp](https://github.com/MicrosoftDocs/mcp), [AWS Knowledge MCP](https://github.com/awslabs/mcp/tree/main/src/aws-knowledge-mcp-server), [idosal/git-mcp](https://github.com/idosal/git-mcp), [DeepWiki MCP](https://cognition.com/blog/deepwiki-mcp-server), [ref-tools-mcp](https://github.com/ref-tools/ref-tools-mcp), [fetch server](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch), [Exa pricing](https://exa.ai/pricing), [Brave Search API](https://brave.com/search/api/), [Perplexity pricing](https://docs.perplexity.ai/guides/pricing)
 - Related: TOK-095, TOK-096, TOK-022, TOK-084, INFRA-003
 
@@ -1626,7 +1631,7 @@ For docs with a first-party server (Microsoft, AWS, Anthropic, TOK-096), prefer 
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: synthesis of TOK-087 to TOK-097; [Tools reference](https://code.claude.com/docs/en/tools-reference); tests listed in those entries
 - Related: TOK-087, TOK-089, TOK-092, TOK-093, TOK-095, TOK-096
 
@@ -1650,7 +1655,7 @@ Rules that follow:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [claude-agent-sdk-demos research-agent](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/research-agent), [Tools reference: session search limit](https://code.claude.com/docs/en/tools-reference#session-search-limit), [README: Design decisions](https://github.com/FreekMencke/claude-kb/blob/main/README.md#design-decisions)
 - Related: ORCH-020, ORCH-025, ORCH-030, TOK-092, TOK-100
 
@@ -1665,7 +1670,7 @@ For one knowledge-base topic (4–6 questions), that means 1–2 subagents split
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [research_lead_agent.md](https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/prompts/research_lead_agent.md), [One-liner research agent](https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/00_The_one_liner_research_agent.ipynb)
 - Related: PROMPT-012, PROMPT-013, PROMPT-014, TOK-099, TOK-101
 
@@ -1683,7 +1688,7 @@ PROMPT-012 covers any cold-start brief: objective, what's known, inputs, boundar
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [One-liner research agent](https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/00_The_one_liner_research_agent.ipynb), [claude-agent-sdk-demos research-agent](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/research-agent)
 - Related: PROMPT-013, ORCH-034, ORCH-035, TOK-100
 
@@ -1700,7 +1705,7 @@ What to ask for, per claim: the URL, the exact quoted wording for any number, de
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [README: Monthly re-verification](https://github.com/FreekMencke/claude-kb/blob/main/README.md#monthly-re-verification)
 - Related: TOK-087, TOK-089, TOK-092, TOK-093, TOK-098, TOK-101
 
@@ -1730,23 +1735,23 @@ Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first la
 - Tool output entering context: Bash about 6.9M tokens, about 995 screenshots, text file reads about 0.9M.
 
 Ranked by expected savings ÷ effort. Done on 2026-10-12, now in `~/.claude` or FreekMencke/claude-skills (re-measure with R6 a month later, Open question 2):
-- R1: `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md whose lines say they're for the summary ("When summarizing, keep…"; TOK-031, TOK-032).
+- R1: `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md (a Keep/Drop list; TOK-031, TOK-032).
 - R2: a context status line (TOK-011, TOK-082).
 - R3: the user-only `handoff` skill: write state to the issue/PR or a scratch file, then `/clear` (FreekMencke/claude-skills#13; TOK-030, TOK-085).
 - R4: `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`, plus the Haiku `Explore` override (ORCH recommendation 13), because the env var doesn't reach built-in Explore and Plan (ORCH-005, TOK-036).
 - R6: the user-only `token-audit` skill, which runs this file's analyses over `~/.claude/projects` (FreekMencke/claude-skills#14; TOK-013, TOK-080).
 - R7: output habits in the global CLAUDE.md ("Shell output") (TOK-042).
-- R8: the 12 unused claude.ai-synced skills set to `name-only` (below).
+- R8: the unused claude.ai-synced skills set to `name-only` (below; 10 kept, `morning` and `import-memory` disabled on claude.ai instead).
 
 | # | Change | What it does / when it triggers | Est. savings | Effort | Evidence |
 |---|---|---|---|---|---|
 | R5 | **Screenshot hygiene** for `osrs-tracker-web`: [osrs-tracker/osrs-tracker-web#223](https://github.com/osrs-tracker/osrs-tracker-web/issues/223) (the `browser-checker` agent, kb-repo-agents T3). Prefer Playwright `browser_snapshot` (about 200 tokens) for structure checks; screenshot elements or a ≤1280px viewport; run visual review loops in a subagent that returns findings | Any UI verification task | Roughly 1–3M image tokens over the 6 days that are later re-read about 58x (TOK-009). Likely the largest single tool-output saving for that repo. | 20 min | TOK-043, TOK-023, TOK-035 |
 
 Won't do (measured 2026-10-12, below):
-- R8, disabling `frontend-design` and `playwright` per project: together about 1.3% of the starting context, against settings changes in every repo that uses them.
+- R13, disabling `frontend-design` and `playwright` per project: together about 1.3% of the starting context, against settings changes in every repo that uses them.
 - R9, project-scoping the `kubernetes`, `flux` and `aws` MCP servers: their tools are deferred, so it saves only their share of the 2.1k server instructions plus their names. Not worth losing the always-on access the global CLAUDE.md wants.
 
-**Measured starting context (2026-10-12).** `claude -p "/context all"` and `claude -p "/skill-doctor"` print their reports as text from the terminal; the desktop Code tab doesn't offer `/skill-doctor` (SKILL-031). In a fresh terminal session in this repo (v2.1.296, Opus 5.5, 400k window):
+**Measured starting context (2026-10-12).** `claude -p "/context all"` and `claude -p "/skill-doctor"` print their reports as text from the terminal; the desktop Code tab doesn't offer `/skill-doctor` (SKILL-054). In a fresh terminal session in this repo (v2.1.296, Opus 5.5, 400k window):
 
 | Loaded every turn | Tokens |
 |---|---|
@@ -1761,7 +1766,7 @@ Won't do (measured 2026-10-12, below):
 
 - Deferred tools (65–70k of MCP tools, 20.8k of built-in tools) are not in that total: only their names are listed until tool search loads one (TOK-020).
 - The deferred MCP tools include claude.ai connectors (MongoDB Atlas, Google Calendar, Claude Docs) that reach terminal sessions from the account. They cost names only while deferred.
-- Skills: 2.8k of the 6.3k listing was the 12 claude.ai-synced skills that `/skill-doctor` showed were never invoked in the last 7 days; about 2.8k more is built-in skills. All 12 are now `"name-only"` in `skillOverrides` in WSL `~/.claude/settings.json`; re-measured, the skill listing dropped from 6.3k to 3.6k. claude.ai chat and desktop Local sessions are unaffected (SKILL-058).
+- Skills: 2.8k of the 6.3k listing was the 12 claude.ai-synced skills that `/skill-doctor` showed were never invoked in the last 7 days; about 2.8k more is built-in skills. All 12 were set to `"name-only"` in `skillOverrides` in WSL `~/.claude/settings.json` (on 2026-10-14: the 10 kept, plus the `anthropic-skills:deep-research` alias; `morning` and `import-memory` are disabled on claude.ai); re-measured, the skill listing dropped from 6.3k to 3.6k. claude.ai chat and desktop Local sessions are unaffected (SKILL-058).
 - The 25 Playwright tools are about 7.8k tokens, all deferred, so a turn carries only their names (roughly 300 tokens); `frontend-design` is about 80 tokens of listing.
 
 Not recommended now:
@@ -1778,7 +1783,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 1. **Real system prompt and tool sizes.** Answered 2026-10-12: `claude -p "/context all"` in a fresh terminal session in this repo measured a 29.4k starting prefix, close to the 24–27k inferred from `usage`. See "Measured starting context" above.
 2. **Compaction quality versus window size.** The R1 simulation ignores compaction cost and lost detail. Re-measure with R6 a month after R1: tracked as [FreekMencke/claude-kb#13](https://github.com/FreekMencke/claude-kb/issues/13), due 2026-11-12.
 3. **How plan usage is weighted.** Are cache reads weighted like API prices (0.05x on Opus 5.5) when counting against 5-hour and weekly limits? Not documented. Our dollar figures are list-price equivalents, not plan percentages.
-4. **MCP description cap.** Answered 2026-10-12: tested, 4,096 characters up front and at least 10,000 (the changelog's 16,384) via tool search; the docs' 2,048 is stale (TOK-020).
+4. **MCP description cap.** Answered 2026-10-12: tested, 4,096 characters up front and at least 10,000 (the changelog's 16,384) via tool search. The docs now state 4,096 and 16,384 (2,048 before v2.1.296), and since v2.1.299 Anthropic's first-party servers at `api.anthropic.com` aren't cut (TOK-020).
 5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
 6. **Skill descriptions and triggering.** No Anthropic benchmark relates description length to trigger rate. The evidence is skill-creator's "pushy" advice, superpowers' anecdotes and Vercel's eval.
 7. **Unverified plan changes.** The May 2026 limit doubling and peak-hour changes, and whether per-model weekly meters other than Fable still exist on some plans, are reported only by secondary sources.
