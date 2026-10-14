@@ -1,6 +1,6 @@
 # Desktop app, artifacts and remote use
 
-Prefix: SURF. Last verified for all entries: 2026-10-12, against the Claude Code docs live that day, on Claude Code v2.1.295 (desktop app 2.31226.1, WSL session) and v2.1.296 (WSL terminal). This file covers what each surface offers for getting work done: the desktop app's Code tab, artifacts, Remote Control and the mobile app, cloud sessions as a place to work, the IDE extensions and Claude in Chrome, and a table of which surface fits which job. Linked, not repeated: which skills each surface loads (SKILL-047 to SKILL-060), which repo config each surface loads (REPO-012), hooks by surface (HOOK-017), starting Remote Control and running several sessions through it (SESS-020), moving sessions between surfaces (SESS-030), routines and scheduled runs (ORCH-017), cloud sessions in GitHub Actions (ORCH-016, REPO-027). What each surface loads for instruction files and memory is MEM-026; waiting on CI and notifications as a workflow are FLOW-024 and FLOW-029; browser checks as verification are FLOW-014.
+Prefix: SURF. Researched 2026-10-12 against the Claude Code docs live that day, on Claude Code v2.1.295 (desktop app 2.31226.1, WSL session) and v2.1.296 (WSL terminal); re-verified 2026-10-14 against the docs fetched that day, the claude-code CHANGELOG through 2.1.299 and our repos' `origin/main` (each entry's Last verified date is authoritative). This file covers what each surface offers for getting work done: the desktop app's Code tab, artifacts, Remote Control and the mobile app, cloud sessions as a place to work, the IDE extensions and Claude in Chrome, and a table of which surface fits which job. Linked, not repeated: which skills each surface loads (SKILL-047 to SKILL-060), which repo config each surface loads (REPO-012), hooks by surface (HOOK-017), starting Remote Control and running several sessions through it (SESS-020), moving sessions between surfaces (SESS-030), routines and scheduled runs (ORCH-017), cloud sessions in GitHub Actions (ORCH-016, REPO-027). What each surface loads for instruction files and memory is MEM-026; waiting on CI and notifications as a workflow are FLOW-024 and FLOW-029; browser checks as verification are FLOW-014.
 
 ## Quick answers
 
@@ -65,7 +65,7 @@ Prefix: SURF. Last verified for all entries: 2026-10-12, against the Claude Code
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop application](https://code.claude.com/docs/en/desktop), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SKILL-047, SURF-002, SURF-003, SURF-006
 
@@ -86,7 +86,7 @@ What it adds:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop: monitor pull request status](https://code.claude.com/docs/en/desktop), [Desktop: work in parallel with sessions](https://code.claude.com/docs/en/desktop)
 - Related: SURF-001, SESS-005, SESS-034, HOOK-017, FLOW-029
 
@@ -104,7 +104,7 @@ Not documented: whether the CI bar polling costs tokens, how often it polls, and
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop: what's not available](https://code.claude.com/docs/en/desktop), [Desktop: feature comparison](https://code.claude.com/docs/en/desktop), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SKILL-057, SURF-004, SURF-005
 
@@ -112,7 +112,7 @@ From the docs' "What's not available in Desktop" and feature comparison:
 - **No scripting:** "`--print`, `--output-format`: Not available. Desktop is interactive only." No Agent SDK.
 - **No `dontAsk` mode.** Modes are Manual, Accept edits, Plan and Auto; Bypass permissions only once enabled (a Settings toggle on Pro and Max, org policy on Team and Enterprise).
 - **No agent teams.** The docs point to dynamic workflows instead.
-- **Third-party providers:** Anthropic's API by default; Bedrock, Vertex (Agent Platform) and Foundry need "Claude Desktop on 3P".
+- **Third-party providers:** Anthropic's API by default; Bedrock, Vertex (Agent Platform) and Foundry need "Claude Desktop on 3P". Desktop can also route through an LLM gateway, and Enterprise deployments can use Google Cloud's Agent Platform (platforms page).
 - **No inline code completions.**
 - **Terminal-dialog commands:** "Commands with no argument form, such as `/permissions`, reply with `isn't available in this environment`." `/config` opens Settings and ignores arguments. Edit settings files instead, or use the CLI.
 - **Linux (beta):** no computer use.
@@ -124,7 +124,7 @@ The CLI is "the most complete surface for terminal-native work: scripting and th
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code Desktop in WSL](https://code.claude.com/docs/en/desktop-wsl), [Desktop application](https://code.claude.com/docs/en/desktop), local test
 - Related: SKILL-047, SKILL-050, SKILL-052, SURF-034
 
@@ -144,7 +144,7 @@ Tested 2026-10-12, desktop app 2.31226.1, WSL session: the app ran its own Claud
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop: CLI flag equivalents, keyboard shortcuts, coming from the CLI](https://code.claude.com/docs/en/desktop)
 - Related: SESS-030, SURF-003
 
@@ -170,7 +170,7 @@ Other keys: Cmd/Ctrl+N new session, Ctrl+Tab next session, Cmd/Ctrl+Shift+D diff
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop: preview your app, browse external sites, configure preview servers](https://code.claude.com/docs/en/desktop)
 - Related: SURF-001, SURF-032, REPO-021, SESS-016, FLOW-014
 
@@ -188,7 +188,7 @@ Auto-verify after every edit adds screenshots and tool calls to each turn. For a
 - Type: tool
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop: sessions from Dispatch](https://code.claude.com/docs/en/desktop), [Claude Code on mobile](https://code.claude.com/docs/en/mobile), [Feature availability](https://code.claude.com/docs/en/feature-availability)
 - Related: SURF-021, SURF-018
 
@@ -205,7 +205,7 @@ Dispatch versus Remote Control: Dispatch starts new work and picks the route; Re
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Share session output as artifacts](https://code.claude.com/docs/en/artifacts)
 - Related: SURF-009, SURF-015, SURF-016
 
@@ -225,13 +225,13 @@ The docs' rule: use one "when terminal text is the wrong medium": annotated PR w
 
 **Bring results back:** ask for a "Copy as prompt" button so a decision made on the page returns to the session as text.
 
-`/artifacts` (v2.1.208+) lists yours and those shared with you; `Ctrl+]` reopens the latest. A new session updates an artifact only if given its URL; otherwise it creates a new one.
+`/artifacts` (v2.1.208+) lists yours and those shared with you; `Ctrl+]` reopens the latest. A new session updates an artifact only if given its URL or if you attach it from `/artifacts`; otherwise it creates a new one.
 
 ## [SURF-009] Artifact availability: plans, logins, surfaces, versions
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Artifacts: availability](https://code.claude.com/docs/en/artifacts), [Feature availability](https://code.claude.com/docs/en/feature-availability), [What's new, week 25](https://code.claude.com/docs/en/whats-new/2026-w25), [What's new, week 27](https://code.claude.com/docs/en/whats-new/2026-w27), local test
 - Related: SURF-008, SURF-017, SKILL-048
 
@@ -242,7 +242,7 @@ The docs' rule: use one "when terminal text is the wrong medium": annotated PR w
 - **Org policy:** not with CMEK, HIPAA or Zero Data Retention. The policy is loaded from `api.anthropic.com`; if it can't load, artifacts are unavailable.
 - **Surface:** "Claude Code CLI, or the Claude desktop app version 1.13576.0 or later", Claude Tag, and sessions served by `claude remote-control` you started yourself (v2.1.281+). "Off by default in the Agent SDK, the GitHub Action, and MCP-server contexts, when you run Claude Code with `-p`", and when `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` is set.
 
-History: introduced in the week of 2026-06-15 (v2.1.178 to v2.1.183); "generally available and included on Pro and Max plans, joining Team and Enterprise" in the week of 2026-06-29. Version gates: `/artifacts` v2.1.208, connector calls v2.1.209, comments v2.1.221, auto-reply to comments v2.1.228, `/slides` and `/design` v2.1.265.
+History: introduced in the week of 2026-06-15 (v2.1.178 to v2.1.183); "generally available and included on Pro and Max plans, joining Team and Enterprise" in the week of 2026-06-29. Version gates: `/artifacts` v2.1.208, connector calls v2.1.209, comments v2.1.221, auto-reply to comments v2.1.228, `/slides` and `/design` v2.1.265 (the artifacts page; the week-34 What's new says `/design` needs v2.1.234, see INDEX.md Conflicts). The CHANGELOG implies cloud sessions and routine runs use the Artifact tool too (v2.1.285, v2.1.292); the docs' surface list doesn't name them.
 
 Tested 2026-10-12, v2.1.295, desktop WSL session: the `Artifact` tool was present, with `ArtifactComments` and `ArtifactData` as deferred tools, and the skills `artifact-design`, `artifact-capabilities` and `artifact-diagramming` were listed. Cloud sessions are not listed as a publishing surface; the docs only describe cloud sessions reading artifacts.
 
@@ -250,8 +250,8 @@ Tested 2026-10-12, v2.1.295, desktop WSL session: the `Artifact` tool was presen
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Artifacts: share, let someone edit, manage for your organization](https://code.claude.com/docs/en/artifacts), [Publish and share artifacts (help center)](https://support.claude.com/en/articles/9547008-publish-and-share-artifacts)
+- Last verified: 2026-10-14
+- Sources: [Artifacts: share, let someone edit, manage for your organization](https://code.claude.com/docs/en/artifacts), [Share artifacts (help center)](https://support.claude.com/en/articles/9547008-share-artifacts)
 - Related: SURF-008, SURF-011, SURF-013
 
 "A new artifact is visible only to you." Share from the **Share** control in the page header; the gallery is claude.ai/code/artifacts.
@@ -270,7 +270,7 @@ Deleting an artifact is permanent and breaks its link for everyone.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Artifacts: when Claude Code asks before publishing, read an artifact shared with you](https://code.claude.com/docs/en/artifacts)
 - Related: SURF-010, REPO-037, INFRA-021
 
@@ -290,8 +290,8 @@ So a page publishes without asking. Treat what goes into the page as published t
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Artifacts: pull live data with MCP connectors, offer a file download](https://code.claude.com/docs/en/artifacts), local test (bundled `artifact-capabilities` 0.2.75 type files, v2.1.295)
+- Last verified: 2026-10-14
+- Sources: [Artifacts: pull live data with MCP connectors, offer a file download](https://code.claude.com/docs/en/artifacts), local test (bundled `artifact-capabilities` type files, contract 0.2.75 on 2026-10-12 and 0.2.77 on 2026-10-14, both in v2.1.295)
 - Related: SURF-011, SURF-014, SURF-015
 
 A page declares its capabilities when Claude publishes it, and declaring any of them triggers a permission ask (SURF-011). The docs describe two:
@@ -305,13 +305,13 @@ A page declares its capabilities when Claude publishes it, and declaring any of 
 
 **File downloads:** "the artifact viewer on claude.ai blocks any download the page starts itself, including links to `data:` or `blob:` URLs." A download button needs the downloads capability, which "claude.ai enables per account".
 
-**Undocumented capabilities:** the bundled `artifact-capabilities` skill (runtime contract 0.2.75, shipped with v2.1.295) has type files for `artifact` (the page republishes itself; `self` is the old name), `assets`, `comments`, `db` (SURF-014), `downloads`, `files`, `mcp`, `room` (live presence between viewers), `sample` (the page asks Claude), `user` (who is viewing) and the built-in `permissions`. Which ones an account gets varies.
+**Undocumented capabilities:** the bundled `artifact-capabilities` skill (runtime contract 0.2.75 on 2026-10-12, 0.2.77 on 2026-10-14 in the same v2.1.295 build: the contract moves without a Claude Code release) has type files for `artifact` (the page republishes itself; `self` is the old name), `assets`, `comments`, `db` (SURF-014), `downloads`, `files`, `mcp`, `room` (live presence between viewers), `sample` (the page asks Claude), `user` (who is viewing) and the built-in `permissions`. Which ones an account gets varies.
 
 ## [SURF-013] Artifact comments and Claude's replies
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Artifacts: collect comments on an artifact](https://code.claude.com/docs/en/artifacts), [Environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code CHANGELOG 2.1.271, 2.1.283](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SURF-010, SURF-008, FLOW-029
 
@@ -319,9 +319,9 @@ People you share with inside the org can comment on the page (v2.1.221+). Public
 
 Claude reads comments when you give it the URL and ask, or when someone who can edit the artifact uses **Send to Claude** or `@claude` in a thread, which "activates" it. "Claude can reply to or resolve only an activated thread." Replies show as Claude, via you.
 
-**Auto-reply** (v2.1.228+): after publishing, the session watches the artifact. What happens to a sent comment depends on the permission mode: Claude replies (and edits the page) on its own when the mode allows; otherwise you see `Comments are waiting on Artifact: <name>` and approve reading and replying; plan mode pauses. Claude stops auto-replying after 60 sent comments or activations on one artifact within an hour. A watch Claude Code armed itself ends "after 3.5 hours with no activity" (v2.1.283); republishing re-arms it. A session watches up to 10 artifacts for republishes made elsewhere (v2.1.271).
+**Auto-reply** (v2.1.228+): after publishing, the session watches the artifact. What happens to a sent comment depends on the permission mode: Claude replies (and edits the page) on its own when the mode allows; otherwise you see `Comments are waiting on Artifact: <name>` and approve reading and replying; plan mode pauses. Claude stops auto-replying after 60 sent comments or activations on one artifact within an hour. A watch Claude Code armed itself ends "after 3.5 hours with no activity" (v2.1.283); republishing re-arms it. A local session watches up to 25 artifacts for republishes made elsewhere (25 since v2.1.299; 10 since v2.1.271).
 
-**Stopping it:** Ctrl+C once at an idle prompt (until your next message), stop the watch in `/tasks`, or `CLAUDE_CODE_ARTIFACT_COMMENTS_AUTOREACT=0`. `CLAUDE_CODE_ARTIFACT_COMMENTS=0` stops reading comments at all.
+**Stopping it:** Ctrl+C once at an idle prompt (until your next message), stop the watch in `/tasks`, or `CLAUDE_CODE_ARTIFACT_COMMENTS_AUTOREACT=0`. `CLAUDE_CODE_ARTIFACT_COMMENTS=0` stops reading comments at all. `Ctrl+X Ctrl+K` twice within 3 seconds stops replies on every artifact for the rest of the session. A stop in `/tasks` survives a republish and a resume, unlike the 3.5-hour idle end, which a republish re-arms.
 
 This gives a light review loop without GitHub: publish a plan or design, share it in the org, and let reviewers send threads to the session that wrote it.
 
@@ -329,11 +329,11 @@ This gives a light review loop without GitHub: publish a plan or design, share i
 - Type: tool
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
-- Sources: [Artifacts](https://code.claude.com/docs/en/artifacts) (no mention), local test (`Artifact` tool description and the bundled `artifact-capabilities` 0.2.75 `db.d.ts`, v2.1.295, desktop WSL session)
+- Last verified: 2026-10-14
+- Sources: [Artifacts](https://code.claude.com/docs/en/artifacts) (no mention), local test (`Artifact` tool description and the bundled `artifact-capabilities` `db.d.ts`, contract 0.2.75 and 0.2.77, v2.1.295, desktop WSL session), [Claude Code CHANGELOG 2.1.269–2.1.288](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SURF-012, SURF-008
 
-The artifacts docs say nothing about a database. The `Artifact` tool description and the bundled type file do:
+The artifacts docs page says nothing about a database; release notes mention artifact database reads and writes (v2.1.269 to v2.1.288), and the help center describes personal and shared artifact storage (20 MB per artifact, text only; unclear whether that is the same store). The `Artifact` tool description and the bundled type file give the details:
 - A page declares the `db` capability and gets "a small shared database": JSON documents at slash-separated paths, one store per artifact, created on the first write and "erased when the artifact is deleted".
 - The companion `ArtifactData` tool reads it (`get`, `list`, `query`) and writes it (`set`, `update`, `delete`, `batch`) "as the person"; a batch is "one approval".
 - Limits in `db.d.ts`: a document "at most 256 KiB serialized and 32 levels deep"; "at most 25,000 documents" per artifact; writes are "last-writer-wins".
@@ -348,7 +348,7 @@ Retention and plan rules aren't published. Treat it as a lead and don't build a 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Artifacts: page constraints](https://code.claude.com/docs/en/artifacts), local test (`Artifact` tool description, v2.1.295)
 - Related: SURF-008, SURF-012, TOK-015
 
@@ -367,23 +367,23 @@ Pages run under a strict CSP:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Artifacts: improve the visual design, start from a template](https://code.claude.com/docs/en/artifacts), local test
 - Related: SURF-008, SKILL-048
 
-**Templates (beta):** Claude can start an artifact from Claude Slides (presentations), Claude Design (artboards on a canvas) or Claude Docs (documents others read and edit). Each opens in its own claude.ai editor and exports to formats such as PowerPoint, PDF or Word. On by default on Pro, Max and Team; on Enterprise an Owner turns each on. `/slides <brief>` and `/design <brief>` need v2.1.265+.
+**Templates (beta):** Claude can start an artifact from Claude Slides (presentations), Claude Design (artboards on a canvas) or Claude Docs (documents others read and edit). Each opens in its own claude.ai editor and exports to formats such as PowerPoint, PDF or Word. On by default on Pro, Max and Team; on Enterprise an Owner turns each on, though the help center says Enterprise defaults flip to on on 2026-10-15. `/slides <brief>` and `/design <brief>` need v2.1.265+.
 
 **Claude Docs** arrives as a claude.ai connector (`claude.ai Claude Docs` in `/mcp`). With it connected, "A request for a document meant for other people then goes to Claude Docs instead of an artifact page". A README or anything in the codebase stays a file; name the format (`.docx`, Markdown in the repo) to get a file. Turn it off with `deniedMcpServers` or the `/mcp` toggle.
 
 **The design skill:** "Claude applies a built-in design skill when it builds an artifact", and it "looks for an existing design system in your project before choosing its own". Precedence: your prompt, then your design system, then the skill's defaults. Record design tokens (colours, fonts, spacing) in CLAUDE.md or a theme file to keep pages on-brand.
 
-This answers part of SKILL's open question: `artifact-design` is the built-in design skill, bundled with the Artifact tool, which explains why it appears only where artifacts are available (SKILL-048). Its name isn't in the docs.
+This answers part of SKILL's open question: `artifact-design` is the built-in design skill, bundled with the Artifact tool, which explains why it appears only where artifacts are available (SKILL-048). Its name is not on the docs page, but the CHANGELOG names it (v2.1.281: "the bundled artifact-design skill").
 
 ## [SURF-017] Turning artifacts off per user, project or organization
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Artifacts: disable artifacts](https://code.claude.com/docs/en/artifacts), [Settings reference: enableArtifact](https://code.claude.com/docs/en/settings-reference), [Environment variables](https://code.claude.com/docs/en/env-vars)
 - Related: SURF-009, SURF-011, REPO-006
 
@@ -408,7 +408,7 @@ Use the project-level `false` for a repo whose code must not leave the machine a
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Remote Control: what connected devices see, limitations](https://code.claude.com/docs/en/remote-control), [Claude Code on mobile](https://code.claude.com/docs/en/mobile)
 - Related: SESS-020, SURF-019, SURF-020
 
@@ -419,7 +419,7 @@ Starting it and running several sessions through it is SESS-020. Once connected,
 - See a diff pane: changes since the branch split from the default branch, plus uncommitted edits.
 - Switch model (v2.1.238+) and effort (v2.1.234+). Permission modes: Manual, Accept edits, Plan and Auto; never Bypass from the app.
 
-Commands from a device: text-output ones work (`/compact`, `/clear`, `/context`, `/usage`, `/recap`), and `/model`, `/effort`, `/fast`, `/rename`, `/autocompact`, `/advisor`, `/output-style`, `/focus` take an argument instead of a picker. "`/plugin` or `/resume` work only from the local CLI". `/mcp` gives a summary on mobile; a line starting with `!` goes to Claude as text, not to the shell. The Fable usage-credits prompt isn't forwarded.
+Commands from a device: text-output ones work (`/compact`, `/clear`, `/context`, `/usage`, `/recap`), and `/model`, `/effort`, `/fast`, `/rename`, `/autocompact`, `/advisor`, `/output-style`, `/focus`, `/color` take an argument instead of a picker; `/config key=value` works from the mobile app (the web opens Settings instead). "`/plugin` or `/resume` work only from the local CLI". `/mcp` gives a summary on mobile; a line starting with `!` goes to Claude as text, not to the shell. The Fable usage-credits prompt isn't forwarded.
 
 With Remote Control, a new artifact doesn't open a browser tab on the machine (SURF-008).
 
@@ -427,7 +427,7 @@ With Remote Control, a new artifact doesn't open a browser tab on the machine (S
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Remote Control: connection and security, Trusted Devices, limitations, resume sessions](https://code.claude.com/docs/en/remote-control), [Claude Code CHANGELOG 2.1.232](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SESS-020, SURF-018, INFRA-021
 
@@ -451,7 +451,7 @@ To keep a machine off Remote Control entirely: `"disableRemoteControl": true` in
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Remote Control: mobile push notifications](https://code.claude.com/docs/en/remote-control), [Settings reference: agentPushNotifEnabled, inputNeededNotifEnabled](https://code.claude.com/docs/en/settings-reference), [Environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code CHANGELOG 2.1.110](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SESS-034, HOOK-030, SURF-002, FLOW-029
 
@@ -474,7 +474,7 @@ Other notification paths: desktop OS notifications for finished sessions (SURF-0
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Claude Code on mobile](https://code.claude.com/docs/en/mobile), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SURF-007, SURF-018, SURF-028
 
@@ -497,7 +497,7 @@ Limits: terminal-panel commands such as `/plugin` and `/resume` don't work; clou
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Desktop: control which sessions appear on your other devices](https://code.claude.com/docs/en/desktop), [Remote Control: enable for all sessions](https://code.claude.com/docs/en/remote-control)
 - Related: SESS-020, SURF-019
 
@@ -515,7 +515,7 @@ Repo settings can't turn it on for everyone: a `true` for `remoteControlAtStartu
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Configure cloud environments](https://code.claude.com/docs/en/cloud-environments), [Use Claude Code in the cloud](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-016, INFRA-002, SURF-024, SURF-026, MEM-026
 
@@ -535,7 +535,7 @@ Every cloud session runs in an environment: a saved network level, environment v
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cloud environments: network access, access levels, allow specific domains](https://code.claude.com/docs/en/cloud-environments), [Claude Code in the cloud: security and isolation](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SURF-023, SURF-025, INFRA-002
 
@@ -559,7 +559,7 @@ Other rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cloud environments: GitHub proxy, work with GitHub issues and pull requests](https://code.claude.com/docs/en/cloud-environments)
 - Related: ORCH-017, SURF-024, SESS-028
 
@@ -576,7 +576,7 @@ Built-in GitHub tools read issues, list PRs, fetch diffs and comment without set
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cloud environments: setup scripts, environment caching, setup scripts vs SessionStart hooks](https://code.claude.com/docs/en/cloud-environments)
 - Related: HOOK-017, SURF-023, SURF-027
 
@@ -597,7 +597,7 @@ The docs' split: setup script for the VM (toolchains), SessionStart hook for pro
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cloud environments: what's available, installed tools, resource limits, time limits](https://code.claude.com/docs/en/cloud-environments), [Claude Code in the cloud: environment expired](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-016, SURF-026, SURF-028
 
@@ -637,7 +637,7 @@ For heavier work, use Remote Control on your own hardware or a self-hosted envir
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Use Claude Code in the cloud: auto-fix pull requests](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SURF-002, SURF-028, SESS-021, REPO-037, FLOW-024
 
@@ -660,7 +660,7 @@ Compared with the desktop CI bar (SURF-002): auto-fix runs in the cloud and keep
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Use Claude Code in VS Code](https://code.claude.com/docs/en/vs-code)
 - Related: SURF-031, SURF-032, FLOW-010
 
@@ -686,7 +686,7 @@ A `claude` in VS Code's integrated terminal gets the same diff viewer and diagno
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [JetBrains IDEs](https://code.claude.com/docs/en/jetbrains), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SURF-030, SURF-033
 
@@ -708,7 +708,7 @@ Caveats:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Use Claude Code with Chrome](https://code.claude.com/docs/en/chrome), [Desktop: choose between the Browser and the Chrome extension](https://code.claude.com/docs/en/desktop)
 - Related: SURF-006, SESS-013, REPO-021, FLOW-014
 
@@ -731,7 +731,7 @@ For WSL setups the browser check stays Playwright MCP, ideally in a subagent so 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Platforms and integrations](https://code.claude.com/docs/en/platforms), [Remote Control vs cloud sessions](https://code.claude.com/docs/en/remote-control), [Desktop: coming from the CLI](https://code.claude.com/docs/en/desktop), [Claude Code on mobile](https://code.claude.com/docs/en/mobile)
 - Related: SURF-001, SURF-021, ORCH-001, ORCH-017, SESS-030
 
@@ -782,7 +782,7 @@ Consequences: browser checks stay on Playwright MCP; scripted runs and agent tea
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Tools reference: SendUserFile](https://code.claude.com/docs/en/tools-reference), [Use Claude Code in VS Code](https://code.claude.com/docs/en/vs-code), [Claude Code CHANGELOG 2.1.234](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SURF-018, SURF-008, SURF-021
 
@@ -801,7 +801,7 @@ When to use which: `SendUserFile` for a file you want on the phone now (a screen
 
 Ranked by impact against effort.
 
-1. **Turn on phone pushes for long runs** (low effort). In `/config`, enable **Push when actions required** and **Push when Claude decides**, and connect Remote Control for sessions you leave running; that covers "which session is waiting on me" while away from the desk. Both are off by default. SURF-020, SURF-022, SESS-020.
+1. **Turn on phone pushes for long runs** (low effort). Done: both toggles are on in `~/.claude/settings.json` (checked 2026-10-14); Remote Control still has to be connected, and v2.1.299 fixed `/config` toggles syncing the previous value (SURF-020). In `/config`, enable **Push when actions required** and **Push when Claude decides**, and connect Remote Control for sessions you leave running; that covers "which session is waiting on me" while away from the desk. Both are off by default. SURF-020, SURF-022, SESS-020.
 2. **Use artifacts for review hand-offs that a person reads, not for knowledge** (low effort). PR walkthroughs, option comparisons and progress boards go into an org-shared or private artifact; anything an agent reads later (KB entries, ADRs, issues) stays a file, because another session reads an artifact back only as a summary. SURF-008, SURF-011, SURF-013.
 3. **Keep secrets and identifiers out of artifacts** (no effort, a habit). A publish from a typed prompt doesn't ask first, and pages live on claude.ai. For a repo whose code must not be published, commit `"enableArtifact": false` to its `.claude/settings.json`. SURF-011, SURF-017.
 4. **Put cloud-session setup in the repo** (medium effort, per repo used in the cloud). A SessionStart hook guarded by `CLAUDE_CODE_REMOTE` for `npm ci`, and an environment setup script only for missing toolchains, kept under five minutes so it caches. SURF-026, HOOK-017. Dropped 2026-10-13 (FreekMencke/claude-kb#52): no repo is worked on in cloud sessions, and the routines only clone claude-kb without building. Revisit when one is.
@@ -813,9 +813,9 @@ Ranked by impact against effort.
 
 - **The artifact shared database and the extra runtime capabilities** (viewer identity, ask Claude, file storage, device access) appear in the `Artifact` tool description but not in the docs. Limits, retention and plan requirements are unknown. SURF-012, SURF-014.
 - **Multi-file artifacts:** the tool accepts supporting files and an asset store; the docs say single page and relative links don't resolve. Which is current? SURF-015.
-- **Can cloud sessions publish artifacts?** The availability table lists CLI, desktop, Claude Tag and Remote Control server sessions, not cloud sessions. Not tested.
+- **Can cloud sessions publish artifacts?** The availability table lists CLI, desktop, Claude Tag and Remote Control server sessions, not cloud sessions. Likely yes: the CHANGELOG fixes cloud-session artifact updates (v2.1.285) and lets routine runs publish private artifacts without approval (v2.1.292). Not tested.
 - **Desktop CI status bar cost and cadence:** does polling use tokens, how often does it poll, and does Auto-fix run in WSL sessions? SURF-002.
 - **Why the desktop denies its own MCP servers in WSL sessions** (`deniedMcpServers` in the launch settings), and whether the Browser pane and app preview work in WSL sessions; the WSL page doesn't say. SURF-034.
 - **Does `agentPushNotifEnabled` fire for a desktop WSL session with Remote Control on?** Not tested: no pushes were sent in this research. SURF-020.
-- **`artifact-design` by name:** the docs call it "a built-in design skill"; whether it can be overridden or disabled per project is undocumented. SURF-016. This is the one home for the question; `kb-skills.md` points here.
+- **`artifact-design` by name:** the docs call it "a built-in design skill"; the CHANGELOG names it (v2.1.281). Whether `skillOverrides` `"off"` disables it per project is untested. SURF-016. This is the one home for the question; `kb-skills.md` points here.
 - **Claude in Chrome in the desktop Code tab:** the desktop page points to the extension for logged-in browsing, but the Chrome page lists only the CLI and VS Code. SURF-032.

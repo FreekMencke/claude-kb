@@ -1,6 +1,6 @@
 # Hooks
 
-Prefix: HOOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296 and the docs live that day. This file covers how to write, scope, debug, secure and price a Claude Code hook. Uses of hooks covered elsewhere are linked, not repeated: forced-review hooks (REPO-025), output-filtering hooks (TOK-042), blocking large reads (TOK-044), orchestration hooks (ORCH-019), forced skill evaluation (SKILL-029), settings merging (REPO-006) and workspace trust for agent frontmatter (REPO-007). Docs pages were read in full as `.md` (`curl -sL https://code.claude.com/docs/en/hooks.md`); version numbers come from the claude-code CHANGELOG.
+Prefix: HOOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live that day; re-verified 2026-10-14 against the docs fetched that day, the claude-code CHANGELOG through 2.1.299 and our repos' `origin/main` (each entry's Last verified date is authoritative). This file covers how to write, scope, debug, secure and price a Claude Code hook. Uses of hooks covered elsewhere are linked, not repeated: forced-review hooks (REPO-025), output-filtering hooks (TOK-042), blocking large reads (TOK-044), orchestration hooks (ORCH-019), forced skill evaluation (SKILL-029), settings merging (REPO-006) and workspace trust for agent frontmatter (REPO-007). Docs pages were read in full as `.md` (`curl -sL https://code.claude.com/docs/en/hooks.md`); version numbers come from the claude-code CHANGELOG.
 
 ## Quick answers
 
@@ -11,7 +11,7 @@ Prefix: HOOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296
 | What does a hook get on stdin? | JSON with `session_id`, `transcript_path`, `cwd`, `permission_mode`, `hook_event_name`, plus event fields such as `tool_name` and `tool_input`. `cwd` follows worktrees; `$CLAUDE_PROJECT_DIR` doesn't. | HOOK-003 |
 | `command`, `http`, `mcp_tool`, `prompt` or `agent`? | `command` for nearly everything. `prompt` and `agent` call a model on every match and are slower; `agent` is experimental. | HOOK-009, HOOK-010 |
 | What does a hook cost? | A command hook costs 4–7 ms and no tokens unless it returns text. A `prompt` hook is a Haiku call per match; on Stop it re-reads the whole conversation uncached (+14k tokens on a short session). An `agent` hook runs up to 50 turns. | HOOK-015, HOOK-010 |
-| What happens when a hook crashes or times out? | It fails open: the action goes ahead. Set `onFailure: "block"` (v2.1.295+) for a policy hook that must fail closed. | HOOK-013, HOOK-012 |
+| What happens when a hook crashes or times out? | It fails open: the action goes ahead. Set `onFailure: "block"` (v2.1.295+) for a policy hook that must fail closed. Since v2.1.299 a plugin hook that can't be handed the action or can't answer fails closed. | HOOK-013, HOOK-012 |
 | Where do I define hooks and how do they combine? | User, project, local and managed settings, plugin `hooks/hooks.json`, skill and agent frontmatter. They merge; all matching hooks run in parallel and the strictest decision wins. | HOOK-016, HOOK-014, REPO-006 |
 | How do I run a hook only for some commands? | `matcher` filters on the tool name (case-sensitive); the `if` field filters on arguments with permission-rule syntax, e.g. `Bash(git *)`. `if` is best-effort, not a security boundary. | HOOK-018, HOOK-019 |
 | Do my hooks run in the desktop app, cloud sessions and `-p`? | Desktop and IDEs read the same settings files. Cloud sessions skip `~/.claude/settings.json`. `-p` runs repo hooks without a trust dialog. | HOOK-017, HOOK-025 |
@@ -19,7 +19,7 @@ Prefix: HOOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296
 | My hook "does nothing". Why? | Shell profile echoes before the JSON, a field outside `hookSpecificOutput`, wrong matcher case, exit 1 instead of 2, or one invalid matcher dropping the whole file's hooks. | HOOK-024 |
 | Is a hook a security boundary? | No. Hooks run with your full permissions and parse text the model wrote. Hard limits belong in deny rules and the sandbox. | HOOK-025, HOOK-026 |
 | Which proven hooks should I copy? | Format after edit, block dangerous commands or protected files, context at SessionStart, notifications, a Stop gate with a loop guard. | HOOK-027–HOOK-031 |
-| What hooks do we run? | Prettier after edit and a lint-before-push gate in the three osrs-tracker repos, each parsing the command in `pre-push-check.sh`; all three filter it with `"if": "Bash(git *)"`. None at user level. | HOOK-036 |
+| What hooks do we run? | Prettier after edit and a lint-before-push gate in the three osrs-tracker repos, each parsing the command in `pre-push-check.sh`; all three filter it with `"if": "Bash(git *)"`. At user level only a `SessionStart` worktree fast-forward hook. | HOOK-036 |
 
 ## Index
 
@@ -68,11 +68,11 @@ Prefix: HOOK. Last verified for all entries: 2026-10-12, on Claude Code v2.1.296
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: lifecycle, matcher patterns, exit code 2 per event](https://code.claude.com/docs/en/hooks)
 - Related: HOOK-002, HOOK-004, ORCH-019
 
-Cadence: `SessionStart`/`SessionEnd` per session, `UserPromptSubmit`/`Stop`/`StopFailure` per turn, `PreToolUse`/`PostToolUse` on every tool call. "Blocks" = exit 2 or a JSON decision stops the action.
+Cadence: `SessionStart`/`SessionEnd` per session, `UserPromptSubmit`/`Stop`/`StopFailure` per turn, `PreToolUse`/`PostToolUse` on every tool call (`EndConversation` skips both). `UserPromptSubmit` also fires for scheduled tasks, `/loop` iterations, background-subagent reports and cross-session messages, and since v2.1.299 it runs before a skill or custom slash command expands, so blocking the prompt also stops its embedded shell lines. "Blocks" = exit 2 or a JSON decision stops the action.
 
 | Event | Fires | Matcher on | Blocks? |
 |---|---|---|---|
@@ -96,7 +96,7 @@ Key input fields: `PreToolUse` gets `tool_name`, `tool_input`, `tool_use_id`; `P
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: lifecycle, matcher patterns, exit code 2 per event](https://code.claude.com/docs/en/hooks), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-001, ORCH-019
 
@@ -124,7 +124,7 @@ Versions from the CHANGELOG: `SubagentStart` 2.0.43, `PermissionRequest` 2.0.45,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: common input fields, reference scripts by path](https://code.claude.com/docs/en/hooks)
 - Related: HOOK-008, HOOK-036
 
@@ -146,7 +146,7 @@ Environment:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: exit code output](https://code.claude.com/docs/en/hooks#exit-code-output), [examples/hooks/bash_command_validator_example.py](https://github.com/anthropics/claude-code/blob/main/examples/hooks/bash_command_validator_example.py)
 - Related: HOOK-005, HOOK-013, HOOK-024
 
@@ -167,7 +167,7 @@ Environment:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: JSON output, decision control](https://code.claude.com/docs/en/hooks#json-output), [Claude Code CHANGELOG 2.1.89](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-004, HOOK-006, HOOK-007, TOK-042
 
@@ -189,7 +189,7 @@ Deprecated: top-level `decision: "approve"/"block"` on PreToolUse (maps to allow
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: PreToolUse decision control](https://code.claude.com/docs/en/hooks#pretooluse-decision-control), [Hooks guide: hooks and permission modes](https://code.claude.com/docs/en/hooks-guide#hooks-and-permission-modes), [Permissions: extend permissions with hooks](https://code.claude.com/docs/en/permissions#extend-permissions-with-hooks)
 - Related: HOOK-014, HOOK-026, REPO-034, TOK-042
 
@@ -209,7 +209,7 @@ Rules:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: add context for Claude](https://code.claude.com/docs/en/hooks#add-context-for-claude)
 - Related: HOOK-005, HOOK-008, HOOK-029, TOK-065
 
@@ -232,7 +232,7 @@ How to write it:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: SessionStart](https://code.claude.com/docs/en/hooks#sessionstart)
 - Related: HOOK-007, HOOK-029, HOOK-003
 
@@ -253,7 +253,7 @@ Timing: interactive sessions run SessionStart hooks in the background so you can
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: hook handler fields, prompt-based hooks](https://code.claude.com/docs/en/hooks#hook-handler-fields), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-010, HOOK-011, REPO-025, SKILL-023
 
@@ -282,7 +282,7 @@ Choosing:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: prompt-based hooks, agent-based hooks](https://code.claude.com/docs/en/hooks#prompt-based-hooks), [Costs: background token usage](https://code.claude.com/docs/en/costs#background-token-usage), [Claude Code CHANGELOG 2.1.294, 2.1.295](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-009, HOOK-015, REPO-025, SKILL-029
 
@@ -304,7 +304,7 @@ Choosing:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: run hooks in the background](https://code.claude.com/docs/en/hooks#run-hooks-in-the-background), [Claude Code CHANGELOG 2.1.295](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-012, HOOK-033
 
@@ -324,8 +324,8 @@ Use async for slow feedback that shouldn't stall the turn: a test suite after an
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Hooks reference: common fields, timeouts](https://code.claude.com/docs/en/hooks#common-fields), [Hooks guide: limitations](https://code.claude.com/docs/en/hooks-guide#limitations), [anthropics/claude-code#85250](https://github.com/anthropics/claude-code/issues/85250)
+- Last verified: 2026-10-14
+- Sources: [Hooks reference: common fields, timeouts](https://code.claude.com/docs/en/hooks#common-fields), [Hooks guide: limitations](https://code.claude.com/docs/en/hooks-guide#limitations), [anthropics/claude-code#85250](https://github.com/anthropics/claude-code/issues/85250), [Hooks reference: hooks that start a background process](https://code.claude.com/docs/en/hooks), [Claude Code CHANGELOG 2.1.285](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-011, HOOK-013, HOOK-033
 
 `timeout` is in seconds, per handler.
@@ -339,7 +339,7 @@ Use async for slow feedback that shouldn't stall the turn: a test suite after an
 
 On timeout a `command`, `http` or `mcp_tool` hook is cancelled and its output discarded, so it **renders no decision**: a timed-out PreToolUse hook "doesn't block the tool call… don't count on a stalled hook to act as a gate". Exceptions: a PreModelSwitch timeout blocks the switch; an Agent SDK callback hook that times out blocks. Add `onFailure: "block"` to make a timeout block (HOOK-013).
 
-Known gap (maintainer-reproduced on v2.1.233, issue open): a hook that exits but leaves a detached child holding stdout stalls the tool call past its `timeout`; a child that never exits freezes the session. Redirect background children's stdio (`>/dev/null 2>&1`) or use `async: true`.
+**Background children:** a stall (the hook exits, a detached child keeps stdout open) was reproduced on v2.1.233 and fixed in v2.1.285 (not retested). Claude Code now "finishes reading the hook's output shortly after the hook's own process exits", so a decision the child prints later doesn't count, and a hook that prints an allow and then starts an unredirected background process is blocked (`refusing to honor the suspect capture`). Print the decision first and start children with `>/dev/null 2>&1 &`, or use `async: true`. anthropics/claude-code#85250 (a wedged hook subprocess ignoring `timeout`, Windows) is still open.
 
 Set an explicit, tight `timeout` on anything on a hot path; the 10-minute default is generous.
 
@@ -347,7 +347,7 @@ Set an explicit, tight `timeout` on anything on a hot path; the 10-minute defaul
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: block the action when a hook fails](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails), [Claude Code CHANGELOG 2.1.295](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-004, HOOK-012, HOOK-024
 
@@ -364,13 +364,15 @@ Tested 2026-10-12, v2.1.296, `-p`: a `sleep 6` PreToolUse hook with `timeout: 2`
 
 With it set, a failure does what exit 2 does on that event; on PermissionRequest it denies. It has no effect on Stop, SubagentStop, TaskCompleted, TeammateIdle ("Claude can't repair a hook that won't run") or async hooks.
 
+Already blocked without `onFailure`: a PreToolUse or PermissionRequest hook whose matching fails or whose tool input can't be serialized to JSON (v2.1.288), and on Windows one with no shell set when Git for Windows is missing (v2.1.299). Since v2.1.299 an action a plugin hook can block is refused when the hook can't be handed it or can't hand back its answer; the hooks page still calls such failures non-blocking (INDEX Conflicts).
+
 When to use it: a hook that is the **only** guard for something that matters (secrets, production). Not for a convenience hook on every Bash call: if its script breaks, every Bash call is blocked until you fix it. Test the first run either way.
 
 ## [HOOK-014] Parallel runs, deduplication and combined decisions
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: hook handler fields](https://code.claude.com/docs/en/hooks#hook-handler-fields), [Hooks guide: combine results from multiple hooks](https://code.claude.com/docs/en/hooks-guide#combine-results-from-multiple-hooks)
 - Related: HOOK-006, HOOK-016, REPO-006
 
@@ -387,7 +389,7 @@ Tested 2026-10-12, v2.1.296, terminal `-p` (Haiku): four handlers in one matcher
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: how a hook resolves, debug hooks](https://code.claude.com/docs/en/hooks#how-a-hook-resolves), [Claude Code CHANGELOG 2.1.85](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-010, HOOK-019, TOK-042, TOK-008
 
@@ -395,7 +397,7 @@ Tested 2026-10-12, v2.1.296, terminal `-p` (Haiku): four handlers in one matcher
 
 Local measurement, 2026-10-12, this machine (WSL2), `scratchpad/lead/time_hooks.sh`, 50 runs each, script time excluding Claude Code's own spawn:
 - empty `sh -c` hook: about 1 ms;
-- osrs-tracker-web `pre-push-check.sh` on a non-push command (bash + two `jq`): about 4 ms;
+- osrs-tracker-web `pre-push-check.sh` on a non-push command (bash, `cat` and one `jq`): about 4 ms;
 - inline Prettier hook on a file outside the project: about 2 ms;
 - `prettier --check` on one file: about 83 ms (5 runs).
 Probes 2026-10-12, v2.1.296, `-p`: the debug log reported 4–7 ms per trivial hook per call, end to end. A PostToolUse hook returning about 900 tokens of `additionalContext` on each of 3 Bash calls raised the run's cost by about 36%.
@@ -414,7 +416,7 @@ Confidence note: behaviour is official-docs; the timings are our measurement.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: hook locations, configuration](https://code.claude.com/docs/en/hooks#hook-locations), [Plugins reference: hooks](https://code.claude.com/docs/en/plugins-reference), [Permissions: working directories](https://code.claude.com/docs/en/permissions), [Settings](https://code.claude.com/docs/en/settings)
 - Related: REPO-005, REPO-006, REPO-040, HOOK-020
 
@@ -444,7 +446,7 @@ Gotchas:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: hook locations, workspace trust](https://code.claude.com/docs/en/hooks), [Settings: settings in cloud sessions](https://code.claude.com/docs/en/settings), [Desktop: shared configuration](https://code.claude.com/docs/en/desktop), [claude-code-action configuration](https://github.com/anthropics/claude-code-action/blob/main/docs/configuration.md), [claude-code-action security](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)
 - Related: HOOK-025, REPO-007, REPO-028
 
@@ -467,7 +469,7 @@ Consequences:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: matcher patterns, match MCP tools](https://code.claude.com/docs/en/hooks#matcher-patterns), [Hooks guide: hook not firing](https://code.claude.com/docs/en/hooks-guide#hook-not-firing), [Debug your config](https://code.claude.com/docs/en/debug-your-config)
 - Related: HOOK-019, HOOK-001, HOOK-024
 
@@ -490,7 +492,7 @@ Consequences:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: common fields, how `if` patterns match Bash commands](https://code.claude.com/docs/en/hooks#bash-if-matching), [Permissions: Bash rule limits](https://code.claude.com/docs/en/permissions), [Claude Code CHANGELOG 2.1.85](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-018, HOOK-015, HOOK-036, REPO-034
 
@@ -504,13 +506,13 @@ Consequences:
 
 "Because the `if` filter is best-effort, use the permission system rather than a hook to enforce a hard allow or deny."
 
-Pattern: filter broadly with `if` (`Bash(git *)`) and do the exact parsing in the script. The official `security-guidance` plugin lists `git commit *` and `git -C * commit *` as separate handlers for the same reason.
+Pattern: filter broadly with `if` (`Bash(git *)`) and do the exact parsing in the script. The official `security-guidance` plugin lists `git commit:*` and `git -C * commit *` (plus push and Graphite forms) as separate handlers for the same reason.
 
 ## [HOOK-020] Hooks in skill and agent frontmatter
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: hooks in skills and agents](https://code.claude.com/docs/en/hooks#hooks-in-skills-and-agents), [Subagents: hooks in frontmatter](https://code.claude.com/docs/en/sub-agents), [Claude Code CHANGELOG 2.1.0](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: REPO-005, REPO-007, REPO-033, SKILL-023
 
@@ -540,7 +542,7 @@ Uses:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: the /hooks menu, disable or remove hooks](https://code.claude.com/docs/en/hooks#the-%2Fhooks-menu), [Settings: when edits take effect](https://code.claude.com/docs/en/settings), [Settings reference: disableAllHooks, allowManagedHooksOnly](https://code.claude.com/docs/en/settings-reference)
 - Related: HOOK-016, HOOK-022, REPO-006
 
@@ -571,7 +573,7 @@ Uses:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: hook error in output](https://code.claude.com/docs/en/hooks-guide#hook-error-in-output), [Hooks reference: hook events](https://code.claude.com/docs/en/hooks#hook-events)
 - Related: HOOK-022, HOOK-024
 
@@ -595,7 +597,7 @@ For a shared hook, keep the sample inputs next to the script and run them in CI.
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: limitations and troubleshooting](https://code.claude.com/docs/en/hooks-guide#limitations-and-troubleshooting), [anthropics/claude-code#75081](https://github.com/anthropics/claude-code/issues/75081), [anthropics/claude-code#21460](https://github.com/anthropics/claude-code/issues/21460)
 - Related: HOOK-004, HOOK-013, HOOK-018, HOOK-022
 
@@ -606,7 +608,7 @@ Checklist, most common first:
 4. **Matcher case or shape.** `bash`, `mcp__server` without `__.*`, a matcher on an event that has none.
 5. **`if` on a non-tool event**: the hook never runs.
 6. **Script not found or not executable** (`chmod +x`): a `hook error` notice and nothing else.
-7. **One invalid matcher drops the whole file.** A maintainer reproduced on v2.1.233 that one schema-invalid matcher (an object instead of a string) discards every hook in that settings file; interactive mode warns, `-p` stays silent (closed as duplicate of #75071).
+7. **One invalid matcher drops the whole file.** A maintainer reproduced on v2.1.233 that one schema-invalid matcher (an object instead of a string) discards every hook in that settings file; interactive mode warns; `-p` was silent until v2.1.299, which lists the file and the invalid entry on stderr in text-output runs (the whole-file drop is unchanged; closed as duplicate of #75071).
 8. **Started in a subdirectory**: project hooks don't load (HOOK-016).
 9. **Folder not trusted** (interactive) or agent frontmatter under `-p` (HOOK-020).
 10. **Timed out**: no decision (HOOK-012).
@@ -617,7 +619,7 @@ After editing hooks: open `/hooks`, then run one capped `-p` probe with `--debug
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: security considerations](https://code.claude.com/docs/en/hooks#security-considerations), [Permissions: what runs before you trust a folder](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder), [Sandboxing: what runs outside the sandbox](https://code.claude.com/docs/en/sandboxing)
 - Related: REPO-007, HOOK-026, HOOK-017
 
@@ -634,7 +636,7 @@ After editing hooks: open `/hooks`, then run one capped `-p` probe with `--debug
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: security best practices, bash if matching](https://code.claude.com/docs/en/hooks#security-best-practices), [Permissions: what a Bash rule doesn't match](https://code.claude.com/docs/en/permissions), [kenryu42/cc-safety-net security model](https://ccsafetynet.com/docs/guides/security-model.md)
 - Related: HOOK-025, HOOK-019, HOOK-028, REPO-035
 
@@ -655,7 +657,7 @@ Do:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: auto-format code after edits](https://code.claude.com/docs/en/hooks-guide#auto-format-code-after-edits), [Hooks reference: run tests after file changes](https://code.claude.com/docs/en/hooks#run-tests-after-file-changes)
 - Related: HOOK-011, HOOK-036, REPO-044
 
@@ -679,7 +681,7 @@ Make it robust:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: block edits to protected files](https://code.claude.com/docs/en/hooks-guide#block-edits-to-protected-files), [Hooks reference: how a hook resolves](https://code.claude.com/docs/en/hooks#how-a-hook-resolves), [examples/hooks/bash_command_validator_example.py](https://github.com/anthropics/claude-code/blob/main/examples/hooks/bash_command_validator_example.py)
 - Related: HOOK-026, HOOK-019, HOOK-032, REPO-033
 
@@ -703,7 +705,7 @@ Not a boundary (HOOK-026): pair with the sandbox for unattended runs.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: re-inject context after compaction](https://code.claude.com/docs/en/hooks-guide#re-inject-context-after-compaction), [Hooks reference: SessionStart, PreCompact, PostCompact](https://code.claude.com/docs/en/hooks#precompact), [How to configure hooks (Anthropic, 2025-12-11)](https://claude.com/resources/articles/how-to-configure-hooks)
 - Related: HOOK-007, HOOK-008, TOK-031, ORCH-019
 
@@ -715,7 +717,7 @@ Not a boundary (HOOK-026): pair with the sandbox for unattended runs.
 ```
 `PostCompact` gets `compact_summary` but can't add context; use it for logging.
 
-**Before compaction:** `PreCompact` (matcher `manual`/`auto`) gets `transcript_path`, `trigger` and `custom_instructions`. Uses from Anthropic's hooks article: back up the transcript, save decisions to a progress file. It can block compaction (exit 2), but blocking an auto-compact that hit the context limit makes the request fail.
+**Before compaction:** `PreCompact` (matcher `manual`/`auto`; `auto` also covers idle compaction, v2.1.290+) gets `transcript_path`, `trigger` and `custom_instructions`. Uses from Anthropic's hooks article: back up the transcript, save decisions to a progress file. It can block compaction (exit 2), but blocking an auto-compact that hit the context limit makes the request fail.
 
 Rules:
 - Static rules belong in CLAUDE.md, not a hook (HOOK-007).
@@ -727,7 +729,7 @@ Rules:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: get notified when Claude needs input](https://code.claude.com/docs/en/hooks-guide#get-notified-when-claude-needs-input), [Hooks reference: emit terminal notifications, Notification](https://code.claude.com/docs/en/hooks#emit-terminal-notifications)
 - Related: HOOK-031, HOOK-017
 
@@ -745,13 +747,13 @@ Allowed: OSC 0/1/2 (titles), 9, 99, 777 and BEL; anything else voids the field. 
 
 **On Stop:** read `last_assistant_message` from the input rather than the transcript, which may lag. Stop fires every turn, so a Stop notifier is noisier than `idle_prompt`.
 
-**Immediate permission alerts:** `PermissionRequest` fires when the prompt appears; `Notification`/`permission_prompt` fires about 6 s later in the desktop app and VS Code.
+**Immediate permission alerts:** `PermissionRequest` fires when the prompt appears; `Notification`/`permission_prompt` fires about 6 s later: in the terminal only if you haven't typed (each keystroke defers it), in the desktop app and VS Code regardless of typing (v2.1.233+; `CLAUDE_CODE_DISABLE_PERMISSION_PROMPT_NOTIFY_HOOKS=1` turns it off there).
 
 ## [HOOK-031] Pattern: Stop hooks that keep Claude working
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: Stop](https://code.claude.com/docs/en/hooks#stop), [Hooks guide: Stop hook hits the block cap](https://code.claude.com/docs/en/hooks-guide#stop-hook-hits-the-block-cap), [ralph-loop plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop), [Claude Code CHANGELOG 2.1.143](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: REPO-025, ORCH-019, HOOK-010
 
@@ -774,7 +776,7 @@ Stop fires on **every** turn end, not only at task completion, and not on interr
 - Type: tool
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [kenryu42/cc-safety-net](https://github.com/kenryu42/cc-safety-net), [nizos/tdd-guard](https://github.com/nizos/tdd-guard), [karanb192/claude-code-hooks](https://github.com/karanb192/claude-code-hooks), [ldayton/Dippy](https://github.com/ldayton/Dippy), [disler/claude-code-hooks-mastery](https://github.com/disler/claude-code-hooks-mastery), [hookify](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/hookify), [security-guidance](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/security-guidance)
 - Related: HOOK-028, HOOK-033, HOOK-026
 
@@ -796,7 +798,7 @@ Stale, skip: johnlindquist/claude-hooks (last push 2025-08-08), decider/claude-h
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: limitations](https://code.claude.com/docs/en/hooks-guide#limitations), [Hooks reference](https://code.claude.com/docs/en/hooks), [anthropics/claude-code#85250](https://github.com/anthropics/claude-code/issues/85250)
 - Related: HOOK-024, HOOK-015, HOOK-026, SKILL-029
 
@@ -808,7 +810,7 @@ Stale, skip: johnlindquist/claude-hooks (last push 2025-08-08), decider/claude-h
 - **Stop hooks without an exit condition.** They burn up to eight extra turns per stop. In a 2026-10-12 probe, Claude edited the unsatisfiable hook script in its working directory to let itself stop: keep hook scripts out of paths Claude edits freely, or deny edits to `.claude/hooks/**`.
 - **Two hooks rewriting the same input** (non-deterministic winner).
 - **Wide `PermissionRequest` allow.** An empty or `.*` matcher "would auto-approve every tool permission prompt".
-- **Background children holding stdout**: can stall past the timeout or freeze the session (HOOK-012).
+- **Background children with open stdio**: print the decision before starting one and redirect its output (`>/dev/null 2>&1 &`); an unredirected child after an allow is blocked, and a decision it prints late doesn't count (HOOK-012).
 - **Relying on a hook that fails open** as the only guard (HOOK-013).
 - **Secrets in hook output** (HOOK-026).
 - **Regex as a security boundary** (HOOK-026).
@@ -818,7 +820,7 @@ Stale, skip: johnlindquist/claude-hooks (last push 2025-08-08), decider/claude-h
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Cursor hooks](https://cursor.com/docs/hooks), [Codex hooks](https://developers.openai.com/codex/hooks), [Codex advanced config](https://developers.openai.com/codex/config-advanced), [Gemini CLI hooks](https://geminicli.com/docs/hooks/), [GitHub Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference)
 - Related: HOOK-013, HOOK-031, TOK-085
 
@@ -837,7 +839,7 @@ Confidence note: read from each vendor's docs on 2026-10-12; defaults there may 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: [Hooks reference (intro)](https://code.claude.com/docs/en/hooks), [Permissions: extend permissions with hooks](https://code.claude.com/docs/en/permissions#extend-permissions-with-hooks), [Mods overview](https://code.claude.com/docs/en/plugins/mods/overview)
 - Related: HOOK-006, HOOK-016
 
@@ -856,15 +858,15 @@ Confidence note: from the hooks and permissions pages; the mods docs themselves 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-10-14
 - Sources: local files read 2026-10-12: `~/.claude/settings.json`, `osrs-tracker-{web,api,aws}/.claude/settings.json`, `.claude/hooks/pre-push-check.sh`; [osrs-tracker/osrs-tracker-aws#79](https://github.com/osrs-tracker/osrs-tracker-aws/pull/79), [osrs-tracker/osrs-tracker-web#235](https://github.com/osrs-tracker/osrs-tracker-web/pull/235), [osrs-tracker/osrs-tracker-api#139](https://github.com/osrs-tracker/osrs-tracker-api/pull/139); [Permissions: Bash rule limits](https://code.claude.com/docs/en/permissions)
 - Related: REPO-001, REPO-033, REPO-043, HOOK-019, HOOK-015
 
-**User level:** no hooks in `~/.claude/settings.json` or `settings.local.json`; none of the enabled plugins ship `hooks.json`. Default mode is `auto`, with no deny rules.
+**User level** (2026-10-14): one hook in `~/.claude/settings.json`, none in `settings.local.json`: `SessionStart` (matcher `startup`, timeout 20 s) runs `~/.claude/hooks/ff-worktree.sh`, which fast-forwards a clean new worktree to origin's default branch and never blocks (SESS-036). None of the enabled plugins ship `hooks.json`. Default mode is `auto`, with five deny rules (`kubectl delete`, `helm uninstall`, reading the AWS credentials file and the admin kubeconfig).
 
 **osrs-tracker-web and -api** (identical except `lint` vs `lint:ci`):
 - PostToolUse `Edit|Write`: inline Prettier on the edited file, only under `$CLAUDE_PROJECT_DIR`, silent, `exit 0`, timeout 30 s. Matches HOOK-027.
-- PreToolUse `Bash` with `"if": "Bash(git *)"` (since 2026-10-12, osrs-tracker/osrs-tracker-web#235 and osrs-tracker/osrs-tracker-api#139): `pre-push-check.sh` on every git subcommand, including `cd x && git push`, since `if` checks each subcommand (HOOK-015). It parses `git [-C path|-c k=v|--flag]… push`, resolves the pushed checkout from `cwd` or `-C` (not `$CLAUDE_PROJECT_DIR`, which stays at the main checkout), runs lint and `prettier:ci`, and blocks with exit 2 and the last 40 lines. Fails open when it can't tell. Timeout 300 s, `statusMessage` set. Costs about 4 ms per non-push call (HOOK-015).
+- PreToolUse `Bash` with `"if": "Bash(git *)"` (since 2026-10-12, osrs-tracker/osrs-tracker-web#235 and osrs-tracker/osrs-tracker-api#139): `pre-push-check.sh` on every git subcommand, including `cd x && git push`, since `if` checks each subcommand (HOOK-019). It parses `git [-C path|-c k=v|--flag]… push`, resolves the pushed checkout from `cwd` or `-C` (not `$CLAUDE_PROJECT_DIR`, which stays at the main checkout), runs lint and `prettier:ci`, and blocks with exit 2 and the last 40 lines. Fails open when it can't tell. Timeout 300 s, `statusMessage` set. Costs about 4 ms per non-push call (HOOK-015).
 - Agent frontmatter: the reviewers' read-only Bash hook (REPO-033).
 
 **osrs-tracker-aws:**
@@ -881,12 +883,12 @@ All three gates are backed by CI lint, so a miss costs a red CI run, not a bad m
 Ranked by impact against effort.
 
 1. **Fix the aws push gate's `git -C` gap.** Done 2026-10-12 in osrs-tracker/osrs-tracker-aws#79. HOOK-036.
-2. **Add `"if": "Bash(git *)"` to the web and api push gate** (low impact, trivial effort). Done in all three repos 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81). Keeps the script's `-C` parsing but skips the spawn on the roughly 13,000 non-git Bash calls a week (TOK-042's count). Would need an issue per repo; aws now has the same script, so all three. HOOK-015, HOOK-019.
+2. **Add `"if": "Bash(git *)"` to the web and api push gate** (low impact, trivial effort). Done in all three repos 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81). Keeps the script's `-C` parsing but skips the spawn on the non-git share of the 13,350 Bash calls in the 6 days 2026-10-07 to 2026-10-12 (TOK-042; it doesn't split git from non-git). HOOK-015, HOOK-019.
 3. **Keep the push gates fail-open; don't add `onFailure: "block"`** (decision). A broken script would then block every Bash call, and CI lints anyway. HOOK-013.
 4. **No `prompt` or `agent` hooks on tool events** (decision). Use `/goal` for ad-hoc "keep going until X", and the reviewer agents for judgement. HOOK-010, HOOK-031, REPO-025.
 5. **When scripting `claude -p` over a repo we didn't write, pass `--settings '{"disableAllHooks": true}'` or `--bare`** (high impact if it ever happens, trivial effort). Our repos' hooks are ours, so this only matters for third-party clones. HOOK-025.
 6. **Optional: a user-level `Notification` hook with `terminalSequence`** for terminal sessions on WSL (low impact, low effort). Skip if the desktop app and push notifications already cover it. HOOK-030.
-7. **Test hook edits the HOOK-023 way** (sample JSON piped in, then one capped `-p` probe with `--debug-file`), because one invalid matcher silently drops a file's hooks under `-p`. HOOK-024.
+7. **Test hook edits the HOOK-023 way** (sample JSON piped in, then one capped `-p` probe with `--debug-file`), because one invalid matcher drops a file's hooks, silently under `-p` before v2.1.299. HOOK-024.
 
 ## Open questions
 
@@ -896,6 +898,6 @@ Ranked by impact against effort.
 - **`/hooks` in the desktop Code tab:** undocumented; not tested.
 - **Does `if` strip the same wrappers as permission rules** (`timeout`, `nice`, `command`)? Inferred, not tested.
 - **Does an agent's frontmatter `Stop` hook convert to `SubagentStop` when the agent runs as the main session (`--agent`)?** Not stated.
-- **Is `Hook JSON output had unrecognized keys` logged at the default debug level** or only with `CLAUDE_CODE_DEBUG_LOG_LEVEL=verbose`? Seen only in a verbose run.
+- **Is `Hook JSON output had unrecognized keys` logged at the default debug level** or only with `CLAUDE_CODE_DEBUG_LOG_LEVEL=verbose`? Seen only in a verbose run, but the hooks guide says to "start Claude Code with `claude --debug` and search the debug log" for it, which implies the default level. Not retested.
 - **Claude Code's own spawn overhead per hook** (Node child-process start) beyond the script time we measured: the debug log's 5–7 ms durations suggest small, but we didn't isolate it.
 - **Version that added `UserPromptExpansion`, `PostToolBatch`, `PostToolUseFailure`**: not found in the CHANGELOG.

@@ -1,6 +1,6 @@
 # MCP servers: configuration, access control, surfaces and vetting
 
-Prefix: MCP. Last verified for all entries: 2026-10-13, on Claude Code v2.1.296 (WSL terminal) and the desktop app's CLI build 2.1.295, against the docs live that day. This file covers how MCP servers are configured, approved, authenticated, permissioned and scoped in Claude Code, how they behave on each surface, and how to choose, vet and write one. MCP topics covered elsewhere are linked, not repeated: context cost and tool search (TOK-020 to TOK-022), output limits (TOK-023), code execution with MCP on the API (TOK-024), our AWS, Kubernetes and Flux servers and why a read-only flag isn't a boundary (INFRA-003 to INFRA-007), docs servers (TOK-095 to TOK-097), GA4 (WEB-006), Playwright and browser checks (FLOW-014, REPO-021), processes across parallel sessions (SESS-013), and MCP versus skills and hooks (SKILL-021). Docs pages were read in full as `.md` (`curl -sL https://code.claude.com/docs/en/mcp.md`); version numbers come from the claude-code CHANGELOG.
+Prefix: MCP. Researched 2026-10-13 on Claude Code v2.1.296 (WSL terminal) and the desktop app's CLI build 2.1.295, against the docs live that day; re-verified 2026-10-14 against the docs fetched that day, the claude-code CHANGELOG through 2.1.299 and our repos' `origin/main` (each entry's Last verified date is authoritative). This file covers how MCP servers are configured, approved, authenticated, permissioned and scoped in Claude Code, how they behave on each surface, and how to choose, vet and write one. MCP topics covered elsewhere are linked, not repeated: context cost and tool search (TOK-020 to TOK-022), output limits (TOK-023), code execution with MCP on the API (TOK-024), our AWS, Kubernetes and Flux servers and why a read-only flag isn't a boundary (INFRA-003 to INFRA-007), docs servers (TOK-095 to TOK-097), GA4 (WEB-006), Playwright and browser checks (FLOW-014, REPO-021), processes across parallel sessions (SESS-013), and MCP versus skills and hooks (SKILL-021). Docs pages were read in full as `.md` (`curl -sL https://code.claude.com/docs/en/mcp.md`); version numbers come from the claude-code CHANGELOG.
 
 ## Quick answers
 
@@ -15,7 +15,7 @@ Prefix: MCP. Last verified for all entries: 2026-10-13, on Claude Code v2.1.296 
 | Server uses SSO or short-lived tokens, not OAuth? | `headersHelper`: a command printing JSON headers, run on each connect, 10 s limit, rerun on 401/403. Repo-supplied helpers run only in a trusted folder and without `*TOKEN*`/`*KEY*` variables. | MCP-007 |
 | How do I give a server to one subagent only? | Inline `mcpServers` in the agent file: it connects for that agent's run and its tools never reach the main context. Project agent files need the folder trusted; plugin agents ignore the field. | MCP-008 |
 | Why does my claude.ai connector show up in Claude Code, and how do I stop it? | Connectors come with a claude.ai login. Stop them with `disableClaudeAiConnectors`, `deniedMcpServers` `{ "serverName": "claude.ai X" }` or `/mcp`. Desktop-delivered connectors ignore all MCP settings: disconnect them at claude.ai. | MCP-010 |
-| What do MCP servers cost a `claude -p` run, and how do I skip them? | Ours: 8 servers, about 6,600 input tokens per request and about 2 s per run, even deferred. `--strict-mcp-config` (optionally with `--mcp-config`) or `--bare` loads none. | MCP-012, MCP-028 |
+| What do MCP servers cost a `claude -p` run, and how do I skip them? | Ours on 2026-10-13: 8 servers, about 6,600 input tokens per request and about 2 s per run, even deferred. `--strict-mcp-config` (optionally with `--mcp-config`) loads none; `--bare` does too but needs API-key auth. | MCP-012, MCP-028 |
 | How long can an MCP tool call run? | Wall clock about 28 h by default; idle limit 5 min (remote) or 30 min (stdio); main-thread calls move to the background after 2 min. Stdio servers aren't reconnected automatically. | MCP-011 |
 | Should I build an MCP server, use a CLI or write a skill? | A CLI Claude knows first (most context-efficient), MCP for systems with no CLI or with OAuth, a skill for the procedure on top. When building: few workflow-shaped tools, not an API mirror. | MCP-017, MCP-018 |
 | Is a third-party MCP server safe to add? | Treat a stdio server as untrusted code with your privileges: check the publisher, pin the version, read its tools, give it its own narrow token. Claude Code accepts changed tool lists without re-approval. | MCP-019 |
@@ -59,7 +59,7 @@ Prefix: MCP. Last verified for all entries: 2026-10-13, on Claude Code v2.1.296 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes)
 - Related: MCP-002, MCP-005, SESS-010, SKILL-053
 
@@ -83,7 +83,7 @@ Desktop worktree sessions read `.mcp.json` from the main checkout's root (SKILL-
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: project scope](https://code.claude.com/docs/en/mcp#project-scope), [MCP: project server approvals and workspace trust](https://code.claude.com/docs/en/mcp#project-server-approvals-and-workspace-trust), [Permissions: what runs before you trust a folder](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)
 - Related: MCP-001, MCP-003, REPO-007, MEM-028
 
@@ -103,7 +103,7 @@ Interactive sessions ask before connecting each `.mcp.json` server. `claude -p`,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: disable a server without removing it](https://code.claude.com/docs/en/mcp#disable-a-server-without-removing-it), [Managed MCP: policy-based control](https://code.claude.com/docs/en/managed-mcp#policy-based-control-with-allowlists-and-denylists), [Settings reference](https://code.claude.com/docs/en/settings-reference)
 - Related: MCP-002, MCP-010, MCP-016, MCP-028
 
@@ -114,7 +114,7 @@ Interactive sessions ask before connecting each `.mcp.json` server. `claude -p`,
 | `deniedMcpServers` | Any settings file, including user `~/.claude/settings.json` | Blocks any server by `serverUrl`, `serverCommand` or `serverName`; merges from every scope and "Nothing overrides a denylist match" |
 | `disableClaudeAiConnectors: true` | Any settings file; any-source-true | All claude.ai connectors Claude Code fetches itself (not desktop- or cloud-delivered ones). Same as `ENABLE_CLAUDEAI_MCP_SERVERS=false` |
 
-`deniedMcpServers` is not only for admins: a user can block servers for themselves, and `allowManagedMcpServersOnly` never stops the denylist merging. A blocked server "disappears from `/mcp` and `claude mcp list`" with no message saying why.
+`deniedMcpServers` is not only for admins: a user can block servers for themselves, and `allowManagedMcpServersOnly` never stops the denylist merging. A blocked server "disappears from `/mcp` and `claude mcp list`" with no message saying why. CHANGELOG v2.1.299: `claude mcp list`/`get` now report a policy-blocked server as blocked without starting it; the docs still say it disappears (not re-tested).
 
 A `serverName` entry "is not a security control": anyone can name any server `github`. Use `serverUrl` or `serverCommand` when it matters. For a connector, `{ "serverName": "claude.ai Slack" }` works in the denylist; the allowlist accepts only letters, digits, `-` and `_` in names.
 
@@ -124,7 +124,7 @@ Unset `allowedMcpServers` allows everything; `[]` allows nothing but built-ins a
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Permissions: MCP](https://code.claude.com/docs/en/permissions#mcp), [Permission modes: auto mode](https://code.claude.com/docs/en/permission-modes), [Permissions: tool name wildcards](https://code.claude.com/docs/en/permissions#tool-name-wildcards), [Permissions: match by input parameter](https://code.claude.com/docs/en/permissions#match-by-input-parameter), [MCP: plugin MCP tool names](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers)
 - Related: MCP-009, MCP-010, MCP-015, HOOK-018, REPO-033, INFRA-006
 
@@ -142,13 +142,15 @@ Prompts that no allow rule skips: tools a server marks `_meta["anthropic/require
 
 An explicit `ask` rule "still force[s] a prompt" in auto mode, so allowing a server's reads and listing its write tools under `ask` gives unattended reads and an approval per write (MCP-028).
 
+Since v2.1.299 a rule `mcp__a` reaches only the server named `a` (it no longer also allows `a__b` or `a_`); for a server whose name contains `__`, write `mcp__<whole name>__*`. Deny and ask rules for such servers also apply from v2.1.299.
+
 Deny rules decide what the model may call; what the server can do with its credential is set by the credential (INFRA-006).
 
 ## [MCP-005] Secrets in MCP config: `${VAR}` expansion and what reads as empty
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: environment variable expansion](https://code.claude.com/docs/en/mcp#environment-variable-expansion-in-mcp-json), [MCP: configuration warnings](https://code.claude.com/docs/en/mcp#configuration-warnings)
 - Related: MCP-001, MCP-006, MCP-007
 
@@ -164,7 +166,7 @@ Claude Code warns, without echoing values, about leading or trailing whitespace 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: authenticate with remote MCP servers](https://code.claude.com/docs/en/mcp#authenticate-with-remote-mcp-servers)
 - Related: MCP-005, MCP-007, SESS-013
 
@@ -185,7 +187,7 @@ A configured `Authorization` header that the server rejects is reported as a fai
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: use dynamic headers for custom authentication](https://code.claude.com/docs/en/mcp#use-dynamic-headers-for-custom-authentication)
 - Related: MCP-005, MCP-006, INFRA-024
 
@@ -211,7 +213,7 @@ Use an absolute path: the working directory depends on where the server is confi
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Subagents: scope MCP servers to a subagent](https://code.claude.com/docs/en/sub-agents#scope-mcp-servers-to-a-subagent)
 - Related: REPO-007, REPO-012, REPO-021, TOK-022, MCP-002
 
@@ -232,7 +234,7 @@ Limits:
 - A project agent file's inline servers load only once that exact folder is trusted (since v2.1.238); a parent folder's trust and `-p` don't count. Agents in `~/.claude/agents/`, `--agents` and managed settings skip this check.
 - `--strict-mcp-config`, `--bare` and managed allow/deny lists also filter frontmatter servers.
 - Plugin agents ignore `mcpServers` (REPO-012); copy the file into `.claude/agents/` to use it.
-- With `tools` omitted, a subagent inherits every MCP tool of the parent; list tools or use `disallowedTools: mcp__<server>` to cut them.
+- With `tools` omitted, a subagent inherits every MCP tool of the parent; list tools or use `disallowedTools: mcp__<server>` to cut them. Since v2.1.299 a `tools:` entry `mcp__a` takes only server `a`'s tools; name a server containing `__` as `mcp__<whole name>__*`.
 
 Fits a server one agent needs and the main thread never does, such as a browser checker (REPO-021).
 
@@ -240,7 +242,7 @@ Fits a server one agent needs and the main thread never does, such as a browser 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: plugin-provided MCP servers](https://code.claude.com/docs/en/mcp#plugin-provided-mcp-servers), [Plugins reference](https://code.claude.com/docs/en/plugins-reference)
 - Related: MCP-004, MCP-001, SKILL-033, SKILL-041, REPO-012
 
@@ -260,7 +262,7 @@ Plugin servers run outside the permission sandbox like any MCP server; read a pl
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: use MCP servers from claude.ai](https://code.claude.com/docs/en/mcp#use-mcp-servers-from-claude-ai), [MCP: how connectors reach Claude Code](https://code.claude.com/docs/en/mcp#how-connectors-reach-claude-code), [Desktop on WSL](https://code.claude.com/docs/en/desktop-wsl), local test
 - Related: MCP-003, MCP-004, MCP-022, MCP-023, MCP-028, SURF-034
 
@@ -282,7 +284,7 @@ Tested 2026-10-13, v2.1.296, WSL terminal `-p`: two connectors were connected, M
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: timeouts](https://code.claude.com/docs/en/mcp), [MCP: automatic reconnection](https://code.claude.com/docs/en/mcp#automatic-reconnection), [MCP: automatic backgrounding](https://code.claude.com/docs/en/mcp#automatic-backgrounding-of-long-tool-calls), [Env vars](https://code.claude.com/docs/en/env-vars)
 - Related: MCP-012, TOK-023, SESS-013
 
@@ -296,7 +298,7 @@ Tested 2026-10-13, v2.1.296, WSL terminal `-p`: two connectors were connected, M
 
 Backgrounded calls appear in `/tasks` and return as a task notification. Subagent calls, IDE servers and `-p` runs (unless `CLAUDE_AUTO_BACKGROUND_TASKS=1`) never background.
 
-**Reconnection.** A remote server that drops is retried up to five times with backoff from 1 s; a first connection gets three retries on transient errors (not on auth or 404). **Stdio servers are never reconnected automatically**: a crashed local server stays failed until you reconnect it in `/mcp` or run `/mcp reconnect all` (v2.1.284+).
+**Reconnection.** A remote server that drops is retried up to five times with backoff from 1 s; a first connection gets three retries on transient errors (not on auth or 404). **Stdio servers are never reconnected automatically**: a crashed local server stays failed until you reconnect it in `/mcp` or run `/mcp reconnect all` (v2.1.284+). In `claude -p` and the SDK, a remote server that keeps failing with a transient error is retried in the background for up to about half an hour.
 
 With tool search on, Claude is told which server failed and why, so it can say so instead of guessing. Without tool search, it isn't told.
 
@@ -304,13 +306,13 @@ With tool search on, Claude is told which server failed and why, so it can say s
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Agent SDK MCP: connection timing](https://code.claude.com/docs/en/agent-sdk/mcp#connection-timing), [Env vars](https://code.claude.com/docs/en/env-vars), [MCP: project scope](https://code.claude.com/docs/en/mcp#project-scope), local test
 - Related: MCP-002, MCP-011, TOK-020, ORCH-014, MEM-028
 
-Every `claude -p` run starts every configured server: user scope, approved project servers, plugin servers and connectors. Startup is non-blocking. The first turn waits for pending servers. With only settings-file servers and tool search on, it waits up to 2 seconds, and only for `alwaysLoad` servers; `CLAUDE_CODE_MCP_STARTUP_WAIT_MS` (v2.1.274+) sets that wait, and `0` skips it.
+Every `claude -p` run starts every configured server: user scope, approved project servers, plugin servers and connectors. Startup is non-blocking. The first turn waits for pending servers. With only settings-file servers and tool search on, it waits up to 2 seconds, and only for `alwaysLoad` servers; `CLAUDE_CODE_MCP_STARTUP_WAIT_MS` (v2.1.274+) sets that wait, and `0` skips it (v2.1.284+: servers named by `--allowedTools` or an `mcp_tool` hook are still waited for, up to 2 s). With `-p`, `--mcp-config` makes the first turn wait for pending servers up to `MCP_TIMEOUT` (30 s default, v2.1.221+).
 
-For a scripted run that needs no MCP, pass `--strict-mcp-config` (with no `--mcp-config`) or `--bare`; pass `--mcp-config file.json --strict-mcp-config` for exactly the servers it needs.
+For a scripted run that needs no MCP, pass `--strict-mcp-config` (with no `--mcp-config`) or `--bare` (API-key auth only: it never reads the claude.ai login); pass `--mcp-config file.json --strict-mcp-config` for exactly the servers it needs.
 
 Tested 2026-10-13, v2.1.296, WSL terminal, Haiku 5.5, `claude -p "Reply with the single word ok." --model haiku --max-turns 1 --max-budget-usd 0.05 --output-format json`, three runs each, in a scratch folder:
 - Default: 8 servers, 152 tools of which 120 MCP; 39,917–40,993 input tokens; 5.4–6.7 s wall clock.
@@ -322,7 +324,7 @@ So our servers add about 6,600 tokens per request, even with every tool deferred
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: use MCP resources](https://code.claude.com/docs/en/mcp#use-mcp-resources), [MCP: use MCP prompts as commands](https://code.claude.com/docs/en/mcp#use-mcp-prompts-as-commands), [MCP: respond to elicitation requests](https://code.claude.com/docs/en/mcp#respond-to-mcp-elicitation-requests)
 - Related: MCP-014, HOOK-002
 
@@ -340,7 +342,7 @@ When to use them: resources suit stable reference data you want to attach by nam
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: client runtimes](https://code.claude.com/docs/en/mcp#mcp-client-runtimes), [MCP: dynamic tool updates](https://code.claude.com/docs/en/mcp#dynamic-tool-updates), [MCP spec versioning](https://modelcontextprotocol.io/specification/versioning), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [claude-code#1785](https://github.com/anthropics/claude-code/issues/1785)
 - Related: MCP-013, MCP-019, MCP-027
 
@@ -362,7 +364,7 @@ A changed tool list is accepted without a new approval; Claude Code has no tool-
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: require approval for a specific tool](https://code.claude.com/docs/en/mcp#require-approval-for-a-specific-tool), [MCP: tool input schemas](https://code.claude.com/docs/en/mcp#tool-input-schemas-with-a-root-level-combinator), [MCP: tool search for server authors](https://code.claude.com/docs/en/mcp#tool-search-for-mcp-server-authors), [MCP: output limits](https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings), [MCP tools spec](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
 - Related: MCP-004, MCP-018, TOK-020, TOK-023
 
@@ -370,7 +372,7 @@ For anyone writing a server Claude Code will use:
 - `_meta["anthropic/requiresUserInteraction"]: true` (JSON `true` only): a prompt on every call, in every mode, with no "don't ask again"; denied in `dontAsk`. For consent steps (v2.1.214+ withholds one-tap approval on Remote Control).
 - `_meta["anthropic/maxResultSizeChars"]`: lets one tool exceed the 50,000-character save-to-file threshold (up to 500K per CHANGELOG v2.1.91).
 - `_meta["anthropic/alwaysLoad"]`: load a tool up front; `false` keeps it deferred (v2.1.285+).
-- Server `instructions`: loaded at start with tool names under tool search; say what the server is for and when to search for its tools. Cut at 4,096 characters (TOK-020).
+- Server `instructions`: loaded at start with tool names under tool search; say what the server is for and when to search for its tools. Cut at 4,096 characters, as is a tool description that loads upfront; one loaded through tool search is cut at 16,384. `CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH` (v2.1.280+) replaces both, and since v2.1.299 Anthropic's own `api.anthropic.com` servers aren't cut (TOK-020). A tool whose full `mcp__<server>__<tool>` name exceeds 128 characters is left out (v2.1.292+).
 
 Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the description, so validate argument combinations server-side. Tools whose property names break the API's rules (1–64 chars of `A-Za-z0-9_.-`) or whose schema isn't valid draft 2020-12 are dropped with a reason (v2.1.216+), not the whole request.
 
@@ -380,7 +382,7 @@ Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Managed MCP](https://code.claude.com/docs/en/managed-mcp)
 - Related: MCP-003, MCP-001
 
@@ -402,7 +404,7 @@ Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Best practices: use CLI tools](https://code.claude.com/docs/en/best-practices), [Features overview](https://code.claude.com/docs/en/features-overview), [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [What if you don't need MCP (Zechner)](https://mariozechner.at/posts/2025-11-02-what-if-you-dont-need-mcp/), [Skills vs dynamic MCP loadouts (Ronacher)](https://lucumr.pocoo.org/2025/12/13/skills-vs-mcp/)
 - Related: TOK-022, SKILL-021, MCP-018, INFRA-007
 
@@ -424,7 +426,7 @@ Community view (Zechner 2025-11-02, Ronacher 2025-12-13): MCP results can't be p
 - Type: recommendation
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [mcp-builder SKILL.md](https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/SKILL.md), [mcp-builder best practices](https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/reference/mcp_best_practices.md), [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [Connector review criteria](https://claude.com/docs/connectors/building/review-criteria)
 - Related: MCP-015, MCP-017, MCP-019
 
@@ -444,7 +446,7 @@ The directory review criteria add: no catch-all `api_request` tool mixing reads 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: local server security](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/local-server-security), [MCP security best practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices), [Claude Code security: MCP](https://code.claude.com/docs/en/security), [API MCP connector: pin the tool list](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector), [Lethal trifecta (Willison)](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)
 - Related: MCP-014, MCP-020, SKILL-041, INFRA-006, REPO-037
 
@@ -464,8 +466,8 @@ The spec's local-server guide treats a stdio server as "untrusted code with exac
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
-- Sources: [MCP: find and build MCP servers](https://code.claude.com/docs/en/mcp#find-and-build-mcp-servers), [MCP Registry: about](https://modelcontextprotocol.io/registry/about), [Connector review criteria](https://claude.com/docs/connectors/building/review-criteria)
+- Last verified: 2026-10-14
+- Sources: [MCP: find and build MCP servers](https://code.claude.com/docs/en/mcp#find-and-build-mcp-servers), [MCP Registry: about](https://modelcontextprotocol.io/registry/about), [MCP Registry: moderation policy](https://modelcontextprotocol.io/registry/moderation-policy), [Connector review criteria](https://claude.com/docs/connectors/building/review-criteria)
 - Related: MCP-019, MCP-016
 
 The Claude Code docs point to one catalog: "Browse reviewed connectors in the Anthropic Directory" (claude.ai/directory). Directory review is an automatic scan, a "Community" label by default and a "Verified" review for some. It isn't a security audit (MCP-019).
@@ -478,7 +480,7 @@ Use the Directory or the vendor's own docs to find a server; treat a registry li
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Action configuration](https://raw.githubusercontent.com/anthropics/claude-code-action/main/docs/configuration.md), [Action FAQ](https://raw.githubusercontent.com/anthropics/claude-code-action/main/docs/faq.md), [install-mcp-server.ts](https://raw.githubusercontent.com/anthropics/claude-code-action/main/src/mcp/install-mcp-server.ts), [GitHub Actions](https://code.claude.com/docs/en/github-actions)
 - Related: REPO-028, REPO-037, MCP-002
 
@@ -488,7 +490,7 @@ Latest action release read: v1.0.248 (2026-10-09).
 
 **Built-in servers** (from the source; the FAQ says two):
 - `github_comment` (updates the tracking comment): tag mode always.
-- `github_inline_comment`: PR runs whose `allowedTools` name it. "starts the MCP server that posts inline comments only when `--allowedTools` in `claude_args` names it".
+- `github_inline_comment`: PR runs whose `allowedTools` name `mcp__github_inline_comment…` or the `mcp__github` / `mcp__github__*` selector (source: `install-mcp-server.ts`, read 2026-10-14).
 - `github_ci` (CI status, run details, job logs): PR runs with `actions: read`.
 - `github_file_ops` (commit, delete files): with `use_commit_signing`.
 - `github` (official GitHub MCP server in Docker, pinned by SHA): when `allowedTools` has `mcp__github__*`.
@@ -501,7 +503,7 @@ Allow exact tool names (`mcp__github_inline_comment__create_inline_comment`), no
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [Routines](https://code.claude.com/docs/en/routines), [MCP: how connectors reach Claude Code](https://code.claude.com/docs/en/mcp#how-connectors-reach-claude-code), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: MCP-010, MCP-002, MEM-026, REPO-030, SURF-026
 
@@ -523,7 +525,7 @@ So: trim connectors per routine, and give a routine only connectors whose write 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Desktop](https://code.claude.com/docs/en/desktop), [Desktop on WSL](https://code.claude.com/docs/en/desktop-wsl), [MCP: import from Claude Desktop](https://code.claude.com/docs/en/mcp#import-mcp-servers-from-claude-desktop), [MCP: scope precedence](https://code.claude.com/docs/en/mcp#scope-hierarchy-and-precedence)
 - Related: MCP-010, SURF-034, SKILL-047, SKILL-053
 
@@ -543,7 +545,7 @@ Whether Desktop Extensions (`.mcpb`) reach Code tab sessions isn't documented.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Agent SDK: MCP](https://code.claude.com/docs/en/agent-sdk/mcp), [Agent SDK: Claude Code features](https://code.claude.com/docs/en/agent-sdk/claude-code-features), [Agent SDK: custom tools](https://code.claude.com/docs/en/agent-sdk/custom-tools)
 - Related: MEM-028, ORCH-015, MCP-012, MCP-002
 
@@ -561,11 +563,11 @@ SDK MCP tools are deferred by tool search like CLI ones; the first-turn wait rul
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-024, TOK-021, MCP-019
 
-The Messages API can call a remote MCP server itself. Beta header `mcp-client-2025-11-20` (`mcp-client-2025-04-04` is deprecated); `mcp-client-2026-09-15` adds everything in it plus tool-list recording and pinning.
+The Messages API can call a remote MCP server itself. Beta header `mcp-client-2025-11-20` (`mcp-client-2025-04-04` is deprecated); `mcp-client-2026-09-15` adds everything in it plus tool-list recording and pinning (Claude API only).
 
 Limits: "only tool calls are currently supported" (no resources or prompts). "The server must be publicly exposed through HTTP (supports both Streamable HTTP and SSE transports). Local STDIO servers cannot be connected directly." Platforms: Claude API, Claude Platform on AWS and Microsoft Foundry, all beta; Bedrock and Vertex aren't listed. Not eligible for zero data retention.
 
@@ -577,7 +579,7 @@ Cost: no MCP surcharge found; tool definitions and results are billed as tokens,
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: use Claude Code as an MCP server](https://code.claude.com/docs/en/mcp#use-claude-code-as-an-mcp-server), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md)
 - Related: MCP-014
 
@@ -587,13 +589,13 @@ So the calling client gets Bash, Edit and Write with no Claude Code permission p
 
 Tested 2026-10-13, v2.1.296, WSL terminal, `initialize` plus `tools/list` over stdio: server `claude/tengu` 2.1.296, protocol 2025-06-18, `tools` capability only. 28 tools, including Agent, Bash, Read, Edit, Write, WebFetch, WebSearch, Skill and the cron and worktree tools; no Grep or Glob. The set may vary by config and version.
 
-CHANGELOG: v2.1.288 sends a progress update every 30 seconds during a call.
+CHANGELOG: v2.1.271 sends a progress update every 30 seconds during a call; v2.1.288 fixed the Agent tool in `claude mcp serve`.
 
 ## [MCP-027] Channels: servers that push events into a session
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [Channels](https://code.claude.com/docs/en/channels), [Channels reference](https://code.claude.com/docs/en/channels-reference), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md)
 - Related: MCP-014, FLOW-014
 
@@ -611,7 +613,7 @@ For us, a channel is a way to wake a session on a CI result without polling; the
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-10-14
 - Sources: [MCP: installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes), [mongodb-mcp-server README](https://raw.githubusercontent.com/mongodb-js/mongodb-mcp-server/main/README.md), [Atlas cloud backups](https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/), local config (`~/.claude.json`, `~/.claude/settings.json`), `claude -p` init message, `ps`
 - Related: INFRA-024, MCP-010, MCP-012, SESS-013, TOK-020
 
@@ -620,20 +622,21 @@ Read from local config and a `claude -p --output-format stream-json` init messag
 | Server | Scope | Transport | Tools |
 |---|---|---|---|
 | `kubernetes`, `flux` | user | stdio, read-only | 14, 12 |
-| `aws` (via `mcp-proxy-for-aws`) | user | stdio | 8 |
+| `aws` (via `mcp-proxy-for-aws-cli`, pinned @1.7.0) | user | stdio | 8 |
 | `analytics-mcp` | user | stdio | 9 |
 | `context7` | user | http | 2 |
 | `playwright` | plugin | stdio | 25 |
 | `angular-cli` | osrs-tracker-web `.mcp.json` | stdio, `--read-only` | 3 allowed |
-| claude.ai MongoDB Atlas | connector | remote | 42 |
+| `mongodb` (from 2026-10-13; replaced the claude.ai MongoDB Atlas connector, 42 tools) | osrs-tracker-api `.mcp.json` | stdio, `mongodb-mcp-server@3.0.5`, `--disabledTools atlas` | 27 |
+| claude.ai Grafana Cloud (from 2026-10-14) | connector | remote, as the user (Editor) | 100+ deferred, including writes, kept on purpose (INFRA recommendation 11) |
 | claude.ai Claude Docs | connector | remote | 8 |
 
-Outside a repo: 8 servers, 120 MCP tools, about 6,600 tokens per request and about 2 s per `-p` run (MCP-012).
+On 2026-10-13, with the Atlas connector (since removed) and without Grafana Cloud: outside a repo, 8 servers, 120 MCP tools, about 6,600 tokens per request and about 2 s per `-p` run (MCP-012).
 
 Permission rules: `~/.claude/settings.json` allows nine named tools (three `angular-cli`, six Playwright) and has no MCP deny rules, no `deniedMcpServers` and no `disableClaudeAiConnectors`. Auto mode decides the rest.
 
 Gaps:
-- The Atlas connector's write tools (`drop-database`, `delete-many`, `atlas-create-db-user`) are in every session. It is the "MongoDB MCP server" the osrs-tracker-api skill uses to check live data, and that skill says its "writes are blocked in auto mode", which nothing configures. What it can do is set by the Atlas account it signed in with. Planned replacement (osrs-tracker/osrs-tracker-api#148): the official `mongodb-mcp-server`, pinned, in that repo's `.mcp.json`, on a database user with `readWrite` on one database, `--disabledTools atlas`, `ask` rules on every write tool, a dump or preview before multi-document writes (the free cluster has no cloud backups), then the connector disconnected.
+- Resolved 2026-10-13 (osrs-tracker/osrs-tracker-api#148, closed): the Atlas connector (42 tools, including `drop-database`, `delete-many` and `atlas-create-db-user`) was replaced by the official `mongodb-mcp-server@3.0.5` in that repo's `.mcp.json` with `--disabledTools atlas`, `ask` rules on nine write tools and a dedicated database user with `readWrite` on one database, and the connector was removed from the claude.ai account.
 - `npx`-run servers use `@latest` (Playwright) and `kubernetes-mcp-server@0.0.67` is pinned; a `@latest` server can change its tools on any start (MCP-019).
 
 ---
@@ -642,7 +645,7 @@ Gaps:
 
 Ranked by impact against effort. Items 1, 3 and 4 change user config or another repo, so each needs your decision before an issue or change.
 
-1. **Replace the MongoDB Atlas connector with a scoped local server that can write** (high impact, low effort). Decided 2026-10-13: Claude should do Atlas writes too, so read-only isn't the goal. The connector's 42 tools, including `drop-database` and `atlas-create-db-user`, reach every session on your Atlas account, and its desktop copies ignore every MCP setting. Opened as osrs-tracker/osrs-tracker-api#148:
+1. **Done 2026-10-13: replace the MongoDB Atlas connector with a scoped local server that can write** (high impact, low effort; osrs-tracker/osrs-tracker-api#148, closed). Decided 2026-10-13: Claude should do Atlas writes too, so read-only isn't the goal. The connector's 42 tools, including `drop-database` and `atlas-create-db-user`, reach every session on your Atlas account, and its desktop copies ignore every MCP setting. Opened as osrs-tracker/osrs-tracker-api#148:
    - a database user with `readWrite` on the one database, which bounds every path;
    - the official server pinned in that repo's `.mcp.json`, with `--disabledTools atlas` and its default confirmations for drops and `delete-many`;
    - `ask` rules on each write tool, which still prompt in auto mode;
@@ -651,7 +654,7 @@ Ranked by impact against effort. Items 1, 3 and 4 change user config or another 
    MCP-010, MCP-028, MCP-004, MCP-019, INFRA-006.
 2. **Pass `--strict-mcp-config` in scripted `claude -p` runs that don't need MCP** (medium impact, trivial effort). This saves about 6,600 tokens per request and about 2 s per run, and drops connector write tools from unattended runs. Add `--mcp-config` with only the servers a run needs. KB research probes should use it too. MCP-012, ORCH-014.
 3. **Move rarely used stdio servers out of user scope** (medium impact, low effort). Each desktop session starts its own copy of every user-scope stdio server, about 0.8 GB RSS per session (SESS-013). `analytics-mcp` serves only web-analytics work and could become a project `.mcp.json` server in the repos that use it, or an inline server on a WEB agent. MCP-001, MCP-008.
-4. **Give Playwright to the browser-checker subagent only** (low-medium impact, medium effort). Disable the plugin and declare the server inline in the agent's `mcpServers`. Main sessions then lose 25 tool names and a Node process, and the server can be pinned instead of `@latest`. This needs an osrs-tracker-web change to its `browser-checker` agent (REPO-021), and the agent must be a project or user agent, not a plugin agent. MCP-008, MCP-019.
+4. **Give Playwright to the browser-checker subagent only** (low-medium impact, medium effort). Partly done: `browser-checker` has its own inline headless, isolated Playwright server (osrs-tracker-web, 2026-10-13); the plugin is still enabled for main sessions, and both use `@latest`. Disable the plugin and declare the server inline in the agent's `mcpServers`. Main sessions then lose 25 tool names and a Node process, and the server can be pinned instead of `@latest`. This needs an osrs-tracker-web change to its `browser-checker` agent (REPO-021), and the agent must be a project or user agent, not a plugin agent. MCP-008, MCP-019.
 5. **Re-read a server's tool list after upgrading it** (low impact, trivial effort). Claude Code doesn't re-approve changed tools (MCP-014). Do this for `kubernetes-mcp-server` and `analytics-mcp` when their pins move. MCP-019.
 6. **Don't add `deniedMcpServers` or `allowedMcpServers` for a solo setup beyond item 1**. Without a managed source they are guards, not boundaries, and a blocked server disappears silently. MCP-016, MCP-003.
 7. **Done 2026-10-13: route MCP questions to this file.** `claude-kb-lookup`'s description now lists "MCP servers" ([FreekMencke/claude-skills#40](https://github.com/FreekMencke/claude-skills/pull/40), from [#39](https://github.com/FreekMencke/claude-skills/issues/39)). Its new trigger case (scoping a server to one subagent) loaded the skill 3 of 3 runs. The optional "adding an MCP server" in the "Use before …" clause was left out: it made a KB-editing near miss load the skill (SKILL-015).
