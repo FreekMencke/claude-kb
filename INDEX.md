@@ -6,7 +6,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 |---|---|---|---|
 | `topics/kb-orchestration.md` | ORCH | Orchestration, parallelization and model selection | 47 (0 merged into other entries) |
 | `topics/kb-token-usage.md` | TOK | Token usage and context efficiency, and the cost of research tools | 78 (4 merged into other entries) |
-| `topics/kb-skills.md` | SKILL | Writing, testing and distributing skills | 60 (1 merged into other entries) |
+| `topics/kb-skills.md` | SKILL | Writing, testing and distributing skills | 61 (1 merged into other entries) |
 | `topics/kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 52 (0 merged into other entries) |
 | `topics/kb-sessions.md` | SESS | Several sessions in one repo | 36 (0 merged into other entries) |
 | `topics/kb-hooks.md` | HOOK | Hooks: events, handler types, cost, debugging, security, patterns | 36 (0 merged into other entries) |
