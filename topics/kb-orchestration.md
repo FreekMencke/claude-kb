@@ -1078,7 +1078,7 @@ Ranked by impact against effort.
 
 **Done.** Recommendations 1–12 reviewed `parallel-code-orchestrator` against this file. All twelve were applied through FreekMencke/claude-skills#4, fixed in FreekMencke/claude-skills#10 (roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1), closed 2026-10-12). The skill's source, `skills/parallel-code-orchestrator/SKILL.md` in FreekMencke/claude-skills (SKILL-050), is now the reference. Recommendation 14 (`--max-budget-usd` and `--max-turns` on every scripted run) lives in the global `~/.claude/CLAUDE.md` as "Scripted Claude runs" ([FreekMencke/claude-kb#7](https://github.com/FreekMencke/claude-kb/issues/7)).
 
-13. **Done 2026-10-12, check pending: user-level `Explore` override on Haiku.** `~/.claude/agents/explore.md` has `name: Explore`, read-only tools, `model: haiku` and `effort: medium`, so explorations in every repo stop running on Opus. Check from 2026-10-19: if searches start missing things, drop the override. Evidence: ORCH-005, ORCH-033.
+13. **Done 2026-10-12, check pending: user-level `Explore` override on Haiku.** `~/.claude/agents/explore.md` has `name: Explore`, read-only tools, `model: haiku` and `effort: medium`, so explorations in every repo stop running on Opus. Check from 2026-10-19: if searches start missing things, drop the override. The check is a step in [FreekMencke/claude-kb#49](https://github.com/FreekMencke/claude-kb/issues/49) since 2026-10-14, with a script and a baseline. Evidence: ORCH-005, ORCH-033.
 15. **Don't enable agent teams globally.** *(Risk avoidance.)* Enabling them changes what named subagent spawns do. Turn them on per session, only for research and review work. Evidence: ORCH-010.
 
 ## Open questions
