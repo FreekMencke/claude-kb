@@ -19,7 +19,8 @@ land in one PR. It moved from FreekMencke/claude-skills on 2026-10-14.
   ```
 
 - **Cloud sessions and routines** don't load personal skills or plugins, only the `.claude/skills/` of the session's
-  repositories. Add FreekMencke/claude-kb as one of them.
+  repositories. Add FreekMencke/claude-kb as one of them; a routine with it as the second repository loaded and ran the
+  skill (SKILL-060, tested 2026-10-14).
 - It runs as a forked subagent on Haiku (`context: fork`), so the index stays out of the caller's context: a lookup
   cost about 0.19 USD against 0.57 inline, with the same entries and facts (FreekMencke/claude-skills#7, 2026-10-12).
 - The fork can't see the conversation, so pass it a self-contained question, and keep its entry IDs in the reply.
