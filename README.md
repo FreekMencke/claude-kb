@@ -93,7 +93,7 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 18 + 7 | EVAL_LOADS | EVAL_SKIPS | Opus 5.5 | 2.1.296 | 2026-10-14 |
+| 18 + 7 | 54/54 | 21/21 | Opus 5.5 | 2.1.296 | 2026-10-14 |
 
 Runs are isolated per plugin, so they don't show overlap with skills elsewhere, such as `seo-audit` in
 FreekMencke/claude-skills.
