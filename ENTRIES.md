@@ -338,6 +338,8 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | REPO-050 | Structured findings and a verdict line | pattern | reviewer, output |
 | REPO-051 | Community agent collections: what to copy and what to avoid | anti-pattern | community, collections |
 | REPO-052 | Ideas from other review tools | comparison | codex, bugbot, copilot, coderabbit |
+| REPO-053 | `tools` doesn't limit the tools of an agent's own `mcpServers` server | fact | tools, mcp, least-privilege |
+| REPO-054 | The v2 reviewer against the v1 baseline (measured) | fact | reviewer, measurement, noise |
 
 ## Several sessions in one repo (`topics/kb-sessions.md`, SESS)
 

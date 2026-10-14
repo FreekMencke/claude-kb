@@ -16,7 +16,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | Which agents are worth having in a repo? | A conventions reviewer that reads the repo's rules and a fresh-context bug review (in osrs-tracker-web the built-in `/code-review high` in a subagent beat a repo agent, REPO-015). For UI-heavy repos, a browser checker. Most other roles duplicate built-ins (`/code-review`, `/security-review`, `/simplify`, Explore) or belong in skills. | REPO-013, REPO-022 |
 | What does osrs-tracker-web have? | At `3c76cc2` (2026-10-10): one `conventions-reviewer`, two hooks (Prettier after edit, lint before push), CLAUDE.md plus a repo skill, and no Claude in CI. The reviewer ran about 30× a day across three repos on Sonnet; 56% of runs came back clean (2026-10-07 to 10-11). By 2026-10-14 it also has a `browser-checker`, a read-only Bash hook and a `verify` skill; a bug-reviewer agent was tried and dropped. | REPO-001–REPO-004 |
 | How do I make a reviewer truly read-only? | Use an explicit `tools: Read, Grep, Glob, Bash`, a frontmatter `PreToolUse` hook that allows only git and gh reads, and no `memory:`. A `permissionMode` setting and "never edit" in the prompt aren't enough. | REPO-033, REPO-031, REPO-032 |
-| Can I scope Bash per agent, e.g. `Bash(git diff *)`? | No. `tools: Bash(git diff *)` gives all of Bash (tested), and `disallowedTools: Bash(git push *)` removes **all** of Bash. Use a hook, a `permissions.deny` rule (which affects the whole session) or the sandbox. | REPO-031, REPO-034 |
+| Can I scope Bash per agent, e.g. `Bash(git diff *)`? | No. `tools: Bash(git diff *)` gives all of Bash (tested), and `disallowedTools: Bash(git push *)` removes **all** of Bash. Use a hook, a `permissions.deny` rule (which affects the whole session) or the sandbox. Nor does `tools` limit an agent's own inline `mcpServers` server: it gets all that server's tools, so remove the dangerous ones with `disallowedTools` (observed). | REPO-031, REPO-034, REPO-053 |
 | Does `permissionMode: plan` on an agent hold? | Only when the parent is in default, `dontAsk` or plan mode. Auto, `acceptEdits` and bypass parents override it. | REPO-032 |
 | How do user, project and plugin levels combine? | Scalars: managed > `--settings` > local > project > user. Permission lists and hooks **merge**, and deny wins. Agents: managed > `--agents` > project > user > plugin. Skills: enterprise > personal > project; plugins are namespaced. | REPO-005, REPO-006 |
 | How do I make sure a review actually runs? | Name it in a procedure the session follows (skill or orchestrator), or `@agent-<name>`. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
@@ -26,7 +26,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | Should reviewers have WebFetch? | No. It isn't sandboxed and is an injection and exfiltration channel. Official security review uses only git reads plus Read, Glob and Grep. | REPO-033, REPO-017 |
 | How do I share one agent across several repos? | Committed copies work everywhere, including cloud sessions and the action. Plugins are versioned but drop agent `hooks` and `permissionMode`, and cloud sessions don't install them. Keep the agent body generic and the rules in each repo. | REPO-040–REPO-043 |
 | What belongs in CLAUDE.md vs the agent vs a skill? | CLAUDE.md: always-true facts, which every subagent loads too. Skill: conventions and procedures. Agent: role, scope, do-not-flag list, output format. Hook: must-happen checks. | REPO-044, REPO-010 |
-| How do published reviewers avoid noise? | A do-not-flag list, only issues introduced by this diff, a citation bar, a validator per finding, caps on the low tier, and a severity floor. | REPO-047–REPO-049 |
+| How do published reviewers avoid noise? | A do-not-flag list, only issues introduced by this diff, a citation bar, a validator per finding, caps on the low tier, and a severity floor. Ours with the list and a 3-item cap: **check** items per report halved (0.41 to 0.21), clean reports 56% to 76%. | REPO-047–REPO-049, REPO-054 |
 | Which model and effort for each repo agent? | Conventions reviewer, test, docs and browser agents: Sonnet 5.5 `medium`. Bug and security reviewer: Opus 5.5 `high`. Set it in frontmatter and don't pass `model` on the spawn. | REPO-022, ORCH-030 |
 
 ## Index
@@ -85,6 +85,8 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | REPO-050 | Structured findings and a verdict line | pattern | reviewer, output |
 | REPO-051 | Community agent collections: what to copy and what to avoid | anti-pattern | community, collections |
 | REPO-052 | Ideas from other review tools | comparison | codex, bugbot, copilot, coderabbit |
+| REPO-053 | `tools` doesn't limit the tools of an agent's own `mcpServers` server | fact | tools, mcp, least-privilege |
+| REPO-054 | The v2 reviewer against the v1 baseline (measured) | fact | reviewer, measurement, noise |
 
 Templates T1–T3 (changed `conventions-reviewer`, new `bug-reviewer`, new `browser-checker`, plus a read-only Bash hook) are under "Recommendations for our setup".
 ---
@@ -152,7 +154,7 @@ model: sonnet
 - Confidence: single-source
 - Last verified: 2026-10-14
 - Sources: local transcripts in `~/.claude/projects/` (all repos), analysed 2026-10-12; [SKILL.md "Release" step 2](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/skills/osrs-tracker-web/SKILL.md)
-- Related: REPO-002, REPO-024, REPO-026
+- Related: REPO-002, REPO-024, REPO-026, REPO-054
 
 **Triggers in use:**
 - The skill's release procedure, step 2: "Review `gh pr diff` for bugs and leftovers while the `conventions-reviewer` agent checks the PR".
@@ -175,7 +177,29 @@ Nothing enforces it. No hook or CI step requires a review.
 
 Reading: the agent is cheap (about $0.10 per run at Sonnet list prices) and used constantly. Most of its output is **check** items, which hand verification work back to the main session (REPO-047).
 
-Caveat: outcomes were counted by regex over report text, and only 63 of the 160 runs had a report in a parseable field.
+Caveat: outcomes were counted by regex over report text, and only 63 of the 160 runs had a report in a parseable field. The v2 reviewer's numbers are in REPO-054.
+
+## [REPO-054] The v2 reviewer against the v1 baseline (measured)
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-14
+- Sources: local transcripts in `~/.claude/projects/` (all repos), analysed 2026-10-14 (FreekMencke/claude-kb#101); [template T1 in osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/agents/conventions-reviewer.md)
+- Related: REPO-003, REPO-033, REPO-047, REPO-049
+
+The v2 `conventions-reviewer` (template T1, live 2026-10-12: do-not-flag list, at most 3 **check** items, `VERDICT:` line, read-only hook) ran 101 times from 2026-10-12 11:00 UTC to 2026-10-14 14:30 UTC: web 60, API 20, AWS 21. Counted by regex over report text, as for v1 (REPO-003):
+
+| | v1, 2026-10-07 to 10-11 | v2 |
+|---|---|---|
+| Reports | 63 | 97 with `VERDICT:` as the first line; 2 runs had no report, 2 no verdict line |
+| Clean | 35 (56%) | 74 (76%) |
+| **violates** findings | 8, in 6 runs | 11 |
+| **check** items | 26, in 18 runs (0.41 per report) | 20, in 17 runs (0.21 per report; at most 2 in one run, cap 3) |
+| **breaks** findings | not counted | 0 |
+
+**The read-only hook held.** It blocked 46 commands in 27 runs, and no run called Edit or Write. Most blocks were pipes (`grep … |`, `git grep … |`, `git diff … |`); 5 were `gh issue …` calls, which the hook rejects because it allows only `gh pr view/diff/checks` (REPO-033).
+
+**Limits.** The API repo's fresh-session check was skipped (osrs-tracker/osrs-tracker-api#135), so its 20 runs are the only evidence there. How many findings the main session acted on is unmeasured (Open questions, "Our reviewer's precision").
 
 ## [REPO-004] What the baseline does not cover
 - Type: fact
@@ -189,7 +213,7 @@ Gaps at `3c76cc2`. By 2026-10-13 gaps 1–6 were closed in osrs-tracker-web: `/c
 
 1. **No fresh-context bug review.** Release step 2 has the session that wrote the code review its own diff for bugs. Anthropic: "A fresh context improves code review since Claude won't be biased toward code it just wrote." The conventions reviewer explicitly skips "general bugs" (REPO-015).
 2. **Read-only by instruction, not by configuration.** The agent has unscoped `Bash`. It inherits the project's local allow rules (`gh pr *`, `gh pr merge:*`, `git push:*`) and the parent's auto mode, which overrides any `permissionMode` it might set (REPO-031, REPO-032).
-3. **No do-not-flag list or finding cap.** **check** items outnumber **violates** findings about 3 to 1 (REPO-047).
+3. **No do-not-flag list or finding cap.** **check** items outnumber **violates** findings about 3 to 1 (REPO-047); with both in v2, 20 to 11 (REPO-054).
 4. **No machine-readable verdict line** for an orchestrator to route on (REPO-050).
 5. **It re-reads CLAUDE.md**, which custom subagents already load (REPO-010).
 6. **Browser checks run in the main context.** The token-usage KB measured about 995 screenshots in 6 days, each re-read on every later turn (TOK-043, REPO-021).
@@ -593,26 +617,29 @@ Both are workflow plus command, not repo subagents. For a solo repo where every 
 - Applies to: Claude Code
 - Confidence: unverified
 - Last verified: 2026-10-14
-- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline), local test in osrs-tracker-web 2026-10-12 (osrs-tracker/osrs-tracker-web#223); [wshobson ui-visual-validator](https://github.com/wshobson/agents)
-- Related: template T3, TOK-043
+- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline), local test in osrs-tracker-web 2026-10-12 (osrs-tracker/osrs-tracker-web#223), local transcripts 2026-10-13 to 10-14; [wshobson ui-visual-validator](https://github.com/wshobson/agents)
+- Related: template T3, TOK-043, REPO-053
 
-**Purpose:** run a Playwright check of a change and return a short report (pass or fail, failed requests, console errors, screenshot paths). The screenshots stay in the subagent's context.
+**Purpose:** run a Playwright check and return a short report (pass or fail, failed requests, console errors, screenshot paths). Screenshots stay in the subagent's context.
 
 **Configuration:**
 
 | Setting | Value |
 |---|---|
 | Trigger | The repo skill's "browser check" step: after visible or request-changing work, and after a deploy |
-| Tools | Read plus Playwright MCP tools named per tool; the live osrs-tracker-web agent uses its own server from frontmatter `mcpServers` (since 2026-10-13) and has no Bash |
+| Tools | Read plus Playwright tools named per tool, no Bash. The live agent's own `mcpServers` server (since 2026-10-13) gives it all its tools anyway, so `disallowedTools` blocks `browser_run_code_unsafe` and `browser_file_upload` (REPO-053) |
 | Model | Sonnet 5.5 at `medium`: following a checklist doesn't need Opus |
 
 **Why it helps.** Each screenshot costs up to about 4,784 tokens on Claude 4.7 and later (1,568 on older models) and is re-read on every later turn of the session that took it (TOK-043, TOK-009). A subagent pays for screenshots once, in a context that is thrown away.
 
-**No official precedent.** No official agent does this. Community `ui-visual-validator` agents are generic. Interim measurement (osrs-tracker/osrs-tracker-web#223): own-app screenshots in main sessions fell from about 23 a day (2026-10-07 to 10-11) to 3 on 2026-10-12, then 32 on 2026-10-13, when sessions needed hover and keyboard tools the agent lacked (added 2026-10-14). The final window is 2026-10-13 to 10-26.
+**No official precedent;** community `ui-visual-validator` agents are generic. Interim measurement (osrs-tracker/osrs-tracker-web#223), own-app screenshots in main sessions:
+- 2026-10-07 to 10-11: about 23 a day (and 43 page loads). 2026-10-12: 3.
+- 2026-10-13: 32, plus 13 re-reads of the agent's, from sessions needing hover, keys or `browser_evaluate`.
+- osrs-tracker/osrs-tracker-web@8143bea added those tools and banned re-reads. 2026-10-14 11:47 to 14:30 UTC: 8 agent runs, 0 main-session page loads, screenshots or re-reads. Too short to call; the 2026-10-13 to 10-26 count follows in FreekMencke/claude-kb#101.
 
 **Constraints:**
 - With the plugin's tools there is one shared browser: run one checker at a time. An own `--isolated` server in `mcpServers` lifts that, but loads only once the agent file's folder is trusted (REPO-007).
-- The subagent can't send files to the user. It saves the screenshot, and the caller sends it.
+- The subagent can't send files to the user; the caller sends the saved screenshot.
 
 Template: template T3.
 
@@ -877,7 +904,7 @@ There is no official dependency-update or flaky-test routine.
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents: tools](https://code.claude.com/docs/en/sub-agents)
-- Related: REPO-033, SKILL-010
+- Related: REPO-033, REPO-053, SKILL-010
 
 - **`tools`** is an allowlist. If omitted, the agent "Inherits every tool available to subagents", **including the main session's MCP tools**. The pr-review-toolkit reviewers omit it, so they can edit and use every MCP server.
 - **`disallowedTools`** is "removed from inherited or specified list". MCP servers can be removed whole with `mcp__<server>` or `mcp__<server>__*`. Since v2.1.299 `mcp__<server>` reaches only that server; write a server whose name contains `__` as `mcp__<whole name>__*`.
@@ -889,8 +916,29 @@ There is no official dependency-update or flaky-test routine.
 Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff *)` was accepted without a warning, reported its tools as `Bash` and `SubagentHandback` only, and ran `git diff --stat`, `git log --oneline -1` and `echo hi` with no refusal, with and without a session-wide `Bash` allow rule. So the specifier is dropped and the agent gets all of Bash.
 - **Docs' workaround:** a `permissions.deny` rule such as `Bash(git push *)`, which "applies to the main conversation and to subagents". It applies to *your* session too, so it only suits commands nobody should run in that repo.
 - **Skills and commands** *do* take scoped `allowed-tools` (`Bash(git diff:*)`), but that pre-approves without restricting (SKILL-010).
+- **An inline `mcpServers` server ignores `tools`:** use `disallowedTools` (REPO-053).
 
 **Consequence.** To give a reviewer `git diff` but not `git push`, use a frontmatter `PreToolUse` hook (REPO-033) or the sandbox (REPO-035).
+
+## [REPO-053] `tools` doesn't limit the tools of an agent's own `mcpServers` server
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-14
+- Sources: [Subagents: mcpServers](https://code.claude.com/docs/en/sub-agents), [Playwright MCP 0.0.83 README](https://github.com/microsoft/playwright-mcp/blob/v0.0.83/README.md) (both read 2026-10-14), local transcripts 2026-10-13 to 10-14, osrs-tracker/osrs-tracker-web@1a1e30e
+- Related: REPO-031, REPO-021, REPO-033, MCP-008
+
+When an agent defines its own MCP server inline in frontmatter `mcpServers`, its `tools` allowlist limits only the other tools: the agent gets **every** tool of that server, listed or not. `disallowedTools: mcp__<server>__<tool>` does remove them, so name the dangerous ones there.
+
+The docs don't say this either way. They say only "The subagent gets the tools; the parent conversation doesn't."
+
+**Evidence** (osrs-tracker-web's `browser-checker`, inline `@playwright/mcp@0.0.83 --headless --isolated`, Claude Code 2.1.296, local sessions):
+- `tools` named 15 of the server's tools; a run's `subagents/agent-*.prefix.json` listed all 25.
+- From 2026-10-13 to 10-14 its runs called four unlisted tools: `browser_find` 83 times, `browser_run_code_unsafe` 62, `browser_network_request` 7 and `browser_tabs` 1. It used `browser_run_code_unsafe` to batch work: looping over pages, logging requests, saving screenshots.
+- The 0.0.83 README: "Unsafe: executes arbitrary JavaScript in the Playwright server process and is RCE-equivalent."
+- Adding `browser_run_code_unsafe` and `browser_file_upload` to `disallowedTools` removed them (osrs-tracker/osrs-tracker-web@1a1e30e, 2026-10-14).
+
+**Rule.** For an agent with an inline server, write `disallowedTools` for that server's code-running and file-reading tools, and recheck the server's tool list when you bump its version. Unverified: whether a string reference to an already-configured server (`mcpServers: - slack`) behaves the same.
 
 ## [REPO-032] The parent's permission mode overrides the agent's; auto mode checks subagents
 - Type: fact
@@ -920,7 +968,7 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents (db-reader hook example)](https://code.claude.com/docs/en/sub-agents), [Permissions](https://code.claude.com/docs/en/permissions), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md)
-- Related: REPO-031, REPO-007, template T1
+- Related: REPO-031, REPO-007, REPO-054, template T1
 
 **Layers, cheapest first:**
 1. **Explicit `tools: Read, Grep, Glob, Bash`.** This excludes Edit, Write, WebFetch, Agent and every MCP tool, so there is no web exfiltration or nested spawning. Don't add `memory:`, which re-enables Write and Edit (REPO-011).
@@ -932,6 +980,8 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff
    This mirrors the official security-review command's tool scope: `git diff/status/log/show`, Read, Glob, Grep, no web.
 3. **Know where layer 2 doesn't run.** Project frontmatter hooks are skipped until the folder is trusted and in `-p` (REPO-007). In CI, use `--allowedTools` with `dontAsk` instead.
 4. **The sandbox** (REPO-035) is the only layer that stops a script from writing, since "arbitrary subprocesses" escape Read and Edit deny rules.
+
+**In practice the hook held:** over 101 runs of our three reviewers (2026-10-12 to 10-14) it blocked 46 commands in 27 runs, and no run called Edit or Write. Reviewers do try what it rejects, mostly pipes and `gh issue view`, so list the allowed commands in the block message (REPO-054).
 
 **What doesn't work:**
 - "never edit files" in the prompt alone (advisory);
@@ -1267,7 +1317,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Confidence: official-example
 - Last verified: 2026-10-14
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices](https://code.claude.com/docs/en/best-practices)
-- Related: ORCH-039, REPO-048, REPO-049
+- Related: ORCH-039, REPO-048, REPO-049, REPO-054
 
 The single most effective noise control in official reviewers is an explicit exclusion list.
 
@@ -1291,6 +1341,8 @@ The single most effective noise control in official reviewers is an explicit exc
 **Best practices:** tell reviewers to "flag only gaps that affect correctness or the stated requirements", because "A reviewer prompted to find gaps will usually report some, even when the work is sound".
 
 **Repo additions:** "anything `docs/decisions.md` explains", and anything the pre-push lint or format hook already enforces.
+
+**Measured effect on our reviewer** (REPO-054): with the list and a cap of 3, **check** items fell from 0.41 to 0.21 per report, clean reports rose from 56% to 76%, and **check** no longer outnumbers **violates** 3 to 1 (20 to 11).
 
 ## [REPO-048] Verify findings before anyone acts on them
 - Type: pattern
@@ -1624,7 +1676,7 @@ Keep it under 300 words.
 > Delegate to `browser-checker` with the URLs and what changed. Send the screenshot paths it returns with `SendUserFile`, then delete `.playwright-mcp/`.
 
 Notes:
-- **Own browser.** Since 2026-10-13 (osrs-tracker-web 709cf9d) the live agent declares its own headless, isolated Playwright server in `mcpServers` instead of the plugin's tools, so checks can run in parallel and beside the session's browser. With the plugin tools below, never run two checkers at once (REPO-021).
+- **Own browser.** Since 2026-10-13 (osrs-tracker-web 709cf9d) the live agent declares its own headless, isolated Playwright server in `mcpServers` instead of the plugin's tools, so checks can run in parallel and beside the session's browser. With the plugin tools below, never run two checkers at once (REPO-021). With its own server, `tools` doesn't limit that server's tools: add `disallowedTools: mcp__<server>__browser_run_code_unsafe, mcp__<server>__browser_file_upload` (REPO-053).
 - **Plugin MCP tools by name work.** Tested 2026-10-12 in osrs-tracker-web (osrs-tracker/osrs-tracker-web#223): a subagent with the `mcp__plugin_playwright_playwright__*` tools listed in `tools` ran the check, so the `disallowedTools` fallback isn't needed.
 - **Two fixes from the first runs.** Give `Read` and tell the agent to read each screenshot: run 1 never looked at the image, so it checked no design rules. Spell out the screenshot path (`.playwright-mcp/<page>-<mode>.png`): a bare `filename` landed in the checkout's root. One run with the image read cost about 37k subagent tokens and 8 tool calls.
 
@@ -1639,6 +1691,6 @@ Notes:
 - **Copilot instruction files.** Copilot's 4,000-character limit was found on no GitHub page read on 2026-10-14; `REVIEW.md` is now on two (REPO-045).
 - **Reviewer model.** There is no published comparison of Opus and Sonnet as bug reviewers on the 5.5 generation. Official plugins use both.
 - **Cost of `agent` and `prompt` hooks.** Not documented. Measured for `prompt` hooks in HOOK-010 (one Haiku call per match; on Stop it re-reads the conversation uncached). Where `agent` hook tokens are billed stays open in `kb-hooks.md`.
-- **Our reviewer's precision.** We counted findings but not how many the main session acted on or dismissed. Partly measured 2026-10-13 (osrs-tracker/osrs-tracker-web#222): over 3 PRs `conventions-reviewer` raised 2 findings (both **check** items, on #274) and none was fixed; too small for a rate.
+- **Our reviewer's precision.** We counted findings but not how many the main session acted on or dismissed. Partly measured 2026-10-13 (osrs-tracker/osrs-tracker-web#222): over 3 PRs `conventions-reviewer` raised 2 findings (both **check** items, on #274) and none was fixed; too small for a rate. The v2 counts over 101 runs, 2026-10-12 to 10-14 (74 of 97 reports clean, 11 **violates**, 20 **check**, 0 **breaks**; REPO-054), still give no acted-on rate.
 - **Personal vs project commands.** Precedence between `~/.claude/commands/x.md` and `.claude/commands/x.md` is not stated. The 2026-10-12 probe (FreekMencke/claude-kb#27) was blocked: auto mode refused writing the test command to `~/.claude/commands/` as `[Self-Modification]`. Run it by hand: a same-named command in both places, each replying a different word, then `claude -p --model haiku --max-turns 1 --max-budget-usd 0.50 "/<name>"` in the repo.
 - **Submodule or symlinked `.claude/`.** It is undocumented, and its behaviour under trust and desktop worktrees is unknown.
