@@ -1,0 +1,11 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "kb-lookup",
+  "description": "The claude-kb-lookup skill, packaged only so claude plugin validate and claude plugin eval can target it. Install it with the symlink in README.md, not as a plugin",
+  "author": {
+    "name": "Freek Mencke"
+  },
+  "skills": [
+    "./.claude/skills/"
+  ]
+}
