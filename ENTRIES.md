@@ -444,6 +444,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
 | SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
+| SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 
