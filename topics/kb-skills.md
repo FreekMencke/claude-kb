@@ -1406,6 +1406,8 @@ Observed: a routine whose prompt named `refresh-md-files` (shipped only in the `
 
 **Workaround that keeps one source of truth:** add the skills repo as an extra repository on the routine. The prompt then tells the run to read `skills/<name>/SKILL.md` from that clone, follow it exactly, and stop if the file is missing. Tested 2026-10-12: a private repo cloned fine through the Claude GitHub App, the run followed the skill's output format, and the prompt can ask the run to confirm it read the file. The alternatives are uploading the skill to claude.ai one by one (a second copy that drifts) or committing it to each target repo.
 
+**Better, when the skill can live in a repo's `.claude/skills/`:** every attached repository's project skills load, not just the first one's. Tested 2026-10-14, routine run on Haiku 5.5 with osrs-tracker-web first and claude-kb second: the cwd was `/home/user`, each repo was cloned under it, and claude-kb's `.claude/skills/claude-kb-lookup` was listed at session start. `${CLAUDE_SKILL_DIR}` resolved to the clone, and `context: fork` ran. This is why `claude-kb-lookup` lives in claude-kb.
+
 ## Recommendations for our setup
 
 Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. Their source is now FreekMencke/claude-skills (SKILL-050, SKILL-056, SKILL-059).
