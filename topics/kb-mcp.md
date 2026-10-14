@@ -215,7 +215,7 @@ Use an absolute path: the working directory depends on where the server is confi
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents: scope MCP servers to a subagent](https://code.claude.com/docs/en/sub-agents#scope-mcp-servers-to-a-subagent)
-- Related: REPO-007, REPO-012, REPO-021, TOK-022, MCP-002
+- Related: REPO-007, REPO-012, REPO-021, REPO-053, TOK-022, MCP-002
 
 An agent file's `mcpServers` list takes inline definitions (same schema as `.mcp.json`) or names of servers already configured:
 
@@ -235,6 +235,7 @@ Limits:
 - `--strict-mcp-config`, `--bare` and managed allow/deny lists also filter frontmatter servers.
 - Plugin agents ignore `mcpServers` (REPO-012); copy the file into `.claude/agents/` to use it.
 - With `tools` omitted, a subagent inherits every MCP tool of the parent; list tools or use `disallowedTools: mcp__<server>` to cut them. Since v2.1.299 a `tools:` entry `mcp__a` takes only server `a`'s tools; name a server containing `__` as `mcp__<whole name>__*`.
+- An agent's own inline server isn't limited by `tools`: all its tools reach the agent, so deny the dangerous ones with `disallowedTools` (REPO-053).
 
 Fits a server one agent needs and the main thread never does, such as a browser checker (REPO-021).
 
