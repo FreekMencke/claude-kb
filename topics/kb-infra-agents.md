@@ -561,7 +561,7 @@ Read from local config and read-only AWS and cluster calls; names left out on pu
 
 **Kubernetes:**
 - Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
-- Logs and metrics moved to Grafana Cloud on 2026-10-14 (home-cluster 50b1a31), ending the agent's day-old Loki grant (FreekMencke/home-cluster#5, INFRA-025). Tested 2026-10-14 (desktop, WSL) through the claude.ai Grafana connector: logs since 2026-10-13 about 20:00 UTC; not read-only (recommendation 11).
+- Logs and metrics moved to Grafana Cloud on 2026-10-14 (home-cluster 50b1a31), ending the agent's day-old Loki grant (FreekMencke/home-cluster#5, INFRA-025). Tested 2026-10-14 (desktop, WSL) through the claude.ai Grafana connector: logs since 2026-10-13 about 20:00 UTC; write tools kept (recommendation 11).
 - The admin kubeconfig is `~/.kube/admin.yaml`, behind a Read deny rule.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
 - **Gap:** an admin kubeconfig on the server, used by the cluster repo to apply, is reachable over `ssh`; auto mode and approvals cover that path.
@@ -658,7 +658,7 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 | 9 | Decided 2026-10-13 (FreekMencke/claude-kb#52): MCP `run_script` first for reads and writes, the CLI with `--profile claude` only where MCP can't do the job, and no `aws:ViaAWSMCPService` conditions, since both paths use the same identity. Decide between Bash `aws` and the AWS MCP server. The global CLAUDE.md asks for `--profile claude` on every CLI call, while the AWS server's instructions say not to use the CLI. Routing writes through MCP makes `aws:ViaAWSMCPService` conditions usable. | Low | Low | INFRA-003, INFRA-006 |
 | 10 | Dropped 2026-10-13 (FreekMencke/claude-kb#52): high effort for one user, and since FreekMencke/claude-kb#44 the key is tightly scoped with CloudTrail on. Later: move the agent from a long-term IAM user key to short-lived credentials (an Identity Center permission set, or a role with a session name). | Medium | High | INFRA-020, INFRA-001 |
 
-| 11 | Open 2026-10-14: keep the Grafana connector's writes away from sessions. It signs in as the user (org Admin) and exposes alert-rule, dashboard, datasource, incident and plugin-install tools next to the reads, while `~/.claude/settings.json` has no MCP deny rules. Deny the write tools (desktop sessions name the server by a UUID, MCP-010), or restrict them where the connector is configured on claude.ai. | Medium | Low | INFRA-006, INFRA-024, MCP-028 |
+| 11 | Decided 2026-10-14: keep the Grafana connector's write tools, so sessions can update dashboards, alerts and the like. The connector signs in as the user with Grafana Editor rights (the user's setting; `user_info` reported the org role Admin on 2026-10-14). | – | – | INFRA-024, MCP-028 |
 
 Not recommended now: running cloud work in a dev container (INFRA-002). The credential is what decides cloud damage, and items 1, 2 and 4 address it directly.
 
@@ -673,5 +673,4 @@ Not recommended now: running cloud work in a dev container (INFRA-002). The cred
 - **CloudTrail attribution.** Answered 2026-10-14 by observation (INFRA-016): MCP-forwarded calls are told apart by `userAgent` and `userIdentity.invokedBy`; direct CLI calls carry no Claude Code marker; no field records `aws:CalledViaAWSMCP`.
 - **Source identity length.** The STS API reference says 64 characters; the IAM user guide says 256.
 - **Classifier error rates.** The 17% false-negative figure is from the March 2026 post (n=52, Sonnet 4.6 classifier). No newer figure for the Sonnet 5 classifier has been published; it has been the default for external sessions since v2.1.210 (CHANGELOG).
-- **Grafana connector tool limits.** Can the claude.ai connector, or a Grafana service account with the Viewer role, give sessions read-only access? Not checked.
 - **Hooks in bypass mode.** Answered in HOOK-006: the hooks guide says a `PreToolUse` `"deny"` blocks "even in `bypassPermissions` mode or with `--dangerously-skip-permissions`", because the hook fires before any permission-mode check.

@@ -628,7 +628,7 @@ Read from local config and a `claude -p --output-format stream-json` init messag
 | `playwright` | plugin | stdio | 25 |
 | `angular-cli` | osrs-tracker-web `.mcp.json` | stdio, `--read-only` | 3 allowed |
 | `mongodb` (from 2026-10-13; replaced the claude.ai MongoDB Atlas connector, 42 tools) | osrs-tracker-api `.mcp.json` | stdio, `mongodb-mcp-server@3.0.5`, `--disabledTools atlas` | 27 |
-| claude.ai Grafana Cloud (from 2026-10-14) | connector | remote, as the user (org Admin) | 100+ deferred, including writes (INFRA recommendation 11) |
+| claude.ai Grafana Cloud (from 2026-10-14) | connector | remote, as the user (Editor) | 100+ deferred, including writes, kept on purpose (INFRA recommendation 11) |
 | claude.ai Claude Docs | connector | remote | 8 |
 
 On 2026-10-13, with the Atlas connector (since removed) and without Grafana Cloud: outside a repo, 8 servers, 120 MCP tools, about 6,600 tokens per request and about 2 s per `-p` run (MCP-012).
