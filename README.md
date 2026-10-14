@@ -8,15 +8,23 @@ level and a last-verified date.
 
 ## Querying it
 
-From any repo, the `claude-kb-lookup` skill answers questions from this knowledge base and cites entry IDs. It lives in
-the `freek-local-skills` plugin of [FreekMencke/claude-skills](https://github.com/FreekMencke/claude-skills)
-(`local-skills/skills/claude-kb-lookup/`); install it with that repo's `install.sh`.
+From any repo, the `claude-kb-lookup` skill answers questions from this knowledge base and cites entry IDs. It lives
+here, in [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md), so a new topic and its routing
+land in one PR. It moved from FreekMencke/claude-skills on 2026-10-14.
 
+- **Local sessions** (terminal, desktop Code tab): link it as a personal skill, from the main checkout, never a worktree:
+
+  ```bash
+  ln -sfn /home/fremen/repos/claude-kb/.claude/skills/claude-kb-lookup ~/.claude/skills/claude-kb-lookup
+  ```
+
+- **Cloud sessions and routines** don't load personal skills or plugins, only the `.claude/skills/` of the session's
+  repositories. Add FreekMencke/claude-kb as one of them.
 - It runs as a forked subagent on Haiku (`context: fork`), so the index stays out of the caller's context: a lookup
   cost about 0.19 USD against 0.57 inline, with the same entries and facts (FreekMencke/claude-skills#7, 2026-10-12).
 - The fork can't see the conversation, so pass it a self-contained question, and keep its entry IDs in the reply.
-- It reads a local clone at `/home/fremen/repos/claude-kb` and fast-forwards it before each lookup, so it doesn't work
-  in cloud sessions.
+- It reads the checkout it lives in (found from `${CLAUDE_SKILL_DIR}`), and fast-forwards it first when it's on `main`.
+  Through the symlink, that also updates the skill itself.
 
 By hand: start at [INDEX.md](INDEX.md) and find the question in Quick answers, or grep [ENTRIES.md](ENTRIES.md) for the
 entry's ID, title or tags (`grep -i -E 'webfetch|curl' ENTRIES.md`), then read only that entry:
@@ -50,7 +58,10 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [topics/kb-documentation.md](topics/kb-documentation.md) | `DOC`: repo docs Claude maintains (changelogs, READMEs, decision records, runbooks, plan docs, drift checks) and a survey of our repos' docs |
 | [topics/kb-web-analytics-seo.md](topics/kb-web-analytics-seo.md) | `WEB`: Claude for web analytics and SEO work (GA4, Search Console and PageSpeed access, crawler view, retired advice, SEO skills, session cost) |
 | [CLAUDE.md](CLAUDE.md) | Research instructions and the entry format; every session in this repo loads it |
-| [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, each topic file's index table against its entries, ENTRIES.md up to date (`--write` regenerates it), unknown IDs in INDEX.md and its file table's entry counts; warns (without failing) about entries in different files with near-identical titles or mostly shared tags, unless INDEX.md already records the pair. ID prefixes come from the files, so a new topic file needs no script change |
+| [scripts/check_kb.py](scripts/check_kb.py) | Format check: required fields, duplicate IDs, broken `Related` links, entry length, each topic file's index table against its entries, ENTRIES.md up to date (`--write` regenerates it), unknown IDs in INDEX.md and its file table's entry counts; warns (without failing) about entries in different files with near-identical titles or mostly shared tags, unless INDEX.md already records the pair. ID prefixes come from the files, so a new topic file needs no script change. |
+| [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill (see Querying it) |
+| [evals/claude-kb-lookup/](evals/claude-kb-lookup) | The lookup skill's trigger evals (see Changing the lookup skill) |
+| [.claude-plugin/plugin.json](.claude-plugin/plugin.json) | Packages the skill as plugin `kb-lookup` only so `claude plugin eval` can target the repo; nothing installs it |
 
 Each topic file ends with "Recommendations for our setup" and "Open questions", kept apart from the facts because
 they go stale faster.
@@ -64,6 +75,28 @@ they go stale faster.
   ```bash
   python3 scripts/check_kb.py
   ```
+
+## Changing the lookup skill
+
+Edit [.claude/skills/claude-kb-lookup/SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR, as for entries. A
+new topic file goes into its description in the same PR, since the topic words in the description decide when it loads
+(SKILL-015).
+
+After changing the description, run its trigger evals by hand (not in CI: each run is a model call, about $6 for the
+suite). `loads-*` prompts should load the skill, `skips-*` near misses shouldn't:
+
+```bash
+claude plugin eval . --ablation none --model claude-opus-5-5 --no-publish -j 4 --threshold 0
+```
+
+Results go to `evals/results/` (ignored). Put the before/after in the PR and replace the row:
+
+| Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
+|---|---|---|---|---|---|
+| 18 + 7 | EVAL_LOADS | EVAL_SKIPS | Opus 5.5 | 2.1.296 | 2026-10-14 |
+
+Runs are isolated per plugin, so they don't show overlap with skills elsewhere, such as `seo-audit` in
+FreekMencke/claude-skills.
 
 ## Monthly re-verification
 

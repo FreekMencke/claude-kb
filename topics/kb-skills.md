@@ -879,6 +879,7 @@ Other rules:
   - It does not check a root-level SKILL.md.
   - It does not catch `source` fetch errors.
 - Run locally on 2026-10-12, it passed all four of our custom skills.
+- Tested 2026-10-14, v2.1.296, CLI: it reported nothing on a skill with `description: Bad: colon here`, an unknown key or `name: [unclosed`, under the default `skills/` and a custom `skills` path, and only warned about the missing `version`. Claude Code tolerated the unquoted `: `: the skill loaded by name and its description appeared intact in the model's skill list. So "SKILL.md frontmatter" above doesn't cover YAML that fails to parse.
 
 **`claude plugin tag [--dry-run] [--push]`** creates a `<name>--v<version>` tag after checking that `plugin.json` and the marketplace entry agree.
 
@@ -1411,6 +1412,7 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 
 **Done.** Recommendations 1–9 were applied on 2026-10-12: 1 in the global `~/.claude/CLAUDE.md`; 2–7 through roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1) (#2, #3, #4, #8); 8 and 12 for WSL Claude Code (`/skill-doctor` and `skillOverrides`, see kb-token-usage R8). Decisions from them that still hold:
 - `freek-skills` (`skills/`) is installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so it keeps to standard frontmatter until it's known whether claude.ai accepts Claude Code-only fields (Open questions). Claude Code-only skills go in `freek-local-skills` (`local-skills/skills/`), which is never installed on claude.ai.
+- `claude-kb-lookup` lives in claude-kb (`.claude/skills/`) since 2026-10-14, not in claude-skills: it is the only skill that reads the KB, so a new topic and its routing land in one PR. As a project skill that finds the KB from `${CLAUDE_SKILL_DIR}`, a cloud session or routine with claude-kb attached can load it (SKILL-048, SKILL-060). Locally it is a personal-skill symlink to the main checkout.
 - On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice.
 - Don't set `syncClaudeAiSkills: false`. The only synced skills left are the 12 set to `name-only` (under 20 tokens each), so turning sync off saves almost nothing and drops the account skills from the terminal.
 

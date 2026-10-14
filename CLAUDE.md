@@ -74,5 +74,9 @@ End the file with two sections kept apart from the facts:
 1. Run `python3 scripts/check_kb.py` and fix what it reports.
 2. Run `python3 scripts/check_kb.py --write` to add the new entries to ENTRIES.md. Update INDEX.md: a file-table row for a new file, the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
 3. For a new file, add a row to README.md's Layout table.
-4. If `claude-kb-lookup` should route questions on a new topic, open an issue in FreekMencke/claude-skills to add the topic to the skill's description.
+4. For a new topic file, add its topic to the description in `.claude/skills/claude-kb-lookup/SKILL.md` in the same PR, and rerun the skill's trigger evals (README.md, "Changing the lookup skill").
 5. Other sessions edit INDEX.md and CHANGELOG.md too: `git fetch origin`, `git rebase origin/main`, rerun the check, then open a PR. Don't push to `main`.
+
+## Editing the lookup skill
+
+`.claude/skills/claude-kb-lookup/` is the skill other repos use to query this knowledge base. Editing it isn't a research session, so the entry format doesn't apply. Follow README.md's "Changing the lookup skill": a change to its description needs the trigger evals.

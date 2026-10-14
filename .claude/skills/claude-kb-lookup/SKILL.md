@@ -1,0 +1,77 @@
+---
+name: claude-kb-lookup
+description: "Looks up the claude-kb knowledge base on using Claude (models, effort, subagents, skills, hooks, prompting, CLAUDE.md, memory, parallel sessions, workflows, infra agents, MCP servers, desktop app, artifacts, tokens, context, caching, changelogs, READMEs, decision records, GA4, Search Console and SEO work), citing entry IDs. Use before picking a subagent's model, writing an agent, skill, hook or CLAUDE.md rule, setting a repo's changelog or docs convention, or cutting token cost, and for how Claude Code features behave. Pass a self-contained question; keep its IDs. Not for writing a repo's docs or editing the knowledge base."
+context: fork
+agent: general-purpose
+model: haiku
+background: false
+argument-hint: "<self-contained question>"
+---
+
+# Look up the Claude knowledge base
+
+You run as a separate subagent on Haiku (`context: fork`, `model: haiku`), with no access to the caller's
+conversation. Answer this question from the knowledge base, following the steps below, and return only the answer in
+the format of step 4:
+
+> $ARGUMENTS
+
+If the question is empty or depends on context you can't see ("this", "the above"), say what is missing and stop.
+
+The knowledge base is the git repo of sourced entries that holds this skill (FreekMencke/claude-kb). Read it; never edit it.
+
+## 1. Get the index
+
+Find the knowledge base, and update it when it's on `main`:
+
+```bash
+kb="$(git -C "$(realpath "${CLAUDE_SKILL_DIR}")" rev-parse --show-toplevel)" && echo "KB=$kb" && if [ "$(git -C "$kb" branch --show-current)" = main ]; then git -C "$kb" fetch -q && git -C "$kb" merge --ff-only -q origin/main && echo updated; else echo "not on main, not updated"; fi
+```
+
+- Below, `KB` stands for the path it printed. Write it out in every command: shell variables don't carry over between commands.
+- If it prints no path, or `KB/INDEX.md` doesn't exist, say the knowledge base isn't available here and stop; the caller decides where to look instead. In a cloud session or routine, FreekMencke/claude-kb has to be one of the session's repositories.
+- Only a checkout on `main` is updated, so a worktree or session branch is never moved. Not `git pull`: two sessions pulling at once fail with "Cannot fast-forward to multiple branches".
+- If the update fails or is skipped, carry on with what is there and say the copy may be behind.
+
+Then read `KB/INDEX.md` in full: Quick answers, the file table and Conflicts. Quick answers often settles the question.
+
+If Quick answers doesn't settle it, find entries in `ENTRIES.md`, which lists every entry by ID, title, type and tags. Don't read it whole: grep it case-insensitively for two to five keywords and synonyms from the question, e.g. `grep -i -E 'webfetch|curl|raw' KB/ENTRIES.md`. Grep again with other words if nothing fits. Matches from more than one topic file (different ID prefixes) usually mean each covers a different angle: read the best match from each.
+
+## 2. Read only the entries you need
+
+Pick the IDs from Quick answers or `ENTRIES.md`, usually one to four. Print each entry with its file and line:
+
+```bash
+cd KB && for id in ORCH-005 TOK-036; do awk -v id="$id" '$(0) ~ "^## \\[" id "\\]" {p=1; print FILENAME ":" FNR; print; next} p && /^## / {exit} p' topics/kb-*.md; done
+```
+
+Keep `$(0)`: Claude Code replaces a literal dollar-zero in a skill with the first argument when one is passed.
+
+- An entry that says "Merged into X": read X instead.
+- Follow a `Related:` ID when the entry doesn't answer the question or calls the answer unconfirmed.
+- If an ID appears in the Conflicts section of `INDEX.md`, use the side it says the sources support.
+- For "what should we do" questions about our own setup, also read the "Recommendations for our setup" section of that entry's file. Recommendations go stale faster than facts.
+- Stop once you have the answer. Don't read whole topic files.
+
+## 3. Check the dates
+
+An entry is due for re-check when its `Last verified` date is more than 60 days old. Get the cutoff with `date -d '60 days ago' +%F`; ISO dates earlier than it are due. Also note entries whose `Confidence` is `single-source` or `unverified`.
+
+## 4. Answer
+
+```
+<the answer>
+
+Entries: ORCH-005, ORCH-030
+Due for re-check: ORCH-030 (last verified 2026-08-01); check its sources before relying on it.
+Not in the knowledge base: <the part of the answer that came from elsewhere, and where from>
+```
+
+- Cite the entry ID next to each claim that comes from it.
+- Leave out the "Due for re-check" and "Not in the knowledge base" lines when they're empty.
+- Nothing relevant: say "The knowledge base has no entry on this", list the IDs and tags you checked, and stop. Don't fill the gap from memory as if it came from the knowledge base.
+
+## Not this skill
+
+- Changing, adding or re-verifying entries: work in the claude-kb repo itself, following its `CLAUDE.md`.
+- Live Claude Code documentation: the `claude-code-guide` agent or the official docs.
