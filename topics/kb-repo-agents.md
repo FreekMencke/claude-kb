@@ -197,7 +197,7 @@ The v2 `conventions-reviewer` (template T1, live 2026-10-12: do-not-flag list, a
 | **check** items | 26, in 18 runs (0.41 per report) | 20, in 17 runs (0.21 per report; at most 2 in one run, cap 3) |
 | **breaks** findings | not counted | 0 |
 
-**The read-only hook held.** It blocked 46 commands in 27 runs, and no run called Edit or Write. Most blocks were pipes (`grep … |`, `git grep … |`, `git diff … |`); 5 were `gh issue …` calls, which the hook rejects because it allows only `gh pr view/diff/checks` (REPO-033).
+**The read-only hook held.** It blocked 46 commands in 27 runs, and no run called Edit or Write. Most blocks were pipes (`grep … |`, `git grep … |`, `git diff … |`); 5 were `gh issue view` calls for the issue a change is for, which the hook then rejected because it allowed only `gh pr view/diff/checks`. All three repos' hooks allow `gh issue view` since 2026-10-14 (osrs-tracker/osrs-tracker-web@a1688c3, copied in osrs-tracker/osrs-tracker-api#182 and osrs-tracker/osrs-tracker-aws#136); other `gh issue` subcommands stay blocked (REPO-033).
 
 **Limits.** The API repo's fresh-session check was skipped (osrs-tracker/osrs-tracker-api#135), so its 20 runs are the only evidence there. How many findings the main session acted on is unmeasured (Open questions, "Our reviewer's precision").
 
@@ -974,14 +974,14 @@ The docs don't say this either way. They say only "The subagent gets the tools; 
 1. **Explicit `tools: Read, Grep, Glob, Bash`.** This excludes Edit, Write, WebFetch, Agent and every MCP tool, so there is no web exfiltration or nested spawning. Don't add `memory:`, which re-enables Write and Edit (REPO-011).
 2. **A frontmatter `PreToolUse` hook on `Bash`** that allows only read commands and exits 2 otherwise. This follows the docs' `db-reader` example, which blocks write SQL. Allow:
    - `git` `diff`, `log`, `show`, `status`, `fetch`, `rev-parse`, `merge-base`, `ls-files`, `blame`;
-   - `gh pr` `view`, `diff`, `checks`;
+   - `gh pr` `view`, `diff`, `checks`, and `gh issue view` (the issue a change is for);
    - reject `;`, `&&`, `|`, `>`, `$(`, and backticks.
    Our live version (`.claude/hooks/read-only-bash.sh` in the three osrs-tracker repos, template T1) also allows `git grep` and plain `grep`, and blocks `<`, newlines, `--output`, `--upload-pack`, `--exec` and the `-O`, `-Q`, `--pager`, `--query`, `--filter` and `--view` options.
    This mirrors the official security-review command's tool scope: `git diff/status/log/show`, Read, Glob, Grep, no web.
 3. **Know where layer 2 doesn't run.** Project frontmatter hooks are skipped until the folder is trusted and in `-p` (REPO-007). In CI, use `--allowedTools` with `dontAsk` instead.
 4. **The sandbox** (REPO-035) is the only layer that stops a script from writing, since "arbitrary subprocesses" escape Read and Edit deny rules.
 
-**In practice the hook held:** over 101 runs of our three reviewers (2026-10-12 to 10-14) it blocked 46 commands in 27 runs, and no run called Edit or Write. Reviewers do try what it rejects, mostly pipes and `gh issue view`, so list the allowed commands in the block message (REPO-054).
+**In practice the hook held:** over 101 runs of our three reviewers (2026-10-12 to 10-14) it blocked 46 commands in 27 runs, and no run called Edit or Write. Reviewers still try pipes, so list the allowed commands in the block message (REPO-054).
 
 **What doesn't work:**
 - "never edit files" in the prompt alone (advisory);
@@ -1536,11 +1536,11 @@ if [[ $cmd =~ (^|\ )-[A-Za-z]*[OQ] || $cmd =~ --(open-files-in-pager|query|filte
 fi
 
 git_re='^git( -C [^ ]+)? (diff|log|show|status|fetch|rev-parse|merge-base|ls-files|blame|grep)( |$)'
-gh_re='^gh pr (view|diff|checks)( |$)'
+gh_re='^gh (pr (view|diff|checks)|issue view)( |$)'
 grep_re='^grep( |$)'
 [[ $cmd =~ $git_re || $cmd =~ $gh_re || $cmd =~ $grep_re ]] && exit 0
 
-echo 'Read-only reviewer: allowed are git diff/log/show/status/fetch/rev-parse/merge-base/ls-files/blame/grep, gh pr view/diff/checks and grep.' >&2
+echo 'Read-only reviewer: allowed are git diff/log/show/status/fetch/rev-parse/merge-base/ls-files/blame/grep, gh pr view/diff/checks, gh issue view and grep.' >&2
 exit 2
 ```
 
