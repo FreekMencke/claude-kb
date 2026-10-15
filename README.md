@@ -1,3 +1,5 @@
+<img src="assets/logo.svg" alt="" width="96" align="right">
+
 # claude-kb
 
 A Markdown knowledge base on using Claude efficiently, written for agents to query: model and effort choice,
@@ -63,6 +65,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill (see Querying it) |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | The lookup skill's trigger evals (see Changing the lookup skill) |
 | [.claude-plugin/plugin.json](.claude-plugin/plugin.json) | Packages the skill as plugin `kb-lookup` only so `claude plugin eval` can target the repo; nothing installs it |
+| [assets/](assets) | The logo (`logo.svg`, `logo.png`) and a 1280×640 banner for GitHub's social preview, in freek-mencke-web's greens; `logo-slate.svg` and `banner-slate.png` are the osrs-tracker-web slate variant |
 
 Each topic file ends with "Recommendations for our setup" and "Open questions", kept apart from the facts because
 they go stale faster.
