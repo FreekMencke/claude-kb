@@ -1,8 +1,9 @@
 """claude-kb's remote MCP server: the knowledge base as tools, for claude.ai and Claude Code.
 
-Spike stage (FreekMencke/claude-kb#110): one tool, `kb_status`, that returns no KB content. Sign-in is FastMCP's
-GitHubProvider, an OAuth proxy: this server is the authorization server Claude sees and GitHub is the upstream login.
-Only the GitHub account whose numeric ID is ALLOWED_GITHUB_ID gets a grant (`OwnerOnlyGitHubProvider`).
+Tools (FreekMencke/claude-kb#112, text built in kb_tools.py): `kb_search`, `kb_get`, `kb_quick_answers` and
+`kb_status`, all read-only. Sign-in is FastMCP's GitHubProvider, an OAuth proxy: this server is the authorization
+server Claude sees and GitHub is the upstream login. Only the GitHub account whose numeric ID is ALLOWED_GITHUB_ID
+gets a grant (`OwnerOnlyGitHubProvider`).
 
 The KB itself is a git-sync checkout of main on a shared volume (KB_LINK), never part of the image. A background task
 re-reads it when the link's target, the synced commit, changes, so no request waits on it.
@@ -22,6 +23,7 @@ from collections.abc import AsyncIterator, Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Annotated
 from urllib.parse import parse_qs, urlparse
 
 import mcp_types
@@ -37,12 +39,14 @@ from key_value.aio.stores.filetree import (
     FileTreeV1KeySanitizationStrategy,
 )
 from key_value.aio.wrappers.encryption import FernetEncryptionWrapper
+from pydantic import Field
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, HTMLResponse, PlainTextResponse, Response
 from starlette.routing import Route
 
 import kb_index
+import kb_tools
 
 HERE = Path(__file__).resolve().parent
 # In the image, assets/ sits next to this file; in the repo it's ../assets
@@ -239,7 +243,11 @@ async def keep_refreshed(state: KbState) -> None:
         await asyncio.sleep(REFRESH_SECONDS)
 
 
-def create_app(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> Starlette:
+def create_mcp(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> FastMCP:
+    """The server with its tools and routes. Descriptions carry the usage rules too: claude.ai web and desktop drop
+    `instructions` (anthropics/claude-ai-mcp#93); Claude Code keeps them. Keep descriptions stable: claude.ai's
+    "Always allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087)."""
+
     @contextlib.asynccontextmanager
     async def lifespan(_server: FastMCP) -> AsyncIterator[None]:
         task = asyncio.create_task(keep_refreshed(state))
@@ -248,14 +256,49 @@ def create_app(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> Starlett
         finally:
             task.cancel()
 
-    mcp = FastMCP("claude-kb", auth=auth, lifespan=lifespan, icons=ICONS)
+    mcp = FastMCP("claude-kb", instructions=kb_tools.INSTRUCTIONS, auth=auth, lifespan=lifespan, icons=ICONS)
+    # Read-only tools can run without a per-call prompt. Text content only: with an output schema, Claude Code hands
+    # Claude the structured JSON instead.
+    read_only = {"readOnlyHint": True, "destructiveHint": False, "openWorldHint": False}
 
-    @mcp.tool(
-        title="Knowledge base status",
-        annotations={"readOnlyHint": True, "destructiveHint": False, "openWorldHint": False},
-        # Text content only: with an output schema, Claude Code hands Claude the structured JSON instead
-        output_schema=None,
-    )
+    @mcp.tool(title="Search the knowledge base", annotations=read_only, output_schema=None)
+    def kb_search(
+        query: Annotated[str, Field(description="Words, a phrase, or entry IDs such as MCP-017")],
+        topic: Annotated[
+            str | None, Field(description="Only this topic: a name such as mcp or a prefix such as MCP")
+        ] = None,
+        type: Annotated[
+            str | None,
+            Field(description="Only this entry type: fact, pattern, recommendation, anti-pattern, tool or comparison"),
+        ] = None,
+        limit: Annotated[int, Field(description="How many entries, 1 to 20")] = 8,
+    ) -> str:
+        """Search claude-kb, a knowledge base on using Claude and Claude Code efficiently: models and effort,
+        subagents, skills, hooks, prompting, CLAUDE.md and memory, MCP servers and connectors, sessions, workflows,
+        tokens and caching, docs, SEO. Returns entry IDs with title, type, confidence, last-verified date and a
+        summary. Search first, then kb_get the 1 to 4 best IDs. Cite entry IDs. Check an entry last verified more
+        than 60 days ago against its sources."""
+        return kb_tools.search(state.index, query, topic, type, limit)
+
+    @mcp.tool(title="Read entries", annotations=read_only, output_schema=None)
+    def kb_get(
+        ids: Annotated[list[str], Field(description="1 to 10 entry IDs, such as [\"MCP-017\", \"TOK-005\"]")],
+    ) -> str:
+        """The full Markdown of claude-kb entries by ID, with their sources, confidence, last-verified date and
+        related IDs. A merged entry comes with the entry it points to."""
+        return kb_tools.get(state.index, ids)
+
+    @mcp.tool(title="Quick answers", annotations=read_only, output_schema=None)
+    def kb_quick_answers(
+        topic: Annotated[
+            str | None, Field(description="A topic name such as mcp or a prefix such as MCP; leave out for all")
+        ] = None,
+    ) -> str:
+        """claude-kb's most-asked questions, each with a one-line answer and its entry IDs: across the knowledge base,
+        or for one topic together with that topic's recommendations for our setup."""
+        return kb_tools.quick_answers(state.index, topic)
+
+    @mcp.tool(title="Knowledge base status", annotations=read_only, output_schema=None)
     def kb_status() -> str:
         """The claude-kb commit this server has loaded, its number of entries, and when it last indexed them."""
         return state.status_text()
@@ -274,8 +317,11 @@ def create_app(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> Starlett
 
     for path in ICON_FILES:
         mcp.custom_route(path, methods=["GET"])(icon)
+    return mcp
 
-    app = mcp.http_app(path=MCP_PATH, stateless_http=True)
+
+def create_app(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> Starlette:
+    app = create_mcp(state, auth).http_app(path=MCP_PATH, stateless_http=True)
     # FastMCP serves the protected-resource metadata only at the path-suffixed URL (RFC 9728). Claude's
     # troubleshooting page curls the root one, so serve the same document there too.
     suffixed = f"/.well-known/oauth-protected-resource{MCP_PATH}"
