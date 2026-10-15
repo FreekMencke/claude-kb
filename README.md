@@ -2,10 +2,13 @@
 
 # claude-kb
 
-[![Check](https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml)
-[![MCP server](https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml)
-[![CD](https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml)
-[![Server](https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&label=server&up_message=up&down_message=down)](mcp-server/README.md)
+[![KB format check](https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml)
+[![MCP server CI](https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml)
+[![MCP server CD](https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml)
+[![Live server](https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&label=live%20server&up_message=online&down_message=offline)](mcp-server/README.md)
+
+<sub>KB format check: every entry and index follows the format in CLAUDE.md (`scripts/check_kb.py`). MCP server CI:
+its tests and image build. MCP server CD: its deploy from `main`. Live server: whether the deployed server answers.</sub>
 
 A Markdown knowledge base on using Claude efficiently, written for agents to query. Every entry carries its sources, a
 confidence level and a last-verified date.

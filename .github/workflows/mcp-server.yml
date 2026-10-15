@@ -1,4 +1,4 @@
-name: MCP server
+name: MCP server CI
 
 # Tests and builds mcp-server/ when it, or the parser or logo its image copies, changes; a KB-only push runs none of
 # this. CD (deploy.yml) deploys main once this passes there.
