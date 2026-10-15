@@ -348,6 +348,8 @@ def main(argv: list[str] | None = None) -> None:
     logs.configure()
     # It logs "Terminating session: None" after every stateless request
     logging.getLogger("mcp.server.streamable_http").setLevel(logging.WARNING)
+    # It logs each call the GitHub sign-in makes to check a token, on every signed-in request
+    logging.getLogger("httpx2").setLevel(logging.WARNING)
 
     if args.local:
         kb_link = Path(os.environ.get("KB_LINK", Path(__file__).resolve().parent.parent))

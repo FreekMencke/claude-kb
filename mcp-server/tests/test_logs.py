@@ -22,6 +22,12 @@ def test_lines_are_json_with_pino_level_names() -> None:
     assert line["time"].endswith("Z")
 
 
+def test_uvicorns_error_logger_reads_as_uvicorn() -> None:
+    record = logging.LogRecord("uvicorn.error", logging.INFO, __file__, 1, "Application startup complete.", (), None)
+
+    assert json.loads(logs.JsonFormatter().format(record))["logger"] == "uvicorn"
+
+
 def test_an_exception_becomes_the_error_field() -> None:
     try:
         raise ValueError("bad index")
