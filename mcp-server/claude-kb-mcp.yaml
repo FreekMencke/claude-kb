@@ -42,7 +42,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: claude-kb-mcp
-          image: freekmencke/claude-kb-mcp@sha256:7c568f1c10975e45091b9b1e2992f44ef39cd73ee244574db26b8a0ce5d2db2b
+          image: freekmencke/claude-kb-mcp@sha256:4be60d1c6537ae036d01058e29665aed0606acf8808e9c50e02276db5a05290d
           imagePullPolicy: IfNotPresent
           # GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SIGNING_KEY, STORAGE_ENCRYPTION_KEY and ALLOWED_GITHUB_ID
           # (FreekMencke/home-cluster cluster/claude-kb/secrets.example.yaml)
