@@ -3,15 +3,15 @@
   <img alt="claude-kb: using Claude efficiently, written for agents to query" src="assets/banner.png">
 </picture>
 
-<p>
+<p align="center">
   <a href="https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml"><img alt="KB format check" src="https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml/badge.svg"></a>
+  &nbsp;
   <a href="https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml"><img alt="MCP server CI" src="https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml/badge.svg"></a>
+  &nbsp;
   <a href="https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml"><img alt="MCP server CD" src="https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml/badge.svg"></a>
+  &nbsp;
   <a href="mcp-server/README.md"><img alt="Live server" src="https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&amp;label=live%20server&amp;up_message=online&amp;down_message=offline"></a>
 </p>
-
-<sub>KB format check: every entry and index follows the format in CLAUDE.md (`scripts/check_kb.py`). MCP server CI:
-its tests and image build. MCP server CD: its deploy from `main`. Live server: whether the deployed server answers.</sub>
 
 A Markdown knowledge base on using Claude efficiently, written for agents to query. Every entry carries its sources, a
 confidence level and a last-verified date.
