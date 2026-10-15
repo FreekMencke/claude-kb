@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="t">
+  <title id="t">claude-kb</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#263347"/>
+      <stop offset="1" stop-color="#070E21"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- page stack -->
+  <g fill="#BBC9DA">
+    <path d="M244 314 C206 286 156 276 104 280 L104 410 C156 406 206 414 244 438 Z"/>
+    <path d="M268 314 C306 286 356 276 408 280 L408 410 C356 406 306 414 268 438 Z"/>
+  </g>
+  <!-- open pages -->
+  <g fill="#EAEFF5">
+    <path d="M244 300 C206 272 156 262 104 266 L104 396 C156 392 206 400 244 424 Z"/>
+    <path d="M268 300 C306 272 356 262 408 266 L408 396 C356 392 306 400 268 424 Z"/>
+  </g>
+  <!-- entries -->
+  <g fill="none" stroke="#BBC9DA" stroke-width="9" stroke-linecap="round">
+    <path d="M128 298 C164 296 196 304 220 318"/>
+    <path d="M128 330 C164 328 196 336 220 350"/>
+    <path d="M128 362 C156 360 176 364 192 370"/>
+    <path d="M384 298 C348 296 316 304 292 318"/>
+    <path d="M384 330 C348 328 316 336 292 350"/>
+    <path d="M384 362 C356 360 336 364 320 370"/>
+  </g>
+  <!-- spark -->
+  <g fill="#34D399">
+    <path d="M256 84 C263 140 282 160 336 168 C282 176 263 196 256 252 C249 196 230 176 176 168 C230 160 249 140 256 84 Z"/>
+    <path d="M362 92 C365 112 372 119 392 122 C372 125 365 132 362 152 C359 132 352 125 332 122 C352 119 359 112 362 92 Z"/>
+  </g>
+</svg>
