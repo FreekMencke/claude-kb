@@ -41,12 +41,14 @@ from key_value.aio.stores.filetree import (
 from key_value.aio.wrappers.encryption import FernetEncryptionWrapper
 from pydantic import Field
 from starlette.applications import Starlette
+from starlette.middleware import Middleware
 from starlette.requests import Request
 from starlette.responses import FileResponse, HTMLResponse, PlainTextResponse, Response
 from starlette.routing import Route
 
 import kb_index
 import kb_tools
+import metrics
 
 HERE = Path(__file__).resolve().parent
 # In the image, assets/ sits next to this file; in the repo it's ../assets
@@ -220,6 +222,7 @@ class KbState:
         if target.name == self.commit:
             return
         self.index = kb_index.load(target)
+        metrics.index_loaded(self.index)
         logger.info(
             "Indexed commit %s: %d entries in %.2f s", self.commit, self.entries, self.index.build_seconds
         )
@@ -257,6 +260,7 @@ def create_mcp(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> FastMCP:
             task.cancel()
 
     mcp = FastMCP("claude-kb", instructions=kb_tools.INSTRUCTIONS, auth=auth, lifespan=lifespan, icons=ICONS)
+    mcp.add_middleware(metrics.ToolMetrics())
     # Read-only tools can run without a per-call prompt. Text content only: with an output schema, Claude Code hands
     # Claude the structured JSON instead.
     read_only = {"readOnlyHint": True, "destructiveHint": False, "openWorldHint": False}
@@ -321,7 +325,9 @@ def create_mcp(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> FastMCP:
 
 
 def create_app(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> Starlette:
-    app = create_mcp(state, auth).http_app(path=MCP_PATH, stateless_http=True)
+    app = create_mcp(state, auth).http_app(
+        path=MCP_PATH, stateless_http=True, middleware=[Middleware(metrics.HttpMetrics)]
+    )
     # FastMCP serves the protected-resource metadata only at the path-suffixed URL (RFC 9728). Claude's
     # troubleshooting page curls the root one, so serve the same document there too.
     suffixed = f"/.well-known/oauth-protected-resource{MCP_PATH}"
@@ -350,6 +356,7 @@ def main(argv: list[str] | None = None) -> None:
         settings = Settings.from_env(os.environ)
         app = create_app(KbState(settings.kb_link), auth=build_auth(settings))
         host = "0.0.0.0"
+        metrics.serve()
     # Only Traefik reaches the pod; its X-Forwarded-For puts the client's address in the access log
     uvicorn.run(app, host=host, port=args.port, proxy_headers=True, forwarded_allow_ips="*")
 

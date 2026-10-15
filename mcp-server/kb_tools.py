@@ -13,6 +13,7 @@ from datetime import UTC, date, datetime
 
 from fastmcp.exceptions import ToolError
 
+import metrics
 from kb_index import INDEX_TOPIC, Entry, Index, normal_id
 
 TYPES = ("fact", "pattern", "recommendation", "anti-pattern", "tool", "comparison")
@@ -87,6 +88,7 @@ def search(
     topic = _resolve_topic(index, topic)
     hits = index.search(query, topic=topic, type=(type or "").strip() or None, limit=limit)
     if not hits:
+        metrics.SEARCH_EMPTY.inc()
         where = f" in topic {topic}" if topic else ""
         return (
             f"No entries match {query!r}{where}. Try other words, or kb_quick_answers for a topic's most-asked"
