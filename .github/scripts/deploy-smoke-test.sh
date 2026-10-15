@@ -36,4 +36,7 @@ check "authorization server: S256, CIMD, public clients" "$(printf '%s' "$metada
 ]' 2>/dev/null || true)" '[true,true,true]'
 
 check "/healthz" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$base/healthz" || true)" 200
+# The icon in serverInfo, fetched without credentials
+check "/icon.png" "$(curl -s -o /dev/null -w '%{http_code} %{content_type}' --max-time 30 "$base/icon.png" || true)" \
+  "200 image/png"
 exit "$failed"
