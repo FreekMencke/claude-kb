@@ -90,6 +90,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [.claude-plugin/](.claude-plugin/plugin.json) | The repo as the `kb-lookup` plugin (the skill plus the server) and as its own marketplace, `freek-kb`; `claude plugin eval` targets it too. No `version`, so installs follow each commit (SKILL-062) |
 | [mcp-server/](mcp-server/README.md) | The remote MCP server that serves this knowledge base (see its README) |
 | [assets/](assets) | Logo, and the banner in light and dark with its source (`banner.html`) |
+| [LICENSE](LICENSE), [LICENSE-MIT](LICENSE-MIT) | CC BY-NC 4.0 for the knowledge base, MIT for the code (see License) |
 
 ## Changing it
 
@@ -180,6 +181,13 @@ a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in t
   input tokens and the same accuracy (MCP-041). It gives up unmerged entries and the index's Conflicts section.
 
 How the knowledge base was built (each research, merge and skill step's prompts and test results) is in the git
-history up to `786847b`, in the former `HANDOFF.md`.
+history up to `60cd4a7`, in the former `HANDOFF.md`.
 
 </details>
+
+## License
+
+The knowledge base (the topic files, the index files, the docs and `assets/`) is licensed under
+[CC BY-NC 4.0](LICENSE): use and adapt it, and run your own copy, with credit and a link back, but not commercially.
+The code (`mcp-server/`, `scripts/` and `.github/`) is under the [MIT License](LICENSE-MIT). Text quoted from
+Anthropic's docs and other sources stays under its owners' terms.

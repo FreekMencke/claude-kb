@@ -6,6 +6,7 @@
   "author": {
     "name": "Freek Mencke"
   },
+  "license": "CC-BY-NC-4.0",
   "skills": [
     "./.claude/skills/"
   ],
