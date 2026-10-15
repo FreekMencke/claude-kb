@@ -157,6 +157,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | MCP-037 | Using a private repo's knowledge without a checkout | comparison | connectors, plugins, surfaces, no-checkout |
 | MCP-038 | Chat and cloud sessions use a custom connector only when the prompt points at it | fact | connectors, claude-ai, cloud, triggering |
 | MCP-039 | One server as connector and user-scope entry: names, duplicates and cost per surface | fact | connectors, scopes, tool-names, tokens |
+| MCP-040 | A plugin that bundles a connector with its skill makes chat use the connector unprompted | fact | connectors, plugins, claude-ai, triggering |
 
 ## Memory and instruction files (`topics/kb-memory.md`, MEM)
 
@@ -458,6 +459,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
 | SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
+| SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
 
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 
