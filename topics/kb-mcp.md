@@ -655,7 +655,7 @@ Read from local config and a `claude -p --output-format stream-json` init messag
 
 On 2026-10-13, with the Atlas connector (since removed) and without Grafana Cloud: outside a repo, 8 servers, 120 MCP tools, about 6,600 tokens per request and about 2 s per `-p` run (MCP-012).
 
-Permission rules: `~/.claude/settings.json` allows nine named tools (three `angular-cli`, six Playwright) and has no MCP deny rules, no `deniedMcpServers` and no `disableClaudeAiConnectors`. Auto mode decides the rest.
+Permission rules: `~/.claude/settings.json` allows nine named tools (three `angular-cli`, six Playwright) plus `mcp__claude-kb__*` and `mcp__claude_ai_Claude_KB__*` (from 2026-10-15), and has no MCP deny rules, no `deniedMcpServers` and no `disableClaudeAiConnectors`. Auto mode decides the rest.
 
 Gaps:
 - Resolved 2026-10-13: the Atlas connector was replaced by a scoped `mongodb-mcp-server` in osrs-tracker-api's `.mcp.json` (osrs-tracker/osrs-tracker-api#148; recommendation 1).
@@ -846,7 +846,7 @@ Tested 2026-10-15 with our claude-kb server (connector "Claude KB"), asking "Whi
 
 The docs describe on-demand loading only for Claude Desktop's Chat tab on third-party deployments: it "now loads them on demand when the key is `true`, as Cowork and Code do". "Custom connectors are never suggested" in chat.
 
-Tool descriptions didn't trigger the load, and chat drops `instructions` (MCP-032). What works: name the connector in the prompt; in Claude Code, a skill that calls the tools. A profile preference or Project instruction is untested.
+Tool descriptions didn't trigger the load, and chat drops `instructions` (MCP-032). What works: name the connector in the prompt; in Claude Code, a skill that calls the tools. An "Instructions for Claude" setting (claude.ai Settings) or a Project instruction is untested.
 
 ## [MCP-039] One server as connector and user-scope entry: names, duplicates and cost per surface
 - Type: fact
@@ -889,13 +889,13 @@ Ranked by impact against effort. Items 1, 3 and 4 change user config or another 
 6. **Don't add `deniedMcpServers` or `allowedMcpServers` for a solo setup beyond item 1**. Without a managed source they are guards, not boundaries, and a blocked server disappears silently. MCP-016, MCP-003.
 7. **Done 2026-10-13: route MCP questions to this file.** `claude-kb-lookup`'s description now lists "MCP servers" ([FreekMencke/claude-skills#40](https://github.com/FreekMencke/claude-skills/pull/40), from [#39](https://github.com/FreekMencke/claude-skills/issues/39)). Its new trigger case (scoping a server to one subagent) loaded the skill 3 of 3 runs. The optional "adding an MCP server" in the "Use before …" clause was left out: it made a KB-editing near miss load the skill (SKILL-015).
 8. **Done 2026-10-15: serve this knowledge base as a remote MCP server on the home cluster** (high impact, high effort). Live with `kb_search`, `kb_get`, `kb_quick_answers` and `kb_status` (FreekMencke/claude-kb#110 to #113), connected as the claude.ai connector "Claude KB" and at user scope; tested per surface in MCP-037 and MCP-038. A custom connector reaches chat, phone, cloud sessions and routines without a checkout, and a user-scope server covers desktop WSL sessions, where connectors are inconsistent. Planned in roadmap [FreekMencke/claude-kb#109](https://github.com/FreekMencke/claude-kb/issues/109): FastMCP with GitHub sign-in gated on the owner's numeric ID, `readOnlyHint` search and fetch tools over a SQLite FTS5 index, git-sync for freshness, and the lookup skill kept as the first choice where a checkout exists. MCP-029 to MCP-037.
-9. **Allow the claude-kb tools by rule** (low impact, trivial effort; needs your go-ahead, since `~/.claude/settings.json` is shared by every session): `mcp__claude-kb__*` and `mcp__claude_ai_Claude_KB__*`. Auto mode let the calls through in the terminal, but denied `kb_get` on the desktop WSL session's UUID-named connector. That UUID was the same in two sessions, so a rule naming it may hold. MCP-039, MCP-004.
-10. **Make chat reach for the KB without being named** (medium impact, trivial effort, yours to do on claude.ai): add "For questions about using Claude or Claude Code, check the Claude KB connector first." to the profile preferences, then retest the plain question. Until then, start a question with "KB:". MCP-038.
+9. **Done 2026-10-15: allow the claude-kb tools by rule** (low impact, trivial effort), in `~/.claude/settings.json`: `mcp__claude-kb__*` and `mcp__claude_ai_Claude_KB__*`. Auto mode let the calls through in the terminal, but denied `kb_get` on the desktop WSL session's UUID-named connector. That UUID was the same in two sessions, so a rule naming it may hold. MCP-039, MCP-004.
+10. **Make chat reach for the KB without being named** (medium impact, trivial effort, yours to do on claude.ai): add "For questions about using Claude, Claude Code or the Claude API (models, effort, subagents, skills, hooks, MCP, prompting, tokens), search the Claude KB connector first and cite its entry IDs." under Settings > Instructions for Claude, which applies to every chat on web, desktop and phone but not to Claude Code, then retest the plain question. Until then, start a question with "KB:". MCP-038.
 
 ## Open questions
 
 - **Connectors in desktop WSL sessions.** The WSL page says "connectors and plugins" aren't available, yet on 2026-10-13 a desktop WSL session (CLI 2.1.295) received three connectors as UUID-named servers mid-session, and on 2026-10-15 another got none. What decides it, and are the UUIDs stable across sessions, so a permission rule could name them? On 2026-10-15 two desktop WSL sessions had the claude-kb connector under the same UUID. MCP-010.
-- **Does a profile preference or Project instruction make claude.ai chat load a custom connector unprompted?** Untested. MCP-038.
+- **Does "Instructions for Claude" or a Project instruction make claude.ai chat load a custom connector unprompted?** Untested. MCP-038.
 - **Does Claude Code act on `readOnlyHint` or `destructiveHint`**, for example in auto mode's classifier? No Claude Code page says so; the connector review criteria say annotations "determine auto-permissions in Claude" for claude.ai. MCP-015, MCP-031.
 - **Is hosted Claude's CIMD client ID stable?** `https://claude.ai/oauth/mcp-oauth-client-metadata` was found by fetching it, not in the docs; only Claude Code's client ID is documented. A server that allow-lists client IDs depends on it. MCP-030.
 - **Do server `instructions` reach the model on claude.ai?** Community reports say no (#93); no Anthropic page says either way for chat. MCP-032.
