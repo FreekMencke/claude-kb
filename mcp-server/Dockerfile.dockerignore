@@ -2,6 +2,7 @@
 *
 !mcp-server/requirements.txt
 !mcp-server/server.py
+!mcp-server/kb_index.py
 !scripts/check_kb.py
 !assets/logo.png
 !assets/logo.svg
