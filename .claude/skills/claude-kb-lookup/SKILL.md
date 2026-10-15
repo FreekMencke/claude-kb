@@ -19,6 +19,7 @@ the format of step 4:
 If the question is empty or depends on context you can't see ("this", "the above"), say what is missing and stop.
 
 The knowledge base is the git repo of sourced entries that holds this skill (FreekMencke/claude-kb). Read it; never edit it.
+Without a checkout, the same entries come from the claude-kb MCP server's `kb_*` tools (see "Without a checkout" below).
 
 ## 1. Get the index
 
@@ -29,7 +30,7 @@ kb="$(git -C "$(realpath "${CLAUDE_SKILL_DIR}")" rev-parse --show-toplevel)" && 
 ```
 
 - Below, `KB` stands for the path it printed. Write it out in every command: shell variables don't carry over between commands.
-- If it prints no path, or `KB/INDEX.md` doesn't exist, say the knowledge base isn't available here and stop; the caller decides where to look instead. In a cloud session or routine, FreekMencke/claude-kb has to be one of the session's repositories.
+- If it prints no path, or `KB/INDEX.md` doesn't exist, follow "Without a checkout" below instead of steps 1 and 2. The checkout comes first because it works offline and in sessions without the server.
 - Only a checkout on `main` is updated, so a worktree or session branch is never moved. Not `git pull`: two sessions pulling at once fail with "Cannot fast-forward to multiple branches".
 - If the update fails or is skipped, carry on with what is there and say the copy may be behind.
 
@@ -56,6 +57,17 @@ Keep `$(0)`: Claude Code replaces a literal dollar-zero in a skill with the firs
 ## 3. Check the dates
 
 An entry is due for re-check when its `Last verified` date is more than 60 days old. Get the cutoff with `date -d '60 days ago' +%F`; ISO dates earlier than it are due. Also note entries whose `Confidence` is `single-source` or `unverified`.
+
+## Without a checkout: the `kb_*` tools
+
+Use the claude-kb MCP server's tools. Their full names depend on how the session got the server: `mcp__claude-kb__kb_search` (user scope), `mcp__claude_ai_Claude_KB__kb_search` (the claude.ai connector in the terminal), `mcp__Claude_KB__kb_search` (cloud sessions) or `mcp__<uuid>__kb_search` (desktop sessions on WSL). Any server with `kb_search` and `kb_get` will do. They're usually deferred: load `kb_search`, `kb_get` and `kb_quick_answers` with one ToolSearch `select:` call. If there are none, say the knowledge base isn't available here and stop; the caller decides where to look instead.
+
+- **Find entries:** `kb_search` with two to five keywords from the question, instead of grepping `ENTRIES.md`. Search again with other words if nothing fits. Each hit shows its type, confidence and last-verified date, and a summary.
+- **Read them:** `kb_get` the best IDs, usually one to four, in one call (up to 10). A merged entry comes with the entry it points to; follow a `Related:` ID as in step 2.
+- **Our own setup:** for "what should we do" questions, `kb_quick_answers` with the entry's topic (its ID prefix, e.g. `MCP`) also returns that file's Recommendations.
+- **Conflicts:** the tools don't return `INDEX.md`'s Conflicts section. If two entries disagree, say so in the answer.
+- **Dates:** a search hit last verified more than 60 days ago says "check its sources"; list it under "Due for re-check" as in step 3.
+- **Corpus:** every result ends with `corpus: <commit>`. Add it as the answer's last line: `Corpus: <commit>`.
 
 ## 4. Answer
 
