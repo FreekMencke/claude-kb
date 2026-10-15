@@ -146,6 +146,15 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | MCP-026 | `claude mcp serve`: Claude Code as an MCP server | tool | mcp-serve, desktop |
 | MCP-027 | Channels: servers that push events into a session | fact | channels, push, research-preview |
 | MCP-028 | Our MCP setup as of 2026-10-13 | fact | our-setup, connectors, inventory |
+| MCP-029 | claude.ai custom connectors: who adds them, what the server needs, limits | fact | custom-connectors, claude-ai, remote, limits |
+| MCP-030 | The OAuth flow Claude runs against a connector | fact | oauth, cimd, dcr, server-authors |
+| MCP-031 | How Claude treats a connector's tools: annotations, names, structured results | fact | annotations, permissions, structured-content, server-authors |
+| MCP-032 | Connector quirks reported by server authors: instructions, tool lists, saved approvals | fact | instructions, tool-list, permissions, community |
+| MCP-033 | Testing and debugging a custom connector | pattern | testing, inspector, troubleshooting |
+| MCP-034 | How docs and knowledge-base servers shape their tools | comparison | docs-servers, search-fetch, tool-design |
+| MCP-035 | Hosting a single-user remote server: Cloudflare Worker or your own server | comparison | hosting, cloudflare, fastmcp, git-sync |
+| MCP-036 | Mistakes single-user remote servers made | anti-pattern | security, oauth, community |
+| MCP-037 | Using a private repo's knowledge without a checkout | comparison | connectors, plugins, surfaces, no-checkout |
 
 ## Memory and instruction files (`topics/kb-memory.md`, MEM)
 

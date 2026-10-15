@@ -1,6 +1,6 @@
 # MCP servers: configuration, access control, surfaces and vetting
 
-Prefix: MCP. Researched 2026-10-13 on Claude Code v2.1.296 (WSL terminal) and the desktop app's CLI build 2.1.295, against the docs live that day; re-verified 2026-10-14 against the docs fetched that day, the claude-code CHANGELOG through 2.1.299 and our repos' `origin/main` (each entry's Last verified date is authoritative). This file covers how MCP servers are configured, approved, authenticated, permissioned and scoped in Claude Code, how they behave on each surface, and how to choose, vet and write one. MCP topics covered elsewhere are linked, not repeated: context cost and tool search (TOK-020 to TOK-022), output limits (TOK-023), code execution with MCP on the API (TOK-024), our AWS, Kubernetes and Flux servers and why a read-only flag isn't a boundary (INFRA-003 to INFRA-007), docs servers (TOK-095 to TOK-097), GA4 (WEB-006), Playwright and browser checks (FLOW-014, REPO-021), processes across parallel sessions (SESS-013), and MCP versus skills and hooks (SKILL-021). Docs pages were read in full as `.md` (`curl -sL https://code.claude.com/docs/en/mcp.md`); version numbers come from the claude-code CHANGELOG.
+Prefix: MCP. Researched 2026-10-13 on Claude Code v2.1.296 (WSL terminal) and the desktop app's CLI build 2.1.295, against the docs live that day; re-verified 2026-10-14 against the docs fetched that day, the claude-code CHANGELOG through 2.1.299 and our repos' `origin/main`; MCP-029 to MCP-037 (claude.ai custom connectors, writing and hosting a remote server, using a repo's knowledge without a checkout) added 2026-10-15 from the claude.com connector docs, Anthropic's and community server repos, and live `tools/list` probes (each entry's Last verified date is authoritative). This file covers how MCP servers are configured, approved, authenticated, permissioned and scoped in Claude Code, how they behave on each surface, and how to choose, vet and write one. MCP topics covered elsewhere are linked, not repeated: context cost and tool search (TOK-020 to TOK-022), output limits (TOK-023), code execution with MCP on the API (TOK-024), our AWS, Kubernetes and Flux servers and why a read-only flag isn't a boundary (INFRA-003 to INFRA-007), docs servers (TOK-095 to TOK-097), GA4 (WEB-006), Playwright and browser checks (FLOW-014, REPO-021), processes across parallel sessions (SESS-013), and MCP versus skills and hooks (SKILL-021). Docs pages were read in full as `.md` (`curl -sL https://code.claude.com/docs/en/mcp.md`); version numbers come from the claude-code CHANGELOG.
 
 ## Quick answers
 
@@ -8,11 +8,11 @@ Prefix: MCP. Researched 2026-10-13 on Claude Code v2.1.296 (WSL terminal) and th
 |---|---|---|
 | Local, project or user scope? | User for personal tools in every repo, project (`.mcp.json`, committed) for what a repo needs, local for credentials or experiments in one repo. Local and user both live in `~/.claude.json`. On a name clash local wins, then project, then user, then plugins, then connectors; entries aren't merged. | MCP-001 |
 | Does a repo's `.mcp.json` run without asking? | Interactive: asks per server, and the repo can't approve itself. `claude -p`, the SDK and cloud sessions load it without asking. Block with `disabledMcpjsonServers`, `--strict-mcp-config`, `--setting-sources user` or `--bare`. | MCP-002 |
-| How do I turn a server off? | `/mcp` toggle (per project), `disabledMcpjsonServers` (a `.mcp.json` server), `deniedMcpServers` (any server, any settings file, always wins), `disableClaudeAiConnectors` (all fetched connectors). | MCP-003 |
-| How do I allow or deny one MCP tool? | `mcp__server__tool`, `mcp__server__*`; allow globs need a literal `mcp__server__` prefix; `"mcp__*"` works only in deny. Parameter rules like `mcp__x__y(arg:v)` are skipped in settings files. Plugin tools are `mcp__plugin_<plugin>_<server>__<tool>`. | MCP-004, MCP-009 |
+| How do I turn a server off, or allow or deny one tool? | Off: `/mcp` toggle (per project), `disabledMcpjsonServers` (a `.mcp.json` server), `deniedMcpServers` (any server, always wins), `disableClaudeAiConnectors` (all fetched connectors). One tool: `mcp__server__tool` or `mcp__server__*`; allow globs need a literal `mcp__server__` prefix, `"mcp__*"` works only in deny, parameter rules are skipped in settings files. | MCP-003, MCP-004, MCP-009 |
 | How do I keep an API key out of `.mcp.json`? | `${VAR}` or `${VAR:-default}` in `command`, `args`, `env`, `url`, `headers`. Claude Code and cloud credentials (`ANTHROPIC_API_KEY`, `NPM_TOKEN` …) read as empty in a remote server's URL and headers. | MCP-005 |
-| How do I sign in to a remote server from WSL or SSH, or for `-p`? | `claude mcp login <name>` (prints the URL when there's no browser; `--no-browser`). `-p` can't sign in: do it once interactively. Pin scopes with `oauth.scopes`. | MCP-006 |
-| Server uses SSO or short-lived tokens, not OAuth? | `headersHelper`: a command printing JSON headers, run on each connect, 10 s limit, rerun on 401/403. Repo-supplied helpers run only in a trusted folder and without `*TOKEN*`/`*KEY*` variables. | MCP-007 |
+| How do I sign in to a remote server from WSL or SSH, for `-p`, or without OAuth? | `claude mcp login <name>` (prints the URL when there's no browser). `-p` can't sign in: do it once interactively. Pin scopes with `oauth.scopes`. For SSO or short-lived tokens, `headersHelper`: a command printing JSON headers, run on each connect. | MCP-006, MCP-007 |
+| What must my server do to work as a claude.ai custom connector? | Be public (calls come from `160.79.104.0/21`, IPv4 only, no cross-host redirect), Streamable HTTP, and for private data OAuth: a 401 with `resource_metadata`, metadata whose `resource` equals the URL you enter, CIMD (`client_id_metadata_document_supported` plus `none`) or DCR, S256 PKCE, `expires_in`. Test with the Inspector CLI and curl; there's no staging. Mark tools `readOnlyHint` so they run without a prompt, and put guidance in tool descriptions: chat drops `instructions` (community reports). | MCP-029, MCP-030, MCP-031, MCP-032, MCP-033 |
+| How do I use a private repo's knowledge without a checkout? | A remote MCP server added as a custom connector reaches chat, phone, the terminal, cloud sessions and routines; add it at user scope for desktop WSL sessions. A claude.ai marketplace plugin reaches chat and the terminal but not cloud sessions; attaching the repo works only in cloud sessions. Docs servers use a search tool plus a fetch tool. | MCP-037, MCP-034, MCP-035 |
 | How do I give a server to one subagent only? | Inline `mcpServers` in the agent file: it connects for that agent's run and its tools never reach the main context. Project agent files need the folder trusted; plugin agents ignore the field. | MCP-008 |
 | Why does my claude.ai connector show up in Claude Code, and how do I stop it? | Connectors come with a claude.ai login. Stop them with `disableClaudeAiConnectors`, `deniedMcpServers` `{ "serverName": "claude.ai X" }` or `/mcp`. Desktop-delivered connectors ignore all MCP settings: disconnect them at claude.ai. | MCP-010 |
 | What do MCP servers cost a `claude -p` run, and how do I skip them? | Ours on 2026-10-13: 8 servers, about 6,600 input tokens per request and about 2 s per run, even deferred. `--strict-mcp-config` (optionally with `--mcp-config`) loads none; `--bare` does too but needs API-key auth. | MCP-012, MCP-028 |
@@ -54,6 +54,15 @@ Prefix: MCP. Researched 2026-10-13 on Claude Code v2.1.296 (WSL terminal) and th
 | MCP-026 | `claude mcp serve`: Claude Code as an MCP server | tool | mcp-serve, desktop |
 | MCP-027 | Channels: servers that push events into a session | fact | channels, push, research-preview |
 | MCP-028 | Our MCP setup as of 2026-10-13 | fact | our-setup, connectors, inventory |
+| MCP-029 | claude.ai custom connectors: who adds them, what the server needs, limits | fact | custom-connectors, claude-ai, remote, limits |
+| MCP-030 | The OAuth flow Claude runs against a connector | fact | oauth, cimd, dcr, server-authors |
+| MCP-031 | How Claude treats a connector's tools: annotations, names, structured results | fact | annotations, permissions, structured-content, server-authors |
+| MCP-032 | Connector quirks reported by server authors: instructions, tool lists, saved approvals | fact | instructions, tool-list, permissions, community |
+| MCP-033 | Testing and debugging a custom connector | pattern | testing, inspector, troubleshooting |
+| MCP-034 | How docs and knowledge-base servers shape their tools | comparison | docs-servers, search-fetch, tool-design |
+| MCP-035 | Hosting a single-user remote server: Cloudflare Worker or your own server | comparison | hosting, cloudflare, fastmcp, git-sync |
+| MCP-036 | Mistakes single-user remote servers made | anti-pattern | security, oauth, community |
+| MCP-037 | Using a private repo's knowledge without a checkout | comparison | connectors, plugins, surfaces, no-checkout |
 
 ## [MCP-001] Installation scopes and which definition wins
 - Type: fact
@@ -265,9 +274,9 @@ Plugin servers run outside the permission sandbox like any MCP server; read a pl
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-10-15
 - Sources: [MCP: use MCP servers from claude.ai](https://code.claude.com/docs/en/mcp#use-mcp-servers-from-claude-ai), [MCP: how connectors reach Claude Code](https://code.claude.com/docs/en/mcp#how-connectors-reach-claude-code), [Desktop on WSL](https://code.claude.com/docs/en/desktop-wsl), local test
-- Related: MCP-003, MCP-004, MCP-022, MCP-023, MCP-028, SURF-034
+- Related: MCP-003, MCP-004, MCP-022, MCP-023, MCP-028, MCP-029, MCP-037, SURF-034
 
 Connectors you add at claude.ai/customize/connectors show up in Claude Code's `/mcp` as `claude.ai <Name>`, with tools named `mcp__claude_ai_<Name>__<tool>`. Anthropic adds some itself, such as `claude.ai Claude Docs`.
 
@@ -282,6 +291,8 @@ They arrive only with a claude.ai subscription login, not with `ANTHROPIC_API_KE
 A server you add with the same URL hides the connector.
 
 Tested 2026-10-13, v2.1.296, WSL terminal `-p`: two connectors were connected, MongoDB Atlas (42 tools, including `drop-database`, `delete-many` and `atlas-create-db-user`) and Claude Docs (8). Tested 2026-10-13, desktop WSL session (CLI 2.1.295): three connectors arrived mid-session as servers named by a UUID (`mcp__<uuid>__find`), although the WSL page says "connectors and plugins" aren't available in WSL sessions. Rules written for `mcp__claude_ai_…` names don't match those.
+
+Tested 2026-10-15, desktop WSL session (CLI 2.1.295): this session's tool list had no connector tools, while `claude mcp list` (v2.1.296) run from its shell showed the claude.ai Claude Docs and Grafana Cloud connectors connected. Connectors in desktop WSL sessions are inconsistent: use a user-scope server there (MCP-037).
 
 ## [MCP-011] Timeouts, reconnection and backgrounded tool calls
 - Type: fact
@@ -369,9 +380,9 @@ A changed tool list is accepted without a new approval; Claude Code has no tool-
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-10-15
 - Sources: [MCP: require approval for a specific tool](https://code.claude.com/docs/en/mcp#require-approval-for-a-specific-tool), [MCP: tool input schemas](https://code.claude.com/docs/en/mcp#tool-input-schemas-with-a-root-level-combinator), [MCP: tool search for server authors](https://code.claude.com/docs/en/mcp#tool-search-for-mcp-server-authors), [MCP: output limits](https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings), [MCP tools spec](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
-- Related: MCP-004, MCP-018, TOK-020, TOK-023
+- Related: MCP-004, MCP-018, MCP-031, TOK-020, TOK-023
 
 For anyone writing a server Claude Code will use:
 - `_meta["anthropic/requiresUserInteraction"]: true` (JSON `true` only): a prompt on every call, in every mode, with no "don't ask again"; denied in `dontAsk`. For consent steps (v2.1.214+ withholds one-tap approval on Remote Control).
@@ -381,7 +392,7 @@ For anyone writing a server Claude Code will use:
 
 Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the description, so validate argument combinations server-side. Tools whose property names break the API's rules (1–64 chars of `A-Za-z0-9_.-`) or whose schema isn't valid draft 2020-12 are dropped with a reason (v2.1.216+), not the whole request.
 
-**Annotations** (`readOnlyHint`, `destructiveHint`) show in `/mcp`, but no Claude Code page says they change permissions; the spec says clients "MUST consider tool annotations to be untrusted unless they come from trusted servers". Unverified whether Claude Code acts on them.
+**Annotations** (`readOnlyHint`, `destructiveHint`) show in `/mcp`, but no Claude Code page says they change permissions; the spec says clients "MUST consider tool annotations to be untrusted unless they come from trusted servers". Unverified whether Claude Code acts on them. On claude.ai they do: the connector review criteria say annotations "determine auto-permissions in Claude" (MCP-031).
 
 ## [MCP-016] Managed MCP patterns and what a solo user can use
 - Type: fact
@@ -644,6 +655,167 @@ Gaps:
 - Resolved 2026-10-13 (osrs-tracker/osrs-tracker-api#148, closed): the Atlas connector (42 tools, including `drop-database`, `delete-many` and `atlas-create-db-user`) was replaced by the official `mongodb-mcp-server@3.0.5` in that repo's `.mcp.json` with `--disabledTools atlas`, `ask` rules on nine write tools and a dedicated database user with `readWrite` on one database, and the connector was removed from the claude.ai account.
 - `npx`-run servers use `@latest` (Playwright) and `kubernetes-mcp-server@0.0.67` is pinned; a `@latest` server can change its tools on any start (MCP-019).
 
+## [MCP-029] claude.ai custom connectors: who adds them, what the server needs, limits
+- Type: fact
+- Applies to: claude.ai
+- Confidence: official-docs
+- Last verified: 2026-10-15
+- Sources: [Get started with custom connectors](https://support.claude.com/en/articles/11175166), [Add an unlisted connector](https://claude.com/docs/connectors/custom/add-unlisted), [Building connectors](https://claude.com/docs/connectors/building), [Authentication for connectors](https://claude.com/docs/connectors/building/authentication), [IP addresses](https://platform.claude.com/docs/en/api/ip-addresses)
+- Related: MCP-010, MCP-022, MCP-030, MCP-033, MCP-037
+
+A custom connector is a remote MCP server added at Customize > Connectors. "You add custom connectors to your own account", so only you see it. "Free users are limited to one custom connector"; on Team plans "only Owners and Primary Owners can add them".
+
+**The server must be public.** "Claude connects to your remote MCP server from Anthropic's cloud infrastructure", so it "must be reachable over the public internet from Anthropic's IP ranges". Outbound traffic comes from `160.79.104.0/21`. A host behind a VPN or on a LAN won't connect.
+
+**Transport and auth.** Streamable HTTP; SSE is "being deprecated", and a URL ending in `/sse` selects it. `oauth_dcr`, `oauth_cimd` and `none` are "Supported by default"; `static_headers` (a fixed key) is "Beta, for a limited set of organizations". With no sign-in, "anyone with access to the server URL can use the connector". The add dialog offers "Sign in now", "Sign in when needed" or "No sign-in", then the OAuth client: "Use Claude's published identity" (CIMD, recommended), "Register automatically" (DCR) or "Use your own OAuth client". "You can't change authentication settings after you add a connector": remove it and add it again.
+
+**Limits** on claude.ai and Desktop: tool results "~150,000 characters" and "240 seconds per tool call". Resource subscriptions, sampling and "Advanced or draft capabilities" aren't supported. Claude follows the 2025-03-26, 2025-06-18 and 2025-11-25 authorization specs.
+
+## [MCP-030] The OAuth flow Claude runs against a connector
+- Type: fact
+- Applies to: claude.ai, Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-15
+- Sources: [Authentication for connectors](https://claude.com/docs/connectors/building/authentication), [Lazy authentication](https://claude.com/docs/connectors/building/lazy-authentication), [Troubleshooting](https://claude.com/docs/connectors/building/troubleshooting), [claude-code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), local test
+- Related: MCP-006, MCP-029, MCP-033, MCP-035
+
+What a server serves, in the order Claude uses it:
+1. **A 401 on an unauthenticated call**: "Claude doesn't honor a `WWW-Authenticate` header on a `200` response". Put `resource_metadata` in the header; without it Claude probes `/.well-known/oauth-protected-resource/<your-mcp-path>`, then the root path.
+2. **Protected-resource metadata**: `resource` "must equal the URL as the user enters it in Claude, including any path component"; of several `authorization_servers`, "Claude uses the first entry".
+3. **Authorization-server metadata**: `/.well-known/oauth-authorization-server` first, then `/.well-known/openid-configuration`.
+4. **Client identity**: CIMD only when that metadata has `client_id_metadata_document_supported: true` and `"none"` in `token_endpoint_auth_methods_supported`; otherwise DCR, which registers "a new client on every fresh connection".
+5. **Authorization**: S256 PKCE every time; the RFC 8707 `resource` "set to the canonical form of your MCP server URL" (lowercase host, no trailing slash); scopes from the 401's `scope`, else `scopes_supported`, plus `offline_access` when listed.
+6. **Tokens**: a form-encoded `/token`; 10 s for discovery, registration and token, 30 s for refresh; refresh on a 401 and "up to five minutes before the stored expiry"; `invalid_grant` for a dead refresh token. Return `expires_in`: Claude Code before 2.1.118 re-authenticated hourly without it.
+
+Claude caches discovery per URL for about five minutes.
+
+Tested 2026-10-15 with curl: `https://claude.ai/oauth/claude-code-client-metadata` (documented) lists `http://localhost/callback` and `http://127.0.0.1/callback` ("match both with the port component ignored"); hosted Claude's `https://claude.ai/oauth/mcp-oauth-client-metadata`, which no page names, lists `https://claude.ai/api/mcp/auth_callback`.
+
+## [MCP-031] How Claude treats a connector's tools: annotations, names, structured results
+- Type: fact
+- Applies to: claude.ai, Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-15
+- Sources: [Connector review criteria](https://claude.com/docs/connectors/building/review-criteria), [Building connectors: MCP](https://claude.com/docs/connectors/building/mcp), [MCP Apps quickstart](https://claude.com/docs/connectors/building/mcp-apps/quickstart), [Get started with connectors](https://claude.com/docs/connectors/getting-started), local test
+- Related: MCP-015, MCP-018, MCP-032, MCP-034
+
+**Annotations set permissions on claude.ai.** "Every tool must include a `title` and the applicable hint: `readOnlyHint: true` for read-only tools, and `destructiveHint: true` for tools that modify or delete data. These determine auto-permissions in Claude. Read-only tools can run without per-call confirmation, and destructive tools always prompt." The MCP page adds "All MCP tools must declare both of these annotations". You can still set **Always allow**, **Needs approval** or **Blocked** per tool or group. No Claude Code page says Claude Code acts on annotations (MCP-015).
+
+**Names and descriptions.** "Tool names must be 64 characters or fewer." "Describe what the tool does, and don't tell Claude how to behave": the directory rejects descriptions that "Tell Claude to behave in ways unrelated to the tool's function".
+
+**Structured results replace the text in Claude Code.** From the MCP Apps quickstart: "because the tool now returns `structuredContent`, the `tool_result` Claude receives is that JSON object as a string ... rather than your `content` text". A text-only server should return `content` alone.
+
+Tested 2026-10-15 (`tools/list`, MCP-034): Anthropic's Claude Code docs server marks its two search tools `readOnlyHint: true` and `submit_feedback` false; the platform docs server sets no hints.
+
+## [MCP-032] Connector quirks reported by server authors: instructions, tool lists, saved approvals
+- Type: fact
+- Applies to: claude.ai, Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-15
+- Sources: [anthropics/claude-ai-mcp#93](https://github.com/anthropics/claude-ai-mcp/issues/93), [#1044](https://github.com/anthropics/claude-ai-mcp/issues/1044), [#1087](https://github.com/anthropics/claude-ai-mcp/issues/1087), [#1132](https://github.com/anthropics/claude-ai-mcp/issues/1132), [mcp-server-dev: server capabilities](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/mcp-server-dev/skills/build-mcp-server/references/server-capabilities.md)
+- Related: MCP-015, MCP-031, MCP-033, TOK-020
+
+Open issues in Anthropic's connector tracker, none answered by Anthropic as of 2026-10-15:
+- **Server `instructions` don't reach the model in chat** (#93, open since 2026-03-11, several reporters). A canary-token test found them missing on claude.ai web while Claude Code returned them; a 2026-10-09 comment found the same on the 2026-07-28 `server/discover` path for web and Desktop, with Claude Code 2.1.295 showing them. Anthropic's `mcp-server-dev` skill says `instructions` land "directly in Claude's system prompt", which holds for Claude Code (MCP-015). Put guidance a model must see in tool descriptions.
+- **Chat can keep an old tool list** (#1044): after a server change, claude.ai showed the previous day's tools. Removing and re-adding didn't help; re-adding with a changed query string (`/mcp?v=…`) did, and the list turned over on its own 3 to about 15 hours later.
+- **A saved "Always allow" isn't honored on iOS** (#1087). A commenter's reading of the web client: a grant is keyed by an md5 of the tool's description and top-level parameter descriptions, so editing them resets it. Keep descriptions stable.
+- **Citation-only results arrive empty** in Cowork and Claude Code, while chat shows them (#1132).
+
+## [MCP-033] Testing and debugging a custom connector
+- Type: pattern
+- Applies to: claude.ai, Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-15
+- Sources: [Test your connector](https://claude.com/docs/connectors/building/testing), [Troubleshooting](https://claude.com/docs/connectors/building/troubleshooting), [MCP in Claude Code](https://code.claude.com/docs/en/mcp)
+- Related: MCP-006, MCP-029, MCP-030, MCP-032
+
+"There is no separate staging environment, so you test in production." The order:
+1. **MCP Inspector CLI** on the running server: `npx @modelcontextprotocol/inspector --cli http://localhost:3000/mcp --transport http --method tools/list`.
+2. **From outside your network**, `curl -i` the MCP URL (a `401`, no redirect) and the metadata documents. Only one of `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration` has to return `200`.
+3. **Add the connector** and check that it shows **Connected** and that **Tool permissions** lists every tool, then call one in a chat.
+
+The three errors:
+- **"Couldn't reach the MCP server"**: the hostname resolves to a non-public address (carrier-grade NAT, loopback, link-local), has no public `A` record ("Connectors are IPv4-only"), or a CDN or WAF answered `403`/`429`. Also OAuth discovery failures, such as "a layer in front of your server" that drops `WWW-Authenticate`.
+- **"Authorization with the MCP server failed"**: often a redirect to another host, on which "Claude drops the `Authorization` header". This explains "works in MCP Inspector or Claude Code CLI but not claude.ai".
+- **"Unexpected error while invoking tool"**: the connector is connected but the call fails.
+
+Claude shows you no server-side logs. When your server issued the token and the connect still fails, file an issue at anthropics/claude-ai-mcp with the `ofid_` reference from the error. With the TypeScript SDK's `createMcpExpressApp()`, add the public hostname to `allowedHosts`. In Claude Code: `claude mcp list`, `/mcp`, `claude mcp login <name>`.
+
+## [MCP-034] How docs and knowledge-base servers shape their tools
+- Type: comparison
+- Applies to: general
+- Confidence: community-consensus
+- Last verified: 2026-10-15
+- Sources: [Claude Code docs MCP](https://code.claude.com/docs/mcp), [Claude Platform docs MCP](https://platform.claude.com/docs/mcp), [Microsoft Learn MCP](https://learn.microsoft.com/api/mcp), [AWS Knowledge MCP](https://knowledge-mcp.global.api.aws), [Cloudflare docs MCP](https://docs.mcp.cloudflare.com/mcp), [GitBook docs MCP](https://gitbook.com/docs/~gitbook/mcp), [DeepWiki MCP](https://mcp.deepwiki.com/mcp), [OpenAI: MCP for ChatGPT](https://developers.openai.com/api/docs/mcp), [Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), local test
+- Related: TOK-096, TOK-097, MCP-018, MCP-031
+
+Tested 2026-10-15: `initialize` and `tools/list` over Streamable HTTP from a Python script (no MCP client) on seven public servers.
+
+| Server | Tools |
+|---|---|
+| Claude Code docs | `search_claude_code_docs`, `query_docs_filesystem_claude_code_docs` (`head`/`cat` on pages), `submit_feedback` |
+| Claude Platform docs | `search_docs`, `get_navigation`, `get_doc`, `get_api_endpoint` |
+| Microsoft Learn | `microsoft_docs_search`, `microsoft_code_sample_search`, `microsoft_docs_fetch` |
+| AWS Knowledge | `aws___search_documentation`, `aws___read_documentation`, plus regions and skills |
+| Cloudflare docs | `search_cloudflare_documentation`, `migrate_pages_to_workers_guide` |
+| GitBook docs | `searchDocumentation`, `getPage`, `askQuestion`, `sendFeedback` |
+| DeepWiki | `ask_wiki_question`, `read_wiki_contents`, `read_wiki_structure` |
+
+The shared shape is **search, then fetch**: search returns ranked snippets with a page reference, and a second tool returns the page. Only GitBook and DeepWiki also **answer on the server** with their own model. Claude can't lend a server its model (no sampling, MCP-029), and an answer string keeps citations only if the server writes them in. OpenAI asks for exactly "two read-only tools: search and fetch" for ChatGPT deep research; Claude has no such rule.
+
+For a small corpus: Anthropic's Contextual Retrieval post says a knowledge base "smaller than 200,000 tokens" can go in the prompt "with no need for RAG", and that BM25 is "particularly effective for queries that include unique identifiers or technical terms", such as entry IDs.
+
+## [MCP-035] Hosting a single-user remote server: Cloudflare Worker or your own server
+- Type: comparison
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-15
+- Sources: [Cloudflare: MCP handler API](https://developers.cloudflare.com/agents/model-context-protocol/apis/handler-api/), [Cloudflare: remote MCP server](https://developers.cloudflare.com/agents/model-context-protocol/guides/remote-mcp-server/), [workers-oauth-provider](https://github.com/cloudflare/workers-oauth-provider), [Workers limits](https://developers.cloudflare.com/workers/platform/limits/), [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/), [FastMCP: OAuth proxy](https://gofastmcp.com/servers/auth/oauth-proxy), [FastMCP: GitHub](https://gofastmcp.com/integrations/github), [FastMCP: authorization](https://gofastmcp.com/servers/authorization), [git-sync](https://github.com/kubernetes/git-sync)
+- Related: MCP-018, MCP-030, MCP-036
+
+Two stacks that can meet claude.ai's OAuth rules (MCP-030), read 2026-10-15:
+
+**Cloudflare Worker.** `McpAgent` "is deprecated and feature-frozen", and the quick-deploy templates "still use the deprecated `McpAgent` path. Do not use that path for a new server." Use the stateless `createMcpHandler` behind `@cloudflare/workers-oauth-provider` (1.2.3), which "needs a KV namespace bound as `OAUTH_KV`, and the `global_fetch_strictly_public` compatibility flag if it accepts Client ID Metadata Documents". The GitHub template (`cloudflare/ai/demos/remote-mcp-github-oauth`, on provider `^0.8.1`) lets any GitHub user sign in; its `ALLOWED_USERNAMES` gates only one tool. CPU per request: "10 ms" on Free; Paid has a "minimum charge of $5 USD per month". Test with `@cloudflare/vitest-plugin` (1.4.2), the renamed `@cloudflare/vitest-pool-workers`.
+
+**Your own server.** FastMCP 4.1.0's OAuth proxy makes the server the authorization server Claude sees, with GitHub as the upstream login, and supports CIMD. For "persistent token management across server restarts" set `jwt_signing_key` and `client_storage`. Limit it to one person with `AuthMiddleware` and a check on `ctx.token.claims`; that check runs per request, so a stranger can still finish sign-in. For content from a private repo, a git-sync sidecar: the basename of its link's target "is the current hash", so the server can rebuild its index when it changes. You also own TLS, a public IPv4 address, WAF rules for `160.79.104.0/21` and uptime.
+
+## [MCP-036] Mistakes single-user remote servers made
+- Type: anti-pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-15
+- Sources: [obsidian-web-mcp#8](https://github.com/jimprosser/obsidian-web-mcp/issues/8), [#20](https://github.com/jimprosser/obsidian-web-mcp/issues/20), [#28](https://github.com/jimprosser/obsidian-web-mcp/issues/28), [#29](https://github.com/jimprosser/obsidian-web-mcp/issues/29), [#71](https://github.com/jimprosser/obsidian-web-mcp/issues/71), [mcp-auth-proxy#167](https://github.com/sigbit/mcp-auth-proxy/issues/167), [#177](https://github.com/sigbit/mcp-auth-proxy/issues/177), [#184](https://github.com/sigbit/mcp-auth-proxy/issues/184), [#188](https://github.com/sigbit/mcp-auth-proxy/issues/188), [claude-ai-mcp#410](https://github.com/anthropics/claude-ai-mcp/issues/410), [workers-oauth-provider#121](https://github.com/cloudflare/workers-oauth-provider/issues/121), [agents#2124](https://github.com/cloudflare/agents/issues/2124)
+- Related: MCP-019, MCP-030, MCP-033, MCP-035
+
+From the issue trackers of personal remote servers (jimprosser/obsidian-web-mcp, 184 stars; sigbit/mcp-auth-proxy, 181 stars) and Cloudflare's, read 2026-10-15:
+- **Sign-in that doesn't check who signs in**: `/oauth/authorize` "auto-approves without authenticating the user" (obsidian #8), and open DCR let "any client" in (#29). Both fixed. Require a real login and gate on a fixed identity.
+- **Metadata behind the auth wall**: `/.well-known/oauth-protected-resource` returned 401 (#20).
+- **An index built in the request path** timed out (#28). Build it at start or in the background.
+- **Unpinned SDK**: an "unbounded mcp dependency now resolves to the 2.0 SDK" broke fresh installs (#71). Pin exact versions.
+- **Auth proxies in front**: mcp-auth-proxy 2.10.2 broke the claude.ai connector ("invalid authorization session", #167), advertises the root URL as the resource (#177), has no CIMD (#184) and writes bearer tokens to logs on panic (#188), all open. Cloudflare Access "Managed OAuth" failed on claude.ai web and mobile while Claude Code connected (claude-ai-mcp#410, closed).
+- **Bot protection on the domain**: Cloudflare's "Block AI Scrapers and Crawlers" blocked Anthropic's outbound traffic (workers-oauth-provider#121, closed 2025-12).
+- **Undocumented wiring**: `OAuthProvider` with a stateless `createMcpHandler` had no example; `apiHandler` takes an object with a `fetch` method (agents#2124).
+
+## [MCP-037] Using a private repo's knowledge without a checkout
+- Type: comparison
+- Applies to: claude.ai, Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-15
+- Sources: [Plugins (claude.com)](https://claude.com/docs/plugins/overview), [Plugin platform support](https://claude.com/docs/plugins/platform-support), [Skills how-to (claude.com)](https://claude.com/docs/skills/how-to), [Skills overview (claude.com)](https://claude.com/docs/skills/overview), [Claude Code skills](https://code.claude.com/docs/en/skills), [Agent Skills overview (platform)](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [GitHub integration](https://claude.com/docs/connectors/github), [Desktop on WSL](https://code.claude.com/docs/en/desktop-wsl)
+- Related: MCP-010, MCP-022, MCP-029, SKILL-049, SKILL-052, SKILL-059, SKILL-060
+
+| Route | Chat (web, desktop, phone) | Claude Code | Cloud sessions, routines | Updates |
+|---|---|---|---|---|
+| Remote server as a custom connector (MCP-029) | Yes | Terminal with a claude.ai login (MCP-010) | Yes (MCP-022) | On redeploy |
+| The same server at user scope | No | Where configured, desktop WSL included | No | On redeploy |
+| Plugin from a claude.ai marketplace (SKILL-059) | Yes, with Code execution on | As `<name>@synced` | No (SKILL-060) | "Sync automatically" |
+| Repo attached to the session | No | No | Yes (SKILL-060) | Cloned per run |
+| Project with the GitHub integration | Private projects only | No | No | "Sync now" by hand |
+
+A plugin holds "up to 5,000 files and 200 MB". In chat, "the skill's whole folder, scripts included, is copied into the code execution sandbox", so bundled content must sit inside the skill's folder. Desktop WSL sessions lack "connectors and plugins" per the docs (MCP-010 and SKILL-052 record what we saw).
+
+Conflict: platform.claude.com's Agent Skills overview says "Custom Skills do not sync across surfaces" and "Claude Code Skills are filesystem-based and separate from both claude.ai and API"; Claude Code's skills page says it "downloads your account's skills into `~/.claude/skills/synced/`" (v2.1.273+). The Claude Code page matches what we see: our WSL home has that folder.
+
 ---
 
 ## Recommendations for our setup
@@ -663,11 +835,14 @@ Ranked by impact against effort. Items 1, 3 and 4 change user config or another 
 5. **Re-read a server's tool list after upgrading it** (low impact, trivial effort). Claude Code doesn't re-approve changed tools (MCP-014). Do this for `kubernetes-mcp-server` and `analytics-mcp` when their pins move. MCP-019.
 6. **Don't add `deniedMcpServers` or `allowedMcpServers` for a solo setup beyond item 1**. Without a managed source they are guards, not boundaries, and a blocked server disappears silently. MCP-016, MCP-003.
 7. **Done 2026-10-13: route MCP questions to this file.** `claude-kb-lookup`'s description now lists "MCP servers" ([FreekMencke/claude-skills#40](https://github.com/FreekMencke/claude-skills/pull/40), from [#39](https://github.com/FreekMencke/claude-skills/issues/39)). Its new trigger case (scoping a server to one subagent) loaded the skill 3 of 3 runs. The optional "adding an MCP server" in the "Use before …" clause was left out: it made a KB-editing near miss load the skill (SKILL-015).
+8. **Serve this knowledge base as a remote MCP server on the home cluster** (high impact, high effort). A custom connector reaches chat, phone, cloud sessions and routines without a checkout, and a user-scope server covers desktop WSL sessions, where connectors are inconsistent. Planned in roadmap [FreekMencke/claude-kb#109](https://github.com/FreekMencke/claude-kb/issues/109): FastMCP with GitHub sign-in gated on the owner's numeric ID, `readOnlyHint` search and fetch tools over a SQLite FTS5 index, git-sync for freshness, and the lookup skill kept as the first choice where a checkout exists. MCP-029 to MCP-037.
 
 ## Open questions
 
-- **Connectors in desktop WSL sessions.** The WSL page says "connectors and plugins" aren't available, yet on 2026-10-13 a desktop WSL session (CLI 2.1.295) received three connectors as UUID-named servers mid-session. Are the UUIDs stable across sessions, so a permission rule could name them? MCP-010.
-- **Does Claude Code act on `readOnlyHint` or `destructiveHint`**, for example in auto mode's classifier? No Claude Code page says so; the connector review criteria say annotations "determine auto-permissions in Claude" for claude.ai. MCP-015.
+- **Connectors in desktop WSL sessions.** The WSL page says "connectors and plugins" aren't available, yet on 2026-10-13 a desktop WSL session (CLI 2.1.295) received three connectors as UUID-named servers mid-session, and on 2026-10-15 another got none. What decides it, and are the UUIDs stable across sessions, so a permission rule could name them? MCP-010.
+- **Does Claude Code act on `readOnlyHint` or `destructiveHint`**, for example in auto mode's classifier? No Claude Code page says so; the connector review criteria say annotations "determine auto-permissions in Claude" for claude.ai. MCP-015, MCP-031.
+- **Is hosted Claude's CIMD client ID stable?** `https://claude.ai/oauth/mcp-oauth-client-metadata` was found by fetching it, not in the docs; only Claude Code's client ID is documented. A server that allow-lists client IDs depends on it. MCP-030.
+- **Do server `instructions` reach the model on claude.ai?** Community reports say no (#93); no Anthropic page says either way for chat. MCP-032.
 - **Sampling:** undocumented in Claude Code and deprecated in spec 2026-07-28; issue anthropics/claude-code#1785 is still open. MCP-014.
 - **Do Desktop Extensions (`.mcpb`) reach Code tab sessions?** Not documented. MCP-023.
 - **Channels outside the terminal** (desktop, cloud, routines): not documented either way. MCP-027.
