@@ -1,7 +1,7 @@
 """JSON log lines in the shape of the Node apps' (`@osrs-tracker/logger`, pino): `time`, `level` (pino's names),
 `logger` and `message`, an `error` with the traceback, and for each request a `type: incoming` line with `method`,
 `route`, `url`, `status`, `responseTime`, `clientIp` and `userAgent`. Grafana reads them with `| json`, and the MCP
-Server Dashboard filters the request lines by `route`, as Express Dashboard does.
+Server Dashboard shows them as one readable line each, as Node Dashboard does.
 
 A formatter of our own on the standard library's logging: no JSON logging package is installed, and this is short.
 """
@@ -16,6 +16,8 @@ from starlette.types import Scope
 
 # pino's level names where Python's differ
 LEVELS = {"WARNING": "warn", "CRITICAL": "fatal"}
+# uvicorn logs its startup and shutdown as "uvicorn.error", which reads like an error
+LOGGERS = {"uvicorn.error": "uvicorn"}
 # The kubelet's probes, one every three seconds or so
 UNLOGGED = {"/healthz"}
 
@@ -27,7 +29,7 @@ class JsonFormatter(logging.Formatter):
         line = {
             "time": datetime.fromtimestamp(record.created, UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z"),
             "level": LEVELS.get(record.levelname, record.levelname.lower()),
-            "logger": record.name,
+            "logger": LOGGERS.get(record.name, record.name),
             **getattr(record, "fields", {}),
             "message": record.getMessage(),
         }
