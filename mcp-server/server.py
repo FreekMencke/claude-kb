@@ -18,10 +18,9 @@ import asyncio
 import contextlib
 import logging
 import os
-import sys
 from collections.abc import AsyncIterator, Mapping
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -43,11 +42,10 @@ from starlette.requests import Request
 from starlette.responses import FileResponse, HTMLResponse, PlainTextResponse, Response
 from starlette.routing import Route
 
-HERE = Path(__file__).resolve().parent
-# In the image, check_kb.py and assets/ sit next to this file; in the repo they're in ../scripts and ../assets.
-sys.path.append(str(HERE.parent / "scripts"))
-import check_kb  # noqa: E402
+import kb_index
 
+HERE = Path(__file__).resolve().parent
+# In the image, assets/ sits next to this file; in the repo it's ../assets
 ASSETS = HERE / "assets" if (HERE / "assets").is_dir() else HERE.parent / "assets"
 
 logger = logging.getLogger("claude_kb_mcp")
@@ -190,13 +188,24 @@ def build_auth(settings: Settings, **overrides) -> OwnerOnlyGitHubProvider:
 
 
 class KbState:
-    """What the server knows about the synced checkout. `refresh` runs in the background, never in a request."""
+    """The index of the synced checkout. `refresh` runs in the background, never in a request: it builds a new Index
+    and swaps it in with one assignment, so a request reads either the old index or the new one, whole."""
 
     def __init__(self, link: Path):
         self.link = link
-        self.commit: str | None = None
-        self.entries: int | None = None
-        self.built_at: datetime | None = None
+        self.index: kb_index.Index | None = None
+
+    @property
+    def commit(self) -> str | None:
+        return self.index.commit if self.index else None
+
+    @property
+    def entries(self) -> int | None:
+        return len(self.index.entries) if self.index else None
+
+    @property
+    def built_at(self) -> datetime | None:
+        return self.index.built_at if self.index else None
 
     def refresh(self) -> None:
         # git-sync flips the link atomically; "the basename of the target of the link is the current hash"
@@ -206,21 +215,18 @@ class KbState:
             return
         if target.name == self.commit:
             return
-        count = sum(
-            1
-            for path in sorted((target / "topics").glob("kb-*.md"))
-            for _ in check_kb.entries(path.read_text(encoding="utf-8"))
+        self.index = kb_index.load(target)
+        logger.info(
+            "Indexed commit %s: %d entries in %.2f s", self.commit, self.entries, self.index.build_seconds
         )
-        self.commit, self.entries, self.built_at = target.name, count, datetime.now(UTC)
-        logger.info("Indexed commit %s: %d entries", self.commit, self.entries)
 
     def status_text(self) -> str:
-        if self.commit is None:
+        if self.index is None:
             return f"No checkout yet: git-sync hasn't created {self.link}."
         return (
             f"Commit: {self.commit}\n"
             f"Entries: {self.entries}\n"
-            f"Index built: {self.built_at.isoformat(timespec='seconds')}"
+            f"Index built: {self.built_at.isoformat(timespec='seconds')} in {self.index.build_seconds:.2f} s"
         )
 
 

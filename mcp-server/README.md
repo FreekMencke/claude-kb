@@ -4,13 +4,15 @@ A remote, read-only MCP server that serves this knowledge base to claude.ai (as 
 at `https://claude-kb.freekmencke.com/mcp`, from the home cluster. Plan: roadmap FreekMencke/claude-kb#109.
 
 Spike stage (FreekMencke/claude-kb#110): one tool, `kb_status`, which returns the synced commit, the entry count and
-when it last indexed them, and no KB content. Search and the real tools come in #111 and #112.
+when it last indexed them, and no KB content. The index and search behind the real tools are in `kb_index.py` (#111);
+the tools come in #112.
 
 | File | What it is |
 |---|---|
 | `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, GitHub sign-in for the owner only, `kb_status` |
-| `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs, the tool |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
+| `kb_index.py` | The entries, parsed by `scripts/check_kb.py`, and their search: SQLite FTS5 in memory, ranked by `bm25()` |
+| `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs, the tool; the index and search on fixtures and on this repo |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_index.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
 | `requirements.in`, `requirements-dev.in` | Direct dependencies, compiled to `requirements*.txt` with exact versions and hashes |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
 | `pyproject.toml` | Python version and pytest settings |
@@ -24,6 +26,15 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   `/git/kb` at it; "the basename of the target of the link is the current hash". Every 10 s the server checks the link
   in a background task and re-indexes when the commit changed, never in a request. A KB push reaches the server in
   about a minute, with no image build.
+- **Index.** `kb_index.load` parses the checkout with `check_kb.py`'s own functions (one parser for CI's checker and
+  the server) into an immutable `Index`: every entry's fields, the Quick answers of `INDEX.md` and each topic file, and
+  each file's Recommendations. The server builds a new one and swaps it in with one assignment, so a request reads
+  the old index or the new one, whole. Building all 575 entries took 0.05 s on 2026-10-15, in WSL and in the image.
+- **Search.** Python's own `sqlite3`, FTS5 with Porter stemming, ranked by `bm25()` with column weights (ID 10, title
+  3, tags 2, body 1). Entry IDs named in the query come first, then entries matching any of its words. Every word is
+  quoted before `MATCH`, so `(`, `-` or `"` in a query never raise. Merged entries are found by ID only. The weights
+  and OR matching were tuned on the Quick-answer questions: 208 of 253 found an entry their row cites in the top 5 on
+  2026-10-15; `tests/test_kb_index.py` fails below 75%.
 - **Sign-in.** FastMCP's `GitHubProvider` is an OAuth proxy: the server is the authorization server Claude sees, with
   CIMD and DCR, PKCE (S256) and a consent page, and GitHub is the login behind it. Its state (clients, codes, the
   GitHub tokens) is in `STATE_DIR` on a volume, encrypted with `STORAGE_ENCRYPTION_KEY`, so a restart signs nobody out.
