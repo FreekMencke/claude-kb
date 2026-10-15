@@ -4,6 +4,7 @@ What changed in the knowledge base, and why. Add new rows at the top of the tabl
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-15 | README | A paragraph's spacing between the banner and the badges. No entries changed. |
 | 2026-10-15 | README | The banners' small line is set in SOLIX too, with wider gaps around its dots and its hyphens lowered like the wordmark's. The README centres the badges, spaced apart, and drops the legend under them. No entries changed. |
 | 2026-10-15 | MCP-041, MCP rec 8 and 10, SKILL recommendations, README, lookup skill | `claude-kb-lookup` reads only the claude-kb MCP server; its checkout path (`git fetch`, `INDEX.md`, grep) is gone. New MCP-041: in 12 side-by-side pairs (6 questions × 2, Opus 5.5 with the skill forked on Haiku 5.5), the server path answered in a median 22.7 s against 32.4 s, with 138k against 207k Haiku input tokens and 12/12 expected entries both. Locally the skill now comes from the synced `kb-lookup` plugin instead of a personal-skill symlink; README's Querying section says so. The skill's description is unchanged. |
 | 2026-10-15 | README | The README opens with the banner instead of the logo and title, swapping to the new `assets/banner-dark.png` (freek-mencke-web's dark tokens) in a dark browser theme. Both banners are re-rendered in SOLIX from `assets/banner.html`, now kept as their source. The slate variant (`logo-slate.svg`, `banner-slate.png`) is gone. No entries changed. |
