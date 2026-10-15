@@ -18,14 +18,11 @@
 A Markdown knowledge base on using Claude efficiently, written for agents to query. Every entry carries its sources, a
 confidence level and a last-verified date.
 
-## Querying it
+## Setup
 
-Ask the `claude-kb-lookup` skill. It runs as a forked subagent that can't see your conversation, so give it a
-self-contained question, and keep the entry IDs it cites in your reply. It reads the remote MCP server at
-`https://claude-kb.freekmencke.com/mcp` ([mcp-server/README.md](mcp-server/README.md)), which signs in with GitHub and
-lets in only the owner's account.
-
-Treat an entry last verified more than 60 days ago as a lead to re-check, not a fact.
+Claude reads the knowledge base through the `claude-kb-lookup` skill and the remote MCP server at
+`https://claude-kb.freekmencke.com/mcp` ([mcp-server/README.md](mcp-server/README.md)). The server signs in with GitHub
+and lets in only the owner's account; anyone else can read the files [by hand](#by-hand).
 
 | Where you ask | What to set up |
 |---|---|
@@ -66,6 +63,14 @@ claude mcp login claude-kb
 
 These load neither synced plugins nor `~/.claude` (SKILL-060). Either start the question with "KB:" so Claude uses the
 "Claude KB" connector (MCP-038), or attach the FreekMencke/claude-kb repo so its `.claude/skills/` loads.
+
+## Querying it
+
+Ask the `claude-kb-lookup` skill, or in a cloud session start the question with "KB:". The skill runs as a forked
+subagent that can't see your conversation, so give it a self-contained question, and keep the entry IDs it cites in
+your reply.
+
+Treat an entry last verified more than 60 days ago as a lead to re-check, not a fact.
 
 ### By hand
 
