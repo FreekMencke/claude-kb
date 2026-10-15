@@ -15,6 +15,8 @@ COPY mcp-server/requirements.txt ./
 RUN pip install --no-cache-dir --require-hashes -r requirements.txt
 
 COPY mcp-server/server.py scripts/check_kb.py ./
+# The server's icon (ICON_FILES in server.py)
+COPY assets/logo.png assets/logo.svg ./assets/
 
 EXPOSE 8000
 

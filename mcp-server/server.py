@@ -25,6 +25,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+import mcp_types
 import uvicorn
 from cryptography.fernet import Fernet
 from fastmcp import FastMCP
@@ -39,17 +40,32 @@ from key_value.aio.stores.filetree import (
 from key_value.aio.wrappers.encryption import FernetEncryptionWrapper
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import HTMLResponse, PlainTextResponse, Response
+from starlette.responses import FileResponse, HTMLResponse, PlainTextResponse, Response
 from starlette.routing import Route
 
-# In the image, check_kb.py sits next to this file; in the repo it's in ../scripts.
-sys.path.append(str(Path(__file__).resolve().parent.parent / "scripts"))
+HERE = Path(__file__).resolve().parent
+# In the image, check_kb.py and assets/ sit next to this file; in the repo they're in ../scripts and ../assets.
+sys.path.append(str(HERE.parent / "scripts"))
 import check_kb  # noqa: E402
+
+ASSETS = HERE / "assets" if (HERE / "assets").is_dir() else HERE.parent / "assets"
 
 logger = logging.getLogger("claude_kb_mcp")
 
 PUBLIC_URL = "https://claude-kb.freekmencke.com"
 MCP_PATH = "/mcp"
+# The logo, served by this server: the MCP spec asks clients to fetch icons only from the server's own origin, over
+# HTTPS and without credentials. Its rounded green background suits light and dark themes alike. The PNG is also
+# /favicon.ico: how claude.ai picks a custom connector's icon isn't documented.
+ICON_FILES = {
+    "/icon.png": ("logo.png", "image/png"),
+    "/icon.svg": ("logo.svg", "image/svg+xml"),
+    "/favicon.ico": ("logo.png", "image/png"),
+}
+ICONS = [
+    mcp_types.Icon(src=f"{PUBLIC_URL}/icon.png", mime_type="image/png", sizes=["512x512"]),
+    mcp_types.Icon(src=f"{PUBLIC_URL}/icon.svg", mime_type="image/svg+xml", sizes=["any"]),
+]
 # Where Claude sends the browser back after sign-in: claude.ai and claude.com for hosted Claude, the loopback
 # callback on any port for Claude Code (a loopback pattern without a port matches every port, RFC 8252 §7.3).
 ALLOWED_CLIENT_REDIRECT_URIS = [
@@ -226,7 +242,7 @@ def create_app(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> Starlett
         finally:
             task.cancel()
 
-    mcp = FastMCP("claude-kb", auth=auth, lifespan=lifespan)
+    mcp = FastMCP("claude-kb", auth=auth, lifespan=lifespan, icons=ICONS)
 
     @mcp.tool(
         title="Knowledge base status",
@@ -241,6 +257,17 @@ def create_app(state: KbState, auth: OwnerOnlyGitHubProvider | None) -> Starlett
     @mcp.custom_route("/healthz", methods=["GET"])
     async def healthz(_request: Request) -> Response:
         return PlainTextResponse("ok")
+
+    async def icon(request: Request) -> Response:
+        name, media_type = ICON_FILES[request.url.path]
+        return FileResponse(
+            ASSETS / name,
+            media_type=media_type,
+            headers={"Cache-Control": "public, max-age=86400", "X-Content-Type-Options": "nosniff"},
+        )
+
+    for path in ICON_FILES:
+        mcp.custom_route(path, methods=["GET"])(icon)
 
     app = mcp.http_app(path=MCP_PATH, stateless_http=True)
     # FastMCP serves the protected-resource metadata only at the path-suffixed URL (RFC 9728). Claude's
