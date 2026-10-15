@@ -1,7 +1,7 @@
 name: MCP server
 
-# Tests and builds mcp-server/ when it, or the parser its image copies, changes; a KB-only push runs none of this. CD
-# (deploy.yml) deploys main once this passes there.
+# Tests and builds mcp-server/ when it, or the parser or logo its image copies, changes; a KB-only push runs none of
+# this. CD (deploy.yml) deploys main once this passes there.
 on:
   push:
     branches: [main]
@@ -10,6 +10,8 @@ on:
       # Deploy commits only change the manifest, which Flux applies by itself: no run, so no deploy run to skip
       - '!mcp-server/claude-kb-mcp.yaml'
       - 'scripts/check_kb.py'
+      - 'assets/logo.png'
+      - 'assets/logo.svg'
       - '.github/workflows/mcp-server.yml'
       - '.github/workflows/deploy.yml'
       - '.github/scripts/*.sh'
@@ -17,6 +19,8 @@ on:
     paths:
       - 'mcp-server/**'
       - 'scripts/check_kb.py'
+      - 'assets/logo.png'
+      - 'assets/logo.svg'
       - '.github/workflows/mcp-server.yml'
       - '.github/workflows/deploy.yml'
       - '.github/scripts/*.sh'

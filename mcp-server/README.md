@@ -10,7 +10,7 @@ when it last indexed them, and no KB content. Search and the real tools come in 
 |---|---|
 | `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, GitHub sign-in for the owner only, `kb_status` |
 | `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs, the tool |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `scripts/check_kb.py` and the pinned dependencies, never KB content or secrets |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
 | `requirements.in`, `requirements-dev.in` | Direct dependencies, compiled to `requirements*.txt` with exact versions and hashes |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
 | `pyproject.toml` | Python version and pytest settings |
@@ -40,6 +40,10 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
 - **Discovery.** `/mcp` without a token is a 401 with `WWW-Authenticate: Bearer ... resource_metadata=...`. The
   protected-resource metadata is served at `/.well-known/oauth-protected-resource/mcp` (FastMCP) and at the root path
   (added in `create_app`), both with `resource` `https://claude-kb.freekmencke.com/mcp`.
+- **Icon.** `serverInfo.icons` lists `assets/logo.png` and `logo.svg`, served by the server itself at `/icon.png` and
+  `/icon.svg` (and the PNG at `/favicon.ico`) without a token: the MCP spec asks clients to fetch icons only from the
+  server's own origin. Claude's docs say a custom connector appears as "Custom", so claude.ai may show its generic
+  icon anyway.
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
   output schema.
 
