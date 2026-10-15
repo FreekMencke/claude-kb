@@ -53,7 +53,7 @@ jobs:
           # Files that don't end up in the image (mcp-server/Dockerfile copies only server.py, requirements.txt,
           # scripts/check_kb.py and assets/logo.{png,svg}): a change to only these needs no new image. Nearly every commit is KB content, which
           # the server gets from git-sync. Flux applies mcp-server/claude-kb-mcp.yaml by itself.
-          NOT_IN_IMAGE: '^(mcp-server/claude-kb-mcp\.yaml|mcp-server/tests/.*|mcp-server/pyproject\.toml|mcp-server/requirements(-dev)?\.in|mcp-server/requirements-dev\.txt|topics/.*|evals/.*|assets/(banner(-slate)?\.png|logo-slate\.svg)|.*\.md|\.claude/.*|\.claude-plugin/.*|\.github/.*|\.gitignore)$'
+          NOT_IN_IMAGE: '^(mcp-server/claude-kb-mcp\.yaml|mcp-server/tests/.*|mcp-server/pyproject\.toml|mcp-server/requirements(-dev)?\.in|mcp-server/requirements-dev\.txt|topics/.*|evals/.*|assets/banner(-dark\.png|\.png|\.html)|.*\.md|\.claude/.*|\.claude-plugin/.*|\.github/.*|\.gitignore)$'
         run: .github/scripts/deploy-plan.sh
 
       - if: steps.plan.outputs.deploy == 'true'
