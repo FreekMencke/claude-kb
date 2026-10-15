@@ -2,6 +2,11 @@
 
 # claude-kb
 
+[![Check](https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml)
+[![MCP server](https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml)
+[![CD](https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml/badge.svg)](https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml)
+[![Server](https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&label=server&up_message=up&down_message=down)](mcp-server/README.md)
+
 A Markdown knowledge base on using Claude efficiently, written for agents to query. Every entry carries its sources, a
 confidence level and a last-verified date.
 
