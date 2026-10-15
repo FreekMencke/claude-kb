@@ -1,11 +1,18 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "kb-lookup",
-  "description": "The claude-kb-lookup skill, packaged only so claude plugin validate and claude plugin eval can target it. Install it with the symlink in README.md, not as a plugin",
+  "displayName": "Claude KB",
+  "description": "Answers questions on using Claude, Claude Code and the Claude API from the claude-kb knowledge base, citing entry IDs: the claude-kb-lookup skill plus the claude-kb MCP server it reads when there's no checkout",
   "author": {
     "name": "Freek Mencke"
   },
   "skills": [
     "./.claude/skills/"
-  ]
+  ],
+  "mcpServers": {
+    "claude-kb": {
+      "type": "http",
+      "url": "https://claude-kb.freekmencke.com/mcp"
+    }
+  }
 }

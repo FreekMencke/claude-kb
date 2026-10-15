@@ -35,8 +35,13 @@ The knowledge base is also a remote MCP server, `https://claude-kb.freekmencke.c
 owner's account only. The skill reads the checkout when it has one and falls back to these tools when it doesn't, for
 example a copy of `SKILL.md` on another machine.
 
-- **claude.ai chat (web, desktop, phone), cloud sessions and routines:** the custom connector "Claude KB"
-  (Customize > Connectors). Claude uses it only when the prompt names it: start the question with "KB:" (MCP-038).
+- **claude.ai chat (web, desktop, phone) and Cowork:** the `kb-lookup` plugin, the skill bundled with the server, so
+  Claude looks things up without being told to (MCP-040). This repo is its marketplace: Customize > Plugins > Add > Add
+  marketplace, `FreekMencke/claude-kb`, with Sync automatically, then install `kb-lookup` and connect "Claude KB" on its
+  Connectors tab. It also syncs into Claude Code as `kb-lookup@synced`: keep that off where the symlink above is set up,
+  or both copies load.
+- **Cloud sessions and routines:** the custom connector "Claude KB" (Customize > Connectors). Claude uses it only when
+  the prompt names it: start the question with "KB:" (MCP-038).
 - **Desktop Code tab sessions on WSL**, where connectors are unreliable (MCP-010), and the terminal: the user-scope server.
 
   ```bash
@@ -90,7 +95,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [scripts/check_kb.py](scripts/check_kb.py) | Format and consistency check; `--write` regenerates ENTRIES.md |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
-| [.claude-plugin/plugin.json](.claude-plugin/plugin.json) | Wraps the skill as a plugin so `claude plugin eval` can target it; nothing installs it |
+| [.claude-plugin/](.claude-plugin/plugin.json) | The repo as the `kb-lookup` plugin (the skill plus the server) and as its own marketplace, `freek-kb`; `claude plugin eval` targets it too. No `version`, so installs follow each commit (SKILL-062) |
 | [mcp-server/](mcp-server/README.md) | The remote MCP server that serves this knowledge base (see its README) |
 | [assets/](assets) | Logo and banner; the `-slate` files are an alternative palette |
 
