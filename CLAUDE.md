@@ -39,7 +39,11 @@ Claims about behaviour:
 - Write absolute dates. "New", "recently" and "currently" go stale; "launched 2026-10-07" doesn't.
 
 What goes in:
-- No account, resource, cluster or IAM IDs, keys, emails or internal hostnames in entries. The repo is private, but entries get quoted into other repos and issues.
+- Write as if the repo were public: entries get quoted into other repos and issues, and the repo may go public. This covers entries, CHANGELOG rows, issues, PRs and commit messages:
+  - No personal data: email addresses, local usernames or home paths (write `~/`).
+  - No keys, tokens, account, resource, cluster or IAM IDs, internal hostnames or IPs.
+  - Describe our infrastructure by pattern, not by weakness: no known gaps, unversioned or unlogged resources, exact policy grants, resource names or where credentials live. Those stay in local config and private repos.
+- In a cloud session, check `git config user.email` before committing: one committed as the claude.ai login's email (2026-10-12).
 - A recommendation that needs a change in another repo becomes an issue there, linked from the recommendation (see the global CLAUDE.md). The research session doesn't make the change.
 
 ## Output format
