@@ -28,7 +28,7 @@ def index() -> kb_index.Index:
 async def mcp(index: kb_index.Index):
     state = server.KbState(REPO)
     state.index = index
-    async with Client(server.create_mcp(state, auth=None)) as client:
+    async with Client(server.create_mcp(state)) as client:
         yield client
 
 
@@ -206,7 +206,7 @@ async def test_quick_answers_for_a_topic(mcp: Client) -> None:
 
 @pytest.mark.anyio
 async def test_before_the_first_sync(tmp_path: Path) -> None:
-    async with Client(server.create_mcp(server.KbState(tmp_path / "kb"), auth=None)) as client:
+    async with Client(server.create_mcp(server.KbState(tmp_path / "kb"))) as client:
         for tool, args in [("kb_search", {"query": "x"}), ("kb_get", {"ids": ["MCP-017"]}), ("kb_quick_answers", {})]:
             text, error = await call(client, tool, **args)
             assert error and "hasn't loaded yet" in text

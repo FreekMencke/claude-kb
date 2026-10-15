@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# MCP server CI (mcp-server.yml): runs image $1 the way the pod does (UID 10001, read-only root filesystem, a 0700
-# state directory, a git-sync-style checkout mounted read-only) and checks it with deploy-smoke-test.sh, then that it
-# indexed the checkout and reports it on /metrics. Runs from the repo root.
+# MCP server CI (mcp-server.yml): runs image $1 the way the pod does (UID 10001, read-only root filesystem, a
+# git-sync-style checkout mounted read-only) and checks it with deploy-smoke-test.sh, then that it indexed the checkout
+# and reports it on /metrics. Runs from the repo root.
 # -e like GitHub's default `run` shell (bash -e), which a script run from it doesn't inherit
 set -e
 
@@ -16,10 +16,7 @@ chmod -R a+rX "$git_root"
 entries=$(cat topics/kb-*.md | grep -c -E '^## \[[A-Z]+-[0-9]+\]')
 
 docker run -d --name "$name" -p 127.0.0.1:8000:8000 -p 127.0.0.1:9090:9090 --read-only --tmpfs /tmp \
-  --tmpfs /state:uid=10001,gid=10001,mode=700 --cap-drop ALL --security-opt no-new-privileges \
-  -v "$git_root:/git:ro" -e GITHUB_CLIENT_ID=ci -e GITHUB_CLIENT_SECRET=ci \
-  -e JWT_SIGNING_KEY="$(openssl rand -hex 32)" -e STORAGE_ENCRYPTION_KEY="$(openssl rand -base64 32 | tr '+/' '-_')" \
-  -e ALLOWED_GITHUB_ID=1 "$image" > /dev/null
+  --cap-drop ALL --security-opt no-new-privileges -v "$git_root:/git:ro" "$image" > /dev/null
 trap 'docker logs "$name"; docker rm -f "$name" > /dev/null' EXIT
 
 for _ in $(seq 30); do

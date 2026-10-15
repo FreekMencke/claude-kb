@@ -1,7 +1,7 @@
 # claude-kb's MCP server at https://claude-kb.freekmencke.com/mcp. Flux applies this file, the only one it reads from
 # this repo, within a minute of a push to main (FreekMencke/home-cluster cluster/claude-kb/flux.yaml). Flux's
-# flux-deployer may only manage Deployments, Services, Ingresses, Traefik Middlewares and PodDisruptionBudgets here:
-# the Secrets and the volume claim are made in home-cluster, and this file only uses them. CD (.github/workflows/
+# flux-deployer may only manage Deployments, Services, Ingresses, Traefik Middlewares and PodDisruptionBudgets here.
+# The server has no sign-in and needs no Secret or volume claim (FreekMencke/claude-kb#142). CD (.github/workflows/
 # deploy.yml) updates the image digest.
 apiVersion: v1
 kind: Namespace
@@ -16,8 +16,8 @@ metadata:
   labels:
     app: claude-kb-mcp
 spec:
-  # One replica: the OAuth state is on a ReadWriteOnce hostPath volume. With one replica on a one-node cluster, a
-  # PodDisruptionBudget could only block every drain of the node (minAvailable: 1) or do nothing, so there is none.
+  # One replica on a one-node cluster: a PodDisruptionBudget could only block every drain of the node (minAvailable: 1)
+  # or do nothing, so there is none.
   replicas: 1
   revisionHistoryLimit: 1
   selector:
@@ -35,8 +35,7 @@ spec:
         prometheus.io/scrape: 'true'
     spec:
       securityContext:
-        # git-sync's docs: "to make SSH key readable" for the git-sync user (the server reads the checkout because
-        # its files are world-readable). The state volume is a hostPath, which ignores fsGroup.
+        # The git-sync user's group. The server reads the checkout because its files are world-readable.
         fsGroup: 65533
         seccompProfile:
           type: RuntimeDefault
@@ -44,16 +43,9 @@ spec:
         - name: claude-kb-mcp
           image: freekmencke/claude-kb-mcp@sha256:39eca09ef5ca14255f97a9a6158087afa9380e5b9e1e7be0f6016439c686bb0e
           imagePullPolicy: IfNotPresent
-          # GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SIGNING_KEY, STORAGE_ENCRYPTION_KEY and ALLOWED_GITHUB_ID
-          # (FreekMencke/home-cluster cluster/claude-kb/secrets.example.yaml)
-          envFrom:
-            - secretRef:
-                name: claude-kb-mcp-oauth
           env:
             - name: KB_LINK
               value: /git/kb
-            - name: STATE_DIR
-              value: /state
           ports:
             - containerPort: 8000
               name: http
@@ -69,8 +61,7 @@ spec:
               memory: 256Mi
           securityContext:
             runAsNonRoot: true
-            # The image's USER, and the owner of the state directory on the host (home-cluster
-            # cluster/claude-kb/volumes.yaml)
+            # The image's USER
             runAsUser: 10001
             runAsGroup: 10001
             allowPrivilegeEscalation: false
@@ -81,8 +72,6 @@ spec:
             - name: git
               mountPath: /git
               readOnly: true
-            - name: state
-              mountPath: /state
             - name: tmp
               mountPath: /tmp
           readinessProbe:
@@ -115,7 +104,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: GITSYNC_REPO
-              value: git@github.com:FreekMencke/claude-kb.git
+              value: https://github.com/FreekMencke/claude-kb.git
             - name: GITSYNC_REF
               value: main
             - name: GITSYNC_ROOT
@@ -131,11 +120,6 @@ spec:
               value: ':2020'
             - name: GITSYNC_HTTP_METRICS
               value: 'true'
-            # A read-only deploy key and github.com's host keys, from the claude-kb-git-sync Secret
-            - name: GITSYNC_SSH_KEY_FILE
-              value: /etc/git-secret/ssh
-            - name: GITSYNC_SSH_KNOWN_HOSTS_FILE
-              value: /etc/git-secret/known_hosts
           ports:
             - containerPort: 2020
               name: git-sync
@@ -158,22 +142,12 @@ spec:
           volumeMounts:
             - name: git
               mountPath: /git
-            - name: git-secret
-              mountPath: /etc/git-secret
-              readOnly: true
             - name: git-sync-tmp
               mountPath: /tmp
       volumes:
         - name: git
           emptyDir:
             sizeLimit: 256Mi
-        - name: git-secret
-          secret:
-            secretName: claude-kb-git-sync
-            defaultMode: 0400
-        - name: state
-          persistentVolumeClaim:
-            claimName: claude-kb-mcp-state
         - name: tmp
           emptyDir:
             sizeLimit: 16Mi
@@ -245,8 +219,8 @@ spec:
                 port:
                   number: 80
 ---
-# Per client IP. Claude's requests all come from Anthropic's 160.79.104.0/21, and a sign-in or a burst of tool calls
-# is a few dozen requests: a 429 would read as a failed connection, so this only stops floods.
+# Per client IP. Claude's requests all come from Anthropic's 160.79.104.0/21, so every claude.ai user shares one
+# bucket, and a burst of tool calls is a few dozen requests: a 429 would read as a failed call, so this only stops floods.
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
