@@ -551,15 +551,20 @@ Mapping INFRA-022 to controls, most-recurring first:
 - Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html), [FreekMencke/claude-kb#69](https://github.com/FreekMencke/claude-kb/issues/69)
 - Related: INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-010, INFRA-016, INFRA-025, WEB-013
 
-Read from local config and read-only AWS and cluster calls; names left out on purpose.
+Read from local config and read-only AWS and cluster calls. Names, exact grants and known gaps are left out on purpose: this entry describes the pattern, not where it's weak.
 
 **AWS:**
+- The agent has its own IAM user and profile. The root user has no access keys and there is no `default` profile, so `aws` without `--profile` fails.
+- Its policy allows changes only to the agent's own resources (Lambda functions, scheduled rules, site bucket objects, log retention) and denies IAM, billing, role assumption and audit-log tampering.
+- One multi-region CloudTrail trail (INFRA-016).
 
 **Kubernetes:**
-- Both MCP servers and `kubectl` use `~/.kube/config`: a `claude-agent` ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus nodes, PVs, StorageClasses, CRDs, `traefik.io` and `/metrics`. No Secrets, exec, port-forward or `nodes/proxy`.
-- Logs and metrics moved to Grafana Cloud on 2026-10-14 (home-cluster 50b1a31), ending the agent's day-old Loki grant (FreekMencke/home-cluster#5, INFRA-025). Tested 2026-10-14 (desktop, WSL) through the claude.ai Grafana connector: logs since 2026-10-13 about 20:00 UTC; write tools kept (recommendation 11).
+- Both MCP servers and `kubectl` use `~/.kube/config`: a ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus read on a few cluster-scoped resources. No Secrets, exec, port-forward or `nodes/proxy`.
+- Logs and metrics moved to Grafana Cloud on 2026-10-14, ending the agent's day-old Loki grant (INFRA-025). Tested 2026-10-14 (desktop, WSL) through the claude.ai Grafana connector: logs since 2026-10-13 about 20:00 UTC; write tools kept (recommendation 11).
+- The admin kubeconfig is kept out of the default path, behind a Read deny rule. Cluster writes go through the cluster repo, applied by the user.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
 
+**Claude Code:** auto mode, with `autoMode.environment` naming the production resources (INFRA-010), and deny rules for destructive cluster commands and the credential files.
 
 ## [INFRA-025] `kubectl auth can-i` reads `resource/x` as a resource name, not a subresource
 - Type: anti-pattern
@@ -641,11 +646,16 @@ Ranked by impact against effort. All are changes to local config or the AWS cons
 | # | Change | Impact | Effort | Entries |
 |---|---|---|---|---|
 | 1 | Done 2026-10-12 (FreekMencke/claude-kb#44), without `AWS_PROFILE`: a failing call is the clearer signal. Delete the root user's access keys and the `default` profile, so an `aws` call without `--profile` fails instead of running as root. Optionally set `"env": {"AWS_PROFILE": "claude"}` in `~/.claude/settings.json` so Bash defaults to the agent profile. | High | Low | INFRA-024, INFRA-020, INFRA-001 |
+| 2 | Done 2026-10-12 (FreekMencke/claude-kb#45, RBAC in the cluster's config repo): the agent kubeconfig became the default `~/.kube/config` and the admin one moved out of the default path, so neither server needs `KUBECONFIG` (both still set it to the default path). `view` already includes Flux on this cluster. Give the agent a non-admin cluster identity: a ServiceAccount bound to `view` (plus read on Flux resources), with its own kubeconfig for both MCP servers and `KUBECONFIG` in Claude Code's `env`. Keep the admin kubeconfig out of the default path. Alternative for Flux only: `--kube-as`. | High | Medium | INFRA-006, INFRA-004, INFRA-005 |
 | 3 | Done 2026-10-12 (FreekMencke/claude-kb#46): `kubernetes-mcp-server@0.0.67` and `mcp-proxy-for-aws-cli@1.7.0`, the latest releases that day. Pin `kubernetes-mcp-server` and `mcp-proxy-for-aws-cli` to tested versions instead of `@latest`, and recheck the TOML keys when upgrading (the flag-to-TOML change). | Medium | Low | INFRA-004 |
+| 4 | Done 2026-10-12 (FreekMencke/claude-kb#44). Clean up the agent policy: remove the no-op `aws-mcp:*` statement and grants for resources that don't exist; scope EventBridge and `PutRetentionPolicy` to the agent's own rules and log groups; add `cloudtrail:StopLogging`, `cloudtrail:DeleteTrail` and `logs:DeleteLogGroup` to the deny statement. Then update the "Cluster and AWS access" section of `~/.claude/CLAUDE.md`, which says the agent may change only prefixed rules. | Medium | Low | INFRA-003, INFRA-024 |
+| 5 | Decided 2026-10-12 (FreekMencke/claude-kb#44). Turn on S3 versioning (with a noncurrent-version expiry) on the site buckets the agent can delete from. | Medium | Low | INFRA-023 |
+| 6 | Done 2026-10-12 (FreekMencke/claude-kb#44). Create one CloudTrail trail for management events. The first copy is free; add S3 and Lambda data events if the cost is acceptable. | Medium | Low | INFRA-016 |
 | 7 | Done 2026-10-12 (FreekMencke/claude-kb#46): four entries after `"$defaults"`, with every namespace on the home cluster as a sensitive target, since there is no staging cluster. Add `autoMode.environment` entries that name the production namespace, the site buckets, the Lambda functions and the AWS account as protected (keep `"$defaults"`). | Medium | Low | INFRA-010 |
 | 8 | Done 2026-10-12 (FreekMencke/claude-kb#46), without the `default`-profile rule: #44 deleted that profile, so the rule would match nothing. Add deny rules as a backstop: `Read(~/.aws/credentials)`, `Bash(kubectl * delete *)`, `Bash(kubectl delete *)`, `Bash(helm * uninstall *)`, `Bash(aws * --profile default *)`. | Low | Low | INFRA-008 |
-| 10 | Dropped 2026-10-13 (FreekMencke/claude-kb#52): high effort for one user, and since FreekMencke/claude-kb#44 the key is tightly scoped with CloudTrail on. Later: move the agent from a long-term IAM user key to short-lived credentials (an Identity Center permission set, or a role with a session name). | Medium | High | INFRA-020, INFRA-001 |
-
+| 9 | Decided 2026-10-13 (FreekMencke/claude-kb#52): MCP `run_script` first for reads and writes, the CLI with the agent's profile only where MCP can't do the job, and no `aws:ViaAWSMCPService` conditions, since both paths use the same identity. Decide between Bash `aws` and the AWS MCP server. The global CLAUDE.md asks for the agent's `--profile` on every CLI call, while the AWS server's instructions say not to use the CLI. Routing writes through MCP makes `aws:ViaAWSMCPService` conditions usable. | Low | Low | INFRA-003, INFRA-006 |
+| 10 | Deferred 2026-10-13 (FreekMencke/claude-kb#52): high effort for one user. Later: move the agent from a long-term IAM user key to short-lived credentials (an Identity Center permission set, or a role with a session name). | Medium | High | INFRA-020, INFRA-001 |
+| 11 | Decided 2026-10-14: keep the Grafana connector's write tools, so sessions can update dashboards, alerts and the like. The connector signs in as the user, with the user's Grafana rights. | – | – | INFRA-024, MCP-028 |
 
 Not recommended now: running cloud work in a dev container (INFRA-002). The credential is what decides cloud damage, and items 1, 2 and 4 address it directly.
 
@@ -653,6 +663,7 @@ Not recommended now: running cloud work in a dev container (INFRA-002). The cred
 
 - **Leaked keys in our transcripts.** Resolved 2026-10-12: the user's check found two distinct `ASIA` strings (temporary keys, which expire within 36 hours) in three research-subagent transcripts that had read AWS docs, and no `AKIA` key. Nothing needed rotating.
 - **`run_script` under `--read-only`.** Does the AWS proxy's read-only flag keep or hide `aws___run_script`? Not documented; list the tools with the flag to check.
+- **Lambda execution roles.** `lambda:UpdateFunctionCode` lets an agent run code as a function's role, so those roles bound what it can reach. Checking them needs IAM reads, which the agent's policy denies.
 - **Agent key age.** The IAM user's key age and last rotation couldn't be read with the agent's own identity.
 - **Cluster RBAC as code.** Answered: the agent's RBAC is in the cluster repo (`cluster/claude-agent/rbac.yaml`), applied by its install script (checked 2026-10-14).
 - **Sandbox with kubectl and the AWS CLI.** Whether both honor the sandbox proxy, and whether `mask` works with SSO token caches and kubeconfig exec plugins, is undocumented and untested.
