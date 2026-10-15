@@ -14,11 +14,12 @@ WORKDIR /app
 COPY mcp-server/requirements.txt ./
 RUN pip install --no-cache-dir --require-hashes -r requirements.txt
 
-COPY mcp-server/server.py mcp-server/kb_tools.py mcp-server/kb_index.py scripts/check_kb.py ./
+COPY mcp-server/server.py mcp-server/kb_tools.py mcp-server/kb_index.py mcp-server/metrics.py scripts/check_kb.py ./
 # The server's icon (ICON_FILES in server.py)
 COPY assets/logo.png assets/logo.svg ./assets/
 
-EXPOSE 8000
+# The app, and /metrics (metrics.py)
+EXPOSE 8000 9090
 
 # The UID that owns the OAuth state volume's directory on the host (FreekMencke/home-cluster
 # cluster/claude-kb/volumes.yaml): a hostPath volume ignores fsGroup
