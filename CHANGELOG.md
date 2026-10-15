@@ -4,6 +4,7 @@ What changed in the knowledge base, and why. Add new rows at the top of the tabl
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-15 | (server) | Follow-up to FreekMencke/claude-kb#136: `http_request_duration_seconds` labels the route template `path`, as the Node apps do, instead of `route`, so the Express Dashboard's queries work for the MCP server too. No entries changed. |
 | 2026-10-15 | (server) | From FreekMencke/claude-kb#136: the MCP server exposes Prometheus metrics on port 9090 (`metrics.py`, `prometheus-client` 0.26.0), scraped by Alloy through `prometheus.io/*` pod annotations like the Node apps: `http_request_duration_seconds{method,route,status_code}`, `kb_tool_calls_total{tool,outcome}`, `kb_tool_duration_seconds{tool}`, `kb_search_empty_total`, the index's entries, build time and build timestamp, and `process_*`/`python_gc_*`. git-sync's own metrics (`git_sync_count_total{status}`) on port 2020 through an annotated Service. No entries changed. |
 | 2026-10-15 | README | A paragraph's spacing between the banner and the badges. No entries changed. |
 | 2026-10-15 | README | The banners' small line is set in SOLIX too, with wider gaps around its dots and its hyphens lowered like the wordmark's. The README centres the badges, spaced apart, and drops the legend under them. No entries changed. |

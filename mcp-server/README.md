@@ -74,8 +74,8 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   icon anyway.
 - **Metrics** (FreekMencke/claude-kb#136). `/metrics` on port 9090, which neither the Service nor the Ingress routes;
   the pod's `prometheus.io/*` annotations have Alloy scrape it once a minute into Grafana Cloud, like the Node apps.
-  - `http_request_duration_seconds{method,route,status_code}`: the Node apps' name and labels. `route` is the matched
-    route's template; every unmatched path is `other`.
+  - `http_request_duration_seconds{method,path,status_code}`: the Node apps' name and labels, so their dashboard
+    queries work here. `path` is the matched route's template; every unmatched path is `other`.
   - `kb_tool_calls_total{tool,outcome}` (`ok` or `error`) and `kb_tool_duration_seconds{tool}`, from a FastMCP
     middleware; `kb_search_empty_total` counts searches that matched nothing.
   - `kb_index_entries`, `kb_index_build_seconds` and `kb_index_built_timestamp_seconds`, set on each re-index.

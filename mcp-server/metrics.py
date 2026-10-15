@@ -1,9 +1,9 @@
 """Prometheus metrics (FreekMencke/claude-kb#136), served on their own port, which the Ingress never routes.
 
-`http_request_duration_seconds` has the name and labels of the Node apps' metric (`@osrs-tracker/express-metrics`),
-so their dashboard panels work here too. The client's default collectors add `process_*` (memory, CPU, open files)
-and `python_gc_*`. Alloy drops histogram buckets on the way to Grafana Cloud, so the histograms arrive as `_sum` and
-`_count`: averages, not percentiles.
+`http_request_duration_seconds` has the name and labels of the Node apps' metric (`@osrs-tracker/express-metrics`):
+`path` is the matched route's template there too, so their dashboard queries work here. The client's default
+collectors add `process_*` (memory, CPU, open files) and `python_gc_*`. Alloy drops histogram buckets on the way to
+Grafana Cloud, so the histograms arrive as `_sum` and `_count`: averages, not percentiles.
 """
 
 from __future__ import annotations
@@ -23,11 +23,11 @@ import kb_index
 
 PORT = 9090
 TOOLS = ("kb_search", "kb_get", "kb_quick_answers", "kb_status")
-# A route label for paths no route matches, so scanners can't add a series per path
+# The path label for requests no route matches, so scanners can't add a series per path
 OTHER = "other"
 
 HTTP_DURATION = Histogram(
-    "http_request_duration_seconds", "Time to answer an HTTP request", ["method", "route", "status_code"]
+    "http_request_duration_seconds", "Time to answer an HTTP request", ["method", "path", "status_code"]
 )
 TOOL_CALLS = Counter("kb_tool_calls", "Tool calls, by tool and outcome (ok or error)", ["tool", "outcome"])
 TOOL_DURATION = Histogram("kb_tool_duration_seconds", "Time a tool call took", ["tool"])
