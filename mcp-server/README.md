@@ -27,9 +27,10 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 | `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, GitHub sign-in for the owner only, the tools' signatures and descriptions |
 | `kb_tools.py` | The text each tool returns, its caps and its error messages |
 | `kb_index.py` | The entries, parsed by `scripts/check_kb.py`, and their search: SQLite FTS5 in memory, ranked by `bm25()` |
+| `logs.py` | JSON log lines in the Node apps' shape, and one line per request |
 | `metrics.py` | Prometheus metrics on port 9090: HTTP requests, tool calls, empty searches, the index |
 | `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs; the tools through FastMCP's in-memory client; the index and search on fixtures and on this repo |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_tools.py`, `kb_index.py`, `metrics.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_tools.py`, `kb_index.py`, `logs.py`, `metrics.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
 | `requirements.in`, `requirements-dev.in` | Direct dependencies, compiled to `requirements*.txt` with exact versions and hashes |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
 | `pyproject.toml` | Python version and pytest settings |
@@ -200,9 +201,14 @@ HTTP checks. "There is no separate staging environment, so you test in productio
 
 ## Debugging
 
-The server logs to stdout (`kubectl -n claude-kb logs deploy/claude-kb-mcp -c claude-kb-mcp`):
+The server logs JSON lines to stderr (`kubectl -n claude-kb logs deploy/claude-kb-mcp -c claude-kb-mcp`), in the Node
+apps' shape (`logs.py`): `time`, `level` (pino's names: `warn`, not `WARNING`), `logger`, `message`, and `error` with a
+traceback. In Grafana Cloud: `{app="claude-kb-mcp", job="claude-kb/claude-kb-mcp"} | json`, or the logs panel of the
+MCP Server Dashboard.
 
-- uvicorn's access log has the client address (from Traefik's `X-Forwarded-For`), the path and the status. A
+- Each request but the `/healthz` probes has a `type: incoming` line with `method`, `route` (the metric's `path`),
+  `url`, `status`, `responseTime`, `clientIp` (from Traefik's `X-Forwarded-For`) and `userAgent`; a 4XX is `warn`, a
+  5XX `error`. uvicorn's own access log is off. A
   `GET /authorize?client_id=https%3A%2F%2Fclaude.ai%2Foauth%2F...` means Claude used CIMD; a `POST /register` before it
   means DCR.
 - `Sign-in granted to GitHub ID ...` and `Sign-in refused: GitHub ID ... isn't the owner` record the gate.

@@ -48,6 +48,7 @@ from starlette.routing import Route
 
 import kb_index
 import kb_tools
+import logs
 import metrics
 
 HERE = Path(__file__).resolve().parent
@@ -344,7 +345,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--local", action="store_true", help="no sign-in, listen on 127.0.0.1 only")
     parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8000")))
     args = parser.parse_args(argv)
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    logs.configure()
     # It logs "Terminating session: None" after every stateless request
     logging.getLogger("mcp.server.streamable_http").setLevel(logging.WARNING)
 
@@ -357,8 +358,11 @@ def main(argv: list[str] | None = None) -> None:
         app = create_app(KbState(settings.kb_link), auth=build_auth(settings))
         host = "0.0.0.0"
         metrics.serve()
-    # Only Traefik reaches the pod; its X-Forwarded-For puts the client's address in the access log
-    uvicorn.run(app, host=host, port=args.port, proxy_headers=True, forwarded_allow_ips="*")
+    # Only Traefik reaches the pod; its X-Forwarded-For puts the client's address in the request lines. Those come from
+    # logs.request, so uvicorn's own access log is off, and log_config=None leaves its loggers to logs.configure.
+    uvicorn.run(
+        app, host=host, port=args.port, proxy_headers=True, forwarded_allow_ips="*", log_config=None, access_log=False
+    )
 
 
 if __name__ == "__main__":

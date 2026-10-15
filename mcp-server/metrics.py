@@ -20,6 +20,7 @@ from starlette.routing import Match
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 import kb_index
+import logs
 
 PORT = 9090
 TOOLS = ("kb_search", "kb_get", "kb_quick_answers", "kb_status")
@@ -63,7 +64,8 @@ def _route(scope: Scope) -> str:
 
 
 class HttpMetrics:
-    """ASGI middleware timing each HTTP request until the app returns, streamed responses included."""
+    """ASGI middleware timing each HTTP request until the app returns, streamed responses included, and logging it
+    (logs.request)."""
 
     def __init__(self, app: ASGIApp) -> None:
         self.app = app
@@ -84,7 +86,10 @@ class HttpMetrics:
         try:
             await self.app(scope, receive, send_and_record)
         finally:
-            HTTP_DURATION.labels(scope["method"], _route(scope), str(status)).observe(time.perf_counter() - start)
+            seconds = time.perf_counter() - start
+            route = _route(scope)
+            HTTP_DURATION.labels(scope["method"], route, str(status)).observe(seconds)
+            logs.request(scope, route, status, seconds)
 
 
 class ToolMetrics(Middleware):
