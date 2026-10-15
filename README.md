@@ -1,7 +1,9 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
-  <img alt="claude-kb: using Claude efficiently, written for agents to query" src="assets/banner.png">
-</picture>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
+    <img alt="claude-kb: using Claude efficiently, written for agents to query" src="assets/banner.png">
+  </picture>
+</p>
 
 <p align="center">
   <a href="https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml"><img alt="KB format check" src="https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml/badge.svg"></a>
