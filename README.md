@@ -1,13 +1,14 @@
-<img src="assets/logo.svg" alt="" width="88">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
+  <img alt="claude-kb: using Claude efficiently, written for agents to query" src="assets/banner.png">
+</picture>
 
-<h1>
-  claude-kb
-  &middot;
+<p>
   <a href="https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml"><img alt="KB format check" src="https://github.com/FreekMencke/claude-kb/actions/workflows/check.yml/badge.svg"></a>
   <a href="https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml"><img alt="MCP server CI" src="https://github.com/FreekMencke/claude-kb/actions/workflows/mcp-server.yml/badge.svg"></a>
   <a href="https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml"><img alt="MCP server CD" src="https://github.com/FreekMencke/claude-kb/actions/workflows/deploy.yml/badge.svg"></a>
   <a href="mcp-server/README.md"><img alt="Live server" src="https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&amp;label=live%20server&amp;up_message=online&amp;down_message=offline"></a>
-</h1>
+</p>
 
 <sub>KB format check: every entry and index follows the format in CLAUDE.md (`scripts/check_kb.py`). MCP server CI:
 its tests and image build. MCP server CD: its deploy from `main`. Live server: whether the deployed server answers.</sub>
@@ -97,7 +98,7 @@ Treat an entry last verified more than 60 days ago as a lead to re-check, not a 
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
 | [.claude-plugin/](.claude-plugin/plugin.json) | The repo as the `kb-lookup` plugin (the skill plus the server) and as its own marketplace, `freek-kb`; `claude plugin eval` targets it too. No `version`, so installs follow each commit (SKILL-062) |
 | [mcp-server/](mcp-server/README.md) | The remote MCP server that serves this knowledge base (see its README) |
-| [assets/](assets) | Logo and banner; the `-slate` files are an alternative palette |
+| [assets/](assets) | Logo, and the banner in light and dark with its source (`banner.html`) |
 
 ## Changing it
 
