@@ -261,7 +261,7 @@ Custom slash commands were merged into skills in v2.1.3. `.claude/commands/x.md`
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Subagents](https://code.claude.com/docs/en/sub-agents)
-- Related: SKILL-021
+- Related: SKILL-021, MCP-039
 
 There are two ways to combine skills and subagents.
 
@@ -278,6 +278,9 @@ There are two ways to combine skills and subagents.
 - Skills with `disable-model-invocation: true` can't be preloaded.
 
 Use a preloading reviewer agent when a checklist must always apply to that agent. Use `context: fork` when a skill's work would flood the main context.
+
+Tested 2026-10-15, v2.1.296, WSL terminal, Opus 5.5 main session: a forked Haiku skill gets the session's MCP tools (it loaded them with ToolSearch). Looking up the claude-kb server through the fork cost 0.24 USD per lookup plus one follow-up turn, against 0.35 USD with the main session calling the same tools itself (12 runs each, 6 questions); the fork cited the expected entries in 12 of 12 runs, direct calls in 10 of 12 ([FreekMencke/claude-kb#114](https://github.com/FreekMencke/claude-kb/issues/114)). Direct calls spent 4 Opus turns per lookup, the fork 2.
+
 
 ## [SKILL-010] `allowed-tools` pre-approves; it does not restrict
 - Type: anti-pattern

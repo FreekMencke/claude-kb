@@ -30,7 +30,8 @@ From any repo, the `claude-kb-lookup` skill answers from this knowledge base and
 
 The knowledge base is also a remote MCP server, `https://claude-kb.freekmencke.com/mcp`, with the tools `kb_search`,
 `kb_get`, `kb_quick_answers` and `kb_status` ([mcp-server/README.md](mcp-server/README.md)). Sign-in is GitHub, for the
-owner's account only.
+owner's account only. The skill reads the checkout when it has one and falls back to these tools when it doesn't, for
+example a copy of `SKILL.md` on another machine.
 
 - **claude.ai chat (web, desktop, phone), cloud sessions and routines:** the custom connector "Claude KB"
   (Customize > Connectors). Claude uses it only when the prompt names it: start the question with "KB:" (MCP-038).
@@ -172,6 +173,9 @@ a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in t
   ENTRIES.md, and the topic files to `topics/` (2026-10-13).
 - **The lookup skill runs forked on Haiku** (`context: fork`), keeping the index out of the caller's context: about
   0.19 USD a lookup against 0.57 inline, with the same entries and facts (FreekMencke/claude-skills#7, 2026-10-12).
+  Re-measured against the MCP server's tools on 2026-10-15 (FreekMencke/claude-kb#114): the fork calling `kb_search`
+  and `kb_get` cost 0.24 USD a lookup plus one follow-up turn on Opus 5.5, against 0.35 for the main session calling
+  the tools itself, and cited the expected entries in 12 of 12 runs against 10 of 12. So the fork stays (SKILL-009).
 
 How the knowledge base was built (each research, merge and skill step's prompts and test results) is in the git
 history up to `786847b`, in the former `HANDOFF.md`.
