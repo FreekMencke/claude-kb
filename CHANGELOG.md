@@ -4,6 +4,7 @@ What changed in the knowledge base, and why. Add new rows at the top of the tabl
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-15 | README | Setup comes before "Querying it": the surface table, plugin, user-scope server and cloud sections move under a new "Setup" heading, and "Querying it" keeps how to ask, the 60-day rule and lookups by hand. No entries changed. |
 | 2026-10-15 | README | "Querying it" split into a table of where you ask and what to set up, then a short section each for the plugin (numbered steps), the user-scope server, cloud sessions and lookups by hand; the timing figures it repeated stay in Design decisions. Two design decisions written before the MCP server are brought up to date: search is grep or the server's FTS5, and `kb_quick_answers` (not the skill) reads INDEX.md's Quick answers whole. The re-verification routine is named, not linked by its ID. No entries changed. |
 | 2026-10-15 | (repo) | Licensed for going public: CC BY-NC 4.0 for the knowledge base (`LICENSE`), MIT for `mcp-server/`, `scripts/` and `.github/` (`LICENSE-MIT`); README gains a License section and the plugin a `license` field. README's pointer to the former `HANDOFF.md` now names `60cd4a7`: the 2026-10-15 history rewrites changed every commit's SHA. |
 | 2026-10-15 | (server) | Follow-up to FreekMencke/claude-kb#136: the MCP server's logs drop httpx2's line for each GitHub token check (one per signed-in request), and uvicorn's lines read `uvicorn` instead of `uvicorn.error`. No entries changed. |
