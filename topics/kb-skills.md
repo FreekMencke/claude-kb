@@ -16,7 +16,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | Should I add a "forced skill evaluation" hook? | Not by default: no official endorsement, evidence is one author with small N, and it raises false positives. | SKILL-029 |
 | How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. A personal Git marketplace added on claude.ai reaches chat, Cowork and local Claude Code, but not cloud sessions or routines. | SKILL-034, SKILL-038, SKILL-059, SKILL-060 |
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
-| Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload. | SKILL-002, SKILL-040 |
+| Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload, except inside a plugin, where claude.ai accepts them. | SKILL-002, SKILL-040, SKILL-062 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
 | How many skills is too many, and how do I prune? | No official number; one measurement saw a skill's invocation rate drop as the roster grew. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
 | Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills no (local test), so symlink the ones you need into the distro's `~/.claude/skills`; plugins enabled in the distro's settings load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054, SKILL-056 |
@@ -87,6 +87,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
 | SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
+| SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
 
 ---
 
@@ -122,7 +123,7 @@ my-skill/
 - Sources: [Agent Skills specification](https://agentskills.io/specification), [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-003, SKILL-014, SKILL-040
 
-Fields from the open standard work everywhere. Claude Code adds many more, which claude.ai, the API and `package_skill.py` reject with a hard error.
+Fields from the open standard work everywhere. Claude Code adds many more, which claude.ai, the API and `package_skill.py` reject with a hard error. A skill inside a plugin uploaded to claude.ai keeps them (SKILL-062).
 
 | Field | Where | Effect |
 |---|---|---|
@@ -1384,7 +1385,7 @@ Context-cost consequence: on the desktop, account skills you never use in code s
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Plugins (claude.com docs)](https://claude.com/docs/plugins/overview), [Install plugins in Cowork](https://claude.com/docs/cowork/guide/plugins), [Plugin loading: synced plugins](https://code.claude.com/docs/en/plugins/loading)
-- Related: SKILL-038, SKILL-034, SKILL-036, SKILL-050, SKILL-060
+- Related: SKILL-038, SKILL-034, SKILL-036, SKILL-050, SKILL-060, SKILL-062
 
 An individual can add a Git repo as a plugin marketplace on claude.ai, and the plugins installed from it reach chat, Cowork and Claude Code. This replaces ZIP uploads (SKILL-038) for skills kept in git.
 
@@ -1430,6 +1431,25 @@ Argument substitution (SKILL-008) also hits literal text whenever arguments are 
 - **The escape:** CHANGELOG 2.1.163, "added `\$` escape syntax to include a literal `$` before a digit in command bodies". The docs: "To include a literal `$` before a digit, `ARGUMENTS`, or a declared argument name, such as `$1.00` in prose, escape it with a backslash: `\$1.00`." A backslash before any other `$` is kept, a doubled backslash escapes nothing, and `${CLAUDE_*}` variables still expand.
 - **Tested** 2026-10-14, v2.1.296, `claude -p --model haiku --max-turns 2 --max-budget-usd 0.30`, a project skill asking the model to copy a line verbatim (FreekMencke/claude-skills#50): `` X1=\$ARGUMENTS X2=\$0 X3=$(0) X4=`\$1` `` rendered as `` X1=$ARGUMENTS X2=$0 X3=$(0) X4=`$1` `` for both `/esc-test` and `/esc-test foo bar`. The backslash is removed either way, inside a code span too, so an escaped line reads the same with or without arguments.
 - **In awk**, `$(0)` is the same field and isn't substituted. It reads more plainly than `\$0`; `claude-kb-lookup` uses it.
+
+## [SKILL-062] Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions
+- Type: fact
+- Applies to: claude.ai, Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-15
+- Sources: [Plugin structure and testing](https://claude.com/docs/plugins/build), [Plugin support by app](https://claude.com/docs/plugins/platform-support), [Plugins reference](https://code.claude.com/docs/en/plugins-reference), [Plugin loading: versions and updates](https://code.claude.com/docs/en/plugins/loading), local tests ([FreekMencke/claude-kb#116](https://github.com/FreekMencke/claude-kb/issues/116))
+- Related: SKILL-002, SKILL-038, SKILL-059, SKILL-034, MCP-040, MCP-009
+
+claude.ai's plugin upload accepts more than its standalone skill upload, and reads manifest keys its docs don't list. Tested 2026-10-15 with zips of our `kb-lookup` plugin, uploaded in the desktop app (Customize › Plugins › Add › Upload plugin):
+
+- **Claude Code frontmatter:** a plugin skill with `context: fork`, `agent`, `model`, `background` and `argument-hint` uploaded and ran in chat, where a standalone upload rejects them (SKILL-002). Chat showed no fork: the tool calls appeared in the main chat.
+- **Custom skill path:** with `"skills": ["./.claude/skills/"]` in `plugin.json` and no `skills/` folder, the plugin listed 1 skill. The claude.com docs list only `skills/<name>/SKILL.md`; in Claude Code the key "Adds to the default `skills/` scan".
+- **Inline `mcpServers`:** a server declared in `plugin.json`, with no `.mcp.json`, showed on the Connectors tab. That keeps it out of a repo-root `.mcp.json`, which would also load as a project server in that repo's sessions.
+
+So a repo can be its own plugin, with nothing copied: `.claude-plugin/marketplace.json` with `"source": "./"`, and the skill left in `.claude/skills/`.
+
+- **Names:** `claude plugin validate` (v2.1.296) rejects a plugin named `claude-kb`: "A third party's plugin name cannot start with "claude-", "anthropic-", "anthropics-", or "cc-plugin-"".
+- **Version:** "a manifest that pins `"version": "1.0.0"` keeps every user on the cached copy until its author changes the string, however many commits they push. To let users track commits instead, leave `version` out of both the manifest and the entry." Validation then warns about the missing version.
 
 ## Recommendations for our setup
 

@@ -1,0 +1,14 @@
+{
+  "name": "freek-kb",
+  "description": "The claude-kb knowledge base as a plugin for claude.ai chat, Cowork and Claude Code",
+  "owner": {
+    "name": "Freek Mencke"
+  },
+  "plugins": [
+    {
+      "name": "kb-lookup",
+      "source": "./",
+      "description": "The claude-kb-lookup skill with the claude-kb MCP server: chat looks up the knowledge base without being told to"
+    }
+  ]
+}
