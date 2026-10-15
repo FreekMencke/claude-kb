@@ -142,7 +142,11 @@ def test_parses_every_field(index: kb_index.Index) -> None:
     assert e.related == ("ALP-002", "BET-001")
     assert e.tags == ("widgets", "rotation")
     assert e.merged_into == ()
-    assert e.summary == "A widget always turns clockwise when seen from above. The spindle sets the direction."
+    # The first paragraph is short, so the summary goes on into the second
+    assert e.summary == (
+        "A widget always turns clockwise when seen from above. The spindle sets the direction."
+        " Second paragraph about gearing."
+    )
     assert e.body.startswith("## [ALP-001] Widgets rotate clockwise\n- Type: fact")
     assert e.body.endswith("Still part of ALP-001.")
     assert index.entries["ALP-002"].related == ()
