@@ -33,11 +33,14 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Sandboxing and credentials: REPO-035 and REPO-036 (repo agents), INFRA-011 (cloud CLIs, AWS credential masking) and INFRA-021 (transcripts, env, telemetry).
 - Permission rules and their limits: REPO-034 (Bash rules are text matches), INFRA-008 (cloud CLI flag order), INFRA-006 (server flags versus credentials).
 - Auto mode: REPO-032 (modes, subagents, fallback), INFRA-009 and INFRA-010 (infrastructure rules, environment entries).
-- MCP servers: TOK-020 to TOK-023 (overhead and output limits), INFRA-003 to INFRA-005 and INFRA-007 (AWS, Kubernetes and Flux servers), MCP-001 to MCP-028 (configuration, access control, surfaces, vetting). The MCP file links the TOK and INFRA entries instead of moving them: their IDs are quoted elsewhere and their angle (context cost, infra credentials) belongs to those topics.
+- MCP servers: TOK-020 to TOK-023 (overhead and output limits), INFRA-003 to INFRA-005 and INFRA-007 (AWS, Kubernetes and Flux servers), MCP-001 to MCP-037 (configuration, access control, surfaces, vetting, custom connectors, remote hosting). The MCP file links the TOK and INFRA entries instead of moving them: their IDs are quoted elsewhere and their angle (context cost, infra credentials) belongs to those topics.
 - MCP and subagents: MCP-008 (inline `mcpServers`), REPO-007 (trust for agent frontmatter), REPO-021 (browser checker).
 - MCP and workspace trust: MCP-002 (`.mcp.json` approval), MCP-007 (`headersHelper`), REPO-007 (what a repo can do before trust).
 - MCP per surface: MCP-021 to MCP-023 (action, cloud, desktop), REPO-028 (action config from the base branch), MEM-026 (what each surface loads), SURF-034 (our WSL surfaces).
 - MCP processes per session: SESS-013 (one process set per session, measured 2026-10-13), MCP-012 (startup cost in `-p`).
+- Docs servers: TOK-095 to TOK-097 (which docs server or tool to use for research), MCP-034 (how such servers shape their tools, for someone writing one), MCP-018 (designing any server).
+- Knowledge without a checkout: MCP-037 (comparison across surfaces), SKILL-059 and SKILL-060 (plugins from a claude.ai marketplace, attached repos), MCP-010 and MCP-029 (connectors in Claude Code and on claude.ai).
+- Remote server auth: MCP-006 (signing in from Claude Code), MCP-030 (what the server must do for Claude's OAuth client).
 - Changelogs: SESS-026 and SESS-027 (merge conflicts between parallel PRs, fragment tools), DOC-001 to DOC-008 and DOC-018 (what goes in an entry, format, enforcement, our conventions). DOC-004 links SESS-027 for continuously deployed apps instead of repeating it.
 - Overviews and docs outside CLAUDE.md: MEM-021 (`/doctor` trim), MEM-033 (the arXiv context-file study), DOC-009 (where that leaves README and `docs/`).
 - Rules in one place: REPO-044 (what goes in CLAUDE.md, a skill, an agent), DOC-019 (the same rule copied into three files drifts).
