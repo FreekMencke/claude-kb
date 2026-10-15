@@ -13,12 +13,12 @@ import logs
 
 
 def test_lines_are_json_with_pino_level_names() -> None:
-    record = logging.LogRecord("claude_kb_mcp", logging.WARNING, __file__, 1, "Sign-in refused: %s", ("x",), None)
+    record = logging.LogRecord("claude_kb_mcp", logging.WARNING, __file__, 1, "Refreshing failed: %s", ("x",), None)
     line = json.loads(logs.JsonFormatter().format(record))
 
     assert line["level"] == "warn"
     assert line["logger"] == "claude_kb_mcp"
-    assert line["message"] == "Sign-in refused: x"
+    assert line["message"] == "Refreshing failed: x"
     assert line["time"].endswith("Z")
 
 
@@ -47,13 +47,13 @@ async def test_requests_are_logged_by_route_except_the_probes(
 
     await client.get("/healthz")
     await client.post("/mcp", json={})
-    await client.get("/authorize?client_id=x")
+    await client.get("/icon.svg?v=1")
 
     records = [record for record in caplog.records if record.name == logs.requests.name]
     lines = [record.fields for record in records]
     assert [(line["method"], line["route"], line["url"], line["status"]) for line in lines] == [
-        ("POST", "/mcp", "/mcp", "401"),
-        ("GET", "/authorize", "/authorize?client_id=x", lines[1]["status"]),
+        ("POST", "/mcp", "/mcp", "400"),
+        ("GET", "/icon.svg", "/icon.svg?v=1", "200"),
     ]
     assert records[0].levelname == "WARNING"
     assert lines[0]["type"] == "incoming"

@@ -1,12 +1,11 @@
-"""kb_status's contract and the background index of the git-sync checkout."""
+"""The HTTP contract (no sign-in, tools, icons) and the background index of the git-sync checkout."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 import pytest
-from conftest import COMMIT, TOPIC, sse_json
-from test_auth import call, owner_token
+from conftest import COMMIT, TOPIC, call, sse_json
 
 import server
 
@@ -43,24 +42,40 @@ def test_before_the_first_sync(tmp_path: Path) -> None:
     assert "git-sync" in state.status_text()
 
 
-def test_allowed_github_id_must_be_numeric() -> None:
-    env = {
-        "GITHUB_CLIENT_ID": "id",
-        "GITHUB_CLIENT_SECRET": "secret",
-        "JWT_SIGNING_KEY": "key",
-        "STORAGE_ENCRYPTION_KEY": "key",
-        "ALLOWED_GITHUB_ID": "owner",
-    }
-    with pytest.raises(SystemExit, match="numeric"):
-        server.Settings.from_env(env)
-    with pytest.raises(SystemExit, match="JWT_SIGNING_KEY"):
-        server.Settings.from_env({**env, "JWT_SIGNING_KEY": ""})
+@pytest.mark.anyio
+async def test_mcp_needs_no_token(client) -> None:
+    response = await call(client, "tools/call", {"name": "kb_status", "arguments": {}})
+    assert response.status_code == 200, response.text
+    result = sse_json(response)["result"]
+    assert result.get("isError") is not True
+    assert "structuredContent" not in result
+    [content] = result["content"]
+    assert content["type"] == "text"
+    assert f"Commit: {COMMIT}" in content["text"]
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/.well-known/oauth-protected-resource/mcp",
+        "/.well-known/oauth-protected-resource",
+        "/.well-known/oauth-authorization-server",
+    ],
+)
+async def test_no_oauth_discovery(client, path: str) -> None:
+    # Claude signs in only when the server points it at OAuth metadata; without any, it connects directly
+    assert (await client.get(path)).status_code == 404
+
+
+@pytest.mark.anyio
+async def test_health_needs_no_token(client) -> None:
+    assert (await client.get("/healthz")).status_code == 200
 
 
 @pytest.mark.anyio
 async def test_tools_contract_over_http(client) -> None:
-    token = await owner_token(client)
-    response = await call(client, token["access_token"], "tools/list")
+    response = await call(client, "tools/list")
     tools = sse_json(response)["result"]["tools"]
     assert [t["name"] for t in tools] == ["kb_search", "kb_get", "kb_quick_answers", "kb_status"]
     for tool in tools:
@@ -76,9 +91,8 @@ async def test_tools_contract_over_http(client) -> None:
 
 @pytest.mark.anyio
 async def test_initialize_carries_the_usage_rules(client) -> None:
-    token = await owner_token(client)
     params = {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "test", "version": "0"}}
-    response = await call(client, token["access_token"], "initialize", params)
+    response = await call(client, "initialize", params)
     instructions = sse_json(response)["result"]["instructions"]
     # The same rules as kb_search's description, for Claude Code; claude.ai web and desktop drop instructions
     assert all(rule in instructions for rule in ("kb_get the 1 to 4 best IDs", "Cite entry IDs", "60 days"))
@@ -87,9 +101,8 @@ async def test_initialize_carries_the_usage_rules(client) -> None:
 
 @pytest.mark.anyio
 async def test_server_info_lists_same_origin_icons(client) -> None:
-    token = await owner_token(client)
     params = {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "test", "version": "0"}}
-    response = await call(client, token["access_token"], "initialize", params)
+    response = await call(client, "initialize", params)
     icons = sse_json(response)["result"]["serverInfo"]["icons"]
     assert [icon["mimeType"] for icon in icons] == ["image/png", "image/svg+xml"]
     # The spec asks clients to fetch icons only over HTTPS from the server's own origin

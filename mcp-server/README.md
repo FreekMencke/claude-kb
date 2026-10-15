@@ -1,7 +1,8 @@
 # claude-kb MCP server
 
 A remote, read-only MCP server that serves this knowledge base to claude.ai (as a custom connector) and Claude Code,
-at `https://claude-kb.freekmencke.com/mcp`, from the home cluster. Plan: roadmap FreekMencke/claude-kb#109.
+at `https://claude-kb.freekmencke.com/mcp`, from the home cluster, without a sign-in. Plan: roadmap
+FreekMencke/claude-kb#109.
 
 ## Tools
 
@@ -24,12 +25,12 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 
 | File | What it is |
 |---|---|
-| `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, GitHub sign-in for the owner only, the tools' signatures and descriptions |
+| `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, no sign-in, the tools' signatures and descriptions |
 | `kb_tools.py` | The text each tool returns, its caps and its error messages |
 | `kb_index.py` | The entries, parsed by `scripts/check_kb.py`, and their search: SQLite FTS5 in memory, ranked by `bm25()` |
 | `logs.py` | JSON log lines in the Node apps' shape, and one line per request |
 | `metrics.py` | Prometheus metrics on port 9090: HTTP requests, tool calls, empty searches, the index |
-| `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs; the tools through FastMCP's in-memory client; the index and search on fixtures and on this repo |
+| `tests/` | pytest: the HTTP contract without a token, the tools through FastMCP's in-memory client, the index and search on fixtures and on this repo, logs and metrics |
 | `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_tools.py`, `kb_index.py`, `logs.py`, `metrics.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
 | `requirements.in`, `requirements-dev.in` | Direct dependencies, compiled to `requirements*.txt` with exact versions and hashes |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
@@ -53,22 +54,11 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   quoted before `MATCH`, so `(`, `-` or `"` in a query never raise. Merged entries are found by ID only. The weights
   and OR matching were tuned on the Quick-answer questions: 208 of 253 found an entry their row cites in the top 5 on
   2026-10-15; `tests/test_kb_index.py` fails below 75%.
-- **Sign-in.** FastMCP's `GitHubProvider` is an OAuth proxy: the server is the authorization server Claude sees, with
-  CIMD and DCR, PKCE (S256) and a consent page, and GitHub is the login behind it. Its state (clients, codes, the
-  GitHub tokens) is in `STATE_DIR` on a volume, encrypted with `STORAGE_ENCRYPTION_KEY`, so a restart signs nobody out.
-- **The owner gate.** Only the GitHub account whose numeric ID is `ALLOWED_GITHUB_ID` gets anything; the login name is
-  never compared. FastMCP 4.1.0 has no public hook between GitHub's callback and the code it hands the client, so:
-  1. `OwnerOnlyGitHubProvider._handle_idp_callback` overrides a **private** FastMCP method. After FastMCP has exchanged
-     GitHub's code, it asks GitHub who signed in; for anyone else it deletes the authorization code and answers 403,
-     so a stranger never gets a token.
-  2. `load_access_token` (public API, run on every request) returns nothing for a token whose GitHub account isn't the
-     owner's, so a FastMCP upgrade that changes the private method still leaves strangers with a 401.
-
-  `tests/test_auth.py` fails if either check stops working. After a FastMCP upgrade, read its `_handle_idp_callback`
-  and the tests' result before deploying.
-- **Discovery.** `/mcp` without a token is a 401 with `WWW-Authenticate: Bearer ... resource_metadata=...`. The
-  protected-resource metadata is served at `/.well-known/oauth-protected-resource/mcp` (FastMCP) and at the root path
-  (added in `create_app`), both with `resource` `https://claude-kb.freekmencke.com/mcp`.
+- **Access.** No sign-in: the knowledge base is a public repo, so the server is open and read-only
+  (FreekMencke/claude-kb#142, 2026-10-15). `/mcp` answers without a token, and there is no OAuth metadata, so Claude
+  connects without signing in. The Ingress's Traefik Middlewares rate-limit each client IP (20 requests a second,
+  bursts of 200) and drop a client-sent `Forwarded` header. Until then a GitHub sign-in let only the owner in; the
+  history before #142 has it.
 - **Icon.** `serverInfo.icons` lists `assets/logo.png` and `logo.svg`, served by the server itself at `/icon.png` and
   `/icon.svg` (and the PNG at `/favicon.ico`) without a token: the MCP spec asks clients to fetch icons only from the
   server's own origin. Claude's docs say a custom connector appears as "Custom", so claude.ai may show its generic
@@ -110,8 +100,7 @@ The tests, which are the verify command for any change here:
 .venv/bin/python -m pytest
 ```
 
-Without sign-in, on 127.0.0.1 only, reading the checkout it runs from (`kb_status` shows its directory name as the
-commit):
+On 127.0.0.1 only, reading the checkout it runs from (`kb_status` shows its directory name as the commit):
 
 ```bash
 .venv/bin/python server.py --local --port 8765
@@ -139,18 +128,12 @@ docker build -f mcp-server/Dockerfile -t claude-kb-mcp:ci . && .github/scripts/c
 
 ## Configuration
 
-Read from the environment; in the cluster, from the `claude-kb-mcp-oauth` Secret (FreekMencke/home-cluster
-`cluster/claude-kb/secrets.example.yaml`).
+Read from the environment, set in the manifest. No secrets.
 
 | Variable | What it is |
 |---|---|
-| `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | The GitHub OAuth App, whose callback is `https://claude-kb.freekmencke.com/auth/callback` |
-| `JWT_SIGNING_KEY` | Signs the tokens the server issues |
-| `STORAGE_ENCRYPTION_KEY` | A Fernet key for the state in `STATE_DIR`. Changing it signs everyone out |
-| `ALLOWED_GITHUB_ID` | The owner's numeric GitHub ID (`gh api user --jq .id`) |
 | `KB_LINK` | git-sync's link (default `/git/kb`) |
-| `STATE_DIR` | The OAuth state (default `/state`, the `claude-kb-mcp-state` volume) |
-| `PUBLIC_URL` | Default `https://claude-kb.freekmencke.com` |
+| `PORT` | Default 8000 |
 
 ## Dependencies
 
@@ -176,27 +159,23 @@ Flux's `Flux / sync` status and smoke-tests the public URL. A change to files ou
 
 Flux may only apply Deployments, Services, Ingresses, Traefik Middlewares and PodDisruptionBudgets in the `claude-kb`
 namespace. Anything else (a ConfigMap, a Secret, a volume claim) fails the deploy with "forbidden" until it's added to
-the Role in FreekMencke/home-cluster `cluster/claude-kb/flux.yaml`; the Secrets and the state volume are made there.
+the Role in FreekMencke/home-cluster `cluster/claude-kb/flux.yaml`.
 
 CD needs the repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
 
 ## Connecting
 
-Before connecting (from outside the LAN, such as a phone hotspot or a cloud session): `curl -i` the URL (a 401 or 405,
-never a redirect), the two metadata documents and the `A` record. `.github/scripts/deploy-smoke-test.sh` runs the
-HTTP checks. "There is no separate staging environment, so you test in production."
+Before connecting (from outside the LAN, such as a phone hotspot or a cloud session): run
+`.github/scripts/deploy-smoke-test.sh` and check the `A` record. "There is no separate staging environment, so you
+test in production."
 
 - **claude.ai** (web, desktop, phone): Customize > Connectors > Add custom connector, URL
-  `https://claude-kb.freekmencke.com/mcp`. You can't change its authentication settings after adding it: remove and
-  re-add it.
+  `https://claude-kb.freekmencke.com/mcp`, no OAuth settings. You can't change its authentication settings after
+  adding it: a connector added while the server still had a sign-in (before 2026-10-15) has to be removed and re-added.
 - **Claude Code** at user scope (needed in desktop WSL sessions):
 
   ```bash
   claude mcp add --transport http --scope user claude-kb https://claude-kb.freekmencke.com/mcp
-  ```
-
-  ```bash
-  claude mcp login claude-kb
   ```
 
 ## Debugging
@@ -208,10 +187,7 @@ MCP Server Dashboard.
 
 - Each request but the `/healthz` probes has a `type: incoming` line with `method`, `route` (the metric's `path`),
   `url`, `status`, `responseTime`, `clientIp` (from Traefik's `X-Forwarded-For`) and `userAgent`; a 4XX is `warn`, a
-  5XX `error`. uvicorn's own access log is off. A
-  `GET /authorize?client_id=https%3A%2F%2Fclaude.ai%2Foauth%2F...` means Claude used CIMD; a `POST /register` before it
-  means DCR.
-- `Sign-in granted to GitHub ID ...` and `Sign-in refused: GitHub ID ... isn't the owner` record the gate.
+  5XX `error`. uvicorn's own access log is off.
 - `Indexed commit <hash>: <n> entries in <s> s` follows each new commit from git-sync; git-sync's own log is container
   `git-sync`.
 - Metrics, in Grafana Cloud's Explore: `sum by (tool, outcome) (increase(kb_tool_calls_total[1d]))` for use,

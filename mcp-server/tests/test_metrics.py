@@ -23,12 +23,12 @@ def sample(name: str, **labels: str) -> float:
 async def test_requests_are_counted_by_route_template(client: httpx2.AsyncClient) -> None:
     count = "http_request_duration_seconds_count"
     healthz = dict(method="GET", path="/healthz", status_code="200")
-    mcp = dict(method="POST", path="/mcp", status_code="401")
+    mcp = dict(method="POST", path="/mcp", status_code="400")
     other = dict(method="GET", path="other", status_code="404")
     before = {k: sample(count, **v) for k, v in [("healthz", healthz), ("mcp", mcp), ("other", other)]}
 
     assert (await client.get("/healthz")).status_code == 200
-    assert (await client.post("/mcp", json={})).status_code == 401
+    assert (await client.post("/mcp", json={})).status_code == 400
     assert (await client.get("/wp-login.php")).status_code == 404
     assert (await client.get("/.env")).status_code == 404
 
@@ -47,7 +47,7 @@ async def test_tool_calls_outcomes_and_empty_searches(state: server.KbState) -> 
         sample("kb_search_empty_total"),
         sample("kb_tool_duration_seconds_count", tool="kb_search"),
     )
-    async with Client(server.create_mcp(state, auth=None)) as client:
+    async with Client(server.create_mcp(state)) as client:
         await client.call_tool("kb_search", {"query": "zzqqxx"})
         await client.call_tool("kb_get", {"ids": ["NOPE-999"]}, raise_on_error=False)
 

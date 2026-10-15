@@ -21,8 +21,7 @@ COPY assets/logo.png assets/logo.svg ./assets/
 # The app, and /metrics (metrics.py)
 EXPOSE 8000 9090
 
-# The UID that owns the OAuth state volume's directory on the host (FreekMencke/home-cluster
-# cluster/claude-kb/volumes.yaml): a hostPath volume ignores fsGroup
+# A fixed non-root UID, which the manifest's runAsUser repeats
 USER 10001:10001
 
 CMD ["python", "server.py"]

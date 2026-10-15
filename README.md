@@ -21,8 +21,8 @@ confidence level and a last-verified date.
 ## Setup
 
 Claude reads the knowledge base through the `claude-kb-lookup` skill and the remote MCP server at
-`https://claude-kb.freekmencke.com/mcp` ([mcp-server/README.md](mcp-server/README.md)). The server signs in with GitHub
-and lets in only the owner's account; anyone else can read the files [by hand](#by-hand).
+`https://claude-kb.freekmencke.com/mcp` ([mcp-server/README.md](mcp-server/README.md)), which is open to anyone
+without a sign-in. The files can also be read [by hand](#by-hand).
 
 | Where you ask | What to set up |
 |---|---|
@@ -48,10 +48,6 @@ In Claude Code, add the server at user scope as well:
 
 ```bash
 claude mcp add --transport http --scope user claude-kb https://claude-kb.freekmencke.com/mcp
-```
-
-```bash
-claude mcp login claude-kb
 ```
 
 - It wins over the plugin's copy of the same URL (MCP-009), so the tools keep the names `mcp__claude-kb__*` that the
