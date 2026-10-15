@@ -1,4 +1,4 @@
-name: Check
+name: KB format check
 
 on:
   push:

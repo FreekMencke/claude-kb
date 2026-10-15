@@ -1,5 +1,5 @@
-name: CD
-# Titled like the CI run that started it, instead of every run being called "CD"
+name: MCP server CD
+# Titled like the CI run that started it, instead of every run being called "MCP server CD"
 run-name: ${{ github.event.workflow_run.display_title }}
 
 # Deploys the MCP server once its CI (mcp-server.yml) passes on main: builds and pushes the image, then commits its
@@ -8,7 +8,7 @@ run-name: ${{ github.event.workflow_run.display_title }}
 # "Deploy" in mcp-server/README.md.
 on:
   workflow_run:
-    workflows: ['MCP server']
+    workflows: ['MCP server CI']
     types: [completed]
     branches: ['main']
 
