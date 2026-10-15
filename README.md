@@ -13,12 +13,6 @@
   <a href="mcp-server/README.md"><img alt="Live server" src="https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&amp;label=live%20server&amp;up_message=online&amp;down_message=offline"></a>
 </p>
 
-<p align="center"><sub>
-  KB format check: every entry and index follows the format in CLAUDE.md (<code>scripts/check_kb.py</code>).<br>
-  MCP server CI: its tests and image build. MCP server CD: its deploy from <code>main</code>. Live server: whether the
-  deployed server answers.
-</sub></p>
-
 A Markdown knowledge base on using Claude efficiently, written for agents to query. Every entry carries its sources, a
 confidence level and a last-verified date.
 
