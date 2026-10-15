@@ -1,0 +1,65 @@
+name: MCP server
+
+# Tests and builds mcp-server/ when it, or the parser its image copies, changes; a KB-only push runs none of this. CD
+# (deploy.yml) deploys main once this passes there.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mcp-server/**'
+      # Deploy commits only change the manifest, which Flux applies by itself: no run, so no deploy run to skip
+      - '!mcp-server/claude-kb-mcp.yaml'
+      - 'scripts/check_kb.py'
+      - '.github/workflows/mcp-server.yml'
+      - '.github/workflows/deploy.yml'
+      - '.github/scripts/*.sh'
+  pull_request:
+    paths:
+      - 'mcp-server/**'
+      - 'scripts/check_kb.py'
+      - '.github/workflows/mcp-server.yml'
+      - '.github/workflows/deploy.yml'
+      - '.github/scripts/*.sh'
+
+# Read-only: the tests and the image build run code from every installed package
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mcp-server
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: mcp-server/requirements-dev.txt
+      - run: pip install --require-hashes -r requirements-dev.txt
+      - run: python -m pytest
+      # The deploy scripts. ShellCheck comes with GitHub's Ubuntu runners.
+      - run: shellcheck ../.github/scripts/*.sh
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Build the image as CD does
+        run: docker build -f mcp-server/Dockerfile -t claude-kb-mcp:ci .
+      - name: Run it as the pod does, and check its sign-in endpoints
+        run: .github/scripts/ci-image-test.sh claude-kb-mcp:ci
+      # Schemas for Kubernetes 1.36 (the cluster's version) and Traefik's Middleware, with unknown fields as errors
+      - name: Validate the manifest
+        run: >-
+          docker run --rm -v "$PWD/mcp-server:/m:ro"
+          ghcr.io/yannh/kubeconform:v0.8.0@sha256:faffaf43f95aa6425306e1ab8d6fcad72acb9049158f38e574c085ea1ec0f64e
+          -strict -summary -kubernetes-version 1.36.0 -schema-location default
+          -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
+          /m/claude-kb-mcp.yaml
