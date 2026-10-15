@@ -1,0 +1,4 @@
+# Compiled to requirements-dev.txt (README.md, "Dependencies")
+-c requirements.txt
+-r requirements.in
+pytest==9.1.1
