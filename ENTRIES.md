@@ -158,6 +158,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | MCP-038 | Chat and cloud sessions use a custom connector only when the prompt points at it | fact | connectors, claude-ai, cloud, triggering |
 | MCP-039 | One server as connector and user-scope entry: names, duplicates and cost per surface | fact | connectors, scopes, tool-names, tokens |
 | MCP-040 | A plugin that bundles a connector with its skill makes chat use the connector unprompted | fact | connectors, plugins, claude-ai, triggering |
+| MCP-041 | A search tool beat grepping a checkout for knowledge-base lookups | fact | search, measurement, tokens, no-checkout |
 
 ## Memory and instruction files (`topics/kb-memory.md`, MEM)
 

@@ -18,32 +18,19 @@ confidence level and a last-verified date.
 
 ## Querying it
 
-From any repo, the `claude-kb-lookup` skill answers from this knowledge base and cites entry IDs.
+From any repo, the `claude-kb-lookup` skill answers from this knowledge base and cites entry IDs. It reads only the
+remote MCP server, `https://claude-kb.freekmencke.com/mcp`, with the tools `kb_search`, `kb_get`, `kb_quick_answers`
+and `kb_status` ([mcp-server/README.md](mcp-server/README.md)); sign-in is GitHub, for the owner's account only. Reading
+the server was faster than reading a checkout: 22.7 s against 32.4 s a lookup, with a third fewer tokens (MCP-041).
 
-- **Local sessions** (terminal, desktop Code tab): link it as a personal skill from the main checkout, never a worktree.
-
-  ```bash
-  ln -sfn /home/fremen/repos/claude-kb/.claude/skills/claude-kb-lookup ~/.claude/skills/claude-kb-lookup
-  ```
-
-- **Cloud sessions and routines** load only their repositories' `.claude/skills/`: add FreekMencke/claude-kb as one of
-  them (SKILL-060), or use the connector below.
-
-### Without a checkout
-
-The knowledge base is also a remote MCP server, `https://claude-kb.freekmencke.com/mcp`, with the tools `kb_search`,
-`kb_get`, `kb_quick_answers` and `kb_status` ([mcp-server/README.md](mcp-server/README.md)). Sign-in is GitHub, for the
-owner's account only. The skill reads the checkout when it has one and falls back to these tools when it doesn't, for
-example a copy of `SKILL.md` on another machine.
-
-- **claude.ai chat (web, desktop, phone) and Cowork:** the `kb-lookup` plugin, the skill bundled with the server, so
-  Claude looks things up without being told to (MCP-040). This repo is its marketplace: Customize > Plugins > Add > Add
-  marketplace, `FreekMencke/claude-kb`, with Sync automatically, then install `kb-lookup` and connect "Claude KB" on its
-  Connectors tab. It also syncs into Claude Code as `kb-lookup@synced`: keep that off where the symlink above is set up,
-  or both copies load.
-- **Cloud sessions and routines:** the custom connector "Claude KB" (Customize > Connectors). Claude uses it only when
-  the prompt names it: start the question with "KB:" (MCP-038).
-- **Desktop Code tab sessions on WSL**, where connectors are unreliable (MCP-010), and the terminal: the user-scope server.
+- **claude.ai chat (web, desktop, phone), Cowork and local Claude Code:** the `kb-lookup` plugin, the skill bundled with
+  the server, so chat looks things up without being told to (MCP-040). This repo is its marketplace: on claude.ai (not
+  the Code tab's Plugins page), Customize > Plugins > Add > Add marketplace, `FreekMencke/claude-kb`, with Sync
+  automatically; then install `kb-lookup` and connect "Claude KB" on its Connectors tab. Claude Code loads it as
+  `kb-lookup@synced` in sessions signed in with claude.ai (SKILL-059); `"kb-lookup@synced": true` in `enabledPlugins`.
+- **Local Claude Code, the server itself:** also add it at user scope. It wins over the plugin's copy of the same URL
+  (MCP-009), keeps the tool names `mcp__claude-kb__*` that the allow rules name, and covers desktop WSL sessions, where
+  connectors are unreliable (MCP-010). It costs about 255 input tokens per request (MCP-039).
 
   ```bash
   claude mcp add --transport http --scope user claude-kb https://claude-kb.freekmencke.com/mcp
@@ -53,10 +40,12 @@ example a copy of `SKILL.md` on another machine.
   claude mcp login claude-kb
   ```
 
-  It costs about 255 input tokens per request (MCP-039).
+- **Cloud sessions and routines** load neither synced plugins nor `~/.claude` (SKILL-060): start the question with
+  "KB:" so Claude uses the "Claude KB" connector (MCP-038), or attach FreekMencke/claude-kb so its `.claude/skills/`
+  loads.
 
-It runs as a forked subagent that can't see the conversation, so pass it a self-contained question and keep its entry
-IDs in the reply. On `main`, it fast-forwards its checkout first, which updates the skill too.
+The skill runs as a forked subagent that can't see the conversation, so pass it a self-contained question and keep its
+entry IDs in the reply.
 
 By hand: find the question in [INDEX.md](INDEX.md)'s Quick answers, or grep [ENTRIES.md](ENTRIES.md) for an ID, title
 or tag, then read only that entry:
@@ -184,6 +173,9 @@ a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in t
   Re-measured against the MCP server's tools on 2026-10-15 (FreekMencke/claude-kb#114): the fork calling `kb_search`
   and `kb_get` cost 0.24 USD a lookup plus one follow-up turn on Opus 5.5, against 0.35 for the main session calling
   the tools itself, and cited the expected entries in 12 of 12 runs against 10 of 12. So the fork stays (SKILL-009).
+- **The lookup skill reads only the server**, never a checkout (2026-10-15): the same forked skill answered in a median
+  22.7 s through `kb_search` and `kb_get` against 32.4 s fetching and grepping a checkout, with 138k against 207k Haiku
+  input tokens and the same accuracy (MCP-041). It gives up unmerged entries and the index's Conflicts section.
 
 How the knowledge base was built (each research, merge and skill step's prompts and test results) is in the git
 history up to `786847b`, in the former `HANDOFF.md`.

@@ -15,7 +15,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | `topics/kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 | `topics/kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
 | `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 35 (0 merged into other entries) |
-| `topics/kb-mcp.md` | MCP | MCP servers: scopes, approval, auth, permissions, subagent scoping, surfaces, vetting and writing servers; claude.ai custom connectors, hosting a remote server, a repo's knowledge without a checkout | 40 (0 merged into other entries) |
+| `topics/kb-mcp.md` | MCP | MCP servers: scopes, approval, auth, permissions, subagent scoping, surfaces, vetting and writing servers; claude.ai custom connectors, hosting a remote server, a repo's knowledge without a checkout | 41 (0 merged into other entries) |
 | `topics/kb-documentation.md` | DOC | Repo docs: changelogs, READMEs, decision records, runbooks, plan docs and drift, plus a survey of our repos | 24 (0 merged into other entries) |
 | `topics/kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO work: Google data access, crawler view, retired advice, SEO skills, title links, sitemap status | 34 (0 merged into other entries) |
 
