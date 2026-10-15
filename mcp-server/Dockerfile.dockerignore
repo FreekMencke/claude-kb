@@ -1,0 +1,5 @@
+# The build context is the repo root; send only what the Dockerfile copies
+*
+!mcp-server/requirements.txt
+!mcp-server/server.py
+!scripts/check_kb.py

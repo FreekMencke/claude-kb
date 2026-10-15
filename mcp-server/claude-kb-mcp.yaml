@@ -1,0 +1,229 @@
+# claude-kb's MCP server at https://claude-kb.freekmencke.com/mcp. Flux applies this file, the only one it reads from
+# this repo, within a minute of a push to main (FreekMencke/home-cluster cluster/claude-kb/flux.yaml). Flux's
+# flux-deployer may only manage Deployments, Services, Ingresses, Traefik Middlewares and PodDisruptionBudgets here:
+# the Secrets and the volume claim are made in home-cluster, and this file only uses them. CD (.github/workflows/
+# deploy.yml) updates the image digest.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: claude-kb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claude-kb-mcp
+  namespace: claude-kb
+  labels:
+    app: claude-kb-mcp
+spec:
+  # One replica: the OAuth state is on a ReadWriteOnce hostPath volume. With one replica on a one-node cluster, a
+  # PodDisruptionBudget could only block every drain of the node (minAvailable: 1) or do nothing, so there is none.
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: claude-kb-mcp
+  template:
+    metadata:
+      labels:
+        app: claude-kb-mcp
+    spec:
+      securityContext:
+        # git-sync's docs: "to make SSH key readable" for the git-sync user (the server reads the checkout because
+        # its files are world-readable). The state volume is a hostPath, which ignores fsGroup.
+        fsGroup: 65533
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: claude-kb-mcp
+          image: freekmencke/claude-kb-mcp@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          imagePullPolicy: IfNotPresent
+          # GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SIGNING_KEY, STORAGE_ENCRYPTION_KEY and ALLOWED_GITHUB_ID
+          # (FreekMencke/home-cluster cluster/claude-kb/secrets.example.yaml)
+          envFrom:
+            - secretRef:
+                name: claude-kb-mcp-oauth
+          env:
+            - name: KB_LINK
+              value: /git/kb
+            - name: STATE_DIR
+              value: /state
+          ports:
+            - containerPort: 8000
+          resources:
+            # About 76 MiB at idle (docker stats, 2026-10-15). No CPU limit, like the other apps.
+            requests:
+              cpu: 10m
+              memory: 96Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            # The image's USER, and the owner of the state directory on the host (home-cluster
+            # cluster/claude-kb/volumes.yaml)
+            runAsUser: 10001
+            runAsGroup: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: git
+              mountPath: /git
+              readOnly: true
+            - name: state
+              mountPath: /state
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 10
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 2
+            failureThreshold: 30
+          lifecycle:
+            # Keep serving until Traefik has dropped the terminating pod, otherwise in-flight requests get a 502/504
+            preStop:
+              sleep:
+                seconds: 5
+        # Keeps a checkout of main in the shared `git` volume, at the commit /git/kb points to. The server indexes it
+        # in the background when that link changes, so a KB push reaches the server in about a minute, without an
+        # image build.
+        - name: git-sync
+          image: registry.k8s.io/git-sync/git-sync:v4.7.1@sha256:c5e1976da735bf0b53979f079a07475d77174c51863cd084e928ff6074480717
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GITSYNC_REPO
+              value: git@github.com:FreekMencke/claude-kb.git
+            - name: GITSYNC_REF
+              value: main
+            - name: GITSYNC_ROOT
+              value: /git
+            - name: GITSYNC_LINK
+              value: kb
+            - name: GITSYNC_PERIOD
+              value: 60s
+            # A read-only deploy key and github.com's host keys, from the claude-kb-git-sync Secret
+            - name: GITSYNC_SSH_KEY_FILE
+              value: /etc/git-secret/ssh
+            - name: GITSYNC_SSH_KNOWN_HOSTS_FILE
+              value: /etc/git-secret/known_hosts
+          resources:
+            requests:
+              cpu: 5m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            runAsNonRoot: true
+            # The git-sync user
+            runAsUser: 65533
+            runAsGroup: 65533
+            allowPrivilegeEscalation: false
+            # git-sync writes only its gitconfig (to $HOME, /tmp) and the checkout (tested 2026-10-15)
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: git
+              mountPath: /git
+            - name: git-secret
+              mountPath: /etc/git-secret
+              readOnly: true
+            - name: git-sync-tmp
+              mountPath: /tmp
+      volumes:
+        - name: git
+          emptyDir:
+            sizeLimit: 256Mi
+        - name: git-secret
+          secret:
+            secretName: claude-kb-git-sync
+            defaultMode: 0400
+        - name: state
+          persistentVolumeClaim:
+            claimName: claude-kb-mcp-state
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: git-sync-tmp
+          emptyDir:
+            sizeLimit: 16Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: claude-kb-mcp-service
+  namespace: claude-kb
+spec:
+  selector:
+    app: claude-kb-mcp
+  ports:
+    - port: 80
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: claude-kb-mcp-ingress
+  namespace: claude-kb
+  annotations:
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    # The Middlewares below: per-client-IP rate limits, then Forwarded header stripping. No compression: it can
+    # buffer the server's event streams.
+    traefik.ingress.kubernetes.io/router.middlewares: claude-kb-claude-kb-mcp-ratelimit@kubernetescrd,claude-kb-claude-kb-mcp-strip-forwarded@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - claude-kb.freekmencke.com
+      secretName: claude-kb-mcp-tls
+  rules:
+    - host: claude-kb.freekmencke.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: claude-kb-mcp-service
+                port:
+                  number: 80
+---
+# Per client IP. Claude's requests all come from Anthropic's 160.79.104.0/21, and a sign-in or a burst of tool calls
+# is a few dozen requests: a 429 would read as a failed connection, so this only stops floods.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: claude-kb-mcp-ratelimit
+  namespace: claude-kb
+spec:
+  rateLimit:
+    average: 20
+    period: 1s
+    burst: 200
+---
+# Traefik passes a client-sent RFC 7239 Forwarded header through unchanged (it only rewrites X-Forwarded-*), so drop it.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: claude-kb-mcp-strip-forwarded
+  namespace: claude-kb
+spec:
+  headers:
+    customRequestHeaders:
+      Forwarded: ''

@@ -80,3 +80,7 @@ End the file with two sections kept apart from the facts:
 ## Editing the lookup skill
 
 `.claude/skills/claude-kb-lookup/` is the skill other repos use to query this knowledge base. Editing it isn't a research session, so the entry format doesn't apply. Follow README.md's "Changing the lookup skill": a change to its description needs the trigger evals.
+
+## Server code
+
+`mcp-server/` is the knowledge base's remote MCP server (roadmap #109), deployed from `main` by `.github/workflows/deploy.yml`. A research session leaves it, `.github/scripts/` and those workflows alone. A session changing the server follows `mcp-server/README.md`; its verify command is `python -m pytest`, run from `mcp-server/` in a venv with `requirements-dev.txt`. Merging a change to the server deploys it.
