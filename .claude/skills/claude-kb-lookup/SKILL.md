@@ -12,64 +12,30 @@ argument-hint: "<self-contained question>"
 
 You run as a separate subagent on Haiku (`context: fork`, `model: haiku`), with no access to the caller's
 conversation. Answer this question from the knowledge base, following the steps below, and return only the answer in
-the format of step 4:
+the format of step 3:
 
 > $ARGUMENTS
 
 If the question is empty or depends on context you can't see ("this", "the above"), say what is missing and stop.
 
-The knowledge base is the git repo of sourced entries that holds this skill (FreekMencke/claude-kb). Read it; never edit it.
-Without a checkout, the same entries come from the claude-kb MCP server's `kb_*` tools (see "Without a checkout" below).
+The knowledge base (FreekMencke/claude-kb) is a set of sourced entries served by the claude-kb MCP server. Read it only
+through the server's `kb_*` tools, never from a checkout or files on disk, and never edit it.
 
-## 1. Get the index
+## 1. Load the tools
 
-Find the knowledge base, and update it when it's on `main`:
+The tools' full names depend on how the session got the server: `mcp__claude-kb__kb_search` (user scope), `mcp__claude_ai_Claude_KB__kb_search` (the claude.ai connector in the terminal), `mcp__Claude_KB__kb_search` (cloud sessions), `mcp__plugin_kb-lookup_claude-kb__kb_search` (the `kb-lookup` plugin) or `mcp__<uuid>__kb_search` (desktop sessions on WSL). Any server with `kb_search` and `kb_get` will do. If they're deferred, load `kb_search`, `kb_get` and `kb_quick_answers` with one ToolSearch `select:` call. If there are none, say the knowledge base isn't available here and stop; the caller decides where to look instead.
 
-```bash
-kb="$(git -C "$(realpath "${CLAUDE_SKILL_DIR}")" rev-parse --show-toplevel)" && echo "KB=$kb" && if [ "$(git -C "$kb" branch --show-current)" = main ]; then git -C "$kb" fetch -q && git -C "$kb" merge --ff-only -q origin/main && echo updated; else echo "not on main, not updated"; fi
-```
+## 2. Find and read the entries you need
 
-- Below, `KB` stands for the path it printed. Write it out in every command: shell variables don't carry over between commands.
-- If it prints no path, or `KB/INDEX.md` doesn't exist, follow "Without a checkout" below instead of steps 1 and 2. The checkout comes first because it works offline and in sessions without the server.
-- Only a checkout on `main` is updated, so a worktree or session branch is never moved. Not `git pull`: two sessions pulling at once fail with "Cannot fast-forward to multiple branches".
-- If the update fails or is skipped, carry on with what is there and say the copy may be behind.
-
-Then read `KB/INDEX.md` in full: Quick answers, the file table and Conflicts. Quick answers often settles the question.
-
-If Quick answers doesn't settle it, find entries in `ENTRIES.md`, which lists every entry by ID, title, type and tags. Don't read it whole: grep it case-insensitively for two to five keywords and synonyms from the question, e.g. `grep -i -E 'webfetch|curl|raw' KB/ENTRIES.md`. Grep again with other words if nothing fits. Matches from more than one topic file (different ID prefixes) usually mean each covers a different angle: read the best match from each.
-
-## 2. Read only the entries you need
-
-Pick the IDs from Quick answers or `ENTRIES.md`, usually one to four. Print each entry with its file and line:
-
-```bash
-cd KB && for id in ORCH-005 TOK-036; do awk -v id="$id" '$(0) ~ "^## \\[" id "\\]" {p=1; print FILENAME ":" FNR; print; next} p && /^## / {exit} p' topics/kb-*.md; done
-```
-
-Keep `$(0)`: Claude Code replaces a literal dollar-zero in a skill with the first argument when one is passed.
-
-- An entry that says "Merged into X": read X instead.
-- Follow a `Related:` ID when the entry doesn't answer the question or calls the answer unconfirmed.
-- If an ID appears in the Conflicts section of `INDEX.md`, use the side it says the sources support.
-- For "what should we do" questions about our own setup, also read the "Recommendations for our setup" section of that entry's file. Recommendations go stale faster than facts.
-- Stop once you have the answer. Don't read whole topic files.
-
-## 3. Check the dates
-
-An entry is due for re-check when its `Last verified` date is more than 60 days old. Get the cutoff with `date -d '60 days ago' +%F`; ISO dates earlier than it are due. Also note entries whose `Confidence` is `single-source` or `unverified`.
-
-## Without a checkout: the `kb_*` tools
-
-Use the claude-kb MCP server's tools. Their full names depend on how the session got the server: `mcp__claude-kb__kb_search` (user scope), `mcp__claude_ai_Claude_KB__kb_search` (the claude.ai connector in the terminal), `mcp__Claude_KB__kb_search` (cloud sessions) or `mcp__<uuid>__kb_search` (desktop sessions on WSL). Any server with `kb_search` and `kb_get` will do. They're usually deferred: load `kb_search`, `kb_get` and `kb_quick_answers` with one ToolSearch `select:` call. If there are none, say the knowledge base isn't available here and stop; the caller decides where to look instead.
-
-- **Find entries:** `kb_search` with two to five keywords from the question, instead of grepping `ENTRIES.md`. Search again with other words if nothing fits. Each hit shows its type, confidence and last-verified date, and a summary.
-- **Read them:** `kb_get` the best IDs, usually one to four, in one call (up to 10). A merged entry comes with the entry it points to; follow a `Related:` ID as in step 2.
+- **Find entries:** `kb_search` with two to five keywords from the question. Search again with other words if nothing fits. Each hit shows its type, confidence and last-verified date, and a summary.
+- **Read them:** `kb_get` the best IDs, usually one to four, in one call (up to 10). A merged entry comes with the entry it points to; follow a `Related:` ID when the entry doesn't answer the question or calls the answer unconfirmed.
 - **Our own setup:** for "what should we do" questions, `kb_quick_answers` with the entry's topic (its ID prefix, e.g. `MCP`) also returns that file's Recommendations.
-- **Conflicts:** the tools don't return `INDEX.md`'s Conflicts section. If two entries disagree, say so in the answer.
-- **Dates:** a search hit last verified more than 60 days ago says "check its sources"; list it under "Due for re-check" as in step 3.
+- **Conflicts:** the tools don't return the index's Conflicts section. If two entries disagree, say so in the answer.
+- **Dates:** a search hit last verified more than 60 days ago says "check its sources"; list it under "Due for re-check". Also note entries whose confidence is `single-source` or `unverified`.
 - **Corpus:** every result ends with `corpus: <commit>`. Add it as the answer's last line: `Corpus: <commit>`.
+- **Stop** once you have the answer. Usually one search and one `kb_get` are enough.
 
-## 4. Answer
+## 3. Answer
 
 ```
 <the answer>

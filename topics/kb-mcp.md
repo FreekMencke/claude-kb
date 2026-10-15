@@ -66,6 +66,7 @@ Prefix: MCP. Researched 2026-10-13 on Claude Code v2.1.296 (WSL terminal) and th
 | MCP-038 | Chat and cloud sessions use a custom connector only when the prompt points at it | fact | connectors, claude-ai, cloud, triggering |
 | MCP-039 | One server as connector and user-scope entry: names, duplicates and cost per surface | fact | connectors, scopes, tool-names, tokens |
 | MCP-040 | A plugin that bundles a connector with its skill makes chat use the connector unprompted | fact | connectors, plugins, claude-ai, triggering |
+| MCP-041 | A search tool beat grepping a checkout for knowledge-base lookups | fact | search, measurement, tokens, no-checkout |
 
 ## [MCP-001] Installation scopes and which definition wins
 - Type: fact
@@ -885,6 +886,31 @@ Tested 2026-10-15 in the desktop app's chat with our `kb-lookup` plugin, uploade
 - **Connector:** the plugin's Connectors tab showed "Claude KB · Connected · Custom" straight away. It reused the existing custom connector at the same URL: no second sign-in, one set of tools. The docs promise this only for directory connectors: "use the same URL here, so that someone who has both your connector and your plugin sees one set of tools rather than two".
 - **Reach:** chat, Cowork and Claude Code as `<name>@synced`; not cloud sessions or routines (SKILL-060). Web and phone chat weren't tested.
 
+## [MCP-041] A search tool beat grepping a checkout for knowledge-base lookups
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-15
+- Sources: local measurement ([FreekMencke/claude-kb#116](https://github.com/FreekMencke/claude-kb/issues/116) follow-up)
+- Related: MCP-037, MCP-034, MCP-039, SKILL-009, MCP-040
+
+The same forked Haiku lookup skill answered faster and with fewer tokens through our server's `kb_search` and `kb_get` than by fetching and grepping a git checkout of the same knowledge base, and cited expected entries equally often.
+
+Measured 2026-10-15, 18:36:03 to 18:42:06 UTC, Claude Code 2.1.296, WSL terminal, `claude -p` on Opus 5.5 with the skill forked on Haiku 5.5. Six questions, two runs each; each pair ran side by side.
+
+| Median of 12 | Checkout | Server |
+|---|---|---|
+| Wall time | 32.4 s (21.7–40.2) | 22.7 s (18.0–33.8) |
+| Haiku input / output tokens | 207k / 2.1k | 138k / 1.3k |
+| Tool calls in the fork | 4.5 | 4 |
+| Expected entry cited | 12/12 | 12/12 |
+
+The server was faster in 9 of 12 pairs (paired median 5.3 s); the Opus side was the same, 72.8k input tokens. The checkout path starts with `git fetch`, then reads the 34 KB `INDEX.md` and greps; the server returns about 2k tokens of ranked hits with summaries.
+
+Per run: `claude -p "Use the <skill> skill to answer: <question>" --model opus --max-turns 15 --max-budget-usd 1.5 --settings <file> --strict-mcp-config --mcp-config <claude-kb only> --allowedTools "mcp__claude-kb__*,Skill,Bash,Read,Grep,Glob" --output-format stream-json --verbose`. The server arm was a copy of the skill keeping only its tools section, with the other skill turned off. Questions: `evals/claude-kb-lookup` loads-1 to 5 and loads-7.
+
+So `claude-kb-lookup` uses only the server since 2026-10-15. It gives up unmerged entries and the index's Conflicts section.
+
 ---
 
 ## Recommendations for our setup
@@ -904,9 +930,9 @@ Ranked by impact against effort. Items 1, 3 and 4 change user config or another 
 5. **Re-read a server's tool list after upgrading it** (low impact, trivial effort). Claude Code doesn't re-approve changed tools (MCP-014). Do this for `kubernetes-mcp-server` and `analytics-mcp` when their pins move. MCP-019.
 6. **Don't add `deniedMcpServers` or `allowedMcpServers` for a solo setup beyond item 1**. Without a managed source they are guards, not boundaries, and a blocked server disappears silently. MCP-016, MCP-003.
 7. **Done 2026-10-13: route MCP questions to this file.** `claude-kb-lookup`'s description now lists "MCP servers" ([FreekMencke/claude-skills#40](https://github.com/FreekMencke/claude-skills/pull/40), from [#39](https://github.com/FreekMencke/claude-skills/issues/39)). Its new trigger case (scoping a server to one subagent) loaded the skill 3 of 3 runs. The optional "adding an MCP server" in the "Use before …" clause was left out: it made a KB-editing near miss load the skill (SKILL-015).
-8. **Done 2026-10-15: serve this knowledge base as a remote MCP server on the home cluster** (high impact, high effort). Live with `kb_search`, `kb_get`, `kb_quick_answers` and `kb_status` (FreekMencke/claude-kb#110 to #113), connected as the claude.ai connector "Claude KB" and at user scope; tested per surface in MCP-037 and MCP-038. A custom connector reaches chat, phone, cloud sessions and routines without a checkout, and a user-scope server covers desktop WSL sessions, where connectors are inconsistent. Planned in roadmap [FreekMencke/claude-kb#109](https://github.com/FreekMencke/claude-kb/issues/109): FastMCP with GitHub sign-in gated on the owner's numeric ID, `readOnlyHint` search and fetch tools over a SQLite FTS5 index, git-sync for freshness, and the lookup skill kept as the first choice where a checkout exists. MCP-029 to MCP-037.
+8. **Done 2026-10-15: serve this knowledge base as a remote MCP server on the home cluster** (high impact, high effort). Live with `kb_search`, `kb_get`, `kb_quick_answers` and `kb_status` (FreekMencke/claude-kb#110 to #113), connected as the claude.ai connector "Claude KB" and at user scope; tested per surface in MCP-037 and MCP-038. A custom connector reaches chat, phone, cloud sessions and routines without a checkout, and a user-scope server covers desktop WSL sessions, where connectors are inconsistent. Planned in roadmap [FreekMencke/claude-kb#109](https://github.com/FreekMencke/claude-kb/issues/109): FastMCP with GitHub sign-in gated on the owner's numeric ID, `readOnlyHint` search and fetch tools over a SQLite FTS5 index, git-sync for freshness, and, since 2026-10-15, the lookup skill reading only the server, which measured faster than a checkout (MCP-041). MCP-029 to MCP-037.
 9. **Done 2026-10-15: allow the claude-kb tools by rule** (low impact, trivial effort), in `~/.claude/settings.json`: `mcp__claude-kb__*` and `mcp__claude_ai_Claude_KB__*`. Auto mode let the calls through in the terminal, but denied `kb_get` on the desktop WSL session's UUID-named connector. That UUID was the same in two sessions, so a rule naming it may hold. MCP-039, MCP-004.
-10. **Make chat reach for the KB without being named: install the `kb-lookup` plugin** (medium impact, trivial effort, yours to do on claude.ai). This repo is its own marketplace since FreekMencke/claude-kb#116: add `FreekMencke/claude-kb` under Customize > Plugins > Add > Add marketplace with Sync automatically, install `kb-lookup`, and remove the test upload. In Claude Code, keep `kb-lookup@synced` off (`enabledPlugins`): the symlinked skill reads the checkout first, and two copies would both load. MCP-040, SKILL-062, SKILL-059. Superseded: an "Instructions for Claude" line (MCP-038), untested.
+10. **Make chat reach for the KB without being named: install the `kb-lookup` plugin** (medium impact, trivial effort, yours to do on claude.ai). This repo is its own marketplace since FreekMencke/claude-kb#116: add `FreekMencke/claude-kb` under Customize > Plugins > Add > Add marketplace with Sync automatically, install `kb-lookup`, and remove the test upload. In Claude Code, `kb-lookup@synced` replaced the personal-skill symlink on 2026-10-15, so the skill now updates with the marketplace. MCP-040, SKILL-062, SKILL-059. Superseded: an "Instructions for Claude" line (MCP-038), untested.
 
 ## Open questions
 
