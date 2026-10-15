@@ -155,6 +155,8 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | MCP-035 | Hosting a single-user remote server: Cloudflare Worker or your own server | comparison | hosting, cloudflare, fastmcp, git-sync |
 | MCP-036 | Mistakes single-user remote servers made | anti-pattern | security, oauth, community |
 | MCP-037 | Using a private repo's knowledge without a checkout | comparison | connectors, plugins, surfaces, no-checkout |
+| MCP-038 | Chat and cloud sessions use a custom connector only when the prompt points at it | fact | connectors, claude-ai, cloud, triggering |
+| MCP-039 | One server as connector and user-scope entry: names, duplicates and cost per surface | fact | connectors, scopes, tool-names, tokens |
 
 ## Memory and instruction files (`topics/kb-memory.md`, MEM)
 
