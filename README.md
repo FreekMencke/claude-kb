@@ -24,7 +24,27 @@ From any repo, the `claude-kb-lookup` skill answers from this knowledge base and
   ```
 
 - **Cloud sessions and routines** load only their repositories' `.claude/skills/`: add FreekMencke/claude-kb as one of
-  them (SKILL-060).
+  them (SKILL-060), or use the connector below.
+
+### Without a checkout
+
+The knowledge base is also a remote MCP server, `https://claude-kb.freekmencke.com/mcp`, with the tools `kb_search`,
+`kb_get`, `kb_quick_answers` and `kb_status` ([mcp-server/README.md](mcp-server/README.md)). Sign-in is GitHub, for the
+owner's account only.
+
+- **claude.ai chat (web, desktop, phone), cloud sessions and routines:** the custom connector "Claude KB"
+  (Customize > Connectors). Claude uses it only when the prompt names it: start the question with "KB:" (MCP-038).
+- **Desktop Code tab sessions on WSL**, where connectors are unreliable (MCP-010), and the terminal: the user-scope server.
+
+  ```bash
+  claude mcp add --transport http --scope user claude-kb https://claude-kb.freekmencke.com/mcp
+  ```
+
+  ```bash
+  claude mcp login claude-kb
+  ```
+
+  It costs about 255 input tokens per request (MCP-039).
 
 It runs as a forked subagent that can't see the conversation, so pass it a self-contained question and keep its entry
 IDs in the reply. On `main`, it fast-forwards its checkout first, which updates the skill too.
