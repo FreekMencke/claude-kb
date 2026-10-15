@@ -27,8 +27,9 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 | `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, GitHub sign-in for the owner only, the tools' signatures and descriptions |
 | `kb_tools.py` | The text each tool returns, its caps and its error messages |
 | `kb_index.py` | The entries, parsed by `scripts/check_kb.py`, and their search: SQLite FTS5 in memory, ranked by `bm25()` |
+| `metrics.py` | Prometheus metrics on port 9090: HTTP requests, tool calls, empty searches, the index |
 | `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs; the tools through FastMCP's in-memory client; the index and search on fixtures and on this repo |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_tools.py`, `kb_index.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_tools.py`, `kb_index.py`, `metrics.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
 | `requirements.in`, `requirements-dev.in` | Direct dependencies, compiled to `requirements*.txt` with exact versions and hashes |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
 | `pyproject.toml` | Python version and pytest settings |
@@ -71,6 +72,21 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   `/icon.svg` (and the PNG at `/favicon.ico`) without a token: the MCP spec asks clients to fetch icons only from the
   server's own origin. Claude's docs say a custom connector appears as "Custom", so claude.ai may show its generic
   icon anyway.
+- **Metrics** (FreekMencke/claude-kb#136). `/metrics` on port 9090, which neither the Service nor the Ingress routes;
+  the pod's `prometheus.io/*` annotations have Alloy scrape it once a minute into Grafana Cloud, like the Node apps.
+  - `http_request_duration_seconds{method,route,status_code}`: the Node apps' name and labels. `route` is the matched
+    route's template; every unmatched path is `other`.
+  - `kb_tool_calls_total{tool,outcome}` (`ok` or `error`) and `kb_tool_duration_seconds{tool}`, from a FastMCP
+    middleware; `kb_search_empty_total` counts searches that matched nothing.
+  - `kb_index_entries`, `kb_index_build_seconds` and `kb_index_built_timestamp_seconds`, set on each re-index.
+  - The client's defaults: `process_*` (memory, CPU, open files) and `python_gc_*`.
+  - git-sync's own metrics on port 2020, through the `claude-kb-git-sync-metrics` Service (a pod's annotations name one
+    port): `git_sync_count_total{status}`, where `status` is `success` (a new commit), `noop` or `error`. Only these
+    tell a quiet repo from a stuck sync.
+
+  Alloy drops histogram buckets, so durations are averages (`_sum / _count`), not percentiles. Container memory and
+  CPU, restarts and OOM kills come from cAdvisor and kube-state-metrics, and home-cluster's cluster-wide alert rules
+  cover the Deployment.
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
   output schema: with one, Claude Code hands Claude the JSON instead of the text. FastMCP logs a failed call as
   `Error calling tool '<name>'`, without its arguments or result.
@@ -192,3 +208,6 @@ The server logs to stdout (`kubectl -n claude-kb logs deploy/claude-kb-mcp -c cl
 - `Sign-in granted to GitHub ID ...` and `Sign-in refused: GitHub ID ... isn't the owner` record the gate.
 - `Indexed commit <hash>: <n> entries in <s> s` follows each new commit from git-sync; git-sync's own log is container
   `git-sync`.
+- Metrics, in Grafana Cloud's Explore: `sum by (tool, outcome) (increase(kb_tool_calls_total[1d]))` for use,
+  `increase(kb_search_empty_total[7d])` for misses, `increase(git_sync_count_total{namespace="claude-kb"}[1h])` for
+  the sync. `.github/scripts/ci-image-test.sh` checks the endpoint on a local container.
