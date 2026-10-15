@@ -3,16 +3,32 @@
 A remote, read-only MCP server that serves this knowledge base to claude.ai (as a custom connector) and Claude Code,
 at `https://claude-kb.freekmencke.com/mcp`, from the home cluster. Plan: roadmap FreekMencke/claude-kb#109.
 
-Spike stage (FreekMencke/claude-kb#110): one tool, `kb_status`, which returns the synced commit, the entry count and
-when it last indexed them, and no KB content. The index and search behind the real tools are in `kb_index.py` (#111);
-the tools come in #112.
+## Tools
+
+All read-only, returning plain text with entry IDs and a last `corpus: <commit>` line (FreekMencke/claude-kb#112).
+
+| Tool | Arguments | Returns | Cap |
+|---|---|---|---|
+| `kb_search` | `query`; optional `topic` (`mcp` or `MCP`), `type`, `limit` 1 to 20 (default 8) | One block per hit: `ID: title (type, confidence, last verified date)`, flagged when over 60 days old, then the entry's summary (at most 300 characters). Named IDs come first. No hits: says so and lists the topics | 8,000 characters (8 hits are about 3 KB) |
+| `kb_get` | `ids`: 1 to 10 IDs, any case, `mcp-17` works | Each entry's full Markdown, separated by `---`; a merged entry brings the entry it points to; an unknown ID gets a line with the closest IDs (an error only when none was found) | 40,000 characters, about 10,000 tokens, where Claude Code starts warning (ten of the longest entries are 28,000) |
+| `kb_quick_answers` | optional `topic` | `INDEX.md`'s Quick answers and the topic list; for a topic, its Quick answers and its Recommendations for our setup | None needed: 18 KB for `INDEX.md` |
+| `kb_status` | none | The synced commit, the entry count and when and how fast it was indexed | |
+
+A cap cuts whole entries or hits and names the IDs it cut. A bad argument returns `isError: true` with what to pass
+instead. The usage rules (search first, then `kb_get` the 1 to 4 best IDs; cite IDs; check entries last verified over
+60 days ago) are in `kb_search`'s description and in the server `instructions`: claude.ai web and desktop drop
+`instructions` (anthropics/claude-ai-mcp#93), Claude Code keeps them. Keep the descriptions stable: claude.ai's "Always
+allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
+
+## Files
 
 | File | What it is |
 |---|---|
-| `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, GitHub sign-in for the owner only, `kb_status` |
+| `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, GitHub sign-in for the owner only, the tools' signatures and descriptions |
+| `kb_tools.py` | The text each tool returns, its caps and its error messages |
 | `kb_index.py` | The entries, parsed by `scripts/check_kb.py`, and their search: SQLite FTS5 in memory, ranked by `bm25()` |
-| `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs, the tool; the index and search on fixtures and on this repo |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_index.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
+| `tests/` | pytest, with a fake GitHub: sign-in, the owner gate, discovery metadata, redirect URIs; the tools through FastMCP's in-memory client; the index and search on fixtures and on this repo |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_tools.py`, `kb_index.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
 | `requirements.in`, `requirements-dev.in` | Direct dependencies, compiled to `requirements*.txt` with exact versions and hashes |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
 | `pyproject.toml` | Python version and pytest settings |
@@ -56,7 +72,8 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   server's own origin. Claude's docs say a custom connector appears as "Custom", so claude.ai may show its generic
   icon anyway.
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
-  output schema.
+  output schema: with one, Claude Code hands Claude the JSON instead of the text. FastMCP logs a failed call as
+  `Error calling tool '<name>'`, without its arguments or result.
 
 ## Run and test locally
 
@@ -90,7 +107,11 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:8765/mcp --transport 
 ```
 
 ```bash
-npx @modelcontextprotocol/inspector --cli http://127.0.0.1:8765/mcp --transport http --method tools/call --tool-name kb_status
+npx @modelcontextprotocol/inspector --cli http://127.0.0.1:8765/mcp --transport http --method tools/call --tool-name kb_search --tool-arg query=MCP-017
+```
+
+```bash
+npx @modelcontextprotocol/inspector --cli http://127.0.0.1:8765/mcp --transport http --method tools/call --tool-name kb_get --tool-arg 'ids=["MCP-017"]'
 ```
 
 The image, run the way the pod runs it and checked like CI does (from the repo root, with Docker running):

@@ -58,17 +58,31 @@ def test_allowed_github_id_must_be_numeric() -> None:
 
 
 @pytest.mark.anyio
-async def test_kb_status_contract(client) -> None:
+async def test_tools_contract_over_http(client) -> None:
     token = await owner_token(client)
     response = await call(client, token["access_token"], "tools/list")
-    [tool] = sse_json(response)["result"]["tools"]
-    assert tool["name"] == "kb_status"
-    assert tool["title"] == "Knowledge base status"
-    assert tool["annotations"]["readOnlyHint"] is True
-    assert tool["annotations"]["destructiveHint"] is False
-    # Text content only: no outputSchema, and no root-level anyOf/oneOf/allOf in the input schema
-    assert "outputSchema" not in tool
-    assert not {"anyOf", "oneOf", "allOf"} & tool["inputSchema"].keys()
+    tools = sse_json(response)["result"]["tools"]
+    assert [t["name"] for t in tools] == ["kb_search", "kb_get", "kb_quick_answers", "kb_status"]
+    for tool in tools:
+        assert tool["title"]
+        assert tool["annotations"]["readOnlyHint"] is True
+        assert tool["annotations"]["destructiveHint"] is False
+        # Text content only: no outputSchema, and no root-level anyOf/oneOf/allOf in the input schema
+        assert "outputSchema" not in tool
+        assert not {"anyOf", "oneOf", "allOf"} & tool["inputSchema"].keys()
+        # Claude Code drops a tool whose mcp__<server>__<tool> name is over 128 characters; claude.ai allows 64
+        assert len(tool["name"]) <= 64
+
+
+@pytest.mark.anyio
+async def test_initialize_carries_the_usage_rules(client) -> None:
+    token = await owner_token(client)
+    params = {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "test", "version": "0"}}
+    response = await call(client, token["access_token"], "initialize", params)
+    instructions = sse_json(response)["result"]["instructions"]
+    # The same rules as kb_search's description, for Claude Code; claude.ai web and desktop drop instructions
+    assert all(rule in instructions for rule in ("kb_get the 1 to 4 best IDs", "Cite entry IDs", "60 days"))
+    assert len(instructions) < 4096  # Claude Code cuts them there
 
 
 @pytest.mark.anyio

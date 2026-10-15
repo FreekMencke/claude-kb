@@ -79,8 +79,9 @@ class Index:
     _lock: threading.Lock
 
     def get(self, ids: list[str]) -> list[Entry]:
-        """The entries with these IDs (any case), in the order asked, skipping unknown ones and repeats."""
-        found = (self.entries.get(i.upper()) for i in dict.fromkeys(ids))
+        """The entries with these IDs, in the order asked, skipping unknown ones and repeats. Any case, and the
+        number padded to three digits: "mcp-17" is MCP-017."""
+        found = (self.entries.get(normal_id(i)) for i in dict.fromkeys(ids))
         return list(dict.fromkeys(e for e in found if e))
 
     def topic(self, name: str) -> str | None:
@@ -120,6 +121,11 @@ class Index:
             return [row[0] for row in self._db.execute(sql, (match, topic, topic, type, type, limit))]
 
 
+def normal_id(eid: str) -> str:
+    m = re.fullmatch(r"\s*([A-Za-z]+)-(\d+)\s*", eid)
+    return f"{m.group(1).upper()}-{int(m.group(2)):03d}" if m else eid.strip().upper()
+
+
 def _phrases(query: str) -> list[str]:
     """Each whitespace-separated part of the query as a quoted FTS5 phrase of its words, so `(`, `-` or `"` in a
     query never reach MATCH as syntax: "mcp-json" becomes the phrase "mcp json". Lone stopwords are dropped."""
@@ -142,8 +148,14 @@ def _prose(body: str) -> str:
 
 
 def _summary(prose: str) -> str:
-    """The first paragraph, cut at the last sentence end within SUMMARY_CHARS (or at a word, with an ellipsis)."""
-    para = " ".join(prose.split("\n\n", 1)[0].split())
+    """The first paragraph (with the next ones while it's under a third of SUMMARY_CHARS, so a lead-in such as
+    "Default TTLs:" keeps its list), cut at the last sentence end within SUMMARY_CHARS, or at a word with an
+    ellipsis."""
+    para = ""
+    for part in prose.split("\n\n"):
+        para = f"{para} {' '.join(part.split())}".strip()
+        if len(para) >= SUMMARY_CHARS // 3:
+            break
     if len(para) <= SUMMARY_CHARS:
         return para
     cut = para[:SUMMARY_CHARS]
