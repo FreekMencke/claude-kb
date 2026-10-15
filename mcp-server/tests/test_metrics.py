@@ -22,9 +22,9 @@ def sample(name: str, **labels: str) -> float:
 @pytest.mark.anyio
 async def test_requests_are_counted_by_route_template(client: httpx2.AsyncClient) -> None:
     count = "http_request_duration_seconds_count"
-    healthz = dict(method="GET", route="/healthz", status_code="200")
-    mcp = dict(method="POST", route="/mcp", status_code="401")
-    other = dict(method="GET", route="other", status_code="404")
+    healthz = dict(method="GET", path="/healthz", status_code="200")
+    mcp = dict(method="POST", path="/mcp", status_code="401")
+    other = dict(method="GET", path="other", status_code="404")
     before = {k: sample(count, **v) for k, v in [("healthz", healthz), ("mcp", mcp), ("other", other)]}
 
     assert (await client.get("/healthz")).status_code == 200

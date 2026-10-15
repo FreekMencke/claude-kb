@@ -14,7 +14,7 @@ WORKDIR /app
 COPY mcp-server/requirements.txt ./
 RUN pip install --no-cache-dir --require-hashes -r requirements.txt
 
-COPY mcp-server/server.py mcp-server/kb_tools.py mcp-server/kb_index.py mcp-server/metrics.py scripts/check_kb.py ./
+COPY mcp-server/server.py mcp-server/kb_tools.py mcp-server/kb_index.py mcp-server/logs.py mcp-server/metrics.py scripts/check_kb.py ./
 # The server's icon (ICON_FILES in server.py)
 COPY assets/logo.png assets/logo.svg ./assets/
 
