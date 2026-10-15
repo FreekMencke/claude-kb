@@ -10,7 +10,7 @@ name=claude-kb-mcp-ci
 # git-sync's layout: the checkout in .worktrees/<hash>, and the kb link pointing at it
 git_root=$(mktemp -d)
 mkdir -p "$git_root/.worktrees/0123abc"
-cp -r topics "$git_root/.worktrees/0123abc/"
+cp -r topics INDEX.md "$git_root/.worktrees/0123abc/"
 ln -s .worktrees/0123abc "$git_root/kb"
 chmod -R a+rX "$git_root"
 entries=$(cat topics/kb-*.md | grep -c -E '^## \[[A-Z]+-[0-9]+\]')
@@ -27,9 +27,13 @@ for _ in $(seq 30); do
   sleep 1
 done
 .github/scripts/deploy-smoke-test.sh http://127.0.0.1:8000
-if docker logs "$name" 2>&1 | grep -q "Indexed commit 0123abc: $entries entries"; then
-  echo "Indexed the checkout: $entries entries"
-else
-  echo "::error::No 'Indexed commit 0123abc: $entries entries' in the server's log"
-  exit 1
-fi
+# The index builds in a background task after startup (0.18 s on a runner), so /healthz can answer before it's done
+for _ in $(seq 10); do
+  if docker logs "$name" 2>&1 | grep -q "Indexed commit 0123abc: $entries entries"; then
+    echo "Indexed the checkout: $entries entries"
+    exit 0
+  fi
+  sleep 1
+done
+echo "::error::No 'Indexed commit 0123abc: $entries entries' in the server's log"
+exit 1

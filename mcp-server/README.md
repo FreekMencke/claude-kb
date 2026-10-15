@@ -169,5 +169,5 @@ The server logs to stdout (`kubectl -n claude-kb logs deploy/claude-kb-mcp -c cl
   `GET /authorize?client_id=https%3A%2F%2Fclaude.ai%2Foauth%2F...` means Claude used CIMD; a `POST /register` before it
   means DCR.
 - `Sign-in granted to GitHub ID ...` and `Sign-in refused: GitHub ID ... isn't the owner` record the gate.
-- `Indexed commit <hash>: <n> entries` follows each new commit from git-sync; git-sync's own log is container
+- `Indexed commit <hash>: <n> entries in <s> s` follows each new commit from git-sync; git-sync's own log is container
   `git-sync`.
