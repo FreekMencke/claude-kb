@@ -3,3 +3,5 @@
 !mcp-server/requirements.txt
 !mcp-server/server.py
 !scripts/check_kb.py
+!assets/logo.png
+!assets/logo.svg

@@ -69,3 +69,28 @@ async def test_kb_status_contract(client) -> None:
     # Text content only: no outputSchema, and no root-level anyOf/oneOf/allOf in the input schema
     assert "outputSchema" not in tool
     assert not {"anyOf", "oneOf", "allOf"} & tool["inputSchema"].keys()
+
+
+@pytest.mark.anyio
+async def test_server_info_lists_same_origin_icons(client) -> None:
+    token = await owner_token(client)
+    params = {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "test", "version": "0"}}
+    response = await call(client, token["access_token"], "initialize", params)
+    icons = sse_json(response)["result"]["serverInfo"]["icons"]
+    assert [icon["mimeType"] for icon in icons] == ["image/png", "image/svg+xml"]
+    # The spec asks clients to fetch icons only over HTTPS from the server's own origin
+    assert all(icon["src"].startswith(f"{server.PUBLIC_URL}/") for icon in icons)
+    for icon in icons:
+        served = await client.get(icon["src"])
+        assert served.status_code == 200
+        assert served.headers["content-type"].startswith(icon["mimeType"])
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize("path", ["/icon.png", "/icon.svg", "/favicon.ico"])
+async def test_icons_need_no_token(client, path: str) -> None:
+    response = await client.get(path)
+    assert response.status_code == 200
+    assert response.headers["x-content-type-options"] == "nosniff"
+    if path != "/icon.svg":
+        assert response.content.startswith(b"\x89PNG\r\n\x1a\n")
