@@ -48,6 +48,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-030 | Test: directions shown as swatches, with the repeat looks banned | comparison | experiment, directions, swatches, banned-patterns |
 | DESIGN-031 | Test: pick colour, then type, then layout, then combine | comparison | experiment, staged-picks, palettes, wireframes |
 | DESIGN-032 | Test: staged picks starting from audience, feel and tone | comparison | experiment, staged-picks, audience, tone-of-voice |
+| DESIGN-033 | Staged picks on an existing site: extract, then lock, nudge or open each step | pattern | existing-site, redesign, staged-picks, tokens |
 
 ## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
 
