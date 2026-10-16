@@ -24,7 +24,7 @@ for _ in $(seq 30); do
   sleep 1
 done
 .github/scripts/deploy-smoke-test.sh http://127.0.0.1:8000
-# The index builds in a background task after startup (0.18 s on a runner), so /healthz can answer before it's done
+# The server indexes the checkout as it starts; allow a slow runner a few seconds for the log line
 indexed=
 for _ in $(seq 10); do
   if docker logs "$name" 2>&1 | grep -q "Indexed commit 0123abc: $entries entries"; then
@@ -38,9 +38,9 @@ if [ -z "$indexed" ]; then
   exit 1
 fi
 echo "Indexed the checkout: $entries entries"
-# The metrics port (metrics.py), as Alloy scrapes it
-if ! curl -s --max-time 5 http://127.0.0.1:9090/metrics | grep -q -x "kb_index_entries $entries.0"; then
-  echo "::error::/metrics on port 9090 doesn't report kb_index_entries $entries.0"
+# The metrics port (metrics.ts), as Alloy scrapes it. The Prometheus client prints whole numbers without a decimal point.
+if ! curl -s --max-time 5 http://127.0.0.1:9090/metrics | grep -q -x "kb_index_entries $entries"; then
+  echo "::error::/metrics on port 9090 doesn't report kb_index_entries $entries"
   exit 1
 fi
-echo "/metrics reports kb_index_entries $entries.0"
+echo "/metrics reports kb_index_entries $entries"

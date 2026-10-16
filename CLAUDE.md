@@ -45,7 +45,7 @@ Write a single Markdown file in `topics/`, named as given in the topic section.
 
 If you are a subagent or workflow agent doing part of the research, don't write or edit any file in the repo: return your findings with source URLs to the agent that started you. Pages you download for grepping go only in your own uniquely named scratchpad folder.
 
-If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit. ENTRIES.md is generated from each file's index table: when an entry is added or its title or tags change, edit that file's index row and run `python3 scripts/check_kb.py --write`. Run `python3 scripts/check_kb.py` after any change to entries and fix what it reports. README.md has the repo layout and the monthly re-verification routine.
+If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit. ENTRIES.md is generated from each file's index table: when an entry is added or its title or tags change, edit that file's index row and run `node scripts/check-kb.ts --write` (Node 22.18 or later, so cloud sessions' Node 22 runs it: SURF-027). Run `node scripts/check-kb.ts` after any change to entries and fix what it reports. README.md has the repo layout and the monthly re-verification routine.
 
 Start the file with:
 1. A "Quick answers" table: the 10–15 questions an agent is most likely to ask about this topic, each with a one-line answer and the entry ID(s) holding the detail.
@@ -69,8 +69,8 @@ End the file with two sections kept apart from the facts:
 
 ## Finishing a research session
 
-1. Run `python3 scripts/check_kb.py` and fix what it reports.
-2. Run `python3 scripts/check_kb.py --write` to add the new entries to ENTRIES.md. Update INDEX.md: a file-table row for a new file, the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
+1. Run `node scripts/check-kb.ts` and fix what it reports.
+2. Run `node scripts/check-kb.ts --write` to add the new entries to ENTRIES.md. Update INDEX.md: a file-table row for a new file, the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
 3. For a new file, add a row to README.md's Layout table.
 4. For a new topic file, add its topic to the description in `.claude/skills/claude-kb-lookup/SKILL.md` in the same PR, and rerun the skill's trigger evals (README.md, "Changing the lookup skill").
 5. Other sessions edit INDEX.md and CHANGELOG.md too: `git fetch origin`, `git rebase origin/main`, rerun the check, then open a PR. Don't push to `main`.
@@ -81,4 +81,4 @@ End the file with two sections kept apart from the facts:
 
 ## Server code
 
-`mcp-server/` is the knowledge base's remote MCP server (roadmap #109), deployed from `main` by `.github/workflows/deploy.yml`. A research session leaves it, `.github/scripts/` and those workflows alone. A session changing the server follows `mcp-server/README.md`; its verify command is `python -m pytest`, run from `mcp-server/` in a venv with `requirements-dev.txt`. Merging a change to the server deploys it.
+`mcp-server/` is the knowledge base's remote MCP server (roadmap #109), deployed from `main` by `.github/workflows/deploy.yml`. A research session leaves it, `.github/scripts/` and those workflows alone. A session changing the server follows `mcp-server/README.md`; its verify command is `npx tsc && npm test && npm run prettier:ci`, run from `mcp-server/` after `npm ci`. Merging a change to the server deploys it.
