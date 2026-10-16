@@ -53,14 +53,13 @@ spec:
             - containerPort: 9090
               name: metrics
           resources:
-            # The rspack bundle: about 104 MiB resident at idle; 300-340 MiB under 1,500 kb_get calls 50 at a time, back
-            # to about 115 within 20 s (VmRSS, Node 24.21 outside a container, 2026-10-16). The Node apps' request and
-            # limit. No CPU limit, like the other apps.
+            # The bundle in lite mode: about 72 MiB resident at idle and 80 at most under bursts of 1,500 tool calls 50
+            # at a time (VmRSS, Node 24.21 outside a container, 2026-10-16). No CPU limit, like the other apps.
             requests:
               cpu: 10m
-              memory: 128Mi
+              memory: 96Mi
             limits:
-              memory: 512Mi
+              memory: 256Mi
           securityContext:
             runAsNonRoot: true
             # The image's USER

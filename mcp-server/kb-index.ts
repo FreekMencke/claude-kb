@@ -10,7 +10,7 @@
  */
 import { existsSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
+import { DatabaseSync, type StatementSync } from 'node:sqlite';
 import {
   entries as parseEntries,
   HEADING,
@@ -77,20 +77,30 @@ export class Index {
   readonly entries: ReadonlyMap<string, Entry>;
   /** Topic file titles by topic ("mcp" for topics/kb-mcp.md) */
   readonly topics: ReadonlyMap<string, string>;
+  /** Each topic's ID prefix ("MCP" for "mcp") */
+  readonly prefixes: ReadonlyMap<string, string>;
   /** The "Quick answers" section by topic, INDEX_TOPIC for INDEX.md's */
   readonly quickAnswers: ReadonlyMap<string, string>;
   readonly recommendations: ReadonlyMap<string, string>;
-  readonly #db: DatabaseSync;
+  readonly #match: StatementSync;
+  readonly #matchAll: StatementSync;
+  /** The searchable entries by FTS rowid: the table is contentless, so it holds no IDs */
+  readonly #rows: readonly Entry[];
 
-  constructor(fields: Omit<Index, 'get' | 'topic' | 'search'>, db: DatabaseSync) {
+  constructor(fields: Omit<Index, 'get' | 'topic' | 'search'>, db: DatabaseSync, rows: readonly Entry[]) {
     this.commit = fields.commit;
     this.builtAt = fields.builtAt;
     this.buildSeconds = fields.buildSeconds;
     this.entries = fields.entries;
     this.topics = fields.topics;
+    this.prefixes = fields.prefixes;
     this.quickAnswers = fields.quickAnswers;
     this.recommendations = fields.recommendations;
-    this.#db = db;
+    const sql = `SELECT rowid FROM fts WHERE fts MATCH ? ORDER BY bm25(fts, ${WEIGHTS.join(', ')})`;
+    this.#match = db.prepare(`${sql} LIMIT ?`);
+    // With a topic or type, filtered here: bm25 scores every match to sort them anyway, so the LIMIT saves little
+    this.#matchAll = db.prepare(sql);
+    this.#rows = rows;
   }
 
   /**
@@ -111,7 +121,7 @@ export class Index {
     const topic = removePrefix(removePrefix(removeSuffix(strip(name).toLowerCase(), '.md'), 'topics/'), 'kb-');
     if (this.topics.has(topic)) return topic;
     const prefix = topic.toUpperCase();
-    for (const e of this.entries.values()) if (e.id.startsWith(`${prefix}-`)) return e.topic;
+    for (const [t, p] of this.prefixes) if (p === prefix) return t;
     return undefined;
   }
 
@@ -131,28 +141,22 @@ export class Index {
     // words first and then any word ranked worse on the Quick-answer questions.
     const queryPhrases = phrases(query);
     if (hits.size < limit && queryPhrases.length) {
-      for (const id of this.#match(queryPhrases.join(' OR '), wantedTopic, type, limit + hits.size)) {
-        if (!hits.has(id)) hits.set(id, { entry: this.entries.get(id)!, byId: false });
+      const match = queryPhrases.join(' OR ');
+      const filtered = wantedTopic !== undefined || type;
+      const rows = filtered ? this.#matchAll.all(match) : this.#match.all(match, limit + hits.size);
+      for (const row of rows) {
+        const entry = this.#rows[(row.rowid as number) - 1];
+        if (!hits.has(entry.id) && keep(entry)) hits.set(entry.id, { entry, byId: false });
+        if (hits.size >= limit) break;
       }
     }
     return [...hits.values()].slice(0, limit);
-  }
-
-  #match(match: string, topic: string | undefined, type: string | undefined, limit: number): string[] {
-    const sql =
-      'SELECT id FROM fts WHERE fts MATCH ? AND (? IS NULL OR topic = ?) AND (? IS NULL OR type = ?)' +
-      ` ORDER BY bm25(fts, ${WEIGHTS.map(w => w.toFixed(1)).join(', ')}) LIMIT ?`;
-    const [t, k] = [topic ?? null, type || null];
-    return this.#db
-      .prepare(sql)
-      .all(match, t, t, k, k, limit)
-      .map(row => row.id as string);
   }
 }
 
 export function normalId(id: string): string {
   const m = /^\s*([A-Za-z]+)-(\d+)\s*$/.exec(id);
-  return m ? `${m[1].toUpperCase()}-${BigInt(m[2]).toString().padStart(3, '0')}` : strip(id).toUpperCase();
+  return m ? `${m[1].toUpperCase()}-${m[2].replace(/^0+(?=\d)/, '').padStart(3, '0')}` : strip(id).toUpperCase();
 }
 
 function removePrefix(text: string, prefix: string): string {
@@ -191,28 +195,22 @@ function prose(body: string): string {
 
 /**
  * The first paragraph (with the next ones while it's under a third of SUMMARY_CHARS, so a lead-in such as "Default
- * TTLs:" keeps its list), cut at the last sentence end within SUMMARY_CHARS, or at a word with an ellipsis. Lengths
- * count code points, as Python's did.
+ * TTLs:" keeps its list), cut at the last sentence end within SUMMARY_CHARS, or at a word with an ellipsis.
  */
 export function summary(text: string): string {
   let para = '';
   for (const part of text.split('\n\n')) {
     para = strip(`${para} ${words(part).join(' ')}`);
-    if (codePoints(para) >= Math.floor(SUMMARY_CHARS / 3)) break;
+    if (para.length >= SUMMARY_CHARS / 3) break;
   }
-  if (codePoints(para) <= SUMMARY_CHARS) return para;
-  const cut = Array.from(para).slice(0, SUMMARY_CHARS).join('');
+  if (para.length <= SUMMARY_CHARS) return para;
+  // Not half an emoji: a cut between a surrogate pair's halves would leave invalid UTF-16
+  const cut = para.slice(0, SUMMARY_CHARS).replace(/[\uD800-\uDBFF]$/, '');
   // A sentence ends at a full stop and a space, or a no-break space
   const end = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('. '));
-  if (end !== -1 && codePoints(cut.slice(0, end)) > Math.floor(SUMMARY_CHARS / 3)) return cut.slice(0, end + 1);
+  if (end > SUMMARY_CHARS / 3) return cut.slice(0, end + 1);
   const space = cut.lastIndexOf(' ');
   return `${space === -1 ? cut : cut.slice(0, space)} …`;
-}
-
-export function codePoints(text: string): number {
-  let count = 0;
-  for (const _ of text) count++;
-  return count;
 }
 
 function mergedInto(indexTitle: string): string[] {
@@ -228,15 +226,15 @@ export function load(root: string, commit?: string): Index {
   const started = performance.now();
   const entries = new Map<string, Entry>();
   const topics = new Map<string, string>();
+  const prefixes = new Map<string, string>();
   const quickAnswers = new Map<string, string>();
   const recommendations = new Map<string, string>();
   const db = new DatabaseSync(':memory:');
-  // Porter stemming, so "reviewers" finds "reviewer"; topic and type are filters, not searched
-  db.exec(
-    'CREATE VIRTUAL TABLE fts USING fts5(id, title, tags, body, topic UNINDEXED, type UNINDEXED,' +
-      " tokenize = 'porter unicode61')",
-  );
-  const insert = db.prepare('INSERT INTO fts VALUES (?, ?, ?, ?, ?, ?)');
+  // Porter stemming, so "reviewers" finds "reviewer". Contentless: the entries are in memory already, so the table
+  // keeps only its index (0.9 instead of 2.2 MiB on 2026-10-16), and rowid N is rows[N - 1]
+  db.exec("CREATE VIRTUAL TABLE fts USING fts5(id, title, tags, body, tokenize = 'porter unicode61', content = '')");
+  const insert = db.prepare('INSERT INTO fts (rowid, id, title, tags, body) VALUES (?, ?, ?, ?, ?)');
+  const rows: Entry[] = [];
   const files = readdirSync(join(root, 'topics'))
     .filter(f => /^kb-.*\.md$/s.test(f))
     .sort();
@@ -273,8 +271,12 @@ export function load(root: string, commit?: string): Index {
         body: strip(body),
       };
       entries.set(id, entry);
+      if (!prefixes.has(topic)) prefixes.set(topic, id.split('-')[0]);
       // A merged entry is a pointer: found by its ID, never in place of the entry it points to
-      if (!entry.mergedInto.length) insert.run(id, entry.title, entry.tags.join(' '), entryProse, topic, entry.type);
+      if (!entry.mergedInto.length) {
+        rows.push(entry);
+        insert.run(rows.length, id, entry.title, entry.tags.join(' '), entryProse);
+      }
     }
   }
   const indexMd = join(root, 'INDEX.md');
@@ -287,9 +289,11 @@ export function load(root: string, commit?: string): Index {
       buildSeconds: (performance.now() - started) / 1000,
       entries,
       topics,
+      prefixes,
       quickAnswers,
       recommendations,
     },
     db,
+    rows,
   );
 }

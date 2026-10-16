@@ -2,14 +2,11 @@
  * The text the MCP tools return, built from a kb-index.ts Index (FreekMencke/claude-kb#112).
  *
  * Plain text with entry IDs everywhere, so an answer can cite them, and a `corpus: <commit>` line last. Results land in
- * the caller's context, so they're capped and say what was cut. A bad argument throws a ToolError, which the SDK
+ * the caller's context, so they're capped and say what was cut. A bad argument throws a ToolError, which mcp.ts
  * returns as `isError: true` with the message; the message says what to pass instead.
- *
- * Ported from the Python server: the texts, quoting included (`pyRepr`), are unchanged.
  */
-import { closeMatches } from '../scripts/difflib.ts';
 import { strip } from '../scripts/kb-parse.ts';
-import { codePoints, type Entry, type Index, INDEX_TOPIC, normalId } from './kb-index.ts';
+import { type Entry, type Index, INDEX_TOPIC, normalId } from './kb-index.ts';
 import { searchEmpty } from './metrics.ts';
 
 export const TYPES = ['fact', 'pattern', 'recommendation', 'anti-pattern', 'tool', 'comparison'];
@@ -25,7 +22,7 @@ export const MAX_CHARS = {
 // INDEX.md's "treat an entry last verified more than 60 days ago as a lead to re-check"
 const STALE_DAYS = 60;
 export const SEPARATOR = '\n\n---\n\n';
-const ID_SHAPE = /^[A-Za-z]+-\d+$/;
+const ID_SHAPE = /^([A-Z]+)-(\d+)$/;
 const DAY_MS = 86_400_000;
 
 export const INSTRUCTIONS =
@@ -33,7 +30,7 @@ export const INSTRUCTIONS =
   ' 1 to 4 best IDs for the full entries. Cite entry IDs (such as MCP-017) in answers. Check an entry last verified' +
   ` more than ${STALE_DAYS} days ago against its sources before relying on it.`;
 
-/** A bad argument or a knowledge base that hasn't loaded: the SDK returns the message as an `isError` result. */
+/** A bad argument or a knowledge base that hasn't loaded: mcp.ts returns the message as an `isError` result. */
 export class ToolError extends Error {}
 
 function loaded(index: Index | undefined): Index {
@@ -46,15 +43,14 @@ function corpus(index: Index): string {
 }
 
 function topicList(index: Index): string {
-  const prefixes = new Map([...index.entries.values()].map(e => [e.topic, e.id.split('-')[0]]));
-  return [...index.topics].map(([t, title]) => `- ${t} (${prefixes.get(t) ?? '?'}): ${title}`).join('\n');
+  return [...index.topics].map(([t, title]) => `- ${t} (${index.prefixes.get(t) ?? '?'}): ${title}`).join('\n');
 }
 
 function resolveTopic(index: Index, topic: string | null | undefined): string | undefined {
   if (topic == null || !strip(topic)) return undefined;
   const name = index.topic(topic);
   if (name === undefined) {
-    throw new ToolError(`Unknown topic ${pyRepr(topic)}. Pass one of these names or prefixes:\n${topicList(index)}`);
+    throw new ToolError(`Unknown topic ${JSON.stringify(topic)}. Pass one of these names or prefixes:\n${topicList(index)}`);
   }
   return name;
 }
@@ -94,7 +90,7 @@ export function search(
     throw new ToolError(`Pass a limit from ${SEARCH_LIMIT[0]} to ${SEARCH_LIMIT[1]} (default 8).`);
   }
   if (type != null && strip(type) && !TYPES.includes(strip(type))) {
-    throw new ToolError(`Unknown type ${pyRepr(type)}. Pass one of: ${TYPES.join(', ')}; or leave it out.`);
+    throw new ToolError(`Unknown type ${JSON.stringify(type)}. Pass one of: ${TYPES.join(', ')}; or leave it out.`);
   }
   const name = resolveTopic(kb, topic);
   const hits = kb.search(query, { topic: name, type: strip(type ?? '') || undefined, limit });
@@ -102,7 +98,7 @@ export function search(
     searchEmpty.inc();
     const where = name ? ` in topic ${name}` : '';
     return (
-      `No entries match ${pyRepr(query)}${where}. Try other words, or kb_quick_answers for a topic's most-asked` +
+      `No entries match ${JSON.stringify(query)}${where}. Try other words, or kb_quick_answers for a topic's most-asked` +
       ` questions. Topics:\n${topicList(kb)}\n\n${corpus(kb)}`
     );
   }
@@ -135,11 +131,26 @@ export function get(index: Index | undefined, ids: string[]): string {
   return `${blocks.join(SEPARATOR)}\n\n${[...notes, corpus(kb)].join('\n')}`;
 }
 
-/** A line for an ID that isn't in the KB, naming the nearest IDs (or, for words, the best search hits). */
+/**
+ * A line for an ID that isn't in the KB: the three numerically nearest IDs with its prefix, the known prefixes when no
+ * topic has it, or for words the best search hits.
+ */
 function unknown(index: Index, asked: string): string {
-  const nearest = ID_SHAPE.test(asked)
-    ? closeMatches(normalId(asked), index.entries.keys(), 3, 0.6).map(id => index.entries.get(id)!)
-    : index.search(asked, { limit: 3 }).map(h => h.entry);
+  const id = ID_SHAPE.exec(normalId(asked));
+  let nearest: Entry[];
+  if (id) {
+    const [, prefix, number] = id;
+    const distance = (e: Entry) => Math.abs(Number(e.id.slice(prefix.length + 1)) - Number(number));
+    nearest = [...index.entries.values()]
+      .filter(e => e.id.startsWith(`${prefix}-`))
+      .sort((a, b) => distance(a) - distance(b) || (a.id < b.id ? -1 : 1))
+      .slice(0, 3);
+    if (!nearest.length) {
+      return `${asked}: no such entry, and no topic uses ${prefix}. Prefixes: ${[...index.prefixes.values()].join(', ')}.`;
+    }
+  } else {
+    nearest = index.search(asked, { limit: 3 }).map(h => h.entry);
+  }
   if (!nearest.length) return `${asked}: no such entry. kb_search finds entries by words.`;
   return `${asked}: no such entry. Closest: ${nearest.map(e => `${e.id} (${e.title})`).join('; ')}`;
 }
@@ -160,45 +171,16 @@ export function quickAnswers(index: Index | undefined, topic?: string | null): s
   return [...parts, corpus(kb)].join('\n\n');
 }
 
-/**
- * As many whole (ID, text) blocks as fit in maxChars, then a line naming the IDs cut: never a silent cut. Counts code
- * points, as Python's did.
- */
+/** As many whole (ID, text) blocks as fit in maxChars, then a line naming the IDs cut: never a silent cut. */
 function fit(blocks: [string, string][], maxChars: number, joiner: string, what: string, advice: string): string[] {
   const kept: string[] = [];
   let size = 0;
   for (const [, text] of blocks) {
-    size += codePoints(text) + codePoints(joiner);
+    size += text.length + joiner.length;
     if (kept.length && size > maxChars) break;
     kept.push(text);
   }
   const cut = blocks.slice(kept.length).map(([id]) => id);
   if (cut.length) kept.push(`(${cut.length} more ${what} cut to keep this result small: ${cut.join(', ')}; ${advice}.)`);
   return kept;
-}
-
-/** Python's `repr()` of a string, which the error texts quote arguments with: 'nope', "it's", 'a\nb'. */
-export function pyRepr(text: string): string {
-  const quote = text.includes("'") && !text.includes('"') ? '"' : "'";
-  let out = quote;
-  for (const ch of text) {
-    const code = ch.codePointAt(0)!;
-    if (ch === quote || ch === '\\') out += `\\${ch}`;
-    else if (ch === '\t') out += '\\t';
-    else if (ch === '\n') out += '\\n';
-    else if (ch === '\r') out += '\\r';
-    else if (code < 0x20 || code === 0x7f) out += `\\x${hex(code, 2)}`;
-    else if (ch === ' ' || !NOT_PRINTABLE.test(ch)) out += ch;
-    else if (code <= 0xff) out += `\\x${hex(code, 2)}`;
-    else if (code <= 0xffff) out += `\\u${hex(code, 4)}`;
-    else out += `\\U${hex(code, 8)}`;
-  }
-  return out + quote;
-}
-
-// What Python's str.isprintable() rejects: other and separator characters (the space is printed)
-const NOT_PRINTABLE = /^[\p{Cc}\p{Cf}\p{Cs}\p{Co}\p{Cn}\p{Zl}\p{Zp}\p{Zs}]$/u;
-
-function hex(code: number, width: number): string {
-  return code.toString(16).padStart(width, '0');
 }

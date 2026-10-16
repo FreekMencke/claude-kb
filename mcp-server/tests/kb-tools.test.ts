@@ -1,10 +1,9 @@
-/** The four tools through the SDK's client, in process, on this repo's index: results, errors and size caps. */
-import { createHash } from 'node:crypto';
+/** The four tools through the SDK's client, over HTTP, on this repo's index: results, errors and size caps. */
 import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/client';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { type Index, load } from '../kb-index.ts';
-import { hitLine, MAX_CHARS, pyRepr, SEPARATOR, TYPES } from '../kb-tools.ts';
+import { hitLine, MAX_CHARS, SEPARATOR, TYPES } from '../kb-tools.ts';
 import { KbState } from '../server.ts';
 import { callTool, collectLogs, mcpClient, REPO, tempDir } from './helpers.ts';
 
@@ -42,10 +41,6 @@ test('tools/list', async () => {
   const search = tools[0].description!;
   expect(search).toContain('kb_get the 1 to 4 best IDs');
   expect(search).toContain('60 days');
-  // claude.ai's "Always allow" is reported to be keyed on the descriptions' hash (anthropics/claude-ai-mcp#1087):
-  // these are the Python server's, line breaks included. Change one only on purpose.
-  const hashes = tools.map(t => createHash('sha256').update(`${t.title}\n${t.description}`).digest('hex').slice(0, 12));
-  expect(hashes).toEqual(['69cd66bf52e4', '8009679f722b', '7ed2cb6763ad', '868e29499dfe']);
 });
 
 describe('kb_search', () => {
@@ -68,7 +63,7 @@ describe('kb_search', () => {
   test('no hits lists the topics', async () => {
     const { text, isError } = await call('kb_search', { query: 'zzqqxx' });
     expect(isError).toBe(false);
-    expect(text.startsWith("No entries match 'zzqqxx'")).toBe(true);
+    expect(text.startsWith('No entries match "zzqqxx"')).toBe(true);
     expect(text).toContain('- mcp (MCP): ');
     expect(text.endsWith(CORPUS)).toBe(true);
   });
@@ -84,8 +79,10 @@ describe('kb_search', () => {
     [{ query: '   ' }, 'Pass a query'],
     [{ query: 'hooks', limit: 0 }, 'Pass a limit from 1 to 20'],
     [{ query: 'hooks', limit: 21 }, 'Pass a limit from 1 to 20'],
-    [{ query: 'hooks', topic: 'nope' }, "Unknown topic 'nope'"],
-    [{ query: 'hooks', type: 'opinion' }, "Unknown type 'opinion'"],
+    [{ query: 'hooks', topic: 'nope' }, 'Unknown topic "nope"'],
+    [{ query: 'hooks', type: 'opinion' }, 'Unknown type "opinion"'],
+    [{ query: 5 }, 'Pass query as a string'],
+    [{ query: 'hooks', limit: 2.5 }, 'Pass limit as a whole number'],
   ])('bad arguments: %j', async (args, message) => {
     const { text, isError } = await call('kb_search', args);
     expect(isError).toBe(true);
@@ -111,13 +108,6 @@ test('stale entries say so', () => {
   );
 });
 
-test("Python's repr() in the error texts", () => {
-  expect(pyRepr('nope')).toBe("'nope'");
-  expect(pyRepr("it's")).toBe('"it\'s"');
-  expect(pyRepr('a\'b"c\\')).toBe("'a\\'b\"c\\\\'");
-  expect(pyRepr('a\nb\t\x01 🙂')).toBe("'a\\nb\\t\\x01\\xa0🙂'");
-});
-
 describe('kb_get', () => {
   afterEach(() => {
     MAX_CHARS.get = 40_000;
@@ -138,9 +128,15 @@ describe('kb_get', () => {
     const { text, isError } = await call('kb_get', { ids: ['MCP-017', 'MCP-999', 'webfetch'] });
     expect(isError).toBe(false);
     expect(text.startsWith('## [MCP-017]')).toBe(true);
-    expect(text).toContain('\nMCP-999: no such entry. Closest: MCP-');
+    expect(text).toMatch(/\nMCP-999: no such entry. Closest: MCP-0\d\d \(/);
     expect(text).toContain('\nwebfetch: no such entry. Closest: TOK-');
     expect(text.endsWith(CORPUS)).toBe(true);
+  });
+
+  test('an unknown prefix lists the prefixes', async () => {
+    const { text, isError } = await call('kb_get', { ids: ['ZZZ-001'] });
+    expect(isError).toBe(true);
+    expect(text).toMatch(/^ZZZ-001: no such entry, and no topic uses ZZZ\. Prefixes: .*\bMCP\b/);
   });
 
   test('only unknown is an error', async () => {

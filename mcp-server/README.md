@@ -25,13 +25,14 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 
 | File | What it is |
 |---|---|
-| `server.ts` | The server: the official TypeScript SDK (`@modelcontextprotocol/server`) on Express, stateless Streamable HTTP at `/mcp`, no sign-in, the tools' schemas and descriptions, the icon and health routes, the run modes |
+| `server.ts` | The server: Express, the KB index's refresh, the `/mcp`, icon and health routes, the run modes |
+| `mcp.ts` | MCP itself, without the SDK: stateless Streamable HTTP with JSON replies, the 2025 protocol revisions, the tools' schemas and descriptions, argument checks |
 | `kb-tools.ts` | The text each tool returns, its caps and its error messages |
 | `kb-index.ts` | The entries, parsed by `scripts/kb-parse.ts`, and their search: SQLite FTS5 in memory (`node:sqlite`), ranked by `bm25()` |
 | `log.ts` | The logger: `@osrs-tracker/logger`, the Node apps' JSON lines |
 | `metrics.ts` | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index |
 | `shutdown.ts` | Graceful shutdown on `SIGTERM`, as osrs-tracker-web does it |
-| `tests/` | Vitest: the HTTP contract without a token, the tools through the SDK's client in process, the index and search on fixtures and on this repo, logs, metrics, and the checker (`scripts/check-kb.ts`) |
+| `tests/` | Vitest: the HTTP contract without a token, the tools through the SDK's client over HTTP (so its version negotiation is tested too), the index and search on fixtures and on this repo, logs, metrics, and the checker (`scripts/check-kb.ts`) |
 | `build.ts` | The rspack bundle the image runs: the server and all of `node_modules` in `dist/server.mjs` (`npm run build`), like osrs-tracker-api |
 | `Dockerfile`, `Dockerfile.dockerignore` | The image: a build stage runs `build.ts`, and the image holds `server.mjs` and `assets/logo.{png,svg}` only, no `node_modules`, never KB content or secrets |
 | `package.json`, `package-lock.json` | Dependencies, pinned by the lockfile; `engines` and the repo's `.node-version` name Node 24 |
@@ -72,8 +73,8 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
     Node apps, so their dashboard queries work here. `path` is the matched route's template; every unmatched path is
     `other`. `/healthz` is answered before the middleware, so the probes aren't counted (nor logged).
   - `kb_tool_calls_total{tool,outcome}` (`ok` or `error`) and `kb_tool_duration_seconds{tool}`, around each tool's
-    handler; `kb_search_empty_total` counts searches that matched nothing. A call the SDK rejects before the handler
-    runs (arguments that fail the schema, an unknown tool) isn't counted.
+    handler; `kb_search_empty_total` counts searches that matched nothing. A call with bad arguments counts as an
+    `error`; a call to an unknown tool isn't counted.
   - `kb_index_entries`, `kb_index_build_seconds` and `kb_index_built_timestamp_seconds`, set on each re-index.
   - The client's defaults: `process_*` (memory, CPU, open files) and `nodejs_*` (heap, event-loop lag, GC).
   - git-sync's own metrics on port 2020, through the `claude-kb-git-sync-metrics` Service (a pod's annotations name one
@@ -83,15 +84,20 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   Alloy drops histogram buckets, so durations are averages (`_sum / _count`), not percentiles. Container memory and
   CPU, restarts and OOM kills come from cAdvisor and kube-state-metrics, and home-cluster's cluster-wide alert rules
   cover the Deployment.
+- **Protocol** (`mcp.ts`). JSON-RPC over `POST /mcp`, answered as JSON: `initialize`, `ping`, `tools/list` and
+  `tools/call`, the 2025 revisions (2024-11-05 to 2025-11-25), no session and no stream, so `GET` and `DELETE` get 405.
+  A 2026-07-28 client probes with `server/discover`, gets "method not found" and falls back to `initialize`, as the
+  SDK's client does in the tests. Hand-written because the official SDK (v2) builds a server per request: it cost
+  about 20 MiB at idle and peaked at 275 MiB instead of 110 under a burst of 50 parallel calls (2026-10-16).
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
-  output schema: with one, Claude Code hands Claude the JSON instead of the text. Bounds (`limit`, the number of
-  `ids`) are checked by the tools, not the schemas, so a bad value gets a message saying what to pass. The SDK returns
-  a thrown error's message as the `isError` result and logs nothing.
+  output schema: with one, Claude Code hands Claude the JSON instead of the text. Arguments are checked by type in
+  `mcp.ts` and by bounds in `kb-tools.ts`, so a bad value gets an `isError` result saying what to pass.
 - **Code.** Node 24 runs the `.ts` files as they are (type stripping) in tests and local runs, so only erasable syntax
   (no `enum`, no parameter properties), relative imports with their `.ts` extension. The image runs an rspack bundle
-  instead (`build.ts`): about 104 MiB at idle against 136 MiB for the `.ts` files, measured 2026-10-16. Moved from Python and FastMCP on 2026-10-16
-  (FreekMencke/claude-kb#146) with the tools' text unchanged; a few Python behaviours are ported on purpose
-  (`scripts/difflib.ts`, `pyRepr` in `kb-tools.ts`, Unicode `\w` in `scripts/kb-parse.ts`).
+  (`build.ts`) with `node --lite-mode`, which turns off V8's optimizing compilers: on 2026-10-16 it idled at 72 MiB and
+  peaked at 80 MiB under bursts of 1,500 calls 50 at a time, where the `.ts` files with the SDK idled at 136 MiB and
+  peaked over 330. Calls are about 1.5x slower in lite mode, still under a millisecond. Moved from Python and FastMCP
+  on 2026-10-16 (FreekMencke/claude-kb#146).
 
 ## Run and test locally
 

@@ -172,8 +172,8 @@ describe('fixture files', () => {
     expect(cut.length).toBeLessThanOrEqual(SUMMARY_CHARS);
     expect(cut.endsWith('.')).toBe(true);
     expect(summary('word '.repeat(100)).endsWith(' …')).toBe(true);
-    // Lengths count code points, as Python's did: an emoji is one character
-    expect(summary('🙂'.repeat(400))).toBe(`${'🙂'.repeat(SUMMARY_CHARS)} …`);
+    // Never half an emoji
+    expect(summary(`a${'🙂'.repeat(400)}`)).toBe(`a${'🙂'.repeat((SUMMARY_CHARS - 2) / 2)} …`);
   });
 
   test('get: any case, in order, without repeats', () => {

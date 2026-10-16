@@ -12,7 +12,7 @@ WORKDIR /app/mcp-server
 COPY mcp-server/package.json mcp-server/package-lock.json ./
 RUN npm ci --ignore-scripts
 
-COPY mcp-server/build.ts mcp-server/server.ts mcp-server/kb-index.ts mcp-server/kb-tools.ts mcp-server/log.ts mcp-server/metrics.ts mcp-server/shutdown.ts ./
+COPY mcp-server/build.ts mcp-server/server.ts mcp-server/mcp.ts mcp-server/kb-index.ts mcp-server/kb-tools.ts mcp-server/log.ts mcp-server/metrics.ts mcp-server/shutdown.ts ./
 COPY scripts/package.json scripts/kb-parse.ts scripts/difflib.ts ../scripts/
 RUN npm run build
 
@@ -32,4 +32,6 @@ EXPOSE 8000 9090
 # A fixed non-root UID, which the manifest's runAsUser repeats
 USER 10001:10001
 
-CMD ["node", "server.mjs"]
+# Lite mode turns off V8's optimizing compilers: 72 MiB at idle and 80 MiB at most under bursts of 1,500 calls,
+# against 83 and 115 without it, for calls about 1.5x slower (still under a millisecond). Measured 2026-10-16.
+CMD ["node", "--lite-mode", "server.mjs"]

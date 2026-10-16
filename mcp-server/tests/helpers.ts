@@ -5,11 +5,10 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
-import { createMcpHandler } from '@modelcontextprotocol/server';
 import type { Logger } from '@osrs-tracker/logger';
 import { register } from '@osrs-tracker/express-metrics';
 import { createServerLogger } from '../log.ts';
-import { createApp, createMcpServer, KbState } from '../server.ts';
+import { createApp, KbState } from '../server.ts';
 
 export const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const MCP_HEADERS = { Accept: 'application/json, text/event-stream', 'Content-Type': 'application/json' };
@@ -64,7 +63,7 @@ export function kbState(): { state: KbState; root: string; lines: Record<string,
 
 /** The app listening on a free port of 127.0.0.1; `close` stops it. */
 export async function serve(state: KbState, logger?: Logger) {
-  const { app, metricsApp, mcp } = createApp(state, { logger: logger ?? collectLogs().logger });
+  const { app, metricsApp } = createApp(state, { logger: logger ?? collectLogs().logger });
   const server = app.listen(0, '127.0.0.1');
   await new Promise(resolve => server.once('listening', resolve));
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
@@ -72,7 +71,6 @@ export async function serve(state: KbState, logger?: Logger) {
     base,
     metricsApp,
     close: async () => {
-      await mcp.close();
       server.closeAllConnections();
       await new Promise(resolve => server.close(resolve));
     },
@@ -96,14 +94,19 @@ export async function rpcMessage(response: Response): Promise<Record<string, any
   return JSON.parse(data.at(-1)!.slice('data: '.length));
 }
 
-/** A client connected to the server in-process, through the same handler the app serves. */
+/**
+ * The SDK's client connected to the app over HTTP. It negotiates as a 2026-07-28 client would: it probes with
+ * `server/discover` and falls back to initialize. Closing it stops the app too.
+ */
 export async function mcpClient(state: KbState): Promise<Client> {
-  const handler = createMcpHandler(() => createMcpServer(state));
-  const transport = new StreamableHTTPClientTransport(new URL('http://test.local/mcp'), {
-    fetch: (url, init) => handler.fetch(new Request(url, init)),
-  });
+  const app = await serve(state);
   const client = new Client({ name: 'test', version: '0' }, { versionNegotiation: { mode: 'auto' } });
-  await client.connect(transport);
+  await client.connect(new StreamableHTTPClientTransport(new URL(`${app.base}/mcp`)));
+  const close = client.close.bind(client);
+  client.close = async () => {
+    await close();
+    await app.close();
+  };
   return client;
 }
 

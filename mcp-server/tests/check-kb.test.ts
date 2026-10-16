@@ -3,7 +3,7 @@ import { mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { buildEntries, main } from '../../scripts/check-kb.ts';
-import { closeMatches, ratio } from '../../scripts/difflib.ts';
+import { ratio } from '../../scripts/difflib.ts';
 import { readText } from '../../scripts/kb-parse.ts';
 import { REPO, tempDir } from './helpers.ts';
 
@@ -184,7 +184,7 @@ describe('a broken fixture', () => {
   });
 });
 
-// Values from Python 3.12's difflib on 2026-10-16, which the checker and kb_get were written against
+// Values from Python 3.12's difflib on 2026-10-16, which the checker was written against
 describe('the difflib port', () => {
   test.each([
     ['widgets rotate clockwise', 'widgets rotate clockwise!', 0.979591836735],
@@ -199,12 +199,5 @@ describe('the difflib port', () => {
     // Nothing left to match on, but an empty match at the start extends over equal characters
     expect(ratio(a, a)).toBe(1);
     expect(ratio(`x${a}`, a)).toBe(0);
-  });
-
-  test('closeMatches, ties to the greater string', () => {
-    const ids = Array.from({ length: 41 }, (_, i) => `MCP-${String(i + 1).padStart(3, '0')}`);
-    expect(closeMatches('MCP-999', ids)).toEqual(['MCP-039', 'MCP-029', 'MCP-019']);
-    expect(closeMatches('MCP-017', ids)).toEqual(['MCP-017', 'MCP-041', 'MCP-037']);
-    expect(closeMatches('SKILL-100', ids)).toEqual([]);
   });
 });

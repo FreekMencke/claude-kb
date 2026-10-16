@@ -1,7 +1,7 @@
 /**
  * Bundles the server and all of node_modules into dist/server.mjs, which the image runs (Dockerfile), with rspack like
- * osrs-tracker-api. A bundle idles at about 104 MiB against 136 MiB for the .ts files under type stripping
- * (FreekMencke/claude-kb#146). Tests and `node server.ts` still run the sources.
+ * osrs-tracker-api: it idled at 83 MiB, and 72 with `--lite-mode` (Dockerfile), where the .ts files with the SDK took
+ * 136 (FreekMencke/claude-kb#146). Tests and `node server.ts` run the sources.
  */
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
