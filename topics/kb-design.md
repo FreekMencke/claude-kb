@@ -7,7 +7,7 @@ Research basis:
 - The lead read Anthropic's pages in full as raw text: the Claude Code artifacts, best-practices and desktop pages (`.md`), the platform prompting pages for Opus 5.5 and Sonnet 5, the general prompting page and the vision page (`.md`), the help center's design-system and custom-visuals articles (HTML stripped of tags), the 2025-11-12 claude.com blog post and the Opus 4.7 launch post, and the frontend-design `SKILL.md` from all three Anthropic repos plus its git history.
 - A Sonnet 5.5 research subagent read community design skills and practice; the lead re-checked every quote used here against its downloads.
 - A second round the same day (DESIGN-014 to DESIGN-028): the lead read Anthropic's other design skills from raw.githubusercontent.com; two Sonnet 5.5 readers at high effort covered colour, type and tokens, and layout, libraries, coherence, critique and originality research, from specs, library docs and repos, npm registry JSON and arXiv; the lead re-checked the quotes used against their downloads, and a skeptical subagent tried to refute the claims the recommendations rest on.
-- The lead ran the prompting test in DESIGN-027 (26 `claude -p` runs) two 5-run follow-ups with the user picking (DESIGN-029, DESIGN-030) and two staged sessions with the user picking at each stage (DESIGN-031, DESIGN-032).
+- The lead ran the prompting test in DESIGN-027 (26 `claude -p` runs) follow-ups with the user picking: two 5-run tests and two staged sessions (DESIGN-029, DESIGN-030).
 - `/design-sync`'s framework support was read from the installed v2.1.296 CLI bundle and the session's `DesignSync` tool description, because the docs say only "React components".
 - A 2026-10-16 deep-research report from a claude.ai chat supplied leads only; it isn't cited.
 
@@ -18,7 +18,7 @@ Research basis:
 | How do I see and iterate on a design in Claude Code? | Ask for variants side by side in one artifact ("four distinctly different layouts… as a grid"), tune one with sliders, or run `/design <brief>` for a canvas of editable artboards. Then build the pick in code and check it in the desktop Browser pane or with Playwright. | DESIGN-001 |
 | Why do Claude's pages look generic? | "Distributional convergence": without direction it samples safe defaults. The 2025 tell was Inter and purple gradients; the 2026-09 frontend-design skill names cream-plus-serif-plus-terracotta, near-black with one acid accent, broadsheet hairlines, the SaaS-card kit and template chrome. | DESIGN-003 |
 | How do I prompt for distinctive design? | Name the subject, audience and the page's one job; give a concrete spec (hex palette, typefaces, radius, motion timing) or ask for 4 directions first; ban the specific patterns you got last time, not "the AI look", and expect a new default; use real copy. | DESIGN-004, DESIGN-027 |
-| Which prompting strategy gave the most varied pages in a test? | One small choice at a time, not whole designs: audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then 5 combined variants; on two subjects the user called 4 of 5 variants good. Earlier tests on the same bakery brief (Sonnet 5.5): the bare brief gave five cream-and-Fraunces pages, a banned list one new look, text directions repeated two options every run, and a one-page visual chooser varied colour and type but not page structure. | DESIGN-027, DESIGN-029, DESIGN-030, DESIGN-031, DESIGN-032 |
+| Which prompting strategy gave the most varied pages in a test? | One small choice at a time, not whole designs: audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then 5 combined variants; on two subjects the user called 4 of 5 variants good. Earlier tests on the same bakery brief (Sonnet 5.5): the bare brief gave five cream-and-Fraunces pages, a banned list one new look, text directions repeated two options every run, and a one-page visual chooser varied colour and type but not page structure. | DESIGN-027, DESIGN-029, DESIGN-030 |
 | How do I get an original, consistent colour scheme? | Pick the brand hue from the subject, then fill named roles (Radix's 12 steps or Material's roles), generate the ramp in OKLCH with a script library and check WCAG 2 contrast in light and dark. | DESIGN-015, DESIGN-016, DESIGN-018, DESIGN-019 |
 | Why do Tailwind and shadcn sites look alike, and how do I theme them away? | Stock fonts, radii, shadows and an achromatic shadcn theme. Clear namespaces with `@theme { --color-*: initial; }`, set shadcn's CSS variables or a `shadcn create` style, from the repo's tokens. | DESIGN-023 |
 | How do I get past hero, three cards and a CTA? | Name a layout (bento, magazine, split screen, zigzag, broken grid…), default to no cards, one job per section, and carry the ASCII wireframe into `grid-template-areas`. | DESIGN-022 |
@@ -64,9 +64,9 @@ Research basis:
 | DESIGN-027 | Test: four prompting strategies on one brief | comparison | experiment, prompting, directions, banned-patterns |
 | DESIGN-028 | Isolating scripted design tests from your own setup | pattern | headless, safe-mode, isolation, testing |
 | DESIGN-029 | Test: four directions, then a person picks | comparison | experiment, directions, human-pick, swatches |
-| DESIGN-030 | Test: directions shown as swatches, with the repeat looks banned | comparison | experiment, directions, swatches, banned-patterns |
-| DESIGN-031 | Test: pick colour, then type, then layout, then combine | comparison | experiment, staged-picks, palettes, wireframes |
-| DESIGN-032 | Test: staged picks starting from audience, feel and tone | comparison | experiment, staged-picks, audience, tone-of-voice |
+| DESIGN-030 | Tests: from a visual chooser to staged picks | comparison | experiment, staged-picks, swatches, tone-of-voice |
+| DESIGN-031 | Test: pick colour, then type, then layout, then combine (merged into DESIGN-030) | comparison | experiment, staged-picks, palettes, wireframes |
+| DESIGN-032 | Test: staged picks starting from audience, feel and tone (merged into DESIGN-030) | comparison | experiment, staged-picks, audience, tone-of-voice |
 | DESIGN-033 | Staged picks on an existing site: extract, then lock, nudge or open each step | pattern | existing-site, redesign, staged-picks, tokens |
 
 ## [DESIGN-001] Visualising and iterating on a design in Claude Code
@@ -131,7 +131,7 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 - Confidence: official-docs
 - Last verified: 2026-10-16
 - Sources: [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md)
-- Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-022, DESIGN-027, DESIGN-031, PROMPT-009
+- Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-022, DESIGN-027, DESIGN-030, PROMPT-009
 
 1. **Ground it.** Name "one concrete subject, the design's audience, and the design's primary job" (frontend-design). Distinctive choices come from the subject's "industry, subject matter, materials, and vernacular".
 2. **Give a concrete spec when you have one.** Sonnet 5 "follows explicit specs precisely". Anthropic's AEFRM example gives five hex values, "4px corner radius", the typeface's character, the section order and "transition: all 160ms ease out".
@@ -141,7 +141,7 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 6. **Real copy.** "Copy can make a design feel as templated as the design itself." CTAs say what happens: "Save changes," not "Submit."
 7. **Restraint.** "Spend your boldness in one place." One orchestrated motion moment, not entrance animations everywhere.
 
-Tested (DESIGN-027 to DESIGN-031): whole designs converged; one small choice at a time, picked by a person, worked best. The general and Sonnet 5 pages' `<frontend_aesthetics>` snippets still ask for "animations for effects and micro-interactions", unlike the 2026-09 skill (INDEX.md Conflicts).
+Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at a time, picked by a person, worked best. The general and Sonnet 5 pages' `<frontend_aesthetics>` snippets still ask for "animations for effects and micro-interactions", unlike the 2026-09 skill (INDEX.md Conflicts).
 
 ## [DESIGN-005] The frontend-design skill and how it differs from `artifact-design`
 - Type: tool
@@ -630,68 +630,18 @@ Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL.
 
 Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL, 19:39–19:46 UTC: 5 proposals and 5 builds, $0.58 in all.
 
-## [DESIGN-030] Test: directions shown as swatches, with the repeat looks banned
+## [DESIGN-030] Tests: from a visual chooser to staged picks
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-16
-- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), local test
-- Related: DESIGN-029, DESIGN-031, DESIGN-027, DESIGN-022, DESIGN-024, DESIGN-004, DESIGN-028
+- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Run Claude Code programmatically: continue conversations](https://code.claude.com/docs/en/headless), local tests
+- Related: DESIGN-029, DESIGN-033, DESIGN-027, DESIGN-004, DESIGN-022, DESIGN-003, DESIGN-028
 
-**Setup.** DESIGN-029 again, Sonnet 5.5, 5 runs, with this suffix after DESIGN-027's brief. The user picked each run's direction from a screenshot of `directions.html`, described in plain words, and `--resume` built it.
-
-```text
-Before building, propose 4 distinct visual directions tailored to this brief. Do not propose either of these looks, or a close variant of them: a cream or off-white background with a terracotta or rust accent and Fraunces with Inter; a dark forest-green background with a honey-gold accent and Cormorant Garamond with Work Sans.
-
-Show the four directions side by side in a file named directions.html, so a person can compare them by eye without reading hex codes or font names. For each direction show its name, colour swatches labelled by role (background, text, accent), a sample headline and paragraph set in its actual fonts, a sample button, and a small sketch of the page layout. Then ask the user to pick one, and implement only that direction in index.html.
-```
-
-**The chooser.** No option used a banned look or cream. Yet every run offered the same four kinds: bright royal blue; a pastel with hot pink or teal and a chunky rounded headline; a dark one (deep plum, named "Night Shift" in 3 runs, or a chalkboard); paper or newspaper. Bricolage Grotesque, Bagel Fat One and Nunito were each on 4 of 5 chooser pages, a monospace on all 5. Picking from pictures was easy.
-
-**The builds** were five different looks (sky blue with pink, blue-grey with gold, navy with coral, white with blue, plum with pink). They matched their picks in colour, type and hero. Background ΔE (pairwise mean) was 0.44, the highest so far. Below the hero all five shared one skeleton: three steps, three plans with the middle one raised, an FAQ (4 of 5), a form. "Fresh bread, …" opened 3 of 5 headlines.
-
-**So:** show directions as pictures and ban the repeats, but the ban sets a new recurring set of options. Put section structure in the chooser or the brief (DESIGN-022), or every page gets one skeleton; DESIGN-031 stages it.
-
-Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL: 5 proposals 19:50–19:52 UTC and 5 builds 19:56–19:57 UTC, $1.01 in all.
-
-## [DESIGN-031] Test: pick colour, then type, then layout, then combine
-- Type: comparison
-- Applies to: Claude Code
-- Confidence: single-source
-- Last verified: 2026-10-16
-- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [Run Claude Code programmatically: continue conversations](https://code.claude.com/docs/en/headless), local test
-- Related: DESIGN-030, DESIGN-032, DESIGN-029, DESIGN-025, DESIGN-022, DESIGN-016, DESIGN-020, DESIGN-028
-
-**Setup.** The user's method: one Sonnet 5.5 session, DESIGN-027's brief reworded to allow several files, then the stages below. Each pick was sent as written with `--resume`. The user replaced a first stage of five palettes on mock-ups: "let's start wide, 20 color swatches of 4-8 colors… just squares".
-
-```text
-Work in four stages, and stop after each of the first three so I can pick. Make the options in each stage clearly different from each other, and tailored to this brief. I compare by eye, so show every option visually; hex codes and font names may appear but must not be needed.
-
-1. Colour. Write palettes.html showing 20 colour palettes of 4 to 8 colours each. Show each palette as a row of plain squares next to each other, with only its number and name: no mock-up, sample text or labels. Put the background colour first. Do not propose a cream or off-white background with a terracotta or rust accent, or a dark forest-green background with a honey-gold accent.
-2. Type. In the picked palette, write fonts.html showing 5 font pairings from Google Fonts side by side. For each: a name, a plain-words line on its character, and the same sample headline, subheading, paragraph, price and button set in its fonts. Do not propose Fraunces with Inter, or Cormorant Garamond with Work Sans.
-3. Layout. Write layouts.html showing 5 page layouts side by side, as grey wireframes of the whole page from top to bottom, with every section labelled. Each must differ in structure and section order, not only in the top section. Use no colour or fonts from the earlier stages, so only the structure differs.
-4. Combine the picked palette, fonts and layout into 5 variants of the full page, variant-1.html to variant-5.html. Keep the picks; vary the details: spacing and density, corner shapes, how the accent is used, decoration, and the headline treatment.
-
-Start with stage 1 now.
-```
-
-**What happened.** The user kept 4 palettes, 2 font pairings and 2 layouts. Claude didn't force one pick: the font page got a palette switch, and the five variants were spread over the kept picks. The layouts differed in section order, unlike DESIGN-030; the first was DESIGN-030's skeleton, labelled "the expected order". The pairings reused DESIGN-030's fonts. 19 of 20 palettes had exactly 5 colours.
-
-**Result:** the user called 4 of 5 variants good starting points. What wasn't a stage converged: "every Saturday" in 4 of 5 headlines, a CSS loaf icon in 4.
-
-**So:** guide the person through one small choice at a time rather than generating whole designs, which converge on one look (DESIGN-027 to DESIGN-030). Start wide, keep several picks, and stage the copy too, as DESIGN-032 does. One session, one judge.
-
-Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL, 20:05–20:17 UTC: $0.90 for the session (the last run's total includes the earlier ones); stage 4 took 271 s.
-
-## [DESIGN-032] Test: staged picks starting from audience, feel and tone
-- Type: comparison
-- Applies to: Claude Code
-- Confidence: single-source
-- Last verified: 2026-10-16
-- Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), local test
-- Related: DESIGN-031, DESIGN-033, DESIGN-004, DESIGN-003, DESIGN-022, DESIGN-028
-
-**Setup.** DESIGN-031 with three stages added at the user's suggestion, on a second subject: a bouldering gym in a converted tram depot (made-up prices, course, kids' sessions, a booking form). One Sonnet 5.5 session, picks sent as written:
+Three follow-ups to DESIGN-029 on Sonnet 5.5, isolated as in DESIGN-028. The user picked from screenshots, and each pick was sent as written with `--resume`.
+1. **One-page chooser** (the bakery, 5 runs): four directions as swatches, type samples and a layout sketch, with DESIGN-029's two repeat looks banned.
+2. **Four steps** (the bakery, one session): steps 4 to 7 below, plus the bans.
+3. **Seven steps** (a bouldering gym, one session), the user's method:
 
 ```text
 Work in seven stages, and stop after each of the first six so I can pick. Make the options in each stage clearly different from each other, and tailored to this brief. I may keep more than one option at a stage. I compare by eye, so show every option visually; hex codes and font names may appear but must not be needed.
@@ -707,21 +657,47 @@ Work in seven stages, and stop after each of the first six so I can pick. Make t
 Start with stage 1 now.
 ```
 
-**What happened.** The user kept 2 audiences, 4 feels, 3 tones, 9 palettes, 1 font pairing and 2 layouts. Claude asked three times for fewer, then chose: five palettes, one per variant; the three tones blended within each page (deadpan headline, calm paragraph, cheeky button). The words now came from the tone pick. The five layout ideas matched the bakery's (classic, sign-up first, side rail, story, chooser), and several palettes were near-black with one acid accent (DESIGN-003).
+| | Chooser | 4 steps | 7 steps |
+|---|---|---|---|
+| Result | five different looks | 4 of 5 variants good starts | "all except 4 look amazing" |
+| Still converged | one section skeleton; every run offered blue, pastel, dark and paper options | "every Saturday" in 4 of 5 headlines | layout ideas and fonts matched the bakery's |
+| Cost | $1.01 | $0.90 | $0.98 |
 
-**Result:** "all except 4 look amazing, this definitly is the way to go". Untested next step from the user: five options per stage, rotating new batches until at least three are kept.
+**Notes.** The user kept several options per step. Claude asked three times for fewer, then spread the variants over them, but blended three kept tones inside each page. The tone step replaced the stock copy.
 
-Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL, 20:34–20:51 UTC: $0.98 for the session; stage 7 took 240 s and 14 of 15 turns, so raise `--max-turns` for it.
+**So:** guide a person through one small choice at a time instead of generating whole designs. The user's refinement is untested: five options per step, with new batches until at least three are kept (FreekMencke/claude-skills#75).
+
+Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL: 19:50–19:57, 20:05–20:17 and 20:34–20:51 UTC. A resumed run's cost includes the earlier runs (DESIGN-028). The final 7-step stage used 14 of 15 turns.
+
+## [DESIGN-031] Test: pick colour, then type, then layout, then combine
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-16
+- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), local test
+- Related: DESIGN-030
+
+Merged into DESIGN-030 on 2026-10-16. Read that entry for the four-step staged test on the bakery brief.
+
+## [DESIGN-032] Test: staged picks starting from audience, feel and tone
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-16
+- Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), local test
+- Related: DESIGN-030
+
+Merged into DESIGN-030 on 2026-10-16. Read that entry for the seven-step staged test and its prompt.
 
 ## [DESIGN-033] Staged picks on an existing site: extract, then lock, nudge or open each step
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: unverified
 - Last verified: 2026-10-16
-- Sources: [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design), [Artifacts: compare alternatives](https://code.claude.com/docs/en/artifacts), local tests (DESIGN-031, DESIGN-032)
-- Related: DESIGN-032, DESIGN-009, DESIGN-010, DESIGN-006, DESIGN-024, DESIGN-021
+- Sources: [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design), [Artifacts: compare alternatives](https://code.claude.com/docs/en/artifacts), local tests (DESIGN-030)
+- Related: DESIGN-030, DESIGN-009, DESIGN-010, DESIGN-006, DESIGN-024, DESIGN-021
 
-DESIGN-032's steps assume a blank page. On an existing site, treat what exists as the first set of picks. This is our synthesis, untested: every test built a new page.
+DESIGN-030's steps assume a blank page. On an existing site, treat what exists as the first set of picks. This is our synthesis, untested: every test built a new page.
 
 1. **Extract** (DESIGN-010): Claude reads the theme files, components and real pages, and writes the current audience, feel, tone (quoted from real copy), colour roles, fonts and layouts in use. Anthropic: "Include real examples, not just specs."
 2. **Lock, nudge or open each step:**
@@ -742,14 +718,14 @@ Ranked by impact against effort.
 1. **Done in this PR: route design questions here.** `claude-kb-lookup`'s description names "visual and UI design with Claude", with a `loads-19` case and a `skips-8` near miss for database design. The MCP server's `kb_search` description follows in a second PR once this one merges (FreekMencke/claude-kb#147).
 2. **osrs-tracker-web: give the browser checker a contrast and token check** (DESIGN-007). Its `browser-checker` agent already has `browser_evaluate` and measures sizes when asked. It doesn't check text contrast against WCAG AA or compare computed colours with the theme tokens. The light and dark themes with tinted pills are where a contrast slip would hide. Tracked in [osrs-tracker/osrs-tracker-web#337](https://github.com/osrs-tracker/osrs-tracker-web/issues/337).
 3. **Don't run `/design-sync` on osrs-tracker-web** (DESIGN-002). It's Angular, and the sync adapters read React only. Its design system stays in the repo skill and the design canvas artifact. If mock-ups move to `/design`, make a Design System artifact from a chat with `theme.css`, `base.css` and screenshots of real pages (DESIGN-010), and refresh it when the tokens change. No repo change.
-4. **For a new page or redesign in any repo, prompt with DESIGN-004:** subject, audience and job; one small choice at a time, picked by you rather than by Claude, instead of whole designs, with DESIGN-032's prompt: audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then combined variants, keeping several picks per stage (4 of 5 variants were good on both subjects; in DESIGN-027 the self-pick added template chrome, in DESIGN-029 half the options repeated across runs, in DESIGN-030 a one-page chooser left one section skeleton); a banned list grown from the last result. On an existing site, extract first and re-open only the steps that should change (DESIGN-033). A skill that runs this, rotating batches included, is [FreekMencke/claude-skills#75](https://github.com/FreekMencke/claude-skills/issues/75). In a Tailwind or shadcn repo, theme the defaults away first (DESIGN-023). No change needed: the `frontend-design` plugin we have installed is the current upstream text (identical checksum, 2026-10-16).
+4. **For a new page or redesign in any repo, prompt with DESIGN-004:** subject, audience and job; one small choice at a time, picked by you rather than by Claude, instead of whole designs, with DESIGN-030's prompt: audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then combined variants, keeping several picks per stage (4 of 5 variants were good on both subjects; in DESIGN-027 the self-pick added template chrome, in DESIGN-029 half the options repeated across runs, and a one-page chooser left one section skeleton); a banned list grown from the last result. On an existing site, extract first and re-open only the steps that should change (DESIGN-033). A skill that runs this, rotating batches included, is [FreekMencke/claude-skills#75](https://github.com/FreekMencke/claude-skills/issues/75). In a Tailwind or shadcn repo, theme the defaults away first (DESIGN-023). No change needed: the `frontend-design` plugin we have installed is the current upstream text (identical checksum, 2026-10-16).
 5. **Don't install Impeccable or Taste Skill user-wide** (DESIGN-012). They add hooks, a downloaded binary, telemetry or image fetching, and overlap with frontend-design. Borrow their banned lists and measuring ideas instead.
 6. **Test design-prompt or skill changes with DESIGN-028's isolation flags**, measured as in DESIGN-027, so CLAUDE.md, the frontend-design plugin and the output style don't leak into the result. The measuring scripts aren't in the repo; adding them under `evals/` would make the test re-runnable.
 7. **Considered, not adopted: `--color-*: initial` in osrs-tracker-web's `@theme`** (DESIGN-023). On 2026-10-16 its templates used no default palette colour classes, so clearing them would turn an off-token colour into a build error. Its repo skill already says "a value the scale lacks becomes a token", and osrs-tracker/osrs-tracker-web#337 adds a computed-colour check; a change would first have to check what `@tailwindcss/forms` reads from the default palette. Not worth an issue now.
 
 ## Open questions
 
-- **The full frontend-design skill wasn't tested** (DESIGN-027): S3 used only its two passes, without its list of default looks. The staged method ran twice (DESIGN-031, DESIGN-032), on two subjects, Sonnet 5.5 only, with one person judging; fonts and layout ideas repeated across both. The user's rotating batches (five options per stage, new batches until at least three are kept) and the existing-site mode (DESIGN-033) are untested; FreekMencke/claude-skills#75's first use will test them.
+- **The full frontend-design skill wasn't tested** (DESIGN-027): S3 used only its two passes, without its list of default looks. The staged method ran twice (DESIGN-030), on two subjects, Sonnet 5.5 only, with one person judging; fonts and layout ideas repeated across both. The user's rotating batches (five options per stage, new batches until at least three are kept) and the existing-site mode (DESIGN-033) are untested; FreekMencke/claude-skills#75's first use will test them.
 - **The test kept only final pages:** `--output-format json` returns the last message, so S2's four directions and S3's plans weren't recorded (DESIGN-028). `stream-json` would keep them.
 - **Typeface choice has no raw-text primary source here** (DESIGN-020): Google Fonts Knowledge and m3.material.io render in JavaScript, so curl got empty pages. A browser read would fill this.
 - **Does OpenAI's "no cards" guidance transfer to Claude?** (DESIGN-022) Written for its GPT models; untested on Claude.
