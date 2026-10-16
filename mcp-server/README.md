@@ -86,8 +86,9 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   cover the Deployment.
 - **Protocol** (`mcp.ts`). JSON-RPC over `POST /mcp`, answered as JSON: `initialize`, `ping`, `tools/list` and
   `tools/call`, the 2025 revisions (2024-11-05 to 2025-11-25), no session and no stream, so `GET` and `DELETE` get 405.
-  A 2026-07-28 client probes with `server/discover`, gets "method not found" and falls back to `initialize`, as the
-  SDK's client does in the tests. Hand-written because the official SDK (v2) builds a server per request: it cost
+  An unsupported `MCP-Protocol-Version` header gets 400, as the spec requires. A 2026-07-28 client probes with
+  `server/discover` under its own version header, gets that 400 and falls back to `initialize`, as the SDK's client
+  does in the tests. Hand-written because the official SDK (v2) builds a server per request: it cost
   about 20 MiB at idle and peaked at 275 MiB instead of 110 under a burst of 50 parallel calls (2026-10-16).
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
   output schema: with one, Claude Code hands Claude the JSON instead of the text. Arguments are checked by type in

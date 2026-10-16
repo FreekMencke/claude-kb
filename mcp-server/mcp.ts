@@ -3,8 +3,8 @@
  * tools/call answered as JSON, nothing more. The official SDK (v2) builds a server per request: it cost about 20 MiB at
  * idle and peaked at 275 MiB instead of 110 under a burst of 50 parallel calls (FreekMencke/claude-kb#146). So this
  * module implements the 2025 protocol family (2024-11-05 to 2025-11-25) by hand. A 2026-07-28 client probes with
- * `server/discover`, gets "method not found" and falls back to initialize; the tests connect with the SDK's client,
- * which does exactly that.
+ * `server/discover` under its own MCP-Protocol-Version header, gets a 400 and falls back to initialize; the tests
+ * connect with the SDK's client, which does exactly that.
  */
 import packageJson from './package.json' with { type: 'json' };
 import * as tools from './kb-tools.ts';
@@ -24,11 +24,12 @@ const INTERNAL_ERROR = -32603;
 const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false };
 const TOPIC = { type: ['string', 'null'], description: 'Only this topic: a name such as mcp or a prefix such as MCP' };
 
-export interface Icon {
-  src: string;
-  mimeType: string;
-  sizes: string[];
-}
+export const PUBLIC_URL = 'https://claude-kb.freekmencke.com';
+// The spec asks clients to fetch icons only from the server's own origin: server.ts serves them (ICON_FILES)
+const ICONS = [
+  { src: `${PUBLIC_URL}/icon.png`, mimeType: 'image/png', sizes: ['512x512'] },
+  { src: `${PUBLIC_URL}/icon.svg`, mimeType: 'image/svg+xml', sizes: ['any'] },
+];
 
 export interface ToolResult {
   content: { type: 'text'; text: string }[];
@@ -171,11 +172,7 @@ function strings(args: Args, key: string): string[] {
   return value;
 }
 
-export interface McpServerInfo {
-  icons: Icon[];
-}
-
-/** What to send back for a POST: the HTTP status and the JSON body, or none (202) when it held only notifications. */
+/** What to send back: the HTTP status and the JSON body, or none (202) when a POST held only notifications. */
 export interface McpReply {
   status: number;
   body?: unknown;
@@ -184,20 +181,29 @@ export interface McpReply {
 type Message = { jsonrpc?: unknown; id?: unknown; method?: unknown; params?: unknown };
 
 /**
- * The reply to a POSTed body, already parsed from JSON (`undefined` when it didn't parse). Unexpected errors are
- * passed to `onError` and answered with JSON-RPC's internal error.
+ * The reply to a POSTed body, already parsed from JSON (`undefined` when it didn't parse), and its MCP-Protocol-Version
+ * header. Unexpected errors are passed to `onError` and answered with JSON-RPC's internal error.
  */
-export function handle(body: unknown, state: KbState, info: McpServerInfo, onError: OnError): McpReply {
+export function handle(body: unknown, protocolVersion: string | undefined, state: KbState, onError: OnError): McpReply {
+  // Sent on every request after initialize; the spec answers an unsupported one with 400
+  if (protocolVersion !== undefined && !VERSIONS.includes(protocolVersion)) {
+    return rejected(400, `Unsupported MCP-Protocol-Version ${protocolVersion}: use one of ${VERSIONS.join(', ')}`);
+  }
   if (body === undefined) return { status: 400, body: error(null, PARSE_ERROR, 'Parse error') };
   // 2025-03-26 allowed batches; later revisions dropped them
   if (Array.isArray(body)) {
     if (!body.length) return { status: 400, body: error(null, INVALID_REQUEST, 'Empty batch') };
-    const replies = body.map(message => answer(message, state, info, onError)).filter(reply => reply !== undefined);
+    const replies = body.map(message => answer(message, state, onError)).filter(reply => reply !== undefined);
     return replies.length ? { status: 200, body: replies } : { status: 202 };
   }
-  const reply = answer(body, state, info, onError);
+  const reply = answer(body, state, onError);
   if (reply === undefined) return { status: 202 };
   return { status: 'error' in reply && reply.error.code === INVALID_REQUEST ? 400 : 200, body: reply };
+}
+
+/** An HTTP error with a JSON-RPC error body, as the spec allows for a request it can't take. */
+export function rejected(status: number, message: string): McpReply {
+  return { status, body: error(null, INVALID_REQUEST, message) };
 }
 
 type OnError = (error: unknown) => void;
@@ -205,7 +211,7 @@ type Reply =
   | { jsonrpc: '2.0'; id: unknown; result: unknown }
   | { jsonrpc: '2.0'; id: unknown; error: { code: number; message: string } };
 
-function answer(message: unknown, state: KbState, info: McpServerInfo, onError: OnError): Reply | undefined {
+function answer(message: unknown, state: KbState, onError: OnError): Reply | undefined {
   if (typeof message !== 'object' || message === null) return error(null, INVALID_REQUEST, 'Not a JSON-RPC message');
   const { jsonrpc, id, method, params } = message as Message;
   if (jsonrpc !== '2.0') return error(id ?? null, INVALID_REQUEST, 'Not a JSON-RPC 2.0 message');
@@ -219,7 +225,7 @@ function answer(message: unknown, state: KbState, info: McpServerInfo, onError: 
         return result(id, {
           protocolVersion: VERSIONS.includes(p.protocolVersion as string) ? p.protocolVersion : VERSIONS[0],
           capabilities: { tools: { listChanged: false } },
-          serverInfo: { name: 'claude-kb', version: packageJson.version, icons: info.icons },
+          serverInfo: { name: 'claude-kb', version: packageJson.version, icons: ICONS },
           instructions: tools.INSTRUCTIONS,
         });
       case 'ping':

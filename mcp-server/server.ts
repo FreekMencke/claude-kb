@@ -20,7 +20,7 @@ import { type Logger, requestLogger } from '@osrs-tracker/logger';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { type Index, load } from './kb-index.ts';
 import { type KbLogType, logger as serverLogger } from './log.ts';
-import { handle, type Icon } from './mcp.ts';
+import { handle, type McpReply, rejected } from './mcp.ts';
 import { httpMetrics, indexLoaded, routeLabel } from './metrics.ts';
 import { configureGracefulShutdown } from './shutdown.ts';
 
@@ -28,21 +28,16 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 // ../assets, in the repo and in the image alike
 const ASSETS = join(HERE, '..', 'assets');
 
-export const PUBLIC_URL = 'https://claude-kb.freekmencke.com';
 const MCP_PATH = '/mcp';
 const METRICS_PORT = 9090;
-// The logo, served by this server: the MCP spec asks clients to fetch icons only from the server's own origin, over
-// HTTPS and without credentials. Its rounded green background suits light and dark themes alike. The PNG is also
-// /favicon.ico: how claude.ai picks a custom connector's icon isn't documented.
+// The logo, served by this server: the MCP spec asks clients to fetch icons (ICONS in mcp.ts) only from the server's
+// own origin, over HTTPS and without credentials. Its rounded green background suits light and dark themes alike. The
+// PNG is also /favicon.ico: how claude.ai picks a custom connector's icon isn't documented.
 const ICON_FILES: Record<string, string> = {
   '/icon.png': 'logo.png',
   '/icon.svg': 'logo.svg',
   '/favicon.ico': 'logo.png',
 };
-const ICONS: Icon[] = [
-  { src: `${PUBLIC_URL}/icon.png`, mimeType: 'image/png', sizes: ['512x512'] },
-  { src: `${PUBLIC_URL}/icon.svg`, mimeType: 'image/svg+xml', sizes: ['any'] },
-];
 // How often to check whether git-sync (every 60 s) has moved the link to a new commit: a realpath, so cheap
 const REFRESH_SECONDS = 10;
 // A tool call is a few hundred bytes
@@ -135,22 +130,20 @@ export function createApp(state: KbState, { logger = serverLogger }: { logger?: 
   }
 
   const uncaughtLog = logger.child({ type: 'uncaught' satisfies KbLogType });
-  const info = { icons: ICONS };
   // Stateless and JSON only: no session, no stream, so GET (a server-to-client stream) and DELETE (ending a session)
   // have nothing to do
   app.post(MCP_PATH, (req, res, next) => {
-    if (!req.is('application/json')) return void res.status(415).send('Send Content-Type: application/json');
+    if (!req.is('application/json')) return send(res, rejected(415, 'Send Content-Type: application/json'));
     express.json({ limit: MAX_BODY, strict: false })(req, res, error => {
       // A body that isn't JSON is JSON-RPC's parse error, not Express's HTML 400
       if (error && error.type !== 'entity.parse.failed') return next(error);
-      const reply = handle(error ? undefined : req.body, state, info, e => {
-        uncaughtLog.error({ error: e }, `${req.method} ${req.originalUrl} failed`);
-      });
-      if (reply.body === undefined) res.status(reply.status).end();
-      else res.status(reply.status).json(reply.body);
+      const onError = (e: unknown) => uncaughtLog.error({ error: e }, `${req.method} ${req.originalUrl} failed`);
+      send(res, handle(error ? undefined : req.body, req.get('MCP-Protocol-Version'), state, onError));
     });
   });
-  app.all(MCP_PATH, (_req, res) => void res.status(405).set('Allow', 'POST').end());
+  app.all(MCP_PATH, (_req, res) => {
+    send(res.set('Allow', 'POST'), rejected(405, 'Use POST: there is no session or stream'));
+  });
 
   // Log errors and answer a generic 500: Express's default handler sends the stack unless NODE_ENV=production
   app.use((error: { status?: number }, req: Request, res: Response, next: NextFunction) => {
@@ -162,6 +155,11 @@ export function createApp(state: KbState, { logger = serverLogger }: { logger?: 
   });
 
   return { app, metricsApp };
+}
+
+function send(res: Response, reply: McpReply): void {
+  if (reply.body === undefined) res.status(reply.status).end();
+  else res.status(reply.status).json(reply.body);
 }
 
 function main(args: string[]): void {

@@ -2,8 +2,21 @@
 import { renameSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { KbState, PUBLIC_URL } from '../server.ts';
-import { addCommit, collectLogs, COMMIT, kbState, MCP_HEADERS, rpc, rpcMessage, serve, tempDir, TOPIC } from './helpers.ts';
+import { PUBLIC_URL } from '../mcp.ts';
+import { KbState } from '../server.ts';
+import {
+  addCommit,
+  collectLogs,
+  COMMIT,
+  kbState,
+  MCP_HEADERS,
+  mcpClient,
+  rpc,
+  rpcMessage,
+  serve,
+  tempDir,
+  TOPIC,
+} from './helpers.ts';
 
 describe('the index of the git-sync checkout', () => {
   test('counts entries in the linked commit', () => {
@@ -138,8 +151,14 @@ describe('over HTTP', () => {
   });
 
   test('a 2025-era GET or DELETE on /mcp has no session to open or end', async () => {
-    expect((await fetch(`${base}/mcp`, { headers: { Accept: 'text/event-stream' } })).status).toBe(405);
-    expect((await fetch(`${base}/mcp`, { method: 'DELETE' })).status).toBe(405);
+    for (const response of [
+      await fetch(`${base}/mcp`, { headers: { Accept: 'text/event-stream' } }),
+      await fetch(`${base}/mcp`, { method: 'DELETE' }),
+    ]) {
+      expect(response.status).toBe(405);
+      expect(response.headers.get('allow')).toBe('POST');
+      expect((await response.json()).error.code).toBe(-32600);
+    }
   });
 });
 
@@ -152,9 +171,11 @@ describe('the protocol', () => {
   });
   afterEach(() => close());
 
-  function post(body: string, contentType = 'application/json'): Promise<Response> {
-    return fetch(`${base}/mcp`, { method: 'POST', headers: { ...MCP_HEADERS, 'Content-Type': contentType }, body });
+  function post(body: string, headers: Record<string, string> = {}): Promise<Response> {
+    return fetch(`${base}/mcp`, { method: 'POST', headers: { ...MCP_HEADERS, ...headers }, body });
   }
+
+  const PING = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping' });
 
   test.each([
     ['2025-03-26', '2025-03-26'],
@@ -167,10 +188,21 @@ describe('the protocol', () => {
     expect(result.capabilities).toEqual({ tools: { listChanged: false } });
   });
 
-  test("a 2026-07-28 client's probe gets method not found, its cue to fall back", async () => {
-    const response = await rpc(base, 'server/discover');
-    expect(response.status).toBe(200);
-    expect((await response.json()).error.code).toBe(-32601);
+  test("a 2026-07-28 client's probe gets a 400, its cue to fall back", async () => {
+    const probe = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'server/discover' });
+    const response = await post(probe, { 'MCP-Protocol-Version': '2026-07-28' });
+    expect(response.status).toBe(400);
+    expect((await response.json()).error.message).toContain('Unsupported MCP-Protocol-Version 2026-07-28');
+  });
+
+  test('the SDK client falls back from the probe to initialize', async () => {
+    const client = await mcpClient(kbState().state);
+    expect((await client.listTools()).tools).toHaveLength(4);
+    await client.close();
+  });
+
+  test.each(['2025-11-25', '2025-03-26'])('MCP-Protocol-Version %s is served', async version => {
+    expect((await post(PING, { 'MCP-Protocol-Version': version })).status).toBe(200);
   });
 
   test('a notification gets 202 and no body', async () => {
@@ -203,6 +235,8 @@ describe('the protocol', () => {
   });
 
   test('a body that says it isn’t JSON gets 415', async () => {
-    expect((await post('{}', 'text/plain')).status).toBe(415);
+    const response = await post(PING, { 'Content-Type': 'text/plain' });
+    expect(response.status).toBe(415);
+    expect((await response.json()).error.code).toBe(-32600);
   });
 });
