@@ -2,6 +2,7 @@
 *
 !mcp-server/package.json
 !mcp-server/package-lock.json
+!mcp-server/build.ts
 !mcp-server/server.ts
 !mcp-server/kb-index.ts
 !mcp-server/kb-tools.ts

@@ -32,7 +32,8 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 | `metrics.ts` | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index |
 | `shutdown.ts` | Graceful shutdown on `SIGTERM`, as osrs-tracker-web does it |
 | `tests/` | Vitest: the HTTP contract without a token, the tools through the SDK's client in process, the index and search on fixtures and on this repo, logs, metrics, and the checker (`scripts/check-kb.ts`) |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: the server's `.ts` files, `package*.json` and its production dependencies, `scripts/kb-parse.ts`, `scripts/difflib.ts`, `assets/logo.{png,svg}`, never KB content or secrets |
+| `build.ts` | The rspack bundle the image runs: the server and all of `node_modules` in `dist/server.mjs` (`npm run build`), like osrs-tracker-api |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: a build stage runs `build.ts`, and the image holds `server.mjs` and `assets/logo.{png,svg}` only, no `node_modules`, never KB content or secrets |
 | `package.json`, `package-lock.json` | Dependencies, pinned by the lockfile; `engines` and the repo's `.node-version` name Node 24 |
 | `tsconfig.json` | The type check (`npx tsc`), which covers `../scripts` too; nothing is emitted |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
@@ -86,8 +87,9 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   output schema: with one, Claude Code hands Claude the JSON instead of the text. Bounds (`limit`, the number of
   `ids`) are checked by the tools, not the schemas, so a bad value gets a message saying what to pass. The SDK returns
   a thrown error's message as the `isError` result and logs nothing.
-- **Code.** Node 24 runs the `.ts` files as they are (type stripping): no build step, only erasable syntax (no `enum`,
-  no parameter properties), relative imports with their `.ts` extension. Moved from Python and FastMCP on 2026-10-16
+- **Code.** Node 24 runs the `.ts` files as they are (type stripping) in tests and local runs, so only erasable syntax
+  (no `enum`, no parameter properties), relative imports with their `.ts` extension. The image runs an rspack bundle
+  instead (`build.ts`): about 104 MiB at idle against 136 MiB for the `.ts` files, measured 2026-10-16. Moved from Python and FastMCP on 2026-10-16
   (FreekMencke/claude-kb#146) with the tools' text unchanged; a few Python behaviours are ported on purpose
   (`scripts/difflib.ts`, `pyRepr` in `kb-tools.ts`, Unicode `\w` in `scripts/kb-parse.ts`).
 
@@ -110,6 +112,12 @@ the metrics port:
 
 ```bash
 node server.ts --local --port 8765
+```
+
+The bundle the image runs, in `dist/server.mjs` (it finds the icons only in the image's layout, `../assets`):
+
+```bash
+npm run build
 ```
 
 Then, from another terminal, the MCP Inspector CLI:
@@ -143,14 +151,14 @@ Read from the environment, set in the manifest. No secrets.
 
 ## Dependencies
 
-`package-lock.json` pins every version, and the image installs from it with `npm ci --omit=dev`: an unpinned
+`package-lock.json` pins every version, and the image's build stage installs from it with `npm ci`: an unpinned
 dependency once jumped a major version and broke another server's startup. Change one with `npm install <name>@<range>`
 from `mcp-server/` and commit both files. The image's base (`node:24-alpine`, by digest) is the Node apps' own; Node's
 major version is in `.node-version`, `engines`, both workflows (`setup-node` reads `.node-version`) and that tag.
 
-TypeScript is 7, the native compiler, used only for `npx tsc` (Node strips the types at run time). Its package has no
-`tsserver` or `lib.*.d.ts`, so an editor or language server pointed at this folder's `typescript` reports every
-built-in as missing: use the editor's own TypeScript, or none.
+TypeScript is 7, the native compiler, used only for `npx tsc` (Node strips the types, and rspack's SWC loader compiles
+the bundle). Its package has no `tsserver` or `lib.*.d.ts`, so an editor or language server pointed at this folder's
+`typescript` reports every built-in as missing: use the editor's own TypeScript, or none.
 
 ## Deploy
 
