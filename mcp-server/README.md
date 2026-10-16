@@ -86,7 +86,8 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   cover the Deployment.
 - **Protocol** (`mcp.ts`). JSON-RPC over `POST /mcp`, answered as JSON: `initialize`, `ping`, `tools/list` and
   `tools/call`, the 2025 revisions (2024-11-05 to 2025-11-25), no session and no stream, so `GET` and `DELETE` get 405.
-  An unsupported `MCP-Protocol-Version` header gets 400, as the spec requires. A 2026-07-28 client probes with
+  An unsupported `MCP-Protocol-Version` header gets 400, and an `Origin` other than the server's own or localhost gets
+  403, as the spec requires (no `Origin`, as from Claude Code and claude.ai, passes). A 2026-07-28 client probes with
   `server/discover` under its own version header, gets that 400 and falls back to `initialize`, as the SDK's client
   does in the tests. Hand-written because the official SDK (v2) builds a server per request: it cost
   about 20 MiB at idle and peaked at 275 MiB instead of 110 under a burst of 50 parallel calls (2026-10-16).

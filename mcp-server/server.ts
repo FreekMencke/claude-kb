@@ -20,7 +20,7 @@ import { type Logger, requestLogger } from '@osrs-tracker/logger';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { type Index, load } from './kb-index.ts';
 import { type KbLogType, logger as serverLogger } from './log.ts';
-import { handle, type McpReply, rejected } from './mcp.ts';
+import { handle, type McpReply, originAllowed, rejected } from './mcp.ts';
 import { httpMetrics, indexLoaded, routeLabel } from './metrics.ts';
 import { configureGracefulShutdown } from './shutdown.ts';
 
@@ -128,6 +128,10 @@ export function createApp(state: KbState, { logger = serverLogger }: { logger?: 
   }
 
   const uncaughtLog = logger.child({ type: 'uncaught' satisfies KbLogType });
+  app.use(MCP_PATH, (req, res, next) => {
+    if (originAllowed(req.get('Origin'))) return next();
+    send(res, rejected(403, `Origin ${req.get('Origin')} may not use this server`));
+  });
   // Stateless and JSON only: no session, no stream, so GET (a server-to-client stream) and DELETE (ending a session)
   // have nothing to do
   app.post(MCP_PATH, (req, res, next) => {

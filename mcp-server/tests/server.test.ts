@@ -251,6 +251,21 @@ describe('the protocol', () => {
     expect((await response.json()).error.code).toBe(code);
   });
 
+  test.each([PUBLIC_URL, 'http://localhost:6274', 'http://127.0.0.1:8765', 'http://[::1]:8765'])(
+    'Origin %s is served',
+    async origin => {
+      expect((await post(PING, { Origin: origin })).status).toBe(200);
+    },
+  );
+
+  test.each(['https://evil.example', 'null', 'http://localhost.evil.example'])('Origin %s gets 403', async origin => {
+    const response = await post(PING, { Origin: origin });
+    expect(response.status).toBe(403);
+    expect((await response.json()).error.code).toBe(-32600);
+    // On every method, so a GET gets 403 rather than 405
+    expect((await fetch(`${base}/mcp`, { headers: { Origin: origin } })).status).toBe(403);
+  });
+
   test('a body that says it isn’t JSON gets 415', async () => {
     const response = await post(PING, { 'Content-Type': 'text/plain' });
     expect(response.status).toBe(415);

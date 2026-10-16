@@ -22,6 +22,8 @@ const INTERNAL_ERROR = -32603;
 
 export const PUBLIC_URL = 'https://claude-kb.freekmencke.com';
 // The spec asks clients to fetch icons only from the server's own origin: server.ts serves them (ICON_FILES)
+const PUBLIC_ORIGIN = new URL(PUBLIC_URL).origin;
+const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
 const ICONS = [
   { src: `${PUBLIC_URL}/icon.png`, mimeType: 'image/png', sizes: ['512x512'] },
   { src: `${PUBLIC_URL}/icon.svg`, mimeType: 'image/svg+xml', sizes: ['any'] },
@@ -74,6 +76,18 @@ export function handle(body: unknown, protocolVersion: string | undefined, state
   const reply = answer(body, state, onError);
   if (reply === undefined) return { status: 202 };
   return { status: 'error' in reply && reply.error.code === INVALID_REQUEST ? 400 : 200, body: reply };
+}
+
+/**
+ * Whether a request's Origin header may reach /mcp: the spec requires a check, against DNS rebinding. No Origin passes
+ * (Claude Code and claude.ai's servers send none), and so do this server's own origin and localhost (the MCP Inspector,
+ * `--local`). Any other origin's page couldn't read a reply anyway: no CORS headers.
+ */
+export function originAllowed(origin: string | undefined): boolean {
+  if (origin === undefined) return true;
+  if (!URL.canParse(origin)) return false;
+  const url = new URL(origin);
+  return url.origin === PUBLIC_ORIGIN || LOCAL_HOSTS.includes(url.hostname);
 }
 
 /** An HTTP error with a JSON-RPC error body, as the spec allows for a request it can't take. */
