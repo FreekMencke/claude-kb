@@ -95,6 +95,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-mcp.md](topics/kb-mcp.md) | `MCP` | MCP servers and connectors |
 | [kb-documentation.md](topics/kb-documentation.md) | `DOC` | Repo docs Claude maintains |
 | [kb-web-analytics-seo.md](topics/kb-web-analytics-seo.md) | `WEB` | Web analytics and SEO |
+| [kb-design.md](topics/kb-design.md) | `DESIGN` | Visual and UI design with Claude |
 
 | Other files | What it holds |
 |---|---|
@@ -142,7 +143,7 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 18 + 7 | 54/54 | 21/21 | Opus 5.5 | 2.1.296 | 2026-10-14 |
+| 19 + 8 | 57/57 | 24/24 | Opus 5.5 | 2.1.296 | 2026-10-16 |
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 

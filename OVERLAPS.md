@@ -28,6 +28,10 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Worktrees: ORCH-009 (subagent and session isolation mechanics), SESS-001 and SESS-004 (what worktrees share), SESS-005 (lifecycle per surface), SKILL-053 (desktop config root).
 - Parallel sessions and quota: ORCH-013 and ORCH-020 (agent view, multipliers), SESS-032 and SESS-033 (plan allowance, how many sessions), ORCH-043 (session managers).
 - Hand-offs: ORCH-036 (progress files in long runs), SESS-031 (choosing a channel between sessions), TOK-030 (handoff before `/clear`).
+- Design in Claude Code: SURF-016 (templates and the `artifact-design` skill), DESIGN-001 (visualising and iterating with artifacts, `/design` and the browser), DESIGN-002 (design systems for `/design`, `/design-sync`).
+- Visual checks: FLOW-004 (the screenshot loop), FLOW-014 (browser tools), REPO-021 (a checker subagent), DESIGN-007 (measuring computed styles instead of judging screenshots), TOK-043 and DESIGN-008 (image cost, and what vision gets wrong).
+- Banning patterns: PROMPT-009 (say what to do; when banning, name the exact patterns), DESIGN-004 (the design version), DESIGN-027 (what a design ban list did in a 26-run test).
+- Isolating `claude -p`: MEM-028 (setting sources and memory), DESIGN-028 (stripping CLAUDE.md, skills, plugins and the output style for a prompt test).
 - Cloud and teleport: ORCH-016 (cloud sessions), SESS-030 (moving sessions between surfaces).
 - Cache scope: TOK-052 (TTLs and scope), SESS-015 (worktrees split the cache).
 - Hook handler types and model-based hooks: HOOK-009 and HOOK-010 (all types, cost), REPO-025 (review hooks), SKILL-023 (hooks vs skills).
@@ -119,6 +123,10 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 - MCP-021 and REPO-027: MCP servers in the action, against the action's modes and inputs.
 - MEM-031 and ORCH-018: memory stores in the API and Managed Agents, against Managed Agents' multi-agent setup.
 - REPO-034 and FLOW-006: what Bash permission rules can match, against what plan mode blocks.
+- DESIGN-011 and FLOW-009: model and effort for design work, against model and effort for planning.
+- DESIGN-024 and REPO-044: what a design system needs in agent context, against what goes in CLAUDE.md, a skill, an agent or a hook in general.
+- DESIGN-025 and REPO-021: scoring a design against a rubric, against a checker subagent that keeps screenshots out of the main context.
+- DESIGN-031 and DESIGN-009: re-opening chosen steps of the staged picks on an existing site, against auditing and polishing it inside locked tokens.
 - SESS-018 and SKILL-010: a message from another session grants nothing, against `allowed-tools` pre-approving without restricting.
 - REPO-001 and WEB-001: osrs-tracker-web's Claude Code setup (agents, hooks, skills), against its SEO and analytics code.
 - WEB-022 and WEB-033: retired title-length advice, against how Google rewrites a `Brand: phrase` title.

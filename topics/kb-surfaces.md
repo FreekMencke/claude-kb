@@ -367,11 +367,11 @@ Pages run under a strict CSP:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Artifacts: improve the visual design, start from a template](https://code.claude.com/docs/en/artifacts), local test
-- Related: SURF-008, SKILL-048
+- Last verified: 2026-10-16
+- Sources: [Artifacts: improve the visual design, start from a template](https://code.claude.com/docs/en/artifacts), [Artifacts admin guide](https://support.claude.com/en/articles/16994751-artifacts-admin-guide-for-team-and-enterprise-plans), [Release notes, 2026-09-16](https://support.claude.com/en/articles/12138966-release-notes), local test
+- Related: SURF-008, SKILL-048, DESIGN-001, DESIGN-002, DESIGN-005
 
-**Templates (beta):** Claude can start an artifact from Claude Slides (presentations), Claude Design (artboards on a canvas) or Claude Docs (documents others read and edit). Each opens in its own claude.ai editor and exports to formats such as PowerPoint, PDF or Word. On by default on Pro, Max and Team; on Enterprise an Owner turns each on, though the help center says Enterprise defaults flip to on on 2026-10-15. `/slides <brief>` and `/design <brief>` need v2.1.265+.
+**Templates (beta):** Claude can start an artifact from Claude Slides (presentations), Claude Design (artboards on a canvas) or Claude Docs (documents others read and edit). Each opens in its own claude.ai editor and exports to formats such as PowerPoint, PDF or Word. On by default on Pro, Max and Team. On Enterprise the Claude Code page says an Owner turns each on, but the admin guide says Docs, Slides and Design "turn on by default on October 15, 2026" (INDEX.md Conflicts). `/slides <brief>` and `/design <brief>` need v2.1.265+. Claude Design itself became this template on 2026-09-16 (release notes); for design work in Claude Code see `kb-design.md` (DESIGN-001, DESIGN-002).
 
 **Claude Docs** arrives as a claude.ai connector (`claude.ai Claude Docs` in `/mcp`). With it connected, "A request for a document meant for other people then goes to Claude Docs instead of an artifact page". A README or anything in the codebase stays a file; name the format (`.docx`, Markdown in the repo) to get a file. Turn it off with `deniedMcpServers` or the `/mcp` toggle.
 
