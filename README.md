@@ -143,7 +143,7 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 18 + 7 | 54/54 | 21/21 | Opus 5.5 | 2.1.296 | 2026-10-14 |
+| 19 + 8 | 57/57 | 24/24 | Opus 5.5 | 2.1.296 | 2026-10-16 |
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
