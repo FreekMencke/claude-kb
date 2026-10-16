@@ -9,7 +9,7 @@
 
 /** `SequenceMatcher(None, a, b).ratio()`: twice the matched characters over the total length. */
 export function ratio(a: string, b: string): number {
-  return new SequenceMatcher(Array.from(a), Array.from(b)).ratio();
+  return new SequenceMatcher(Array.from(b)).ratio(Array.from(a));
 }
 
 /**
@@ -17,23 +17,27 @@ export function ratio(a: string, b: string): number {
  * cutoff, best first; ties go to the greater string, as Python's `heapq.nlargest` on (ratio, string) pairs does.
  */
 export function closeMatches(word: string, possibilities: Iterable<string>, n = 3, cutoff = 0.6): string[] {
-  const b = Array.from(word);
+  // As Python does: word's index is built once, and two cheap upper bounds skip most possibilities before the full
+  // ratio. They can't change the result, but without them a burst of unknown IDs in kb_get doubled the server's memory
+  const matcher = new SequenceMatcher(Array.from(word));
   const scored: [number, string][] = [];
   for (const x of possibilities) {
-    const score = new SequenceMatcher(Array.from(x), b).ratio();
+    const a = Array.from(x);
+    if (matcher.realQuickRatio(a) < cutoff || matcher.quickRatio(a) < cutoff) continue;
+    const score = matcher.ratio(a);
     if (score >= cutoff) scored.push([score, x]);
   }
   scored.sort(([sa, xa], [sb, xb]) => sb - sa || (xb > xa ? 1 : xb < xa ? -1 : 0));
   return scored.slice(0, n).map(([, x]) => x);
 }
 
+/** Python's SequenceMatcher with b set once (`set_seq2`) and a passed to each ratio, as get_close_matches uses it. */
 class SequenceMatcher {
-  private readonly a: string[];
   private readonly b: string[];
   private readonly b2j = new Map<string, number[]>();
+  private fullbcount: Map<string, number> | undefined;
 
-  constructor(a: string[], b: string[]) {
-    this.a = a;
+  constructor(b: string[]) {
     this.b = b;
     for (const [i, elt] of b.entries()) {
       const indices = this.b2j.get(elt);
@@ -47,18 +51,38 @@ class SequenceMatcher {
     }
   }
 
-  ratio(): number {
-    const length = this.a.length + this.b.length;
-    return length ? (2 * this.matches()) / length : 1;
+  ratio(a: string[]): number {
+    return calculateRatio(this.matches(a), a.length + this.b.length);
+  }
+
+  /** An upper bound on ratio(): the characters a and b share, in any order. */
+  quickRatio(a: string[]): number {
+    if (!this.fullbcount) {
+      this.fullbcount = new Map();
+      for (const elt of this.b) this.fullbcount.set(elt, (this.fullbcount.get(elt) ?? 0) + 1);
+    }
+    const avail = new Map<string, number>();
+    let matches = 0;
+    for (const elt of a) {
+      const numb = avail.get(elt) ?? this.fullbcount.get(elt) ?? 0;
+      avail.set(elt, numb - 1);
+      if (numb > 0) matches++;
+    }
+    return calculateRatio(matches, a.length + this.b.length);
+  }
+
+  /** A looser, cheaper upper bound on ratio(): from the lengths alone. */
+  realQuickRatio(a: string[]): number {
+    return calculateRatio(Math.min(a.length, this.b.length), a.length + this.b.length);
   }
 
   /** The total size of `get_matching_blocks()`: merging adjacent blocks doesn't change it. */
-  private matches(): number {
+  private matches(a: string[]): number {
     let total = 0;
-    const queue: [number, number, number, number][] = [[0, this.a.length, 0, this.b.length]];
+    const queue: [number, number, number, number][] = [[0, a.length, 0, this.b.length]];
     while (queue.length) {
       const [alo, ahi, blo, bhi] = queue.pop()!;
-      const [i, j, k] = this.findLongestMatch(alo, ahi, blo, bhi);
+      const [i, j, k] = this.findLongestMatch(a, alo, ahi, blo, bhi);
       if (k) {
         total += k;
         if (alo < i && blo < j) queue.push([alo, i, blo, j]);
@@ -68,8 +92,8 @@ class SequenceMatcher {
     return total;
   }
 
-  private findLongestMatch(alo: number, ahi: number, blo: number, bhi: number): [number, number, number] {
-    const { a, b } = this;
+  private findLongestMatch(a: string[], alo: number, ahi: number, blo: number, bhi: number): [number, number, number] {
+    const { b } = this;
     let [besti, bestj, bestsize] = [alo, blo, 0];
     let j2len = new Map<number, number>();
     for (let i = alo; i < ahi; i++) {
@@ -91,4 +115,8 @@ class SequenceMatcher {
     while (besti + bestsize < ahi && bestj + bestsize < bhi && a[besti + bestsize] === b[bestj + bestsize]) bestsize++;
     return [besti, bestj, bestsize];
   }
+}
+
+function calculateRatio(matches: number, length: number): number {
+  return length ? (2 * matches) / length : 1;
 }
