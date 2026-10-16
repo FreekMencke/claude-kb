@@ -54,7 +54,7 @@ jobs:
           # server's .ts files, scripts/package.json, scripts/kb-parse.ts, scripts/difflib.ts and assets/logo.{png,svg}):
           # a change to only these needs no new image. Nearly every commit is KB content, which the server gets from
           # git-sync. Flux applies mcp-server/claude-kb-mcp.yaml by itself.
-          NOT_IN_IMAGE: '^(mcp-server/claude-kb-mcp\.yaml|mcp-server/tests/.*|mcp-server/tsconfig\.json|scripts/check-kb\.ts|\.node-version|topics/.*|evals/.*|assets/banner(-dark\.png|\.png|\.html)|.*\.md|\.claude/.*|\.claude-plugin/.*|\.github/.*|\.gitignore)$'
+          NOT_IN_IMAGE: '^(mcp-server/claude-kb-mcp\.yaml|mcp-server/tests/.*|mcp-server/tsconfig\.json|scripts/check-kb\.ts|scripts/difflib\.ts|\.node-version|topics/.*|evals/.*|assets/banner(-dark\.png|\.png|\.html)|.*\.md|\.claude/.*|\.claude-plugin/.*|\.github/.*|\.gitignore)$'
         run: .github/scripts/deploy-plan.sh
 
       - if: steps.plan.outputs.deploy == 'true'

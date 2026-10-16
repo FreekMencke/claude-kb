@@ -1,7 +1,7 @@
 /**
  * claude-kb's remote MCP server: the knowledge base as tools, for claude.ai and Claude Code.
  *
- * Tools (FreekMencke/claude-kb#112, text built in kb-tools.ts): `kb_search`, `kb_get`, `kb_quick_answers` and
+ * Tools (FreekMencke/claude-kb#112, defined in kb-tools.ts): `kb_search`, `kb_get`, `kb_quick_answers` and
  * `kb_status`, all read-only, and open to anyone without a sign-in: the knowledge base is a public repo
  * (FreekMencke/claude-kb#142). Traefik rate-limits each client IP (claude-kb-mcp.yaml). The MCP protocol is in mcp.ts;
  * Express, logs and metrics are set up as in the Node apps (osrs-tracker-api and osrs-tracker-web).

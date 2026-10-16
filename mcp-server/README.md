@@ -26,8 +26,8 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 | File | What it is |
 |---|---|
 | `server.ts` | The server: Express, the KB index's refresh, the `/mcp`, icon and health routes, the run modes |
-| `mcp.ts` | MCP itself, without the SDK: stateless Streamable HTTP with JSON replies, the 2025 protocol revisions, the tools' schemas and descriptions, argument checks |
-| `kb-tools.ts` | The text each tool returns, its caps and its error messages |
+| `mcp.ts` | MCP itself, without the SDK: stateless Streamable HTTP with JSON replies, the 2025 protocol revisions |
+| `kb-tools.ts` | The tools: their schemas and descriptions, argument checks, and the text each returns, with its caps and error messages |
 | `kb-index.ts` | The entries, parsed by `scripts/kb-parse.ts`, and their search: SQLite FTS5 in memory (`node:sqlite`), ranked by `bm25()` |
 | `log.ts` | The logger: `@osrs-tracker/logger`, the Node apps' JSON lines |
 | `metrics.ts` | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index |
@@ -91,14 +91,15 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   does in the tests. Hand-written because the official SDK (v2) builds a server per request: it cost
   about 20 MiB at idle and peaked at 275 MiB instead of 110 under a burst of 50 parallel calls (2026-10-16).
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
-  output schema: with one, Claude Code hands Claude the JSON instead of the text. Arguments are checked by type in
-  `mcp.ts` and by bounds in `kb-tools.ts`, so a bad value gets an `isError` result saying what to pass.
+  output schema: with one, Claude Code hands Claude the JSON instead of the text. Arguments are checked in
+  `kb-tools.ts`, by type and by bounds, so a bad value gets an `isError` result saying what to pass.
 - **Code.** Node 24 runs the `.ts` files as they are (type stripping) in tests and local runs, so only erasable syntax
   (no `enum`, no parameter properties), relative imports with their `.ts` extension. The image runs an rspack bundle
   (`build.ts`) with `node --lite-mode`, which turns off V8's optimizing compilers: on 2026-10-16 it idled at 72 MiB and
   peaked at 80 MiB under bursts of 1,500 calls 50 at a time, where the `.ts` files with the SDK idled at 136 MiB and
-  peaked over 330. Calls are about 1.5x slower in lite mode, still under a millisecond. Moved from Python and FastMCP
-  on 2026-10-16 (FreekMencke/claude-kb#146).
+  peaked over 330. Over 24 re-indexes it stayed at 78 to 80 MiB, where without lite mode it climbed to 135. Calls are
+  about 1.5x slower in lite mode, still under a millisecond. Lite mode also turns off WebAssembly, which type stripping
+  needs, so it can run only the bundle. Moved from Python and FastMCP on 2026-10-16 (FreekMencke/claude-kb#146).
 
 ## Run and test locally
 

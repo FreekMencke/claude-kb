@@ -19,7 +19,6 @@ import {
   META_LINE,
   readText,
   section,
-  strip,
   topicTitle,
   WORD_CHAR,
   words,
@@ -28,7 +27,7 @@ import {
 export const INDEX_TOPIC = 'index';
 // Column weights for bm25(), in the FTS table's column order: id, title, tags, body. Tuned on tests/kb-index.test.ts's
 // Quick-answer questions; on 2026-10-15, 208 of all 253 Quick-answer questions found a cited entry in the top 5.
-const WEIGHTS = [10.0, 3.0, 2.0, 1.0];
+const WEIGHTS = [10, 3, 2, 1];
 export const SUMMARY_CHARS = 300;
 const ID_IN_QUERY = new RegExp(`(?<!${WORD_CHAR})([A-Za-z]+-\\d+)(?!${WORD_CHAR})`, 'gu');
 const WORD = new RegExp(`${WORD_CHAR}+`, 'gu');
@@ -118,7 +117,7 @@ export class Index {
 
   /** The topic for "mcp", "kb-mcp", "kb-mcp.md" or the prefix "MCP"; undefined for anything else. */
   topic(name: string): string | undefined {
-    const topic = removePrefix(removePrefix(removeSuffix(strip(name).toLowerCase(), '.md'), 'topics/'), 'kb-');
+    const topic = name.trim().toLowerCase().replace(/\.md$/, '').replace(/^topics\//, '').replace(/^kb-/, '');
     if (this.topics.has(topic)) return topic;
     const prefix = topic.toUpperCase();
     for (const [t, p] of this.prefixes) if (p === prefix) return t;
@@ -156,15 +155,7 @@ export class Index {
 
 export function normalId(id: string): string {
   const m = /^\s*([A-Za-z]+)-(\d+)\s*$/.exec(id);
-  return m ? `${m[1].toUpperCase()}-${m[2].replace(/^0+(?=\d)/, '').padStart(3, '0')}` : strip(id).toUpperCase();
-}
-
-function removePrefix(text: string, prefix: string): string {
-  return text.startsWith(prefix) ? text.slice(prefix.length) : text;
-}
-
-function removeSuffix(text: string, suffix: string): string {
-  return suffix && text.endsWith(suffix) ? text.slice(0, -suffix.length) : text;
+  return m ? `${m[1].toUpperCase()}-${m[2].replace(/^0+(?=\d)/, '').padStart(3, '0')}` : id.trim().toUpperCase();
 }
 
 /**
@@ -184,13 +175,13 @@ function phrases(query: string): string[] {
 
 function field(body: string, name: string): string {
   const m = new RegExp(`^- ${name}:[ \\t]*(.*)$`, 'm').exec(body);
-  return m ? strip(m[1]) : '';
+  return m ? m[1].trim() : '';
 }
 
 /** The entry without its heading and metadata lines. */
 function prose(body: string): string {
   const newline = body.indexOf('\n');
-  return strip((newline === -1 ? '' : body.slice(newline + 1)).replace(META_LINE, ''));
+  return (newline === -1 ? '' : body.slice(newline + 1)).replace(META_LINE, '').trim();
 }
 
 /**
@@ -200,14 +191,14 @@ function prose(body: string): string {
 export function summary(text: string): string {
   let para = '';
   for (const part of text.split('\n\n')) {
-    para = strip(`${para} ${words(part).join(' ')}`);
+    para = `${para} ${words(part).join(' ')}`.trim();
     if (para.length >= SUMMARY_CHARS / 3) break;
   }
   if (para.length <= SUMMARY_CHARS) return para;
   // Not half an emoji: a cut between a surrogate pair's halves would leave invalid UTF-16
   const cut = para.slice(0, SUMMARY_CHARS).replace(/[\uD800-\uDBFF]$/, '');
-  // A sentence ends at a full stop and a space, or a no-break space
-  const end = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('. '));
+  // A sentence ends at a full stop and a space: words() made every space, a no-break one too, a plain one
+  const end = cut.lastIndexOf('. ');
   if (end > SUMMARY_CHARS / 3) return cut.slice(0, end + 1);
   const space = cut.lastIndexOf(' ');
   return `${space === -1 ? cut : cut.slice(0, space)} …`;
@@ -247,10 +238,10 @@ export function load(root: string, commit?: string): Index {
       ['Recommendations for our setup', recommendations],
     ] as const) {
       const body = section(text, name);
-      if (body !== undefined) store.set(topic, strip(body));
+      if (body !== undefined) store.set(topic, body.trim());
     }
     const listed = new Map(indexTable(text).map(([id, title, , tags]) => [id, [title, tags]]));
-    const titles = new Map([...text.matchAll(HEADING)].map(m => [m[1], strip(m[2])]));
+    const titles = new Map([...text.matchAll(HEADING)].map(m => [m[1], m[2].trim()]));
     for (const [id, body] of parseEntries(text)) {
       const [indexTitle, tagText] = listed.get(id) ?? ['', ''];
       const entryProse = prose(body);
@@ -265,10 +256,10 @@ export function load(root: string, commit?: string): Index {
         lastVerified: field(body, 'Last verified'),
         sources: field(body, 'Sources'),
         related: field(body, 'Related').match(/[A-Z]+-\d+/g) ?? [],
-        tags: tagText.split(',').map(strip).filter(Boolean),
+        tags: tagText.split(',').map(t => t.trim()).filter(Boolean),
         mergedInto: mergedInto(indexTitle),
         summary: summary(entryProse),
-        body: strip(body),
+        body: body.trim(),
       };
       entries.set(id, entry);
       if (!prefixes.has(topic)) prefixes.set(topic, id.split('-')[0]);
@@ -281,7 +272,7 @@ export function load(root: string, commit?: string): Index {
   }
   const indexMd = join(root, 'INDEX.md');
   const quick = existsSync(indexMd) ? section(readText(indexMd), 'Quick answers') : undefined;
-  if (quick) quickAnswers.set(INDEX_TOPIC, strip(quick));
+  if (quick) quickAnswers.set(INDEX_TOPIC, quick.trim());
   return new Index(
     {
       commit: commit || basename(root),

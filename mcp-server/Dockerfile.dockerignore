@@ -12,6 +12,5 @@
 !mcp-server/shutdown.ts
 !scripts/package.json
 !scripts/kb-parse.ts
-!scripts/difflib.ts
 !assets/logo.png
 !assets/logo.svg

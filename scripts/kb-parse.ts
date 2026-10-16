@@ -2,9 +2,6 @@
  * The knowledge base's Markdown format, parsed: shared by the checker (check-kb.ts) and the MCP server's index
  * (mcp-server/kb-index.ts), so they can't drift. Node built-ins only: research sessions run the checker without an
  * `npm install`.
- *
- * Python's regular expressions were the first implementation: `\w` and `\b` match Unicode letters and digits there,
- * so WORD_CHAR stands in for them, and `PY_SPACE` is Python's whitespace for `str.split()` and `str.strip()`.
  */
 import { readFileSync } from 'node:fs';
 
@@ -16,32 +13,17 @@ const OTHER_HEADING = /^#{1,2} (?!\[)/gm;
 export const META_LINE = new RegExp(`^- (?:${FIELDS.join('|')}):.*$`, 'gm');
 // A merged entry's index row may add this to its heading's title.
 export const MERGED_SUFFIX = / \(merged into [^)]*\)$/;
-// A word character as Python's `\w` matches it, for word boundaries in patterns built with `u`
+// A letter, digit or underscore in any script, for word boundaries: `\w` and `\b` are ASCII-only, even with `u`
 export const WORD_CHAR = '[\\p{L}\\p{N}_]';
-const PY_SPACE = '[\\t\\n\\v\\f\\r\\x1c-\\x1f \\x85\\xa0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]';
-const SPACE_RUN = new RegExp(`${PY_SPACE}+`, 'u');
-const EDGE_SPACE = new RegExp(`^${PY_SPACE}+|${PY_SPACE}+$`, 'gu');
 
-/** A file as Python's `read_text` gives it: UTF-8, with `\r\n` and `\r` read as `\n`. */
+/** A file as UTF-8, with `\r\n` and `\r` read as `\n`. */
 export function readText(path: string): string {
   return readFileSync(path, 'utf8').replace(/\r\n?/g, '\n');
 }
 
-/** Python's `str.split()`: the words between runs of whitespace. */
+/** The words between runs of whitespace. */
 export function words(text: string): string[] {
-  return text.split(SPACE_RUN).filter(Boolean);
-}
-
-/** Python's `str.strip()`. */
-export function strip(text: string): string {
-  return text.replace(EDGE_SPACE, '');
-}
-
-/** Python's `str.splitlines()`. */
-export function splitLines(text: string): string[] {
-  const lines = text.split(/\r\n|[\n\r\v\f\x1c-\x1e\x85\u2028\u2029]/);
-  if (lines.at(-1) === '') lines.pop();
-  return lines;
+  return text.split(/\s+/).filter(Boolean);
 }
 
 export function escapeRegExp(text: string): string {
@@ -73,5 +55,5 @@ export function indexTable(text: string): [string, string, string, string][] {
 
 /** A topic file's title: its first line without the `#` and the `(PREFIX)` at the end. */
 export function topicTitle(text: string): string {
-  return strip(text.split('\n', 1)[0].replace(/^[# ]+/, '')).replace(/ \([A-Z]+\)$/, '');
+  return text.split('\n', 1)[0].replace(/^[# ]+/, '').trim().replace(/ \([A-Z]+\)$/, '');
 }

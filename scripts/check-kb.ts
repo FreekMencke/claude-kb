@@ -23,8 +23,6 @@ import {
   META_LINE,
   readText,
   section,
-  splitLines,
-  strip,
   topicTitle,
   WORD_CHAR,
   words,
@@ -44,7 +42,7 @@ const REVIEWED_SECTIONS: Record<string, string[]> = {
 };
 // Files that name entry IDs, checked for IDs that don't exist.
 const ID_FILES = ['INDEX.md', 'OVERLAPS.md', 'CHANGELOG.md'];
-// An ID with Python's `\b` on each side
+// An ID with a word boundary on each side
 const ID = `(?<!${WORD_CHAR})[A-Z]+-\\d+(?!${WORD_CHAR})`;
 const ID_RANGE = new RegExp(`(?<!${WORD_CHAR})([A-Z]+)-(\\d+) to (?:[A-Z]+-)?(\\d+)(?!${WORD_CHAR})`, 'gu');
 const ENTRIES_HEADER = `# Entries
@@ -71,7 +69,7 @@ function countEntries(text: string): number {
 function quickAnswerRows(text: string): number | undefined {
   const body = section(text, 'Quick answers');
   if (body === undefined) return undefined;
-  const rows = splitLines(body).filter(l => l.startsWith('|'));
+  const rows = body.split('\n').filter(l => l.startsWith('|'));
   return Math.max(rows.length - 2, 0); // minus header and separator
 }
 
@@ -95,7 +93,7 @@ function reviewedPairs(others: Texts): Set<string> {
   const pairs = new Set<string>();
   for (const [file, names] of Object.entries(REVIEWED_SECTIONS)) {
     for (const name of names) {
-      for (const line of splitLines(section(others.get(file) ?? '', name) ?? '')) {
+      for (const line of (section(others.get(file) ?? '', name) ?? '').split('\n')) {
         const ids = new Set(line.match(new RegExp(ID, 'gu')) ?? []);
         for (const [, prefix, start, end] of line.matchAll(ID_RANGE)) {
           for (let n = Number(start); n <= Number(end); n++) ids.add(`${prefix}-${String(n).padStart(start.length, '0')}`);
@@ -113,11 +111,15 @@ function pairKey(a: string, b: string): string {
 }
 
 /** Warnings, not failures: cross-file entry pairs with near-identical titles or mostly shared tags. */
-function possibleDuplicates(
-  titles: Map<string, [string, string]>,
-  tags: Map<string, Set<string>>,
-  reviewed: Set<string>,
-): string[] {
+function possibleDuplicates(texts: Texts, reviewed: Set<string>): string[] {
+  const titles = new Map<string, [string, string]>();
+  const tags = new Map<string, Set<string>>();
+  for (const [name, t] of texts) {
+    for (const m of t.matchAll(HEADING)) titles.set(m[1], [name, m[2].trim()]);
+    for (const [eid, , , tagText] of indexTable(t)) {
+      tags.set(eid, new Set(tagText.split(',').map(tag => tag.trim()).filter(Boolean)));
+    }
+  }
   const found: string[] = [];
   const ids = [...titles.keys()].sort();
   for (const [i, a] of ids.entries()) {
@@ -151,7 +153,7 @@ function checkTopic(t: string, where: Map<string, string[]>): string[] {
   if (rows !== undefined && !(rows >= 10 && rows <= 15)) issues.push(`Quick answers has ${rows} rows (want 10-15)`);
 
   // The file's own index table must list exactly its entries, under their heading's title.
-  const headings = new Map([...t.matchAll(HEADING)].map(m => [m[1], strip(m[2])]));
+  const headings = new Map([...t.matchAll(HEADING)].map(m => [m[1], m[2].trim()]));
   const listed = new Map(indexTable(t).map(([eid, name]) => [eid, name]));
   for (const eid of headings.keys()) if (!listed.has(eid)) issues.push(`${eid} is missing from the file's index`);
   for (const eid of listed.keys()) {
@@ -169,8 +171,8 @@ function checkTopic(t: string, where: Map<string, string[]>): string[] {
       if (!new RegExp(`^- ${name}:`, 'm').test(body)) issues.push(`${eid}: missing field ${name}`);
     }
     const confidence = field(body, 'Confidence:\\s*(.+)$');
-    if (confidence !== undefined && !CONFIDENCE.has(strip(confidence))) {
-      issues.push(`${eid}: Confidence '${strip(confidence)}' is not one of the allowed values`);
+    if (confidence !== undefined && !CONFIDENCE.has(confidence.trim())) {
+      issues.push(`${eid}: Confidence '${confidence.trim()}' is not one of the allowed values`);
     }
     const verified = field(body, 'Last verified:\\s*(\\S+)');
     if (verified !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(verified)) {
@@ -187,6 +189,33 @@ function checkTopic(t: string, where: Map<string, string[]>): string[] {
     const prose = body.replace(META_LINE, '').replace(/```[\s\S]*?```/g, '');
     const count = words(prose).length;
     if (count > 300 && !SYNTHESIS_SOURCE.test(sources ?? '')) issues.push(`${eid}: about ${count} words (want 50-250)`);
+  }
+  return issues;
+}
+
+/** INDEX.md's file table against the topic files, and the entry IDs INDEX.md, OVERLAPS.md and CHANGELOG.md name. */
+function checkIndex(indexMd: string, others: Texts, texts: Texts, where: Map<string, string[]>): string[] {
+  const issues: string[] = [];
+  // Prefixes come from the entries themselves, so a new topic file is checked without editing this script.
+  const prefixes = [...new Set([...where.keys()].map(eid => eid.split('-')[0]))].sort().join('|');
+  const mention = new RegExp(`(?<!${WORD_CHAR})(?:${prefixes})-\\d+(?!${WORD_CHAR})`, 'gu');
+  for (const [name, text] of others) {
+    const mentioned = [...new Set(text.match(mention) ?? [])].sort();
+    for (const ref of mentioned) if (!where.has(ref)) issues.push(`${name} mentions unknown ${ref}`);
+  }
+  // The file table at the top: every topic file listed, with its current entry count.
+  const table = new Map(
+    [...indexMd.matchAll(/^\| `topics\/(kb-[\p{L}\p{N}_-]+\.md)` \| [A-Z]+ \| .*? \| (\d+)/gmu)].map(m => [
+      m[1],
+      Number(m[2]),
+    ]),
+  );
+  for (const [name, t] of texts) {
+    const count = countEntries(t);
+    if (!table.has(name)) issues.push(`topics/${name} is missing from the file table`);
+    else if (table.get(name) !== count) {
+      issues.push(`file table says ${table.get(name)} entries for topics/${name}, the file has ${count}`);
+    }
   }
   return issues;
 }
@@ -231,41 +260,12 @@ export function main(root: string, write = false): number {
   );
   const indexMd = others.get('INDEX.md');
   if (indexMd !== undefined) {
-    const issues: string[] = [];
-    // Prefixes come from the entries themselves, so a new topic file is checked without editing this script.
-    const prefixes = [...new Set([...where.keys()].map(eid => eid.split('-')[0]))].sort().join('|');
-    const mention = new RegExp(`(?<!${WORD_CHAR})(?:${prefixes})-\\d+(?!${WORD_CHAR})`, 'gu');
-    for (const [name, text] of others) {
-      const mentioned = [...new Set(text.match(mention) ?? [])].sort();
-      for (const ref of mentioned) if (!where.has(ref)) issues.push(`${name} mentions unknown ${ref}`);
-    }
-    // The file table at the top: every topic file listed, with its current entry count.
-    const table = new Map(
-      [...indexMd.matchAll(/^\| `topics\/(kb-[\p{L}\p{N}_-]+\.md)` \| [A-Z]+ \| .*? \| (\d+)/gmu)].map(m => [
-        m[1],
-        Number(m[2]),
-      ]),
-    );
-    for (const [name, t] of texts) {
-      const count = countEntries(t);
-      if (!table.has(name)) issues.push(`topics/${name} is missing from the file table`);
-      else if (table.get(name) !== count) {
-        issues.push(`file table says ${table.get(name)} entries for topics/${name}, the file has ${count}`);
-      }
-    }
+    const issues = checkIndex(indexMd, others, texts, where);
     console.log(`INDEX.md: ${issues.length} issue(s)`);
     for (const issue of issues) console.log(`  - ${issue}`);
     problems += issues.length;
 
-    const titles = new Map<string, [string, string]>();
-    const tags = new Map<string, Set<string>>();
-    for (const [name, t] of texts) {
-      for (const m of t.matchAll(HEADING)) titles.set(m[1], [name, strip(m[2])]);
-      for (const [eid, , , tagText] of indexTable(t)) {
-        tags.set(eid, new Set(tagText.split(',').map(strip).filter(Boolean)));
-      }
-    }
-    const warnings = possibleDuplicates(titles, tags, reviewedPairs(others));
+    const warnings = possibleDuplicates(texts, reviewedPairs(others));
     if (warnings.length) {
       console.log(
         `\nPossible duplicates across files (${warnings.length}, warnings only). Merge or cross-link them,` +

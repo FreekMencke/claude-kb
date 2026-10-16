@@ -1,17 +1,18 @@
 /**
- * The text the MCP tools return, built from a kb-index.ts Index (FreekMencke/claude-kb#112).
+ * The MCP tools (FreekMencke/claude-kb#112): each one's definition, argument checks and the text it returns, built
+ * from a kb-index.ts Index. mcp.ts serves them.
  *
  * Plain text with entry IDs everywhere, so an answer can cite them, and a `corpus: <commit>` line last. Results land in
  * the caller's context, so they're capped and say what was cut. A bad argument throws a ToolError, which mcp.ts
  * returns as `isError: true` with the message; the message says what to pass instead.
  */
-import { strip } from '../scripts/kb-parse.ts';
 import { type Entry, type Index, INDEX_TOPIC, normalId } from './kb-index.ts';
-import { searchEmpty } from './metrics.ts';
+import { searchEmpty, type ToolName } from './metrics.ts';
+import type { KbState } from './server.ts';
 
 export const TYPES = ['fact', 'pattern', 'recommendation', 'anti-pattern', 'tool', 'comparison'];
-const SEARCH_LIMIT = [1, 20] as const;
-const GET_IDS = [1, 10] as const;
+const LIMIT = { min: 1, max: 20, default: 8 };
+const IDS = { min: 1, max: 10 };
 export const MAX_CHARS = {
   // kb_search's 8 hits come to about 3 KB; this only bites at a high limit with long titles
   search: 8_000,
@@ -33,6 +34,135 @@ export const INSTRUCTIONS =
 /** A bad argument or a knowledge base that hasn't loaded: mcp.ts returns the message as an `isError` result. */
 export class ToolError extends Error {}
 
+export type Args = Record<string, unknown>;
+
+export interface Tool {
+  definition: { name: ToolName; title: string; description: string; inputSchema: object; annotations: object };
+  run: (state: KbState, args: Args) => string;
+}
+
+// Read-only tools can run without a per-call prompt
+const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false };
+const TOPIC = { type: ['string', 'null'], description: 'Only this topic: a name such as mcp or a prefix such as MCP' };
+
+/**
+ * Descriptions carry the usage rules too: claude.ai web and desktop drop `instructions` (anthropics/claude-ai-mcp#93).
+ * Clients may not enforce the schema, so the arguments are checked again, with a message saying what to pass. Text
+ * content only: with an output schema, Claude Code hands Claude the structured JSON instead.
+ */
+export const TOOLS: Tool[] = [
+  {
+    definition: {
+      name: 'kb_search',
+      title: 'Search the knowledge base',
+      description:
+        'Search claude-kb, a knowledge base on using Claude and Claude Code efficiently: models and effort, subagents,' +
+        ' skills, hooks, prompting, CLAUDE.md and memory, MCP servers and connectors, sessions, workflows, tokens and' +
+        ' caching, docs, SEO. Returns entry IDs with title, type, confidence, last-verified date and a summary. Search' +
+        ' first, then kb_get the 1 to 4 best IDs. Cite entry IDs. Check an entry last verified more than 60 days ago' +
+        ' against its sources.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Words, a phrase, or entry IDs such as MCP-017' },
+          topic: TOPIC,
+          type: { type: ['string', 'null'], description: `Only this entry type: ${TYPES.join(', ')}` },
+          limit: {
+            type: 'integer',
+            minimum: LIMIT.min,
+            maximum: LIMIT.max,
+            default: LIMIT.default,
+            description: 'How many entries',
+          },
+        },
+        required: ['query'],
+      },
+      annotations: READ_ONLY,
+    },
+    run: (state, args) =>
+      search(
+        state.index,
+        string(args, 'query'),
+        optionalString(args, 'topic'),
+        optionalString(args, 'type'),
+        integer(args, 'limit', LIMIT.default),
+      ),
+  },
+  {
+    definition: {
+      name: 'kb_get',
+      title: 'Read entries',
+      description:
+        'The full Markdown of claude-kb entries by ID, with their sources, confidence, last-verified date and related' +
+        ' IDs. A merged entry comes with the entry it points to.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          ids: {
+            type: 'array',
+            items: { type: 'string' },
+            minItems: IDS.min,
+            maxItems: IDS.max,
+            description: 'Entry IDs, such as ["MCP-017", "TOK-005"]',
+          },
+        },
+        required: ['ids'],
+      },
+      annotations: READ_ONLY,
+    },
+    run: (state, args) => get(state.index, strings(args, 'ids')),
+  },
+  {
+    definition: {
+      name: 'kb_quick_answers',
+      title: 'Quick answers',
+      description:
+        "claude-kb's most-asked questions, each with a one-line answer and its entry IDs: across the knowledge base, or" +
+        " for one topic together with that topic's recommendations for our setup.",
+      inputSchema: {
+        type: 'object',
+        properties: { topic: { ...TOPIC, description: `${TOPIC.description}; leave out for all` } },
+      },
+      annotations: READ_ONLY,
+    },
+    run: (state, args) => quickAnswers(state.index, optionalString(args, 'topic')),
+  },
+  {
+    definition: {
+      name: 'kb_status',
+      title: 'Knowledge base status',
+      description: 'The claude-kb commit this server has loaded, its number of entries, and when it last indexed them.',
+      inputSchema: { type: 'object', properties: {} },
+      annotations: READ_ONLY,
+    },
+    run: state => state.statusText(),
+  },
+];
+
+function string(args: Args, key: string): string {
+  const value = args[key];
+  if (typeof value !== 'string') throw new ToolError(`Pass ${key} as a string.`);
+  return value;
+}
+
+function optionalString(args: Args, key: string): string | undefined {
+  return args[key] == null ? undefined : string(args, key);
+}
+
+function integer(args: Args, key: string, fallback: number): number {
+  const value = args[key] ?? fallback;
+  if (!Number.isInteger(value)) throw new ToolError(`Pass ${key} as a whole number.`);
+  return value as number;
+}
+
+function strings(args: Args, key: string): string[] {
+  const value = args[key];
+  if (!Array.isArray(value) || !value.every(v => typeof v === 'string')) {
+    throw new ToolError(`Pass ${key} as a list of strings, such as ["MCP-017"].`);
+  }
+  return value;
+}
+
 function loaded(index: Index | undefined): Index {
   if (index === undefined) throw new ToolError("The knowledge base hasn't loaded yet: try again in a minute.");
   return index;
@@ -46,8 +176,8 @@ function topicList(index: Index): string {
   return [...index.topics].map(([t, title]) => `- ${t} (${index.prefixes.get(t) ?? '?'}): ${title}`).join('\n');
 }
 
-function resolveTopic(index: Index, topic: string | null | undefined): string | undefined {
-  if (topic == null || !strip(topic)) return undefined;
+function resolveTopic(index: Index, topic: string | undefined): string | undefined {
+  if (!topic?.trim()) return undefined;
   const name = index.topic(topic);
   if (name === undefined) {
     throw new ToolError(`Unknown topic ${JSON.stringify(topic)}. Pass one of these names or prefixes:\n${topicList(index)}`);
@@ -80,20 +210,21 @@ export function hitLine(entry: Entry, today: Date): string {
 export function search(
   index: Index | undefined,
   query: string,
-  topic?: string | null,
-  type?: string | null,
-  limit = 8,
+  topic?: string,
+  type?: string,
+  limit = LIMIT.default,
 ): string {
   const kb = loaded(index);
-  if (!query || !strip(query)) throw new ToolError('Pass a query: some words, a phrase, or entry IDs such as MCP-017.');
-  if (!(SEARCH_LIMIT[0] <= limit && limit <= SEARCH_LIMIT[1])) {
-    throw new ToolError(`Pass a limit from ${SEARCH_LIMIT[0]} to ${SEARCH_LIMIT[1]} (default 8).`);
+  if (!query.trim()) throw new ToolError('Pass a query: some words, a phrase, or entry IDs such as MCP-017.');
+  if (limit < LIMIT.min || limit > LIMIT.max) {
+    throw new ToolError(`Pass a limit from ${LIMIT.min} to ${LIMIT.max} (default ${LIMIT.default}).`);
   }
-  if (type != null && strip(type) && !TYPES.includes(strip(type))) {
+  const wantedType = type?.trim() || undefined;
+  if (wantedType && !TYPES.includes(wantedType)) {
     throw new ToolError(`Unknown type ${JSON.stringify(type)}. Pass one of: ${TYPES.join(', ')}; or leave it out.`);
   }
   const name = resolveTopic(kb, topic);
-  const hits = kb.search(query, { topic: name, type: strip(type ?? '') || undefined, limit });
+  const hits = kb.search(query, { topic: name, type: wantedType, limit });
   if (!hits.length) {
     searchEmpty.inc();
     const where = name ? ` in topic ${name}` : '';
@@ -110,9 +241,9 @@ export function search(
 
 export function get(index: Index | undefined, ids: string[]): string {
   const kb = loaded(index);
-  const asked = ids.filter(i => i && strip(i)).map(strip);
-  if (!(GET_IDS[0] <= asked.length && asked.length <= GET_IDS[1])) {
-    throw new ToolError(`Pass ${GET_IDS[0]} to ${GET_IDS[1]} entry IDs, such as ["MCP-017"]; got ${asked.length}.`);
+  const asked = ids.map(id => id.trim()).filter(Boolean);
+  if (asked.length < IDS.min || asked.length > IDS.max) {
+    throw new ToolError(`Pass ${IDS.min} to ${IDS.max} entry IDs, such as ["MCP-017"]; got ${asked.length}.`);
   }
   const found = kb.get(asked);
   const known = new Set(found.map(e => e.id));
@@ -155,7 +286,7 @@ function unknown(index: Index, asked: string): string {
   return `${asked}: no such entry. Closest: ${nearest.map(e => `${e.id} (${e.title})`).join('; ')}`;
 }
 
-export function quickAnswers(index: Index | undefined, topic?: string | null): string {
+export function quickAnswers(index: Index | undefined, topic?: string): string {
   const kb = loaded(index);
   const name = resolveTopic(kb, topic);
   if (name === undefined) {
