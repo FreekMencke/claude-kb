@@ -45,7 +45,7 @@ Write a single Markdown file in `topics/`, named as given in the topic section.
 
 If you are a subagent or workflow agent doing part of the research, don't write or edit any file in the repo: return your findings with source URLs to the agent that started you. Pages you download for grepping go only in your own uniquely named scratchpad folder.
 
-If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit. ENTRIES.md is generated from each file's index table: when an entry is added or its title or tags change, edit that file's index row and run `node scripts/check-kb.ts --write` (Node 22.18 or later, so cloud sessions' Node 22 runs it: SURF-027). Run `node scripts/check-kb.ts` after any change to entries and fix what it reports. README.md has the repo layout and the monthly re-verification routine.
+If your task isn't a research session (merging, indexing, re-verifying), follow the task prompt; the entry format below still applies to any entry you write or edit. ENTRIES.md is generated from each file's index table: when an entry is added or its title or tags change, edit that file's index row and run `node scripts/check-kb.ts --write` (Node 22.18 or later, so cloud sessions' Node 22 runs it: SURF-027). Run `node scripts/check-kb.ts` after any change to entries and fix what it reports. README.md has the repo layout and the re-verification routine.
 
 Start the file with:
 1. A "Quick answers" table: the 10–15 questions an agent is most likely to ask about this topic, each with a one-line answer and the entry ID(s) holding the detail.
