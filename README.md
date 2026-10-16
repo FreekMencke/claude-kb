@@ -102,7 +102,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [ENTRIES.md](ENTRIES.md) | Every entry's ID, title and tags; generated, so grep it |
 | [OVERLAPS.md](OVERLAPS.md) | Overlaps kept on purpose, merges, similar-but-distinct pairs |
 | [CHANGELOG.md](CHANGELOG.md) | What changed, newest first |
-| [CLAUDE.md](CLAUDE.md) | Research rules and the entry format |
+| [CLAUDE.md](CLAUDE.md) | This knowledge base's research rules on top of the `research` skill, and the entry format |
 | [scripts/check_kb.py](scripts/check_kb.py) | Format and consistency check; `--write` regenerates ENTRIES.md |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
@@ -112,6 +112,11 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [LICENSE](LICENSE), [LICENSE-MIT](LICENSE-MIT) | CC BY-NC 4.0 for the knowledge base, MIT for the code (see License) |
 
 ## Changing it
+
+Research sessions run the `research` skill from the `freek-skills` plugin
+([FreekMencke/claude-skills](https://github.com/FreekMencke/claude-skills)), with [CLAUDE.md](CLAUDE.md) adding this
+repo's sources, entry format and finishing steps. A research issue says "Run the `research` skill for …" and lists its
+questions, instead of pasting a prompt. Cloud sessions don't load the plugin, so CLAUDE.md keeps the core reading rules.
 
 Entries follow [CLAUDE.md](CLAUDE.md). When you add an entry or change its title or tags, update the topic file's
 index row and run `python3 scripts/check_kb.py --write`. After any change to entries, run the check; CI runs it on
