@@ -6,6 +6,8 @@ Research basis:
 - Researched 2026-10-16 (FreekMencke/claude-kb#147) against Claude Code v2.1.296 in a desktop WSL session, on the Claude 5 model family. The same day the scope was narrowed at the user's request: no external design tools, and Claude Design only as far as Claude Code's `/design` uses it.
 - The lead read Anthropic's pages in full as raw text: the Claude Code artifacts, best-practices and desktop pages (`.md`), the platform prompting pages for Opus 5.5 and Sonnet 5, the general prompting page and the vision page (`.md`), the help center's design-system and custom-visuals articles (HTML stripped of tags), the 2025-11-12 claude.com blog post and the Opus 4.7 launch post, and the frontend-design `SKILL.md` from all three Anthropic repos plus its git history.
 - A Sonnet 5.5 research subagent read community design skills and practice; the lead re-checked every quote used here against its downloads.
+- A second round the same day (DESIGN-014 to DESIGN-028): the lead read Anthropic's other design skills from raw.githubusercontent.com; two Sonnet 5.5 readers at high effort covered colour, type and tokens, and layout, libraries, coherence, critique and originality research, from specs, library docs and repos, npm registry JSON and arXiv; the lead re-checked the quotes used against their downloads, and a skeptical subagent tried to refute the claims the recommendations rest on.
+- The lead ran the prompting test in DESIGN-027 (26 `claude -p` runs).
 - `/design-sync`'s framework support was read from the installed v2.1.296 CLI bundle and the session's `DesignSync` tool description, because the docs say only "React components".
 - A 2026-10-16 deep-research report from a claude.ai chat supplied leads only; it isn't cited.
 
@@ -15,16 +17,18 @@ Research basis:
 |---|---|---|
 | How do I see and iterate on a design in Claude Code? | Ask for variants side by side in one artifact ("four distinctly different layouts… as a grid"), tune one with sliders, or run `/design <brief>` for a canvas of editable artboards. Then build the pick in code and check it in the desktop Browser pane or with Playwright. | DESIGN-001 |
 | Why do Claude's pages look generic? | "Distributional convergence": without direction it samples safe defaults. The 2025 tell was Inter and purple gradients; the 2026-09 frontend-design skill names cream-plus-serif-plus-terracotta, near-black with one acid accent, broadsheet hairlines, the SaaS-card kit and template chrome. | DESIGN-003 |
-| How do I prompt for distinctive design? | Name the subject, audience and the page's one job; give a concrete spec (hex palette, typefaces, radius, motion timing) or ask for 4 directions first; ban the specific patterns you got last time, not "the AI look"; use real copy. | DESIGN-004 |
-| frontend-design or `artifact-design`? | frontend-design is the plugin skill for UI in code and is identical in all three Anthropic repos (last changed 2026-09-01 to 09-03). `artifact-design` is bundled with the Artifact tool and governs published pages. | DESIGN-005 |
+| How do I prompt for distinctive design? | Name the subject, audience and the page's one job; give a concrete spec (hex palette, typefaces, radius, motion timing) or ask for 4 directions first; ban the specific patterns you got last time, not "the AI look", and expect a new default; use real copy. | DESIGN-004, DESIGN-027 |
+| Which prompting strategy gave the most varied pages in a test? | Directions first. On one bakery brief, 5 runs each on Sonnet 5.5: the bare brief gave five cream-and-Fraunces pages; a banned list gave five dark-green-and-amber pages; four directions with a self-pick varied fonts and accents most, but added monospace labels. | DESIGN-027 |
+| How do I get an original, consistent colour scheme? | Pick the brand hue from the subject, then fill named roles (Radix's 12 steps or Material's roles), generate the ramp in OKLCH with a script library and check WCAG 2 contrast in light and dark. | DESIGN-015, DESIGN-016, DESIGN-018, DESIGN-019 |
+| Why do Tailwind and shadcn sites look alike, and how do I theme them away? | Stock fonts, radii, shadows and an achromatic shadcn theme. Clear namespaces with `@theme { --color-*: initial; }`, set shadcn's CSS variables or a `shadcn create` style, from the repo's tokens. | DESIGN-023 |
+| How do I get past hero, three cards and a CTA? | Name a layout (bento, magazine, split screen, zigzag, broken grid…), default to no cards, one job per section, and carry the ASCII wireframe into `grid-template-areas`. | DESIGN-022 |
+| How do I keep a multi-page site consistent? | Give every session the role tokens, a component inventory and page templates (CLAUDE.md or a repo skill), and check every page for off-token values, visual diffs and raw hexes. | DESIGN-024, DESIGN-021 |
+| frontend-design or `artifact-design`? | frontend-design is the plugin skill for UI in code and is identical in all three Anthropic repos (last changed 2026-09-01 to 09-03). `artifact-design` is bundled with the Artifact tool and governs published pages. Community skills (Impeccable, Taste Skill) are unofficial: borrow their ideas rather than install them. | DESIGN-005, DESIGN-012 |
 | Where do design tokens go? | Where Claude reads them: the project's CLAUDE.md, a theme file, or a repo skill. Precedence: your prompt, then your design system, then Claude's defaults. Artifacts load fonts only from Google Fonts; other faces are inlined. | DESIGN-006 |
-| Does `/design-sync` work for an Angular (non-React) design system? | No. The docs say "React components", and the v2.1.296 CLI's sync adapters read `.tsx`/`.jsx` exports and React Storybook stories. Give `/design` a Design System artifact made from a chat instead. | DESIGN-002, DESIGN-010 |
-| Screenshot or computed styles to check a design? | Screenshots for overall look and hierarchy; computed styles (`getComputedStyle`, a contrast check) for exact spacing, sizes, colours and contrast, because Claude's localisation is "approximate". | DESIGN-007, DESIGN-008 |
-| Can Claude generate images for a design? | No. Claude "cannot generate, produce, edit, manipulate, or create images"; its design output is HTML, CSS, SVG or canvas. | DESIGN-008 |
+| How do I get a design system out of existing code? | React: `/design-sync`. Anything else, Angular included (the v2.1.296 sync adapters read `.tsx`/`.jsx` and React Storybook only): have Claude read the theme files, CSS custom properties and components into one token list per role. | DESIGN-002, DESIGN-010 |
+| Screenshot or computed styles to check a design? | Screenshots for overall look and hierarchy; computed styles (`getComputedStyle`, a contrast check) for exact spacing, sizes, colours and contrast, because Claude's localisation is "approximate". Claude can't generate images; its design output is HTML, CSS, SVG or canvas. | DESIGN-007, DESIGN-008 |
 | How do I improve an existing design rather than redesign it? | Give the highest-fidelity input you have (code plus the running app, then a URL, then a screenshot), lock the tokens, audit against a checklist and change one thing at a time; redesign only when asked, on a branch. | DESIGN-009 |
-| How do I get a design system out of existing code? | React: `/design-sync`. Anything else: have Claude read the theme files, CSS custom properties and components into one token list in the repo, cleaned to one token per role. | DESIGN-010 |
-| Which model and effort for design work? | No published design benchmark. Anthropic says Opus "performs the best at visualization tasks" and Opus 5.5 reads screenshots far better than Opus 5; use Opus 5.5 at `high` for new directions and critique, Sonnet 5.5 for iterations inside a set design system. Inference, not measured. | DESIGN-011 |
-| Should I install Impeccable or another community design skill? | They're unofficial; read them for their anti-pattern lists and audit commands, and adopt ideas rather than install them blind. | DESIGN-012 |
+| Which model and effort for design work? | Opus 5.5 at `high` for new directions and critique, Sonnet 5.5 for work inside a set design system (inference). A vendor-run 2026-10 benchmark put Opus 5.5 first for meeting briefs but in the bottom group for originality, and in our test Opus and Sonnet gave the same default page. | DESIGN-011, DESIGN-026 |
 | What goes wrong most often? | Claude claiming fixes it never rendered, drifting to its house style, redesigning when asked to polish, animating everything, CSS specificity clashes, and messy source design systems. | DESIGN-013 |
 
 ## Index
@@ -44,6 +48,21 @@ Research basis:
 | DESIGN-011 | Models and effort for design work | recommendation | models, effort, opus, sonnet, inference |
 | DESIGN-012 | Community design skills (unofficial) | comparison | community, impeccable, taste-skill, design-md |
 | DESIGN-013 | Design pitfalls | anti-pattern | pitfalls, verification, drift, animation, css |
+| DESIGN-014 | Anthropic's other design skills in `anthropics/skills` | tool | theme-factory, canvas-design, brand-guidelines, web-artifacts-builder |
+| DESIGN-015 | Colour roles: name tokens by job, not by hue | pattern | colour, roles, semantic-tokens, radix, material |
+| DESIGN-016 | Generating a palette in OKLCH, to contrast targets | pattern | colour, oklch, palette, leonardo, tailwind |
+| DESIGN-017 | Contrast: target WCAG 2 ratios; WCAG 3 hasn't picked an algorithm | fact | contrast, wcag, apca, accessibility |
+| DESIGN-018 | Deriving dark mode | pattern | dark-mode, light-dark, colour, tokens |
+| DESIGN-019 | Colour libraries Claude can call from a script or an artifact | tool | culori, colorjs, leonardo, material-color-utilities, npm |
+| DESIGN-020 | Type: a fluid scale and a measured line length | pattern | typography, type-scale, utopia, line-length |
+| DESIGN-021 | Token files: the DTCG format and three tiers | fact | tokens, dtcg, style-dictionary, tiers |
+| DESIGN-022 | Layout: name the structure, then encode the wireframe | pattern | layout, grid, wireframes, cards, every-layout |
+| DESIGN-023 | Tailwind and shadcn/ui defaults, and theming them away | fact | tailwind, shadcn, defaults, theming |
+| DESIGN-024 | Coherent multi-page sites: tokens, inventory, templates, drift checks | pattern | multi-page, consistency, drift, design-system |
+| DESIGN-025 | Critique and variants: diverge, pick, then score | pattern | critique, rubric, variants, heuristics |
+| DESIGN-026 | Measured originality of LLM-generated UI | fact | originality, benchmark, diversity, research |
+| DESIGN-027 | Test: four prompting strategies on one brief | comparison | experiment, prompting, directions, banned-patterns |
+| DESIGN-028 | Isolating scripted design tests from your own setup | pattern | headless, safe-mode, isolation, testing |
 
 ## [DESIGN-001] Visualising and iterating on a design in Claude Code
 - Type: pattern
@@ -64,6 +83,8 @@ Claude Code writes the HTML, CSS and SVG itself. The loop is explore, pick, tune
 | Check | Desktop Browser pane ("Claude auto-verifies changes after every edit") or Playwright MCP in the terminal | Measure, don't only look (DESIGN-007) |
 
 Artifacts and `/design` need a claude.ai login (not an API key, gateway token or cloud-provider credential), the Anthropic API rather than Bedrock, Vertex or Foundry, and an interactive session: they're off in `-p`. `/design` needs v2.1.265 per the artifacts page, v2.1.234 per the week-34 notes (INDEX.md Conflicts). If the organization turned the Design template off, "`/design` doesn't draft designs".
+
+Tested 2026-10-16, v2.1.296: a `claude -p` launched from a desktop session inherited its environment and had the Artifact tool; under `env -i` it didn't.
 
 ## [DESIGN-002] Design systems for `/design`: Design System artifacts and `/design-sync`
 - Type: fact
@@ -105,17 +126,17 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 - Confidence: official-docs
 - Last verified: 2026-10-16
 - Sources: [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md)
-- Related: DESIGN-003, DESIGN-005, DESIGN-006, PROMPT
+- Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-022, DESIGN-027, PROMPT-009
 
 1. **Ground it.** Name "one concrete subject, the design's audience, and the design's primary job" (frontend-design). Distinctive choices come from the subject's "industry, subject matter, materials, and vernacular".
 2. **Give a concrete spec when you have one.** Sonnet 5 "follows explicit specs precisely". Anthropic's AEFRM example gives five hex values, "4px corner radius", the typeface's character, the section order and "transition: all 160ms ease out".
 3. **Or ask for directions first.** "Before building, propose 4 distinct visual directions tailored to this brief (each as: bg hex / accent hex / typeface, plus a one-line rationale)." Because Sonnet 5 doesn't accept `temperature`, this is "the recommended way to produce meaningfully different design directions across runs".
-4. **Ban specific patterns and iterate the list.** Opus 5.5's example: "Do not use a cream or off-white background, italic accent words in headlines, numbered "01/02/03" section labels, monospace labels, or pill-shaped buttons." Then "check which styles the first result used instead, and extend the list if needed."
+4. **Ban specific patterns and iterate the list.** Opus 5.5's example: "Do not use a cream or off-white background, italic accent words in headlines, numbered "01/02/03" section labels, monospace labels, or pill-shaped buttons." Then "check which styles the first result used instead, and extend the list if needed." Sonnet 5 says "don't use that color" shifts it "to a different fixed palette".
 5. **Plan tokens before code.** frontend-design's two passes: a compact plan (4–6 named hex values, typefaces and roles, a layout in prose and ASCII wireframes, principles), then a review of that plan against the brief, then code.
 6. **Real copy.** "Copy can make a design feel as templated as the design itself." CTAs say what happens: "Save changes," not "Submit."
 7. **Restraint.** "Spend your boldness in one place." Use one orchestrated motion moment, not entrance animations on every section.
 
-The `<frontend_aesthetics>` snippets on the general and Sonnet 5 pages still ask for "animations for effects and micro-interactions"; the 2026-09 skill is stricter on motion (INDEX.md Conflicts).
+Tested (DESIGN-027): directions-first varied most; a banned list moved every run to one new look. The general and Sonnet 5 pages' `<frontend_aesthetics>` snippets still ask for "animations for effects and micro-interactions", unlike the 2026-09 skill (INDEX.md Conflicts).
 
 ## [DESIGN-005] The frontend-design skill and how it differs from `artifact-design`
 - Type: tool
@@ -227,7 +248,7 @@ Validate the result by building one or two test pages from the tokens alone and 
 - Confidence: unverified
 - Last verified: 2026-10-16
 - Sources: [Custom visuals in chat: tips](https://support.claude.com/en/articles/13979539-custom-visuals-in-chat), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7)
-- Related: DESIGN-008, ORCH-030, ORCH-028, FLOW-009
+- Related: DESIGN-008, DESIGN-026, DESIGN-027, ORCH-030, ORCH-028, FLOW-009
 
 **What Anthropic says:**
 - Custom visuals: "Opus performs the best at visualization tasks, so if you're going for something complex, we'd recommend choosing a more intelligent model."
@@ -235,9 +256,9 @@ Validate the result by building one or two test pages from the tokens alone and 
 - Opus 5.5 reads screenshots and diagrams far better than Opus 5, even at its lowest effort. Its default is `medium`, and it uses image tools "more effectively at higher effort levels" (DESIGN-008).
 - Sonnet 5 defaults to `high`, "may settle into a consistent default visual style", and "follows explicit specs precisely".
 
-**No published design benchmark** compares the models on design quality. Anthropic's statements above are launch and guidance claims, not measurements.
+**Benchmarks:** Design Creativity Bench (a preprint, 2026-10-08) puts Claude Opus 5.5 in the bottom group on originality (13th of 15, intervals overlapping) and first on meeting a brief's criteria, 99.2%. It is vendor-run and tested no prompting (DESIGN-026). WebDev Arena ranks pairwise human preference; we didn't read its current rankings. Anthropic's statements above are launch and guidance claims, not measurements.
 
-**Our inference:** use Opus 5.5 at `high` for open briefs, new directions, critiques and dense screenshots. Use Sonnet 5.5 for iterations inside an established design system or a precise spec, where following the spec matters more than taste. A checklist-driven visual check runs on Sonnet 5.5 at `medium` (REPO-021). Not Haiku for design judgement. Test before relying on any of this.
+**Our inference:** in our test Opus 5.5 and Sonnet 5.5 gave the same default page (DESIGN-027), so work on the prompt and process (DESIGN-004) before switching models. Use Opus 5.5 at `high` for open briefs, new directions, critiques and dense screenshots. Use Sonnet 5.5 for iterations inside an established design system or a precise spec, where following the spec matters more than taste. A checklist-driven visual check runs on Sonnet 5.5 at `medium` (REPO-021). Not Haiku for design judgement. Test before relying on any of this.
 
 ## [DESIGN-012] Community design skills (unofficial)
 - Type: comparison
@@ -281,6 +302,309 @@ None of these is Anthropic's. Read on 2026-10-16, not installed; stars from the 
 | A messy source design system | "Design system import is only as good as its source" (DESIGN-010) |
 | Too many screenshots in the main context | Check in a subagent (REPO-021, TOK-043) |
 
+## [DESIGN-014] Anthropic's other design skills in `anthropics/skills`
+- Type: tool
+- Applies to: Claude Code, claude.ai
+- Confidence: official-example
+- Last verified: 2026-10-16
+- Sources: [theme-factory](https://github.com/anthropics/skills/blob/main/skills/theme-factory/SKILL.md), [brand-guidelines](https://github.com/anthropics/skills/blob/main/skills/brand-guidelines/SKILL.md), [canvas-design](https://github.com/anthropics/skills/blob/main/skills/canvas-design/SKILL.md), [algorithmic-art](https://github.com/anthropics/skills/blob/main/skills/algorithmic-art/SKILL.md), [web-artifacts-builder and its init script](https://github.com/anthropics/skills/blob/main/skills/web-artifacts-builder/SKILL.md)
+- Related: DESIGN-005, DESIGN-003, DESIGN-023, SKILL
+
+Besides frontend-design (DESIGN-005), five skills touch visual design. Each path's only commit in the repo is dated 2025-12-01, so they predate frontend-design's 2026-09 rewrite.
+
+| Skill | What it does | What to take from it |
+|---|---|---|
+| theme-factory | 10 preset themes, each a hex palette plus a header and body font, in `themes/*.md`. Show them, "Wait for selection", apply; or generate a new named theme | A named theme file as the unit the user picks. The presets themselves are stock ("Tech Innovation": `#0066ff`, `#00ffff`, DejaVu Sans) |
+| brand-guidelines | Anthropic's own brand: `#faf9f5` light, `#141413` dark, `#d97757` orange, Poppins headings, Lora body | That cream and orange is the look frontend-design calls a tell ("often near #D97757") |
+| canvas-design | Posters and static art as PNG or PDF: write a 4–6 paragraph "design philosophy" naming a movement, then express it; finish with a pass that will "avoid adding more graphics; instead refine what has been created" | Concept first, then subtract |
+| algorithmic-art | The same philosophy-first pattern for seeded p5.js generative art | |
+| web-artifacts-builder | React 18, Vite, "Tailwind CSS 3.4.1" and shadcn/ui, bundled to one HTML file. Its one design rule: "avoid using excessive centered layouts, purple gradients, uniform rounded corners, and Inter font" | Its init script writes shadcn's stock theme (`--radius: 0.5rem`, `--primary: 0 0% 9%`, `baseColor` slate), so output starts from the shadcn look unless re-themed (DESIGN-023) |
+
+## [DESIGN-015] Colour roles: name tokens by job, not by hue
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Radix Colors: understanding the scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale), [Radix Colors: composing a palette](https://www.radix-ui.com/colors/docs/palette-composition/composing-a-palette), [Material Web: color](https://github.com/material-components/material-web/blob/main/docs/theming/color.md)
+- Related: DESIGN-006, DESIGN-016, DESIGN-018, DESIGN-021
+
+Give Claude roles to fill, not a bag of hexes. Two documented role sets:
+
+**Radix 12-step scale**, per hue:
+
+| Steps | Use |
+|---|---|
+| 1–2 | "App background", "Subtle background" |
+| 3–5 | UI element background: normal, hover, "Active / Selected" |
+| 6–8 | Borders: "Subtle borders and separators", "UI element border and focus rings", "Hovered UI element border" |
+| 9–10 | "Solid backgrounds" and their hover; "Step 9 has the highest chroma of all steps" |
+| 11–12 | "Low-contrast text", "High-contrast text" |
+
+Radix's semantic pairings: error red, success green, warning yellow, amber or orange, info blue. For a brand colour it advises "adding custom scales alongside Radix scales" and a gray "saturated with the hue closest to your accent hue".
+
+**Material 3:** `--md-sys-color-<token>` for primary, secondary, tertiary and error, each with a `-container`; a surface family (`surface-container-lowest` to `-highest`), `outline` and `outline-variant`. "All tokens have a corresponding `--md-sys-color-on-<token>` for content color with accessible contrast."
+
+Neither system says how to pick the brand hue. That comes from the brief's subject (DESIGN-004); the roles keep the result consistent across pages.
+
+## [DESIGN-016] Generating a palette in OKLCH, to contrast targets
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Tailwind CSS v4.0 (2025-01-22)](https://tailwindcss.com/blog/tailwindcss-v4), [Tailwind: colors](https://tailwindcss.com/docs/colors), [MDN: oklch()](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch), [Leonardo contrast-colors README](https://github.com/adobe/leonardo/blob/main/packages/contrast-colors/README.md), [Material Web: color](https://github.com/material-components/material-web/blob/main/docs/theming/color.md), [Evil Martians: OKLCH in CSS (community)](https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl)
+- Related: DESIGN-015, DESIGN-017, DESIGN-018, DESIGN-019, DESIGN-007
+
+**Why OKLCH.** Equal steps in its L look equally different, unlike HSL: "it uses perceptual lightness" (Evil Martians). Tailwind v4.0 "upgraded the entire default color palette from rgb to oklch"; each hue has "11 steps, with 50 being the lightest, and 950 being the darkest", e.g. `--color-blue-500: oklch(62.3% 0.214 259.815)`. MDN: `oklch()` has been "available across browsers since May 2023".
+
+**Three documented generators:**
+- **Leonardo** generates colours to hit contrast ratios against a background: `colorKeys: ['#5CDBFF', '#0000FF']`, `ratios: [3, 4.5]`, and a theme `lightness` "from 0-100". Its interpolation spaces are LCH, LAB, CAM02, HSL, HSLuv, HSV and RGB; OKLCH isn't listed.
+- **Material:** "From five key colors, roles are automatically assigned"; `material-color-utilities` (HCT) does it at runtime.
+- **Radix's custom palette tool** expands "a couple reference colors" into a 12-step scale.
+
+**For Claude:** compute the palette in a script with one of the libraries in DESIGN-019 and print each role's contrast against its background, instead of choosing hexes by feel. The contrast targets are in DESIGN-017.
+
+## [DESIGN-017] Contrast: target WCAG 2 ratios; WCAG 3 hasn't picked an algorithm
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [WCAG 3.0 Working Draft, 2026-09-10](https://www.w3.org/TR/wcag-3.0/), [APCA README](https://github.com/Myndex/apca-w3/blob/master/README.md), [Radix Colors: understanding the scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale), [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
+- Related: DESIGN-007, DESIGN-016, DESIGN-019
+
+- **WCAG 2.2 AA** is the target: 4.5:1 for body text, 3:1 for large text and UI parts (DESIGN-007).
+- **WCAG 3** (Working Draft, 10 September 2026): "The contrast algorithm used in WCAG 3 is yet to be determined." The draft doesn't mention APCA. "WCAG 3 does not replace WCAG 2."
+- **APCA** returns a lightness contrast (Lc) of about −108 to 106. Its own README: "standards that will be incorporating APCA are still developmental." `apca-w3` 0.1.9 was last published 2022-07-04, under a "Limited W3 License".
+- **Radix** tunes its text steps to APCA: "guaranteed to Lc 60 and Lc 90 APCA contrast ratio on top of a step 2 background".
+
+**For Claude:** pass and fail on WCAG 2 ratios. APCA can be a second, perceptual check (dark mode, thin type), never a conformance claim.
+
+## [DESIGN-018] Deriving dark mode
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Radix Colors: usage](https://www.radix-ui.com/colors/docs/overview/usage), [Material Components Android: color theming](https://github.com/material-components/material-components-android/blob/master/docs/theming/Color.md), [Leonardo contrast-colors README](https://github.com/adobe/leonardo/blob/main/packages/contrast-colors/README.md), [MDN: light-dark()](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark), [Tailwind: colors](https://tailwindcss.com/docs/colors)
+- Related: DESIGN-015, DESIGN-016, DESIGN-017
+
+Dark mode keeps the roles and re-picks the tones; it isn't the light palette inverted.
+- **Radix** ships a separate dark scale per hue (`@import "@radix-ui/colors/blue-dark.css"`, applied by a `.dark` class) with the same step meanings, so a role keeps its step number.
+- **Material** takes another tone of the same palette per role: primary is tone 40 in light and 80 in dark, surface neutral 98 and 6, on-surface neutral 10 and 90.
+- **Leonardo** regenerates the theme at a lower `lightness` with the same contrast ratios.
+- **CSS:** `light-dark(<light>, <dark>)` "works across the latest devices and browser versions" since May 2024, and needs `color-scheme: light dark`, "usually set on the :root pseudo-class". Tailwind's docs show semantic variables redefined under `[data-theme="dark"]`.
+
+**For Claude:** define both modes as values of the same role tokens, then check contrast in each mode separately (DESIGN-007); a pair that passes in light often fails in dark.
+
+## [DESIGN-019] Colour libraries Claude can call from a script or an artifact
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [npm registry](https://registry.npmjs.org/), [culori](https://culorijs.org/), [Leonardo](https://github.com/adobe/leonardo), [Radix Colors](https://www.radix-ui.com/colors), [material-color-utilities](https://github.com/material-foundation/material-color-utilities), [Color.js](https://colorjs.io/), [utopia-core](https://www.npmjs.com/package/utopia-core)
+- Related: DESIGN-016, DESIGN-017, DESIGN-020, SURF-016
+
+Latest versions from the npm registry on 2026-10-16. "CDN" means the reader got HTTP 200 from jsDelivr (`+esm` or a bundled file), so an artifact can import it (artifacts allow jsDelivr `/npm/`, SURF-016).
+
+| Package | Version, published | Licence | Does |
+|---|---|---|---|
+| `culori` | 4.0.2, 2025-06-27 | MIT | Parse, convert (OKLCH), interpolate, gamut-map, contrast |
+| `colorjs.io` | 0.7.1, 2026-07-24 | MIT | Conversion, gamut mapping, WCAG 2 and APCA contrast |
+| `@adobe/leonardo-contrast-colors` | 1.1.0, 2026-02-18 | Apache-2.0 | Colours generated to target contrast ratios |
+| `@material/material-color-utilities` | 0.4.0, 2026-01-21 | Apache-2.0 | HCT, tonal palettes, Material schemes |
+| `@radix-ui/colors` | 3.0.0, 2023-10-02 | MIT | Static 12-step scales, light and dark, P3 |
+| `apca-w3` | 0.1.9, 2022-07-04 | Limited W3 License | APCA Lc only; unmaintained since 2022 |
+| `utopia-core` | 1.6.0, 2024-09-19 | ISC | Utopia's fluid type and space maths (DESIGN-020) |
+
+All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS files (`blue.css`) but not an `index.css`. For a one-off palette, `culori` or `colorjs.io` in a Node script is enough; Leonardo when the ratios are the spec. Not run by us: behaviour is as each README describes.
+
+## [DESIGN-020] Type: a fluid scale and a measured line length
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Utopia](https://utopia.fyi/), [Utopia type calculator](https://utopia.fyi/type/calculator/), [webtypography.net 2.1.2, quoting Bringhurst](https://webtypography.net/2.1.2), [Butterick: line length](https://practicaltypography.com/line-length.html), [Butterick: point size](https://practicaltypography.com/point-size.html), [WCAG 2.2 Understanding 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html), [MDN: text-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap)
+- Related: DESIGN-004, DESIGN-005, DESIGN-019, DESIGN-021
+
+**Scale.** Utopia defines one modular scale for a small screen and one for a large screen and lets `clamp()` interpolate. The calculator's default, `360,18,1.2,1240,20,1.25,5,2`, is a 360 px viewport at 18 px and ratio 1.2 ("Minor Third"), a 1240 px viewport at 20 px and ratio 1.25 ("Major Third"), 5 steps up and 2 down. It outputs `--step-0: clamp(1.125rem, 1.0739rem + 0.2273vw, 1.25rem)`. Butterick: body text "on the web, the optimal size is 15–25 pixels".
+
+**Line length:**
+- Bringhurst: "Anything from 45 to 75 characters is widely regarded as a satisfactory length… The 66-character line… is widely regarded as ideal." For columns, "40 to 50".
+- Butterick: "45–90 characters, including spaces".
+- WCAG 1.4.8 (AAA): "no more than 80 characters". frontend-design asks for under 80.
+
+**Wrapping:** `text-wrap: balance` for headings (Chromium balances six lines or fewer); `pretty` for paragraphs, which "has a negative effect on performance".
+
+**Typefaces:** we found no primary source on choosing them that we could read as raw text (Google Fonts Knowledge renders in JavaScript), nor one that ranks overused Google Fonts. Pick by role and subject (DESIGN-004), and record the choice as a token.
+
+## [DESIGN-021] Token files: the DTCG format and three tiers
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [DTCG Format 2025.10](https://www.designtokens.org/TR/2025.10/format/), [DTCG Color 2025.10](https://www.designtokens.org/TR/2025.10/color/), [Material Web: theming](https://github.com/material-components/material-web/blob/main/docs/theming/README.md), [Style Dictionary: DTCG](https://styledictionary.com/info/dtcg/), [Terrazzo docs](https://terrazzo.app/docs/), [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4)
+- Related: DESIGN-006, DESIGN-012, DESIGN-015, DESIGN-024
+
+**DTCG.** The Design Tokens Community Group's format 2025.10 is a "Final Community Group Report 28 October 2025", "considered stable", and "not a W3C Standard nor is it on the W3C Standards Track". A token is `{"$value": …, "$type": …}`; groups nest; aliases are `"{colors.blue}"`. Types include color (with an `oklch` colour space in the Color module), dimension, fontFamily, fontWeight, duration, cubicBezier, number, and composites: border, shadow, gradient, transition, typography. The `/tr/drafts/` copy is a preview: "Do not attempt to implement".
+
+**Tools:** Style Dictionary 5.7.0 ("the latest format 2025.10 does not have full support yet"); Terrazzo `@terrazzo/cli` 2.9.0, which has a `check` command for DTCG files.
+
+**Tiers** (Material): reference tokens "hold concrete values"; system tokens "define decisions and roles"; component tokens map to system tokens (`--md-ref-typeface-brand`, `--md-sys-color-primary`, `--md-filled-button-container-shape`).
+
+**For Claude:** the format matters less than the tiers. Claude should use only system (role) tokens in components, so changing a reference value restyles every page. A Tailwind v4 `@theme` block or plain CSS custom properties can hold the same tiers without a build step.
+
+## [DESIGN-022] Layout: name the structure, then encode the wireframe
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [OpenAI: designing frontends with GPT-5.4](https://developers.openai.com/blog/designing-delightful-frontends-with-gpt-5-4), [Every Layout: layouts](https://every-layout.dev/layouts/), [MDN: grid template areas](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Grid_template_areas), [NN/g: F-shaped pattern](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/), [web-features 3.43.0](https://www.npmjs.com/package/web-features)
+- Related: DESIGN-003, DESIGN-004, DESIGN-024, DESIGN-027
+
+"Landing page" gets the hero, three cards and a CTA. Name a structure instead. Lovable's layout vocabulary: "hero grid, single column, split screen, sidebar, masonry, bento grid, magazine, dashboard, full-width sections, zigzag, card grid, asymmetric, broken grid, feed, or gallery."
+
+**Card and section rules** from OpenAI's guide for its own models (another vendor's, not tested on Claude):
+- "Cards: Default: no cards." "If removing a border, shadow, background, or radius does not hurt interaction or understanding, it should not be a card."
+- "One job per section."
+- "Brand test: If the first viewport could belong to another brand after removing the nav, the branding is too weak."
+
+**Wireframe to code.** frontend-design asks for ASCII wireframes (DESIGN-004). Have Claude carry them into `grid-template-areas`, which MDN says "allows you to visualize what your element looks like in the code" (`"a a a" "b c c"`). For components, Every Layout's 13 primitives (Stack, Box, Center, Cluster, Sidebar, Switcher, Cover, Grid, Frame, Reel, Imposter, Icon, Container) avoid breakpoint hacks.
+
+**Reading patterns:** NN/g says the F-pattern "is not the only scanning pattern": in a layer-cake pattern the eyes scan headings and subheadings and skip the text below. Headings then have to carry the page.
+
+**Baseline** (web-features 3.43.0): `subgrid` became widely available on 2026-03-15 and container size queries on 2025-08-14. Container style queries are only newly available (2026-05-19).
+
+## [DESIGN-023] Tailwind and shadcn/ui defaults, and theming them away
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Tailwind `theme.css`](https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/theme.css), [Tailwind: theme variables](https://tailwindcss.com/docs/theme), [shadcn/ui: theming](https://ui.shadcn.com/docs/theming), [shadcn changelog: shadcn create (2025-12-12)](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/changelog/2025-12-shadcn-create.mdx), [shadcn/ui: skills](https://ui.shadcn.com/docs/skills)
+- Related: DESIGN-003, DESIGN-014, DESIGN-015, DESIGN-021
+
+**The shared look.** Tailwind 4.3.3's defaults: a system `--font-sans` stack, radii from `--radius-xs: 0.125rem` to `--radius-4xl: 2rem`, shadows of black at 5% to 25% alpha (`--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), …`), and an OKLCH palette. shadcn's default theme (CLI 4.22.0) has achromatic surfaces and primary: `--background: oklch(1 0 0)`, `--primary: oklch(0.205 0 0)`, `--radius: 0.625rem`, with every radius derived from it. Its dark mode adds indigo and purple: `--chart-1` and `--sidebar-primary` at hue 264, `--chart-4` at 304. Its author, 2025-12-12: "somewhere along the way, all apps started looking the same. I guess the defaults were a little _too_ good. My bad."
+
+**Theming away:**
+- Tailwind v4: "To completely override an entire namespace… set the entire namespace to `initial`". `@theme { --color-*: initial; … }` removes every default colour utility; `--*: initial` removes the whole default theme.
+- shadcn: edit the CSS variables, or pick a style and preset with `npx shadcn create`, which "rewrites the component code to match your setup". There are eight styles (Vega, Nova, Maia, Lyra, Mira, Luma, Sera, Rhea); base colours are Neutral, Stone, Zinc, Mauve, Olive, Mist and Taupe.
+
+**For Claude:** in a Tailwind or shadcn project, replace the colour, font, radius and shadow namespaces from the repo's tokens before generating pages (DESIGN-021). Otherwise every page inherits the stock look. Anthropic's web-artifacts-builder starts from stock shadcn too (DESIGN-014). shadcn's own skill (`npx skills add shadcn/ui`) explains its theming to Claude Code, but doesn't pick a direction for you.
+
+## [DESIGN-024] Coherent multi-page sites: tokens, inventory, templates, drift checks
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: community-consensus
+- Last verified: 2026-10-16
+- Sources: [Atomic Design, chapter 2](https://atomicdesign.bradfrost.com/chapter-2/), [Cursor for designers](https://cursor.com/for/designers), [v0 docs: Design Systems 2.0](https://v0.app/docs/llms.txt), [Lovable: design systems](https://docs.lovable.dev/features/design-systems), [Project Wallace css-analyzer](https://github.com/projectwallace/css-analyzer), [Playwright: visual comparisons](https://playwright.dev/docs/test-snapshots)
+- Related: DESIGN-006, DESIGN-010, DESIGN-021, DESIGN-007, REPO-021, REPO-044
+
+**Give every session the same three things**, in CLAUDE.md or a repo skill (DESIGN-006):
+1. The token file, roles only (DESIGN-021).
+2. A component inventory: which components exist and when to use each.
+3. Page templates. Atomic Design: "Templates are page-level objects that place components into a layout"; pages are templates with real content and "are essential for testing the effectiveness of the underlying design system".
+
+Other vendors do the same. Cursor: "Use rules files to encode your design system", with rules such as "Never create custom buttons, inputs, or modals". v0 saves a design system as a skill: "an adapter that tells v0 where your source lives, which components, props, and tokens are safe to use". Lovable checks ongoing work for "raw colors, custom or customized components".
+
+**Check for drift** on every page, not only the new one:
+- **Computed styles** across pages: unique colours, font sizes and spacing values outside the tokens (DESIGN-007).
+- **CSS analysis:** `@projectwallace/css-analyzer` 9.9.4 reports "200+ metrics", with unique counts and "uniqueness ratios" per category.
+- **Visual regression:** Playwright's `toHaveScreenshot()` compares against reference screenshots after the first run.
+- **Lint:** Stylelint 17.16.0's `declaration-property-value-allowed-list`, or the community `stylelint-declaration-strict-value`, can require `var(--…)` instead of raw values.
+
+A checker subagent can run these and return numbers (REPO-021).
+
+## [DESIGN-025] Critique and variants: diverge, pick, then score
+- Type: pattern
+- Applies to: general
+- Confidence: community-consensus
+- Last verified: 2026-10-16
+- Sources: [Dow et al.: parallel prototyping (submitted version)](https://hci.stanford.edu/publications/2010/parallel-prototyping/ParallelPrototyping2010-submitted.pdf), [Design Council: the Double Diamond](https://www.designcouncil.org.uk/our-resources/the-double-diamond/), [NN/g: 10 usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/), [NN/g: design critiques](https://www.nngroup.com/articles/design-critiques/), [Impeccable: critique.md](https://github.com/pbakaus/impeccable/blob/main/.agent/skills/impeccable/reference/critique.md), [OneRedOak: design-review agent](https://github.com/OneRedOak/claude-code-workflows/blob/main/design-review/design-review-agent.md)
+- Related: DESIGN-001, DESIGN-004, DESIGN-009, DESIGN-012, DESIGN-027, REPO-021
+
+**Diverge before refining.** Dow et al. (2010): novice designers who made several prototypes before feedback beat those who refined one at a time, "as measured by click-through data and expert ratings", and raters "found Parallel prototypes to be more diverse". The Double Diamond's second diamond "encourages people to give different answers to the clearly defined problem". So ask for 3–4 directions (DESIGN-004) and have a person pick. In our experiment, letting Claude pick for itself still gave the most varied results (DESIGN-027).
+
+**Score against a rubric, not taste.** NN/g: critiques need "Agreed-upon design objectives for the work"; "Without these, any feedback is subjective and baseless."
+- Impeccable's critique scores Nielsen's ten heuristics 0–4 ("Most real interfaces score 20-32 out of 40") and starts with a "Design Specificity Verdict": "Does the result feel authored for this product, or category-interchangeable?"
+- OneRedOak's reviewer runs phases from interaction flow to accessibility and triages "[Blocker]" to "[Nitpick]". Its principles file is a SaaS-dashboard checklist ("Persistent Left Sidebar"), so it would bias a marketing-site review.
+
+**For Claude:** score in a subagent against the brief's objectives plus the specificity question, and cite measured values (DESIGN-007).
+
+## [DESIGN-026] Measured originality of LLM-generated UI
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-16
+- Sources: [Design Creativity Bench, arXiv 2610.11539 (2026-10-08)](https://arxiv.org/abs/2610.11539), [Enabling Creative Exploration for Vibe Design Agents, arXiv 2609.15078 (2026-09-14)](https://arxiv.org/abs/2609.15078), [Interrogating Design Homogenization in Web Vibe Coding, arXiv 2603.13036](https://arxiv.org/abs/2603.13036), [Design2Code, arXiv 2403.03163](https://arxiv.org/abs/2403.03163), [WebDev Arena](https://news.lmarena.ai/webdev-arena)
+- Related: DESIGN-003, DESIGN-011, DESIGN-025, DESIGN-027
+
+**Design Creativity Bench** (arXiv 2610.11539 v2; "All authors are affiliated with Kombai Inc.", a UI-generation vendor; a preprint): 15 models, 160 designs each over 80 tasks, default prompts. The score is `0.9 S_IA + 0.1 S_colour`, mostly information architecture, with embeddings trained to be "invariant to color systems", so it says little about palette or type.
+- "Originality is 0.592 for same-prompt design pairs from different models… far below the 0.764 for same-prompt human-model pairs": different labs' models resemble each other more than human designs.
+- Claude Opus 5.5 is in the bottom group on originality (13th of 15, 0.557; ranks 12 to 15 overlap) and 11th on creative range across its own briefs, yet first on meeting brief criteria (99.2%, GPT-6 Astra 99.1%).
+- "No diversity-seeking prompting was attempted", so it can't say whether prompting helps.
+
+**A measured mitigation** (arXiv 2609.15078, Google Labs, a non-Claude generator): propose three specs "with typicality weights", let an external policy sample one, build it. Over 168 prompts, coverage rose "from one option to nearly three", but "These labels do not verify unique rendered designs". Screenshot similarity fell from 0.6765 to about 0.58; judged preference didn't clearly improve, and a production A/B test found "no detectable gains in exports or task completion".
+
+**Other benchmarks:** Design2Code scores fidelity to a reference screenshot; WebDev Arena ranks pairwise preference. Neither measures diversity.
+
+**For us:** no model came near human originality, and Opus 5.5 and Sonnet 5.5 gave the same default page in our test (DESIGN-027). Work on the prompt and process (DESIGN-004) before switching models.
+
+## [DESIGN-027] Test: four prompting strategies on one brief
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-16
+- Sources: [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), local test
+- Related: DESIGN-003, DESIGN-004, DESIGN-025, DESIGN-026, DESIGN-028, PROMPT-009
+
+**Setup.** One brief (below) plus: S0 nothing; S1 the Opus 5.5 page's banned list; S2 the Sonnet 5 page's four directions, self-picked; S3 frontend-design's two passes without its list of default looks. Sonnet 5.5, 5 runs each; Opus 5.5, 3 runs of S0 and S2; default effort. Brief and S2 suffix:
+
+```text
+Create a single self-contained HTML file named index.html in the current directory: a landing page for a neighbourhood bakery's weekly bread subscription. Facts: the bakery is called Hollow Oak, a small sourdough bakery on a residential street. Subscribers choose one, two or three loaves a week (€9, €17 or €24 a week), collect on Saturday morning or get bike delivery within 3 km, and can pause or skip any week. The page explains the subscription, shows the plans and lets people sign up with a form. Inline all CSS and JS. You may load fonts from Google Fonts; use no other external resources and no images. Write the file with the Write tool, then stop.
+
+Before building, propose 4 distinct visual directions tailored to this brief (each as: bg hex / accent hex / typeface, plus a one-line rationale). Then pick the direction least like the generic default you would produce for any similar page, say which and why, and implement only that direction.
+```
+
+| | S0 | S1 | S2 | S3 | Opus S0 | Opus S2 |
+|---|---|---|---|---|---|---|
+| Headline fonts | 1 | 1 | 4 | 3 | 1 | 3 |
+| Accent ΔE (pairwise mean) | 0.06 | 0.14 | 0.40 | 0.22 | 0.06 | 0.33 |
+| Runs: monospace labels | 0 | 0 | 5 | 5 | 0 | 3 |
+| Runs: accented headline word | 1 | 2 | 5 | 5 | 3 | 3 |
+
+**Findings:**
+1. The bare brief gave one page five times: cream, Fraunces, brown pills (DESIGN-003's first look). Opus 5.5 too.
+2. The banned list was obeyed; every run moved to one new look: dark green, amber, Fraunces.
+3. Directions-first varied most on both models, but added template chrome (monospace labels, middle-dot eyebrows) and paper props (dockets, order slips) in 6 of 8 runs.
+4. The two passes stayed near cream and vermilion: the review misses defaults it isn't told about.
+5. Copy converged: "every Saturday" in 12 of 20 headlines.
+
+**So:** directions first, a person picks, and a banned list grown from the last result. Small samples, unrated quality.
+
+Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL, 19:05–19:21 UTC: 26 runs, $5.36 (about $0.13 a Sonnet run, $0.44 an Opus run), isolated as in DESIGN-028. Measured with Playwright 1.63 at 1280 px (`getComputedStyle`, OKLab ΔE); the lead judged screenshots.
+
+## [DESIGN-028] Isolating scripted design tests from your own setup
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [CLI reference: --safe-mode, --disable-slash-commands, --tools, --bare](https://code.claude.com/docs/en/cli-reference), local test
+- Related: DESIGN-027, DESIGN-001, MEM-028, SKILL-048
+
+A prompt test in `claude -p` picks up your CLAUDE.md, plugins (frontend-design), skills and output style unless you strip them. With a claude.ai login `--bare` is out: its help says "Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper". What worked:
+
+```bash
+claude -p "$(cat prompt.txt)" --model claude-sonnet-5-5 --safe-mode --disable-slash-commands \
+  --settings '{"outputStyle":"default"}' --tools "Read,Write,Edit" --permission-mode acceptEdits \
+  --strict-mcp-config --max-turns 8 --max-budget-usd 1.5 --output-format json
+```
+
+- `--safe-mode`: the docs say CLAUDE.md, skills, plugins and "output styles… do not load". In the probe, CLAUDE.md and plugin skills went, but bundled skills (`artifact-design`, `dataviz`) and the user's chosen Concise output style stayed.
+- `--disable-slash-commands` ("Disable all skills and commands") removed the bundled skills.
+- `--settings '{"outputStyle":"default"}'` removed the output style.
+- `--tools` dropped the Artifact tool, which a `-p` child of a desktop session otherwise gets (DESIGN-001).
+
+Check with a Haiku probe that asks the model to list its skills and quote its CLAUDE.md's first heading. `--output-format json` gives each run's cost and duration, but not its intermediate messages (S2's directions and S3's plans weren't kept).
+
+Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -288,12 +612,20 @@ Ranked by impact against effort.
 1. **Done in this PR: route design questions here.** `claude-kb-lookup`'s description names "visual and UI design with Claude", with a `loads-19` case and a `skips-8` near miss for database design. The MCP server's `kb_search` description follows in a second PR once this one merges (FreekMencke/claude-kb#147).
 2. **osrs-tracker-web: give the browser checker a contrast and token check** (DESIGN-007). Its `browser-checker` agent already has `browser_evaluate` and measures sizes when asked. It doesn't check text contrast against WCAG AA or compare computed colours with the theme tokens. The light and dark themes with tinted pills are where a contrast slip would hide. Tracked in [osrs-tracker/osrs-tracker-web#337](https://github.com/osrs-tracker/osrs-tracker-web/issues/337).
 3. **Don't run `/design-sync` on osrs-tracker-web** (DESIGN-002). It's Angular, and the sync adapters read React only. Its design system stays in the repo skill and the design canvas artifact. If mock-ups move to `/design`, make a Design System artifact from a chat with `theme.css`, `base.css` and screenshots of real pages (DESIGN-010), and refresh it when the tokens change. No repo change.
-4. **For a new page or redesign in any repo, prompt with DESIGN-004:** subject, audience and job; four directions first; a banned list from the last result; real copy. No change needed: the `frontend-design` plugin we have installed is the current upstream text (identical checksum, 2026-10-16).
+4. **For a new page or redesign in any repo, prompt with DESIGN-004:** subject, audience and job; four directions first, picked by you rather than by Claude (in DESIGN-027 the self-pick added template chrome); a banned list grown from the last result; real copy. In a Tailwind or shadcn repo, theme the defaults away first (DESIGN-023). No change needed: the `frontend-design` plugin we have installed is the current upstream text (identical checksum, 2026-10-16).
 5. **Don't install Impeccable or Taste Skill user-wide** (DESIGN-012). They add hooks, a downloaded binary, telemetry or image fetching, and overlap with frontend-design. Borrow their banned lists and measuring ideas instead.
+6. **Test design-prompt or skill changes with DESIGN-028's isolation flags**, measured as in DESIGN-027, so CLAUDE.md, the frontend-design plugin and the output style don't leak into the result. The measuring scripts aren't in the repo; adding them under `evals/` would make the test re-runnable.
+7. **Considered, not adopted: `--color-*: initial` in osrs-tracker-web's `@theme`** (DESIGN-023). On 2026-10-16 its templates used no default palette colour classes, so clearing them would turn an off-token colour into a build error. Its repo skill already says "a value the scale lacks becomes a token", and osrs-tracker/osrs-tracker-web#337 adds a computed-colour check; a change would first have to check what `@tailwindcss/forms` reads from the default palette. Not worth an issue now.
 
 ## Open questions
 
+- **The full frontend-design skill wasn't tested** (DESIGN-027): S3 used only its two passes, without its list of default looks, and no run had a person pick the direction. Both are the next test.
+- **The test kept only final pages:** `--output-format json` returns the last message, so S2's four directions and S3's plans weren't recorded (DESIGN-028). `stream-json` would keep them.
+- **Typeface choice has no raw-text primary source here** (DESIGN-020): Google Fonts Knowledge and m3.material.io render in JavaScript, so curl got empty pages. A browser read would fill this.
+- **Does OpenAI's "no cards" guidance transfer to Claude?** (DESIGN-022) Written for its GPT models; untested on Claude.
+- **Not read:** Müller-Brockmann's grid systems via a reputable secondary source, Refactoring UI's public pages, the CRAP principles, Carbon's and Polaris's spacing pages, Storybook and Chromatic (DESIGN-022, DESIGN-024).
+- **Leonardo and OKLCH:** its README lists LCH, LAB, CAM02, HSL, HSLuv, HSV and RGB only (DESIGN-016); whether newer builds interpolate in OKLCH wasn't checked.
 - **`/design` minimum version:** v2.1.265 (artifacts page) or v2.1.234 (week-34 notes); already in INDEX.md Conflicts (DESIGN-001).
 - **`/design-sync` on a non-React repo:** concluded from the bundle and docs, not run, because a run writes to claude.ai. A run against a scratch design-system project would confirm what it reports for an Angular library (DESIGN-002).
 - **The issue's "Claude 4 best-practices page suggests Inter for headings" conflict doesn't hold on 2026-10-16:** the general prompting page names Inter three times, all as fonts to avoid. Not added to Conflicts.
-- **No published benchmark compares Claude models on design quality** (DESIGN-011). Searched Anthropic's prompting pages, launch posts and release notes.
+- **No benchmark compares Claude models on design quality as people judge it, beyond pairwise preference** (DESIGN-011, DESIGN-026). Design Creativity Bench measures originality with an embedding metric; we didn't check how it was validated (its Appendix B).
