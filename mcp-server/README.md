@@ -97,7 +97,7 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   (no `enum`, no parameter properties), relative imports with their `.ts` extension. The image runs an rspack bundle
   (`build.ts`) with `node --lite-mode`, which turns off V8's optimizing compilers: on 2026-10-16 it idled at 72 MiB and
   peaked at 80 MiB under bursts of 1,500 calls 50 at a time, where the `.ts` files with the SDK idled at 136 MiB and
-  peaked over 330. Over 24 re-indexes it stayed at 78 to 80 MiB, where without lite mode it climbed to 135. Calls are
+  peaked over 330. Over 24 re-indexes it stayed at 78 to 80 MiB, where without lite mode it climbed to 135–160. Calls are
   about 1.5x slower in lite mode, still under a millisecond. Lite mode also turns off WebAssembly, which type stripping
   needs, so it can run only the bundle. Moved from Python and FastMCP on 2026-10-16 (FreekMencke/claude-kb#146).
 

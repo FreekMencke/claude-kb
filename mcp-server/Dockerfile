@@ -34,6 +34,6 @@ USER 10001:10001
 
 # Lite mode turns off V8's optimizing compilers and keeps the heap small: 72 MiB at idle and 80 MiB at most under
 # bursts of 1,500 calls, against 83 and 115 without it, for calls about 1.5x slower (still under a millisecond). Over 24
-# re-indexes (new KB commits) it stayed at 78 to 80 MiB, where without it it climbed to 135. Measured 2026-10-16. It
+# re-indexes (new KB commits) it stayed at 78 to 80 MiB, where without it it climbed to 135-160. Measured 2026-10-16. It
 # also turns off WebAssembly, which Node's type stripping needs, so it runs the bundle only: never the .ts files.
 CMD ["node", "--lite-mode", "server.mjs"]
