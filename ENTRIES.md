@@ -46,9 +46,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-028 | Isolating scripted design tests from your own setup | pattern | headless, safe-mode, isolation, testing |
 | DESIGN-029 | Test: four directions, then a person picks | comparison | experiment, directions, human-pick, swatches |
 | DESIGN-030 | Tests: from a visual chooser to staged picks | comparison | experiment, staged-picks, swatches, tone-of-voice |
-| DESIGN-031 | Test: pick colour, then type, then layout, then combine (merged into DESIGN-030) | comparison | experiment, staged-picks, palettes, wireframes |
-| DESIGN-032 | Test: staged picks starting from audience, feel and tone (merged into DESIGN-030) | comparison | experiment, staged-picks, audience, tone-of-voice |
-| DESIGN-033 | Staged picks on an existing site: extract, then lock, nudge or open each step | pattern | existing-site, redesign, staged-picks, tokens |
+| DESIGN-031 | Staged picks on an existing site: extract, then lock, nudge or open each step | pattern | existing-site, redesign, staged-picks, tokens |
 
 ## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
 

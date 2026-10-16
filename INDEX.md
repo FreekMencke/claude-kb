@@ -18,7 +18,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | `topics/kb-mcp.md` | MCP | MCP servers: scopes, approval, auth, permissions, subagent scoping, surfaces, vetting and writing servers; claude.ai custom connectors, hosting a remote server, a repo's knowledge without a checkout | 41 (0 merged into other entries) |
 | `topics/kb-documentation.md` | DOC | Repo docs: changelogs, READMEs, decision records, runbooks, plan docs and drift, plus a survey of our repos | 24 (0 merged into other entries) |
 | `topics/kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO work: Google data access, crawler view, retired advice, SEO skills, title links, sitemap status | 34 (0 merged into other entries) |
-| `topics/kb-design.md` | DESIGN | Visual and UI design with Claude: original layouts, colour schemes, type and design systems, iterating in Claude Code (artifacts, `/design`), tokens, Tailwind and shadcn defaults, multi-page coherence, visual checks, prompting tests | 33 (2 merged into other entries) |
+| `topics/kb-design.md` | DESIGN | Visual and UI design with Claude: original layouts, colour schemes, type and design systems, iterating in Claude Code (artifacts, `/design`), tokens, Tailwind and shadcn defaults, multi-page coherence, visual checks, prompting tests | 31 (0 merged into other entries) |
 
 Each topic file also ends with "Recommendations for our setup" (what we should adopt, ranked) and "Open questions". Recommendations are kept apart from the facts because they go stale faster.
 
