@@ -148,6 +148,10 @@ dependency once jumped a major version and broke another server's startup. Chang
 from `mcp-server/` and commit both files. The image's base (`node:24-alpine`, by digest) is the Node apps' own; Node's
 major version is in `.node-version`, `engines`, both workflows (`setup-node` reads `.node-version`) and that tag.
 
+TypeScript is 7, the native compiler, used only for `npx tsc` (Node strips the types at run time). Its package has no
+`tsserver` or `lib.*.d.ts`, so an editor or language server pointed at this folder's `typescript` reports every
+built-in as missing: use the editor's own TypeScript, or none.
+
 ## Deploy
 
 Merging to `main` deploys, as for freek-mencke-web. CI (`MCP server`) runs only when the server, its workflows,
