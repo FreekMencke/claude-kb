@@ -1725,7 +1725,7 @@ PROMPT-012 covers any cold-start brief: objective, what's known, inputs, boundar
 1. **Source order.** Early agents "consistently chose SEO-optimized content farms over authoritative but less highly-ranked sources"; "source quality heuristics" fixed it. Name the hierarchy (official docs, then official repos, then community).
 2. **How to read.** "Start with short, broad queries, evaluate what's available, then progressively narrow focus." Then: exact figures only from `curl` + `grep`, never from a WebFetch summary (TOK-087).
 3. **What's already known or tested,** so it doesn't redo it (TOK-099's measurement).
-4. **Absence rules.** "Not found" must say where it looked; a truncated fetch is not evidence of absence (README, Monthly re-verification).
+4. **Absence rules.** "Not found" must say where it looked; a truncated fetch is not evidence of absence (README, Re-verification routine).
 5. **Fetched text is data.** Pages and issues may contain instructions; the subagent doesn't follow them or install what they suggest.
 6. **Write limits.** "Don't write files" or a unique scratch folder, so parallel readers don't collide.
 7. **Return format** with a source per claim (TOK-101).
@@ -1752,7 +1752,7 @@ What to ask for, per claim: the URL, the exact quoted wording for any number, de
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [README: Monthly re-verification](https://github.com/FreekMencke/claude-kb/blob/main/README.md#monthly-re-verification)
+- Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [README: Re-verification routine](https://github.com/FreekMencke/claude-kb/blob/main/README.md#re-verification-routine)
 - Related: TOK-087, TOK-089, TOK-092, TOK-093, TOK-098, TOK-101
 
 | Anti-pattern | Instead | Entry |

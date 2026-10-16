@@ -409,7 +409,7 @@ A spot check of README version claims against `package.json` and Dockerfiles fou
 - Area subtitles where the spec has six types.
 - Bare `(#N)` where the spec prefers prose.
 
-solix follows the spec apart from a seventh "Development" type. claude-kb's table is built for its monthly re-verification on purpose.
+solix follows the spec apart from a seventh "Development" type. claude-kb's table is built for its re-verification routine on purpose.
 
 ## [DOC-019] One rule in three files drifts apart
 - Type: anti-pattern

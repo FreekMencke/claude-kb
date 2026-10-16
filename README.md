@@ -146,12 +146,12 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
-## Monthly re-verification
+## Re-verification routine
 
-A cloud routine, "claude-kb monthly re-verification" at [claude.ai/code/routines](https://claude.ai/code/routines),
-runs at 06:00 UTC on the 1st on Sonnet 5.5. It re-checks every official-docs and official-example entry against its
+A cloud routine, "claude-kb re-verification" at [claude.ai/code/routines](https://claude.ai/code/routines),
+runs at 06:00 UTC on the 1st and 15th of each month on Sonnet 5.5. It re-checks every official-docs and official-example entry against its
 sources, updates Last verified, logs corrections in CHANGELOG.md, checks new and changed entries for overlap, and opens
-a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in this repo.
+a PR from `claude/reverify-<YYYY-MM-DD>`. Its prompt lives in the routine, not in this repo.
 
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`; pause or delete it on the routines page.
@@ -159,6 +159,7 @@ a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in t
 <details>
 <summary>Why it works this way</summary>
 
+- **The 1st and 15th, not every 14 days:** cron has no "every two weeks", so the gaps are 14 to 17 days.
 - **A PR, not a push to `main`:** a wrong correction to an entry every agent trusts should be reviewed first.
 - **Subagents curl and grep sources for exact wording:** the first run
   ([FreekMencke/claude-kb#1](https://github.com/FreekMencke/claude-kb/pull/1)) changed 25 entries and 8 were wrong, 6 of
