@@ -58,9 +58,9 @@ export const TOOLS: Tool[] = [
       description:
         'Search claude-kb, a knowledge base on using Claude and Claude Code efficiently: models and effort, subagents,' +
         ' skills, hooks, prompting, CLAUDE.md and memory, MCP servers and connectors, sessions, workflows, tokens and' +
-        ' caching, docs, SEO. Returns entry IDs with title, type, confidence, last-verified date and a summary. Search' +
-        ' first, then kb_get the 1 to 4 best IDs. Cite entry IDs. Check an entry last verified more than 60 days ago' +
-        ' against its sources.',
+        ' caching, docs, SEO, visual and UI design. Returns entry IDs with title, type, confidence, last-verified date' +
+        ' and a summary. Search first, then kb_get the 1 to 4 best IDs. Cite entry IDs. Check an entry last verified' +
+        ' more than 60 days ago against its sources.',
       inputSchema: {
         type: 'object',
         properties: {
