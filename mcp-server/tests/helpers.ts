@@ -11,7 +11,7 @@ import { createServerLogger } from '../log.ts';
 import { createApp, KbState } from '../server.ts';
 
 export const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-export const MCP_HEADERS = { Accept: 'application/json, text/event-stream', 'Content-Type': 'application/json' };
+export const MCP_HEADERS = { 'Accept': 'application/json, text/event-stream', 'Content-Type': 'application/json' };
 export const COMMIT = '0123456789abcdef0123456789abcdef01234567';
 export const TOPIC = `# Topic
 
@@ -114,14 +114,20 @@ export async function mcpClient(state: KbState): Promise<Client> {
 export async function callTool(client: Client, name: string, args: Record<string, unknown> = {}) {
   const result = await client.callTool({ name, arguments: args });
   const content = result.content as { type: string; text: string }[];
-  if (content.length !== 1 || content[0].type !== 'text') throw new Error(`Not one text block: ${JSON.stringify(result)}`);
+  if (content.length !== 1 || content[0].type !== 'text') {
+    throw new Error(`Not one text block: ${JSON.stringify(result)}`);
+  }
   return { text: content[0].text, isError: result.isError === true };
 }
 
 /** A sample's value in the default registry, 0 when it has none yet. */
 export async function sample(name: string, labels: Record<string, string> = {}): Promise<number> {
   for (const metric of await register.getMetricsAsJSON()) {
-    for (const value of metric.values as { metricName?: string; labels?: Record<string, string | number>; value: number }[]) {
+    for (const value of metric.values as {
+      metricName?: string;
+      labels?: Record<string, string | number>;
+      value: number;
+    }[]) {
       const sameLabels = Object.entries(labels).every(([k, v]) => String(value.labels?.[k]) === v);
       if ((value.metricName ?? metric.name) === name && sameLabels) return value.value;
     }

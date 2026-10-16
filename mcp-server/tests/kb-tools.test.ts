@@ -89,14 +89,17 @@ describe('kb_search', () => {
     expect(text).toContain(message);
   });
 
-  test.each(['subagent model effort', 'prompt caching', 'mcp server oauth connector', 'hooks', 'skills description trigger'])(
-    'stays under 4 KB: %s',
-    async query => {
-      const { text } = await call('kb_search', { query });
-      expect(hitIds(text)).toHaveLength(8);
-      expect(Buffer.byteLength(text)).toBeLessThan(4096);
-    },
-  );
+  test.each([
+    'subagent model effort',
+    'prompt caching',
+    'mcp server oauth connector',
+    'hooks',
+    'skills description trigger',
+  ])('stays under 4 KB: %s', async query => {
+    const { text } = await call('kb_search', { query });
+    expect(hitIds(text)).toHaveLength(8);
+    expect(Buffer.byteLength(text)).toBeLessThan(4096);
+  });
 });
 
 test('stale entries say so', () => {

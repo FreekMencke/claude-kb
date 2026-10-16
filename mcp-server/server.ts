@@ -77,9 +77,7 @@ export class KbState {
     if (basename(target) === this.commit) return;
     this.index = load(target);
     indexLoaded(this.index);
-    this.#log.info(
-      `Indexed commit ${this.commit}: ${this.entries} entries in ${this.index.buildSeconds.toFixed(2)} s`,
-    );
+    this.#log.info(`Indexed commit ${this.commit}: ${this.entries} entries in ${this.index.buildSeconds.toFixed(2)} s`);
   }
 
   /**

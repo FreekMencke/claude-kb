@@ -180,7 +180,9 @@ function resolveTopic(index: Index, topic: string | undefined): string | undefin
   if (!topic?.trim()) return undefined;
   const name = index.topic(topic);
   if (name === undefined) {
-    throw new ToolError(`Unknown topic ${JSON.stringify(topic)}. Pass one of these names or prefixes:\n${topicList(index)}`);
+    throw new ToolError(
+      `Unknown topic ${JSON.stringify(topic)}. Pass one of these names or prefixes:\n${topicList(index)}`,
+    );
   }
   return name;
 }
@@ -312,6 +314,8 @@ function fit(blocks: [string, string][], maxChars: number, joiner: string, what:
     kept.push(text);
   }
   const cut = blocks.slice(kept.length).map(([id]) => id);
-  if (cut.length) kept.push(`(${cut.length} more ${what} cut to keep this result small: ${cut.join(', ')}; ${advice}.)`);
+  if (cut.length) {
+    kept.push(`(${cut.length} more ${what} cut to keep this result small: ${cut.join(', ')}; ${advice}.)`);
+  }
   return kept;
 }

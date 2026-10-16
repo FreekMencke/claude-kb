@@ -1,0 +1,5 @@
+# Prettier formats the TypeScript in mcp-server/ and scripts/ only (`npm run prettier` in mcp-server/), never the
+# knowledge base's Markdown, whose tables and line breaks are written by hand
+*
+!*/
+!*.ts

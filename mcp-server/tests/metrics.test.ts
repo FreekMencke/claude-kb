@@ -19,7 +19,10 @@ test('requests are counted by route template, the probes not at all', async () =
   const count = 'http_request_duration_seconds_count';
   try {
     expect((await fetch(`${base}/healthz`)).status).toBe(200);
-    expect((await fetch(`${base}/mcp`, { method: 'POST', body: '{}', headers: { 'Content-Type': 'application/json' } })).status).toBe(400);
+    expect(
+      (await fetch(`${base}/mcp`, { method: 'POST', body: '{}', headers: { 'Content-Type': 'application/json' } }))
+        .status,
+    ).toBe(400);
     expect((await fetch(`${base}/wp-login.php`)).status).toBe(404);
     expect((await fetch(`${base}/.env`)).status).toBe(404);
   } finally {
@@ -57,7 +60,9 @@ test('every tool and outcome starts at zero', async () => {
   registerMetrics(kbState().state);
   const text = await register.getSingleMetricAsString('kb_tool_calls_total');
   for (const tool of TOOLS) {
-    for (const outcome of ['ok', 'error']) expect(text).toMatch(`kb_tool_calls_total{tool="${tool}",outcome="${outcome}"} `);
+    for (const outcome of ['ok', 'error']) {
+      expect(text).toMatch(`kb_tool_calls_total{tool="${tool}",outcome="${outcome}"} `);
+    }
   }
 });
 

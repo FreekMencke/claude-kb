@@ -92,7 +92,9 @@ function answer(message: unknown, state: KbState, onError: OnError): Reply | und
   if (jsonrpc !== '2.0') return error(id ?? null, INVALID_REQUEST, 'Not a JSON-RPC 2.0 message');
   // A notification (initialized, cancelled) or a response: nothing to answer
   if (id === undefined || typeof method !== 'string') return undefined;
-  if (typeof id !== 'string' && typeof id !== 'number') return error(null, INVALID_REQUEST, 'Use a string or number id');
+  if (typeof id !== 'string' && typeof id !== 'number') {
+    return error(null, INVALID_REQUEST, 'Use a string or number id');
+  }
   const p = typeof params === 'object' && params !== null ? (params as Args) : {};
   try {
     switch (method) {

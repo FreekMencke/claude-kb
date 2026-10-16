@@ -11,6 +11,8 @@ on:
       - '!mcp-server/claude-kb-mcp.yaml'
       - 'scripts/**'
       - '.node-version'
+      - '.prettierrc.json'
+      - '.prettierignore'
       - 'assets/logo.png'
       - 'assets/logo.svg'
       - '.github/workflows/mcp-server.yml'
@@ -21,6 +23,8 @@ on:
       - 'mcp-server/**'
       - 'scripts/**'
       - '.node-version'
+      - '.prettierrc.json'
+      - '.prettierignore'
       - 'assets/logo.png'
       - 'assets/logo.svg'
       - '.github/workflows/mcp-server.yml'
@@ -50,6 +54,8 @@ jobs:
       # Type checks the server, its tests and ../scripts (tsconfig.json); Node itself only strips the types
       - run: npx tsc
       - run: npm test
+      # The TypeScript only (.prettierrc.json, .prettierignore): never the knowledge base's Markdown
+      - run: npm run prettier:ci
       # The deploy scripts. ShellCheck comes with GitHub's Ubuntu runners.
       - run: shellcheck ../.github/scripts/*.sh
 

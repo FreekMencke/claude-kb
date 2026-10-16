@@ -117,7 +117,12 @@ export class Index {
 
   /** The topic for "mcp", "kb-mcp", "kb-mcp.md" or the prefix "MCP"; undefined for anything else. */
   topic(name: string): string | undefined {
-    const topic = name.trim().toLowerCase().replace(/\.md$/, '').replace(/^topics\//, '').replace(/^kb-/, '');
+    const topic = name
+      .trim()
+      .toLowerCase()
+      .replace(/\.md$/, '')
+      .replace(/^topics\//, '')
+      .replace(/^kb-/, '');
     if (this.topics.has(topic)) return topic;
     const prefix = topic.toUpperCase();
     for (const [t, p] of this.prefixes) if (p === prefix) return t;
@@ -135,7 +140,11 @@ export class Index {
     const keep = (e: Entry) => (wantedTopic === undefined || e.topic === wantedTopic) && (!type || e.type === type);
 
     const ids = [...query.matchAll(ID_IN_QUERY)].map(m => m[1]);
-    const hits = new Map(this.get(ids).filter(keep).map(e => [e.id, { entry: e, byId: true }]));
+    const hits = new Map(
+      this.get(ids)
+        .filter(keep)
+        .map(e => [e.id, { entry: e, byId: true }]),
+    );
     // OR, not FTS5's implicit AND: a question's words rarely all appear in the entry that answers it. Matching all
     // words first and then any word ranked worse on the Quick-answer questions.
     const queryPhrases = phrases(query);
@@ -256,7 +265,10 @@ export function load(root: string, commit?: string): Index {
         lastVerified: field(body, 'Last verified'),
         sources: field(body, 'Sources'),
         related: field(body, 'Related').match(/[A-Z]+-\d+/g) ?? [],
-        tags: tagText.split(',').map(t => t.trim()).filter(Boolean),
+        tags: tagText
+          .split(',')
+          .map(t => t.trim())
+          .filter(Boolean),
         mergedInto: mergedInto(indexTitle),
         summary: summary(entryProse),
         body: body.trim(),

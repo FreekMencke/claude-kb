@@ -5,7 +5,9 @@ import { collectLogs, kbState, serve } from './helpers.ts';
 test("lines are JSON with pino's level names, a type and a message", () => {
   const { logger, lines } = collectLogs();
   logger.child({ type: 'index' }).warn('Refreshing failed: x');
-  expect(lines).toEqual([{ level: 'warn', time: expect.stringMatching(/Z$/), type: 'index', message: 'Refreshing failed: x' }]);
+  expect(lines).toEqual([
+    { level: 'warn', time: expect.stringMatching(/Z$/), type: 'index', message: 'Refreshing failed: x' },
+  ]);
 });
 
 test('an error becomes the error field, with its stack', () => {

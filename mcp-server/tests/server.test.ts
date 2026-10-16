@@ -26,7 +26,11 @@ describe('the index of the git-sync checkout', () => {
     expect(state.statusText()).toMatch(new RegExp(`^Commit: ${COMMIT}\nEntries: 2\nIndex built: \\S+Z in `));
     // ci-image-test.sh greps for this line
     expect(lines).toContainEqual(
-      expect.objectContaining({ level: 'info', type: 'index', message: expect.stringMatching(`^Indexed commit ${COMMIT}: 2 entries in `) }),
+      expect.objectContaining({
+        level: 'info',
+        type: 'index',
+        message: expect.stringMatching(`^Indexed commit ${COMMIT}: 2 entries in `),
+      }),
     );
   });
 
@@ -63,7 +67,11 @@ describe('the index of the git-sync checkout', () => {
     const stop = new KbState(join(root, 'kb'), logger).keepRefreshed();
     stop();
     expect(lines).toContainEqual(
-      expect.objectContaining({ level: 'error', type: 'index', message: 'Refreshing the index failed; keeping commit none' }),
+      expect.objectContaining({
+        level: 'error',
+        type: 'index',
+        message: 'Refreshing the index failed; keeping commit none',
+      }),
     );
     expect(lines[0].error).toContain('ENOENT');
   });
@@ -106,7 +114,12 @@ describe('over HTTP', () => {
 
   test('the tools contract', async () => {
     const { tools } = (await rpcMessage(await rpc(base, 'tools/list'))).result;
-    expect(tools.map((t: { name: string }) => t.name)).toEqual(['kb_search', 'kb_get', 'kb_quick_answers', 'kb_status']);
+    expect(tools.map((t: { name: string }) => t.name)).toEqual([
+      'kb_search',
+      'kb_get',
+      'kb_quick_answers',
+      'kb_status',
+    ]);
     for (const tool of tools) {
       expect(tool.title).toBeTruthy();
       expect(tool.annotations.readOnlyHint).toBe(true);
@@ -123,7 +136,9 @@ describe('over HTTP', () => {
     const params = { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'test', version: '0' } };
     const { instructions } = (await rpcMessage(await rpc(base, 'initialize', params))).result;
     // The same rules as kb_search's description, for Claude Code; claude.ai web and desktop drop instructions
-    for (const rule of ['kb_get the 1 to 4 best IDs', 'Cite entry IDs', '60 days']) expect(instructions).toContain(rule);
+    for (const rule of ['kb_get the 1 to 4 best IDs', 'Cite entry IDs', '60 days']) {
+      expect(instructions).toContain(rule);
+    }
     expect(instructions.length).toBeLessThan(4096); // Claude Code cuts them there
   });
 
@@ -146,7 +161,9 @@ describe('over HTTP', () => {
     expect(response.headers.get('x-content-type-options')).toBe('nosniff');
     expect(response.headers.get('cache-control')).toBe('public, max-age=86400');
     if (path !== '/icon.svg') {
-      expect(Buffer.from(await response.arrayBuffer()).subarray(0, 8)).toEqual(Buffer.from('\x89PNG\r\n\x1a\n', 'latin1'));
+      expect(Buffer.from(await response.arrayBuffer()).subarray(0, 8)).toEqual(
+        Buffer.from('\x89PNG\r\n\x1a\n', 'latin1'),
+      );
     }
   });
 

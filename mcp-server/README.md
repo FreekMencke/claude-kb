@@ -109,11 +109,14 @@ Node 24 (`.node-version`). From `mcp-server/`:
 npm ci
 ```
 
-The type check and the tests, which are the verify command for any change here:
+The type check, the tests and the formatting check, which are the verify command for any change here:
 
 ```bash
-npx tsc && npm test
+npx tsc && npm test && npm run prettier:ci
 ```
+
+`npm run prettier` formats the TypeScript here and in `../scripts`, with osrs-tracker-web's settings
+(`../.prettierrc.json`). `../.prettierignore` keeps Prettier off everything else, the knowledge base's Markdown above all.
 
 On 127.0.0.1 only, reading the checkout it runs from (`kb_status` shows its directory name as the commit), without
 the metrics port:

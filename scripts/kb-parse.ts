@@ -55,5 +55,9 @@ export function indexTable(text: string): [string, string, string, string][] {
 
 /** A topic file's title: its first line without the `#` and the `(PREFIX)` at the end. */
 export function topicTitle(text: string): string {
-  return text.split('\n', 1)[0].replace(/^[# ]+/, '').trim().replace(/ \([A-Z]+\)$/, '');
+  return text
+    .split('\n', 1)[0]
+    .replace(/^[# ]+/, '')
+    .trim()
+    .replace(/ \([A-Z]+\)$/, '');
 }

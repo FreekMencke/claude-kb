@@ -273,7 +273,10 @@ describe('this repo', () => {
     // 2026-10-15, 208 of 253). A drop means a search change made ranking worse.
     const rows = [...repo.quickAnswers.values()].flatMap(text =>
       text.split('\n').flatMap(line => {
-        const cells = line.replace(/^\|+|\|+$/g, '').split('|').map(c => c.trim());
+        const cells = line
+          .replace(/^\|+|\|+$/g, '')
+          .split('|')
+          .map(c => c.trim());
         return cells.length >= 3 && /^[A-Z]+-\d+/.test(cells.at(-1)!)
           ? [[cells[0], new Set(cells.at(-1)!.match(/[A-Z]+-\d+/g))] as const]
           : [];

@@ -81,4 +81,4 @@ End the file with two sections kept apart from the facts:
 
 ## Server code
 
-`mcp-server/` is the knowledge base's remote MCP server (roadmap #109), deployed from `main` by `.github/workflows/deploy.yml`. A research session leaves it, `.github/scripts/` and those workflows alone. A session changing the server follows `mcp-server/README.md`; its verify command is `npx tsc && npm test`, run from `mcp-server/` after `npm ci`. Merging a change to the server deploys it.
+`mcp-server/` is the knowledge base's remote MCP server (roadmap #109), deployed from `main` by `.github/workflows/deploy.yml`. A research session leaves it, `.github/scripts/` and those workflows alone. A session changing the server follows `mcp-server/README.md`; its verify command is `npx tsc && npm test && npm run prettier:ci`, run from `mcp-server/` after `npm ci`. Merging a change to the server deploys it.
