@@ -163,7 +163,7 @@ function strings(args: Args, key: string): string[] {
   return value;
 }
 
-function loaded(index: Index | undefined): Index {
+export function loaded(index: Index | undefined): Index {
   if (index === undefined) throw new ToolError("The knowledge base hasn't loaded yet: try again in a minute.");
   return index;
 }

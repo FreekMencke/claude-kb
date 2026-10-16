@@ -7,6 +7,7 @@
 !mcp-server/mcp.ts
 !mcp-server/kb-index.ts
 !mcp-server/kb-tools.ts
+!mcp-server/kb-resources.ts
 !mcp-server/log.ts
 !mcp-server/metrics.ts
 !mcp-server/shutdown.ts

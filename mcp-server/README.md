@@ -28,6 +28,7 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 | `server.ts` | The server: Express, the KB index's refresh, the `/mcp`, icon and health routes, the run modes |
 | `mcp.ts` | MCP itself, without the SDK: stateless Streamable HTTP with JSON replies, the 2025 protocol revisions |
 | `kb-tools.ts` | The tools: their schemas and descriptions, argument checks, and the text each returns, with its caps and error messages |
+| `kb-resources.ts` | The entries, each topic's Quick answers and INDEX.md's as resources (`kb://entry/MCP-017`), with the tools' text |
 | `kb-index.ts` | The entries, parsed by `scripts/kb-parse.ts`, and their search: SQLite FTS5 in memory (`node:sqlite`), ranked by `bm25()` |
 | `log.ts` | The logger: `@osrs-tracker/logger`, the Node apps' JSON lines |
 | `metrics.ts` | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index |
@@ -75,6 +76,7 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   - `kb_tool_calls_total{tool,outcome}` (`ok` or `error`) and `kb_tool_duration_seconds{tool}`, around each tool's
     handler; `kb_search_empty_total` counts searches that matched nothing. A call with bad arguments counts as an
     `error`; a call to an unknown tool isn't counted.
+  - `kb_resource_reads_total{kind}`: `resources/read` calls by `entry`, `topic`, `index` (INDEX.md) or `not_found`.
   - `kb_index_entries`, `kb_index_build_seconds` and `kb_index_built_timestamp_seconds`, set on each re-index.
   - The client's defaults: `process_*` (memory, CPU, open files) and `nodejs_*` (heap, event-loop lag, GC).
   - git-sync's own metrics on port 2020, through the `claude-kb-git-sync-metrics` Service (a pod's annotations name one
@@ -84,8 +86,8 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   Alloy drops histogram buckets, so durations are averages (`_sum / _count`), not percentiles. Container memory and
   CPU, restarts and OOM kills come from cAdvisor and kube-state-metrics, and home-cluster's cluster-wide alert rules
   cover the Deployment.
-- **Protocol** (`mcp.ts`). JSON-RPC over `POST /mcp`, answered as JSON: `initialize`, `ping`, `tools/list` and
-  `tools/call`, the 2025 revisions (2024-11-05 to 2025-11-25), no session and no stream, so `GET` and `DELETE` get 405.
+- **Protocol** (`mcp.ts`). JSON-RPC over `POST /mcp`, answered as JSON: `initialize`, `ping`, `tools/list`,
+  `tools/call`, `resources/list`, `resources/templates/list` and `resources/read`, the 2025 revisions (2024-11-05 to 2025-11-25), no session and no stream, so `GET` and `DELETE` get 405.
   An unsupported `MCP-Protocol-Version` header gets 400, and an `Origin` other than the server's own or localhost gets
   403, as the spec requires (no `Origin`, as from Claude Code and claude.ai, passes). A 2026-07-28 client probes with
   `server/discover` under its own version header, gets that 400 and falls back to `initialize`, as the SDK's client
@@ -94,6 +96,12 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
   output schema: with one, Claude Code hands Claude the JSON instead of the text. Arguments are checked in
   `kb-tools.ts`, by type and by bounds, so a bad value gets an `isError` result saying what to pass.
+- **Resources** are for a user to attach, where the tools are for Claude to search: in Claude Code,
+  `@claude-kb:kb://entry/MCP-017`, `kb://topic/mcp` (its Quick answers and recommendations) or `kb://quick-answers`. All
+  603 are listed (79 KB on 2026-10-16), except merged entries, which still read by ID. No subscriptions, which claude.ai
+  doesn't support. A missing one gets `-32002`, the 2025 revisions' code (2026-07-28 moved it to `-32602` and asks
+  clients to accept both). Tested 2026-10-16 with Claude Code 2.1.296: `ReadMcpResourceTool` and
+  `ListMcpResourcesTool` both work.
 - **Code.** Node 24 runs the `.ts` files as they are (type stripping) in tests and local runs, so only erasable syntax
   (no `enum`, no parameter properties), relative imports with their `.ts` extension. The image runs an rspack bundle
   (`build.ts`) with `node --lite-mode`, which turns off V8's optimizing compilers: on 2026-10-16 it idled at 72 MiB and

@@ -12,7 +12,7 @@ WORKDIR /app/mcp-server
 COPY mcp-server/package.json mcp-server/package-lock.json ./
 RUN npm ci --ignore-scripts
 
-COPY mcp-server/build.ts mcp-server/server.ts mcp-server/mcp.ts mcp-server/kb-index.ts mcp-server/kb-tools.ts mcp-server/log.ts mcp-server/metrics.ts mcp-server/shutdown.ts ./
+COPY mcp-server/build.ts mcp-server/server.ts mcp-server/mcp.ts mcp-server/kb-index.ts mcp-server/kb-tools.ts mcp-server/kb-resources.ts mcp-server/log.ts mcp-server/metrics.ts mcp-server/shutdown.ts ./
 COPY scripts/package.json scripts/kb-parse.ts ../scripts/
 RUN npm run build
 

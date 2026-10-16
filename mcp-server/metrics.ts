@@ -12,6 +12,8 @@ import type { Index } from './kb-index.ts';
 
 export const TOOLS = ['kb_search', 'kb_get', 'kb_quick_answers', 'kb_status'] as const;
 export type ToolName = (typeof TOOLS)[number];
+export const RESOURCE_KINDS = ['entry', 'topic', 'index', 'not_found'] as const;
+export type ResourceKind = (typeof RESOURCE_KINDS)[number];
 // The path label for requests no route matches, so scanners can't add a series per path
 export const OTHER = 'other';
 
@@ -33,6 +35,12 @@ export const searchEmpty = new Counter({
   help: 'kb_search calls that matched no entry',
   registers: [],
 });
+export const resourceReads = new Counter({
+  name: 'kb_resource_reads_total',
+  help: 'resources/read calls, by kind: entry, topic, index (INDEX.md) or not_found',
+  labelNames: ['kind'],
+  registers: [],
+});
 const indexEntries = new Gauge({ name: 'kb_index_entries', help: 'Entries in the loaded index', registers: [] });
 const indexBuildSeconds = new Gauge({
   name: 'kb_index_build_seconds',
@@ -47,6 +55,7 @@ const indexBuilt = new Gauge({
 
 // Every tool and outcome from the start, so a rate over the first calls isn't missing its zero
 for (const tool of TOOLS) for (const outcome of ['ok', 'error']) toolCalls.inc({ tool, outcome }, 0);
+for (const kind of RESOURCE_KINDS) resourceReads.inc({ kind }, 0);
 
 /** The route template a request matched, such as `/mcp`, or `other`: the `path` label and the request log's `route`. */
 export function routeLabel(req: Request): string {
@@ -57,7 +66,15 @@ export function routeLabel(req: Request): string {
 /** Records each request and serves the registry as `GET /metrics` from `metricsApp`. */
 export function httpMetrics(metricsApp: Pick<Router, 'get'>): RequestHandler {
   const middleware = metricsMiddleware({ metricsApp, normalizePath: req => routeLabel(req) });
-  for (const metric of [toolCalls, toolDuration, searchEmpty, indexEntries, indexBuildSeconds, indexBuilt]) {
+  for (const metric of [
+    toolCalls,
+    toolDuration,
+    searchEmpty,
+    resourceReads,
+    indexEntries,
+    indexBuildSeconds,
+    indexBuilt,
+  ]) {
     register.registerMetric(metric);
   }
   return middleware;

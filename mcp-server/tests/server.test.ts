@@ -202,7 +202,7 @@ describe('the protocol', () => {
     const params = { protocolVersion: asked, capabilities: {}, clientInfo: { name: 'test', version: '0' } };
     const { result } = await rpcMessage(await rpc(base, 'initialize', params));
     expect(result.protocolVersion).toBe(version);
-    expect(result.capabilities).toEqual({ tools: { listChanged: false } });
+    expect(result.capabilities).toEqual({ tools: { listChanged: false }, resources: { listChanged: false } });
   });
 
   test("a 2026-07-28 client's probe gets a 400, its cue to fall back", async () => {
@@ -245,6 +245,8 @@ describe('the protocol', () => {
     ['not json', 400, -32700],
     ['{"jsonrpc":"1.0","id":1,"method":"ping"}', 400, -32600],
     ['{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"kb_nope"}}', 200, -32602],
+    // Resource not found, in the 2025 revisions; 2026-07-28 moved it to -32602 and asks clients to accept both
+    ['{"jsonrpc":"2.0","id":1,"method":"resources/read","params":{"uri":"kb://entry/TST-999"}}', 200, -32002],
   ])('%s: HTTP %i, JSON-RPC %i', async (body, status, code) => {
     const response = await post(body);
     expect(response.status).toBe(status);
