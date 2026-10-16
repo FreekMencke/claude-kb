@@ -12,7 +12,7 @@
 import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ratio } from './difflib.ts';
+import { SequenceMatcher } from './difflib.ts';
 import {
   entries,
   escapeRegExp,
@@ -96,7 +96,9 @@ function reviewedPairs(others: Texts): Set<string> {
       for (const line of (section(others.get(file) ?? '', name) ?? '').split('\n')) {
         const ids = new Set(line.match(new RegExp(ID, 'gu')) ?? []);
         for (const [, prefix, start, end] of line.matchAll(ID_RANGE)) {
-          for (let n = Number(start); n <= Number(end); n++) ids.add(`${prefix}-${String(n).padStart(start.length, '0')}`);
+          for (let n = Number(start); n <= Number(end); n++) {
+            ids.add(`${prefix}-${String(n).padStart(start.length, '0')}`);
+          }
         }
         const list = [...ids];
         list.forEach((a, i) => list.slice(i + 1).forEach(b => pairs.add(pairKey(a, b))));
@@ -117,9 +119,29 @@ function possibleDuplicates(texts: Texts, reviewed: Set<string>): string[] {
   for (const [name, t] of texts) {
     for (const m of t.matchAll(HEADING)) titles.set(m[1], [name, m[2].trim()]);
     for (const [eid, , , tagText] of indexTable(t)) {
-      tags.set(eid, new Set(tagText.split(',').map(tag => tag.trim()).filter(Boolean)));
+      tags.set(
+        eid,
+        new Set(
+          tagText
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(Boolean),
+        ),
+      );
     }
   }
+  // Each title lowercased, split into code points and indexed once: about 160,000 pairs are compared
+  const lower = new Map([...titles].map(([id, [, title]]) => [id, Array.from(title.toLowerCase())]));
+  const matchers = new Map([...titles].map(([id, [, title]]) => [id, new SequenceMatcher(title.toLowerCase())]));
+  const similar = (a: string, b: string) => {
+    const [chars, matcher] = [lower.get(a)!, matchers.get(b)!];
+    // The cheap upper bounds first: they rule out all but about 1 pair in 15, and never a similar one
+    return (
+      matcher.realQuickRatio(chars) >= TITLE_SIMILAR &&
+      matcher.quickRatio(chars) >= TITLE_SIMILAR &&
+      matcher.ratio(chars) >= TITLE_SIMILAR
+    );
+  };
   const found: string[] = [];
   const ids = [...titles.keys()].sort();
   for (const [i, a] of ids.entries()) {
@@ -127,12 +149,11 @@ function possibleDuplicates(texts: Texts, reviewed: Set<string>): string[] {
       const [fileA, titleA] = titles.get(a)!;
       const [fileB, titleB] = titles.get(b)!;
       if (fileA === fileB || reviewed.has(pairKey(a, b))) continue;
-      const similar = ratio(titleA.toLowerCase(), titleB.toLowerCase());
       const tagsA = tags.get(a) ?? new Set();
       const tagsB = tags.get(b) ?? new Set();
       const shared = [...tagsA].filter(t => tagsB.has(t)).length;
       const union = new Set([...tagsA, ...tagsB]).size;
-      if (similar >= TITLE_SIMILAR || (shared >= 2 && shared / union >= TAGS_SHARED)) {
+      if ((shared >= 2 && shared / union >= TAGS_SHARED) || similar(a, b)) {
         found.push(`${a} '${titleA}' and ${b} '${titleB}'`);
       }
     }
@@ -255,9 +276,7 @@ export function main(root: string, write = false): number {
     console.log('ENTRIES.md: up to date');
   }
 
-  const others: Texts = new Map(
-    ID_FILES.filter(n => existsSync(join(root, n))).map(n => [n, readText(join(root, n))]),
-  );
+  const others: Texts = new Map(ID_FILES.filter(n => existsSync(join(root, n))).map(n => [n, readText(join(root, n))]));
   const indexMd = others.get('INDEX.md');
   if (indexMd !== undefined) {
     const issues = checkIndex(indexMd, others, texts, where);

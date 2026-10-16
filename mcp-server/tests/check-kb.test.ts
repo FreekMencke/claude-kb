@@ -3,7 +3,7 @@ import { mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { buildEntries, main } from '../../scripts/check-kb.ts';
-import { ratio } from '../../scripts/difflib.ts';
+import { ratio, SequenceMatcher } from '../../scripts/difflib.ts';
 import { readText } from '../../scripts/kb-parse.ts';
 import { REPO, tempDir } from './helpers.ts';
 
@@ -179,7 +179,9 @@ describe('a broken fixture', () => {
     expect(output).toContain('ENTRIES.md: written');
     const entries = readText(join(root, 'ENTRIES.md'));
     expect(entries).toContain('`node scripts/check-kb.ts --write`');
-    expect(entries).toContain('## Alpha (`topics/kb-alpha.md`, ALP)\n\n| ID | Title | Type | Tags |\n|---|---|---|---|\n');
+    expect(entries).toContain(
+      '## Alpha (`topics/kb-alpha.md`, ALP)\n\n| ID | Title | Type | Tags |\n|---|---|---|---|\n',
+    );
     expect(entries).toContain('| BET-001 | Widgets rotate clockwise! | fact | widgets, rotation |\n');
   });
 });
@@ -192,6 +194,17 @@ describe('the difflib port', () => {
     ['', '', 1],
   ])('ratio(%j, %j)', (a, b, expected) => {
     expect(ratio(a, b)).toBeCloseTo(expected, 12);
+  });
+
+  test.each([
+    ['widgets rotate clockwise', 'widgets rotate clockwise!', 0.979591836735, 0.979591836735],
+    ['cli, skill or mcp server?', 'what a research subagent brief adds', 0.833333333333, 0.433333333333],
+    // Past the checker's 0.72 on both bounds, but not on ratio (0.29)
+    ['which model for a reviewer', 'reviewer subagent model choice', 0.928571428571, 0.75],
+  ])('the upper bounds for (%j, %j)', (a, b, realQuick, quick) => {
+    const matcher = new SequenceMatcher(b);
+    expect(matcher.realQuickRatio(Array.from(a))).toBeCloseTo(realQuick, 12);
+    expect(matcher.quickRatio(Array.from(a))).toBeCloseTo(quick, 12);
   });
 
   test('autojunk: a 200+ character b drops its popular characters, which only extend a match', () => {
