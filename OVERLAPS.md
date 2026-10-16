@@ -127,6 +127,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 - DESIGN-024 and REPO-044: what a design system needs in agent context, against what goes in CLAUDE.md, a skill, an agent or a hook in general.
 - DESIGN-025 and REPO-021: scoring a design against a rubric, against a checker subagent that keeps screenshots out of the main context.
 - DESIGN-031 and DESIGN-009: re-opening chosen steps of the staged picks on an existing site, against auditing and polishing it inside locked tokens.
+- MEM-034 and TOK-116: our instruction files and auto memory measured, against what auto-compaction at 400K lost in our sessions.
 - SESS-018 and SKILL-010: a message from another session grants nothing, against `allowed-tools` pre-approving without restricting.
 - REPO-001 and WEB-001: osrs-tracker-web's Claude Code setup (agents, hooks, skills), against its SEO and analytics code.
 - WEB-022 and WEB-033: retired title-length advice, against how Google rewrites a `Brand: phrase` title.

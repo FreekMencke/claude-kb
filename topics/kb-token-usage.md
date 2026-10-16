@@ -11,7 +11,7 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 | How do I see what fills my context, and what I spent? | `/context` (or `/context all`); `/usage` for spend (`/cost` and `/stats` are aliases). For history, `ccusage`; live, the status line JSON, `claude-hud` or `ccstatusline`. | TOK-010, TOK-080, TOK-082 |
 | How do plan limits work? | A 5-hour session window plus a weekly limit, shared by claude.ai, Claude Code and Desktop. Max is 5x or 20x Pro per session. | TOK-014 |
 | Do many MCP servers still bloat context? | Much less: Claude Code defers MCP tool schemas by default, so only names and server instructions load. CLIs (`gh`, `aws`) are still cheaper. | TOK-020, TOK-022 |
-| When should I `/clear` vs `/compact`, and when does auto-compact fire? | `/clear` between unrelated tasks or after two failed corrections; `/compact <focus>` at a natural break. Auto-compact fires at about 967K on native-1M models (200K on 4.6 without `[1m]`); lower it with `autoCompactWindow`. | TOK-030, TOK-031, TOK-007, TOK-032 |
+| When should I `/clear` vs `/compact`, and when does auto-compact fire? | `/clear` between unrelated tasks or after two failed corrections; `/compact <focus>` at a natural break. Auto-compact fires at about 967K on native-1M models (200K on 4.6 without `[1m]`); lower it with `autoCompactWindow`. At 400K, compaction measurably lost little (TOK-116). | TOK-030, TOK-031, TOK-007, TOK-032, TOK-116 |
 | Which model should subagents use? | Built-in Explore inherits the main model (Opus, if that's what you run). Set `model:` per agent, or `CLAUDE_CODE_SUBAGENT_MODEL` for cheaper defaults; it doesn't move built-in Explore or Plan, so define your own `Explore` agent or also set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`. | TOK-036 |
 | How long does the prompt cache live, and what breaks it? | 1 hour for the main conversation on a subscription; 5 minutes for subagents, on an API key, or on usage credits. Switching model, fast mode, effort on older models, upgrading Claude Code, and MCP changes with tool search off break it; editing CLAUDE.md doesn't. | TOK-052, TOK-053 |
 | How much do batches save? | 50% on input and output, and it stacks with caching. Most finish within 1 hour, max 24 hours. | TOK-054 |
@@ -117,6 +117,7 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 | TOK-113 | Terse-output skills and rules files: measured savings | comparison | community, output, measurement |
 | TOK-114 | Masking old tool output: measured elsewhere, not a Claude Code setting | comparison | context, tool-results, other-agents |
 | TOK-115 | Task budgets (API beta) | fact | api, budgets, agents |
+| TOK-116 | What auto-compaction at 400K lost: measured | fact | compaction, measurement, our-setup |
 
 ---
 
@@ -654,7 +655,7 @@ Instructions given only in conversation are lost on `/clear` and compaction. Put
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Context window](https://code.claude.com/docs/en/context-window), [Costs](https://code.claude.com/docs/en/costs), [Skills](https://code.claude.com/docs/en/skills), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
-- Related: TOK-032, SKILL-006, MEM-003, TOK-114
+- Related: TOK-032, SKILL-006, MEM-003, TOK-114, TOK-116
 
 Steering the summary:
 - `/compact Focus on code samples and API usage` tells the summarizer what to keep.
@@ -677,7 +678,7 @@ Cost: compaction is itself a request over the whole history. While the cache is 
 - Confidence: single-source
 - Last verified: 2026-10-14
 - Sources: [Model config: set the auto-compact window](https://code.claude.com/docs/en/model-config), [Env vars](https://code.claude.com/docs/en/env-vars)
-- Related: TOK-007, TOK-008, TOK-031
+- Related: TOK-007, TOK-008, TOK-031, TOK-116
 
 Knobs:
 - `/autocompact 400k` is saved per model (v2.1.288+). `/autocompact auto` restores the default.
@@ -696,7 +697,7 @@ Simulation on our 6 days (2026-10-07 to 2026-10-12; first labelled "30 days", co
 | 300K | −30% | 31 |
 | 200K | −42% | 82 |
 
-A lower window trades lossy summaries for cost. Pair it with compact instructions (TOK-031) and a handoff habit (R3).
+A lower window trades lossy summaries for cost. Pair it with compact instructions (TOK-031) and a handoff habit (R3). At 400K, measured over 31 compactions, the loss was small (TOK-116).
 
 
 `CLAUDE_CODE_MAX_OUTPUT_TOKENS` has no single default: "Defaults and caps vary by model", and only "For a model ID Claude Code can't resolve to a model it knows, the default is 32000 and the cap is 128000". `CLAUDE_CODE_AUTO_COMPACT_WINDOW` takes a plain integer: "a value like `500k` reads as `500` and clamps to the 100K minimum"; `/autocompact` accepts `500k`. Since v2.1.198 the summarizer inherits the session's thinking settings (context-window docs).
@@ -2014,6 +2015,22 @@ A task budget tells the model how many tokens a whole agentic loop may spend. Be
 
 They replace context awareness on newer models: Sonnet 5, Sonnet 4.6, Sonnet 4.5 and Haiku 4.5 get injected budget tags, while "Claude Opus 4.7 and later Opus models, Claude Sonnet 5.5, … and Claude Haiku 5.5 don't receive these injected tags".
 
+## [TOK-116] What auto-compaction at 400K lost: measured
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-16
+- Sources: our transcripts (`compact_boundary` records in `~/.claude/projects`, 2026-10-12 to 2026-10-16), [FreekMencke/claude-kb#13](https://github.com/FreekMencke/claude-kb/issues/13), [Settings: when edits take effect](https://code.claude.com/docs/en/settings#when-edits-take-effect)
+- Related: TOK-031, TOK-032, TOK-030, TOK-085
+
+At `autoCompactWindow: 400000`, compaction lost little. In 15 compactions read by hand, no session made a mistake from missing context or asked for something it had known. The only redundant re-read was one file of about 7k tokens. Mean context over the next 20 API messages fell from 344k to 87k.
+
+Scope: 31 auto compactions in 23 sessions, from R1 (2026-10-12 12:13 UTC) to 2026-10-16, on v2.1.295 to v2.1.299 in the desktop Code tab on WSL. A script listed the re-reads, `gh` calls and questions in the 20 API messages after each summary. 15 of them, across 6 repos, were read by hand.
+- **Re-reads:** 12 of 15 compactions were followed by one. Nearly all read a file right before editing it, since summaries keep no file contents.
+- **Cost of one compaction:** median 369k to 18k tokens, taking 67 s (32 to 121 s). The first cache write after it is a median 37k.
+- **Summaries:** Claude Code's 9 sections, whatever `# Compact instructions` asks (TOK-031). A done-when appears in 4 of 31, and bare `#N` outnumber `owner/repo#N`, but neither caused a wrong lookup.
+- **A running session kept its old window.** One session started before R1 grew to 631k after the change, though the docs say Claude Code "applies most edits to the running session without a restart". The setting was written with `jq … > tmp && mv`. One session; the cause is unknown.
+
 ## Recommendations for our setup
 
 Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first labelled "30 days", corrected 2026-10-12). Dollar and token totals below are for those 6 days, about a fifth of a month; percentages are unaffected:
@@ -2025,7 +2042,7 @@ Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first la
 - Tool output entering context: Bash about 6.9M tokens, about 995 screenshots, text file reads about 0.9M.
 
 Ranked by expected savings ÷ effort. Done on 2026-10-12, now in `~/.claude` or FreekMencke/claude-skills (re-measure with R6 a month later, Open question 2):
-- R1: `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md (a Keep/Drop list; TOK-031, TOK-032).
+- R1: `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md (a Keep/Drop list; TOK-031, TOK-032). Measured 2026-10-16 in FreekMencke/claude-kb#13: kept at 400K, since compaction lost little (TOK-116). Turns over 400k fell from 7% to 1%.
 - R2: a context status line (TOK-011, TOK-082).
 - R3: the user-only `handoff` skill: write state to the issue/PR or a scratch file, then `/clear` (FreekMencke/claude-skills#13; TOK-030, TOK-085).
 - R4: `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`, plus the Haiku `Explore` override (ORCH recommendation 13), because the env var doesn't reach built-in Explore and Plan (ORCH-005, TOK-036).
@@ -2077,7 +2094,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 ## Open questions
 
 1. **Real system prompt and tool sizes.** Answered 2026-10-12: `claude -p "/context all"` in a fresh terminal session in this repo measured a 29.4k starting prefix, close to the 24–27k inferred from `usage`. See "Measured starting context" above.
-2. **Compaction quality versus window size.** The R1 simulation ignores compaction cost and lost detail. Re-measure with R6 a month after R1: tracked as [FreekMencke/claude-kb#13](https://github.com/FreekMencke/claude-kb/issues/13), due 2026-11-12.
+2. **Compaction quality versus window size.** Answered 2026-10-16 for 400K in [FreekMencke/claude-kb#13](https://github.com/FreekMencke/claude-kb/issues/13): no mistakes from lost context in 15 compactions, and mean context over the next 20 messages fell from 344k to 87k (TOK-116). Still open: whether 300K saves more without more loss. R1's saving in dollars couldn't be separated from R4 and R5, which landed the same week.
 3. **How plan usage is weighted.** Are cache reads weighted like API prices (0.05x on Opus 5.5) when counting against 5-hour and weekly limits? Not documented. Our dollar figures are list-price equivalents, not plan percentages.
 4. **MCP description cap.** Answered 2026-10-12: tested, 4,096 characters up front and at least 10,000 (the changelog's 16,384) via tool search. The docs now state 4,096 and 16,384 (2,048 before v2.1.296), and since v2.1.299 Anthropic's first-party servers at `api.anthropic.com` aren't cut (TOK-020).
 5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
@@ -2093,6 +2110,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 15. **Search budget outside the terminal.** The docs give the 200-call limit for "an interactive terminal session"; whether cloud sessions, routines and the desktop app apply the same limit is untested (TOK-092).
 16. **The report-file refusal.** "Subagents should return findings as text, not write report files" keys on file names in both interactive sessions and `claude -p` (TOK-107), but the full name list and the version that added it are in neither the docs nor the CHANGELOG.
 17. **When an Agent result spills to a file.** 40,225 characters arrived whole in `claude -p`; 50,709 bytes spilled in an interactive auto-mode session. The docs give no rule, and the inline cost inside an interactive session wasn't measured (TOK-105).
+18. **Does a running session pick up a new `autoCompactWindow`?** The settings docs say most edits apply without a restart, and they don't list this key among those read at start. One session started before R1 still grew to 631k (TOK-116). Untested: a fresh session edited mid-way, and an in-place edit instead of `mv`.
 18. **Background subagents in `-p`.** The docs say fork mode is off in `-p`, yet v2.1.296 backgrounded the Agent call there (TOK-105).
 19. **Undocumented meters.** The wording and thresholds of the `/usage` warnings (2.1.299), and the OTel `cache_creation_5m_tokens` and `cache_creation_1h_tokens` attributes (2.1.300), are only in the CHANGELOG (TOK-010, TOK-012).
 20. **Other agents' defaults.** Whether Gemini CLI masks tool output by default, Codex's `model_auto_compact_token_limit` default, and whether OpenCode users run V1 (`prune`) or V2 compaction (TOK-085, TOK-114).

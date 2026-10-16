@@ -633,6 +633,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TOK-113 | Terse-output skills and rules files: measured savings | comparison | community, output, measurement |
 | TOK-114 | Masking old tool output: measured elsewhere, not a Claude Code setting | comparison | context, tool-results, other-agents |
 | TOK-115 | Task budgets (API beta) | fact | api, budgets, agents |
+| TOK-116 | What auto-compaction at 400K lost: measured | fact | compaction, measurement, our-setup |
 
 ## Claude for web analytics and SEO work (`topics/kb-web-analytics-seo.md`, WEB)
 
