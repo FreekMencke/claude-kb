@@ -584,6 +584,19 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TOK-100 | What a research subagent's brief adds | pattern | research, subagents, briefs |
 | TOK-101 | Getting sources back from research subagents | pattern | research, subagents, citations |
 | TOK-102 | Anti-patterns: research tools | anti-pattern | consolidated, research |
+| TOK-103 | Subagent file handoff: return a path and a status, not the report | pattern | subagents, handoff, context |
+| TOK-104 | Where handoff files go | recommendation | subagents, handoff, scratchpad |
+| TOK-105 | A background agent's `output_file` is its transcript, not its report | fact | subagents, background, notifications |
+| TOK-106 | Handoff file layout for partial reads | recommendation | handoff, files, read |
+| TOK-107 | Anti-patterns: subagent handoff | anti-pattern | consolidated, subagents, handoff |
+| TOK-108 | What the Bash tool does to a script's output | fact | bash, output, exit-codes |
+| TOK-109 | Output contract for scripts and CLIs that agents run | recommendation | scripts, output, cli |
+| TOK-110 | Detecting an agent in a script | fact | env-vars, scripts, detection |
+| TOK-111 | Agent-aware test runners and quiet flags | tool | tests, output, flags |
+| TOK-112 | Background token spenders | fact | background, usage, settings |
+| TOK-113 | Terse-output skills and rules files: measured savings | comparison | community, output, measurement |
+| TOK-114 | Masking old tool output: measured elsewhere, not a Claude Code setting | comparison | context, tool-results, other-agents |
+| TOK-115 | Task budgets (API beta) | fact | api, budgets, agents |
 
 ## Claude for web analytics and SEO work (`topics/kb-web-analytics-seo.md`, WEB)
 

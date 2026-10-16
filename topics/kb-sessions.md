@@ -422,7 +422,7 @@ The cost is per session start, not per turn, so it rarely justifies giving up wo
 - Confidence: single-source
 - Last verified: 2026-10-12
 - Sources: [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [Agent view: CLAUDE_JOB_DIR](https://code.claude.com/docs/en/agent-view)
-- Related: SESS-008
+- Related: SESS-008, TOK-104
 
 Worktrees don't isolate the network. Dev servers, test databases and emulators in parallel sessions still compete for ports, and a session can end up testing another session's server on the same port.
 
@@ -437,6 +437,8 @@ Other options:
 - Use one session as the only one that runs servers.
 
 For temporary files, background sessions get `CLAUDE_JOB_DIR` "so shell commands the session runs can write temporary files to `$CLAUDE_JOB_DIR/tmp` without colliding with parallel sessions" (agent view docs). Interactive sessions get a per-session scratchpad.
+
+Where subagent handoff files go, scratchpad included: TOK-104.
 
 ## [SESS-017] Cross-session messaging: `ListAgents` and `SendMessage`
 - Type: tool

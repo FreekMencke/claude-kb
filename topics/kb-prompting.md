@@ -476,7 +476,7 @@ On Max plans Fable is capped at 50% of weekly limits (ORCH-031), so these prompt
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- Related: PROMPT-026, PROMPT-009, PROMPT-006, TOK-055
+- Related: PROMPT-026, PROMPT-009, PROMPT-006, TOK-055, TOK-113
 
 Prompt for length; effort doesn't set it. "Effort controls thinking volume, not visible response length: on Claude Opus 5, changing effort does not reliably shorten responses, so prompt for length."
 
@@ -487,6 +487,8 @@ Snippets Anthropic tested:
 - **Narration (Opus 5):** "Before your first tool call, say in one sentence what you're about to do. While working, give a brief update only when you find something important or change direction."
 
 Cautions: old "be brief" or anti-markdown lines can over-correct Fable 5.1, which already writes less; show a short example rather than listing what to drop (PROMPT-006).
+
+Measured savings of terse styles: TOK-113.
 
 ## [PROMPT-025] Fewer clarifying questions, or more: the knobs
 - Type: pattern

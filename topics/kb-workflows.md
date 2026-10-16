@@ -260,7 +260,7 @@ Don't raise to `xhigh` or `max` for planning by default: `max` "may show diminis
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Best practices: Give Claude a way to verify its work](https://code.claude.com/docs/en/best-practices), [Effective harnesses for long-running agents (2025-11-26)](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
-- Related: FLOW-012, FLOW-015, HOOK-031, ORCH-039, ORCH-037, PROMPT-027
+- Related: FLOW-012, FLOW-015, HOOK-031, ORCH-039, ORCH-037, PROMPT-027, TOK-108, TOK-109
 
 It is the first section of the best-practices page: "Give Claude a check it can run: tests, a build, a screenshot to compare. It's the difference between a session you watch and one you walk away from."
 
@@ -275,6 +275,8 @@ How hard the check gates the stop, cheapest first:
 "Each step trades setup for attention… The `/goal` and Stop hook versions are what let an unattended run finish correctly without you."
 
 Anthropic's harness post saw the failure this prevents: Claude tended "to mark a feature as complete without proper testing", and did much better "once explicitly prompted to use browser automation tools and do all testing as a human user would."
+
+A check's exit status and output must survive the Bash tool: TOK-108, TOK-109.
 
 ## [FLOW-012] `/goal`: keep working until a condition holds
 - Type: tool
@@ -306,7 +308,7 @@ Behaviour:
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Skills: run and verify your app](https://code.claude.com/docs/en/skills), [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Claude Code CHANGELOG 2.1.215, 2.1.286](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
-- Related: FLOW-011, FLOW-014, SKILL-021
+- Related: FLOW-011, FLOW-014, SKILL-021, TOK-108, TOK-109
 
 Three bundled skills check a change against the running app, not just tests:
 - `/run`: launch and drive the app to see a change working.
@@ -318,6 +320,8 @@ Claude doesn't run `/verify` or `/code-review` on its own (v2.1.215); they are u
 **Commit hook-in (v2.1.286+).** "When a session starts with a skill named `verify` or `simplify` in place, Claude Code's commit instructions tell Claude to run it right before each commit, except for changes to docs or tests." It counts only enterprise, personal, project or added-directory skills (not plugin or claude.ai ones), and not when the skill has `disable-model-invocation: true` or `includeGitInstructions` is off.
 
 So a repo's own `.claude/skills/verify/SKILL.md` that runs its verify command turns "verify before committing" from a CLAUDE.md line into built-in commit guidance.
+
+Print a one-line summary on success and the log path on failure: Claude Code keeps only the head and tail of a failing command's output, with no path (TOK-108, TOK-109).
 
 ## [FLOW-014] Browser and GUI checks: Chrome, Playwright MCP, computer use
 - Type: comparison

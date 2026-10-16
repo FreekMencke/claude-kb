@@ -15,12 +15,12 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 | Which model should subagents use? | Built-in Explore inherits the main model (Opus, if that's what you run). Set `model:` per agent, or `CLAUDE_CODE_SUBAGENT_MODEL` for cheaper defaults; it doesn't move built-in Explore or Plan, so define your own `Explore` agent or also set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`. | TOK-036 |
 | How long does the prompt cache live, and what breaks it? | 1 hour for the main conversation on a subscription; 5 minutes for subagents, on an API key, or on usage credits. Switching model, fast mode, effort on older models, upgrading Claude Code, and MCP changes with tool search off break it; editing CLAUDE.md doesn't. | TOK-052, TOK-053 |
 | How much do batches save? | 50% on input and output, and it stacks with caching. Most finish within 1 hour, max 24 hours. | TOK-054 |
-| How big can a skill description be, and what does it cost? | Every skill's name + description is in context on every turn, within a budget of 1% of the window. Each entry is capped at 1,536 characters. Keep it short and front-load triggers. | TOK-005, TOK-061 |
-| How long should CLAUDE.md be? | Under 200 lines per file. `@imports` don't reduce cost. Move procedures to skills or `paths:`-scoped rules. | TOK-003, TOK-065 |
+| How long should CLAUDE.md and skill descriptions be? | CLAUDE.md under 200 lines per file; `@imports` don't reduce cost, so move procedures to skills or `paths:`-scoped rules. Every skill's name + description loads on every turn, within 1% of the window and 1,536 characters each: keep it short and front-load triggers. | TOK-003, TOK-065, TOK-005, TOK-061 |
 | What do images and PDFs cost? | An image costs ⌈w/28⌉×⌈h/28⌉ tokens (max 1,568 standard, 4,784 high-res). A PDF costs 1,500–3,000 tokens per page plus image cost. | TOK-043 |
-| Does WebFetch give Claude the whole page? | No: 100,000 characters per call (an `offset` reads on), usually answered by a small model that may cut quotes (since v2.1.299 the extraction can run on the caller's own model and effort). Preapproved docs pages under that come back raw. For exact wording, `curl` the `.md` page and grep. | TOK-087, TOK-088, TOK-089 |
+| How should I read docs: WebFetch, `curl`, a docs MCP server or context7? | WebFetch reads 100,000 characters per call (an `offset` reads on), usually answered by a small model that may cut quotes; preapproved docs pages under that come back raw. For exact wording, `curl` the `.md` page and grep, or use the docs' MCP server. context7 costs about 2k tokens a lookup but can be weeks stale. | TOK-087, TOK-088, TOK-089, TOK-095, TOK-096, TOK-098 |
 | WebSearch `standard` or `extended`? | `standard` first. `extended` is "several times the cost and latency" (tool schema only); in our one test it was broader, not more authoritative. 200 searches per session, shared with subagents. | TOK-093, TOK-092 |
-| context7, a docs MCP server or web search for docs? | The source's own channel first: the `.md` page plus grep, or the docs' MCP server (both Claude docs sites have one). context7 costs about 2k tokens a lookup but can be weeks stale. | TOK-095, TOK-096, TOK-098 |
+| Should a subagent return its report or a file path? | A path and a status in under 15 lines, when the lead will only slice or forward the report (an inline 40k-character report cost the parent about 14.9k tokens, a path about 0.8k). Subagents can't write files named `report.md`, `summary.md`, `analysis.md` or `findings*.md` (2026-10-16). | TOK-103, TOK-107 |
+| How should a verify or query script print its result? | One line on success. On failure, capped `file:line` errors with the log path first and last: Claude Code keeps 10,000 characters of head and tail "with no file path". Keep the exit status through pipes (`pipefail` is off). | TOK-108, TOK-109, TOK-042 |
 
 ## Index
 
@@ -104,6 +104,19 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 | TOK-100 | What a research subagent's brief adds | pattern | research, subagents, briefs |
 | TOK-101 | Getting sources back from research subagents | pattern | research, subagents, citations |
 | TOK-102 | Anti-patterns: research tools | anti-pattern | consolidated, research |
+| TOK-103 | Subagent file handoff: return a path and a status, not the report | pattern | subagents, handoff, context |
+| TOK-104 | Where handoff files go | recommendation | subagents, handoff, scratchpad |
+| TOK-105 | A background agent's `output_file` is its transcript, not its report | fact | subagents, background, notifications |
+| TOK-106 | Handoff file layout for partial reads | recommendation | handoff, files, read |
+| TOK-107 | Anti-patterns: subagent handoff | anti-pattern | consolidated, subagents, handoff |
+| TOK-108 | What the Bash tool does to a script's output | fact | bash, output, exit-codes |
+| TOK-109 | Output contract for scripts and CLIs that agents run | recommendation | scripts, output, cli |
+| TOK-110 | Detecting an agent in a script | fact | env-vars, scripts, detection |
+| TOK-111 | Agent-aware test runners and quiet flags | tool | tests, output, flags |
+| TOK-112 | Background token spenders | fact | background, usage, settings |
+| TOK-113 | Terse-output skills and rules files: measured savings | comparison | community, output, measurement |
+| TOK-114 | Masking old tool output: measured elsewhere, not a Claude Code setting | comparison | context, tool-results, other-agents |
+| TOK-115 | Task budgets (API beta) | fact | api, budgets, agents |
 
 ---
 
@@ -304,7 +317,7 @@ Confidence note: derived from our local 6-day measurement and list prices.
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Commands](https://code.claude.com/docs/en/commands), [Costs](https://code.claude.com/docs/en/costs)
-- Related: TOK-011, TOK-013
+- Related: TOK-011, TOK-013, TOK-112
 
 `/usage` shows session cost, plan usage limits and activity stats. `/cost` and `/stats` are aliases.
 - **Session block:** API-style tokens and USD at list price, computed locally. It resets on `/clear` (v2.1.211+). "For authoritative billing see the Usage page in the Claude Console."
@@ -321,6 +334,8 @@ Other meters:
 - The spinner shows live output tokens for the current turn.
 
 Help-center articles still mention `/status` for remaining allocation. In current Claude Code, `/status` is version, model and account; the plan bars are in `/usage`.
+
+2.1.299 "Added `/usage` warnings for max effort, workflows, always-on context and large tool results"; their wording isn't on a docs page (2026-10-16). Requests sent without a prompt: TOK-112.
 
 ## [TOK-011] Status line JSON fields for live monitoring
 - Type: tool
@@ -344,6 +359,8 @@ The `statusLine` command gets JSON on stdin. Configure it with `{"statusLine": {
 
 A minimal one-liner: `jq -r '"[\(.model.display_name)] \(.context_window.used_percentage // 0)% ctx · 5h \(.rate_limits.five_hour.used_percentage // "-")%"'`. This covers most of what community status lines offer (TOK-082).
 
+With `CLAUDE_CODE_AUTO_COMPACT_WINDOW` set, `used_percentage` "always measures against the model's full context window, so once this variable is set, that percentage no longer indicates when compaction will run" (env-vars).
+
 ## [TOK-012] OpenTelemetry metrics for teams
 - Type: tool
 - Applies to: Claude Code
@@ -363,13 +380,15 @@ The `api_request` log event carries `cost_usd`. Prompt and response content logg
 
 The docs call OTel "the only option that streams per-user token and cost metrics into your own observability stack in near real time." It's the route for Bedrock, Vertex and Foundry, which the Analytics API doesn't cover. For one user it's overkill; use TOK-010, TOK-011 and TOK-013.
 
+2.1.300 "Added `cache_creation_5m_tokens` and `cache_creation_1h_tokens` to the OpenTelemetry `api_request` event, splitting cache writes by lifetime"; monitoring-usage.md didn't list them on 2026-10-16.
+
 ## [TOK-013] Local transcripts as a usage data source
 - Type: tool
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-14
 - Sources: [.claude directory](https://code.claude.com/docs/en/claude-directory), local inspection
-- Related: TOK-080, TOK-008
+- Related: TOK-080, TOK-008, TOK-105
 
 Where transcripts live:
 - Main sessions: `~/.claude/projects/<project>/<session>.jsonl`.
@@ -387,6 +406,9 @@ Pitfall: one API message can appear on several lines (streamed chunks). **Dedupl
 All our local measurements in this file use last-line-per-id.
 
 Second source: each session file also has `type: "cost-state"` lines with `modelUsage.<model>` (`inputTokens`, `outputTokens`, `cacheReadInputTokens`, `cacheCreationInputTokens`, `costUSD`, …). `costUSD` is exactly list price for its own token counts, but it counts about 10% more cache reads than the deduplicated `message.usage`, so transcript-based Opus cost comes out about 6% lower (median over 146 sessions, 2026-10-12). Use it as the closer total; `message.usage` for per-turn analysis.
+
+
+A background subagent's notification names an `output_file`: a symlink to its transcript in `subagents/`, not its report (TOK-105).
 
 Confidence note: the transcript location is documented (official-docs); the `usage` schema is observed locally and not a documented contract.
 
@@ -632,7 +654,7 @@ Instructions given only in conversation are lost on `/clear` and compaction. Put
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Context window](https://code.claude.com/docs/en/context-window), [Costs](https://code.claude.com/docs/en/costs), [Skills](https://code.claude.com/docs/en/skills), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
-- Related: TOK-032, SKILL-006, MEM-003
+- Related: TOK-032, SKILL-006, MEM-003, TOK-114
 
 Steering the summary:
 - `/compact Focus on code samples and API usage` tells the summarizer what to keep.
@@ -675,6 +697,9 @@ Simulation on our 6 days (2026-10-07 to 2026-10-12; first labelled "30 days", co
 | 200K | −42% | 82 |
 
 A lower window trades lossy summaries for cost. Pair it with compact instructions (TOK-031) and a handoff habit (R3).
+
+
+`CLAUDE_CODE_MAX_OUTPUT_TOKENS` has no single default: "Defaults and caps vary by model", and only "For a model ID Claude Code can't resolve to a model it knows, the default is 32000 and the cap is 128000". `CLAUDE_CODE_AUTO_COMPACT_WINDOW` takes a plain integer: "a value like `500k` reads as `500` and clamps to the 100K minimum"; `/autocompact` accepts `500k`. Since v2.1.198 the summarizer inherits the session's thinking settings (context-window docs).
 
 Confidence note: the knobs are documented (official-docs); the savings come from our local simulation.
 
@@ -726,7 +751,7 @@ Confidence note: the share of rebuilds is our local measurement (single-source).
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Sub-agents: isolate high-volume operations](https://code.claude.com/docs/en/sub-agents#isolate-high-volume-operations), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-- Related: TOK-006, TOK-009, TOK-036, ORCH-020, ORCH-034
+- Related: TOK-006, TOK-009, TOK-036, ORCH-020, ORCH-034, TOK-103
 
 What the docs say:
 - "Since context is your fundamental constraint, use subagents to keep research out of it."
@@ -742,6 +767,8 @@ Don't delegate when:
 - latency matters.
 
 Ask for a specific return format with a word cap, to keep the summary small.
+
+For a long result the lead will only slice or forward, have the subagent write it to a file and return the path (TOK-103).
 
 ## [TOK-036] Subagent model selection
 - Type: recommendation
@@ -779,7 +806,7 @@ Merged into ORCH-020 (kb-orchestration.md) on 2026-10-12. Token multipliers are 
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction), [Compaction threshold](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold), [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing), [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)
-- Related: TOK-050, TOK-055
+- Related: TOK-050, TOK-055, TOK-114, TOK-115
 
 **Server-side compaction (beta):**
 - On demand: header `compact-2026-09-04`, top-level `compaction` param. This is the recommended mode.
@@ -796,13 +823,15 @@ Merged into ORCH-020 (kb-orchestration.md) on 2026-10-12. Token multipliers are 
 
 **Thinking:** on current models (Opus 4.5+, Sonnet 4.6+, Haiku 5.5, Fable), earlier thinking blocks are kept and billed as input. Use thinking clearing in long loops.
 
+On-demand compaction (beta `compact-2026-09-04`): "You can't combine `compaction` with `context_management` on one request"; a non-blank `instructions` string, "up to 16,384 characters", replaces the summary prompt; sum `usage.iterations` to count its cost. Task budgets: TOK-115.
+
 ## [TOK-040] Read tool limits and partial reads
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Tools reference: Read](https://code.claude.com/docs/en/tools-reference#read-tool-behavior), [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
-- Related: TOK-041, TOK-062
+- Related: TOK-041, TOK-062, TOK-106
 
 Limits:
 - Read returns up to 25,000 tokens per call (`CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS`).
@@ -816,6 +845,8 @@ Habits:
 - For reference docs, put a table of contents at the top so a partial read shows scope.
 
 Our 6 days (2026-10-07 to 2026-10-12): 428 text reads, median about 700 tokens, p90 about 6.4k. 171 (40%) already used offset/limit, and only 16 were over 10k. Text file reads aren't our problem; images and Bash output are (TOK-042, TOK-043).
+
+CHANGELOG: 2.1.86 "deduplicates unchanged re-reads"; Read "cannot split one long line" (2.1.287), so write files Claude will page as lines, not one blob (TOK-106).
 
 ## [TOK-041] Search before reading; code intelligence
 - Type: pattern
@@ -840,15 +871,17 @@ A "codebase-overview" skill (official suggestion) or a small repo map (TOK-085) 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-10-16
 - Sources: [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference#output-limits), [Costs: offload processing to hooks](https://code.claude.com/docs/en/costs), [Hooks](https://code.claude.com/docs/en/hooks)
-- Related: TOK-009, TOK-083, TOK-023
+- Related: TOK-009, TOK-083, TOK-023, TOK-108, TOK-109
 
 Limits:
 - Successful output is inline up to about 30,000 characters. The `bashOutputMaxChars` setting (4,000–128,000, v2.1.261+) raises that ceiling and makes Claude Code ignore `BASH_MAX_OUTPUT_LENGTH`, which (default 30,000, max 150,000) only widens the read-back window. Beyond the inline ceiling Claude gets a file path plus a 2k preview.
-- Failing commands get about 10k characters, head and tail.
+- Failing commands: "Inline up to roughly 10,000 characters; past that, a head-and-tail excerpt of that size cut from the read-back window, with no file path" (TOK-108).
 
 Official hook pattern: a `PreToolUse` hook on Bash rewrites `npm test` and `pytest` via `updatedInput` to `… 2>&1 | grep -A 5 -E '(FAIL|ERROR|error:)' | head -100`. The docs say this cuts a 10,000-line log "from tens of thousands of tokens to hundreds". `PostToolUse` can replace output with `updatedToolOutput`.
+
+**The example hides failures**: `pipefail` is off in the Bash tool, so the pipeline exits with `head`'s status and a failing run exits 0; a crash line such as `TypeError: …` matches none of the patterns. Capture the status first: `out=$(cmd 2>&1); rc=$?; printf '%s\n' "$out" | grep … | head -100; exit $rc` (tested in TOK-108).
 
 Our 6 days (2026-10-07 to 2026-10-12, TOK-008):
 - Bash output was about 6.9M tokens over 13,350 calls (average about 520).
@@ -1025,7 +1058,7 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Thinking cost](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking), [Costs](https://code.claude.com/docs/en/costs)
-- Related: TOK-017, TOK-053, ORCH-028
+- Related: TOK-017, TOK-053, ORCH-028, TOK-115
 
 **Effort** (`output_config.effort`):
 - Levels: low, medium, high, xhigh, max. It affects all output tokens: text, tool calls and thinking.
@@ -1038,6 +1071,8 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 - Manual `budget_tokens` is deprecated on 4.6 and rejected on 4.7+. Use adaptive thinking plus effort instead.
 - In Claude Code, thinking can't be turned off on Opus, Sonnet and Haiku 5.5 or Fable. Use `/effort` instead; `MAX_THINKING_TOKENS` applies only to fixed-budget models.
 - On current models, earlier-turn thinking stays in context as input (TOK-038).
+
+In Claude Code, "You can't turn thinking off on Opus 5.5, Sonnet 5.5, Haiku 5.5, or the Fable models", and "You are charged for all thinking tokens generated, even when collapsed or redacted." The API goes lower: `between_tools` on Sonnet 5.5 and `disabled` on Haiku 5.5, both only at `high` effort or below.
 
 ## [TOK-056] Order of cost levers (official cookbook)
 - Type: recommendation
@@ -1110,6 +1145,8 @@ Size and structure rules (under 500 lines, references one level deep, a TOC over
 Official skill sizes (SKILL.md lines): xlsx 99, docx 91, pdf 314 plus 8 scripts, skill-creator 485. claude-api is 616 lines and 105 KB, breaking its own guidance, but it loads only the detected language's directory.
 
 Community: one superpowers proposal (#832) cut 14 skills from 3,150 to 977 lines (−69%) by removing what "Claude would do anyway".
+
+Built-in prompts shrank too: the `claude-api` skill "from ~200k+ tokens to ~25k" (2.1.234), and the Workflow tool's description to "about 1k tokens instead of 5.7k" (2.1.248).
 
 ## [TOK-063] Scripts and dynamic injection instead of prose
 - Type: pattern
@@ -1306,8 +1343,8 @@ Now that the status line exposes official `rate_limits` (TOK-011), most of this 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
-- Sources: [jarrodwatts/claude-hud](https://github.com/jarrodwatts/claude-hud), [sirmalloc/ccstatusline](https://github.com/sirmalloc/ccstatusline), [Status line docs](https://code.claude.com/docs/en/statusline)
+- Last verified: 2026-10-16
+- Sources: [jarrodwatts/claude-hud](https://github.com/jarrodwatts/claude-hud), [sirmalloc/ccstatusline](https://github.com/sirmalloc/ccstatusline), [Status line docs](https://code.claude.com/docs/en/statusline), [ykdojo check-context.sh](https://github.com/ykdojo/claude-code-tips/blob/577ac89252195d61283b334c4b9d292b52c82203/scripts/check-context.sh), [ECC suggest-compact.js](https://github.com/affaan-m/everything-claude-code/blob/76aaa77df6adc5b889e689007bf99b9a4f74af34/scripts/hooks/suggest-compact.js)
 - Related: TOK-011, TOK-080
 
 **claude-hud** (about 28.5k stars, v0.10.0 on 2026-10-01):
@@ -1322,15 +1359,15 @@ Now that the status line exposes official `rate_limits` (TOK-011), most of this 
 
 Others: cc-statusline (stale since Feb 2026) and claudeline (uses an undocumented API).
 
-No popular hook warns at a context threshold; feature requests are open. The status line's `used_percentage` is the practical monitor. A DIY script reading TOK-011's fields gives the same core data with no dependency.
+Context-threshold hooks exist. ykdojo's `check-context.sh` is a Stop hook that "suggests /half-clone when context usage exceeds 85%" of a hard-coded `max_context=200000`, so on a 1M window it fires at 17%. ECC's `suggest-compact.js` is a PreToolUse reminder at "default 160k on a 200k window, 250k on 1M", repeated every 60k tokens of growth. Neither has a measured effect. ykdojo's `half-clone-conversation.sh` (with `--quarter`) copies the later half or quarter of a conversation into a new session. The status line's `used_percentage` is the practical monitor. A DIY script reading TOK-011's fields gives the same core data with no dependency.
 
 ## [TOK-083] Output-compression tools (RTK, context-mode)
 - Type: tool
 - Applies to: Claude Code
-- Confidence: unverified
-- Last verified: 2026-10-12
-- Sources: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), [mksglu/context-mode](https://github.com/mksglu/context-mode)
-- Related: TOK-042, TOK-009
+- Confidence: community-consensus
+- Last verified: 2026-10-16
+- Sources: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), [mksglu/context-mode](https://github.com/mksglu/context-mode), [JetBrains: RTK tested](https://blog.jetbrains.com/ai/2026/07/rtk-claude-code-token-savings/), [Quesma: RTK cost benchmark](https://quesma.com/blog/does-rtk-make-ai-coding-cheaper/)
+- Related: TOK-042, TOK-009, TOK-113
 
 **RTK** (about 83k stars, v0.51.0 on 2026-10-02, created Jan 2026):
 - A Rust proxy that compresses command output. A PreToolUse hook (`rtk init -g`) rewrites Bash calls, e.g. `git status` becomes `rtk git status`.
@@ -1342,9 +1379,13 @@ No popular hook warns at a context threshold; feature requests are open. The sta
 - Claims "315 KB → 5.4 KB, 98%" over 14 selected scenarios.
 - License is ELv2, not OSI open source.
 
-Neither has independent session-level measurement of cost or task success. Both follow the official hook-filtering pattern (TOK-042). Try one only where Bash output really dominates. For us, large outputs were `git diff`/`gh` dumps, which habits fix (TOK-042).
+**RTK, measured independently:**
+- JetBrains (2026-07-20; Claude Code 2.1.201, claude-sonnet-5, SkillsBench, 80 clean pairs): "+7.6% more expensive at low reasoning effort (p=0.004), ±0% at high effort", task quality unchanged. RTK's own `rtk gain` "reported 96.2 million tokens saved" while "the measured bill for the same trials went up."
+- Quesma (2026-09-11; Terminal-Bench 2.1, 1,740 attempts): "With RTK, costs fell by 5% for Fable and rose by 5% for DeepSeek" on the total bill, but per task "Fable was 1% more expensive, with no clear difference from zero", and pass rates were slightly lower: "We do not recommend RTK as a generic cost-saving tool."
 
-Confidence note: the savings figures are the vendors' own claims.
+**context-mode** has no independent measurement (searched 2026-10-16). Both tools follow the official hook-filtering pattern (TOK-042); hold any savings claim to paired per-task cost (TOK-113). Try one only where Bash output really dominates. For us, large outputs were `git diff`/`gh` dumps, which habits fix (TOK-042).
+
+Confidence note: the 60–90% and 98% figures are the vendors' own claims; the RTK measurements are independent and agree.
 
 ## [TOK-084] Code-index MCP servers (Serena, claude-context, code-review-graph)
 - Type: tool
@@ -1373,9 +1414,9 @@ Confidence note: the savings figures are the vendors' own claims.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Aider repo map](https://aider.chat/docs/repomap.html), [Aider commands](https://aider.chat/docs/usage/commands.html), [Cline auto-compact](https://docs.cline.bot/features/auto-compact), [Cline new_task (blog)](https://cline.bot/blog/unlocking-persistent-memory-how-clines-new_task-tool-eliminates-context-window-limitations), [Cline commands](https://docs.cline.bot/core-workflows/using-commands), [Gemini CLI commands](https://google-gemini.github.io/gemini-cli/docs/cli/commands.html)
-- Related: TOK-041, TOK-030, TOK-032
+- Last verified: 2026-10-16
+- Sources: [Aider repo map](https://aider.chat/docs/repomap.html), [Aider commands](https://aider.chat/docs/usage/commands.html), [Cline auto-compact](https://docs.cline.bot/features/auto-compact), [Cline new_task (blog)](https://cline.bot/blog/unlocking-persistent-memory-how-clines-new_task-tool-eliminates-context-window-limitations), [Cline commands](https://docs.cline.bot/core-workflows/using-commands), [Gemini CLI commands](https://google-gemini.github.io/gemini-cli/docs/cli/commands.html), [Gemini CLI configuration](https://github.com/google-gemini/gemini-cli/blob/b25669d84e1a404e30c176d779e732e25dafcec0/docs/reference/configuration.md), [Codex config schema](https://github.com/openai/codex/blob/b5115cdd669d37a8635a9742851e97ba4fb1d42c/codex-rs/core/config.schema.json), [OpenCode config](https://github.com/anomalyco/opencode/blob/582c974ee362683f5dd5c7f9741cae207581c6b5/packages/web/src/content/docs/config.mdx)
+- Related: TOK-041, TOK-030, TOK-032, TOK-114
 
 **Aider repo map.** A token-budgeted map (default 1k tokens) of files and key symbol signatures, ranked by a dependency-graph algorithm. It transfers as a generated `docs/repo-map.md`, or a `codebase-overview` skill read on demand, instead of re-exploring each session. Aider's `/drop` frees context, the equivalent of rewind-summarize here.
 
@@ -1385,9 +1426,14 @@ Confidence note: the savings figures are the vendors' own claims.
 
 That handoff idea transfers directly as a user-invoked handoff skill plus `/clear` (R3).
 
-**Gemini CLI** (`/compress`, `/stats`) and **Codex** (`model_auto_compact_token_limit`, custom compact prompt; defaults unverified) add nothing beyond `/compact`, compact instructions and `autoCompactWindow`.
+Beyond `/compact` (checked 2026-10-16 in each tool's repo):
+- **Gemini CLI** (`/compress`, `/stats`) truncates tool output past `truncateToolOutputThreshold` (default `40000` characters), compresses at `compressionThreshold` (default `0.5` of the window), can summarize shell output per tool, and has tool-output masking under `contextManagement` (schema category "Experimental").
+- **Codex** has `tool_output_token_limit`, compaction after a final response (`model_post_turn_compact_threshold_percent`), and background compaction at a default of 65%, a feature still under development and off by default. The `model_auto_compact_token_limit` default is unverified.
+- **OpenCode**'s V1 config has `compaction.prune` to drop old tool outputs (default `false`); its V2 compaction page no longer lists it.
 
-Confidence note: each tool's behavior is from its own docs; Cline's quality figure is a vendor claim and the Codex defaults are unverified.
+Masking old tool output, measured: TOK-114.
+
+Confidence note: each tool's behavior is from its own docs; Cline's quality figure is a vendor claim and the Codex `model_auto_compact_token_limit` default is unverified.
 
 ## [TOK-086] The April 2026 usage-drain incident
 - Type: fact
@@ -1690,12 +1736,12 @@ PROMPT-012 covers any cold-start brief: objective, what's known, inputs, boundar
 - Confidence: official-example
 - Last verified: 2026-10-14
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [One-liner research agent](https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/00_The_one_liner_research_agent.ipynb), [claude-agent-sdk-demos research-agent](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/research-agent)
-- Related: PROMPT-013, ORCH-034, ORCH-035, TOK-100
+- Related: PROMPT-013, ORCH-034, ORCH-035, TOK-100, TOK-103
 
 Anthropic's patterns:
 - The cookbook research agent: "Always include source URLs as citations", "Format citations as markdown links", grouped in a "Sources:" section.
 - The research system has subagents "store their work in external systems, then pass lightweight references back", to avoid a "game of telephone", and a separate CitationAgent maps claims to source locations.
-- The SDK demo's researchers save notes ending in "## Sources" to files.
+- The SDK demo's researchers save notes ending in "## Sources" to `files/research_notes/{topic_name}.md` and return the "Filename where saved"; the lead holds only `Task`, and later agents find the notes in that folder (TOK-103).
 
 What to ask for, per claim: the URL, the exact quoted wording for any number, default or version, how it was read (curl + grep, or a fetch), and "not verified" where it couldn't. Access dates are our rule (CLAUDE.md), not Anthropic's. Keep the report under about 1,500 words; bulky downloads stay in the subagent's scratch folder, where the lead can grep them.
 
@@ -1723,6 +1769,250 @@ What to ask for, per claim: the URL, the exact quoted wording for any number, de
 | Publishing a subagent's "not found" unchecked | Re-check absence claims before they change an entry | TOK-101 |
 
 Confidence note: each row's detail and confidence is in the linked entry.
+
+## Subagent handoff and script output
+
+## [TOK-103] Subagent file handoff: return a path and a status, not the report
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-10-16
+- Sources: [Multi-agent research system (appendix)](https://www.anthropic.com/engineering/multi-agent-research-system), [Agent SDK: subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [claude-agent-sdk-demos researcher prompt](https://github.com/anthropics/claude-agent-sdk-demos/blob/826b268506a5f3707623c9e6140b200befcbebae/research-agent/research_agent/prompts/researcher.txt), [superpowers implementer prompt](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/implementer-prompt.md)
+- Related: ORCH-034, ORCH-035, ORCH-007, TOK-035, TOK-101, TOK-104, TOK-105, TOK-106, TOK-107
+
+When a subagent's output is long and the lead needs only part of it, or hands it to another agent, have the subagent write the full report to a file named in the brief and return a status, the path and a few lines. An inline report enters the lead's context whole and is re-read on every later turn (TOK-008).
+
+- **The brief carries the path**: "The only content you pass from parent to subagent is the Agent tool's prompt string" (SDK subagents page).
+- **Anthropic's pattern.** Subagents "store their work in external systems, then pass lightweight references back to the coordinator", which "works particularly well for structured outputs like code, reports, or data visualizations" (engineering post, 2025-06-13). In the SDK demo, the lead holds only `Task`; researchers "SAVE findings to files/research_notes/{topic_name}.md" and return the "Filename where saved".
+- **A worked contract.** superpowers: "report back with ONLY (under 15 lines — the detail lives in the report file)": a status (`DONE`, `DONE_WITH_CONCERNS`, `BLOCKED`, `NEEDS_CONTEXT`), commits, a one-line test summary, concerns and the path. Blockers go in the message itself: "the controller acts on it directly".
+- **When it pays.** Only when the lead reads a slice (TOK-106) or forwards the path; reading the whole file back costs the same one turn later. The saving recurs on each later turn; the test below measured one. Under about 2k tokens, inline is simpler (our judgment, untested). Anthropic's stated reason is fidelity first.
+
+Tested 2026-10-16, v2.1.296, `claude -p` on Haiku 5.5, 3 runs per arm: a 40,225-character report returned inline added 14,868 to 14,873 tokens to the parent's next request; written to a file with a 303–322-character return, 806 to 816.
+
+## [TOK-104] Where handoff files go
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [The .claude directory: session scratchpad](https://code.claude.com/docs/en/claude-directory#session-scratchpad-directory), [Hooks: common input fields](https://code.claude.com/docs/en/hooks), [superpowers sdd-workspace](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/scripts/sdd-workspace), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Related: TOK-103, SESS-016, ORCH-009, HOOK-003
+
+Default to the session scratchpad. Use a git-ignored folder in the working tree when the file must outlive the session or the session has none.
+
+- **The scratchpad** is "a per-session directory that Claude Code gives Claude for temporary files", and Claude "can create, edit, and read files in it without a permission prompt". On Linux: `/tmp/claude-<uid>/<project>/<session-id>/scratchpad/`. Its files "last as long as the session's transcript", but the OS "can also clear it, such as on restart". Hooks get it as `scratchpad_dir` (v2.1.257+).
+- **Not every session has one**: only with a claude.ai login rather than an API key, on the Anthropic API rather than Bedrock, Google Cloud or Foundry, and with `enableArtifact` not `false`.
+- **Sibling subagents share it**: one per session, so give each subagent its own subfolder or filename.
+- **In the repo**, superpowers keeps its workspace at `<repo-root>/.superpowers/sdd/<plan>/` with a self-ignoring `.gitignore`, "in the working tree (not under .git/) because Claude Code treats .git/ as a protected path and denies agent writes there".
+- **Not inside an isolation worktree.** The CHANGELOG has three fixes for lost outputs: 2.1.98 ("removing worktrees that contain untracked files"), 2.1.143 ("preventing loss of gitignored or in-progress files") and 2.1.153 ("could silently discard outputs written to gitignored paths").
+- **Cloud sessions**: since 2.1.268, files in persisted session folders "now persist for up to a day".
+
+Tested 2026-10-16, desktop Code tab on WSL, v2.1.299: four parallel subagents wrote into their own folders under the lead's scratchpad with no permission prompt.
+
+## [TOK-105] A background agent's `output_file` is its transcript, not its report
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Tools reference](https://code.claude.com/docs/en/tools-reference), [Hooks: SubagentStop](https://code.claude.com/docs/en/hooks), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Related: TOK-013, TOK-103, ORCH-007, ORCH-006
+
+Since 2.1.198, "Subagents now run in the background by default", and "A background subagent's results reach Claude as a completion notification in a later turn." The notification names an `output_file`. For a Bash background task that file is the output, which Claude reads with `Read` (`TaskOutput` was "Removed in v2.1.277"). For a subagent it is `tasks/<agentId>.output`, a symlink to the transcript `subagents/agent-<agentId>.jsonl`. The launch result says: "Do NOT Read or tail this file via the shell tool — it is the full subagent JSONL transcript and reading it will overflow your context."
+
+Where the report arrives: in the notification's result, or, in auto mode (v2.1.271+), as a separate hand-back message from the `SubagentHandback` tool. The notification then says "This agent's report was delivered to you as a message from …".
+
+The docs give no size rule for a subagent's result. In our tests a 40,225-character report arrived whole in `claude -p`. In an interactive auto-mode session, a 50,709-byte report arrived as "Output too large (49.5KB). Full output saved to: …/tool-results/….txt" with "Preview (first 2KB)", matching 2.1.51's "Tool results larger than 50K characters are now persisted to disk".
+
+Tested 2026-10-16: desktop Code tab on WSL, v2.1.299: each agent's `.output` in the session's `tasks/` folder was a symlink to its transcript, while a Bash background task's was a regular file. `claude -p`, v2.1.296: the Agent call was backgrounded (`task_started` with `is_backgrounded: true`), although sub-agents.md says fork mode is off in `-p`.
+
+Confidence note: the symlink and the warning are observed harness behaviour, not documented.
+
+## [TOK-106] Handoff file layout for partial reads
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Related: TOK-103, TOK-040, SKILL-017
+
+Write a handoff file so the lead can read only the part it needs:
+- **Status and a summary of at most about ten lines first**, within 2,000 characters: a large Bash result is previewed as "the first 2,000 characters", and a reader may `head` the file.
+- **A contents list.** For skill reference files: "For reference files longer than 100 lines, include a table of contents at the top. This ensures Claude can see the full scope of available information even when previewing with partial reads." Claude "might use commands like `head -100` to preview content rather than reading entire files".
+- **Fixed, unique `##` headings**, so `grep -n '^#'` gives an outline with line numbers and `Read` with `offset` and `limit` fetches one section.
+- **Lines, not blobs.** Read can't page one long line: 2.1.287 fixed Claude "being told to page large MCP results saved as JSON with Read's offset and limit, which cannot split one long line". A whole-file read past the limit returns "a truncated first page with a "PARTIAL view" notice" (2.1.145) unless Claude passes `allow_large` (2.1.296).
+- **One claim per line with its source**, raw excerpts last.
+
+Confidence note: the quoted rules are official for skill files and Read; applying them to handoff files is our inference, untested.
+
+## [TOK-107] Anti-patterns: subagent handoff
+- Type: anti-pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Hooks: SubagentStop](https://code.claude.com/docs/en/hooks), [Permission modes: protected paths](https://code.claude.com/docs/en/permission-modes), [VoltAgent multi-agent-coordinator](https://github.com/VoltAgent/awesome-claude-code-subagents/blob/408d3c9eee2d0c75c12a3abb5de29e53c2ca6b9e/categories/09-meta-orchestration/multi-agent-coordinator.md), [superpowers SKILL.md](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/SKILL.md)
+- Related: TOK-103, TOK-104, TOK-105, TOK-106, ORCH-005, ORCH-019, ORCH-023
+
+| Anti-pattern | Instead |
+|---|---|
+| Asking Explore or Plan to write the report | They have "read-only tools; Write and Edit are denied"; use a general-purpose or custom agent |
+| Asking a subagent to write `report.md`, `summary.md` or `findings.md` | The Write is refused (test below); ask for an inline return, or name the file for its content |
+| Two subagents writing one file | One file each; VoltAgent: "a single writer per file", "write to a temp path, then swap" |
+| Trusting a file left by an earlier run | A run-scoped folder, or an identity first line (superpowers' ledger) |
+| Reading the notification's `output_file` | It is the transcript (TOK-105) |
+| Reading the whole handoff file back | The summary and the sections you need (TOK-106) |
+| A long inline report under a low output cap | Only the last segment arrives (test below) |
+| A `SubagentStop` gate on `last_assistant_message` in auto mode | Match `SubagentHandback`: its `tool_input.message` is the report; `last_assistant_message` "is not the delivered report" (v2.1.271+) |
+| Handoff files under `.git/` or `.claude/` | Protected paths prompt, and a background subagent can't answer |
+
+Tested 2026-10-16, one Write per name, desktop Code tab on WSL (v2.1.299, auto mode) and `claude -p` (v2.1.296): subagent writes of `report.md`, `summary.md`, `analysis.md` and `findings*.md` failed with "Subagents should return findings as text, not write report files."; `notes.md`, `x-summary.md`, `probe-report.md` and `.txt` files were written. Undocumented: treat it as Anthropic's preference, not a filter to rename around.
+
+Tested 2026-10-16, v2.1.296, `claude -p`, n=2: with `CLAUDE_CODE_MAX_OUTPUT_TOKENS=4000`, a 40,000-character inline return was cut three times ("Output token limit hit. Resume directly"), and the parent got only the last segment (6,209 and 6,023 characters), status `completed`.
+
+## [TOK-108] What the Bash tool does to a script's output
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference), [Skills: injected command output](https://code.claude.com/docs/en/skills), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Related: TOK-042, TOK-109, TOK-110, HOOK-004
+
+How Claude Code hands a command's output to Claude, which decides how a script should print (TOK-109):
+- **Success**: "Inline up to roughly 30,000 characters by default; past that, the path of a file saved to the session directory and truncated past 64 MiB, plus a preview of up to the first 2,000 characters".
+- **Failure**: "Inline up to roughly 10,000 characters; past that, a head-and-tail excerpt of that size cut from the read-back window, with no file path". A failing script's middle is lost, and Claude can't read the rest.
+- **Exit 1 is a failure** except for "`grep`, `rg`, `egrep`, `fgrep`, `find`, `diff`, `test`, and `[`, plus `git diff` and `git grep`". A script that exits 1 for "no results" reads as failing.
+- **Caps**: "a command whose output passes 5 GB is killed"; 2.1.265 "Added a 1 GB cap on tool results saved to disk".
+- **Timeouts**: two minutes by default, ten at most. At its timeout a foreground command moves to the background, "unless the command starts with `sleep`".
+- **stderr**: documented only for skill injection ("Claude Code merges stderr into stdout"). In the Bash tool, stdout and stderr came back interleaved in call order.
+
+Tested 2026-10-16, desktop Code tab on WSL, v2.1.299, Bash tool: `set -o` showed `pipefail off`, so `false | tail -1` exits 0 (no docs page mentions `pipefail`); stdout and stdin were not terminals; a failing command's result started with `Exit code N`. With synthetic functions, costs.md's filter pipeline (TOK-042) exited 0 on a failing run; adding `set -o pipefail` made a passing run, where `grep` matched nothing, report `Exit code 1`; capturing the status first exited 1 with the FAIL lines.
+
+## [TOK-109] Output contract for scripts and CLIs that agents run
+- Type: recommendation
+- Applies to: general
+- Confidence: official-example
+- Last verified: 2026-10-16
+- Sources: [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [OpenAI cli-creator: agent CLI patterns](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/cli-creator/references/agent-cli-patterns.md), [clig.dev](https://clig.dev/), [HumanLayer: context-efficient backpressure](https://www.humanlayer.dev/blog/context-efficient-backpressure), [npm logging](https://docs.npmjs.com/cli/v11/using-npm/logging)
+- Related: TOK-108, TOK-042, SKILL-018, MCP-018, FLOW-011, FLOW-013, HOOK-004
+
+A script an agent runs pays only for its output (SKILL-018), so shape the output:
+- **Success: one line.** Anthropic's validator example: `# Returns: "OK" or lists conflicts`. HumanLayer: "Success = ✓. Failure = full output."
+- **Failure: specific and bounded.** Errors should "clearly communicate specific and actionable improvements, rather than opaque error codes or tracebacks" (Anthropic). Print sorted `file:line` failures, cap them ("and N more"), stay under 10,000 characters, and put the log path on the first and last line: Claude Code keeps only head and tail of a failure, with no path (TOK-108). npm prints "the path to that file … if the execution of a command fails".
+- **Exit status carries the verdict**: "Exit zero when the command succeeded, including an empty result" (cli-creator). As a hook, exit 2 blocks (HOOK-004). Keep the status through pipes (TOK-042).
+- **Bounded by default**: "Start shallow by default", with `--limit`. When truncating, "be sure to steer agents with helpful instructions" (Anthropic).
+- **`--json`**: "Emit JSON to stdout only." Progress on stderr still reaches Claude, which reads both streams (TOK-108), so send it to the log.
+- **No colour, animation, pager or prompt off a terminal**: "If stdout is not an interactive terminal, don't display any animations"; "Use a pager only if stdin or stdout is an interactive terminal" (clig.dev).
+
+Anthropic's example: a concise tool response of 72 tokens against a detailed one of 206 ("~⅓ of the tokens"), illustrative. Fail-fast ("One failure at a time", HumanLayer) trades against running every check in one round (FLOW-013).
+
+Confidence note: a synthesis; Anthropic's rules are written for tools and validators, the CLI rules come from OpenAI's skill and clig.dev.
+
+## [TOK-110] Detecting an agent in a script
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Environment variables](https://code.claude.com/docs/en/env-vars), [CLI hints for plugins](https://code.claude.com/docs/en/plugins/cli-hints), [Permissions](https://code.claude.com/docs/en/permissions), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [gh agents/detect.go](https://github.com/cli/cli/blob/b758ce35643e64cfe4d61bc58b6009c4088e5e0c/internal/agents/detect.go)
+- Related: TOK-108, TOK-111, HOOK-003
+
+- **`CLAUDECODE=1`**: set "in subprocesses Claude Code spawns (Bash and PowerShell tools, tmux sessions, hook commands, status line commands, stdio MCP server subprocesses). IDE extensions also set this in their integrated terminals", so a person may be typing.
+- **`CLAUDE_CODE_CHILD_SESSION=1`** (v2.1.172+): "only set by Claude Code itself when it launches a subprocess and not by IDE extensions"; not set for stdio MCP servers. The CLI-hints page: "Emit the tag only when `CLAUDECODE` or `CLAUDE_CODE_CHILD_SESSION` is set".
+- **`CLAUDE_CODE_SESSION_ID`** correlates a script with the session.
+- **`AI_AGENT`**: CHANGELOG only, 2.1.120, "so `gh` can attribute traffic to Claude Code"; gh checks it first. **`CLAUDE_CODE_ENTRYPOINT`** is undocumented; gh: "it's not documented so we don't want to rely on it too heavily".
+- **Not set**: `NO_COLOR`, `PAGER`, `GIT_PAGER`, `CI`. Claude Code relies on stdout not being a terminal; 2.1.295 fixed background sessions "inheriting `FORCE_COLOR=3`, which put color escape codes into the output Claude reads". `NO_COLOR` in settings `env` reaches "only subprocesses". Codex, by contrast, forces `NO_COLOR=1`, `TERM=dumb` and `PAGER=cat`; Gemini CLI sets `GEMINI_CLI=1` and `PAGER=cat` and strips ANSI.
+- **Prefixes and allow rules**: "An allow rule won't match past an assignment of any other variable" than "certain known-safe" ones, so prefer flags (`git --no-pager`, `gh --json`) to `PAGER=cat`.
+
+Tested 2026-10-16, desktop Code tab on WSL, v2.1.299: `CLAUDECODE=1`, `CLAUDE_CODE_CHILD_SESSION=1`, `AI_AGENT=claude-code_2-1-299_agent`, `CLAUDE_CODE_ENTRYPOINT=claude-desktop`; `NO_COLOR`, `PAGER`, `GIT_PAGER`, `CI` and `AGENT` unset; `TERM=xterm-256color`.
+
+## [TOK-111] Agent-aware test runners and quiet flags
+- Type: tool
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Vitest reporters](https://vitest.dev/guide/reporters), [Bun test: AI agent integration](https://bun.com/docs/test), [testthat LlmReporter](https://testthat.r-lib.org/reference/LlmReporter.html), [pytest reference](https://docs.pytest.org/en/stable/reference/reference.html), [go help test](https://pkg.go.dev/cmd/go#hdr-Test_packages), [git docs](https://git-scm.com/docs/git)
+- Related: TOK-108, TOK-110, TOK-042, FLOW-011
+
+Some runners detect an agent and cut their own output:
+- **Vitest** (v5.0.5): with no reporter configured, it uses "`minimal` when Vitest detects an AI coding agent", which keeps "only failed tests and their error messages". Detection comes from `std-env`, which maps Claude to `CLAUDECODE` and also turns watch mode off.
+- **Bun**: "`CLAUDECODE=1` - For Claude Code" and "`AGENT=1` - Generic AI agent flag"; "Only test failures are displayed in detail" and "Summary statistics remain intact".
+- **testthat**: "`LlmReporter` is used by default when tests are run by a coding agent."
+
+Elsewhere, flags do it:
+- **pytest**: `-q`, `-x` ("Exit instantly on first error or failed test"), `--tb=short`, `--no-header`, `--no-summary`.
+- **go test**: with package arguments, a passing package prints "only the final 'ok' summary line"; `-v` prints everything.
+- **cargo test**: `-q` is forwarded to the test harness, which then prints one character per test.
+- **git**: pages only "if standard output is a terminal"; `--no-pager` for tools that allocate one.
+- **gh**: `--json <fields>` with `--jq`.
+
+Our largest Bash outputs were `git diff` and `gh`, not test runs (TOK-042), so quiet query habits matter as much as quiet runners.
+
+## Background spenders and measured savers
+
+## [TOK-112] Background token spenders
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Costs: background token usage](https://code.claude.com/docs/en/costs), [Interactive mode](https://code.claude.com/docs/en/interactive-mode), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Permission modes: cost and latency](https://code.claude.com/docs/en/permission-modes), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Related: TOK-008, TOK-010, TOK-053, TOK-030
+
+Requests Claude Code sends without a typed prompt:
+- **Prompt suggestions**: "a short request to the model your session is using after Claude responds", "mostly cache reads plus a few output tokens", skipped when "The prompt cache is cold". Off: `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=false` or `promptSuggestionEnabled: false`.
+- **`!` commands** (since 2.1.186): Claude replies to the output, and "The response costs the same as sending a normal prompt." `respondToBashCommands: false` adds the output without a reply.
+- **Idle compaction**: a long conversation left idle is compacted "shortly before its prompt cache expires" (default threshold 200,000 tokens, after "about 54 minutes"); `idleCompaction: false` turns it off.
+- **Model switch** (2.1.301): "a conversation too long for the new model is now summarized by the previous model first".
+- **Auto-mode classifier**: billed only where Claude Code runs it locally; `CLAUDE_CODE_AUTO_MODE_SERVER=0` opts into that "(the local classifier then counts toward usage)" (2.1.281).
+- **Housekeeping**: `--resume` summaries and `/usage` status checks, "typically under $0.04 per session".
+- **Idle turns with full context**: scheduled tasks, cross-session messages (`crossSessionInbound: hold`) and goal check-ins (at most three per goal; `CLAUDE_CODE_GOAL_CHECKIN_MINUTES=0` turns them off).
+
+2.1.299 "Added `/usage` warnings for max effort, workflows, always-on context and large tool results"; their wording isn't on a docs page.
+
+## [TOK-113] Terse-output skills and rules files: measured savings
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: community-consensus
+- Last verified: 2026-10-16
+- Sources: [JetBrains: Caveman tested](https://blog.jetbrains.com/ai/2026/07/speak-to-ai-agents-like-cavemen-tosave-tokens/), [Caveman README](https://github.com/JuliusBrussee/caveman/blob/d262ab3882952a59312ff3537cd86d894523c5ab/README.md), [claude-token-efficient benchmark](https://github.com/drona23/claude-token-efficient/blob/0d30a6db75af983b8ababf585f28faefdfc87895/benchmark/SUMMARY.md), [CAVEWOMAN (arXiv 2606.24083)](https://arxiv.org/abs/2606.24083), [Dasein code-compression-bench](https://github.com/daseinlabs/code-compression-bench/blob/466077f002e6ef71fe5e8f24fc1c930edd4e3691/FACT-VS-FICTION.md)
+- Related: PROMPT-024, TOK-008, TOK-083
+
+Terse-style skills cut a small share of an agent session's cost, because output is a small share of it (17% of our list-price cost, TOK-008).
+- **JetBrains** (2026-07-06; Claude Code 2.1.200, claude-sonnet-5 at low effort, Caveman forced on, 82 paired tasks): "Advertised saving: 65%. Measured saving: 8.5%." Quality tied (p = 0.82). The raw totals came out 11.6% dearer, and "The entire inversion came from a single trial". Why: "Only the narration between tool calls gets compressed, and there is not much of it."
+- **Caveman's own README** (2026-10-13): "'Be concise' is the real baseline", and `/caveman` "cuts 3% more at the median" (ten questions on Opus 5.5).
+- **claude-token-efficient** (a terse CLAUDE.md, N=5): "The published 63% reduction does not reproduce", and "On short prompts the minimal profile is roughly cost-neutral. Per-turn input overhead cancels output saving."
+- **Dasein** (one run per arm; the sponsor sells another arm): Caveman cost −19% on 100 SWE-bench Verified tasks.
+- **CAVEWOMAN** (Adobe, single-turn QA): compressing the input "raises net cost rather than lowering it (~1.15x on the five-benchmark mean …)"; compressing the output cut cost "1.4-2.4x per model".
+
+Take: a plain "be concise" instruction (PROMPT-024) gets most of the saving; hold savings claims to paired per-task cost over several runs. These tests cover Caveman's output style, not the input compression its 3.0 release added.
+
+## [TOK-114] Masking old tool output: measured elsewhere, not a Claude Code setting
+- Type: comparison
+- Applies to: general
+- Confidence: community-consensus
+- Last verified: 2026-10-16
+- Sources: [JetBrains Research: efficient context management](https://blog.jetbrains.com/research/2025/12/efficient-context-management/), [Gemini CLI configuration](https://github.com/google-gemini/gemini-cli/blob/b25669d84e1a404e30c176d779e732e25dafcec0/docs/reference/configuration.md), [Codex config schema](https://github.com/openai/codex/blob/b5115cdd669d37a8635a9742851e97ba4fb1d42c/codex-rs/core/config.schema.json), [Factory: evaluating compression](https://factory.com/news/evaluating-compression)
+- Related: TOK-038, TOK-031, TOK-085, TOK-042
+
+Dropping old tool outputs while keeping recent turns is the best-measured way to trim an agent's context, and Claude Code doesn't expose it as a setting.
+- **JetBrains Research** (2025-12-01; SWE-bench Verified, 500 instances; Qwen3 and Gemini 2.5 Flash, not Claude): masking, with "a window of the latest 10 turns", "outperforms LLM summarization in terms of overall efficiency and reliability", and both "consistently cut costs by over 50%".
+- **Other agents**: Gemini CLI truncates tool output at `truncateToolOutputThreshold` (default `40000` characters) and has masking settings under `contextManagement` (schema category "Experimental"); Codex has `tool_output_token_limit`; OpenCode's V1 `compaction.prune` "Remove[s] old tool outputs" (default `false`).
+- **Claude Code**: big Bash and tool results go to a file (TOK-042, TOK-088). Claude Code does clear old tool results itself (costs.md counts "clearing old tool results from context" as an expected cache rebuild), but no page documents its trigger or a setting. The API's context editing does it on request, at a cache-write cost each time (TOK-038).
+- **What compaction loses**: in Factory's vendor-run test, "Artifact trail is the weakest dimension for all methods, ranging from 2.19 to 2.45" out of 5, so compact instructions should list the files created and changed (TOK-031).
+
+## [TOK-115] Task budgets (API beta)
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-10-16
+- Sources: [Task budgets](https://platform.claude.com/docs/en/build-with-claude/task-budgets), [Context windows: context awareness](https://platform.claude.com/docs/en/build-with-claude/context-windows)
+- Related: TOK-038, TOK-055, TOK-072
+
+A task budget tells the model how many tokens a whole agentic loop may spend. Beta header `task-budgets-2026-03-13`; set `output_config.task_budget` with `type: "tokens"`, `total` and an optional `remaining`.
+- "The minimum accepted `task_budget.total` is **20,000 tokens**"; smaller values return a 400.
+- "Task budgets are a **soft hint, not a hard cap**"; `max_tokens` is still the enforced limit.
+- It counts "what Claude **sees** (thinking, tool calls and results, and text)", and "The countdown is visible only to the model."
+- Caching: "If your client decrements `task_budget.remaining` on each follow-up request, the changed value invalidates any cache prefix that contains it." Set it once.
+- "Task budgets are not supported on Claude Code or Cowork surfaces."
+- Supported on Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Haiku 5.5 and others; not on Sonnet 5, Opus 4.6, Sonnet 4.6 or Haiku 4.5.
+
+They replace context awareness on newer models: Sonnet 5, Sonnet 4.6, Sonnet 4.5 and Haiku 4.5 get injected budget tags, while "Claude Opus 4.7 and later Opus models, Claude Sonnet 5.5, … and Claude Haiku 5.5 don't receive these injected tags".
 
 ## Recommendations for our setup
 
@@ -1770,13 +2060,19 @@ Won't do (measured 2026-10-12, below):
 - The 25 Playwright tools are about 7.8k tokens, all deferred, so a turn carries only their names (roughly 300 tokens); `frontend-design` is about 80 tokens of listing.
 
 Not recommended now:
-- RTK or context-mode (TOK-083): our big outputs aren't test runs, the claims are unverified, and context-mode is ELv2.
+- RTK or context-mode (TOK-083): our big outputs aren't test runs, two independent tests found no reliable saving from RTK, and context-mode is unmeasured and ELv2.
 - Serena or claude-context (TOK-084): `typescript-lsp` already covers symbol lookup.
 - Raising cache TTLs: rebuilds are only 8% of writes (TOK-034).
 
 **Research tools (TOK-087 to TOK-102, 2026-10-12).** Ranked by impact against effort. R10 and R11 are done (2026-10-12, FreekMencke/claude-kb#50): CLAUDE.md's research rules now say a WebFetch answer is never a quote, keep context7 for third-party libraries, and brief research subagents with source order, what's tested, absence rules, write limits and a quote per claim. R12 is done (2026-10-12, FreekMencke/claude-kb#51): the re-verification routine's subagent rules now state the shared 200-search budget and say to curl cited sources instead of searching for them; both routines also open with PROMPT-014's autonomy block.
 
 Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost only names while deferred, but `llms.txt` plus a curled `.md` page already finds and reads a page for fewer tokens. Revisit if lookups keep missing the right page. The AWS docs tools already come with the `aws` server (TOK-097).
+
+**Subagent handoff and script output (TOK-103 to TOK-115, 2026-10-16).** Ranked by impact against effort:
+- R14: keep failed check logs in osrs-tracker-api's `verify.sh`. It deletes its logs on exit and prints each failed log whole, so a failure over 10,000 characters arrives as head and tail with nothing left to read. web and aws already keep the log and print its path and last 60 lines (TOK-108, TOK-109). Issue: [osrs-tracker/osrs-tracker-api#183](https://github.com/osrs-tracker/osrs-tracker-api/issues/183).
+- R15: leave this repo's research readers returning inline (the `research` skill's brief). Subagents can't write `report.md` or `findings*.md` files, and a report over 50K characters already arrived as a file plus a 2 KB preview in an interactive session, so ask for a 10-line summary first and one `##` section per question (TOK-105, TOK-106, TOK-107). No change needed: the brief already asks for per-question sections.
+- R16: for the output-style trial (FreekMencke/claude-kb#49), compare against TOK-113: a plain concise instruction gets most of what terse styles save, and output is 17% of our cost (TOK-008).
+- Not now: turning off prompt suggestions or `!` replies (TOK-112). Both are small, cache-read requests or ones we ask for.
 
 ## Open questions
 
@@ -1787,7 +2083,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
 6. **Skill descriptions and triggering.** No Anthropic benchmark relates description length to trigger rate. The evidence is skill-creator's "pushy" advice, superpowers' anecdotes and Vercel's eval.
 7. **Unverified plan changes.** The May 2026 limit doubling and peak-hour changes, and whether per-model weekly meters other than Fable still exist on some plans, are reported only by secondary sources.
-8. **Token savers.** No independent session-level measurement of any community token saver (RTK, context-mode, Serena, claude-context) including task success.
+8. **Token savers.** RTK now has independent paired measurements (TOK-083, 2026-10-16); context-mode, Serena and claude-context still have none, and Caveman's results disagree between JetBrains and Dasein (TOK-113).
 9. **Compact instructions.** Answered 2026-10-12: tested, just context it sees; the same text worked or failed alike under `# Compact instructions` and `# Notes` (TOK-031). One Haiku run per cell; a larger model may read the heading as scoping.
 10. **Resume cache bug.** Answered 2026-10-12: tested, not reliably present in v2.1.296; two of three `-p --resume` runs hit the full cache, including after a `git status` change, and one rewrote 11k tokens (TOK-034).
 11. **WebSearch `extended`.** What it does differently, what "several times the cost" means on a subscription, and whether one extended call counts as one against the 200-call budget. Only the tool schema mentions the modes (TOK-093). One test is not a latency or freshness measurement.
@@ -1795,3 +2091,9 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 13. **When WebFetch skips summarization.** The preapproved domain list isn't published; our tests fit "preapproved and under 100,000 characters", but the rule isn't documented (TOK-088). The size at which a WebFetch result goes to a file instead of inline (seen at 56.6 KB) isn't documented either.
 14. **Accuracy of docs tools.** No independent benchmark compares context7, docs MCP servers, `llms.txt` and web search on answer accuracy; Upstash's benchmark covers tokens only (TOK-095).
 15. **Search budget outside the terminal.** The docs give the 200-call limit for "an interactive terminal session"; whether cloud sessions, routines and the desktop app apply the same limit is untested (TOK-092).
+16. **The report-file refusal.** "Subagents should return findings as text, not write report files" keys on file names in both interactive sessions and `claude -p` (TOK-107), but the full name list and the version that added it are in neither the docs nor the CHANGELOG.
+17. **When an Agent result spills to a file.** 40,225 characters arrived whole in `claude -p`; 50,709 bytes spilled in an interactive auto-mode session. The docs give no rule, and the inline cost inside an interactive session wasn't measured (TOK-105).
+18. **Background subagents in `-p`.** The docs say fork mode is off in `-p`, yet v2.1.296 backgrounded the Agent call there (TOK-105).
+19. **Undocumented meters.** The wording and thresholds of the `/usage` warnings (2.1.299), and the OTel `cache_creation_5m_tokens` and `cache_creation_1h_tokens` attributes (2.1.300), are only in the CHANGELOG (TOK-010, TOK-012).
+20. **Other agents' defaults.** Whether Gemini CLI masks tool output by default, Codex's `model_auto_compact_token_limit` default, and whether OpenCode users run V1 (`prune`) or V2 compaction (TOK-085, TOK-114).
+21. **Env prefixes and allow rules.** Whether `PAGER=cat`, `GIT_PAGER=cat` or `CI=1` stop a `Bash(...)` allow rule from matching. The docs' wording says they would; untested (TOK-110).

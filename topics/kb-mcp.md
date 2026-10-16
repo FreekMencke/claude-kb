@@ -450,7 +450,7 @@ Community view (Zechner 2025-11-02, Ronacher 2025-12-13): MCP results can't be p
 - Confidence: official-example
 - Last verified: 2026-10-14
 - Sources: [mcp-builder SKILL.md](https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/SKILL.md), [mcp-builder best practices](https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/reference/mcp_best_practices.md), [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [Connector review criteria](https://claude.com/docs/connectors/building/review-criteria)
-- Related: MCP-015, MCP-017, MCP-019
+- Related: MCP-015, MCP-017, MCP-019, TOK-109
 
 Anthropic's `mcp-builder` skill (anthropics/skills) encodes these rules:
 - **Names:** server `{service}-mcp-server` (Node) or `{service}_mcp` (Python); tools snake_case with a service prefix, `{service}_{action}_{resource}`.
@@ -463,6 +463,8 @@ Anthropic's `mcp-builder` skill (anthropics/skills) encodes these rules:
 Tension: `mcp-builder` says "When uncertain, prioritize comprehensive API coverage"; the engineering post says "We recommend building a few thoughtful tools targeting specific high-impact workflows." For an agent-only server, follow the post: fewer tools mean less to choose between (TOK-021: selection degrades past 30–50 tools).
 
 The directory review criteria add: no catch-all `api_request` tool mixing reads and writes, tool names of 64 characters or fewer, and no descriptions that steer Claude toward other tools.
+
+In Anthropic's tool-writing post, a concise response took 72 tokens against 206 for a detailed one. The same rules for scripts and CLIs: TOK-109.
 
 ## [MCP-019] Vetting a third-party server
 - Type: recommendation

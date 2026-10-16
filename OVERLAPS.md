@@ -9,6 +9,11 @@ How entries in different `topics/kb-*.md` files that cover the same ground were 
 These clusters cover neighbouring ground from different angles. They are cross-linked through `Related:` rather than merged:
 
 - Where to put something, and what it costs: SKILL-021 (decision), SKILL-022 and TOK-065 (context cost), REPO-044 (repos with agents).
+- Subagent results: ORCH-034 (the principle), ORCH-035 (status codes), TOK-035 (delegating), TOK-101 (research sources), TOK-103 to TOK-107 (file handoff in Claude Code).
+- Bash output: TOK-042 (limits and filter hooks), TOK-108 (what reaches Claude), TOK-109 (how a script should print), SKILL-018 (scripts in skills), FLOW-011 and FLOW-013 (checks Claude runs).
+- Temporary files: SESS-016 (parallel sessions, `CLAUDE_JOB_DIR`), TOK-104 (handoff files and the scratchpad).
+- Terse output: PROMPT-024 (how to write short answers), TOK-113 (what terse styles measurably save).
+- Trimming old context: TOK-038 (API context editing), TOK-085 (other agents' settings), TOK-114 (masking, measured).
 - CLAUDE.md size: SKILL-024 (authoring), TOK-003 (loading rules), REPO-045 (research and agents).
 - claude.ai plugins: SKILL-059 (personal Git marketplaces, sync), SKILL-062 (what an upload accepts, repo as its own plugin), MCP-040 (a bundled connector and skill in chat), MCP-037 (plugin against connector without a checkout).
 - Worktree staleness: SESS-006 (what `baseRef: "fresh"` fetches), SESS-036 (a `SessionStart` hook that fast-forwards), SESS-025 (rebase before pushing).
@@ -109,6 +114,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 `scripts/check_kb.py` warns about entries in different files with very similar titles or mostly shared tags. These pairs were checked and cover different things; listing a pair here (or together on one Overlaps or Merges line) silences the warning.
 
 - HOOK-020 and TOK-064: hooks declared in skill and agent frontmatter, against frontmatter fields that make a skill cheaper to load.
+- HOOK-004 and TOK-108: how a hook's exit code and stdout resolve, against how the Bash tool hands a command's output and exit code to Claude.
 - MCP-008 and TOK-035: scoping an MCP server to one subagent, against delegating verbose work to a subagent in general.
 - MCP-021 and REPO-027: MCP servers in the action, against the action's modes and inputs.
 - MEM-031 and ORCH-018: memory stores in the API and Managed Agents, against Managed Agents' multi-agent setup.
