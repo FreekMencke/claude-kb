@@ -178,7 +178,7 @@ The model default matters. In Claude Code, Opus 5.5, Sonnet 5.5 and Haiku 5.5 de
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents – built-in subagents](https://code.claude.com/docs/en/sub-agents)
-- Related: ORCH-003, ORCH-030, ORCH-033
+- Related: ORCH-003, ORCH-030, ORCH-033, TOK-107
 
 | Built-in | Model | Notes |
 |---|---|---|
@@ -192,6 +192,8 @@ The model default matters. In Claude Code, Opus 5.5, Sonnet 5.5 and Haiku 5.5 de
 The community belief that Explore runs on Haiku is not true of the current docs. With an Opus 5.5 session, every Explore sweep runs on Opus. Plain `CLAUDE_CODE_SUBAGENT_MODEL` does not change Explore or Plan. The docs' fix: "A user or project subagent named `Explore` overrides the built-in and keeps its own `model` field, so define one with `model: haiku` to run exploration on a lower-cost model." Alternatively, pass `model: haiku` on each Explore call.
 
 You can disable the built-ins with `permissions.deny: ["Agent(Explore)"]` or `CLAUDE_CODE_DISABLE_EXPLORE_PLAN_AGENTS=1`.
+
+Explore and Plan have "read-only tools; Write and Edit are denied", so they can't hand back a file (TOK-107).
 
 ## [ORCH-006] Concurrency, nesting and background defaults
 - Type: fact
@@ -216,7 +218,7 @@ The SDK docs warn that Opus 5 "delegates to subagents more readily than earlier 
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Tools reference – Agent tool](https://code.claude.com/docs/en/tools-reference), [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
-- Related: ORCH-008, ORCH-034, ORCH-035, REPO-010, TOK-006
+- Related: ORCH-008, ORCH-034, ORCH-035, REPO-010, TOK-006, TOK-103, TOK-105
 
 **What a non-fork subagent starts with:**
 - its own system prompt (the agent body), environment and tools, and the delegation message;
@@ -238,6 +240,8 @@ It does **not** get the parent's history, the files already read, the skills alr
 **Turn cap:** `maxTurns` returns partial output marked as partial (v2.1.246+), and the subagent can be resumed.
 
 The docs' own warning: "Running many subagents that each return detailed results can consume significant context."
+
+The brief is the only channel down (TOK-103); how results arrive and when they spill to a file: TOK-105.
 
 ## [ORCH-008] Forked subagents vs fresh subagents
 - Type: fact
@@ -790,7 +794,7 @@ Use Haiku for read-only, summarizable work (search, gates, digests), where a mis
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Effective context engineering (2025-09-29)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Best practices](https://code.claude.com/docs/en/best-practices), [Workflows](https://code.claude.com/docs/en/workflows)
-- Related: ORCH-007, ORCH-035, ORCH-036, TOK-035
+- Related: ORCH-007, ORCH-035, ORCH-036, TOK-035, TOK-103
 
 Context is "the most important resource to manage", and "performance degrades as it fills". Ways to keep the orchestrator's context lean:
 - **Summaries.** A subagent may use "tens of thousands of tokens or more, but returns only a condensed, distilled summary of its work (often 1,000-2,000 tokens)."
@@ -799,6 +803,8 @@ Context is "the most important resource to manage", and "performance degrades as
 - **Script variables.** For dozens of agents, use a workflow: intermediate results stay in script variables and only the final answer reaches context.
 - **Bounded reports.** Cap the report's length in the brief and say what to leave out; "the diff is the detail".
 - **Compaction instructions.** For example: "always preserve the full list of modified files and any test commands".
+
+The post's criterion: "The pattern works particularly well for structured outputs like code, reports, or data visualizations where the subagent's specialized prompt produces better results than filtering through a general coordinator." Doing it in Claude Code: TOK-103 to TOK-107.
 
 ## [ORCH-035] Structured subagent reports and status codes
 - Type: pattern
@@ -932,14 +938,14 @@ Rules:
 - Confidence: community-consensus
 - Last verified: 2026-10-14
 - Sources: [obra/superpowers (297,942 stars on 2026-10-12)](https://github.com/obra/superpowers), [SDD skill](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md), [Parallel agents skill](https://github.com/obra/superpowers/blob/main/skills/dispatching-parallel-agents/SKILL.md)
-- Related: ORCH-035, ORCH-039, ORCH-033
+- Related: ORCH-035, ORCH-039, ORCH-033, TOK-103, TOK-104
 
 Superpowers is the most widely used Claude Code methodology. Its flow is brainstorm, design, plan, then execute.
 
 **Subagent-driven development:**
 - The controller never writes code. It keeps a ledger, which lets work resume after compaction.
 - Each task goes to a fresh implementer, **one at a time**, in a git worktree.
-- Implementers write their full report to a file and return status, commits, a one-line test summary and concerns.
+- Implementers write their full report to a file named after the brief and "report back with ONLY (under 15 lines — the detail lives in the report file)": status, commits, a one-line test summary, concerns and the path. The files live in a git-ignored `.superpowers/sdd/<plan>/` folder (TOK-103, TOK-104).
 - Each task is reviewed for both spec compliance and quality, and the whole branch gets one final review. Older versions ran two sequential review stages; the current file does not.
 - The fix loop is capped at 5 rounds. Rounds 4–5 use a fresh implementer on a more capable model, and the controller adjudicates at the cap.
 - On models: "Always specify the model explicitly"; "Turn count beats token price"; a mid-tier floor for reviewers.

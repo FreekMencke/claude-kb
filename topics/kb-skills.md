@@ -452,7 +452,7 @@ Treat SKILL.md as a table of contents and move the detail into files that load o
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills), [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator)
-- Related: SKILL-008, SKILL-016
+- Related: SKILL-008, SKILL-016, TOK-109
 
 Anthropic frames this as "degrees of freedom": a narrow bridge needs guard rails, an open field doesn't.
 - **High freedom (prose)** when many approaches are valid.
@@ -466,6 +466,8 @@ Scripts are more reliable than generated code and cheaper: only their output ent
 - **Plan, validate, execute** for batch or destructive work: write a plan file, check it with a verbose validator, then apply it.
 - **List dependencies.** Don't assume packages are installed: the API sandbox has no network.
 - **Bundle repeated code.** If every test run writes the same helper, put it in `scripts/` (skill-creator).
+
+Validator output: short on success (`# Returns: "OK" or lists conflicts`), specific on failure; the full output contract is TOK-109.
 
 ## [SKILL-019] Durable wording: no dates, one term per idea, a default not a menu
 - Type: recommendation
