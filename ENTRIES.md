@@ -44,6 +44,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-026 | Measured originality of LLM-generated UI | fact | originality, benchmark, diversity, research |
 | DESIGN-027 | Test: four prompting strategies on one brief | comparison | experiment, prompting, directions, banned-patterns |
 | DESIGN-028 | Isolating scripted design tests from your own setup | pattern | headless, safe-mode, isolation, testing |
+| DESIGN-029 | Test: four directions, then a person picks | comparison | experiment, directions, human-pick, swatches |
 
 ## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
 
