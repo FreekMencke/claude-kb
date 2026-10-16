@@ -12,6 +12,31 @@ Then read only the entries you need: `grep -n '^## \[TOK-036\]' topics/kb-*.md` 
 
 Merged entries keep their ID and a pointer, so old references still resolve.
 
+## Visual and UI design with Claude (`topics/kb-design.md`, DESIGN)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| DESIGN-001 | Which surface for which design job | comparison | surfaces, claude-design, figma, canva, frontend-design |
+| DESIGN-002 | Claude Design: history, where it runs, plans and the standalone shutdown | fact | claude-design, plans, shutdown, enterprise |
+| DESIGN-003 | Making and refining a design in Claude Design | pattern | claude-design, comments, canvas, variations |
+| DESIGN-004 | Claude Design exports, hand-offs, sharing, usage and known limits | fact | claude-design, export, handoff, limits |
+| DESIGN-005 | Design System artifacts | fact | design-system, migration, admin, default |
+| DESIGN-006 | `/design` and `/design-sync` in Claude Code | fact | design-command, design-sync, react, angular |
+| DESIGN-007 | Why Claude's designs look generic, and the named clichés by date | fact | generic, distributional-convergence, cliches |
+| DESIGN-008 | Prompting for distinctive design | recommendation | prompting, brief, tokens, banned-patterns, directions |
+| DESIGN-009 | The frontend-design skill and how it differs from `artifact-design` | tool | frontend-design, artifact-design, skills |
+| DESIGN-010 | House style: where design tokens live and what wins | recommendation | tokens, CLAUDE.md, design-md, fonts, precedence |
+| DESIGN-011 | Verify a design by measuring, not only by looking | pattern | verification, computed-styles, screenshots, contrast |
+| DESIGN-012 | What Claude's vision gets wrong in design work | fact | vision, limits, coordinates, image-size |
+| DESIGN-013 | Improving an existing design: inputs, audit, polish or redesign | pattern | audit, redesign, polish, accessibility, variants |
+| DESIGN-014 | Extracting a design system from code, Figma or a URL | pattern | design-system, extraction, design-sync, figma |
+| DESIGN-015 | Figma's MCP server: read, write to canvas, seats and pricing | tool | figma, mcp, use_figma, code-connect |
+| DESIGN-016 | Canva's connector and when it beats Claude Design | tool | canva, connector, brand-kit |
+| DESIGN-017 | Models and effort for design work | recommendation | models, effort, opus, sonnet, inference |
+| DESIGN-018 | Community design skills (unofficial) | comparison | community, impeccable, taste-skill, design-md |
+| DESIGN-019 | Design pitfalls | anti-pattern | pitfalls, verification, drift, animation, css |
+| DESIGN-020 | Inline custom visuals in chat | fact | inline-visuals, chat, diagrams, ephemeral |
+
 ## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
 
 | ID | Title | Type | Tags |
