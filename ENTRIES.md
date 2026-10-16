@@ -45,6 +45,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-027 | Test: four prompting strategies on one brief | comparison | experiment, prompting, directions, banned-patterns |
 | DESIGN-028 | Isolating scripted design tests from your own setup | pattern | headless, safe-mode, isolation, testing |
 | DESIGN-029 | Test: four directions, then a person picks | comparison | experiment, directions, human-pick, swatches |
+| DESIGN-030 | Test: directions shown as swatches, with the repeat looks banned | comparison | experiment, directions, swatches, banned-patterns |
 
 ## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
 
