@@ -46,6 +46,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-028 | Isolating scripted design tests from your own setup | pattern | headless, safe-mode, isolation, testing |
 | DESIGN-029 | Test: four directions, then a person picks | comparison | experiment, directions, human-pick, swatches |
 | DESIGN-030 | Test: directions shown as swatches, with the repeat looks banned | comparison | experiment, directions, swatches, banned-patterns |
+| DESIGN-031 | Test: pick colour, then type, then layout, then combine | comparison | experiment, staged-picks, palettes, wireframes |
 
 ## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
 
