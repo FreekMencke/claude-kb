@@ -25,16 +25,17 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 
 | File | What it is |
 |---|---|
-| `server.py` | The server: FastMCP, stateless Streamable HTTP at `/mcp`, no sign-in, the tools' signatures and descriptions |
-| `kb_tools.py` | The text each tool returns, its caps and its error messages |
-| `kb_index.py` | The entries, parsed by `scripts/check_kb.py`, and their search: SQLite FTS5 in memory, ranked by `bm25()` |
-| `logs.py` | JSON log lines in the Node apps' shape, and one line per request |
-| `metrics.py` | Prometheus metrics on port 9090: HTTP requests, tool calls, empty searches, the index |
-| `tests/` | pytest: the HTTP contract without a token, the tools through FastMCP's in-memory client, the index and search on fixtures and on this repo, logs and metrics |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: `server.py`, `kb_tools.py`, `kb_index.py`, `logs.py`, `metrics.py`, `scripts/check_kb.py`, `assets/logo.{png,svg}` and the pinned dependencies, never KB content or secrets |
-| `requirements.in`, `requirements-dev.in` | Direct dependencies, compiled to `requirements*.txt` with exact versions and hashes |
+| `server.ts` | The server: the official TypeScript SDK (`@modelcontextprotocol/server`) on Express, stateless Streamable HTTP at `/mcp`, no sign-in, the tools' schemas and descriptions, the icon and health routes, the run modes |
+| `kb-tools.ts` | The text each tool returns, its caps and its error messages |
+| `kb-index.ts` | The entries, parsed by `scripts/kb-parse.ts`, and their search: SQLite FTS5 in memory (`node:sqlite`), ranked by `bm25()` |
+| `log.ts` | The logger: `@osrs-tracker/logger`, the Node apps' JSON lines |
+| `metrics.ts` | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index |
+| `shutdown.ts` | Graceful shutdown on `SIGTERM`, as osrs-tracker-web does it |
+| `tests/` | Vitest: the HTTP contract without a token, the tools through the SDK's client in process, the index and search on fixtures and on this repo, logs, metrics, and the checker (`scripts/check-kb.ts`) |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: the server's `.ts` files, `package*.json` and its production dependencies, `scripts/kb-parse.ts`, `scripts/difflib.ts`, `assets/logo.{png,svg}`, never KB content or secrets |
+| `package.json`, `package-lock.json` | Dependencies, pinned by the lockfile; `engines` and the repo's `.node-version` name Node 24 |
+| `tsconfig.json` | The type check (`npx tsc`), which covers `../scripts` too; nothing is emitted |
 | `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
-| `pyproject.toml` | Python version and pytest settings |
 
 The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (CI), `workflows/deploy.yml` (CD) and
 `scripts/`.
@@ -43,17 +44,18 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
 
 - **Content.** A git-sync sidecar keeps a checkout of `main` in a volume shared with the server, and points the link
   `/git/kb` at it; "the basename of the target of the link is the current hash". Every 10 s the server checks the link
-  in a background task and re-indexes when the commit changed, never in a request. A KB push reaches the server in
+  on a timer and re-indexes when the commit changed, never in a request. A KB push reaches the server in
   about a minute, with no image build.
-- **Index.** `kb_index.load` parses the checkout with `check_kb.py`'s own functions (one parser for CI's checker and
+- **Index.** `kb-index.ts`'s `load` parses the checkout with `scripts/kb-parse.ts` (one parser for CI's checker and
   the server) into an immutable `Index`: every entry's fields, the Quick answers of `INDEX.md` and each topic file, and
   each file's Recommendations. The server builds a new one and swaps it in with one assignment, so a request reads
-  the old index or the new one, whole. Building all 575 entries took 0.05 s on 2026-10-15, in WSL and in the image.
-- **Search.** Python's own `sqlite3`, FTS5 with Porter stemming, ranked by `bm25()` with column weights (ID 10, title
+  the old index or the new one, whole. Building all 580 entries took 0.07 s on 2026-10-16 in WSL; the build blocks
+  the event loop that long, once per KB push.
+- **Search.** Node's built-in `node:sqlite`, FTS5 with Porter stemming, ranked by `bm25()` with column weights (ID 10, title
   3, tags 2, body 1). Entry IDs named in the query come first, then entries matching any of its words. Every word is
   quoted before `MATCH`, so `(`, `-` or `"` in a query never raise. Merged entries are found by ID only. The weights
   and OR matching were tuned on the Quick-answer questions: 208 of 253 found an entry their row cites in the top 5 on
-  2026-10-15; `tests/test_kb_index.py` fails below 75%.
+  2026-10-15; `tests/kb-index.test.ts` fails below 75%.
 - **Access.** No sign-in: the knowledge base is a public repo, so the server is open and read-only
   (FreekMencke/claude-kb#142, 2026-10-15). `/mcp` answers without a token, and there is no OAuth metadata, so Claude
   connects without signing in. The Ingress's Traefik Middlewares rate-limit each client IP (20 requests a second,
@@ -65,12 +67,14 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   icon anyway.
 - **Metrics** (FreekMencke/claude-kb#136). `/metrics` on port 9090, which neither the Service nor the Ingress routes;
   the pod's `prometheus.io/*` annotations have Alloy scrape it once a minute into Grafana Cloud, like the Node apps.
-  - `http_request_duration_seconds{method,path,status_code}`: the Node apps' name and labels, so their dashboard
-    queries work here. `path` is the matched route's template; every unmatched path is `other`.
-  - `kb_tool_calls_total{tool,outcome}` (`ok` or `error`) and `kb_tool_duration_seconds{tool}`, from a FastMCP
-    middleware; `kb_search_empty_total` counts searches that matched nothing.
+  - `http_request_duration_seconds{method,path,status_code}` and `up`, from `@osrs-tracker/express-metrics` as in the
+    Node apps, so their dashboard queries work here. `path` is the matched route's template; every unmatched path is
+    `other`. `/healthz` is answered before the middleware, so the probes aren't counted (nor logged).
+  - `kb_tool_calls_total{tool,outcome}` (`ok` or `error`) and `kb_tool_duration_seconds{tool}`, around each tool's
+    handler; `kb_search_empty_total` counts searches that matched nothing. A call the SDK rejects before the handler
+    runs (arguments that fail the schema, an unknown tool) isn't counted.
   - `kb_index_entries`, `kb_index_build_seconds` and `kb_index_built_timestamp_seconds`, set on each re-index.
-  - The client's defaults: `process_*` (memory, CPU, open files) and `python_gc_*`.
+  - The client's defaults: `process_*` (memory, CPU, open files) and `nodejs_*` (heap, event-loop lag, GC).
   - git-sync's own metrics on port 2020, through the `claude-kb-git-sync-metrics` Service (a pod's annotations name one
     port): `git_sync_count_total{status}`, where `status` is `success` (a new commit), `noop` or `error`. Only these
     tell a quiet repo from a stuck sync.
@@ -79,31 +83,33 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   CPU, restarts and OOM kills come from cAdvisor and kube-state-metrics, and home-cluster's cluster-wide alert rules
   cover the Deployment.
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
-  output schema: with one, Claude Code hands Claude the JSON instead of the text. FastMCP logs a failed call as
-  `Error calling tool '<name>'`, without its arguments or result.
+  output schema: with one, Claude Code hands Claude the JSON instead of the text. Bounds (`limit`, the number of
+  `ids`) are checked by the tools, not the schemas, so a bad value gets a message saying what to pass. The SDK returns
+  a thrown error's message as the `isError` result and logs nothing.
+- **Code.** Node 24 runs the `.ts` files as they are (type stripping): no build step, only erasable syntax (no `enum`,
+  no parameter properties), relative imports with their `.ts` extension. Moved from Python and FastMCP on 2026-10-16
+  (FreekMencke/claude-kb#146) with the tools' text unchanged; a few Python behaviours are ported on purpose
+  (`scripts/difflib.ts`, `pyRepr` in `kb-tools.ts`, Unicode `\w` in `scripts/kb-parse.ts`).
 
 ## Run and test locally
 
-Python 3.13. From `mcp-server/`:
+Node 24 (`.node-version`). From `mcp-server/`:
 
 ```bash
-python3.13 -m venv .venv
+npm ci
 ```
 
+The type check and the tests, which are the verify command for any change here:
+
 ```bash
-.venv/bin/pip install --require-hashes -r requirements-dev.txt
+npx tsc && npm test
 ```
 
-The tests, which are the verify command for any change here:
+On 127.0.0.1 only, reading the checkout it runs from (`kb_status` shows its directory name as the commit), without
+the metrics port:
 
 ```bash
-.venv/bin/python -m pytest
-```
-
-On 127.0.0.1 only, reading the checkout it runs from (`kb_status` shows its directory name as the commit):
-
-```bash
-.venv/bin/python server.py --local --port 8765
+node server.ts --local --port 8765
 ```
 
 Then, from another terminal, the MCP Inspector CLI:
@@ -133,25 +139,19 @@ Read from the environment, set in the manifest. No secrets.
 | Variable | What it is |
 |---|---|
 | `KB_LINK` | git-sync's link (default `/git/kb`) |
-| `PORT` | Default 8000 |
+| `PORT` | Default 8000; `--port` overrides it |
 
 ## Dependencies
 
-Pinned exactly, with hashes: an unbounded `mcp` dependency jumped to SDK 2.0 and broke another server's startup. To
-change one, edit the `.in` file and recompile both (needs `uv`), from `mcp-server/`:
-
-```bash
-uv pip compile requirements.in --python-version 3.13 --python-platform x86_64-unknown-linux-gnu --generate-hashes -o requirements.txt
-```
-
-```bash
-uv pip compile requirements-dev.in --python-version 3.13 --python-platform x86_64-unknown-linux-gnu --generate-hashes -o requirements-dev.txt
-```
+`package-lock.json` pins every version, and the image installs from it with `npm ci --omit=dev`: an unpinned
+dependency once jumped a major version and broke another server's startup. Change one with `npm install <name>@<range>`
+from `mcp-server/` and commit both files. The image's base (`node:24-alpine`, by digest) is the Node apps' own; Node's
+major version is in `.node-version`, `engines`, both workflows (`setup-node` reads `.node-version`) and that tag.
 
 ## Deploy
 
-Merging to `main` deploys, as for freek-mencke-web. CI (`MCP server`) runs only when the server, its workflows or
-`scripts/check_kb.py` change. When it passes on `main`, CD builds the image, pushes it to Docker Hub
+Merging to `main` deploys, as for freek-mencke-web. CI (`MCP server`) runs only when the server, its workflows,
+`scripts/` or `.node-version` change. When it passes on `main`, CD builds the image, pushes it to Docker Hub
 (`freekmencke/claude-kb-mcp`, public: it holds no KB content), commits its digest to `claude-kb-mcp.yaml`, waits for
 Flux's `Flux / sync` status and smoke-tests the public URL. A change to files outside the image (`NOT_IN_IMAGE` in
 `deploy.yml`) builds nothing. Change the cluster only through this repo, as Flux reverts anything else. To roll back,
@@ -180,16 +180,17 @@ test in production."
 
 ## Debugging
 
-The server logs JSON lines to stderr (`kubectl -n claude-kb logs deploy/claude-kb-mcp -c claude-kb-mcp`), in the Node
-apps' shape (`logs.py`): `time`, `level` (pino's names: `warn`, not `WARNING`), `logger`, `message`, and `error` with a
-traceback. In Grafana Cloud: `{app="claude-kb-mcp", job="claude-kb/claude-kb-mcp"} | json`, or the logs panel of the
-MCP Server Dashboard.
+The server logs JSON lines to stdout (`kubectl -n claude-kb logs deploy/claude-kb-mcp -c claude-kb-mcp`) with
+`@osrs-tracker/logger`, as the Node apps do (`log.ts`): `level` (pino's names), `time`, `type`, `message`, and `error`
+with its stack. `type` is `incoming` (a request), `lifecycle` (startup and shutdown), `uncaught` (an error that reached
+Express's error handler) or `index`. In Grafana Cloud: `{app="claude-kb-mcp", job="claude-kb/claude-kb-mcp"} | json`,
+or the logs panel of the MCP Server Dashboard.
 
 - Each request but the `/healthz` probes has a `type: incoming` line with `method`, `route` (the metric's `path`),
-  `url`, `status`, `responseTime`, `clientIp` (from Traefik's `X-Forwarded-For`) and `userAgent`; a 4XX is `warn`, a
-  5XX `error`. uvicorn's own access log is off.
-- `Indexed commit <hash>: <n> entries in <s> s` follows each new commit from git-sync; git-sync's own log is container
-  `git-sync`.
+  `url`, `status`, `responseTime`, `clientIp` (from Traefik's `X-Forwarded-For`), `userAgent`, `host`, `referer` and
+  `contentLength`; a 4XX is `warn`, a 5XX `error`.
+- `Indexed commit <hash>: <n> entries in <s> s` (`type: index`) follows each new commit from git-sync; git-sync's own
+  log is container `git-sync`.
 - Metrics, in Grafana Cloud's Explore: `sum by (tool, outcome) (increase(kb_tool_calls_total[1d]))` for use,
   `increase(kb_search_empty_total[7d])` for misses, `increase(git_sync_count_total{namespace="claude-kb"}[1h])` for
   the sync. `.github/scripts/ci-image-test.sh` checks the endpoint on a local container.

@@ -1,7 +1,7 @@
 # Entries
 
 Every entry by ID, title, type and tags, one table per topic file. Generated from the topic files' index tables by
-`python3 scripts/check_kb.py --write`: don't edit it by hand. Grep it rather than reading it whole:
+`node scripts/check-kb.ts --write`: don't edit it by hand. Grep it rather than reading it whole:
 
 ```bash
 grep -i -E 'webfetch|curl' ENTRIES.md

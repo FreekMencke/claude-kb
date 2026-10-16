@@ -1,0 +1,19 @@
+{
+  // Type checks only: Node runs the .ts files as they are (type stripping), so nothing is emitted, and only syntax it
+  // can erase is allowed. Covers the checker and parser in ../scripts, which the server imports.
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "es2024",
+    "module": "nodenext",
+    "strict": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node"]
+  },
+  "include": ["*.ts", "tests/**/*.ts", "../scripts/*.ts"]
+}

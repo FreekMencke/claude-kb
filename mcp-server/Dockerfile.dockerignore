@@ -1,11 +1,15 @@
 # The build context is the repo root; send only what the Dockerfile copies
 *
-!mcp-server/requirements.txt
-!mcp-server/server.py
-!mcp-server/kb_index.py
-!mcp-server/kb_tools.py
-!mcp-server/logs.py
-!mcp-server/metrics.py
-!scripts/check_kb.py
+!mcp-server/package.json
+!mcp-server/package-lock.json
+!mcp-server/server.ts
+!mcp-server/kb-index.ts
+!mcp-server/kb-tools.ts
+!mcp-server/log.ts
+!mcp-server/metrics.ts
+!mcp-server/shutdown.ts
+!scripts/package.json
+!scripts/kb-parse.ts
+!scripts/difflib.ts
 !assets/logo.png
 !assets/logo.svg

@@ -103,7 +103,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [OVERLAPS.md](OVERLAPS.md) | Overlaps kept on purpose, merges, similar-but-distinct pairs |
 | [CHANGELOG.md](CHANGELOG.md) | What changed, newest first |
 | [CLAUDE.md](CLAUDE.md) | This knowledge base's research rules on top of the `research` skill, and the entry format |
-| [scripts/check_kb.py](scripts/check_kb.py) | Format and consistency check; `--write` regenerates ENTRIES.md |
+| [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
 | [.claude-plugin/](.claude-plugin/plugin.json) | The `kb-lookup` plugin (the skill plus the server) and its marketplace, `freek-kb`. No `version`, so installs follow each commit (SKILL-062) |
@@ -119,11 +119,11 @@ repo's sources, entry format and finishing steps. A research issue says "Run the
 questions, instead of pasting a prompt. Cloud sessions don't load the plugin, so CLAUDE.md keeps the core reading rules.
 
 Entries follow [CLAUDE.md](CLAUDE.md). When you add an entry or change its title or tags, update the topic file's
-index row and run `python3 scripts/check_kb.py --write`. After any change to entries, run the check; CI runs it on
+index row and run `node scripts/check-kb.ts --write`. After any change to entries, run the check; CI runs it on
 every PR and push to `main`:
 
 ```bash
-python3 scripts/check_kb.py
+node scripts/check-kb.ts
 ```
 
 ### Changing the lookup skill
@@ -166,7 +166,7 @@ a PR from `claude/reverify-<YYYY-MM>`. Its prompt lives in the routine, not in t
   contradicting quote changes it.
 - **Overlap checks cover only new and changed entries:** the topic files were reconciled once in full
   (FreekMencke/claude-kb#28), and per-file subagents can't see other files. The lead resolves each overlap and each
-  `check_kb.py` duplicate warning in OVERLAPS.md and lists them in the PR body.
+  `check-kb.ts` duplicate warning in OVERLAPS.md and lists them in the PR body.
 - **It opens the PR with the cloud session's GitHub tool:** `gh pr create` uses GraphQL, which returns 403 in cloud
   sessions.
 

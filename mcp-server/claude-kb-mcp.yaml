@@ -27,7 +27,7 @@ spec:
     metadata:
       labels:
         app: claude-kb-mcp
-      # The server's own metrics, scraped by Alloy's kubernetes-pods job like the Node apps' (metrics.py). A pod's
+      # The server's own metrics, scraped by Alloy's kubernetes-pods job like the Node apps' (metrics.ts). A pod's
       # annotations name one port, so git-sync's metrics come through the claude-kb-git-sync-metrics Service below.
       annotations:
         prometheus.io/path: /metrics
@@ -53,12 +53,14 @@ spec:
             - containerPort: 9090
               name: metrics
           resources:
-            # About 76 MiB at idle (docker stats, 2026-10-15). No CPU limit, like the other apps.
+            # About 130 MiB resident at idle; 310-350 MiB under 1,500 kb_get calls 50 at a time, back to about 130
+            # within 20 s (process_resident_memory_bytes, Node 24.21 outside a container, 2026-10-16). The limit is the
+            # Node apps'. No CPU limit, like the other apps.
             requests:
               cpu: 10m
-              memory: 96Mi
+              memory: 160Mi
             limits:
-              memory: 256Mi
+              memory: 512Mi
           securityContext:
             runAsNonRoot: true
             # The image's USER

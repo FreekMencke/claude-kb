@@ -1,6 +1,6 @@
 name: MCP server CI
 
-# Tests and builds mcp-server/ when it, or the parser or logo its image copies, changes; a KB-only push runs none of
+# Tests and builds mcp-server/ when it, or the scripts or logo its image copies, changes; a KB-only push runs none of
 # this. CD (deploy.yml) deploys main once this passes there.
 on:
   push:
@@ -9,7 +9,8 @@ on:
       - 'mcp-server/**'
       # Deploy commits only change the manifest, which Flux applies by itself: no run, so no deploy run to skip
       - '!mcp-server/claude-kb-mcp.yaml'
-      - 'scripts/check_kb.py'
+      - 'scripts/**'
+      - '.node-version'
       - 'assets/logo.png'
       - 'assets/logo.svg'
       - '.github/workflows/mcp-server.yml'
@@ -18,7 +19,8 @@ on:
   pull_request:
     paths:
       - 'mcp-server/**'
-      - 'scripts/check_kb.py'
+      - 'scripts/**'
+      - '.node-version'
       - 'assets/logo.png'
       - 'assets/logo.svg'
       - '.github/workflows/mcp-server.yml'
@@ -39,13 +41,15 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-node@v7
         with:
-          python-version: '3.13'
-          cache: pip
-          cache-dependency-path: mcp-server/requirements-dev.txt
-      - run: pip install --require-hashes -r requirements-dev.txt
-      - run: python -m pytest
+          node-version-file: .node-version
+          cache: npm
+          cache-dependency-path: mcp-server/package-lock.json
+      - run: npm ci
+      # Type checks the server, its tests and ../scripts (tsconfig.json); Node itself only strips the types
+      - run: npx tsc
+      - run: npm test
       # The deploy scripts. ShellCheck comes with GitHub's Ubuntu runners.
       - run: shellcheck ../.github/scripts/*.sh
 

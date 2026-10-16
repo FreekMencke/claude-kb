@@ -2,7 +2,7 @@
 
 How entries in different `topics/kb-*.md` files that cover the same ground were resolved: cross-linked, merged, or checked and found distinct. This is for curating the knowledge base; to answer a question, start at [INDEX.md](INDEX.md). Disagreements between entries are in INDEX.md's Conflicts, because lookups use them.
 
-`scripts/check_kb.py` treats IDs named on one line in these sections (and in INDEX.md's Conflicts) as already reviewed together.
+`scripts/check-kb.ts` treats IDs named on one line in these sections (and in INDEX.md's Conflicts) as already reviewed together.
 
 ## Overlaps kept on purpose
 
@@ -111,7 +111,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 
 ## Similar but distinct
 
-`scripts/check_kb.py` warns about entries in different files with very similar titles or mostly shared tags. These pairs were checked and cover different things; listing a pair here (or together on one Overlaps or Merges line) silences the warning.
+`scripts/check-kb.ts` warns about entries in different files with very similar titles or mostly shared tags. These pairs were checked and cover different things; listing a pair here (or together on one Overlaps or Merges line) silences the warning.
 
 - HOOK-020 and TOK-064: hooks declared in skill and agent frontmatter, against frontmatter fields that make a skill cheaper to load.
 - HOOK-004 and TOK-108: how a hook's exit code and stdout resolve, against how the Bash tool hands a command's output and exit code to Claude.
