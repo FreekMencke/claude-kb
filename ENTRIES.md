@@ -381,6 +381,27 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | JSUP-014 | Triaging a Dependabot PR | pattern | dependabot, triage, comment-commands |
 | JSUP-015 | When the model's training predates the versions in use | recommendation | knowledge-cutoff, docs, llms-txt |
 
+## Small-cluster Kubernetes with Flux GitOps and Grafana/Prometheus observability (`topics/kb-kubernetes-flux.md`, KUBE)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| KUBE-001 | Flux 2.8 and 2.9: what changed and what needs action | fact | flux, release-notes, upgrade, helm-v4 |
+| KUBE-002 | Upgrading Flux across removed APIs with `flux migrate` | fact | flux, flux-migrate, api-versions, upgrade |
+| KUBE-003 | Which Kubernetes minors Flux supports, and the 1.37 gap | fact | flux, kubernetes-versions, support-policy, release-cadence |
+| KUBE-004 | helm-controller on Helm v4: server-side apply, kstatus and post-render defaults | fact | flux, helm-controller, helm-v4, server-side-apply |
+| KUBE-005 | Flux Operator or `flux bootstrap` | comparison | flux, flux-operator, bootstrap, fluxinstance |
+| KUBE-006 | ingress-nginx is retired; the Ingress API is frozen, not removed | fact | ingress-nginx, ingress, retirement, gateway-api |
+| KUBE-007 | Gateway API 1.5 and 1.6: the Standard channel and how its CRDs install | fact | gateway-api, crds, listenerset, httproute |
+| KUBE-008 | Replacing ingress-nginx on a single node: a Gateway API implementation or another Ingress controller | comparison | ingress-nginx, gateway-api, traefik, ingress2gateway |
+| KUBE-009 | cert-manager with Gateway API, and its supported releases | fact | cert-manager, gateway-api, acme, http-01 |
+| KUBE-010 | Let's Encrypt's 64- and 45-day certificates and other changes for cert-manager users | fact | lets-encrypt, cert-manager, certificate-lifetime, renewal |
+| KUBE-011 | Prometheus 2 to 3: what breaks | fact | prometheus, migration, promql, lts |
+| KUBE-012 | Loki 3 on a small setup: monolithic mode, TSDB and v13, and what 4.0 removes | fact | loki, upgrade, tsdb, monolithic |
+| KUBE-013 | Promtail's end of life and `alloy convert` | fact | promtail, alloy, alloy-convert, logs |
+| KUBE-014 | Alloy or the OpenTelemetry Collector for one small cluster | comparison | alloy, opentelemetry-collector, otlp, k8s-monitoring |
+| KUBE-015 | Kubernetes release cadence, support period and version skew | fact | kubernetes-versions, version-skew, support-period, release-cadence |
+| KUBE-016 | Upgrading a small kubeadm cluster: one minor at a time, gated by add-ons | pattern | kubeadm, upgrade, kubernetes-versions, add-ons |
+
 ## MCP servers: configuration, access control, surfaces and vetting (`topics/kb-mcp.md`, MCP)
 
 | ID | Title | Type | Tags |
