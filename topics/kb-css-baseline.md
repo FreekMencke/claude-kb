@@ -235,7 +235,7 @@ All three are widely available (CSS-005); what breaks them is Sass habits and mi
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [MDN: Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API), [MDN: Using the Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using), [MDN: `popover`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/popover), [MDN: `<button>` `command`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button), [MDN: `@starting-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style), [MDN: `overlay`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overlay) (raw from mdn/content), web-features 3.43.0
-- Related: CSS-006, CSS-007, CSS-010
+- Related: CSS-006, CSS-007, CSS-010, ACCESS-013
 
 Menus, tooltips and modals no longer need a JavaScript library. Statuses from web-features 3.43.0: `<dialog>` widely available; popover (2025-01-27), invoker commands (2025-12-12), `@starting-style` and `transition-behavior` (2024-08-06) newly available.
 
