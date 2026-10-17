@@ -19,10 +19,14 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Worktree staleness: SESS-006 (what `baseRef: "fresh"` fetches), SESS-036 (a `SessionStart` hook that fast-forwards), SESS-025 (rebase before pushing).
 - Workflow cost: ORCH-038 (caps per mechanism), ORCH-049 (size guideline, ultracode, reruns), ORCH-040 (caching in fan-outs).
 - Effort: ORCH-028 (levels and defaults), TOK-055 (as a cost lever, plus thinking), PROMPT-010 (what prompts still move once effort sets thinking).
+- Breaking changes for API callers: CAPI-001 and CAPI-002 (per-model 400s and thinking blocks, from the migration guides), PROMPT-002 (what a prompt written for 4.x must change). PROMPT-002 scopes the sampling 400 to Sonnet 5; the deprecations page says "Claude 4.7 and later models" (CAPI-001).
+- Agent SDK: CAPI-011 and CAPI-012 (choosing it over `claude -p`, permission order, hooks, the bundled binary), ORCH-015 (subagents, budgets, cost), MCP-024 (MCP and in-process tools), MEM-028 (setting sources), ORCH-014 (`claude -p`).
+- Evals: CAPI-015 (an LLM feature, Anthropic's test-and-evaluate guide), SKILL-025 and SKILL-028 (skills), JSTEST-013 (mutation testing for agent-written tests).
 - Keeping the orchestrator's context lean: ORCH-034 (results), TOK-035 (when to delegate).
 - Caching: ORCH-040 (in fan-outs), TOK-052 (TTLs and settings).
 - Skill frontmatter: SKILL-014 (invocation controls), TOK-064 (token effects).
 - Scheduling: ORCH-017 (mechanisms), REPO-030 (for repo agents).
+- Scheduled agents on the API: CAPI-014 (Managed Agents deployment against a routine), ORCH-017 and REPO-030 (Claude Code mechanisms), CAPI-013 and ORCH-018 (Managed Agents features and pricing).
 - Subagent definitions: ORCH-002 (fields), REPO-005 and REPO-009 (locations, reload), TOK-067 (description budget).
 - Inline agent MCP servers: MCP-008 (scoping a server to one subagent), REPO-053 (`tools` doesn't limit its tools).
 - Our reviewer's measurements: REPO-003 (v1 baseline and triggers), REPO-054 (v2 against v1).

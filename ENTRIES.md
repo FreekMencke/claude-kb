@@ -55,6 +55,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | NG-017 | angular/skills follows Angular's `main` branch | fact | skills, angular-developer, third-party |
 | NG-018 | In-page WebMCP and AI debugging tools (v22) | fact | webmcp, devtools, experimental |
 
+## Building on the Claude API, Agent SDK and Managed Agents (`topics/kb-claude-api.md`, CAPI)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| CAPI-001 | Request settings that return 400 on the 5.x models | fact | api, breaking-changes, thinking, tool-choice, sampling, prefill |
+| CAPI-002 | Thinking blocks in responses: read by type, pass back, keep history append-only | fact | api, thinking, preserved-thinking, migration |
+| CAPI-003 | Model IDs are pinned snapshots; the retirement schedule and how to check it | fact | api, model-ids, deprecations, retirement, models-api |
+| CAPI-004 | Replace forced tool use with `auto` plus strict tools; strict-tool limits | recommendation | api, tool-choice, strict-tool-use, json-schema |
+| CAPI-005 | Structured outputs: what isn't guaranteed and what they don't combine with | fact | api, structured-outputs, refusals, citations |
+| CAPI-006 | The SDK tool runner, and returning parallel tool results | tool | api, tool-runner, parallel-tool-use, typescript-sdk |
+| CAPI-007 | Programmatic tool calling: when it pays off and its constraints | tool | api, programmatic-tool-calling, code-execution |
+| CAPI-008 | Stop reasons and refusals an app must handle | fact | api, stop-reason, refusals, fallback |
+| CAPI-009 | TypeScript SDK: retries, timeouts, streaming and request size | fact | typescript-sdk, retries, timeouts, streaming, errors |
+| CAPI-010 | Files API, citations and Batch for a small app | comparison | api, files-api, citations, batch |
+| CAPI-011 | Agent SDK or `claude -p`, and what the SDK installs | comparison | agent-sdk, headless, auth, versioning |
+| CAPI-012 | Agent SDK permission order and hook callbacks | fact | agent-sdk, permissions, can-use-tool, hooks |
+| CAPI-013 | Managed Agents scheduled deployments, budgets, vaults and webhooks | fact | managed-agents, scheduled-deployments, budgets, vaults, webhooks |
+| CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code routine | comparison | managed-agents, routines, schedule, cost, secrets |
+| CAPI-015 | Evaluating an LLM feature: success criteria, test sets and graders | recommendation | evals, graders, testing, llm-judge |
+
 ## Modern CSS and Baseline browser support (`topics/kb-css-baseline.md`, CSS)
 
 | ID | Title | Type | Tags |
