@@ -139,6 +139,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-nestjs.md](topics/kb-nestjs.md) | `NEST` | NestJS 12 backends: Express 5, MongoDB driver 7 |
 | [kb-og-images.md](topics/kb-og-images.md) | `OG` | Open Graph images with satori and resvg |
 | [kb-aws-lambda-node.md](topics/kb-aws-lambda-node.md) | `LAMBDA` | AWS Lambda on the Node.js runtime |
+| [kb-github.md](topics/kb-github.md) | `GH` | GitHub through `gh` and the API: issues, rulesets, releases, Copilot cloud agent |
 
 | Other files | What it holds |
 |---|---|
