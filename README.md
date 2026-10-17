@@ -15,8 +15,9 @@
   <a href="mcp-server/README.md"><img alt="Live server" src="https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&amp;label=live%20server&amp;up_message=online&amp;down_message=offline"></a>
 </p>
 
-A Markdown knowledge base on using Claude efficiently, written for agents to query. Every entry carries its sources, a
-confidence level and a last-verified date.
+A Markdown knowledge base on using Claude efficiently, and on the stack it works on (Angular, TypeScript, Node, npm,
+GitHub Actions, fonts, CSS, accessibility), written for agents to query. Every entry carries its sources, a confidence
+level and a last-verified date.
 
 ## Setup
 
@@ -213,6 +214,11 @@ a PR from `claude/reverify-<YYYY-MM-DD>`. Its prompt lives in the routine, not i
 - **A file per kind of question, not per feature.** Prompting and memory are separate files because agents look them
   up separately; research-tool cost is a section of `kb-token-usage.md` at a handful of entries
   (FreekMencke/claude-kb#18).
+- **One knowledge base for Claude and the stack it works on** (FreekMencke/claude-kb#167, 2026-10-17). Stack topics
+  share the server, the plugin and the research rules; their primary sources are each vendor's docs and changelogs and
+  the npm registry (CLAUDE.md). File names and prefixes name the technology (`kb-js-testing.md`, `JSTEST`), so a
+  generic `TEST` doesn't clash with later topics, and prefixes are letters only: `check-kb.ts` and the server match
+  `[A-Z]+-\d+`.
 - **Link, don't repeat.** Topic files link to neighbouring entries instead of covering them; overlaps kept on purpose
   are listed in OVERLAPS.md, and duplicates are merged with a pointer, never renumbered. An open question raised in two
   files lives in one. Cross-file pointers name entry IDs, not issues.
