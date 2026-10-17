@@ -122,6 +122,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-web-analytics-seo.md](topics/kb-web-analytics-seo.md) | `WEB` | Web analytics and SEO |
 | [kb-design.md](topics/kb-design.md) | `DESIGN` | Visual and UI design with Claude |
 | [kb-typescript.md](topics/kb-typescript.md) | `TS` | TypeScript 6.0 to 7.0 |
+| [kb-nodejs.md](topics/kb-nodejs.md) | `NODE` | Node.js 24/26 runtime and the modern JS baseline |
 
 | Other files | What it holds |
 |---|---|
