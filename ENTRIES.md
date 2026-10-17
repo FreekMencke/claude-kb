@@ -287,6 +287,9 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ORCH-045 | Cognition vs Anthropic on multi-agent | comparison | debate, writes |
 | ORCH-046 | Best-of-N needs a good verifier | fact | best-of-n, voting |
 | ORCH-047 | Decision table: task → pattern → tier | recommendation | decision-table |
+| ORCH-048 | Workflow or orchestrator skill: who holds the plan | recommendation | workflows, skills, orchestrator |
+| ORCH-049 | Workflow cost: size guideline, ultracode and reruns | fact | workflows, ultracode, cost |
+| ORCH-050 | Workflows in `claude -p`, the Agent SDK and `claude-code-action` | fact | workflows, headless, permissions, github-actions |
 
 ## Instructing the 5.x models (`topics/kb-prompting.md`, PROMPT)
 

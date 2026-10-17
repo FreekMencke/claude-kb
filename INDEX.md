@@ -4,7 +4,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 
 | File | Prefix | Topic | Entries |
 |---|---|---|---|
-| `topics/kb-orchestration.md` | ORCH | Orchestration, parallelization and model selection | 47 (0 merged into other entries) |
+| `topics/kb-orchestration.md` | ORCH | Orchestration, parallelization and model selection | 50 (0 merged into other entries) |
 | `topics/kb-token-usage.md` | TOK | Token usage and context efficiency, and the cost of research tools | 92 (4 merged into other entries) |
 | `topics/kb-skills.md` | SKILL | Writing, testing and distributing skills | 62 (1 merged into other entries) |
 | `topics/kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 54 (0 merged into other entries) |
@@ -36,6 +36,8 @@ The questions agents ask most, across all topics. Each topic file's own Quick an
 | Effort or model: which should I change first? | Effort. Anthropic: "sweep effort on your current model first, because most workloads end there". The 5.5 models default to `medium` in Claude Code. Raise effort before raising the tier. | ORCH-028, ORCH-029, TOK-055 |
 | When does parallelizing pay off, and what does it cost? | For independent, read-heavy work (research, review, search, competing hypotheses) or disjoint files with a test oracle; not for sequential chains, shared files or open design. A coding fan-out uses about 3–10× the tokens of a single agent; ten parallel sessions burn quota about 10× as fast. | ORCH-021, ORCH-022, ORCH-020 |
 | Subagents, agent view, agent teams or workflows? | Subagents for side tasks that return a summary. Agent view for independent tasks you hand off. Agent teams (experimental) when workers must talk to each other. Dynamic workflows for dozens of agents or cross-checked results. | ORCH-001 |
+| Workflow or the `parallel-code-orchestrator` skill? | A workflow for fan-out-and-check work, saved from `/workflows` if it repeats; the skill for multi-wave features with plan approval, integration and review loops, since a workflow takes no mid-run input. | ORCH-048 |
+| Can `claude -p` or `claude-code-action` start a workflow? | Only through a `Workflow` allow rule, auto or bypass mode, a hook or a permission-prompt tool; there's no approval prompt. The `ultracode` keyword doesn't trigger from `-p` or relayed PR comments (v2.1.210+). | ORCH-050 |
 | What does a subagent start with, and what goes in its brief? | Its own prompt, tools and the brief, the CLAUDE.md hierarchy and a git status snapshot (Explore and Plan skip both), preloaded skills; no conversation history. So the brief carries objective and why, what's known or ruled out, exact inputs, boundaries, done-when and return format; for unattended runs, say nobody is watching. | ORCH-007, PROMPT-012, PROMPT-013, PROMPT-014 |
 | How should subagent results come back? | As a short structured report (status, files, verify result, about 1–2k tokens). Cap the report, not the work. Bulky output goes to files or the diff, never into the orchestrator's context. | ORCH-034, ORCH-035, PROMPT-013 |
 | How big is the fixed overhead, and how do I see what fills my context? | About 25–27k tokens of system prompt and tool definitions; 37–42k on our first turn with CLAUDE.md, skills and the prompt. `/context` shows the split, `/usage` the spend. | TOK-002, TOK-001, TOK-010 |
