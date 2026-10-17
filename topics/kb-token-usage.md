@@ -2049,10 +2049,7 @@ Ranked by expected savings ÷ effort. Done on 2026-10-12, now in `~/.claude` or 
 - R6: the user-only `token-audit` skill, which runs this file's analyses over `~/.claude/projects` (FreekMencke/claude-skills#14; TOK-013, TOK-080).
 - R7: output habits in the global CLAUDE.md ("Shell output") (TOK-042).
 - R8: the unused claude.ai-synced skills set to `name-only` (below; 10 kept, `morning` and `import-memory` disabled on claude.ai instead).
-
-| # | Change | What it does / when it triggers | Est. savings | Effort | Evidence |
-|---|---|---|---|---|---|
-| R5 | **Screenshot hygiene** for `osrs-tracker-web`: [osrs-tracker/osrs-tracker-web#223](https://github.com/osrs-tracker/osrs-tracker-web/issues/223) (the `browser-checker` agent, kb-repo-agents T3; landed 2026-10-12, final count due from 2026-10-27). Prefer Playwright `browser_snapshot` (about 200 tokens) for structure checks; screenshot elements or a ≤1280px viewport; run visual review loops in a subagent that returns findings | Any UI verification task | Roughly 1–3M image tokens over the 6 days that are later re-read about 58x (TOK-009). Likely the largest single tool-output saving for that repo. | 20 min | TOK-043, TOK-023, TOK-035 |
+- R5: the `browser-checker` agent keeps osrs-tracker-web's screenshots out of main sessions (osrs-tracker/osrs-tracker-web#223, kb-repo-agents T3; final count due from 2026-10-27). TOK-043, TOK-009.
 
 Won't do (measured 2026-10-12, below):
 - R13, disabling `frontend-design` and `playwright` per project: together about 1.3% of the starting context, against settings changes in every repo that uses them.
@@ -2081,12 +2078,12 @@ Not recommended now:
 - Serena or claude-context (TOK-084): `typescript-lsp` already covers symbol lookup.
 - Raising cache TTLs: rebuilds are only 8% of writes (TOK-034).
 
-**Research tools (TOK-087 to TOK-102, 2026-10-12).** Ranked by impact against effort. R10 and R11 are done (2026-10-12, FreekMencke/claude-kb#50): CLAUDE.md's research rules now say a WebFetch answer is never a quote, keep context7 for third-party libraries, and brief research subagents with source order, what's tested, absence rules, write limits and a quote per claim. R12 is done (2026-10-12, FreekMencke/claude-kb#51): the re-verification routine's subagent rules now state the shared 200-search budget and say to curl cited sources instead of searching for them; both routines also open with PROMPT-014's autonomy block.
+**Research tools (TOK-087 to TOK-102).** R10 to R12, done 2026-10-12: CLAUDE.md's research rules (FreekMencke/claude-kb#50), and the re-verification routine's shared search budget, curl-not-search rule and autonomy opener (FreekMencke/claude-kb#51).
 
 Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost only names while deferred, but `llms.txt` plus a curled `.md` page already finds and reads a page for fewer tokens. Revisit if lookups keep missing the right page. The AWS docs tools already come with the `aws` server (TOK-097).
 
 **Subagent handoff and script output (TOK-103 to TOK-115, 2026-10-16).** Ranked by impact against effort:
-- R14, done 2026-10-16: keep failed check logs in osrs-tracker-api's `verify.sh`. It deletes its logs on exit and prints each failed log whole, so a failure over 10,000 characters arrives as head and tail with nothing left to read. web and aws already keep the log and print its path and last 60 lines (TOK-108, TOK-109). Done in [osrs-tracker/osrs-tracker-api#183](https://github.com/osrs-tracker/osrs-tracker-api/issues/183).
+- R14, done 2026-10-16: osrs-tracker-api's `verify.sh` keeps failed check logs and prints their path and tail, like web and aws (osrs-tracker/osrs-tracker-api#183). TOK-108, TOK-109.
 - R15: leave this repo's research readers returning inline (the `research` skill's brief). Subagents can't write `report.md` or `findings*.md` files, and a report over 50K characters already arrived as a file plus a 2 KB preview in an interactive session, so ask for a 10-line summary first and one `##` section per question (TOK-105, TOK-106, TOK-107). No change needed: the brief already asks for per-question sections.
 - R16: for the output-style trial (FreekMencke/claude-kb#49), compare against TOK-113: a plain concise instruction gets most of what terse styles save, and output is 17% of our cost (TOK-008).
 - Not now: turning off prompt suggestions or `!` replies (TOK-112). Both are small, cache-read requests or ones we ask for.

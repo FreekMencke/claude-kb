@@ -1463,11 +1463,9 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 - On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice.
 - Don't set `syncClaudeAiSkills: false`. The only synced skills left are the 10 set to `name-only` (under 20 tokens each), so turning sync off saves almost nothing and drops the account skills from the terminal.
 
-Still open:
-
 10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). `CLAUDE.md` and `.claude/rules/` still load from the worktree, so CLAUDE.md edits do take effect there.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
-12. **Done 2026-10-12: prune unused account skills on claude.ai** (Customize › Skills). Done for WSL Claude Code (`skillOverrides`). On claude.ai, 2026-10-12: `morning` and `import-memory` disabled; kept on purpose: `docs`, `pdf`, `docx`, `pptx`, `xlsx` (used in chat), `deep-research`, `computer-use`, `chrome-browser`, `built-in-browser`, and `skill-creator` (skill-workshop points to it for benchmarks and description tuning). Disabling on claude.ai removes a skill from every surface, chat included, so decide per skill on use anywhere, not just in code. In desktop Local sessions these skills arrive as a plugin, which `skillOverrides` and `syncClaudeAiSkills` don't control, and they cost listing budget in every session and subagent (SKILL-058, SKILL-005).
+12. **Done 2026-10-12: unused account skills pruned**: `name-only` in WSL Claude Code's `skillOverrides` (kb-token-usage R8), and `morning` and `import-memory` disabled on claude.ai. The rest are kept on purpose, since disabling one there removes it from every surface. SKILL-058, SKILL-005.
 
 ## Open questions
 
