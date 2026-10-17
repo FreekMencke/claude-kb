@@ -148,6 +148,10 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-029 | Test: four directions, then a person picks | comparison | experiment, directions, human-pick, swatches |
 | DESIGN-030 | Tests: from a visual chooser to staged picks | comparison | experiment, staged-picks, swatches, tone-of-voice |
 | DESIGN-031 | Staged picks on an existing site: extract, then lock, nudge or open each step | pattern | existing-site, redesign, staged-picks, tokens |
+| DESIGN-032 | Optical sizes: when they matter, and what browsers do with `opsz` | fact | typography, optical-size, opsz, font-optical-sizing, variable-fonts |
+| DESIGN-033 | Pairing typefaces: one family first, then a second face with a job | pattern | typography, font-pairing, superfamily, font-matrix |
+| DESIGN-034 | Numerals and `case` in a UI: tabular for data, `case` for capitals | recommendation | typography, numerals, tabular-nums, font-variant-numeric, opentype-features |
+| DESIGN-035 | The Google Fonts API serves fewer features and axes than the family has | fact | google-fonts, opentype-features, opsz, self-hosting |
 
 ## Docker images for Node apps (`topics/kb-docker-node.md`, DOCKER)
 

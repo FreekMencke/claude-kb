@@ -10,6 +10,7 @@ Research basis:
 - The lead ran the prompting test in DESIGN-027 (26 `claude -p` runs) and follow-ups with the user picking: two 5-run tests and two staged sessions (DESIGN-029, DESIGN-030).
 - `/design-sync`'s framework support was read from the installed v2.1.296 CLI bundle and the session's `DesignSync` tool description, because the docs say only "React components".
 - A 2026-10-16 deep-research report from a claude.ai chat supplied leads only; it isn't cited.
+- A third round on 2026-10-18 (DESIGN-032 to DESIGN-035, FreekMencke/claude-kb#191): typography choices. The lead read Google Fonts Knowledge as raw Markdown from its source in google/fonts (`cc-by-sa/knowledge/`, CC BY-SA 4.0; the site itself renders in JavaScript), MDN's `font-variant-numeric` and `font-optical-sizing` pages from mdn/content, the OpenType feature and `opsz` registry pages, CSS Fonts 4 from csswg-drafts, Butterick's pages and the web-features 3.43.0 data, and tested Google Fonts files with fontTools and headless Chrome. No readers, no web searches.
 
 ## Quick answers
 
@@ -22,9 +23,9 @@ Research basis:
 | How do I get an original, consistent colour scheme? | Pick the brand hue from the subject, then fill named roles (Radix's 12 steps or Material's roles), generate the ramp in OKLCH with a script library and check WCAG 2 contrast in light and dark. | DESIGN-015, DESIGN-016, DESIGN-018, DESIGN-019 |
 | Why do Tailwind and shadcn sites look alike, and how do I theme them away? | Stock fonts, radii, shadows and an achromatic shadcn theme. Clear namespaces with `@theme { --color-*: initial; }`, set shadcn's CSS variables or a `shadcn create` style, from the repo's tokens. | DESIGN-023 |
 | How do I get past hero, three cards and a CTA? | Name a layout (bento, magazine, split screen, zigzag, broken grid…), default to no cards, one job per section, and carry the ASCII wireframe into `grid-template-areas`. | DESIGN-022 |
-| How do I keep a multi-page site consistent? | Give every session the role tokens, a component inventory and page templates (CLAUDE.md or a repo skill), and check every page for off-token values, visual diffs and raw hexes. | DESIGN-024, DESIGN-021 |
+| Where do design tokens go, and how do I keep a multi-page site consistent? | Where Claude reads them: CLAUDE.md, a theme file or a repo skill; your prompt beats them, and they beat Claude's defaults. Give every session the role tokens, a component inventory and page templates, and check every page for off-token values, visual diffs and raw hexes. Artifacts load fonts only from Google Fonts; other faces are inlined. | DESIGN-006, DESIGN-024, DESIGN-021 |
+| Which type details should a UI specify: pairing, optical sizes, numerals? | One family first; add a second face only for a job the first can't do, from the same form model or designer. `tabular-nums` for data and changing values, `"case"` on all-caps labels, `slashed-zero` for codes; check the font has the feature. Optical sizes matter when one family runs from captions to display sizes; browsers apply them by CSS px without any CSS. A `fonts.googleapis.com` link drops `case`, `zero`, `onum` and stylistic sets, and `opsz` unless the URL names it. | DESIGN-033, DESIGN-034, DESIGN-032, DESIGN-035 |
 | frontend-design or `artifact-design`? | frontend-design is the plugin skill for UI in code and is identical in all three Anthropic repos (last changed 2026-09-01 to 09-03). `artifact-design` is bundled with the Artifact tool and governs published pages. Community skills (Impeccable, Taste Skill) are unofficial: borrow their ideas rather than install them. | DESIGN-005, DESIGN-012 |
-| Where do design tokens go? | Where Claude reads them: the project's CLAUDE.md, a theme file, or a repo skill. Precedence: your prompt, then your design system, then Claude's defaults. Artifacts load fonts only from Google Fonts; other faces are inlined. | DESIGN-006 |
 | How do I get a design system out of existing code? | React: `/design-sync`. Anything else, Angular included (the v2.1.296 sync adapters read `.tsx`/`.jsx` and React Storybook only): have Claude read the theme files, CSS custom properties and components into one token list per role. | DESIGN-002, DESIGN-010 |
 | Screenshot or computed styles to check a design? | Screenshots for overall look and hierarchy; computed styles (`getComputedStyle`, a contrast check) for exact spacing, sizes, colours and contrast, because Claude's localisation is "approximate". Claude can't generate images; its design output is HTML, CSS, SVG or canvas. | DESIGN-007, DESIGN-008 |
 | How do I improve an existing design rather than redesign it? | Give the highest-fidelity input you have (code plus the running app, then a URL, then a screenshot), lock the tokens, audit against a checklist and change one thing at a time; redesign only when asked, on a branch. For staged picks, extract the current design first and re-open only the steps that should change. | DESIGN-009, DESIGN-031 |
@@ -66,6 +67,10 @@ Research basis:
 | DESIGN-029 | Test: four directions, then a person picks | comparison | experiment, directions, human-pick, swatches |
 | DESIGN-030 | Tests: from a visual chooser to staged picks | comparison | experiment, staged-picks, swatches, tone-of-voice |
 | DESIGN-031 | Staged picks on an existing site: extract, then lock, nudge or open each step | pattern | existing-site, redesign, staged-picks, tokens |
+| DESIGN-032 | Optical sizes: when they matter, and what browsers do with `opsz` | fact | typography, optical-size, opsz, font-optical-sizing, variable-fonts |
+| DESIGN-033 | Pairing typefaces: one family first, then a second face with a job | pattern | typography, font-pairing, superfamily, font-matrix |
+| DESIGN-034 | Numerals and `case` in a UI: tabular for data, `case` for capitals | recommendation | typography, numerals, tabular-nums, font-variant-numeric, opentype-features |
+| DESIGN-035 | The Google Fonts API serves fewer features and axes than the family has | fact | google-fonts, opentype-features, opsz, self-hosting |
 
 ## [DESIGN-001] Visualising and iterating on a design in Claude Code
 - Type: pattern
@@ -159,17 +164,17 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-10-18
 - Sources: [Artifacts: improve the visual design, page constraints](https://code.claude.com/docs/en/artifacts), [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design)
-- Related: DESIGN-002, DESIGN-012, SURF-016, MEM, REPO-044
+- Related: DESIGN-002, DESIGN-012, DESIGN-034, DESIGN-035, SURF-016, MEM, REPO-044
 
 **Where.** Anthropic: record tokens "where Claude can find them, such as the project's CLAUDE.md or a theme file in your repository". Any clear list works: "The heading and format above are an example; any clear list of colors, fonts, and spacing works." For a repo with agents, a repo skill that reviewers preload works too (REPO-044). A `DESIGN.md` is a community convention, not an Anthropic one (DESIGN-012).
 
 **Precedence:** "Claude treats your design system as higher precedence than its own choices, and your prompt as higher precedence than both." For `/design` canvases and artifact templates, a Design System artifact does the same job (DESIGN-002).
 
-**What a token block needs:** colours by role (surface, text, accent, borders, states), typefaces and their roles, a type scale, a spacing scale, radii by surface type, shadow and motion rules, and real examples. Roles beat raw hexes: Claude can apply "accent for links and primary actions", not "#10b981 somewhere".
+**What a token block needs:** colours by role (surface, text, accent, borders, states), typefaces and their roles (with the figure style per role, such as tabular for data, DESIGN-034), a type scale, a spacing scale, radii by surface type, shadow and motion rules, and real examples. Roles beat raw hexes: Claude can apply "accent for links and primary actions", not "#10b981 somewhere".
 
-**Fonts in artifacts:** Google Fonts is "the one external font source an artifact page can load from"; Claude inlines any other typeface as a `@font-face` data URI with a fallback stack. External images are blocked by the CSP. A private brand font in an artifact therefore costs data-URI tokens on every publish.
+**Fonts in artifacts:** Google Fonts is "the one external font source an artifact page can load from"; Claude inlines any other typeface as a `@font-face` data URI with a fallback stack. External images are blocked by the CSP. A private brand font in an artifact therefore costs data-URI tokens on every publish. Google's served files also lack most OpenType features (`case`, `zero`, stylistic sets), so an artifact that needs them inlines the font too (DESIGN-035).
 
 **Note:** the docs' sample block uses "Inter for body", which Anthropic's own design guidance lists as a generic default (INDEX.md Conflicts). It is a format example; choose your own type.
 
@@ -423,9 +428,9 @@ All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS fil
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
-- Sources: [Utopia](https://utopia.fyi/), [Utopia type calculator](https://utopia.fyi/type/calculator/), [webtypography.net 2.1.2, quoting Bringhurst](https://webtypography.net/2.1.2), [Butterick: line length](https://practicaltypography.com/line-length.html), [Butterick: point size](https://practicaltypography.com/point-size.html), [WCAG 2.2 Understanding 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html), [MDN: text-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap)
-- Related: DESIGN-004, DESIGN-005, DESIGN-019, DESIGN-021
+- Last verified: 2026-10-18
+- Sources: [Utopia](https://utopia.fyi/), [Utopia type calculator](https://utopia.fyi/type/calculator/), [webtypography.net 2.1.2, quoting Bringhurst](https://webtypography.net/2.1.2), [Butterick: line length](https://practicaltypography.com/line-length.html), [Butterick: point size](https://practicaltypography.com/point-size.html), [WCAG 2.2 Understanding 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html), [MDN: text-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap), [Google Fonts Knowledge source (google/fonts, `cc-by-sa/knowledge`)](https://github.com/google/fonts/tree/main/cc-by-sa/knowledge)
+- Related: DESIGN-004, DESIGN-005, DESIGN-019, DESIGN-021, DESIGN-032, DESIGN-033, DESIGN-034
 
 **Scale.** Utopia defines one modular scale for a small screen and one for a large screen and lets `clamp()` interpolate. The calculator's default, `360,18,1.2,1240,20,1.25,5,2`, is a 360 px viewport at 18 px and ratio 1.2 ("Minor Third"), a 1240 px viewport at 20 px and ratio 1.25 ("Major Third"), 5 steps up and 2 down. It outputs `--step-0: clamp(1.125rem, 1.0739rem + 0.2273vw, 1.25rem)`. Butterick: body text "on the web, the optimal size is 15–25 pixels".
 
@@ -436,7 +441,7 @@ All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS fil
 
 **Wrapping:** `text-wrap: balance` for headings (Chromium balances six lines or fewer); `pretty` for paragraphs, which "has a negative effect on performance".
 
-**Typefaces:** we found no primary source on choosing them that we could read as raw text (Google Fonts Knowledge renders in JavaScript), nor one that ranks overused Google Fonts. Pick by role and subject (DESIGN-004), and record the choice as a token.
+**Typefaces:** Google Fonts Knowledge renders in JavaScript, but its lessons are Markdown in google/fonts under `cc-by-sa/knowledge/modules/<module>/lessons/<lesson>/content.md`, readable from raw.githubusercontent.com (found 2026-10-18). Its "Choosing type" module covers choosing, pairing (DESIGN-033) and optical sizes (DESIGN-032); numerals are in DESIGN-034. We found no source that ranks overused Google Fonts. Pick by role and subject (DESIGN-004), and record the choice as a token.
 
 ## [DESIGN-021] Token files: the DTCG format and three tiers
 - Type: fact
@@ -689,6 +694,89 @@ DESIGN-030's steps assume a blank page. On an existing site, treat what exists a
 3. **Show options in the site's own CSS and components**, in an artifact or a scratch page, not on a generic mock-up.
 4. **Write the picks back** into the tokens and the repo's design skill, with audience, feel and tone as a few lines, so later sessions don't re-decide them and drift checks have a reference (DESIGN-006, DESIGN-024).
 
+## [DESIGN-032] Optical sizes: when they matter, and what browsers do with `opsz`
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Google Fonts Knowledge: choosing typefaces that have optical sizes](https://fonts.google.com/knowledge/choosing_type/choosing_typefaces_that_have_optical_sizes), [Google Fonts Knowledge: optical size axis](https://fonts.google.com/knowledge/glossary/optical_size_axis), [OpenType: the `opsz` axis](https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_opsz), [CSS Fonts 4: `font-optical-sizing`](https://drafts.csswg.org/css-fonts-4/#font-optical-sizing-def), [MDN: font-optical-sizing](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-optical-sizing), [web-features 3.43.0](https://www.npmjs.com/package/web-features)
+- Related: DESIGN-020, DESIGN-033, DESIGN-035, FONT-023, FONT-006
+
+Optical sizes are versions of a face drawn for a size. Small ones "have less stroke contrast, larger x-heights, wider characters, and more open spacing" (Google Fonts Knowledge).
+
+**When they matter:** when one family runs from captions to display sizes: "if we're creating a brand that will require text to be set very small and also very large, optical sizes will undoubtedly be useful." The axis costs bytes: "the font file-size will typically double… it can range between 1.2× and 2.6×". The axis range caps the effect: `opsz` runs 14–32 in Inter, 7–72 in Literata, 9–144 in Fraunces (google/fonts files).
+
+**What browsers do:** nothing to write. `font-optical-sizing: auto` is the initial value, Baseline widely available since 2022-09-24 (web-features 3.43.0). The units differ: OpenType values "can be interpreted as text size, in typographic points"; CSS Fonts 4 expects a value "close to the used value for 'font-size'", clamped to the font's range, and Google's glossary says browsers "match it to the CSS `px` unit". So 16 px text gets `opsz` 16, not 12 (INDEX.md Conflicts). To choose another value, such as the sturdier body size Google suggests for TV screens, `font-variation-settings: 'opsz' N` is the only route (FONT-023's override caveat applies).
+
+Google Fonts serves the axis only when the URL names it (DESIGN-035).
+
+Tested 2026-10-18, Chrome 155.0.8059.39 headless, Literata `[opsz,wght]` from google/fonts, one line at 24 px: `auto` measured 331.13 px wide, the same as `'opsz' 24` (18: 331.56; 7: 368.28). At 72 px, `auto` matched `'opsz' 72`.
+
+## [DESIGN-033] Pairing typefaces: one family first, then a second face with a job
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Google Fonts Knowledge: pairing typefaces](https://fonts.google.com/knowledge/choosing_type/pairing_typefaces), [… based on their construction (the font matrix)](https://fonts.google.com/knowledge/choosing_type/pairing_typefaces_based_on_their_construction_using_the_font_matrix), [… within a family or superfamily](https://fonts.google.com/knowledge/choosing_type/pairing_typefaces_within_a_family_superfamily), [Butterick: mixing fonts](https://practicaltypography.com/mixing-fonts.html)
+- Related: DESIGN-004, DESIGN-020, DESIGN-030, DESIGN-032, DESIGN-034, DESIGN-003
+
+**First ask whether you need a second face.** Google: "Do we really need a secondary typeface?" Try the primary's weights, widths, optical sizes, size, case and tracking first. Butterick: "Mixing fonts is never a requirement… Most documents can tolerate a second font. Few can tolerate a third." Google's reasons for one: a change of context (data beside editorial text), a brand voice the primary can't carry, missing weights, widths or italics, and missing features or languages.
+
+**Rules with a source:**
+- *Distinct, not competing.* Jason Santa Maria, quoted by Google: "choose typefaces that don't compete too much with each other, but aren't so similar as to be indistinguishable… When in doubt […] pair a serif and a sans serif." Butterick denies serif-plus-sans is required: "it's not true… lower contrast between fonts can be more effective". Use it as the fallback, not the rule.
+- *The font matrix* (Indra Kupferschmid, via Google): describe each face's skeleton (dynamic, rational or geometric) and flesh (contrast, serifs). "Pair typefaces with similar form models"; "Avoid combinations with different form models, but the same contrast and serifs".
+- *Shortcuts:* a superfamily (Merriweather with Merriweather Sans, Nunito with Nunito Sans), or one designer, which Butterick says "works reliably".
+- *Roles:* "each font has a consistent role"; change fonts only at paragraph breaks.
+
+**For Claude:** name each face's role and why the pair works (form model, shared x-height), show candidates in real copy (DESIGN-030, step 5), and check both files have the numeral features the UI needs (DESIGN-034).
+
+## [DESIGN-034] Numerals and `case` in a UI: tabular for data, `case` for capitals
+- Type: recommendation
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Google Fonts Knowledge: understanding numerals](https://fonts.google.com/knowledge/introducing_type/understanding_numerals), [MDN: font-variant-numeric](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-variant-numeric), [OpenType feature registry: `case`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-case), [Butterick: alternate figures](https://practicaltypography.com/alternate-figures.html), [web-features 3.43.0](https://www.npmjs.com/package/web-features)
+- Related: FONT-023, FONT-019, DESIGN-033, DESIGN-035, DESIGN-006, OG-003
+
+Figures are proportional or tabular, and lining or oldstyle. The default is safe: "It's never wrong to use the default figures in your font" (Butterick).
+
+| Where | CSS (feature) | Why |
+|---|---|---|
+| Table columns, prices, stats, timers, values that update | `font-variant-numeric: tabular-nums` (`tnum`) | Numbers that "might change, but need to stay aligned, such as in an app's countdown timer" (Google) |
+| Running text | default | "In body text, proportional figures are preferred" (Butterick) |
+| Long-form serif reading | `oldstyle-nums` (`onum`), optional | They "don't interrupt the flow of reading lowercase characters" (Google); never with capitals |
+| All-caps labels, buttons, eyebrows | `font-feature-settings: "case"` | Shifts "punctuation marks up to a position that works better with all-capital sequences… also changes oldstyle figures to lining figures" (OpenType registry) |
+| Codes, IDs, keys | `slashed-zero` (`zero`) | "when a clear distinction between O and 0 is needed" (MDN) |
+
+`font-variant-numeric` is Baseline widely available since 2022-07-15 (web-features 3.43.0); `case` has no high-level property (FONT-023).
+
+**A property does nothing when the font lacks the feature.** Check the file, or use Butterick's test: "type a line of zeroes above a line of ones. If they're the same length, then your font has tabular figures."
+
+Tested 2026-10-18, fontTools 4.46.0, files from google/fonts: Fraunces (Claude's default display face, DESIGN-027) has `case` but no `tnum`, `lnum` or `onum`; Inter has `tnum`, `case` and `zero`; Literata has all five (`tnum`, `lnum`, `onum`, `case`, `zero`); Roboto Flex's default figures are already tabular. Chrome 155: `tabular-nums` widened Literata's "1111" at 24 px from 39.08 to 55.88 px.
+
+## [DESIGN-035] The Google Fonts API serves fewer features and axes than the family has
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Google Fonts Knowledge: OpenType features in practice](https://fonts.google.com/knowledge/introducing_type/open_type_features_in_practice), [Google Fonts CSS API v2](https://developers.google.com/fonts/docs/css2), [google/fonts](https://github.com/google/fonts)
+- Related: DESIGN-032, DESIGN-034, DESIGN-006, FONT-019, FONT-023, OG-003
+
+Google Fonts Knowledge: "non-essential OpenType features *aren't* included in web fonts served via Google Fonts' API; however, the OpenType features are still present in the downloadable fonts, which can then be self-hosted." The lesson's only commit in google/fonts is dated 2022-03-28; the test below shows it still held on 2026-10-18.
+
+The CSS API serves only the axes the URL names: "When a request doesn't specify a position or range for an axis, the default position will be used." `family=Inter:wght@100..900` returns a file without `opsz`, so `font-optical-sizing` has nothing to vary; `family=Inter:opsz,wght@14..32,100..900` keeps it.
+
+**For a design:** from a `fonts.googleapis.com` link (the only font source artifacts allow, DESIGN-006), `tabular-nums` works, but `case`, `slashed-zero`, `oldstyle-nums`, small caps and stylistic sets don't. For those, self-host the family's file from google/fonts, subset with `--layout-features='*'` (FONT-019), or inline it in an artifact.
+
+Tested 2026-10-18, fontTools 4.46.0, the `latin` files the API served to a Chrome 155 user agent:
+
+| Family | google/fonts file | Served |
+|---|---|---|
+| Inter | 43 features, `case`, `zero`, `ss01`–`ss08`, `cv01`–`cv14` among them | 11: `calt ccmp dnom frac kern locl mark mkmk numr pnum tnum` |
+| Literata | 26, `lnum`, `onum`, `smcp`, `case`, `zero` among them | 11: `ccmp dnom frac kern liga locl mark numr pnum rvrn tnum` |
+
+Both served sets fall within `pyftsubset`'s defaults plus `tnum` and `pnum` (FONT-019). Inter's `latin` file was 48,256 bytes with `wght` only and 72,920 with `opsz,wght`.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -697,15 +785,20 @@ Ranked by impact against effort.
 2. **Done 2026-10-17: a contrast and computed-colour check in osrs-tracker-web's `browser-checker`** (osrs-tracker/osrs-tracker-web#337, script fixes in osrs-tracker/osrs-tracker-web#340). DESIGN-007.
 3. **Don't run `/design-sync` on osrs-tracker-web** (DESIGN-002). It's Angular, and the sync adapters read React only. Its design system stays in the repo skill and the design canvas artifact. If mock-ups move to `/design`, make a Design System artifact from a chat with `theme.css`, `base.css` and screenshots of real pages (DESIGN-010), and refresh it when the tokens change. No repo change.
 4. **For a new page or redesign in any repo, prompt with DESIGN-004:** subject, audience and job; one small choice at a time, picked by you rather than by Claude, instead of whole designs, with DESIGN-030's prompt: audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then combined variants, keeping several picks per stage (4 of 5 variants were good on both subjects; in DESIGN-027 the self-pick added template chrome, in DESIGN-029 half the options repeated across runs, and a one-page chooser left one section skeleton); a banned list grown from the last result. On an existing site, extract first and re-open only the steps that should change (DESIGN-031). A skill that runs this, rotating batches included, is `design-workshop`, added 2026-10-16 in [FreekMencke/claude-skills#75](https://github.com/FreekMencke/claude-skills/issues/75). It ends with a design brief, and `frontend-design` implements that brief as a fixed spec: its craft rules and quality floor without its own direction-setting (DESIGN-005). In a Tailwind or shadcn repo, theme the defaults away first (DESIGN-023). No change needed: the `frontend-design` plugin we have installed is the current upstream text (identical checksum, 2026-10-16).
-5. **Don't install Impeccable or Taste Skill user-wide** (DESIGN-012). They add hooks, a downloaded binary, telemetry or image fetching, and overlap with frontend-design. Borrow their banned lists and measuring ideas instead.
-6. **Test design-prompt or skill changes with DESIGN-028's isolation flags**, measured as in DESIGN-027, so CLAUDE.md, the frontend-design plugin and the output style don't leak into the result. The measuring scripts aren't in the repo; adding them under `evals/` would make the test re-runnable. Decided 2026-10-17 (FreekMencke/claude-kb#43): a habit, not an issue; add the scripts the next time a design test runs.
-7. **Considered, not adopted: `--color-*: initial` in osrs-tracker-web's `@theme`** (DESIGN-023). On 2026-10-16 its templates used no default palette colour classes, so clearing them would turn an off-token colour into a build error. Its repo skill already says "a value the scale lacks becomes a token", and osrs-tracker/osrs-tracker-web#337 added a computed-colour check; a change would first have to check what `@tailwindcss/forms` reads from the default palette. Not worth an issue now.
+5. **Have `design-workshop` check figures and Google Fonts' feature limits** (DESIGN-034, DESIGN-035, DESIGN-032): its Type step shows a pairing with one key fact, so a face without `tnum` (Fraunces, Claude's default display face) passes unnoticed, and its brief doesn't record figure styles or features that a `fonts.googleapis.com` link strips. One line in the Type step and one in the brief: [FreekMencke/claude-skills#84](https://github.com/FreekMencke/claude-skills/issues/84).
+6. **No change for osrs-tracker-web or freek-mencke-web** (DESIGN-034, DESIGN-032): both self-host one variable font family (`wght` only, 300–700 and 100–700 cuts, no `opsz`) whose files keep `tnum` and `case`, and osrs-tracker-web already sets `tabular-nums` on its values (checked 2026-10-18 with fontTools 4.46.0). Optical sizes would need a font with the axis; not worth changing the face for.
+7. **Don't install Impeccable or Taste Skill user-wide** (DESIGN-012). They add hooks, a downloaded binary, telemetry or image fetching, and overlap with frontend-design. Borrow their banned lists and measuring ideas instead.
+8. **Test design-prompt or skill changes with DESIGN-028's isolation flags**, measured as in DESIGN-027, so CLAUDE.md, the frontend-design plugin and the output style don't leak into the result. The measuring scripts aren't in the repo; adding them under `evals/` would make the test re-runnable. Decided 2026-10-17 (FreekMencke/claude-kb#43): a habit, not an issue; add the scripts the next time a design test runs.
+9. **Considered, not adopted: `--color-*: initial` in osrs-tracker-web's `@theme`** (DESIGN-023). On 2026-10-16 its templates used no default palette colour classes, so clearing them would turn an off-token colour into a build error. Its repo skill already says "a value the scale lacks becomes a token", and osrs-tracker/osrs-tracker-web#337 added a computed-colour check; a change would first have to check what `@tailwindcss/forms` reads from the default palette. Not worth an issue now.
 
 ## Open questions
 
 - **The full frontend-design skill wasn't tested** (DESIGN-027): S3 used only its two passes, without its list of default looks. The staged method ran twice (DESIGN-030), on two subjects, Sonnet 5.5 only, with one person judging; fonts and layout ideas repeated across both. The user's rotating batches (five options per stage, new batches until at least three are kept) and the existing-site mode (DESIGN-031) are untested; FreekMencke/claude-skills#75's first use will test them.
 - **The test kept only final pages:** `--output-format json` returns the last message, so S2's four directions and S3's plans weren't recorded (DESIGN-028). `stream-json` would keep them.
-- **Typeface choice has no raw-text primary source here** (DESIGN-020): Google Fonts Knowledge and m3.material.io render in JavaScript, so curl got empty pages. A browser read would fill this.
+- **Typeface choice beyond pairing** (DESIGN-020, DESIGN-033): Google Fonts Knowledge turned out to be readable as Markdown in google/fonts (2026-10-18); its "A checklist for choosing type" and "Emotive considerations" lessons weren't read. m3.material.io still renders in JavaScript; headless Chrome (`--dump-dom`) would read it.
+- **Does any browser turn on `case` by itself under `text-transform: uppercase`?** (DESIGN-034) The OpenType registry suggests applications apply it "automatically when the user changes case"; CSS Fonts 4 says nothing, and we didn't test it. Set it explicitly until tested.
+- **`opsz` in Firefox and Safari** (DESIGN-032): only Chrome 155 was measured; whether Firefox and Safari also map CSS px one to one wasn't checked.
+- **Does the Google Fonts API keep any feature on request?** (DESIGN-035) The CSS API v2 page lists no parameter for features; only Inter and Literata were tested.
 - **Does OpenAI's "no cards" guidance transfer to Claude?** (DESIGN-022) Written for its GPT models; untested on Claude.
 - **Not read:** Müller-Brockmann's grid systems via a reputable secondary source, Refactoring UI's public pages, the CRAP principles, Carbon's and Polaris's spacing pages, Storybook and Chromatic (DESIGN-022, DESIGN-024).
 - **Leonardo and OKLCH:** its README lists LCH, LAB, CAM02, HSL, HSLuv, HSV and RGB only (DESIGN-016); whether newer builds interpolate in OKLCH wasn't checked.

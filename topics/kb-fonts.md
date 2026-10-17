@@ -5,8 +5,8 @@ Prefix `FONT`. This file covers building a font family from sources with the fon
 instancer, gftools builder), OpenType feature code, hinting and the `gasp` table, QA with Fontspector, release
 layout, version fields and the OFL, and serving the fonts on the web: WOFF2, subsetting, `unicode-range`,
 `font-display`, preload, fallback metric overrides, variable-font CSS and OpenType features in CSS. It ends with what
-Claude can and can't do in type design. Choosing and pairing typefaces is in `kb-design.md` (DESIGN-006,
-DESIGN-020); LCP and CLS measurement is in `kb-web-analytics-seo.md` (WEB-010, WEB-011).
+Claude can and can't do in type design. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
+DESIGN-020, DESIGN-032 to DESIGN-035); LCP and CLS measurement is in `kb-web-analytics-seo.md` (WEB-010, WEB-011).
 
 Research basis:
 - Researched 2026-10-17 (FreekMencke/claude-kb#176, part of roadmap #167) by an Opus 5.5 lead with three Sonnet 5.5
