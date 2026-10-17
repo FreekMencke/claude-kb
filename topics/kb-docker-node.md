@@ -218,7 +218,7 @@ Tested 2026-10-17, Node 24.21.0 as PID 1 of a new PID namespace (`unshare -rpf -
 
 Write both: `FROM node:24-alpine@sha256:<digest>`. The tag stays readable and tells Dependabot which line to follow; the digest is what's pulled. Our apps do this, with a weekly `docker` entry that ignores `version-update:semver-major` for `node`, because a Node major also moves CI's setup-node, `engines` and `@types/node` (NODE-014).
 
-Docker's other half: "rebuild your images regularly". A pinned digest is only as fresh as the last merged bump, and an app that isn't redeployed keeps the old base: on 2026-10-17 our web image's config said `NODE_VERSION=24.21.0` while `24-alpine` was 24.22.0 (released 2026-10-14).
+Docker's other half: "rebuild your images regularly". A pinned digest is only as fresh as the last merged bump, and an app that isn't redeployed keeps the old base until its next build: a digest-pinned image keeps the Node patch it was built with, even after the tag it came from has moved on.
 
 ## [DOCKER-010] Image size and startup: what actually changes start time
 - Type: fact
@@ -332,7 +332,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 1. **Keep the setup; it matches the sources** (DOCKER-004, DOCKER-005, DOCKER-008, DOCKER-009). Digest pins with Dependabot, two stages, exec-form `CMD`, a non-root user and SIGTERM handlers are all in place.
 2. **Move to `node:26-alpine` with the Node 26 move** (DOCKER-002, NODE-001): on 26, x64 musl is Tier 2 rather than Experimental. NODE's recommendation 1 already covers when; the Dockerfile's two `FROM` lines are part of that checklist.
 3. **When a Dockerfile is next touched, write `USER 1000:1000` instead of `USER node`** (DOCKER-008). The pods set `runAsUser`, so nothing fails today; the number keeps `runAsNonRoot` working if that line is dropped. Not worth its own PR.
-4. **Won't do: add `cache-to: type=gha` to the deploy workflows** (DOCKER-014). They run on `workflow_run`, which gets read-only cache since 2026-06-26, and granting write with `cache-mode` would let a poisoned cache reach a job holding the deploy key and registry credentials. A `push`-triggered CI job would have to fill it; not worth it for a build that runs a few times a day.
+4. **Won't do: add `cache-to: type=gha` to the deploy workflows** (DOCKER-014). They run on `workflow_run`, which gets read-only cache since 2026-06-26, and granting write with `cache-mode` would let a poisoned cache reach a privileged deploy job. A `push`-triggered CI job would have to fill it; not worth it for a build that runs a few times a day.
 5. **Won't do now: sign images or add SBOMs** (DOCKER-011, DOCKER-012, DOCKER-013). Public repos already publish `mode=max` SLSA v1 provenance; their build args hold no secrets. A signature or SBOM has no consumer until the cluster has an admission policy, which belongs to KUBE.
 6. **Won't do now: switch to distroless or Docker Hardened Images** (DOCKER-003). The runtime stage only runs `node`, so it would fit, but DHI adds a registry login and pull secrets, and distroless a second registry, for a smaller CVE count on an already small image.
 
