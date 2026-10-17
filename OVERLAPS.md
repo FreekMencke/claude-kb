@@ -94,6 +94,8 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - llms.txt: TOK-090 (reading Anthropic's to find docs), WEB-021 (publishing one, and what Google and Anthropic say it does for search).
 - The credential is the control: INFRA-006 (AWS and Kubernetes), WEB-012 (Google read-only scopes).
 - Report formats: REPO-049 and REPO-050 (reviewer severity and findings), WEB-029 (audit findings ranked by impact and effort).
+- Code-intelligence plugins: TOK-041 (LSP plugins save tokens over grep and read), TS-012 (the official `typescript-lsp` plugin needs a `tsserver.js`, which TypeScript 7 and the `@typescript/typescript6` alias lack).
+- TypeScript next to the other stack topics (batch 1 of FreekMencke/claude-kb#167): `kb-typescript.md` covers the TypeScript side and links the others by file name. Node's type stripping is in `kb-nodejs.md` (TS-013 keeps only the tsconfig flags), Angular's TypeScript range and its TS 7 compiler plans in `kb-angular.md` (TS-009 keeps one table row), the upgrade procedure and peer-range checks in `kb-js-upgrades.md` (TS-011 and TS-015 keep the TypeScript-specific traps), npm's peer-dependency handling in `kb-npm.md`.
 
 ## Merges
 
