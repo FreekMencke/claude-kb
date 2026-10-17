@@ -313,6 +313,32 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | INFRA-026 | Before changing a config value, read the code that consumes it | pattern | config, lambda, retries, issues |
 | INFRA-027 | Change one Lambda environment variable without printing the others | pattern | lambda, env, credentials, transcripts |
 
+## Node/TS lint, format and build tools (`topics/kb-js-lint-build.md`, JSTOOL)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| JSTOOL-001 | ESLint 10: what changed from 9 | fact | eslint, eslint-10, migration, flat-config |
+| JSTOOL-002 | ESLint 10's CLI: formatters, exit codes, cache and suppressions | tool | eslint, cli, formatters, cache, suppressions |
+| JSTOOL-003 | typescript-eslint typed linting: setup and cost | fact | typescript-eslint, typed-linting, projectservice, performance |
+| JSTOOL-004 | typescript-eslint 8.71: ESLint 10, `defineConfig` and TypeScript 7 | fact | typescript-eslint, eslint-10, defineconfig, typescript-7 |
+| JSTOOL-005 | angular-eslint 22: flat config, ESLint 10 and opt-in typed linting | fact | angular-eslint, angular, eslint-10, typed-linting |
+| JSTOOL-006 | Oxlint 1.x: what it covers and what moving from ESLint loses | tool | oxlint, eslint, migration, angular |
+| JSTOOL-007 | Oxlint's type-aware linting with tsgolint | tool | oxlint, tsgolint, typed-linting, typescript-go |
+| JSTOOL-008 | Oxlint switches to its `agent` output format under Claude Code | fact | oxlint, agent-output, claude-code, formatters |
+| JSTOOL-009 | Biome 2: one tool for lint and format, and its limits | tool | biome, prettier, eslint, gritql |
+| JSTOOL-010 | ESLint, Oxlint or Biome for a TypeScript repo | comparison | eslint, oxlint, biome, angular, nestjs |
+| JSTOOL-011 | Prettier 3.9: status and config pitfalls | fact | prettier, angular, configuration, eslint-config-prettier |
+| JSTOOL-012 | oxfmt: a beta Prettier-compatible formatter | tool | oxfmt, prettier, formatter, oxc |
+| JSTOOL-013 | knip 6: unused files, exports and dependencies | tool | knip, unused-code, dependencies, reporters |
+| JSTOOL-014 | Vite 8: Rolldown, Oxc and Lightning CSS replace esbuild and Rollup | fact | vite, vite-8, rolldown, oxc, migration |
+| JSTOOL-015 | Rolldown 1.0 and tsdown; tsup unmaintained | fact | rolldown, tsdown, tsup, library-bundling |
+| JSTOOL-016 | esbuild 0.x: minor versions break, and it never type-checks | fact | esbuild, pinning, type-checking, decorators |
+| JSTOOL-017 | Angular 22's build: esbuild, Vite for the dev server, Rolldown for chunks | fact | angular, esbuild, vite, rolldown, build |
+| JSTOOL-018 | NestJS 12's `nest build`: tsc by default, rspack new, webpack deprecated | fact | nestjs, nest-cli, rspack, swc, type-checking |
+| JSTOOL-019 | Rspack 2 and Rsbuild 2 | fact | rspack, rsbuild, webpack, build |
+| JSTOOL-020 | Short, machine-readable output from lint and build tools | comparison | agent-output, eslint, oxlint, biome, knip, angular, vite |
+| JSTOOL-021 | Picking a build tool: Angular, Nest, apps, libraries and scripts | comparison | vite, rolldown, tsdown, esbuild, rspack, angular, nestjs |
+
 ## Testing Node/TS code, and tests written by agents (`topics/kb-js-testing.md`, JSTEST)
 
 | ID | Title | Type | Tags |
