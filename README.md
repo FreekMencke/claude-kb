@@ -123,6 +123,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-design.md](topics/kb-design.md) | `DESIGN` | Visual and UI design with Claude |
 | [kb-typescript.md](topics/kb-typescript.md) | `TS` | TypeScript 6.0 to 7.0 |
 | [kb-nodejs.md](topics/kb-nodejs.md) | `NODE` | Node.js 24/26 runtime and the modern JS baseline |
+| [kb-angular.md](topics/kb-angular.md) | `NG` | Angular 21–22 changes and Angular's AI tooling |
 
 | Other files | What it holds |
 |---|---|

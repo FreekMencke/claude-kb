@@ -91,7 +91,11 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Research subagents: PROMPT-012 and PROMPT-013 (any subagent's brief and return format), ORCH-020 and ORCH-025 (multipliers, scaling rules), TOK-099 to TOK-101 (what research adds: source order, curl rule, sources back, the shared search budget). ORCH-030 puts codebase search on Haiku; TOK-099 keeps research readers on Sonnet because they judge sources, not because the advice differs.
 - MCP output and docs servers: TOK-023 (output limits), TOK-088 (WebFetch results saved to a file), TOK-095 to TOK-097 (docs MCP servers), INFRA-003 (the AWS server, which TOK-097 lists for its docs tools).
 - Raw pages instead of WebFetch: TOK-087 and TOK-089 (reading docs for research), WEB-016 and WEB-014 (inspecting the page under test in an SEO audit).
-- llms.txt: TOK-090 (reading Anthropic's to find docs), WEB-021 (publishing one, and what Google and Anthropic say it does for search).
+- llms.txt: TOK-090 (reading Anthropic's to find docs), WEB-021 (publishing one, and what Google and Anthropic say it does for search), NG-016 (Angular's, next to its per-tool rules files).
+- Angular's MCP server: NG-012 to NG-014 (its tools, measured context cost and the `.mcp.json` line), TOK-020 (tool search), MCP-012 (cost in scripted runs), MCP-028 (our inventory), MCP-039 (cost per surface).
+- Framework rules files: NG-016 (Angular's `AGENTS.md`, `GEMINI.md` and rules files), MEM-008 (when Claude Code reads `AGENTS.md`), REPO-045 (cross-tool instruction files).
+- Third-party skills: NG-017 (angular/skills, which our `angular-developer` mirrors), SKILL-041 (security review), SKILL-042 (Anthropic's collections).
+- Angular's TypeScript and Node ranges: NG-002 (each supported major's ranges from the registry, and Angular's TypeScript 7 plan), TS-009 and TS-015 (which tools wait for TypeScript 7.1, where to read a range), NODE-001 (the Node release lines).
 - The credential is the control: INFRA-006 (AWS and Kubernetes), WEB-012 (Google read-only scopes).
 - Report formats: REPO-049 and REPO-050 (reviewer severity and findings), WEB-029 (audit findings ranked by impact and effort).
 - Code-intelligence plugins: TOK-041 (LSP plugins save tokens over grep and read), TS-012 (the official `typescript-lsp` plugin needs a `tsserver.js`, which TypeScript 7 and the `@typescript/typescript6` alias lack).
