@@ -141,6 +141,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-aws-lambda-node.md](topics/kb-aws-lambda-node.md) | `LAMBDA` | AWS Lambda on the Node.js runtime |
 | [kb-github.md](topics/kb-github.md) | `GH` | GitHub through `gh` and the API: issues, rulesets, releases, Copilot cloud agent |
 | [kb-web-security.md](topics/kb-web-security.md) | `WEBSEC` | Security of agent-written web code: OWASP Top 10:2025, headers and CSP nonces in Angular SSR, SSRF, cookies, CSRF, review tools |
+| [kb-oss-licensing.md](topics/kb-oss-licensing.md) | `OSS` | Open-source licensing and repo hygiene: licences, SPDX, dependency and font licences, community health files |
 
 | Other files | What it holds |
 |---|---|
