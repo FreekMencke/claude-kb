@@ -10,16 +10,16 @@ How to split work across several Claude agents, which mechanism to use for it, a
 | Which model should a reviewer subagent use? | Opus 5.5 (session tier) for bug and design review, in a fresh context. Use Sonnet 5.5 as the minimum for any reviewer. Don't use Haiku. | ORCH-030, ORCH-039, ORCH-042 |
 | Which model should an implementer use? | Sonnet 5.5 for well-specified units. Opus 5.5 when the unit needs design judgment or defines a shared contract. | ORCH-030, ORCH-026 |
 | Which model should the orchestrator use? | The session model, normally Opus 5.5. Use Fable 5.1 only for long-horizon work where Opus 5.5 at `xhigh` falls short. | ORCH-027, ORCH-029 |
-| How do I set a subagent's model, and what wins? | The per-call `model` parameter wins, then frontmatter `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model. `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` together with `CLAUDE_CODE_SUBAGENT_MODEL` overrides all of them (v2.1.257+); FORCE alone puts subagents on the main model. | ORCH-003 |
-| How do I set a subagent's effort, and what wins? | `CLAUDE_CODE_EFFORT_LEVEL` wins, then the per-call `effort` parameter, then frontmatter `effort`, then the session `/effort`. The 5.5 models default to `medium` in Claude Code. | ORCH-004, ORCH-028 |
+| How do I set a subagent's model and effort, and what wins? | Model: the per-call `model` parameter wins, then frontmatter `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the main model. `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` together with `CLAUDE_CODE_SUBAGENT_MODEL` overrides all of them (v2.1.257+); FORCE alone puts subagents on the main model. Effort: `CLAUDE_CODE_EFFORT_LEVEL` wins, then the per-call `effort` parameter, then frontmatter `effort`, then the session `/effort`. The 5.5 models default to `medium` in Claude Code. | ORCH-003, ORCH-004, ORCH-028 |
 | Effort or model: which should I change first? | Effort. Anthropic: "sweep effort on your current model first, because most workloads end there". | ORCH-028, ORCH-029 |
 | How much does multi-agent cost? | About 3–10× the tokens of a single agent (the 15× figure is against chat, from the 2025 research system). Agent teams use about 7× in plan mode. Ten parallel sessions burn quota about 10× as fast. | ORCH-020 |
 | When does parallelizing pay off? | Independent, read-heavy work: research, review, search, competing hypotheses, or disjoint files with a test oracle. It doesn't pay off for sequential chains, shared files or open design. | ORCH-021, ORCH-022, ORCH-023 |
-| Subagents, agent view, agent teams or workflows? | Subagents for side tasks that return a summary. Agent view for independent tasks you hand off. Agent teams (experimental) when workers must talk to each other. Dynamic workflows for dozens of agents or cross-checked results. | ORCH-001 |
+| Subagents, agent view, agent teams or workflows? | Subagents for side tasks that return a summary. Agent view for independent tasks you hand off. Agent teams (experimental) when workers must talk to each other. Dynamic workflows for dozens of agents or cross-checked results. A workflow takes no mid-run input, so multi-wave feature work stays with the `parallel-code-orchestrator` skill. | ORCH-001, ORCH-048 |
 | How do I stop parallel agents from editing the same files? | Put each writer in its own worktree (`isolation: worktree`), give every file one owner, and keep shared files (changelog, registries) with the orchestrator. | ORCH-009, ORCH-024 |
 | How should results come back? | As a short structured report (status, files, verify result, about 1–2k tokens). Put bulky output in files or the diff, never in the orchestrator's context. | ORCH-034, ORCH-035 |
-| How do I cap cost? | Headless: `--max-budget-usd` and `--max-turns`. SDK: `maxBudgetUsd`. Subagents: frontmatter `maxTurns`. Workflows: run a small slice first and use the size guideline. All: cheaper models and lower effort for workers. | ORCH-038 |
+| How do I cap cost? | Headless: `--max-budget-usd` and `--max-turns`. SDK: `maxBudgetUsd`. Subagents: frontmatter `maxTurns`. Workflows: run a small slice first and use the size guideline. All: cheaper models and lower effort for workers. | ORCH-038, ORCH-049 |
 | Can subagents spawn subagents? | Yes, up to 3 layers below the main conversation by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`), with at most 20 running concurrently. Agent-team teammates can't spawn teammates. | ORCH-006, ORCH-010 |
+| Can a `claude -p` run or `claude-code-action` start a workflow? | Only with a `Workflow` allow rule, auto or bypass mode, a hook or a permission-prompt tool; there's no approval prompt. The `ultracode` keyword doesn't trigger from `-p`, scheduled prompts or relayed PR comments (v2.1.210+). | ORCH-050 |
 | How do I run agents on a schedule or with the laptop closed? | Cloud routines (minimum 1 hour), desktop scheduled tasks (local, app open), `/loop` (in-session, expires after 7 days), `claude --cloud`, or GitHub Actions. | ORCH-016, ORCH-017 |
 
 ## Index
@@ -73,6 +73,9 @@ How to split work across several Claude agents, which mechanism to use for it, a
 | ORCH-045 | Cognition vs Anthropic on multi-agent | comparison | debate, writes |
 | ORCH-046 | Best-of-N needs a good verifier | fact | best-of-n, voting |
 | ORCH-047 | Decision table: task → pattern → tier | recommendation | decision-table |
+| ORCH-048 | Workflow or orchestrator skill: who holds the plan | recommendation | workflows, skills, orchestrator |
+| ORCH-049 | Workflow cost: size guideline, ultracode and reruns | fact | workflows, ultracode, cost |
+| ORCH-050 | Workflows in `claude -p`, the Agent SDK and `claude-code-action` | fact | workflows, headless, permissions, github-actions |
 
 ---
 
@@ -317,28 +320,23 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an Agent call with `subagent_type: 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-10-17
 - Sources: [Dynamic workflows](https://code.claude.com/docs/en/workflows)
-- Related: ORCH-001, ORCH-034, ORCH-038, ORCH-040
+- Related: ORCH-001, ORCH-034, ORCH-038, ORCH-040, ORCH-048, ORCH-049, ORCH-050
 
-A workflow is a JavaScript script, written by Claude and run by a runtime, that calls `agent()`, `parallel()` and `pipeline()`. It "moves the plan into code". Intermediate results stay in script variables, "so Claude's context holds only the final answer". An `agent()` call can take a JSON `schema` so the agent returns validated JSON instead of prose.
+A workflow is a JavaScript script, written by Claude and run by a runtime in the background, that calls `agent()`, `parallel()` and `pipeline()`. It "moves the plan into code": the script decides what runs next, and intermediate results stay in script variables, "so Claude's context holds only the final answer". An `agent()` call can take a JSON `schema` for validated JSON. Workflows are "available on all paid plans"; "On Pro, turn them on from the Dynamic workflows row in `/config`."
 
-**Triggers:** include `ultracode` in the prompt, say "use a workflow", run a bundled workflow such as `/deep-research`, or turn on `/effort ultracode` so Claude plans a workflow for every substantive task.
+**Triggers:** `ultracode` in a prompt you type, "use a workflow", a bundled (`/deep-research`) or saved workflow command, or `/effort ultracode` for every substantive task (ORCH-049).
 
 **Limits:**
 - 16 concurrent agents by default, fewer on machines with fewer CPUs (`CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS`, 1–256, v2.1.269+);
-- 4,096 items per `parallel()` or `pipeline()` call;
-- 1,000 agents per run;
-- no mid-run user input;
-- an agent that stalls is restarted automatically.
+- 4,096 items per `parallel()` or `pipeline()` call, 1,000 agents per run;
+- no mid-run user input, and no filesystem, shell or `import()` in the script itself;
+- a stalled agent restarts from its prompt, at most five times.
 
-**Cost and resumption:**
-- A `Large workflow` warning appears above 25 agents or about 1.5M projected tokens. It is advisory only.
-- Runs are resumable in the same session and pause on usage limits.
-- `/workflows` shows per-agent token use and lets you stop a run.
-- Each stage can name a model, which counts as the per-invocation model.
+**Running:** `/workflows` lists runs and shows per-agent token use; `p` pauses, `x` stops, `s` saves the script as a `/<name>` command (ORCH-048). Runs resume in the same session, and in interactive subscription sessions they pause on a usage limit instead of failing (v2.1.271+). Each stage can name a model, which counts as the per-invocation model.
 
-**When:** "a codebase-wide audit, a 500-file migration, cross-checked research, or a plan drafted from several angles", that is, work that outgrows a handful of subagents or needs independent agents to check each other. Docs advice: run on a small slice first, and use the `small` size guideline to keep runs to fewer agents.
+**When:** "a codebase-wide bug sweep, a 500-file migration", cross-checked research, or a plan drafted from several angles. Cost levers: ORCH-049. Headless runs: ORCH-050.
 
 ## [ORCH-012] `/batch` for one large change
 - Type: tool
@@ -1076,6 +1074,52 @@ So spending N× tokens on parallel attempts pays only when you have an executabl
 | Unsolved hard algorithm after Opus xhigh fails | Single dedicated subagent | Fable 5.1 (high) | Capped and slow; justify by prior failure (ORCH-030) |
 | Recurring maintenance or triage | Routine (cloud) or desktop task | Sonnet/Haiku | No machine needed; min 1 h (ORCH-017) |
 
+## [ORCH-048] Workflow or orchestrator skill: who holds the plan
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-17
+- Sources: [Dynamic workflows](https://code.claude.com/docs/en/workflows), [Plugins reference – workflows](https://code.claude.com/docs/en/plugins-reference), [parallel-code-orchestrator SKILL.md at be126d4](https://github.com/FreekMencke/claude-skills/blob/be126d4dd488/plugins/freek-skills/skills/parallel-code-orchestrator/SKILL.md)
+- Related: ORCH-011, ORCH-012, ORCH-021, ORCH-024, ORCH-039, ORCH-047
+
+Use a workflow for fan-out-and-check work, and keep `parallel-code-orchestrator` as a skill for multi-wave feature work. Don't convert the skill into a workflow.
+
+The docs put the difference in who holds the plan: with subagents, skills and agent teams "Claude is the orchestrator: it decides turn by turn", while in a workflow the script does, with "No mid-run user input" ("For sign-off between stages, run each stage as its own workflow"). The skill relies on those turn-by-turn calls: risky units "return its plan, then message it to proceed", integration and conflicts stay with the orchestrator ("never delegated"), wave 2 starts from wave 1's integrated result, and review runs "then fix and rerun until clean". It already sends the other case away: "For one repetitive change across 30 or more files, or "audit everything", use `/batch` or a dynamic workflow".
+
+Where a workflow wins is a check we repeat in the same shape, such as a reviewer per changed file merged into one ranked summary. Save the run from `/workflows` with `s`, to `.claude/workflows/` (shared with the repo) or `~/.claude/workflows/` (personal); if both define a name, "the project one runs". A plugin ships one from a `workflows/` directory, run as `/<plugin>:<name>`. The script reads its input from an `args` global. To try it, the docs say you "can point Claude at" an existing fan-out skill "and ask for a workflow that does the same thing".
+
+## [ORCH-049] Workflow cost: size guideline, ultracode and reruns
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-17
+- Sources: [Dynamic workflows](https://code.claude.com/docs/en/workflows), [Settings reference – workflowSizeGuideline](https://code.claude.com/docs/en/settings-reference), [Model config – ultracode](https://code.claude.com/docs/en/model-config), [Subagents – concurrent limit](https://code.claude.com/docs/en/sub-agents)
+- Related: ORCH-011, ORCH-020, ORCH-025, ORCH-038, ORCH-040
+
+**Size guideline** (v2.1.219+): `workflowSizeGuideline` is "advice, not an enforced cap": `small` "fewer than 5 agents", `medium` "fewer than 10", `large` "fewer than 50", `unrestricted` none. Default: `"medium"`, or `"small"` "when you're signed in on a Pro plan with Claude Code v2.1.271 or later". A settings file beats `/config`. A chosen value replaces the 25-agent threshold of the advisory `Large workflow` warning, which also fires above 1.5 million projected tokens. Run a small slice first.
+
+**Ultracode** (`/effort ultracode`, `claude --effort ultracode`, the `ultracode` setting) plans a workflow for each substantive task, so "each request uses more tokens and takes longer". While it's on, the `Large workflow` warning is hidden, the session's concurrent subagent limit (20 by default) isn't enforced for Agent-tool spawns, and auto mode skips the first-launch approval. `--effort ultracode` also sets effort to `xhigh`. Turn it off with `/effort ultracode off`.
+
+**Reruns:** a relaunch replays agents in start order. Completed agents return saved results, but a failed one "runs again, and so does every agent that started after it, even ones that completed". Stopping one agent with `x` "counts as failing"; stopping the whole run doesn't.
+
+Tested 2026-10-17, v2.1.296, terminal `claude -p` on Haiku 5.5: a three-agent workflow counting lines in three tiny files reported 81,724 subagent tokens, about 27k per agent, so fixed per-agent overhead dominates small runs.
+
+## [ORCH-050] Workflows in `claude -p`, the Agent SDK and `claude-code-action`
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-17
+- Sources: [Dynamic workflows – approve the plan](https://code.claude.com/docs/en/workflows), [claude-code CHANGELOG 2.1.210](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [claude-code-action package.json](https://github.com/anthropics/claude-code-action/blob/main/package.json)
+- Related: ORCH-011, ORCH-014, ORCH-016, ORCH-038
+
+"In `claude -p` and the Agent SDK, Claude Code never shows this prompt": the `Workflow` tool call goes through normal permission evaluation. It starts only with `Workflow` (every workflow) or `Workflow(<name>)` (one saved workflow) in allow rules, auto mode's classifier, bypass permissions, a PreToolUse hook returning `"allow"` (not enough in plan mode), or `--permission-prompt-tool` / `canUseTool`. `claude-code-action` runs on the Agent SDK (`@anthropic-ai/claude-agent-sdk` in its `package.json`), so the same rules apply there.
+
+The `ultracode` keyword is an opt-in "only in a prompt you type yourself", not in "a prompt passed with `-p`", a scheduled task prompt, or "a webhook payload or pull request comment relayed into the conversation". CHANGELOG 2.1.210: "Fixed the `ultracode` keyword opt-in firing on non-human-originated input such as webhook payloads and relayed PR comments". Asking for a workflow in plain words still makes Claude call the tool.
+
+Usage-limit pauses don't apply headless: with `-p` or the SDK, an agent that hits the limit fails.
+
+Tested 2026-10-17, v2.1.296, terminal `claude -p` on Haiku 5.5, no `Workflow` rules: with `--permission-mode default`, "use a workflow" was denied (`permission_denials: ["Workflow"]`, "Review dynamic workflow before running"); under a user-level `defaultMode: "auto"` the same request launched a three-agent run unprompted. One `ultracode:` prompt was handled with a single Bash call and no workflow.
+
 ---
 
 ## Recommendations for our setup
@@ -1086,6 +1130,7 @@ Ranked by impact against effort.
 
 13. **Done 2026-10-12, check pending: a user-level `Explore` override on Haiku** (`~/.claude/agents/explore.md`: read-only tools, `model: haiku`, `effort: medium`). Drop it if searches start missing things; the check is a step in [FreekMencke/claude-kb#49](https://github.com/FreekMencke/claude-kb/issues/49) from 2026-10-19. ORCH-005, ORCH-033.
 15. **Don't enable agent teams globally.** *(Risk avoidance.)* Enabling them changes what named subagent spawns do. Turn them on per session, only for research and review work. Evidence: ORCH-010.
+16. **Keep `parallel-code-orchestrator` a skill; save a workflow only for a fan-out we repeat.** *(Low effort, when the need comes up.)* A reviewer per changed file merged into one ranked summary is the first candidate: ask Claude to write it as a workflow, then save the run with `s`. Evidence: ORCH-048, ORCH-049.
 
 ## Open questions
 
@@ -1098,4 +1143,5 @@ Ranked by impact against effort.
 - **Managed Agents billing.** Answered 2026-10-14: Pricing lists session runtime at $0.08 per session-hour while `running`, plus tokens; no per-thread runtime charge is documented (ORCH-018).
 - **Session limits.** Agent view and cloud sessions document no cap on simultaneous sessions beyond the shared usage limit. SESS-032 records user reports of 429s at 6 or more sessions (`kb-sessions.md` open question 6).
 - **Unverified community claims:** the performance claims of claude-flow/ruflo. Cursor's worktrees and the best-of-N paper numbers were checked on 2026-10-14 (ORCH-044, ORCH-046).
+- **`--max-budget-usd` and workflow agents.** Not documented whether a `claude -p` budget stops a workflow's background agents. The 2026-10-17 probe (ORCH-050) stayed under its $0.15 cap, so it never hit it.
 - **Truncated pages.** The sub-agents, hooks and model-config pages were longer than one fetch. A few details were not read in full. The hook input fields for team events (TaskCreated, TaskCompleted, TeammateIdle) are now in HOOK-002.

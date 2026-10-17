@@ -17,6 +17,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - CLAUDE.md size: SKILL-024 (authoring), TOK-003 (loading rules), REPO-045 (research and agents).
 - claude.ai plugins: SKILL-059 (personal Git marketplaces, sync), SKILL-062 (what an upload accepts, repo as its own plugin), MCP-040 (a bundled connector and skill in chat), MCP-037 (plugin against connector without a checkout).
 - Worktree staleness: SESS-006 (what `baseRef: "fresh"` fetches), SESS-036 (a `SessionStart` hook that fast-forwards), SESS-025 (rebase before pushing).
+- Workflow cost: ORCH-038 (caps per mechanism), ORCH-049 (size guideline, ultracode, reruns), ORCH-040 (caching in fan-outs).
 - Effort: ORCH-028 (levels and defaults), TOK-055 (as a cost lever, plus thinking), PROMPT-010 (what prompts still move once effort sets thinking).
 - Keeping the orchestrator's context lean: ORCH-034 (results), TOK-035 (when to delegate).
 - Caching: ORCH-040 (in fan-outs), TOK-052 (TTLs and settings).
