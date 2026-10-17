@@ -122,6 +122,35 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DOC-023 | Runbooks in `docs/` or in a skill | comparison | our-setup, runbooks, skills |
 | DOC-024 | Our weekly docs-drift routine: first runs | fact | our-setup, drift, routines, refresh-md-files |
 
+## Type design pipeline and web font delivery (`topics/kb-fonts.md`, FONT)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| FONT-001 | Source formats: UFO 3 is current, UFO 4 isn't published, Glyphs files go through glyphsLib | fact | ufo, glyphs, glyphslib, sources |
+| FONT-002 | Designspace 5: discrete axes, `<variable-fonts>` and axis labels | fact | designspace, variable-fonts, stat, fontmake |
+| FONT-003 | fontc 1.0.0: what it builds and what it doesn't | fact | fontc, fontmake, compiler, rust |
+| FONT-004 | fontc or fontmake for nine static weights and a variable font | comparison | fontc, fontmake, static-instances, designspace |
+| FONT-005 | ufo2ft writes `kern`, `mark` and `mkmk` from groups and anchors | pattern | ufo2ft, feature-writers, kerning, anchors |
+| FONT-006 | `varLib.instancer`: static fonts and narrower axes from a variable font | tool | fonttools, instancer, variable-fonts, static-instances |
+| FONT-007 | Check master compatibility with `varLib.interpolatable` | tool | fonttools, interpolation, masters, qa |
+| FONT-008 | gftools builder and the Google Fonts project template | tool | gftools, builder, google-fonts, template |
+| FONT-009 | Writing OpenType feature code: the parts a family needs | pattern | opentype-features, fea, kern, ss01 |
+| FONT-010 | Compile-check feature code with `fonttools feaLib` | pattern | fea, fealib, validation, ci |
+| FONT-011 | Hinting static fonts: ttfautohint for TTF, `otfautohint` for OTF | recommendation | hinting, ttfautohint, otfautohint, afdko |
+| FONT-012 | Leave variable fonts unhinted | recommendation | hinting, variable-fonts, vtt, gftools |
+| FONT-013 | The `gasp` table for hinted and unhinted fonts | fact | gasp, hinting, opentype-spec |
+| FONT-014 | Fontspector replaces Font Bakery: profiles and install | comparison | fontspector, fontbakery, qa, profiles |
+| FONT-015 | Running Fontspector in CI | pattern | fontspector, ci, github-actions, qa |
+| FONT-016 | Release layout: which formats, folders and file names | recommendation | release, woff2, variable-fonts, file-names |
+| FONT-017 | Version fields: `head.fontRevision`, name ID 5 and UFO `versionMinor` | fact | versioning, name-table, head-table, ufo2ft |
+| FONT-018 | The OFL, Reserved Font Names and web subsets | fact | ofl, license, reserved-font-name, subsetting |
+| FONT-019 | Subsetting with `pyftsubset`: its defaults drop features | anti-pattern | pyftsubset, subsetting, woff2, opentype-features |
+| FONT-020 | `unicode-range` slices and preloading a font | pattern | unicode-range, preload, google-fonts, crossorigin |
+| FONT-021 | `font-display` and its effect on LCP and CLS | recommendation | font-display, lcp, cls, web-performance |
+| FONT-022 | Fallback metric overrides and `font-size-adjust`: what's Baseline | fact | size-adjust, ascent-override, font-size-adjust, cls |
+| FONT-023 | Variable-font and OpenType-feature CSS: use the high-level properties | recommendation | variable-fonts, font-weight, font-variation-settings, font-variant-numeric |
+| FONT-024 | What Claude can and can't do in type design | fact | claude, type-design, fea, glif |
+
 ## GitHub Actions: changes and hardening (`topics/kb-github-actions.md`, GHA)
 
 | ID | Title | Type | Tags |
