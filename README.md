@@ -174,7 +174,10 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 19 + 8 | 57/57 | 24/24 | Opus 5.5 | 2.1.296 | 2026-10-16 |
+| 24 + 10 | 72/72 | 29/30 | Opus 5.5 | 2.1.296 | 2026-10-17 |
+
+The one miss (2026-10-17): `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs after the description
+gained the stack topics (FreekMencke/claude-kb#175).
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
@@ -228,9 +231,10 @@ a PR from `claude/reverify-<YYYY-MM-DD>`. Its prompt lives in the routine, not i
 - **Link, don't repeat.** Topic files link to neighbouring entries instead of covering them; overlaps kept on purpose
   are listed in OVERLAPS.md, and duplicates are merged with a pointer, never renumbered. An open question raised in two
   files lives in one. Cross-file pointers name entry IDs, not issues.
-- **INDEX.md holds only what answers a lookup**, because `kb_quick_answers` returns its Quick answers whole. They
-  stay near 30 rows (each topic file keeps its own 10–15); curation records and history live in OVERLAPS.md and
-  CHANGELOG.md.
+- **INDEX.md holds only what answers a lookup**, because `kb_quick_answers` returns its Quick answers whole. The
+  Claude rows stay near 30 (each topic file keeps its own 10–15). Stack topics get at most one row per file, in their
+  own table under "The stack Claude works on", so the 23 planned files add about 23 rows, not 70
+  (FreekMencke/claude-kb#175, 2026-10-17). Curation records and history live in OVERLAPS.md and CHANGELOG.md.
 - **The entry list is grepped, not read.** At 504 entries it was 51 of INDEX.md's 74 KB, so it moved to a generated
   ENTRIES.md, and the topic files to `topics/` (2026-10-13).
 - **The lookup skill runs forked on Haiku** (`context: fork`), keeping the lookup out of the caller's context

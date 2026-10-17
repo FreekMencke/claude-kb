@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "kb-lookup",
   "displayName": "Claude KB",
-  "description": "Answers questions on using Claude, Claude Code and the Claude API from the claude-kb knowledge base, citing entry IDs: the claude-kb-lookup skill plus the claude-kb MCP server it reads",
+  "description": "Answers questions on using Claude, Claude Code and the Claude API, and on the stack it works in (Angular, TypeScript, Node.js, npm, GitHub Actions), from the claude-kb knowledge base, citing entry IDs: the claude-kb-lookup skill plus the claude-kb MCP server it reads",
   "author": {
     "name": "Freek Mencke"
   },

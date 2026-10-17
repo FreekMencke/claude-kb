@@ -358,17 +358,18 @@ TypeScript 6.0 was the last JavaScript-based release: "we do not intend to relea
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [npm registry: typescript](https://www.npmjs.com/package/typescript), [TypeScript blog](https://devblogs.microsoft.com/typescript/), [TypeScript 7.1 Iteration Plan (microsoft/TypeScript#63703)](https://github.com/microsoft/TypeScript/issues/63703), [microsoft/TypeScript releases](https://github.com/microsoft/TypeScript/releases), [Angular: version compatibility](https://angular.dev/reference/versions)
-- Related: TS-001, TS-011, TS-014
+- Related: TS-001, TS-011, TS-014, JSUP-001
 
 Read versions from the registry and plans from the team's issues; never from memory or a model's cutoff.
 
 ```bash
 npm view typescript dist-tags                          # latest, next, rc (beta is stale: 6.0.0-beta)
-npm view typescript time --json                        # publish date per version
+npm view typescript 'time[7.0.2]'                      # publish date of one version
 npm view @angular/compiler-cli@22.2.3 peerDependencies # a tool's accepted range, at the version you use
 npm ls typescript                                      # every package in the tree that pulls in TypeScript
 ```
 
+- `npm view typescript time --json` lists every version's date but returned 198,668 characters on 2026-10-17; ask for one version, as above, or see JSUP-001 for other small queries.
 - Plans and dates: the open "TypeScript X.Y Iteration Plan" issue (label `Planning`) in microsoft/TypeScript; announcements on devblogs.microsoft.com/typescript.
 - GitHub Releases lag: `v7.0.2` there is dated 2026-08-20, six weeks after npm's 2026-07-08, because 7.0 was tagged in microsoft/typescript-go first; no 7.0.0 or 7.0.1 release exists there. Use npm for dates.
 - The wiki's Roadmap page stops at "January to June 2021"; don't use it.

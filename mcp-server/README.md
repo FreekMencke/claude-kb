@@ -28,7 +28,7 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
 | `server.ts` | The server: Express, the KB index's refresh, the `/mcp`, icon and health routes, the run modes |
 | `mcp.ts` | MCP itself, without the SDK: stateless Streamable HTTP with JSON replies, the 2025 protocol revisions |
 | `kb-tools.ts` | The tools: their schemas and descriptions, argument checks, and the text each returns, with its caps and error messages |
-| `kb-resources.ts` | The entries, each topic's Quick answers and INDEX.md's as resources (`kb://entry/MCP-017`), with the tools' text |
+| `kb-resources.ts` | INDEX.md's and each topic's Quick answers as listed resources, and each entry through the `kb://entry/{id}` template, with the tools' text |
 | `kb-index.ts` | The entries, parsed by `scripts/kb-parse.ts`, and their search: SQLite FTS5 in memory (`node:sqlite`), ranked by `bm25()` |
 | `log.ts` | The logger: `@osrs-tracker/logger`, the Node apps' JSON lines |
 | `metrics.ts` | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index |
@@ -97,8 +97,10 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   output schema: with one, Claude Code hands Claude the JSON instead of the text. Arguments are checked in
   `kb-tools.ts`, by type and by bounds, so a bad value gets an `isError` result saying what to pass.
 - **Resources** are for a user to attach, where the tools are for Claude to search: in Claude Code,
-  `@claude-kb:kb://entry/MCP-017`, `kb://topic/mcp` (its Quick answers and recommendations) or `kb://quick-answers`. All
-  603 are listed (79 KB on 2026-10-16), except merged entries, which still read by ID. No subscriptions, which claude.ai
+  `@claude-kb:kb://entry/MCP-017`, `kb://topic/mcp` (its Quick answers and recommendations) or `kb://quick-answers`.
+  Only `kb://quick-answers` and the topics are listed; entries read by ID through the `kb://entry/{id}` template, since
+  listing every entry passed 100,000 characters at about 810 entries (2026-10-17), about 25k tokens when
+  `ListMcpResourcesTool` returns it. No subscriptions, which claude.ai
   doesn't support. A missing one gets `-32002`, the 2025 revisions' code (2026-07-28 moved it to `-32602` and asks
   clients to accept both). Tested 2026-10-16 with Claude Code 2.1.296: `ReadMcpResourceTool` and
   `ListMcpResourcesTool` both work.

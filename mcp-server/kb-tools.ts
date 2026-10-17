@@ -27,8 +27,8 @@ const ID_SHAPE = /^([A-Z]+)-(\d+)$/;
 const DAY_MS = 86_400_000;
 
 export const INSTRUCTIONS =
-  'claude-kb is a knowledge base on using Claude and Claude Code efficiently. Search with kb_search, then kb_get the' +
-  ' 1 to 4 best IDs for the full entries. Cite entry IDs (such as MCP-017) in answers. Check an entry last verified' +
+  'claude-kb is a knowledge base on using Claude and Claude Code efficiently, and on the stack it works in (Angular,' +
+  ' TypeScript, Node.js, npm, GitHub Actions). Search with kb_search, then kb_get the 1 to 4 best IDs for the full entries. Cite entry IDs (such as MCP-017) in answers. Check an entry last verified' +
   ` more than ${STALE_DAYS} days ago against its sources before relying on it.`;
 
 /** A bad argument or a knowledge base that hasn't loaded: mcp.ts returns the message as an `isError` result. */
@@ -58,7 +58,8 @@ export const TOOLS: Tool[] = [
       description:
         'Search claude-kb, a knowledge base on using Claude and Claude Code efficiently: models and effort, subagents,' +
         ' skills, hooks, prompting, CLAUDE.md and memory, MCP servers and connectors, sessions, workflows, tokens and' +
-        ' caching, docs, SEO, visual and UI design. Returns entry IDs with title, type, confidence, last-verified date' +
+        ' caching, docs, SEO, visual and UI design; and versions, defaults and upgrade traps in Angular, TypeScript,' +
+        ' Node.js, npm and GitHub Actions. Returns entry IDs with title, type, confidence, last-verified date' +
         ' and a summary. Search first, then kb_get the 1 to 4 best IDs. Cite entry IDs. Check an entry last verified' +
         ' more than 60 days ago against its sources.',
       inputSchema: {
