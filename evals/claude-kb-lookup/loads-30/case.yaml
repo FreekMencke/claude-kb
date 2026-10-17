@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-30
+tags: [claude-kb-lookup, should-load]
+description: "Lint and build tools (kb-js-lint-build.md)."
+execution:
+  prompt: "Should we move from ESLint to Oxlint now that we're going to TypeScript 7, or does typescript-eslint keep working?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'

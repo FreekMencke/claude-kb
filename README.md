@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
-    <img alt="claude-kb: using Claude efficiently, written for agents to query" src="assets/banner.png">
+    <img alt="claude-kb: Claude and the stack it works on, written for agents to query" src="assets/banner.png">
   </picture>
 </p>
 
@@ -16,7 +16,8 @@
 </p>
 
 A Markdown knowledge base on using Claude efficiently, and on the stack it works on (Angular, TypeScript, Node, npm,
-GitHub Actions, fonts, CSS, accessibility), written for agents to query. Every entry carries its sources, a confidence
+NestJS, MongoDB, lint and test tools, CSS, fonts, accessibility, web performance and security, GitHub and its Actions,
+Docker, Kubernetes, AWS Lambda, licences), written for agents to query. Every entry carries its sources, a confidence
 level and a last-verified date.
 
 ## Setup
@@ -178,8 +179,8 @@ node scripts/check-kb.ts
 Edit [SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR. A new topic file goes into its description in the
 same PR: the topic words there decide when it loads (SKILL-015).
 
-After changing the description, run the trigger evals by hand (about $6 a run, so not in CI). `loads-*` cases should
-load the skill, `skips-*` near misses shouldn't:
+After changing the description, run the trigger evals by hand (about $15 a run at 57 cases, so not in CI; `--case
+<glob>` reruns one case). `loads-*` cases should load the skill, `skips-*` near misses shouldn't:
 
 ```bash
 claude plugin eval . --ablation none --model claude-opus-5-5 --no-publish -j 4 --threshold 0
@@ -189,10 +190,11 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 28 + 13 | 84/84 | 38/39 | Opus 5.5 | 2.1.296 | 2026-10-17 |
+| 40 + 17 | 120/120 | 51/51 | Opus 5.5 | 2.1.296 | 2026-10-18 |
 
-The one miss (2026-10-17): `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs after the description
-gained the stack topics (FreekMencke/claude-kb#175), and again after batch 2's (FreekMencke/claude-kb#180).
+`skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
+once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
+(FreekMencke/claude-kb#194, 2026-10-18).
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
@@ -246,9 +248,10 @@ a PR from `claude/reverify-<YYYY-MM-DD>`. Its prompt lives in the routine, not i
 - **Link, don't repeat.** Topic files link to neighbouring entries instead of covering them; overlaps kept on purpose
   are listed in OVERLAPS.md, and duplicates are merged with a pointer, never renumbered. An open question raised in two
   files lives in one. Cross-file pointers name entry IDs, not issues.
-- **INDEX.md holds only what answers a lookup**, because `kb_quick_answers` returns its Quick answers whole. The
-  Claude rows stay near 30 (each topic file keeps its own 10–15). Stack topics get at most one row per file, in their
-  own table under "The stack Claude works on", so the 23 planned files add about 23 rows, not 70
+- **INDEX.md holds only what answers a lookup**, because `kb_quick_answers` returns its Quick answers whole. The Claude
+  rows stay near 30 (each topic file keeps its own 10–15): they had drifted to 57 and were trimmed back to 33, keeping
+  each question whose entries no topic table lists (FreekMencke/claude-kb#194, 2026-10-18). Stack topics get at most one
+  row per file, in their own table under "The stack Claude works on", so the 23 planned files add about 23 rows, not 70
   (FreekMencke/claude-kb#175, 2026-10-17). Curation records and history live in OVERLAPS.md and CHANGELOG.md.
 - **The entry list is grepped, not read.** At 504 entries it was 51 of INDEX.md's 74 KB, so it moved to a generated
   ENTRIES.md, and the topic files to `topics/` (2026-10-13).

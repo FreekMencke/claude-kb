@@ -52,7 +52,7 @@ Research basis:
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Nest migration guide](https://docs.nestjs.com/migration-guide) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/migration.md)), npm registry (`npm view @nestjs/core dist-tags`, `npm view @nestjs/core 'time[12.0.0]'`)
-- Related: JSUP-003, JSTOOL-018, JSTEST-007
+- Related: JSUP-003, JSTOOL-018, JSTEST-007, WEBSEC-003, WEBSEC-009, WEBSEC-013
 
 `@nestjs/core` 12.0.0 was published 2026-08-27; `latest` was 12.1.3 (2026-10-12) and the `legacy` tag 11.2.7 on 2026-10-17 (`npm view @nestjs/core dist-tags`). The guide: "Version 12 centers on ESM packages, updated CLI defaults, first-class support for Standard Schema-based validation and serialization, and native observability support."
 
@@ -65,6 +65,8 @@ Changes that keep compiling but behave differently, which `nest upgrade` only re
 - **Removed**: Terminus's legacy `HealthIndicator`/`HealthCheckError` API, `subscriptions-transport-ws`, the `angular` schematic; NATS moves to v3.
 
 Opt-in additions: `routeConflictPolicy` and `routeResolutionStrategy` ("Both default to the previous behavior"), an `errorCode` on HTTP exceptions, `@nestjs/observe`, `nest deploy`.
+
+Security additions in 12.1: `app.useSecurityHeaders()` (WEBSEC-003), `app.enableCsrfProtection()` (WEBSEC-009) and `ConsoleLogger`'s `redact` (from 12.1.3, WEBSEC-013).
 
 ## [NEST-002] Node floors: running Nest 12 needs 20.19 or 22.12, the CLI needs 22.22.3, 24.15 or 26
 - Type: fact

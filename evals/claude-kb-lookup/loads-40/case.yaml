@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-40
+tags: [claude-kb-lookup, should-load]
+description: "SEO (kb-web-analytics-seo.md)."
+execution:
+  prompt: "Which robots.txt user-agent tokens block AI training crawlers without dropping us from Google Search?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'
