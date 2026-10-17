@@ -8,6 +8,8 @@ Research basis:
 - The baseline is `osrs-tracker-web` at `main` `9f8eadc` (2026-10-13, after #239's player link-preview cards), plus local transcripts of its SEO sessions from 2026-10-09 to 2026-10-13.
 - No measurement IDs, property IDs, project numbers or key paths are copied here.
 
+Extended 2026-10-18 (FreekMencke/claude-kb#190) with Google's 2025–2026 documentation changes, other vendors' AI crawlers and hreflang (WEB-035 to WEB-042), from three Sonnet 5.5 readers' raw downloads, re-checked by the lead; WEB-017, WEB-020, WEB-021 and WEB-023 were updated in place.
+
 Re-verified 2026-10-14; each entry's Last verified date is authoritative.
 
 ## Quick answers
@@ -18,14 +20,14 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative.
 | Is there an official GA4 MCP server? | Yes, `googleanalytics/google-analytics-mcp` (experimental, v0.7.0, 2026-07-29). It has 9 report and list tools, uses Application Default Credentials and requests only `analytics.readonly`. Installed user-wide on 2026-10-13 with the Search Console service account as a GA4 Viewer. | WEB-006, WEB-004 |
 | Does the PageSpeed Insights API work without a key? | No. Keyless calls returned 429 (quota 0) on 2026-10-10 and 2026-10-13, although the docs still say a key is optional. Field data is moving to the CrUX API, which needs a key. | WEB-010 |
 | How should an agent see what Googlebot sees? | `curl` the server HTML with the Googlebot user agent and grep the head tags. Don't use WebFetch (it returns a summary) or a Playwright snapshot (it has no `<head>`). | WEB-014, WEB-015, WEB-016 |
-| Is the rendered DOM what Google indexes? | Google indexes the rendered HTML, but it may skip rendering for non-200 pages and `noindex` pages. A canonical in the original HTML should match the rendered one. Use URL Inspection for Google's own view; its API has no rendered HTML. | WEB-017 |
+| Does a noindex or canonical set by JavaScript count, and what must an SSR page send? | Google indexes the rendered HTML, but since December 2025 it says a `noindex` in the original HTML may stop rendering, a canonical must match the original HTML's or be absent from it (one tag only), and non-200 pages may not be rendered. So send the status, robots meta and one canonical from the server: in Angular, `ServerRoute.status` or `RESPONSE_INIT`. Googlebot reads only the first 2MB of the HTML, uncompressed. | WEB-017, WEB-035, WEB-036, WEB-037 |
 | Can an agent validate structured data through an API? | No public API for the Rich Results Test or the Schema Markup Validator. Check the JSON-LD in the server HTML, then validate by hand. URL Inspection's `richResultsResult` covers indexed URLs only. | WEB-019 |
-| Which robots.txt tokens are Anthropic's? | `ClaudeBot` (training), `Claude-User` (fetches for a user's question) and `Claude-SearchBot` (search indexing). All three honour robots.txt and `Crawl-delay`. Claude Code's WebFetch identifies as `Claude-User`. | WEB-020 |
+| Which robots.txt tokens do AI crawlers use, and which honour it? | Anthropic: `ClaudeBot` (training), `Claude-User` (WebFetch too) and `Claude-SearchBot`, all honouring robots.txt. Other training tokens: `GPTBot`, `Google-Extended`, `Applebot-Extended`, `meta-externalagent`, `Amazonbot`, `MistralAI-Training`, `CCBot`. Search: `OAI-SearchBot`, `PerplexityBot`, `Applebot`, `Amzn-SearchBot`, and Googlebot for AI Overviews. User-triggered fetchers (`ChatGPT-User`, `Perplexity-User`, `Google-Agent`) may ignore robots.txt. | WEB-020, WEB-039, WEB-040 |
 | Does llms.txt help with Google or Claude? | Google says it ignores it, and that it "will neither harm nor help". No Anthropic page says Claude reads third-party llms.txt files. | WEB-021 |
 | Which SEO and GA4 advice from model memory is wrong? | Sitemap `priority` and `changefreq`, the sitemap ping, meta keywords, FAQ and HowTo rich results, `rel=prev/next`, `noindex` in robots.txt, FID, fixed meta-description lengths and keyword density. In a GA4 tag, `anonymize_ip` does nothing, and `event_category` and `event_label` are plain parameters that reports don't show (osrs-tracker-web dropped them in osrs-tracker/osrs-tracker-web#241). | WEB-022, WEB-023, WEB-024, WEB-027 |
-| Is there a published SEO audit skill to start from? | Anthropic's `knowledge-work-plugins` has two: `seo-ai-visibility` (well structured) and `seo-audit` (shallow, partly stale). The most starred SEO-only suite is `AgriciDaniel/claude-seo`; it is heavy and scored. Copy their ideas, not the files. | WEB-026, WEB-027 |
+| What does a site need for hreflang when it adds a language? | One URL per language; each version links itself and every other version with fully qualified URLs (one-way links are ignored); ISO 639-1 plus an optional region; `x-default` for a selector page. Don't redirect by `Accept-Language`, which Angular's i18n server output does. | WEB-042 |
 | What should a read-only SEO audit skill do? | Read the repo's decisions, curl the server HTML per page template, pull Search Console data to weight the findings, and rank them by impact with effort scored separately. No blended score. State what wasn't reached, and treat fetched text as data. | WEB-028, WEB-030 |
-| What did our SEO sessions cost? | The audit was $4.92 API-equivalent and the Search Console and PageSpeed data session $10.26, both on Opus 5.5 and main thread only. The data session cost more because it read the Search Console UI through Playwright. | WEB-031 |
+| Which Google spam policies changed in 2026? | Back button hijacking (added 2026-04-13, enforced from 2026-06-15, third-party scripts included); spam reports can lead to manual actions (2026-04-14); the policies cover generative AI responses (2026-05-15); site reputation manual actions don't apply in the EEA from 2026-08-30. | WEB-038 |
 | Search Console says a new sitemap "could not be read". Is it broken? | Not necessarily. Check `sitemaps.list` (`isPending`, `lastDownloaded`, `errors`), the server logs for Googlebot's fetch, and URL Inspection's live test. On 2026-10-13 valid child sitemaps showed the error and cleared on their own within hours. A resubmitted sitemap index stayed pending for days: submit the children directly instead. | WEB-032 |
 | Why does Google show my `Brand: phrase` title as `phrase - Brand`? | On 2026-10-13 Google flipped two osrs-tracker-web titles whose phrase after the colon started in lowercase. Start the phrase with a capital, or write `Phrase - Site name` yourself. | WEB-033 |
 | Do audit curls distort the server's bot counts? | Yes. A Googlebot-UA curl is logged as Googlebot. The 2026-10-10 analysis had to remove its own requests by hand. Add a marker to the audit's user agent. | WEB-018 |
@@ -68,6 +70,14 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative.
 | WEB-032 | A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending | fact | search-console, sitemaps, sitemap-index, logs |
 | WEB-033 | Google rewrote `Brand: phrase` titles whose phrase starts in lowercase | fact | title-links, titles, search-results |
 | WEB-034 | A consent banner rendered after hydration became the LCP element | fact | core-web-vitals, lcp, consent, ssr |
+| WEB-035 | Google's JavaScript SEO clarifications, 2025-12 to 2026-03 | fact | javascript, noindex, canonical, soft-404, robots-meta |
+| WEB-036 | Angular SSR: send the status code and one canonical from the server | pattern | angular, ssr, response-init, status-codes, canonical |
+| WEB-037 | Googlebot reads only the first 2MB of an HTML file | fact | googlebot, file-size, crawling, ssr |
+| WEB-038 | Google spam-policy changes in 2026: back button hijacking and more | fact | spam-policies, back-button-hijacking, manual-actions, site-reputation |
+| WEB-039 | AI crawler tokens beyond Anthropic and Google | comparison | crawlers, robots-txt, gptbot, oai-searchbot, perplexitybot, applebot-extended |
+| WEB-040 | Google's AI controls: Googlebot, Google-Extended and Google-Agent | fact | google-extended, google-agent, ai-overviews, web-bot-auth, robots-txt |
+| WEB-041 | AI usage preferences in robots.txt: the IETF aipref drafts | fact | aipref, content-usage, robots-txt, ietf |
+| WEB-042 | hreflang basics for a site that adds a language | fact | hreflang, i18n, multilingual, x-default, angular-localize |
 
 ## [WEB-001] osrs-tracker-web's SEO and analytics setup (2026-10-13)
 - Type: fact
@@ -465,9 +475,9 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-10-18
 - Sources: [JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [Dynamic rendering](https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering), [Search Central documentation updates](https://developers.google.com/search/updates)
-- Related: WEB-008, WEB-014, WEB-022
+- Related: WEB-008, WEB-014, WEB-022, WEB-035, WEB-036
 
 **How Google renders**
 - "Googlebot queues all pages with a 200 HTTP status code for rendering, unless a robots meta tag or header tells Google not to index the page."
@@ -478,6 +488,7 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - A not-found page must carry its content and its status in the server HTML.
 - A `noindex` that JavaScript removes may still apply. The 2025-12-15 docs update says: "If there's a possibility that you do want the page indexed, don't use a noindex tag in the original page code."
 - Canonicals (2025-12-17 update): set the same canonical in the original HTML as in the rendered page, or leave it out of the original HTML. An audit should compare the curl result with the rendered DOM for these two tags.
+- WEB-035 has the full December 2025 to March 2026 wording (the live page's `noindex` line is "If you do want the page indexed…"), WEB-036 the Angular side, and WEB-037 Googlebot's 2MB limit.
 
 **Checking Google's own view.** "use the Rich Results Test or the URL Inspection Tool and look at the rendered HTML". Neither has an API that returns it (WEB-008, WEB-019).
 
@@ -528,7 +539,7 @@ Community skills point out that curl misses JSON-LD that JavaScript injects (WEB
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Does Anthropic crawl data from the web?](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler), [Tools reference](https://code.claude.com/docs/en/tools-reference)
-- Related: WEB-016, WEB-021
+- Related: WEB-016, WEB-021, WEB-039, WEB-040, WEB-041
 
 The support article (modified 2026-04-07): "Below is information on the three robots that Anthropic uses".
 
@@ -547,6 +558,7 @@ The support article (modified 2026-04-07): "Below is information on the three ro
 - Anthropic publishes its IP ranges at `claude.com/crawling/bots.json`, but discourages IP blocking because it hides robots.txt from the bots.
 - `anthropic-ai` and `Claude-Web` no longer appear on the page.
 - Claude Code's WebFetch is `Claude-User` (WEB-016).
+- Other vendors' tokens: WEB-039; Google's: WEB-040.
 
 **For us:** osrs-tracker-web's `robots.txt` allows every bot. A 2026-10-13 grep of 24 h of pod logs found no Claude bot requests; the pods had been up only since that morning's deploy.
 
@@ -556,7 +568,7 @@ The support article (modified 2026-04-07): "Below is information on the three ro
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [AI features and your website](https://developers.google.com/search/docs/appearance/ai-features), [Google's AI optimization guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide), [llmstxt.org](https://llmstxt.org/)
-- Related: WEB-020, TOK-090
+- Related: WEB-020, TOK-090, WEB-040
 
 **What llms.txt is.** A proposal "to provide LLM-friendly content" in a Markdown file at `/llms.txt`. Anthropic publishes one for its own docs (TOK-090).
 
@@ -564,7 +576,7 @@ The support article (modified 2026-04-07): "Below is information on the three ro
 - AI Overviews and AI Mode have "no additional requirements … nor other special optimizations necessary".
 - "You don't need to create new machine readable files, AI text files, or markup to appear in these features."
 - The AI optimization guide (added 2026-05-15; the llms.txt clarification on 2026-06-15) says such files "will neither harm nor help your site's visibility or rankings in Google Search, as Google Search ignores them".
-- What counts: a page "must be indexed and eligible to be shown in Google Search with a snippet", and crawling must be allowed.
+- What counts: a page "must be indexed and eligible to be shown in Google Search with a snippet", and crawling must be allowed. Googlebot's robots.txt rules and the snippet controls govern AI Overviews and AI Mode, not `Google-Extended` (WEB-040).
 
 **Anthropic's position.** No Anthropic page says Claude reads llms.txt files on third-party sites. The researcher checked the crawler article, the web search and web fetch tool pages, and the Claude Code docs dump. So treat any claim that it does as unverified.
 
@@ -597,26 +609,22 @@ osrs-tracker-web dropped `priority` and `changefreq` on 2026-10-10 (#166). The a
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-13
-- Sources: [Search Central documentation updates](https://developers.google.com/search/updates), [FAQ and HowTo changes](https://developers.google.com/search/blog/2023/08/howto-faq-changes), [Simplifying the search results page](https://developers.google.com/search/blog/2025/06/simplifying-search-results), [Core Web Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals), [Mobile-first indexing has landed](https://developers.google.com/search/blog/2023/10/mobile-first-is-here)
-- Related: WEB-019, WEB-022, WEB-027
+- Last verified: 2026-10-18
+- Sources: [Search Central documentation updates](https://developers.google.com/search/updates), [FAQ and HowTo changes](https://developers.google.com/search/blog/2023/08/howto-faq-changes), [Simplifying the search results page](https://developers.google.com/search/blog/2025/06/simplifying-search-results), [Fact check (ClaimReview)](https://developers.google.com/search/docs/appearance/structured-data/factcheck), [Search gallery](https://developers.google.com/search/docs/appearance/structured-data/search-gallery), [Search Console data anomalies](https://support.google.com/webmasters/answer/6211453), [Core Web Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals), [Mobile-first indexing has landed](https://developers.google.com/search/blog/2023/10/mobile-first-is-here)
+- Related: WEB-019, WEB-022, WEB-027, WEB-038
 
-**Structured data**
-- **HowTo:** "now deprecated" (2023-09-13); its documentation was removed 2023-09-14.
-- **FAQ:** limited to government and health sites in 2023. Then "This feature will no longer appear in Google Search starting May 7, 2026", and its documentation was removed 2026-06-15.
-- **The 2025-06-12 simplification** dropped Book Actions, Course Info, Claim Review, Estimated Salary, Learning Video, Special Announcement and Vehicle Listing: "This update won't affect how pages are ranked." Book Actions' docs stayed, because a feature still uses it.
-- **Others:** the sitelinks search box docs were removed 2024-11-29. Practice problem docs were removed 2026-01-06. "Dataset structured data is only used by Dataset Search".
-- So a proposed `WebSite` + `SearchAction` (the 2026-10-09 audit prompt asked about it) no longer earns a sitelinks search box.
+**Structured data** (re-checked 2026-10-18; the [Search gallery](https://developers.google.com/search/docs/appearance/structured-data/search-gallery) lists what still earns a rich result)
+- **HowTo:** "now deprecated" (2023-09-13); docs removed 2023-09-14.
+- **FAQ:** limited to "well-known, authoritative government and health websites" from 2023-08-08. "This feature will no longer appear in Google Search starting May 7, 2026"; docs removed 2026-06-15. Search Console's FAQ impressions drop accordingly.
+- **The 2025-06-12 simplification** phased out Book Actions, Course Info, Claim Review, Estimated Salary, Learning Video, Special Announcement and Vehicle Listing: "This update won't affect how pages are ranked." On 2025-09-09 five lost their docs, and all but Book Actions left Search Console's reports and the Rich Results Test. ClaimReview's page stays: "We're phasing out support for ClaimReview markup in Google Search. However, this markup remains supported by the Factcheck Explorer Tool." Book Actions lost its banner on 2025-11-05: "there's still a feature using the markup".
+- **Practice problem:** docs removed 2026-01-06; Search Console's help still lists it (INDEX.md Conflicts).
+- **Others:** sitelinks search box docs removed 2024-11-29, so `WebSite` + `SearchAction` earns nothing. "Dataset structured data is only used by Dataset Search" (2025-11-05). Breadcrumbs show on desktop only (2025-01-22).
 
-**Metrics**
-- "INP replaces FID as a Core Web Vital" (2024-03-12).
-- Good values: LCP within 2.5 s, INP under 200 ms, CLS under 0.1, at the 75th percentile.
+**Metrics.** "INP replaces FID as a Core Web Vital" (2024-03-12). Good values: LCP within 2.5 s, INP under 200 ms, CLS under 0.1, at the 75th percentile.
 
-**Tools and indexing**
-- The Mobile-Friendly Test and the Mobile Usability report went away from 2023-12-01 (Google removed them from its docs that day).
-- Mobile-first indexing has been complete since 2023-10-31.
+**Tools and indexing.** The Mobile-Friendly Test and Mobile Usability report went away from 2023-12-01. Mobile-first indexing has been complete since 2023-10-31.
 
-The type list keeps changing. A skill should link to the documentation updates page rather than copy the list.
+The list keeps changing: a skill should link the updates page, not copy it.
 
 ## [WEB-024] Universal Analytics habits in a GA4 tag
 - Type: anti-pattern
@@ -882,6 +890,169 @@ A cookie banner that renders only in the browser can become the page's Largest C
 
 Measured locally (production build, mobile emulation, 4× CPU): first paint of the banner fell from 3,185 ms to 1,248 ms. Returning visitors saw it in 0 frames, before and after. The PR didn't report a production PageSpeed run after the fix (not verified).
 
+## [WEB-035] Google's JavaScript SEO clarifications, 2025-12 to 2026-03
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Search Central documentation updates](https://developers.google.com/search/updates), [JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics) (last updated 2026-03-04), [Fix Search-related JavaScript problems](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript) (2025-12-18), [Robots meta tag](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) (2026-03-24), [Consolidate duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls) (2026-07-10)
+- Related: WEB-017, WEB-036, WEB-037, NG-008
+
+Google documented in December 2025 that the original HTML decides more than the rendered page: put the robots meta, the canonical and the status code in the server response. All read as raw text 2026-10-18.
+
+| Date | Topic | Google's wording |
+|---|---|---|
+| 2025-12-15 | `noindex` | "When Google encounters the noindex tag, it may skip rendering and JavaScript execution, which means using JavaScript to change or remove the robots meta tag from noindex may not work as expected. If you do want the page indexed, don't use a noindex tag in the original page code." |
+| 2025-12-17 | Canonical | "you shouldn't use JavaScript to change the canonical URL to something else than the URL you specified as the canonical URL in the original HTML"; otherwise "leave it out of the original HTML". "make sure that this is the only rel="canonical" link tag on the page" |
+| 2025-12-18 | Non-200 | "rendering might be skipped" |
+| 2026-03-24 | Robots meta placement | "Google Search doesn't enforce placement of meta robots in the HTML head and will respect robots meta tags in the body section of an HTML document as well." (no change in behaviour, newly documented) |
+
+Canonical and hreflang links still count only in the `<head>` (WEB-042). Google's soft-404 fixes for client-side routing (redirect to a URL the server answers with 404, or add `noindex` with JavaScript) aren't needed when the server sends the 404 (WEB-036).
+
+## [WEB-036] Angular SSR: send the status code and one canonical from the server
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [angular.dev: Server and hybrid rendering](https://angular.dev/guide/ssr) ([raw at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/ssr.md)), [`RESPONSE_INIT` source](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/application/platform_tokens.ts), [`ServerRoute` source](https://raw.githubusercontent.com/angular/angular-cli/v22.2.3/packages/angular/ssr/src/routes/route-config.ts), [osrs-tracker-web `not-found.ts`](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/src/app/features/not-found/not-found.ts)
+- Related: WEB-035, WEB-014, WEB-001, NG-008
+
+`@angular/ssr` 22.2.3 (`latest` on 2026-10-18, `npm view @angular/ssr dist-tags`) gives two ways to set the status, and angular.dev has no worked 404 example.
+
+- **Per route:** "You can set custom headers and status codes for individual server routes using the `headers` and `status` properties in the `ServerRoute` configuration."
+- **At runtime:** `RESPONSE_INIT` "allows you to set headers and the status code for the response dynamically". It is `null` "When the application is rendered in the browser (CSR)", during the build and during static site generation, so inject it as optional and check.
+- No angular.dev page says a `**` route returns 404 by itself.
+
+**Canonical.** ssr.md's `CanonicalLinkService` example appends a `<link rel="canonical">` without removing one already in `index.html`. Google wants exactly one (WEB-035): replace an existing tag, as osrs-tracker-web's `PageMetaStrategy` does.
+
+**Prerendering.** Redirects there are "soft redirects" using `<meta http-equiv="refresh">`; server-rendered routes get real 301 or 302 responses.
+
+Tested 2026-10-18, osrs-tracker-web production (`@angular/ssr` ^22.2.2, `NotFound` sets `RESPONSE_INIT.status = 404`), `curl` with a marked Googlebot UA: five not-found URLs (unknown path, item, player) returned 404 with no canonical and no robots meta; `/` and an item page returned 200 with one canonical each and no robots meta.
+
+## [WEB-037] Googlebot reads only the first 2MB of an HTML file
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Googlebot](https://developers.google.com/search/docs/crawling-indexing/googlebot) (last updated 2026-02-03), [Overview of Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers) (2026-06-12), [Search Central documentation updates](https://developers.google.com/search/updates)
+- Related: WEB-014, WEB-035, WEBPERF-013
+
+Since the 2026-02-03 docs change, Googlebot's limit is 2MB per file, counted uncompressed. The 15MB figure models repeat is now the default for Google's crawlers in general, not Googlebot's.
+
+**Googlebot page:** "When crawling for Google Search, Googlebot crawls the first 2MB of a supported file type, and the first 64MB of a PDF file." Each CSS or JavaScript resource "is fetched separately, and each resource fetch is bound by the same file size limit". "Once the cutoff limit is reached, Googlebot stops the fetch and only sends the already downloaded part of the file for indexing consideration. The file size limit is applied on the uncompressed data."
+
+**Crawler overview:** "By default, Google's crawlers and fetchers only crawl the first 15MB of a file … a Google crawler like Googlebot may have a smaller size limit (for example, 2MB)".
+
+**For an SSR app.** Inline transfer state (`ng-state`), inlined critical CSS and JSON-LD all count toward the 2MB, and content past it isn't indexed (our inference from the wording; not tested). Measure uncompressed bytes with `curl -s --compressed <url> | wc -c`: curl's `%{size_download}` counts the compressed bytes (tested 2026-10-18, curl on WSL: 15,464 against 84,492 for one osrs-tracker-web item page). osrs-tracker-web's largest page measured 145,047 B on 2026-10-13 (WEB-014), far below the limit.
+
+## [WEB-038] Google spam-policy changes in 2026: back button hijacking and more
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Spam policies](https://developers.google.com/search/docs/essentials/spam-policies) (last updated 2026-08-28), [Back button hijacking (blog, 2026-04-13)](https://developers.google.com/search/blog/2026/04/back-button-hijacking), [Report quality issues](https://developers.google.com/search/help/report-quality-issues) (2026-04-23), [Site reputation policy update (blog, 2026-08-28)](https://developers.google.com/search/blog/2026/08/update-site-reputation-policy), [Manual actions report](https://support.google.com/webmasters/answer/9044175), [Search Central documentation updates](https://developers.google.com/search/updates)
+- Related: WEB-014, WEB-021, WEB-028
+
+**Back button hijacking** (added 2026-04-13 to "Malicious practices"): "when a site interferes with user browser navigation by manipulating the browser history or other functionalities, preventing them from using their back button to immediately get back to the page they came from."
+- Enforcement from 2026-06-15: pages "may be subject to manual spam actions or automated demotions". Search Console has a matching manual action.
+- The blog says it "may originate from the site's included libraries or advertising platform", so review third-party scripts too.
+- Google says nothing about single-page apps. Our reading: ordinary router navigation (one history entry per real page) isn't what it describes; pushing extra entries, or a `popstate` handler that redirects, is.
+
+**Other changes**
+
+| Date | Change |
+|---|---|
+| 2026-04-14, clarified 04-23 | Spam reports: "Google may use your report to take manual action against violations." The report text goes to the site owner, so it must contain no personal data. |
+| 2026-05-15 | The policies cover "attempting to manipulate generative AI responses in Google Search" |
+| 2026-08-28 | Site reputation abuse: "Beginning August 30, manual actions applied under our site reputation policy will have a different effect for those searching in the EEA than outside of it"; "For users inside the EEA, the impact of the manual action won't apply." |
+
+The updates page shows no other spam-policy change from 2025-01-01 to 2026-10-18 (the 2025-01-21 one was editorial).
+
+## [WEB-039] AI crawler tokens beyond Anthropic and Google
+- Type: comparison
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [OpenAI: Overview of OpenAI crawlers](https://developers.openai.com/api/docs/bots), [Perplexity crawlers](https://docs.perplexity.ai/docs/resources/perplexity-crawlers), [About Applebot](https://support.apple.com/en-us/119829) (published 2026-09-04), [Meta web crawlers](https://developers.facebook.com/documentation/sharing/webmasters/web-crawlers), [Amazonbot](https://developer.amazon.com/amazonbot), [Mistral robots](https://docs.mistral.ai/robots), [DuckAssistBot](https://duckduckgo.com/duckduckgo-help-pages/results/duckassistbot), [CCBot](https://commoncrawl.org/ccbot)
+- Related: WEB-020, WEB-040, WEB-041, WEB-021
+
+Most vendors split training, search and user-triggered fetching into separate robots.txt tokens. Disallowing the training token keeps a site in that vendor's AI search. Read on each vendor's page, 2026-10-18.
+
+| Vendor | Training | Search, answers | User fetches |
+|---|---|---|---|
+| OpenAI | `GPTBot` | `OAI-SearchBot` | `ChatGPT-User`: "robots.txt rules may not apply" |
+| Perplexity | none: PerplexityBot "is not used to crawl content for AI foundation models" | `PerplexityBot` | `Perplexity-User`: "generally ignores robots.txt rules" |
+| Apple | `Applebot-Extended` (never crawls, only governs use) | `Applebot` | — |
+| Meta | `meta-externalagent` | `meta-webindexer` | `meta-externalfetcher`: "may bypass robots.txt" |
+| Amazon | `Amazonbot` ("may be used to train Amazon AI models") | `Amzn-SearchBot` | `Amzn-User`: "may not follow all robots.txt directives" |
+| Mistral | `MistralAI-Training` | `MistralAI-Index` | `MistralAI-User`: "governs which sites these user requests can be made to" |
+| DuckDuckGo | none: "not used in any way to train AI models" | `DuckAssistBot` | — |
+| Common Crawl | `CCBot`, an open crawl others train on | — | — |
+
+**Details**
+- OpenAI: "Sites that are opted out of OAI-SearchBot will not be shown in ChatGPT search answers, though can still appear as navigational links." Changes take "~24 hours".
+- Applebot follows Googlebot's rules when robots.txt doesn't name it; Amzn-SearchBot follows other search bots'.
+- Microsoft lists no AI token; Copilot appears to use Bing's index (inference). ByteDance has no official crawler page.
+
+## [WEB-040] Google's AI controls: Googlebot, Google-Extended and Google-Agent
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Google's common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) (last updated 2026-10-15), [AI features and your website](https://developers.google.com/search/docs/appearance/ai-features) (2025-12-10), [Google user-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers) (2026-08-19), [Web Bot Auth](https://developers.google.com/crawling/docs/crawlers-fetchers/web-bot-auth), [Crawling docs changelog](https://developers.google.com/crawling/docs/changelog)
+- Related: WEB-021, WEB-039, WEB-020, WEB-041
+
+Disallowing `Google-Extended` doesn't take a site out of AI Overviews or AI Mode: those follow Googlebot's rules and the snippet controls.
+
+- **AI Overviews and AI Mode:** "robots.txt directives for Googlebot is the control for site owners to manage access to how their sites are crawled for Search. To limit the information shown from your pages in Search, use nosnippet, data-nosnippet, max-snippet, or noindex controls."
+- **Google-Extended** has no user agent of its own; it governs whether crawled content is used "for training future generations of Gemini models" and "for grounding (providing content from the Google Search index to the model at prompt time …)" in Gemini Apps and Vertex AI. "Google-Extended does not impact a site's inclusion in Google Search nor is it used as a ranking signal in Google Search."
+- **Google-Agent** (added 2026-03-20) "is used by agents hosted on Google infrastructure to navigate the web and perform actions upon user request". Like every user-triggered fetcher, "these fetchers generally ignore robots.txt rules". NotebookLM's fetcher became `Google-GeminiNotebook` on 2026-07-16.
+- **Web Bot Auth** (experimental, added 2026-05-04): some Google-Agent requests carry an RFC 9421 signature from `https://agent.bot.goog`. It's only for verifying traffic: "We don't sign every request of a particular agent", so keep reverse-DNS checks. A site needs no change to be crawled.
+- Google's crawling docs moved to developers.google.com/crawling on 2025-11-20; old Search Central links redirect.
+
+## [WEB-041] AI usage preferences in robots.txt: the IETF aipref drafts
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [draft-ietf-aipref-attach-05](https://www.ietf.org/archive/id/draft-ietf-aipref-attach-05.txt) (2026-08-19), [draft-ietf-aipref-vocab-08](https://www.ietf.org/archive/id/draft-ietf-aipref-vocab-08.txt) (2026-09-14), [IETF datatracker: aipref](https://datatracker.ietf.org/wg/aipref/about/)
+- Related: WEB-039, WEB-040
+
+The IETF AI Preferences working group (aipref, active) is drafting one vendor-neutral way to say "don't train on this" in robots.txt and HTTP. Neither draft is an RFC yet, and no vendor page read for WEB-039 or WEB-040 says it honours them. Read from the datatracker API and the draft text, 2026-10-18.
+
+- **Attach, rev 05** (Illyes of Google, Thomson of Mozilla): "This document defines attachment methods using the Robots Exclusion Protocol and HTTP header fields" and "updates RFC 9309". It adds a `Content-Usage` header field and robots.txt rule. Allow and Disallow still control crawling; for disallowed paths, "no preferences are implied".
+- **Vocab, rev 08:** three categories, `train-ai` (AI Training), `ai-use` (AI Use) and `search` (Search).
+
+The draft's example:
+
+```text
+User-Agent: *
+Allow: /
+Content-Usage: train-ai=n
+```
+
+**Use today:** per-vendor tokens (WEB-039, WEB-040) are what crawlers document honouring. Google's robots.txt spec supports only `user-agent`, `allow`, `disallow` and `sitemap` (WEB-022), so a `Content-Usage` line has no documented effect yet.
+
+## [WEB-042] hreflang basics for a site that adds a language
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-18
+- Sources: [Tell Google about localized versions of your page](https://developers.google.com/search/docs/specialty/international/localized-versions) (last updated 2026-09-21), [Managing multi-regional and multilingual sites](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites) (2025-12-10), [Angular i18n: deploy](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/i18n/deploy.md)
+- Related: WEB-035, WEB-036, WEB-022
+
+Give each language its own URL, link every version to every other with hreflang, and don't redirect by language.
+
+**Google's rules** (read as raw text 2026-10-18)
+- Three equivalent methods: `<link>` tags in the head, HTTP `Link` headers, or the sitemap (`xhtml:link`). "there's no benefit in Search" in using more than one.
+- "Each language version must list itself as well as all other language versions." "If two pages don't both point to each other, the tags will be ignored."
+- URLs must be fully qualified ("not //example.com/foo or /foo").
+- Codes: ISO 639-1 language, optional ISO 3166-1 Alpha 2 region; "You can't specify the country code by itself", and `es-419` isn't supported. `x-default` is for when nothing matches, "designed for language selector pages".
+- "Google doesn't use hreflang or the HTML lang attribute to detect the language of a page"; it reads the visible content.
+- "Google recommends using different URLs for each language version". Googlebot "sends HTTP requests without setting Accept-Language". "Avoid automatically redirecting users from one language version of a site to a different language version".
+
+**Angular conflict.** `@angular/localize` builds one app per locale under `subPath`, which fits the per-URL rule. But the i18n deploy guide says that with `outputMode: 'server'`, "Angular automatically handles redirection dynamically based on the `Accept-Language` HTTP header", which Google advises against. Which URLs it redirects, and whether that can be turned off, is not verified.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -891,7 +1062,11 @@ Ranked by impact against effort.
 3. **Done 2026-10-13: read-only GA4 access** through the official GA MCP server, in osrs-tracker-web sessions only since 2026-10-14 (`kb-mcp.md` recommendation 3). WEB-006, WEB-005.
 4. **Done 2026-10-13: mark audit traffic**: the skill's `probe.sh` appends `seo-audit` to the Googlebot user agent. WEB-018.
 5. **Done 2026-10-13: route SEO questions to this file** ([FreekMencke/claude-skills#30](https://github.com/FreekMencke/claude-skills/pull/30)).
-6. **Done 2026-10-13, superseded 2026-10-14: historical server logs.** Logs and metrics are in Grafana Cloud, read through the claude.ai Grafana connector with its write tools kept on purpose (INFRA recommendation 11); the cluster Loki route it replaced (FreekMencke/home-cluster#5) is gone. WEB-013, INFRA-024, INFRA-025.
+6. **Add Google's 2025–2026 rules to the `/seo-audit` skill's references**: Googlebot's 2MB limit, one canonical only, a `noindex` anywhere in the document counting, back button hijacking, which robots.txt tokens govern AI features, hreflang checks and the retired types. Small effort, applies to every audit. [FreekMencke/claude-skills#83](https://github.com/FreekMencke/claude-skills/issues/83). WEB-035, WEB-037, WEB-038, WEB-039, WEB-040, WEB-042, WEB-023.
+7. **Decision 2026-10-18: keep osrs-tracker-web's and freek-mencke-web's allow-all robots.txt.** Both want to appear in AI answers, and blocking a training token gains them nothing. If a site ever opts out of training only, disallow the training tokens (`GPTBot`, `Google-Extended`, `Applebot-Extended`, `meta-externalagent`, `CCBot`, `ClaudeBot`) and keep the search ones; user-triggered fetchers may ignore it anyway. WEB-039, WEB-040, WEB-020.
+8. **No change: osrs-tracker-web already sends 404s and one server-side canonical** (tested 2026-10-18). WEB-036.
+9. **Before adding a second language:** decide on per-locale paths with hreflang, and turn off or avoid the `Accept-Language` redirect of Angular's i18n server output. No issue until a language is planned. WEB-042.
+10. **Done 2026-10-13, superseded 2026-10-14: historical server logs.** Logs and metrics are in Grafana Cloud, read through the claude.ai Grafana connector with its write tools kept on purpose (INFRA recommendation 11); the cluster Loki route it replaced (FreekMencke/home-cluster#5) is gone. WEB-013, INFRA-024, INFRA-025.
 
 ## Open questions
 
@@ -901,4 +1076,10 @@ Ranked by impact against effort.
 - How big are the GA MCP server's tool schemas, and how much context does a `run_report` answer take? Not measured (WEB-006); it's installed now, so a `/context` check in a fresh session would show the schemas.
 - How long does a resubmitted sitemap index stay pending? `sitemaps.list` for `/sitemap.xml` was still pending three days after the 2026-10-10 resubmit (WEB-032); a check on or after 2026-10-20 would show whether it is processed.
 - Does Google keep the capitalised `Brand: Phrase` titles as written? osrs-tracker-web shipped them in 6c4937f on 2026-10-13; a search-results check after the next crawl of `/trackers/xp` and `/trackers/price` would confirm WEB-033's rule.
+- Does `@angular/ssr` 22 answer a `**` route with 404 on its own, without `ServerRoute.status` or `RESPONSE_INIT` (WEB-036)? angular.dev's ssr.md and define-routes.md don't say; the `angular-cli` source (`packages/angular/ssr/src/app.ts`) wasn't read. A built test app would settle it.
+- Which URLs does Angular's i18n `Accept-Language` redirect cover under `outputMode: 'server'`, and can it be turned off (WEB-042)? Only the deploy guide was read.
+- Do the Search Console FAQ, ClaimReview and practice problem reports still exist? Google announced removal dates for ClaimReview (2025-09-09) and practice problem (January 2026), none for FAQ, yet the help pages still list practice problems on 2026-10-18 (WEB-023).
+- When did OpenAI change `ChatGPT-User`'s robots.txt wording to "may not apply", and does ChatGPT's agent or Atlas use its own token (WEB-039)? The 2025 Wayback copies of the bots page are script shells, and OpenAI's publisher FAQ returned 403 to curl, a browser and WebFetch.
+- Does Microsoft publish an AI training opt-out token, or say Copilot uses only bingbot (WEB-039)? Bing's crawler page lists none; third-party lists name a "Copilot-Bot" no Microsoft page confirms.
+- Does any crawler honour the aipref `Content-Usage` rule yet (WEB-041)? None of the vendor pages read on 2026-10-18 mention it.
 - Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)? Answered 2026-10-14: its CLI help lists it among the available categories (`cli/cli-flags.js` at v13.5.0); not run.
