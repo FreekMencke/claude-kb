@@ -121,6 +121,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-documentation.md](topics/kb-documentation.md) | `DOC` | Repo docs Claude maintains |
 | [kb-web-analytics-seo.md](topics/kb-web-analytics-seo.md) | `WEB` | Web analytics and SEO |
 | [kb-design.md](topics/kb-design.md) | `DESIGN` | Visual and UI design with Claude |
+| [kb-typescript.md](topics/kb-typescript.md) | `TS` | TypeScript 6.0 to 7.0 |
 
 | Other files | What it holds |
 |---|---|

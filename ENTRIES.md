@@ -639,6 +639,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TOK-115 | Task budgets (API beta) | fact | api, budgets, agents |
 | TOK-116 | What auto-compaction at 400K lost: measured | fact | compaction, measurement, our-setup |
 
+## TypeScript 6.0 to 7.0 (`topics/kb-typescript.md`, TS)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| TS-001 | TypeScript versions, dates and npm dist-tags | fact | versions, npm, dist-tags, release-dates |
+| TS-002 | The tsconfig defaults TypeScript 6.0 changed | fact | tsconfig, defaults, strict, rootDir, migration |
+| TS-003 | `types` defaults to `[]`: "Cannot find name 'process'" | fact | tsconfig, types, types-node, errors, migration |
+| TS-004 | What 6.0 deprecated, and `ignoreDeprecations: "6.0"` | fact | tsconfig, deprecations, ignoreDeprecations, baseUrl, migration |
+| TS-005 | What 7.0 removes outright, and other 7.0 differences | fact | tsconfig, removals, typescript-7, migration |
+| TS-006 | TypeScript 7: the Go port in the `typescript` package | fact | typescript-7, tsgo, native-port, lsp |
+| TS-007 | TypeScript 7 speed, and `--checkers`, `--builders`, `--singleThreaded` | fact | typescript-7, performance, ci, parallelism |
+| TS-008 | TypeScript 7.0 ships no compiler API | fact | typescript-7, compiler-api, tooling |
+| TS-009 | Which tools can't use TypeScript 7.0 yet | comparison | typescript-7, peer-dependencies, angular, typescript-eslint, nestjs |
+| TS-010 | Running 7.0 for type-checking while tools keep 6.0 | pattern | typescript-7, npm-alias, typescript6, side-by-side |
+| TS-011 | `npm install typescript@latest` in a repo whose tools need 6.0 | anti-pattern | typescript-7, peer-dependencies, eresolve, upgrades |
+| TS-012 | Claude Code's `typescript-lsp` plugin and TypeScript 7 | fact | lsp, claude-code-plugins, typescript-language-server, typescript-7 |
+| TS-013 | tsconfig flags for code Node runs by type stripping | fact | type-stripping, erasableSyntaxOnly, verbatimModuleSyntax, tsconfig |
+| TS-014 | Release cadence, the 7.1 plan and 6.0 servicing | fact | release-cadence, iteration-plan, typescript-7, versions |
+| TS-015 | Where to check the current version and a package's TypeScript range | recommendation | versions, peer-dependencies, npm, dist-tags |
+
 ## Claude for web analytics and SEO work (`topics/kb-web-analytics-seo.md`, WEB)
 
 | ID | Title | Type | Tags |
