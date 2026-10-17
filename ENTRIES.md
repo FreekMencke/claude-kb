@@ -661,6 +661,23 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ORCH-049 | Workflow cost: size guideline, ultracode and reruns | fact | workflows, ultracode, cost |
 | ORCH-050 | Workflows in `claude -p`, the Agent SDK and `claude-code-action` | fact | workflows, headless, permissions, github-actions |
 
+## Open-source licensing and repo hygiene (`topics/kb-oss-licensing.md`, OSS)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| OSS-001 | Choosing a licence for code, content and fonts | recommendation | license, choosealicense, creative-commons, ofl, no-license |
+| OSS-002 | Source-available isn't open source: Elastic-2.0, CC BY-NC, BUSL | fact | source-available, elastic-license, cc-by-nc, osi, osd |
+| OSS-003 | Several licences in one repo: code, docs and assets | pattern | dual-licensing, mixed-licenses, readme, package-json |
+| OSS-004 | How GitHub detects a repo's licence, and why it shows "Other" | fact | licensee, license-detection, noassertion, github-api |
+| OSS-005 | SPDX identifiers and expressions in files and `package.json` | fact | spdx, license-expression, licenseref, headers |
+| OSS-006 | REUSE: per-file licensing, `LICENSES/` and `REUSE.toml` | tool | reuse, spdx, per-file-license, fonts, images |
+| OSS-007 | Listing dependency licences with `npm sbom` and `npm query` | tool | npm-sbom, npm-query, spdx, cyclonedx, 3rdpartylicenses |
+| OSS-008 | Gating dependency licences in CI: dependency-review-action | tool | dependency-review, allow-licenses, github-actions, sbom |
+| OSS-009 | Font licences: bundling, web fonts and what to record | fact | ofl, fonts, webfonts, name-table, google-fonts |
+| OSS-010 | Notice obligations when copying code: MIT, BSD, ISC, Apache, ELv2 | fact | notices, apache-notice, mit, attribution, cc-by |
+| OSS-011 | What an agent must not do with third-party code | anti-pattern | copyleft, gpl, compatibility, notices, copilot-code-referencing |
+| OSS-012 | Community health files for a personal project: SECURITY.md, CONTRIBUTING, CODEOWNERS | recommendation | security-md, private-vulnerability-reporting, contributing, codeowners, community-profile |
+
 ## Instructing the 5.x models (`topics/kb-prompting.md`, PROMPT)
 
 | ID | Title | Type | Tags |
