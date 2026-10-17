@@ -133,6 +133,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-030 | Tests: from a visual chooser to staged picks | comparison | experiment, staged-picks, swatches, tone-of-voice |
 | DESIGN-031 | Staged picks on an existing site: extract, then lock, nudge or open each step | pattern | existing-site, redesign, staged-picks, tokens |
 
+## Docker images for Node apps (`topics/kb-docker-node.md`, DOCKER)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| DOCKER-001 | Official `node` image tags on 2026-10-17: what each points to, and sizes | fact | node-image, alpine, slim, lts, image-size |
+| DOCKER-002 | Alpine and musl: Node's support tier and native modules | fact | alpine, musl, native-modules, sharp, arm64 |
+| DOCKER-003 | Distroless, Docker Hardened Images and Chainguard for Node | comparison | distroless, docker-hardened-images, chainguard, nonroot |
+| DOCKER-004 | Choosing a base image for a Node 24/26 server | recommendation | base-image, alpine, slim, distroless |
+| DOCKER-005 | Multi-stage Dockerfile for a bundled Angular SSR or NestJS server | pattern | dockerfile, multi-stage, angular-ssr, nestjs |
+| DOCKER-006 | npm inside the image: `NODE_ENV`, `--omit=dev`, cache mounts, npm 12 scripts | fact | npm-ci, omit-dev, node-env, cache-mount |
+| DOCKER-007 | `.dockerignore` and build secrets | fact | dockerignore, build-context, secrets, build-args |
+| DOCKER-008 | Non-root user and PID 1: signals and `runAsNonRoot` | fact | non-root, pid-1, sigterm, tini |
+| DOCKER-009 | Pin the base image by digest and let Dependabot bump it | recommendation | digest-pinning, dependabot, base-image |
+| DOCKER-010 | Image size and startup: what actually changes start time | fact | image-size, startup, compile-cache, heap |
+| DOCKER-011 | SBOM and provenance attestations: buildx and build-push-action defaults | fact | provenance, sbom, slsa, attestations, buildx |
+| DOCKER-012 | Signing images: cosign keyless or GitHub artifact attestations | comparison | cosign, sigstore, artifact-attestations, signing |
+| DOCKER-013 | What Flux verifies, and where a workload image check lives | fact | flux, verification, admission-controller, cosign |
+| DOCKER-014 | Build cache in GitHub Actions: `type=gha`, its limits and read-only triggers | fact | build-cache, gha-cache, build-push-action, workflow-run |
+| DOCKER-015 | Multi-arch images: QEMU, native arm64 runners or Docker's GitHub Builder | comparison | multi-arch, arm64, qemu, github-builder |
+
 ## Repo documentation: changelogs, READMEs, decision records and drift (`topics/kb-documentation.md`, DOC)
 
 | ID | Title | Type | Tags |
