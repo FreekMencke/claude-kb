@@ -2052,7 +2052,7 @@ Ranked by expected savings ÷ effort. Done on 2026-10-12, now in `~/.claude` or 
 
 | # | Change | What it does / when it triggers | Est. savings | Effort | Evidence |
 |---|---|---|---|---|---|
-| R5 | **Screenshot hygiene** for `osrs-tracker-web`: [osrs-tracker/osrs-tracker-web#223](https://github.com/osrs-tracker/osrs-tracker-web/issues/223) (the `browser-checker` agent, kb-repo-agents T3). Prefer Playwright `browser_snapshot` (about 200 tokens) for structure checks; screenshot elements or a ≤1280px viewport; run visual review loops in a subagent that returns findings | Any UI verification task | Roughly 1–3M image tokens over the 6 days that are later re-read about 58x (TOK-009). Likely the largest single tool-output saving for that repo. | 20 min | TOK-043, TOK-023, TOK-035 |
+| R5 | **Screenshot hygiene** for `osrs-tracker-web`: [osrs-tracker/osrs-tracker-web#223](https://github.com/osrs-tracker/osrs-tracker-web/issues/223) (the `browser-checker` agent, kb-repo-agents T3; landed 2026-10-12, final count due from 2026-10-27). Prefer Playwright `browser_snapshot` (about 200 tokens) for structure checks; screenshot elements or a ≤1280px viewport; run visual review loops in a subagent that returns findings | Any UI verification task | Roughly 1–3M image tokens over the 6 days that are later re-read about 58x (TOK-009). Likely the largest single tool-output saving for that repo. | 20 min | TOK-043, TOK-023, TOK-035 |
 
 Won't do (measured 2026-10-12, below):
 - R13, disabling `frontend-design` and `playwright` per project: together about 1.3% of the starting context, against settings changes in every repo that uses them.
@@ -2111,7 +2111,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 16. **The report-file refusal.** "Subagents should return findings as text, not write report files" keys on file names in both interactive sessions and `claude -p` (TOK-107), but the full name list and the version that added it are in neither the docs nor the CHANGELOG.
 17. **When an Agent result spills to a file.** 40,225 characters arrived whole in `claude -p`; 50,709 bytes spilled in an interactive auto-mode session. The docs give no rule, and the inline cost inside an interactive session wasn't measured (TOK-105).
 18. **Does a running session pick up a new `autoCompactWindow`?** The settings docs say most edits apply without a restart, and they don't list this key among those read at start. One session started before R1 still grew to 631k (TOK-116). Untested: a fresh session edited mid-way, and an in-place edit instead of `mv`.
-18. **Background subagents in `-p`.** The docs say fork mode is off in `-p`, yet v2.1.296 backgrounded the Agent call there (TOK-105).
-19. **Undocumented meters.** The wording and thresholds of the `/usage` warnings (2.1.299), and the OTel `cache_creation_5m_tokens` and `cache_creation_1h_tokens` attributes (2.1.300), are only in the CHANGELOG (TOK-010, TOK-012).
-20. **Other agents' defaults.** Whether Gemini CLI masks tool output by default, Codex's `model_auto_compact_token_limit` default, and whether OpenCode users run V1 (`prune`) or V2 compaction (TOK-085, TOK-114).
-21. **Env prefixes and allow rules.** Whether `PAGER=cat`, `GIT_PAGER=cat` or `CI=1` stop a `Bash(...)` allow rule from matching. The docs' wording says they would; untested (TOK-110).
+19. **Background subagents in `-p`.** The docs say fork mode is off in `-p`, yet v2.1.296 backgrounded the Agent call there (TOK-105).
+20. **Undocumented meters.** The wording and thresholds of the `/usage` warnings (2.1.299), and the OTel `cache_creation_5m_tokens` and `cache_creation_1h_tokens` attributes (2.1.300), are only in the CHANGELOG (TOK-010, TOK-012).
+21. **Other agents' defaults.** Whether Gemini CLI masks tool output by default, Codex's `model_auto_compact_token_limit` default, and whether OpenCode users run V1 (`prune`) or V2 compaction (TOK-085, TOK-114).
+22. **Env prefixes and allow rules.** Whether `PAGER=cat`, `GIT_PAGER=cat` or `CI=1` stop a `Bash(...)` allow rule from matching. The docs' wording says they would; untested (TOK-110).
