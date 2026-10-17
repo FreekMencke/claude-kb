@@ -65,6 +65,7 @@ Summary in 1–3 sentences, then details, config snippets or examples as needed.
 
 End the file with two sections kept apart from the facts:
 - "Recommendations for our setup": what we should adopt, ranked by impact vs effort, each pointing to the entries that justify it.
+  When one is done, cut it to one line: `Done YYYY-MM-DD:` what changed, the issue or PR, and the entry IDs. The reasoning stays in the entries and CHANGELOG.md. Decisions and won't-dos keep their reason, so nobody proposes them again. `kb_quick_answers` returns the whole section with every topic call.
 - "Open questions": what you couldn't resolve.
 
 ## Finishing a research session

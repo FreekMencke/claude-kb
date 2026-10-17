@@ -882,8 +882,8 @@ All three gates are backed by CI lint, so a miss costs a red CI run, not a bad m
 
 Ranked by impact against effort.
 
-1. **Fix the aws push gate's `git -C` gap.** Done 2026-10-12 in osrs-tracker/osrs-tracker-aws#79. HOOK-036.
-2. **Add `"if": "Bash(git *)"` to the web and api push gate** (low impact, trivial effort). Done in all three repos 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81). Keeps the script's `-C` parsing but skips the spawn on the non-git share of the 13,350 Bash calls in the 6 days 2026-10-07 to 2026-10-12 (TOK-042; it doesn't split git from non-git). HOOK-015, HOOK-019.
+1. **Done 2026-10-12: fix the aws push gate's `git -C` gap** (osrs-tracker/osrs-tracker-aws#79). HOOK-036.
+2. **Done 2026-10-12: `"if": "Bash(git *)"` on the push gate in all three repos**, so non-git Bash calls skip the spawn (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81). HOOK-015, HOOK-019.
 3. **Keep the push gates fail-open; don't add `onFailure: "block"`** (decision). A broken script would then block every Bash call, and CI lints anyway. HOOK-013.
 4. **No `prompt` or `agent` hooks on tool events** (decision). Use `/goal` for ad-hoc "keep going until X", and the reviewer agents for judgement. HOOK-010, HOOK-031, REPO-025.
 5. **When scripting `claude -p` over a repo we didn't write, pass `--settings '{"disableAllHooks": true}'` or `--bare`** (high impact if it ever happens, trivial effort). Our repos' hooks are ours, so this only matters for third-party clones. HOOK-025.
