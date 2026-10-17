@@ -13,7 +13,7 @@ Research basis:
 | Question | Answer | Entries |
 |---|---|---|
 | Which Angular majors are supported, and when is the next? | 22 active (released 2026-06-03, LTS to 2028-06), 21 LTS to 2027-06, 20 LTS to 2026-11-28; v19 and older unsupported. From v22 a major comes every 12 months: v23 about June 2027. | NG-001 |
-| Which TypeScript and Node does Angular 22 need? | TypeScript `>=6.0 <6.1` and Node `^22.22.3 \|\| ^24.15.0 \|\| >=26.0.0`. `typescript@latest` is 7.0.2, which npm refuses next to Angular 22 (ERESOLVE). 21.2+ takes TS 5.9 or 6.0. | NG-002 |
+| Which TypeScript and Node does Angular 22 need? | TypeScript `>=6.0 <6.1` and Node `^22.22.3 \|\| ^24.15.0 \|\| >=26.0.0`. `typescript@latest` is 7.0.2: npm refuses to install it together with Angular 22 (ERESOLVE), and bumping it in an existing repo only warns (JSUP-002). 21.2+ takes TS 5.9 or 6.0. | NG-002, JSUP-002 |
 | Do I still write `changeDetection: ChangeDetectionStrategy.OnPush`? | No: since v22 a component without `changeDetection` is OnPush. Write `ChangeDetectionStrategy.Eager` for the old behaviour; `Default` is deprecated. | NG-003 |
 | Is zone.js still needed? | No: zoneless is the default since v21, in apps and in TestBed. A zone app needs `provideZoneChangeDetection()`; `ng update` adds it. | NG-004 |
 | What else changed default in v22 without a compile error? | HttpClient uses fetch (`withXhr()` for upload progress), routes inherit all parent params, incremental hydration is on, `?.` in templates gives `undefined`, `data-` attributes don't bind, `PORT` beats `--port`. | NG-005 |
