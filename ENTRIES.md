@@ -975,6 +975,25 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | WEB-033 | Google rewrote `Brand: phrase` titles whose phrase starts in lowercase | fact | title-links, titles, search-results |
 | WEB-034 | A consent banner rendered after hydration became the LCP element | fact | core-web-vitals, lcp, consent, ssr |
 
+## Web performance beyond Core Web Vitals (`topics/kb-web-performance.md`, WEBPERF)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| WEBPERF-001 | INP: the three subparts, long tasks and yielding | pattern | inp, long-tasks, scheduler-yield, interactivity |
+| WEBPERF-002 | INP in an Angular 22 SSR app: hydration, event replay and `@defer` | pattern | inp, angular, hydration, incremental-hydration, event-replay |
+| WEBPERF-003 | Finding the slow interaction: web-vitals attribution and LoAF | tool | inp, web-vitals, attribution, long-animation-frames |
+| WEBPERF-004 | What keeps a page out of the bfcache | fact | bfcache, unload, no-store, cache-control |
+| WEBPERF-005 | Testing the bfcache: DevTools, `notRestoredReasons`, `pageshow` | tool | bfcache, devtools, not-restored-reasons, lighthouse |
+| WEBPERF-006 | Speculation Rules: support, syntax, eagerness and Chrome's limits | fact | speculation-rules, prerender, prefetch, eagerness |
+| WEBPERF-007 | Speculation Rules: side effects, analytics, CSP and SPAs | anti-pattern | speculation-rules, analytics, csp, spa, sec-purpose |
+| WEBPERF-008 | `fetchpriority` and preload for the LCP image, and `NgOptimizedImage` `priority` | pattern | fetchpriority, preload, lcp, ngoptimizedimage |
+| WEBPERF-009 | 103 Early Hints from Express behind a proxy | fact | early-hints, 103, express, traefik, preconnect |
+| WEBPERF-010 | Image formats: AVIF, WebP and the `<picture>` fallback | fact | avif, webp, picture, image-formats |
+| WEBPERF-011 | `loading="lazy"`, `srcset`/`sizes` and `NgOptimizedImage` defaults | pattern | lazy-loading, srcset, sizes, ngoptimizedimage, cls |
+| WEBPERF-012 | Cache-Control for hashed bundles, other static files and SSR HTML | recommendation | cache-control, immutable, no-cache, express-static, ssr |
+| WEBPERF-013 | Compression from Express: brotli, zstd and which level | fact | compression, brotli, zstd, express, node-zlib |
+| WEBPERF-014 | Traefik's compress middleware sends gzip unless `br` comes first | anti-pattern | traefik, compression, brotli, accept-encoding |
+
 ## Session workflows (`topics/kb-workflows.md`, FLOW)
 
 | ID | Title | Type | Tags |

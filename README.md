@@ -134,6 +134,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-accessibility.md](topics/kb-accessibility.md) | `ACCESS` | Web accessibility: WCAG 2.2, the EU Accessibility Act, axe and its limits |
 | [kb-docker-node.md](topics/kb-docker-node.md) | `DOCKER` | Docker images for Node apps |
 | [kb-js-lint-build.md](topics/kb-js-lint-build.md) | `JSTOOL` | Node/TS lint, format and build tools |
+| [kb-web-performance.md](topics/kb-web-performance.md) | `WEBPERF` | Web performance beyond Core Web Vitals: INP, bfcache, Speculation Rules, priority hints, images, caching, compression |
 
 | Other files | What it holds |
 |---|---|
