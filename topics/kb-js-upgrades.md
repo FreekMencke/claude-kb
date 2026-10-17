@@ -12,7 +12,7 @@ Research basis:
 | Question | Answer | Entries |
 |---|---|---|
 | How should an agent check versions and peer ranges before a bump? | `npm outdated`, `npm view <pkg> dist-tags`, `npm view <pkg> "time[<version>]"` and `npm view <pkg>@<target> peerDependencies peerDependenciesMeta`, then `npm ls <pkg>`. Not `npm view <pkg> time --json` (199k characters for typescript) or `npm explain` (260 lines). | JSUP-001, TS-015 |
-| Does npm stop me installing a version outside a peer range? | Not in an existing repo: `npm install -D typescript@latest` next to typescript-eslint or Angular exits 0 with "ERESOLVE overriding peer dependency" warnings. Check with `npm ls --all`, or install with `--strict-peer-deps`. | JSUP-002, TS-011 |
+| Does npm stop me installing a version outside a peer range? | Not in an existing repo: `npm install -D typescript@latest` next to typescript-eslint or Angular exits 0 with "ERESOLVE overriding peer dependency" warnings. Check with `npm ls --all`; `--strict-peer-deps` stops only required-peer breaks, not Angular's optional peer. | JSUP-002, TS-011 |
 | Which official migration tools exist on our stack? | `ng update` (Angular), `nest upgrade` (Nest CLI 12), `@eslint/migrate-config` and `npx codemod @eslint/v9-to-v10` (ESLint), Node's `npx codemod @nodejs/<recipe>`. Vitest, Jest and typescript-eslint have guides, no codemod. | JSUP-003, NG-010 |
 | Codemod, rename tool or agent edit? | A vendor codemod first; ts-morph for a rename or move across files; ast-grep for one syntax pattern many times; the agent, with a discovery list and a build-and-test gate, for changes that vary by context. | JSUP-004, JSUP-005 |
 | Can Claude Code's LSP tool rename a symbol? | No: nine operations (definition, references, hover, symbols, implementations, call hierarchy), no rename. Use ts-morph's `rename()`. | JSUP-004 |
@@ -21,7 +21,7 @@ Research basis:
 | How should a major upgrade be split into PRs? | Prep PR on the old version for deprecations; then one major of one package family per PR, with the tool's output and the hand fixes in separate commits; optional adoptions later. | JSUP-008 |
 | How do I verify an upgrade? | In a clean checkout: `npm ci`, `npm ls --all`, type-check, build, tests, lint; then read the lockfile diff for unexpected changes. | JSUP-009, JSUP-002 |
 | Should I delete `package-lock.json` to fix an install? | No: regenerating changed 76 of 532 locked versions in one of our repos and 34 of 761 in another, against 0 when kept. | JSUP-010 |
-| How do I resolve a `package-lock.json` conflict on rebase? | Resolve `package.json` by hand, then `npm install --package-lock-only` with the conflict markers still in the lockfile: npm merges both sides. Then `npm ci`. | JSUP-011 |
+| How do I resolve a `package-lock.json` conflict on rebase? | Resolve `package.json` by hand, then `npm install --package-lock-only` with the conflict markers still in the lockfile: npm merges both sides, best effort, so read the diff. Then `npm ci`. | JSUP-011 |
 | What does Dependabot do by default? | Weekly on Monday (random time, UTC), 5 open version PRs, a 3-day cooldown on version updates since 2026-07-14 (security updates exempt), automatic rebases for 30 days. | JSUP-012 |
 | Which Dependabot PRs are safe to auto-merge? | GitHub's example merges patch updates of one named dependency, behind required status checks. Merging deploys in our repos, so we don't. | JSUP-013 |
 | How should an agent triage a Dependabot PR? | Read the PR body's release notes, check peer ranges and CI, run it locally only if CI can't show the effect; `@dependabot rebase`, `recreate` or `ignore`. `@dependabot merge` and `close` stopped working on 2026-01-27. | JSUP-014 |
@@ -79,10 +79,10 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0, a scratch project with typescript 
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: [npm config: strict-peer-deps](https://docs.npmjs.com/cli/v11/using-npm/config#strict-peer-deps), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [npm-ci](https://docs.npmjs.com/cli/v11/commands/npm-ci)
+- Sources: [npm config: strict-peer-deps](https://docs.npmjs.com/cli/v11/using-npm/config#strict-peer-deps), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [npm/cli#4664](https://github.com/npm/cli/issues/4664)
 - Related: TS-011, NG-002, JSUP-009
 
-Bumping one package past a peer range in an installed repo succeeds. npm's `strict-peer-deps` (default `false`): "conflicting `peerDependencies` deep in the dependency graph will be resolved using the nearest non-peer dependency specification, even if doing so will result in some packages receiving a peer dependency outside the range… When such an override is performed, a warning is printed".
+In our tests, bumping one package past a peer range in an installed repo succeeded. npm's `strict-peer-deps` (default `false`): conflicting peers "deep in the dependency graph will be resolved using the nearest non-peer dependency specification… a warning is printed". npm's source can still raise `ERESOLVE` for a project's own dependencies, so the table is observed, not guaranteed.
 
 Tested 2026-10-17, npm 11.19.0 and npm 12.2.0, Node 24.21.0, with typescript 6.0.3 installed:
 
@@ -90,13 +90,14 @@ Tested 2026-10-17, npm 11.19.0 and npm 12.2.0, Node 24.21.0, with typescript 6.0
 |---|---|
 | `npm install -D typescript@latest` beside typescript-eslint 8.71.2 (peer `<6.1.0`) | exit 0, 8 × `ERESOLVE overriding peer dependency`, `package.json` now `^7.0.2` |
 | The same beside `@angular/compiler-cli` 22.2.3 (optional peer `>=6.0 <6.1`) | exit 0, 1 warning |
-| The same with `--strict-peer-deps` | exit 1, `ERESOLVE`, nothing changed |
-| `npm install --dry-run` | exit 0; it doesn't predict a failure either |
+| With `--strict-peer-deps`, beside typescript-eslint | exit 1, `ERESOLVE`, nothing changed |
+| With `--strict-peer-deps`, beside Angular | exit 0, 1 warning: an optional peer isn't enforced |
+| `--dry-run` | exit 0 |
 | Both installed together in an empty project | exit 1, `ERESOLVE unable to resolve dependency tree` |
 
-Afterwards `npm ls` exits 0 (top level only), while `npm ls --all` and `npm ls typescript` exit 1 with `ELSPROBLEMS` and `invalid: ">=4.8.4 <6.1.0" from node_modules/typescript-eslint`. A fresh `npm ci` from the new lockfile fails with `ERESOLVE` for typescript-eslint's required peer but passes for Angular's optional one, where only the build catches it (TS-009).
+Afterwards `npm ls` exits 0 (top level only), while `npm ls --all` exits 1: `ELSPROBLEMS`, `invalid: ">=4.8.4 <6.1.0" from node_modules/typescript-eslint`. A fresh `npm ci` fails with `ERESOLVE` on typescript-eslint's required peer (a maintainer in npm/cli#4664, 2022: "This should have always been an error") but passes Angular's optional one; only the build catches that (TS-009).
 
-So after any bump, run `npm ls --all`, or install with `--strict-peer-deps`.
+So after any bump, run `npm ls --all`; `--strict-peer-deps` helps only for required peers.
 
 ## [JSUP-003] Official migration tools on our stack, and what they leave to you
 - Type: comparison
@@ -262,20 +263,21 @@ Instead:
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: [npm v6 docs: resolving lockfile conflicts](https://docs.npmjs.com/cli/v6/configuring-npm/package-locks), [git-checkout: --ours and --theirs](https://git-scm.com/docs/git-checkout)
+- Sources: [npm v6 docs: resolving lockfile conflicts](https://docs.npmjs.com/cli/v6/configuring-npm/package-locks), [npm/cli#6989](https://github.com/npm/cli/issues/6989), [parse-conflict-json](https://github.com/npm/parse-conflict-json), [git-checkout: --ours and --theirs](https://git-scm.com/docs/git-checkout)
 - Related: JSUP-010, SESS-025, JSUP-014
 
-When two branches both change dependencies, a rebase conflicts in `package-lock.json` and often `package.json`. Don't hand-edit the lockfile.
+When both branches changed dependencies, a rebase conflicts in `package-lock.json` and often `package.json`. Don't hand-edit the lockfile.
 
 1. Resolve `package.json` by hand, keeping both sides' dependencies.
-2. Run `npm install --package-lock-only` with the conflict markers still in `package-lock.json`. npm parses both sides and writes a merged lockfile.
-3. `npm ci`, then the checks (JSUP-009), then `git add` and `git rebase --continue`.
+2. Run `npm install --package-lock-only` with the conflict markers still in `package-lock.json`. npm merges both sides.
+3. Read the lockfile's diff: where both sides changed one package, the parser keeps "ours", which in a rebase is upstream; rerun your install if your version was lost.
+4. `npm ci`, then the checks (JSUP-009), then `git add` and `git rebase --continue`.
 
-npm 6's docs described this: "As of `npm@5.7.0`, these conflicts can be resolved by manually fixing any `package.json` conflicts, and then running `npm install [--package-lock-only]` again." The section is gone from npm 7 and later docs, but npm 11's arborist still reads lockfiles through `parse-conflict-json`.
+npm 6's docs: "As of `npm@5.7.0`, these conflicts can be resolved by manually fixing any `package.json` conflicts, and then running `npm install [--package-lock-only]` again." npm 7 and later docs dropped this, but npm 11's arborist still parses lockfiles with `parse-conflict-json`; a reply on npm/cli#6989 (2023, still open): "It does have some functionality but it's a best effort." If it fails (that issue's `must provide string spec`, on a diff3-style conflict), use the alternative.
 
-Alternative: take the upstream lockfile and redo your change with your branch's install command. During a rebase the sides are swapped: "`--ours` gives the version from the branch the changes are rebased onto, while `--theirs` gives the version from the branch that holds your work".
+Alternative: take upstream's lockfile and rerun your branch's install command. During a rebase the sides are swapped: "`--ours` gives the version from the branch the changes are rebased onto, while `--theirs` gives the version from the branch that holds your work".
 
-Tested 2026-10-17, npm 11.19.0, git 2.43.0: two branches adding `picocolors` and `ms` to a lockfile with `semver`; the rebase conflicted in both files; after step 1, step 2 exited 0, removed all markers, kept all three packages, and `npm ci` passed.
+Tested 2026-10-17, npm 11.19.0, git 2.43.0: two branches adding `picocolors` and `ms` to a lockfile with `semver`; the rebase conflicted in both files; after step 1, step 2 exited 0, removed the markers and kept all three packages; `npm ci` passed.
 
 ## [JSUP-012] Dependabot options for npm and GitHub Actions
 - Type: fact
@@ -299,7 +301,7 @@ Our three app repos follow the patterns: npm security-only (limit 0 with `applie
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: [Automating Dependabot with GitHub Actions](https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/automate-dependabot-with-actions), [Troubleshooting Dependabot on GitHub Actions](https://docs.github.com/en/code-security/reference/supply-chain-security/troubleshoot-dependabot/dependabot-on-actions), [dependabot/fetch-metadata README](https://github.com/dependabot/fetch-metadata/blob/main/README.md)
+- Sources: [Automating Dependabot with GitHub Actions](https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/automate-dependabot-with-actions), [Troubleshooting Dependabot on GitHub Actions](https://docs.github.com/en/code-security/reference/supply-chain-security/troubleshoot-dependabot/dependabot-on-actions), [Changelog 2021-10-06: Dependabot runs respect `permissions`](https://github.blog/changelog/2021-10-06-github-actions-workflows-triggered-by-dependabot-prs-will-respect-permissions-key-in-workflows/), [dependabot/fetch-metadata README](https://github.com/dependabot/fetch-metadata/blob/main/README.md)
 - Related: JSUP-012, JSUP-014, SESS-024, SURF-002
 
 GitHub's example "automerges all patch updates to `my-dependency`": on `pull_request` with `permissions: contents: write, pull-requests: write`, a job limited to `dependabot[bot]` runs `dependabot/fetch-metadata` and, when `update-type == 'version-update:semver-patch'`, `gh pr merge --auto --merge "$PR_URL"`.
@@ -307,7 +309,7 @@ GitHub's example "automerges all patch updates to `my-dependency`": on `pull_req
 What it needs:
 - Repo setting "Allow auto-merge", and "**Require status checks to pass before merging**" on the target branch: without required checks there is nothing to wait for.
 - fetch-metadata's `update-type` is "The highest semver change being made by this PR", so a grouped PR is gated by its largest bump. Outputs fill only for PRs whose commits are all Dependabot's.
-- Tokens: Dependabot-triggered `pull_request` runs get "a read-only `GITHUB_TOKEN`" and only Dependabot secrets. GitHub's troubleshooting page: "You can use the `permissions` key in your workflow to increase the access for the token". fetch-metadata's README instead says such runs can't write and uses `pull_request_target`, which "runs in the context of the default branch of the base repository". Neither tested; prefer the documented `permissions` route.
+- Tokens: Dependabot-triggered `pull_request` runs get "a read-only `GITHUB_TOKEN`" by default and only Dependabot secrets. GitHub's troubleshooting page: "You can use the `permissions` key in your workflow to increase the access for the token"; the 2021-10-06 changelog made it so: such runs "will begin to respect the permissions specified in your workflows". fetch-metadata's README still says they can't write and uses `pull_request_target`, which "runs in the context of the default branch of the base repository". Untested; prefer `permissions` on `pull_request`.
 
 Safe to auto-merge: patch (and perhaps minor) updates of dev tooling, behind required CI that builds and tests. Not majors, and not where merging deploys without someone reading the release notes.
 
@@ -354,8 +356,8 @@ Claude Code's docs say only "Give URLs for documentation and API references". co
 
 Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-tracker-web, osrs-tracker-api, freek-mencke-web and claude-skills: all three apps are on ESLint 10, Vitest 5 and TypeScript 6.0, Angular 22 or NestJS 12; npm updates are by hand in web and freek-mencke-web and grouped minor-and-patch in api; none auto-merges Dependabot PRs.
 
-1. **Add JSUP-002's check to the Angular upgrade rules being written in [FreekMencke/claude-skills#79](https://github.com/FreekMencke/claude-skills/issues/79)** (high impact, low effort): an existing repo's `npm install -D typescript@latest` only warns, and `npm ci` passes Angular's optional peer, so the rule should be "after any bump, `npm ls --all` exits 0", not "npm refuses". Added as a comment on that issue. (JSUP-002, NG-010)
-2. **Resolve lockfile conflicts with npm, not by hand or by deleting the lockfile** (medium impact, low effort): parallel sessions rebase often. A one-line rule for the global CLAUDE.md's pull-request section, proposed to the user rather than edited here: "`package-lock.json` conflict: resolve `package.json`, run `npm install --package-lock-only` with the markers in place, then `npm ci`." (JSUP-011, JSUP-010)
+1. **Add JSUP-002's check to the Angular upgrade rules being written in [FreekMencke/claude-skills#79](https://github.com/FreekMencke/claude-skills/issues/79)** (high impact, low effort): an existing repo's `npm install -D typescript@latest` only warns, and `npm ci` passes Angular's optional peer, so the rule should be "after any bump, `npm ls --all` exits 0", not "npm refuses". [Added as a comment](https://github.com/FreekMencke/claude-skills/issues/79#issuecomment-6239623606) on that issue. (JSUP-002, NG-010)
+2. **Resolve lockfile conflicts with npm, not by hand or by deleting the lockfile** (medium impact, low effort): parallel sessions rebase often. A one-line rule for the global CLAUDE.md's pull-request section, proposed to the user rather than edited here: "`package-lock.json` conflict: resolve `package.json`, run `npm install --package-lock-only` with the markers in place, read the lockfile diff, then `npm ci`." (JSUP-011, JSUP-010)
 3. **For NestJS 13, start from `nest upgrade --dry-run`** after updating the global CLI, instead of the old hand-run npm-check-updates flow (JSUP-003). Nothing to change before then.
 4. **Keep Dependabot's default 3-day cooldown**; no config needed. Revisit only if a compromised release slips through (JSUP-012).
 5. **Won't do: Dependabot auto-merge in our app repos.** Merging deploys them, and a bump that changes behaviour gets a CHANGELOG line that needs judgment (JSUP-013, JSUP-014, DOC-018).
@@ -363,7 +365,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 
 ## Open questions
 
-- **Does `pull_request` with `permissions: contents: write` let a Dependabot-triggered auto-merge workflow write?** GitHub's docs say yes; fetch-metadata's README says use `pull_request_target`. Not tested; needs a probe repo (JSUP-013).
+- **Does `pull_request` with `permissions: contents: write` let a Dependabot-triggered auto-merge workflow write?** GitHub's docs and its 2021-10-06 changelog say yes; fetch-metadata's README says use `pull_request_target`. Not tested; needs a probe repo (JSUP-013).
 - **How to opt out of Dependabot's default cooldown** ("opt out entirely", per the changelog): the options reference allows 1 to 90 days and doesn't say. Whether `exclude: ["*"]` does it is untested. Also not stated: whether the 3 days count from the git tag for GitHub Actions (JSUP-012).
 - **`quarterly`, `semiannually` and `yearly` schedules**: the options reference says they're "only available on GitHub Enterprise Server from version 3.19", while the optimizing tutorial lists them generally.
 - **Lockfile conflict merging is undocumented since npm 7** (JSUP-011): tested on npm 11.19.0 only; npm 12 not tested.

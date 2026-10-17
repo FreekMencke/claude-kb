@@ -277,7 +277,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0: with the two aliases, `tsc --versi
 Since 2026-07-08 `latest` is a major that most of the Node and Angular toolchain can't load. An agent told to "upgrade TypeScript" or "update dependencies to latest" moves an Angular, NestJS or typescript-eslint repo from 6.0.x to 7.0.2 and breaks its build.
 
 What it sees (npm 11.19.0, Node 24.21.0, 2026-10-17):
-1. In a repo that already has typescript 6.0.3, `npm install -D typescript@latest` beside typescript-eslint 8.71.2 or `@angular/compiler-cli` 22.2.3 exits 0 with `ERESOLVE overriding peer dependency` warnings and writes `^7.0.2` (JSUP-002). Only installing both into an empty project, or `--strict-peer-deps`, stops with `ERESOLVE unable to resolve dependency tree` … `peer typescript@">=4.8.4 <6.1.0" from typescript-eslint@8.71.2`.
+1. In a repo that already has typescript 6.0.3, `npm install -D typescript@latest` beside typescript-eslint 8.71.2 or `@angular/compiler-cli` 22.2.3 exits 0 with `ERESOLVE overriding peer dependency` warnings and writes `^7.0.2` (JSUP-002). Only installing both into an empty project, or `--strict-peer-deps` beside typescript-eslint, stops with `ERESOLVE unable to resolve dependency tree` … `peer typescript@">=4.8.4 <6.1.0" from typescript-eslint@8.71.2`.
 2. `npm ls --all` then exits 1 (`invalid`), CI's `npm ci` fails on typescript-eslint's peer but not on Angular's optional one, and the tools fail at runtime (TS-009).
 
 Instead:
