@@ -4,7 +4,7 @@ Prefix `NPM`. This file covers the npm CLI and registry on 2026-10-17: what npm 
 
 Research basis:
 - Researched 2026-10-17 (FreekMencke/claude-kb#172, part of roadmap #167) by an Opus 5.5 lead with three Sonnet 5.5 readers and one Sonnet 5.5 refuter.
-- Versions and dates come from the npm registry (`npm view npm dist-tags time --json`, `npm view <pkg> scripts`), the raw npm CLI CHANGELOG on the `latest` and `release/v11` branches, the npm docs' Markdown source (github.com/npm/documentation, `main`, which builds docs.npmjs.com), the GitHub changelog's supply-chain-security feed, and the raw Node.js `doc/api/*.md` and changelogs.
+- Versions and dates come from the npm registry (`npm view npm dist-tags --json`, `npm view npm 'time[12.2.0]'` for one version's date, `npm view <pkg> scripts`; the whole `time` field is about 27k characters for npm, JSUP-001), the raw npm CLI CHANGELOG on the `latest` and `release/v11` branches, the npm docs' Markdown source (github.com/npm/documentation, `main`, which builds docs.npmjs.com), the GitHub changelog's supply-chain-security feed, and the raw Node.js `doc/api/*.md` and changelogs.
 - Behaviour was tested on WSL2 with Node 24.21.0, its bundled npm 11.19.0, and the official `npm@12.2.0` installed into a scratch folder with `--ignore-scripts`. Install-script tests used a local package of our own whose `postinstall` writes a marker file; `esbuild@0.28.2` was installed with `--ignore-scripts` to read its key format and run its API. No other community package was run.
 - Our repos' setup was read on 2026-10-17 from `main` of osrs-tracker-web, osrs-tracker-api, osrs-tracker-aws, freek-mencke-web, claude-skills and this repo.
 
@@ -59,7 +59,7 @@ Research basis:
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: npm registry (`npm view npm dist-tags time engines --json`, 2026-10-17), [npm CLI CHANGELOG (latest)](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm CLI CHANGELOG (release/v11)](https://raw.githubusercontent.com/npm/cli/release/v11/CHANGELOG.md), [nodejs/Release#1161](https://github.com/nodejs/Release/issues/1161), [nodejs/node#66212](https://github.com/nodejs/node/pull/66212), [Node release schedule](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json)
+- Sources: npm registry (`npm view npm dist-tags --json`, `npm view npm@12.2.0 'time[12.2.0]' engines.node`, 2026-10-17), [npm CLI CHANGELOG (latest)](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm CLI CHANGELOG (release/v11)](https://raw.githubusercontent.com/npm/cli/release/v11/CHANGELOG.md), [nodejs/Release#1161](https://github.com/nodejs/Release/issues/1161), [nodejs/node#66212](https://github.com/nodejs/node/pull/66212), [Node release schedule](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json)
 - Related: NPM-002, NPM-003
 
 On 2026-10-17 `npm view npm dist-tags` gives `latest` 12.2.0 (published 2026-09-30) and `next-12` 12.2.1 (published 2026-10-15; its CHANGELOG heading says 2026-10-14). So the CHANGELOG's top entry isn't what `npm install -g npm` installs: read the dist-tags. npm 11 is maintained alongside: `next-11` is 11.21.1, and the 11.x line gets backports (NPM-003).
@@ -183,7 +183,7 @@ Tested 2026-10-17, npm 12.2.0: with `esbuild@0.28.2` installed and its script ne
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [npm install-scripts docs v12](https://docs.npmjs.com/cli/v12/commands/npm-install-scripts), [npm config docs v12: strict-allow-scripts](https://docs.npmjs.com/cli/v12/using-npm/config), [osrs-tracker-web 7fad45e](https://github.com/osrs-tracker/osrs-tracker-web/commit/7fad45e), [dependabot-core npm_lockfile_updater.rb](https://github.com/dependabot/dependabot-core/blob/main/npm_and_yarn/lib/dependabot/npm_and_yarn/file_updater/npm_lockfile_updater.rb)
-- Related: NPM-004, NPM-005, NPM-006
+- Related: NPM-004, NPM-005, NPM-006, JSUP-014
 
 `npm install-scripts approve` writes `pkg@version` entries, "which keep their approval narrowed to the specific version you reviewed". So a hijacked new release can't run its script unreviewed, but a dependency bump leaves the old pin behind and the new version uncovered.
 npm 12 then skips its script (warning, exit 0, CI stays green); npm 11.16+ runs it and warns.
@@ -195,7 +195,7 @@ What to do:
 - To make a stale pin fail loudly, run CI with `--strict-allow-scripts` (npm 11.16+ too): any uncovered script fails the install instead of being skipped.
 - Name-only approvals (`--no-allow-scripts-pin`) give up that protection; use them only where re-reviewing each release isn't worth it.
 
-Dependabot won't do the re-approval: dependabot-core runs every npm install with `--ignore-scripts`, which overrides `strict-allow-scripts`, and its npm updater never mentions `allowScripts` (code read 2026-10-17; an absence, not a documented statement). Triage of its PRs is in `kb-js-upgrades.md`.
+Dependabot won't do the re-approval: dependabot-core runs every npm install with `--ignore-scripts`, which overrides `strict-allow-scripts`, and its npm updater never mentions `allowScripts` (code read 2026-10-17; an absence, not a documented statement). Triaging its PRs: JSUP-014.
 
 ## [NPM-008] npm tokens since 2025-12-09: session and granular
 - Type: fact
@@ -373,7 +373,7 @@ Before publishing:
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [npm ci docs v12](https://docs.npmjs.com/cli/v12/commands/npm-ci), [package-lock.json docs v12](https://docs.npmjs.com/cli/v12/configuring-npm/package-lock-json), [npm/cli `lib/commands/ci.js`](https://github.com/npm/cli/blob/latest/lib/commands/ci.js), [npm CLI CHANGELOG](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm/cli#10043](https://github.com/npm/cli/issues/10043)
-- Related: NPM-017, NPM-019
+- Related: NPM-017, NPM-019, JSUP-010, JSUP-011
 
 `npm ci` is a frozen install for CI:
 - "The project **must** have an existing `package-lock.json`."
@@ -388,21 +388,25 @@ Before publishing:
 
 Lockfile versions: "`3`: The lockfile version used by npm v9 and above. Backwards compatible to npm v7." npm 10, 11 and 12 all write v3, so a lock doesn't change format between them.
 
+Don't delete the lock to make `ci` pass: that re-resolves every transitive dependency (JSUP-010). Lock conflicts on a rebase: JSUP-011.
+
 ## [NPM-017] Optional platform packages missing from a lockfile made on another OS
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [npm/cli#4828](https://github.com/npm/cli/issues/4828), [npm/cli#8184](https://github.com/npm/cli/pull/8184), [arborist v9.0.2 release](https://github.com/npm/cli/releases/tag/arborist-v9.0.2), [npm/cli#10043](https://github.com/npm/cli/issues/10043), [esbuild 0.28.2 `install.js`](https://unpkg.com/esbuild@0.28.2/install.js)
-- Related: NPM-006, NPM-016
+- Related: NPM-006, NPM-016, JSUP-010
 
 Tools such as esbuild, Rollup, SWC, lmdb and sharp ship their native binary as one optional package per platform (`@esbuild/linux-x64`, `@esbuild/darwin-arm64`, …), and the lockfile should list all of them. npm/cli#4828: when the lock was regenerated with `node_modules` present, npm wrote "only the platform-specific dependency that was installed on this machine". A lock made on a Mac then lacks the Linux package, and CI fails with `Missing: … from lock file` or the tool fails at runtime for want of its binary.
 
 Status: #4828 was closed as completed on 2025-04-03 by npm/cli#8184, an arborist fix shipped in npm 11.3.0 (2025-04-08). Locks written before that, or by an npm with a later regression (#10043, unconfirmed), can still miss entries.
 
-Fix, from the issue: delete both `node_modules` and `package-lock.json`, run `npm install` with a current npm, and commit the lock. Deleting only `node_modules` keeps the bad lock; before 11.3.0, deleting only the lock while `node_modules` was present is what caused the bug. Check with `grep -c '"node_modules/@esbuild/' package-lock.json`: there should be one entry per platform.
+Fix: with npm 11.3.0 or later, run `npm install` (or `npm install --package-lock-only`) with the lock kept, and commit it. The issue's advice, deleting `node_modules` and `package-lock.json` first, works too but re-resolves every transitive dependency (JSUP-010). Before 11.3.0, deleting only the lock while `node_modules` was present is what caused the bug. Check with `grep -c '"node_modules/@esbuild/' package-lock.json`: there should be one entry per platform.
 
 Blocked install scripts make it worse: esbuild's `postinstall` would download a missing binary, but under npm 12's default it doesn't run (NPM-006).
+
+Tested 2026-10-17, npm 11.19.0, Node 24.21.0, WSL2: a lock for `esbuild@0.28.2` with 25 of its 26 `@esbuild/*` entries removed made `npm ci` fail with `EUSAGE` ("… are in sync"); `npm install` with the lock kept (with or without `node_modules`) and `--package-lock-only` each restored all 26.
 
 ## [NPM-018] `overrides`, `packageExtensions` and `npm patch`
 - Type: fact
@@ -433,9 +437,9 @@ Three root-level tools change dependencies you don't control.
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [npm config docs v12: legacy-peer-deps, strict-peer-deps, force](https://docs.npmjs.com/cli/v12/using-npm/config), [package.json docs v12: peerDependencies](https://docs.npmjs.com/cli/v12/configuring-npm/package-json), [npm ci docs v12](https://docs.npmjs.com/cli/v12/commands/npm-ci)
-- Related: NPM-016, NPM-018, TS-011
+- Related: NPM-016, NPM-018, TS-011, JSUP-002
 
-"As of npm v7, peerDependencies _are_ installed by default", and a root install whose peers can't be satisfied stops with `ERESOLVE unable to resolve dependency tree`. Deeper in the tree, npm resolves a conflict "using the nearest non-peer dependency specification" and prints a warning; `--strict-peer-deps` turns that warning into a failure.
+"As of npm v7, peerDependencies _are_ installed by default", and a root install whose peers can't be satisfied stops with `ERESOLVE unable to resolve dependency tree`. Deeper in the tree, npm resolves a conflict "using the nearest non-peer dependency specification" and prints a warning; `--strict-peer-deps` turns that warning into a failure for required peers. So bumping one package past a peer range in an installed repo exits 0 with only `ERESOLVE overriding peer dependency` warnings, and `npm ls --all` is what exits 1 (tested in JSUP-002).
 
 The error suggests two flags. Both install a tree the package authors said doesn't work:
 - `--legacy-peer-deps` "Causes npm to completely ignore `peerDependencies` when building a package tree", like npm 3 to 6. The docs: "Use of `legacy-peer-deps` is not recommended". A lock made with it needs the flag on every later `npm ci`, so it ends up in `.npmrc` and hides the next conflict too.
@@ -448,7 +452,7 @@ What to do: read the conflict (`npm explain <pkg>` shows who requires which rang
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: [pnpm v11.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v11.0.0), [pnpm v12.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v12.0.0), [pnpm docs: settings](https://pnpm.io/settings), [pnpm docs: git worktrees](https://pnpm.io/git-worktrees), [pnpm feature comparison](https://pnpm.io/feature-comparison), [Dependabot options reference](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference), [Corepack README](https://github.com/nodejs/corepack/blob/main/README.md), npm registry (`npm view pnpm dist-tags time`)
+- Sources: [pnpm v11.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v11.0.0), [pnpm v12.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v12.0.0), [pnpm docs: settings](https://pnpm.io/settings), [pnpm docs: git worktrees](https://pnpm.io/git-worktrees), [pnpm feature comparison](https://pnpm.io/feature-comparison), [Dependabot options reference](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference), [Corepack README](https://github.com/nodejs/corepack/blob/main/README.md), npm registry (`npm view pnpm dist-tags`, then `'time[<version>]'`)
 - Related: NPM-004, NPM-007, SESS-008
 
 pnpm `latest` is 12.14.0 (12.0.0 on 2026-08-26; 11.0.0 on 2026-04-28).
