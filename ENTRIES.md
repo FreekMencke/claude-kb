@@ -553,6 +553,20 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | NPM-020 | npm 12 or pnpm for a handful of small repos | comparison | pnpm, package-managers, worktrees |
 | NPM-021 | Installing Claude Code with npm 12: allow its postinstall | fact | claude-code, install, allowScripts, global-install |
 
+## Open Graph images with satori and resvg (`topics/kb-og-images.md`, OG)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| OG-001 | satori 0.37 to 0.42: browser layout defaults, and release notes that skip them | fact | satori, breaking-changes, taffy, box-sizing, upgrades |
+| OG-002 | What satori 0.62 lays out and draws, and what throws | fact | satori, css, grid, stylesheets, colors |
+| OG-003 | satori's fonts: four static formats, no variable fonts | fact | satori, fonts, woff2, variable-fonts, instancer |
+| OG-004 | Vercel's and Next.js's OG docs describe an older satori | fact | vercel-og, next-og, imageresponse, satori, docs-drift |
+| OG-005 | SVG to PNG: resvg-js, resvg-wasm or sharp | comparison | resvg-js, resvg-wasm, sharp, librsvg, bundling, webp |
+| OG-006 | Open Graph and X card tags, and X's missing docs | fact | open-graph, twitter-card, og-image, ogp |
+| OG-007 | Image limits and preview caches per platform | fact | og-image, image-size, caching, facebook, x, linkedin, discord, slack |
+| OG-008 | Google's use of `og:image`: preferred image, Discover and `max-image-preview` | fact | google, discover, max-image-preview, og-image |
+| OG-009 | Build time or on request in an SSR app, and caching the card | recommendation | build-time, ssr, cache-control, cache-busting, cors |
+
 ## Orchestration, parallelization and model selection (`topics/kb-orchestration.md`, ORCH)
 
 | ID | Title | Type | Tags |
