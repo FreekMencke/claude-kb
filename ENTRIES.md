@@ -12,6 +12,26 @@ Then read only the entries you need: `grep -n '^## \[TOK-036\]' topics/kb-*.md` 
 
 Merged entries keep their ID and a pointer, so old references still resolve.
 
+## Web accessibility: WCAG 2.2, the EU Accessibility Act, axe and its limits (`topics/kb-accessibility.md`, ACCESS)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| ACCESS-001 | Target WCAG 2.2 AA; WCAG 3.0 is a Working Draft | recommendation | wcag, wcag-2-2, wcag-3, standards |
+| ACCESS-002 | What WCAG 2.2 added and removed, and what it means in code | fact | wcag-2-2, target-size, focus, authentication |
+| ACCESS-003 | The European Accessibility Act: from when, for whom, and the microenterprise exemption | fact | eaa, eu-law, e-commerce, microenterprise |
+| ACCESS-004 | EN 301 549: v3.2.1 is cited, v4.1.1 (WCAG 2.2 AA) awaits its Official Journal citation | fact | en-301-549, eaa, harmonised-standard, wcag-2-2 |
+| ACCESS-005 | axe-core 4.14: what runs by default, tags, and what 4.14.0 changed | fact | axe-core, tags, rules, upgrade |
+| ACCESS-006 | axe in Playwright tests with `@axe-core/playwright` | pattern | playwright, axe-core, e2e, ci |
+| ACCESS-007 | Lighthouse's accessibility score: an axe subset with weights | fact | lighthouse, axe-core, score |
+| ACCESS-008 | What automated accessibility checks miss | fact | limits, manual-testing, axe-core, lighthouse |
+| ACCESS-009 | Native elements over ARIA: a role is a promise | anti-pattern | aria, native-html, agent-mistakes, webaim |
+| ACCESS-010 | Custom widgets: follow an APG pattern; site navigation isn't an ARIA menu | pattern | apg, angular-aria, navigation, widgets |
+| ACCESS-011 | Lint templates with angular-eslint's `templateAccessibility` | tool | angular-eslint, lint, angular, templates |
+| ACCESS-012 | Focus after a client-side route change | pattern | focus, routing, angular, ssr |
+| ACCESS-013 | Modal `<dialog>`, `inert`, popover semantics and `ariaNotify()` | fact | dialog, inert, popover, arianotify |
+| ACCESS-014 | Motion and contrast preferences: what WCAG requires | fact | prefers-reduced-motion, forced-colors, prefers-contrast, wcag |
+| ACCESS-015 | An agent's accessibility check, and what a human must still do | recommendation | verification, agents, manual-testing, workflow |
+
 ## Angular 21–22 changes and Angular's AI tooling (`topics/kb-angular.md`, NG)
 
 | ID | Title | Type | Tags |
