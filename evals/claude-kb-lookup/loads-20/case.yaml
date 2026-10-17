@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-20
+tags: [claude-kb-lookup, should-load]
+description: "TypeScript versions and tool support (kb-typescript.md)."
+execution:
+  prompt: "Can I move our Angular 22 repo to TypeScript 7, or does something still need 6.0?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'
