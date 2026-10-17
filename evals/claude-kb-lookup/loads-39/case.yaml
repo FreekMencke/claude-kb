@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-39
+tags: [claude-kb-lookup, should-load]
+description: "Open-source licences (kb-oss-licensing.md)."
+execution:
+  prompt: "Which licence should a small open-source Angular library use, and how does GitHub detect the licence from the repo?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'

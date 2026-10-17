@@ -28,8 +28,10 @@ const DAY_MS = 86_400_000;
 
 export const INSTRUCTIONS =
   'claude-kb is a knowledge base on using Claude and Claude Code efficiently, and on the stack it works in (Angular,' +
-  ' TypeScript, Node.js, npm, GitHub Actions, CSS, web fonts, accessibility, JS testing). Search with kb_search, then kb_get the 1 to 4 best IDs for the full entries. Cite entry IDs (such as MCP-017) in answers. Check an entry last verified' +
-  ` more than ${STALE_DAYS} days ago against its sources before relying on it.`;
+  ' TypeScript, Node.js, npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, web fonts, accessibility,' +
+  ' web performance and security, GitHub and its Actions, Docker, Kubernetes and Flux, AWS Lambda, licences). Search' +
+  ' with kb_search, then kb_get the 1 to 4 best IDs for the full entries. Cite entry IDs (such as MCP-017) in answers.' +
+  ` Check an entry last verified more than ${STALE_DAYS} days ago against its sources before relying on it.`;
 
 /** A bad argument or a knowledge base that hasn't loaded: mcp.ts returns the message as an `isError` result. */
 export class ToolError extends Error {}
@@ -57,9 +59,12 @@ export const TOOLS: Tool[] = [
       title: 'Search the knowledge base',
       description:
         'Search claude-kb, a knowledge base on using Claude and Claude Code efficiently: models and effort, subagents,' +
-        ' skills, hooks, prompting, CLAUDE.md and memory, MCP servers and connectors, sessions, workflows, tokens and' +
-        ' caching, docs, SEO, visual and UI design; and versions, defaults and upgrade traps in Angular, TypeScript,' +
-        ' Node.js, npm, GitHub Actions, CSS, web fonts, accessibility and JS testing. Returns entry IDs with title, type, confidence, last-verified date' +
+        ' skills, hooks, prompting, CLAUDE.md and memory, MCP servers and connectors, the Claude API and Agent SDK,' +
+        ' sessions, workflows, tokens and caching, docs, SEO, visual and UI design, typography; and versions, defaults' +
+        ' and upgrade traps in Angular, TypeScript, Node.js, npm, NestJS, Express, MongoDB, lint and build tools, JS' +
+        ' testing, CSS, web fonts, accessibility, web performance and security (CSP, cookies, OWASP), OG images, GitHub' +
+        ' and gh, GitHub Actions, Docker, Kubernetes and Flux, AWS Lambda and open-source licences. Returns entry IDs' +
+        ' with title, type, confidence, last-verified date' +
         ' and a summary. Search first, then kb_get the 1 to 4 best IDs. Cite entry IDs. Check an entry last verified' +
         ' more than 60 days ago against its sources.',
       inputSchema: {

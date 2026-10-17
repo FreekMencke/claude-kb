@@ -221,14 +221,14 @@ Tested 2026-10-17, typescript@7.0.2, Node 24.21.0: `Object.keys(require("typescr
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Announcing TypeScript 7.0: TypeScript and Embedded Languages](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [Angular: version compatibility](https://angular.dev/reference/versions), [An update on Angular's TypeScript 7-powered compiler](https://blog.angular.dev/an-update-on-angulars-typescript-7-powered-compiler-9619a35e2b0a), [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940), [nest-cli#3478](https://github.com/nestjs/nest-cli/pull/3478), [ts-jest#5366](https://github.com/kulshekhar/ts-jest/issues/5366), [typedoc#3098](https://github.com/TypeStrong/typedoc/issues/3098), [ts-morph#1621](https://github.com/dsherret/ts-morph/issues/1621)
-- Related: TS-008, TS-010, TS-011
+- Related: TS-008, TS-010, TS-011, JSTOOL-004
 
 Peer ranges from `npm view <pkg>@<latest> peerDependencies` on 2026-10-17, with each project's statement:
 
 | Tool | TypeScript range | Status on 7.0 |
 |---|---|---|
 | `@angular/compiler-cli`, `@angular/build` 22.2.3 (and 22.3.0-next.2) | `>=6.0 <6.1` | Angular's blog (2026-09-25): its compiler "cannot work with a Go-compiled version of TypeScript"; a new one (`ngp`) will use 7.1's APIs. See `kb-angular.md`. |
-| `typescript-eslint` 8.71.2 (and canary) | `>=4.8.4 <6.1.0` | Throws "typescript-eslint does not support TS 7.0." Native support is a draft (#12803) for 7.1. |
+| `typescript-eslint` 8.71.2 (and canary) | `>=4.8.4 <6.1.0` | Throws "typescript-eslint does not support TS 7.0." Native support is a draft (typescript-eslint#12803, adding `projectService.EXPERIMENTAL_backend`, open on 2026-10-17) for 7.1; see JSTOOL-004. |
 | `@nestjs/cli` 12.0.8 | dependency `~6.0.2` | Exits with "does not expose the programmatic compiler API that the Nest CLI requires" (fail-fast since #3478). |
 | `ts-jest` 29.4.15 | `>=4.3 <7` | Owner: 7 works "only through the documented side-by-side aliases". |
 | `typedoc` 0.28.20 | up to `6.0.x` | "TypeDoc does not yet support TS 7." |

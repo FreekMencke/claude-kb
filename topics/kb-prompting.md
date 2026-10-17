@@ -87,7 +87,7 @@ Two layers: one general page, and one page per model listing only what differs f
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5)
-- Related: PROMPT-003, PROMPT-004, PROMPT-010, PROMPT-011, PROMPT-030, ORCH-028
+- Related: PROMPT-003, PROMPT-004, PROMPT-010, PROMPT-011, PROMPT-030, ORCH-028, CAPI-001
 
 What a prompt written for the 4.x models needs to change:
 
@@ -95,7 +95,7 @@ What a prompt written for the 4.x models needs to change:
 - **Brief instructions are enough.** Fable 5: "you can steer most behaviors with a brief instruction rather than enumerating each behavior by name." Skills written for prior models "are often too prescriptive… and can degrade output quality."
 - **Less shouting.** From Opus 4.5 on, aggressive tool-use language over-triggers (PROMPT-004).
 - **Effort, not prompts, sets thinking.** `budget_tokens` returns 400 from the 4.7 models on; effort names are recalibrated per model (PROMPT-010, ORCH-028).
-- **No prefill, no sampling knobs.** Prefilled assistant turns return 400 from the 4.6 models on; non-default `temperature`, `top_p` or `top_k` return 400 on Sonnet 5. Use instructions or structured outputs instead.
+- **No prefill, no sampling knobs.** Prefilled assistant turns return 400 from the 4.6 models on; non-default `temperature`, `top_p` or `top_k` return 400 from the 4.7 models on (the deprecations page: "Claude 4.7 and later models"; CAPI-001 has the per-model table). Use instructions or structured outputs instead.
 - **Don't ask for visible reasoning.** It can be declined as `reasoning_extraction` (PROMPT-011).
 - **Remove old scaffolding.** Forced verification, "double-check" and progress-every-N-calls instructions now cost tokens for nothing on some models (PROMPT-030).
 - **Append-only history** on the 5.5 models and Fable 5.1: editing `system` or earlier turns mid-conversation invalidates thinking blocks, so add instructions as new messages.
