@@ -637,9 +637,9 @@ For us, a channel is a way to wake a session on a CI result without polling; the
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-10-17
 - Sources: [MCP: installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes), [mongodb-mcp-server README](https://raw.githubusercontent.com/mongodb-js/mongodb-mcp-server/main/README.md), [Atlas cloud backups](https://www.mongodb.com/docs/atlas/backup/cloud-backup/overview/), local config (`~/.claude.json`, `~/.claude/settings.json`), `claude -p` init message, `ps`
-- Related: INFRA-024, MCP-010, MCP-012, MCP-038, SESS-013, TOK-020
+- Related: INFRA-024, MCP-010, MCP-012, MCP-038, SESS-013, TOK-020, SKILL-063
 
 Read from local config and a `claude -p --output-format stream-json` init message on v2.1.296 in the WSL terminal.
 
@@ -654,15 +654,15 @@ Read from local config and a `claude -p --output-format stream-json` init messag
 | `mongodb` (from 2026-10-13; replaced the claude.ai MongoDB Atlas connector, 42 tools) | osrs-tracker-api `.mcp.json` | stdio, `mongodb-mcp-server@3.0.5`, `--disabledTools atlas` | 27 |
 | claude.ai Grafana Cloud (from 2026-10-14) | connector | remote, as the user (Editor) | 100+ deferred, including writes, kept on purpose (INFRA recommendation 11) |
 | claude.ai Claude Docs | connector | remote | 8 |
-| `claude-kb` (from 2026-10-15) | user | http, no sign-in | 4, deferred (MCP-039) |
+| `claude-kb` (from 2026-10-15) | plugin (user until 2026-10-17, SKILL-063) | http, no sign-in | 4, deferred (MCP-039) |
 | claude.ai Claude KB (from 2026-10-15) | connector, same URL | remote | 4 |
 
 On 2026-10-13, with the Atlas connector (since removed) and without Grafana Cloud: outside a repo, 8 servers, 120 MCP tools, about 6,600 tokens per request and about 2 s per `-p` run (MCP-012).
 
-Permission rules: `~/.claude/settings.json` allows nine named tools (three `angular-cli`, six Playwright) plus `mcp__claude-kb__*` and `mcp__claude_ai_Claude_KB__*` (from 2026-10-15), and has no MCP deny rules, no `deniedMcpServers` and no `disableClaudeAiConnectors`. Auto mode decides the rest.
+Permission rules: `~/.claude/settings.json` allows nine named tools (three `angular-cli`, six Playwright) plus claude-kb under three names: `mcp__claude-kb__*`, `mcp__claude_ai_Claude_KB__*`, `mcp__plugin_kb-lookup_claude-kb__*`. It has no MCP deny rules, no `deniedMcpServers` and no `disableClaudeAiConnectors`. Auto mode decides the rest.
 
 Gaps:
-- Resolved 2026-10-13: the Atlas connector was replaced by a scoped `mongodb-mcp-server` in osrs-tracker-api's `.mcp.json` (osrs-tracker/osrs-tracker-api#148; recommendation 1).
+- Resolved 2026-10-13: the Atlas connector became a scoped `mongodb-mcp-server` (osrs-tracker/osrs-tracker-api#148).
 - `npx`-run servers use `@latest` (Playwright) and `kubernetes-mcp-server@0.0.67` is pinned; a `@latest` server can change its tools on any start (MCP-019).
 
 ## [MCP-029] claude.ai custom connectors: who adds them, what the server needs, limits
