@@ -256,6 +256,25 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | GHA-023 | Workflow linters and hardening tools: zizmor, actionlint, CodeQL, harden-runner, Scorecard | comparison | zizmor, actionlint, codeql, harden-runner, scorecard |
 | GHA-024 | Incidents 2024–2026 and the control that would have stopped each | fact | incidents, tj-actions, ultralytics, tanstack, supply-chain |
 
+## GitHub through `gh` and the API: issues, rulesets, releases, Copilot cloud agent (`topics/kb-github.md`, GH)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| GH-001 | Sub-issues, dependencies and issue types in `gh` 2.94+: flags and JSON fields | fact | gh, sub-issues, issue-dependencies, issue-types |
+| GH-002 | The REST API for sub-issues and dependencies: numeric `id`s, limits, same owner | fact | rest-api, sub-issues, issue-dependencies, cloud |
+| GH-003 | Issue types belong to organizations; "Relates to" links | fact | issue-types, personal-repos, relates-to |
+| GH-004 | Rulesets against branch protection: what differs, and plan availability | comparison | rulesets, branch-protection, plans |
+| GH-005 | A ruleset for a solo-maintainer public repo with agents | recommendation | rulesets, bypass, required-checks, gh-ruleset |
+| GH-006 | `gh release create` pitfalls: auto-created tags, latest, empty releases | fact | releases, gh-release, tags |
+| GH-007 | Generated release notes and `.github/release.yml` | fact | releases, release-notes, labels |
+| GH-008 | Publishing to an immutable release: draft, upload, publish | pattern | immutable-releases, gh-release, assets |
+| GH-009 | Which `gh` commands fail with which token or surface, and the REST fallbacks | fact | gh, fine-grained-pat, github-app, cloud, graphql |
+| GH-010 | The Projects (classic) error in `gh pr edit` and `gh issue edit` | fact | gh, projects-classic, deprecation |
+| GH-011 | `gh` for coding agents: agent detection, full help, telemetry, the `gh` skill | fact | gh, agents, telemetry, worktrees |
+| GH-012 | GitHub MCP server v2 against `gh` for an agent | comparison | github-mcp-server, mcp, gh, context-cost |
+| GH-013 | Copilot cloud agent against Claude Code and `claude-code-action` | comparison | copilot, cloud-agent, claude-code-action |
+| GH-014 | GitHub Agentic Workflows (gh-aw) and the ideas worth borrowing | tool | gh-aw, agentic-workflows, safe-outputs, firewall |
+
 ## Hooks (`topics/kb-hooks.md`, HOOK)
 
 | ID | Title | Type | Tags |
