@@ -1,4 +1,4 @@
-# Claude efficiency knowledge base: index
+# Knowledge base on Claude and the stack it works on: index
 
 Start here. Find your question in Quick answers below. If it isn't there, grep [ENTRIES.md](ENTRIES.md), which lists every entry by ID, title, type and tags (`grep -i -E 'webfetch|curl' ENTRIES.md`), then read only that entry: `grep -n '^## \[TOK-036\]' topics/kb-*.md` gives the file and line. Every entry carries its sources, a Confidence value and a Last verified date; treat an entry last verified more than 60 days ago as a lead to re-check, not a fact. The prefix tells you the file:
 
