@@ -363,7 +363,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 3. **Keep `@types/node` at the runtime's major** (NODE-014). In place: the apps pin `^24.19.2`, and osrs-tracker-api's Dependabot skips all majors.
 4. **New scripts: `.ts` run with plain `node`, erasable syntax only** (NODE-003, NODE-005), not tsx or ts-node. This repo's `scripts/check-kb.ts` already runs that way. Existing `.js` and `.mjs` scripts stay as they are.
 5. **Won't do: replace Vitest with `node:test`** (NODE-008). The Angular and NestJS builders and our testing rules use Vitest, and `node:test`'s coverage and module mocks are experimental.
-6. **Won't do now: move claude-skills' CI off Node 22** (NODE-001, NODE-014). The job only installs Claude Code, and 22 is supported until 2027-04-30; switch it to a `.node-version` file when the workflow is next changed, and before that date.
+6. **Won't do now: move claude-skills' CI off Node 22** (NODE-001, NODE-014). The job uses Node only to install Claude Code, and 22 is supported until 2027-04-30; switch it to a `.node-version` file when the workflow is next changed, and before that date.
 
 ## Open questions
 
