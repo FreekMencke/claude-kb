@@ -500,6 +500,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 | SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
+| SKILL-063 | Desktop WSL: synced plugins didn't load, a CLI install from the marketplace did | fact | desktop, wsl, plugins, sync |
 
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 

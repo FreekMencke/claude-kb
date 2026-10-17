@@ -19,7 +19,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload, except inside a plugin, where claude.ai accepts them. | SKILL-002, SKILL-040, SKILL-062 |
 | Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
 | How many skills is too many, and how do I prune? | No official number; one measurement saw a skill's invocation rate drop as the roster grew. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
-| Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills no (local test), so symlink the ones you need into the distro's `~/.claude/skills`; plugins enabled in the distro's settings load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054, SKILL-056 |
+| Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills and `<name>@synced` plugins no (local tests), so symlink the skills you need into the distro's `~/.claude/skills` and install plugins with the distro's CLI (`claude plugin install <plugin>@<marketplace name>`); those load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054, SKILL-056, SKILL-063 |
 | Where should skills live with desktop and WSL? | WSL uses the distro's Linux `~/.claude`; Windows and WSL share no skills, plugins, settings or credentials. Keep skills in a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-051, SKILL-056 |
 
 ## Index
@@ -88,6 +88,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 | SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
+| SKILL-063 | Desktop WSL: synced plugins didn't load, a CLI install from the marketplace did | fact | desktop, wsl, plugins, sync |
 
 ---
 
@@ -1150,7 +1151,7 @@ For a **WSL** session, the app copies a Linux CLI build into the distro under `~
 |---|---|---|---|---|
 | Terminal CLI (`/login`) | yes | yes | yes | yes, from `~/.claude/skills/synced/` |
 | Desktop Local | yes (that OS's home) | yes | yes | yes, delivered by the app as a plugin |
-| Desktop WSL | yes (the distro's home) | yes | docs say no; observed yes (SKILL-052) | **no** (local test, SKILL-050) |
+| Desktop WSL | yes (the distro's home) | yes | docs say no; observed yes for CLI installs (SKILL-052), no for `<name>@synced` (SKILL-063) | **no** (local test, SKILL-050) |
 | Desktop SSH | the remote host's | yes | yes | not documented |
 | Desktop Cloud, routines | no | yes (from the clone) | no | skills enabled one by one only; marketplace plugins don't load (SKILL-060) |
 | Cowork | no | n/a | from Customize | yes |
@@ -1236,9 +1237,9 @@ Pitfalls:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-10-17
 - Sources: [Claude Code on desktop: Install plugins](https://code.claude.com/docs/en/desktop), [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl), [#88432](https://github.com/anthropics/claude-code/issues/88432), [#97515](https://github.com/anthropics/claude-code/issues/97515), local test
-- Related: SKILL-048, SKILL-050
+- Related: SKILL-048, SKILL-050, SKILL-063
 
 The docs say: "Plugins aren't available in WSL sessions". The WSL page lists "connectors and plugins" as unavailable.
 
@@ -1250,6 +1251,7 @@ Observed behaviour:
 Working interpretation:
 - What is unavailable in WSL sessions is the app's plugin *UI*, together with the plugins the *app* manages itself: the claude.ai skills plugin and app-deployed org plugins.
 - Plugins installed with the WSL CLI (`claude plugin install …`) and enabled in the distro's settings do load.
+- Plugins synced from claude.ai (`<name>@synced`) didn't, in a 2026-10-17 test (SKILL-063).
 
 Rely on them, but re-check after app updates, since the documented behaviour says otherwise.
 
@@ -1453,13 +1455,29 @@ So a repo can be its own plugin, with nothing copied: `.claude-plugin/marketplac
 - **Names:** `claude plugin validate` (v2.1.296) rejects a plugin named `claude-kb`: "A third party's plugin name cannot start with "claude-", "anthropic-", "anthropics-", or "cc-plugin-"".
 - **Version:** "a manifest that pins `"version": "1.0.0"` keeps every user on the cached copy until its author changes the string, however many commits they push. To let users track commits instead, leave `version` out of both the manifest and the entry." Validation then warns about the missing version.
 
+## [SKILL-063] Desktop WSL: synced plugins didn't load, a CLI install from the marketplace did
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-17
+- Sources: local tests ([FreekMencke/claude-skills#77](https://github.com/FreekMencke/claude-skills/issues/77), [FreekMencke/claude-kb#164](https://github.com/FreekMencke/claude-kb/issues/164)), [Plugin loading: synced plugins](https://code.claude.com/docs/en/plugins/loading), [Desktop with WSL](https://code.claude.com/docs/en/desktop-wsl)
+- Related: SKILL-050, SKILL-052, SKILL-059, SKILL-036, MCP-009, MCP-039
+
+A plugin synced from claude.ai (`<name>@synced`, SKILL-059) didn't load in a desktop WSL session, like synced account skills (SKILL-050). The same plugin installed with the distro's CLI from its marketplace did. One session per case, on one machine.
+
+Tested 2026-10-17, desktop Code tab on WSL (bundled CLI 2.1.295 or 2.1.299; which one ran wasn't checked), terminal v2.1.296, with our `kb-lookup` plugin:
+1. **Synced:** `kb-lookup@synced: true` in the distro's `enabledPlugins`, the plugin downloaded under `~/.claude/plugins/synced/`. Neither its skill nor its MCP server loaded. The claude.ai connector's `mcp__<uuid>__kb_*` tools arrived late in the session (MCP-010).
+2. **Marketplace name:** `claude plugin install kb-lookup@claude-kb` failed. The CLI registers a marketplace under the `name` in its `.claude-plugin/marketplace.json` (ours: `freek-kb`); `claude-kb` was only the claude.ai sync's name. `claude plugin marketplace add FreekMencke/claude-kb`, then `claude plugin install kb-lookup@freek-kb`, worked at user scope.
+3. **CLI install:** in the next desktop WSL session the skill was listed once, as `kb-lookup:claude-kb-lookup`, though `kb-lookup@synced` was still `true`. With no user-scope `claude-kb` server, the tools were `mcp__plugin_kb-lookup_claude-kb__kb_*` (MCP-009), so allow rules naming `mcp__claude-kb__*` don't cover them.
+4. **Auto-update** was off for `freek-kb`, as SKILL-036 says for third-party marketplaces, and was turned on with `"autoUpdate": true` on its `extraKnownMarketplaces` entry. Later that day the install was still at the commit it was installed from, two commits behind `main`: no update seen yet.
+
 ## Recommendations for our setup
 
 Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. Their source is now FreekMencke/claude-skills (SKILL-050, SKILL-056, SKILL-059).
 
 **Done.** Recommendations 1–9 were applied on 2026-10-12: 1 in the global `~/.claude/CLAUDE.md`; 2–7 through roadmap [FreekMencke/claude-skills#1](https://github.com/FreekMencke/claude-skills/issues/1) (#2, #3, #4, #8); 8 and 12 for WSL Claude Code (`/skill-doctor` and `skillOverrides`, see kb-token-usage R8). Decisions from them that still hold:
 - `freek-skills` (`skills/`) is installed on claude.ai from the marketplace with **Sync automatically** (SKILL-059), so it keeps to standard frontmatter until it's known whether claude.ai accepts Claude Code-only fields (Open questions). Claude Code-only skills go in `freek-local-skills` (`local-skills/skills/`), which is never installed on claude.ai.
-- `claude-kb-lookup` lives in claude-kb (`.claude/skills/`) since 2026-10-14, not in claude-skills: it is the only skill that reads the KB, so a new topic and its routing land in one PR. As a project skill, a cloud session or routine with claude-kb attached can load it (SKILL-048, SKILL-060). Locally it comes from the synced `kb-lookup` plugin since 2026-10-15 (SKILL-062), replacing a personal-skill symlink, and it reads the KB only through the MCP server (MCP-041).
+- `claude-kb-lookup` lives in claude-kb (`.claude/skills/`) since 2026-10-14, not in claude-skills: it is the only skill that reads the KB, so a new topic and its routing land in one PR. As a project skill, a cloud session or routine with claude-kb attached can load it (SKILL-048, SKILL-060). Locally it comes from the `kb-lookup` plugin, replacing a personal-skill symlink: synced since 2026-10-15 (SKILL-062), and since 2026-10-17 also installed from the CLI as `kb-lookup@freek-kb`, because the synced copy doesn't load in desktop WSL sessions (SKILL-063). It reads the KB only through the MCP server (MCP-041).
 - On the machine that uses `install.sh`, `"freek-skills@synced": false` in `enabledPlugins` stops every skill being listed twice.
 - Don't set `syncClaudeAiSkills: false`. The only synced skills left are the 10 set to `name-only` (under 20 tokens each), so turning sync off saves almost nothing and drops the account skills from the terminal.
 
@@ -1481,6 +1499,6 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 - **Trigger-only descriptions.** Does superpowers' finding (SKILL-013) hold on current models? It is single-source, with no controlled replication.
 - **Forcing hooks.** Do hooks that force skill evaluation still help on current models (Opus 5.x, Sonnet 5.x)? All published measurements are on 4.5-era models or small N.
 - **Claude Code-only frontmatter on claude.ai.** Does claude.ai accept, ignore or reject fields such as `context`, `agent` or `disable-model-invocation` in a skill that arrives through a marketplace plugin (SKILL-059) rather than a ZIP upload? Until tested, `freek-skills` keeps to standard frontmatter.
-- **Synced plugins in desktop WSL sessions.** Do `<name>@synced` plugins load there, when synced account skills don't (SKILL-050)? Not tested: this machine turns `freek-skills@synced` off.
+- **Auto-update for a third-party marketplace.** Does `"autoUpdate": true` on the `freek-kb` entry make Claude Code update `kb-lookup@freek-kb` to a newer commit (SKILL-063, SKILL-036)? Turned on 2026-10-17; no update seen that day. Check `gitCommitSha` for `kb-lookup@freek-kb` in `~/.claude/plugins/installed_plugins.json` against `main`.
 - **ZIP size.** The claude.ai skill ZIP size limit is not stated anywhere found. Uploaded plugins may hold up to 5,000 files and 200 MB ([claude.com plugins platform support](https://claude.com/docs/plugins/platform-support), read 2026-10-14).
 - **TOC threshold.** Anthropic's best-practices page says reference files over 100 lines need a TOC; skill-creator says over 300.

@@ -27,7 +27,7 @@ without a sign-in. The files can also be read [by hand](#by-hand).
 | Where you ask | What to set up |
 |---|---|
 | claude.ai chat (web, desktop, phone), Cowork | [The plugin](#the-plugin) |
-| Claude Code on your machine, desktop WSL included | [The plugin](#the-plugin) and [the server at user scope](#the-server-at-user-scope) |
+| Claude Code on your machine, desktop WSL included | [The plugin](#the-plugin), installed [from the command line](#in-claude-code) |
 | Cloud sessions and routines | Nothing to install: [prefix the question](#cloud-sessions-and-routines) |
 
 ### The plugin
@@ -35,23 +35,47 @@ without a sign-in. The files can also be read [by hand](#by-hand).
 The `kb-lookup` plugin bundles the skill with the server, so chat looks things up without being told to (MCP-040).
 This repo is its marketplace.
 
+#### On claude.ai
+
+For chat and Cowork:
+
 1. On claude.ai (not the Code tab's Plugins page): Customize > Plugins > Add > Add marketplace.
 2. Enter `FreekMencke/claude-kb` and turn on Sync automatically.
 3. Install `kb-lookup`, then connect "Claude KB" on its Connectors tab.
 
-Claude Code sessions signed in with claude.ai load it as `kb-lookup@synced` (SKILL-059), the name `enabledPlugins`
-uses.
+Claude Code sessions signed in with claude.ai get it as `kb-lookup@synced` (SKILL-059), but desktop WSL sessions
+didn't load that copy in a 2026-10-17 test (SKILL-063).
+
+#### In Claude Code
+
+Install it from the command line as well:
+
+```bash
+claude plugin marketplace add FreekMencke/claude-kb
+```
+
+```bash
+claude plugin install kb-lookup@freek-kb
+```
+
+- The CLI names the marketplace `freek-kb`, the `name` in `.claude-plugin/marketplace.json`. `kb-lookup@claude-kb`,
+  the name the claude.ai sync uses, fails.
+- Auto-update is off for this marketplace (SKILL-036). Turn it on in `/plugin` > Marketplaces, or with
+  `"autoUpdate": true` on the `freek-kb` entry of `extraKnownMarketplaces` in `~/.claude/settings.json`.
+- This copy wins over `kb-lookup@synced`, so the skill is listed once.
+- Its tools are named `mcp__plugin_kb-lookup_claude-kb__*` (MCP-009): allow that pattern in `permissions.allow`.
 
 ### The server at user scope
 
-In Claude Code, add the server at user scope as well:
+Optional, for the tools without the plugin's skill. The plugin's own server works in desktop WSL sessions too
+(SKILL-063).
 
 ```bash
 claude mcp add --transport http --scope user claude-kb https://claude-kb.freekmencke.com/mcp
 ```
 
-- It wins over the plugin's copy of the same URL (MCP-009), so the tools keep the names `mcp__claude-kb__*` that the
-  allow rules use.
+- It wins over the plugin's copy of the same URL (MCP-009), so with both installed the tools are named
+  `mcp__claude-kb__*`.
 - It works in desktop WSL sessions, where claude.ai connectors are unreliable (MCP-010).
 - It costs about 255 input tokens per request (MCP-039).
 
