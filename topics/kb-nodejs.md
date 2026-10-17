@@ -6,6 +6,7 @@ Research basis:
 - Researched 2026-10-17 (FreekMencke/claude-kb#171, part of roadmap #167) by an Opus 5.5 lead with three Sonnet 5.5 readers.
 - Versions and dates come from `raw.githubusercontent.com/nodejs/Release/main/schedule.json`, `nodejs.org/dist/index.json` and the npm registry (`npm view <pkg> …`); API facts from the raw `doc/api/*.md` files of nodejs/node on `main` and at the tags `v24.22.0` and `v26.12.0`, and from the raw `doc/changelogs/CHANGELOG_V22.md`, `V24`, `V25` and `V26`.
 - Behaviour was tested in the official linux-x64 binaries of Node 22.23.3, 24.22.0 and 26.12.0 from nodejs.org/dist (SHA-256 checked against `SHASUMS256.txt`), in a scratch folder on WSL2, plus the official `undici@7.30.1` and `undici@8.12.2` installed with `--ignore-scripts`. No community package was run.
+- A Sonnet 5.5 refuter challenged the claims the recommendations rest on; it qualified NODE-005, NODE-013 and NODE-014, and the lead re-checked its sources (undici PRs, ts-node#2140, DefinitelyTyped) before editing.
 - Our repos' setup was read on 2026-10-17 from `main` of osrs-tracker-web, osrs-tracker-api, freek-mencke-web, claude-skills and this repo.
 
 ## Quick answers
@@ -98,7 +99,7 @@ What it changes for an agent: don't put 27 alphas in production or in `engines`;
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Node.js docs: Modules: TypeScript (v26.12.0, same as main)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/typescript.md), [the same page at v24.22.0](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/typescript.md), [CHANGELOG_V22.md: 22.18.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V22.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md)
-- Related: NODE-004, NODE-005, SURF-027
+- Related: NODE-004, NODE-005, TS-013, SURF-027
 
 `node file.ts` runs TypeScript without flags on Node 22.18.0 and later, 23.6.0 and later, and every 24, 25 and 26 release. Node replaces type annotations with whitespace and runs the result; it doesn't type-check and ignores `tsconfig.json`. Run `tsc --noEmit` (or your build) for types.
 
@@ -109,7 +110,7 @@ Milestones, from the YAML `changes:` block of `doc/api/typescript.md`:
 - v25.2.0 and v24.12.0 (2025-12-10): "Type stripping is now stable." The v24.22.0 page says "Stability: 2 - Stable".
 - v26.0.0: "Removed `--experimental-transform-types` flag" (the flag that transformed enums and parameter properties; "Stability: 1.2 - Release candidate" on 24).
 
-Node's recommended `tsconfig.json` for code it runs this way: `"target": "esnext"`, `"module": "nodenext"`, `"rewriteRelativeImportExtensions": true`, `"erasableSyntaxOnly": true`, `"verbatimModuleSyntax": true`, and `"noEmit": true` if you only run the `.ts` files ("version 5.8 or newer"). `kb-typescript.md` covers those options. `.ts` follows `package.json` `"type"` like `.js`; `.mts` is always ESM and `.cts` always CommonJS. Turn it off with `--no-strip-types` (24 and 26; on 22 it's `--no-experimental-strip-types`). The 26 docs add that it needs WebAssembly: without it, `ERR_WEBASSEMBLY_NOT_SUPPORTED`.
+Node's recommended `tsconfig.json` for code it runs this way: `"target": "esnext"`, `"module": "nodenext"`, `"rewriteRelativeImportExtensions": true`, `"erasableSyntaxOnly": true`, `"verbatimModuleSyntax": true`, and `"noEmit": true` if you only run the `.ts` files ("version 5.8 or newer"). TS-013 covers those options. `.ts` follows `package.json` `"type"` like `.js`; `.mts` is always ESM and `.cts` always CommonJS. Turn it off with `--no-strip-types` (24 and 26; on 22 it's `--no-experimental-strip-types`). The 26 docs add that it needs WebAssembly: without it, `ERR_WEBASSEMBLY_NOT_SUPPORTED`.
 
 Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: a `.ts` file with interfaces, generics, `satisfies` and `import type` ran on all three without flags or warnings; stack traces kept the original line and column (`good.ts:7:31`). On 26.12.0 `--experimental-transform-types` exits 9 with "bad option".
 
@@ -119,7 +120,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: a `.ts` file with interfac
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Node.js docs: Modules: TypeScript](https://raw.githubusercontent.com/nodejs/node/main/doc/api/typescript.md)
-- Related: NODE-003, NODE-005
+- Related: NODE-003, NODE-005, TS-013
 
 Node only removes types; "any TypeScript features that involve _replacing_ TypeScript syntax with new JavaScript syntax will error." Code an agent writes from older TypeScript habits fails at startup, not at compile time.
 
@@ -144,7 +145,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, one file per row except th
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: [Node.js docs: Modules: TypeScript](https://raw.githubusercontent.com/nodejs/node/main/doc/api/typescript.md), [tsx docs: TypeScript](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/typescript.md), [tsx docs: FAQ](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/faq.md), [ts-node README](https://raw.githubusercontent.com/TypeStrong/ts-node/main/README.md), npm registry (`npm view ts-node time --json`, `npm view tsx time --json`, 2026-10-17)
+- Sources: [Node.js docs: Modules: TypeScript](https://raw.githubusercontent.com/nodejs/node/main/doc/api/typescript.md), [tsx docs: TypeScript](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/typescript.md), [tsx docs: FAQ](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/faq.md), [ts-node README](https://raw.githubusercontent.com/TypeStrong/ts-node/main/README.md), [TypeStrong/ts-node#2140](https://github.com/TypeStrong/ts-node/issues/2140), npm registry (`npm view ts-node time --json`, `npm view tsx time --json`, 2026-10-17)
 - Related: NODE-003, NODE-004, NODE-007, NODE-010
 
 Don't add ts-node to a project. Run erasable TypeScript with plain `node`; reach for tsx only for what stripping can't do; build apps that need decorator metadata with `tsc` or the framework's CLI.
@@ -158,7 +159,7 @@ Don't add ts-node to a project. Run erasable TypeScript with plain `node`; reach
 | `.tsx`, JSX | no | yes | yes |
 | `emitDecoratorMetadata` | no | "is not supported" | yes |
 
-For "full support of all of TypeScript's syntax and features", Node's own docs point to a third-party package and use tsx as the example (`npx tsx file.ts` or `node --import=tsx file.ts`). ts-node's README still documents ESM through `--loader ts-node/esm`, and Node 26's CLI docs call `--experimental-loader` "discouraged". Open ts-node issues report `ERR_UNKNOWN_FILE_EXTENSION` for `.ts` in ESM projects on Node 20 and later, with no maintainer reply in the threads read (single source, not tested).
+For "full support of all of TypeScript's syntax and features", Node's own docs point to a third-party package and use tsx as the example (`npx tsx file.ts` or `node --import=tsx file.ts`). ts-node's author wrote in TypeStrong/ts-node#2140 (2024-10-23, still open): "It's been a while since this package has had a regular maintainer" and "If you are seeking an alternative to `ts-node`, I would recommend `tsx`." Its README still documents ESM through `--loader ts-node/esm`, which Node 26's CLI docs call "discouraged". It is the only one of the three that type-checks while running.
 
 Whichever runs the code, check types in CI with `tsc --noEmit`. NestJS dependency injection relies on `emitDecoratorMetadata`, so a NestJS app runs through `nest start` or a `tsc` build, not stripping or tsx.
 
@@ -275,7 +276,7 @@ Don't polyfill or install these on the lines that have them. V8 is 12.4 on 22.23
 | `Map`/`WeakMap` `getOrInsert()`, `getOrInsertComputed()`; `Iterator.concat()` | no | no | yes | 26.0.0 notes (V8 14.6) |
 | `Math.sumPrecise` | no | no | no | BCD: Node `false` |
 
-Caveats: `Error.isError` returned `false` for `DOMException` before 24.3.0 (BCD). On 24, Temporal exists only behind V8's undocumented `--harmony-temporal`; don't ship that. A Node 26 built from source without Rust has no Temporal (BUILDING.md at v26.12.0); official binaries have it. The matching TypeScript `lib` is in `kb-typescript.md`; keep `@types/node` at the runtime's major (NODE-014).
+Caveats: `Error.isError` returned `false` for `DOMException` before 24.3.0 (BCD). On 24, Temporal exists only behind V8's undocumented `--harmony-temporal`; don't ship that. A Node 26 built from source without Rust has no Temporal (BUILDING.md at v26.12.0); official binaries have it. No official page maps a TypeScript `lib` to a Node line; the community `@tsconfig/node24` base uses `es2024` plus `ESNext` parts, `@tsconfig/node26` `es2025` with `ESNext.Temporal`. Keep `@types/node` at the runtime's major (NODE-014).
 
 Tested 2026-10-17, official node@22.23.3, 24.22.0 and 26.12.0 binaries, one probe script each: every yes/no in the table matched, and `Temporal.Now.zonedDateTimeISO("Europe/Amsterdam")` worked on 26.12.0.
 
@@ -308,26 +309,26 @@ Tested 2026-10-17: on node@26.12.0 `typeof localStorage` was `'undefined'`, with
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: [Node.js docs: Globals, `fetch`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/globals.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [undici README (v8.12.2)](https://raw.githubusercontent.com/nodejs/undici/v8.12.2/README.md), [undici v8.0.0 release](https://github.com/nodejs/undici/releases/tag/v8.0.0), [Node.js docs: CLI `NODE_USE_ENV_PROXY`](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/cli.md)
+- Sources: [Node.js docs: Globals, `fetch`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/globals.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [undici README (v8.12.2)](https://raw.githubusercontent.com/nodejs/undici/v8.12.2/README.md), [undici v8.0.0 release](https://github.com/nodejs/undici/releases/tag/v8.0.0), undici PRs [#4827](https://github.com/nodejs/undici/pull/4827), [#5448](https://github.com/nodejs/undici/pull/5448) and [#5860](https://github.com/nodejs/undici/pull/5860), [Node.js docs: CLI `NODE_USE_ENV_PROXY`](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/cli.md)
 - Related: NODE-011, NODE-012
 
-Global `fetch` is undici: 6.28.1 in Node 22.23.3, 7.29.1 in 24.22.0 and 8.11.2 in 26.12.0 (`process.versions.undici`). Node 26.0.0: "Undici has been updated to version 8.0.2". undici 8 made "enable h2 by default" a breaking change, so Node 26's `fetch` negotiates HTTP/2 where the server offers it.
+Global `fetch` is undici: 6.28.1 in Node 22.23.3, 7.29.1 in 24.22.0, 8.11.2 in 26.12.0 (`process.versions.undici`). undici 8 made "enable h2 by default" a breaking change, so Node 26's `fetch` negotiates HTTP/2 when the server offers it, with the default dispatcher. After an installed undici's `setGlobalDispatcher()`, the global `fetch` goes through a `Dispatcher1Wrapper` that sets `allowH2: false` (undici#5448; a fix was reverted in #5860).
 
-Install `undici` when you need what the bundled copy doesn't expose. Its README lists "APIs not available in the built-in fetch (`ProxyAgent`, `Socks5Agent`, `MockAgent`, etc.)", pooling configuration, interceptors, `undici.request()` for speed, and features newer than your Node's copy. Its table pairs 7.x with Node 24 and 8.x with Node 26; `undici@8` needs Node `>=22.19.0`.
+Install `undici` for what the bundled copy doesn't expose: "APIs not available in the built-in fetch (`ProxyAgent`, `Socks5Agent`, `MockAgent`, etc.)", pooling configuration, interceptors, `undici.request()`, or newer features. Its README pairs 7.x with Node 24 and 8.x with Node 26; `undici@8` needs Node `>=22.19.0`.
 
-The rule: take `fetch` and the `Agent` you pass as `dispatcher` from the same package, as `import { fetch, Agent } from 'undici'`. The global `fetch` with an installed `Agent` of another major can fail. `setGlobalDispatcher()` from an installed undici reaches the global `fetch` too ("Calling this method will affect both `undici` and Node.js"). Don't mix the global `FormData` with `undici.fetch()` either (README).
+Take `fetch` and the `Agent` you pass as `dispatcher` from the same package: `import { fetch, Agent } from 'undici'`. Across majors the global `fetch` can fail; undici#4827 names "cross-version collisions with Node.js built-in `fetch`… causing runtime failures like `invalid onRequestStart method`". An installed undici's `setGlobalDispatcher()` also reaches the global `fetch` ("will affect both `undici` and Node.js").
 
-Proxies: `NODE_USE_ENV_PROXY=1` (fetch from v24.0.0) or `--use-env-proxy` (v24.5.0) reads `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY`, at "Stability: 1.1 - Active Development". `WebSocket` is global since 22; `EventSource` still needs `--experimental-eventsource` on 24 and 26.
+Also built in: `NODE_USE_ENV_PROXY=1` (fetch from v24.0.0, "1.1 - Active Development") reads `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY`; `WebSocket` is global since 22. `EventSource` still needs `--experimental-eventsource`.
 
-Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, `undici@7.30.1` and `undici@8.12.2` installed with `--ignore-scripts`: a local TLS server offering HTTP/2 and 1.1 saw HTTP/1.1 from 22 and 24, HTTP/2.0 from 26. On 24.22.0 the global `fetch` with undici 8's `Agent` as `dispatcher` failed ("invalid onRequestStart method"); on 26.12.0 it accepted undici 7's. Same-package pairs and `setGlobalDispatcher()` worked on 24 and 26.
+Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, with `undici@7.30.1` and `undici@8.12.2` (`--ignore-scripts`): a local TLS server offering HTTP/2 saw HTTP/1.1 from 22 and 24, HTTP/2.0 from 26. On 24.22.0 the global `fetch` with undici 8's `Agent` failed ("invalid onRequestStart method"); 26.12.0 accepted undici 7's. Same-package pairs and `setGlobalDispatcher()` worked on 24 and 26.
 
 ## [NODE-014] Pinning a repo's Node version: `.node-version`, `engines`, `devEngines`, setup-node
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-17
-- Sources: [actions/setup-node v7.1.0 README](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/README.md), [setup-node advanced usage (v7.1.0)](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/docs/advanced-usage.md), [npm docs: package.json `engines`, `devEngines`](https://raw.githubusercontent.com/npm/cli/latest/docs/lib/content/configuring-npm/package-json.md), [nvm README](https://raw.githubusercontent.com/nvm-sh/nvm/master/README.md), [fnm README](https://raw.githubusercontent.com/Schniz/fnm/master/README.md), [mise docs: Node](https://raw.githubusercontent.com/jdx/mise/main/docs/lang/node.md), npm registry (`npm view @types/node dist-tags --json`, 2026-10-17)
-- Related: NODE-001, NODE-011, NODE-015
+- Sources: [actions/setup-node v7.1.0 README](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/README.md), [setup-node advanced usage (v7.1.0)](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/docs/advanced-usage.md), [npm docs: package.json `engines`, `devEngines`](https://raw.githubusercontent.com/npm/cli/latest/docs/lib/content/configuring-npm/package-json.md), [nvm README](https://raw.githubusercontent.com/nvm-sh/nvm/master/README.md), [fnm README](https://raw.githubusercontent.com/Schniz/fnm/master/README.md), [mise docs: Node](https://raw.githubusercontent.com/jdx/mise/main/docs/lang/node.md), [DefinitelyTyped README](https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/master/README.md), npm registry (`npm view @types/node dist-tags --json`, 2026-10-17)
+- Related: NODE-001, NODE-011, NODE-015, TS-003
 
 Keep one version file, point CI at it, and treat `engines` as a hint. A major-only pin (`24`) gets patch releases without bumps.
 
@@ -336,7 +337,7 @@ Keep one version file, point CI at it, and treat `engines` as a hint. A major-on
 - **`engines.node`** is "advisory only and will only produce warnings when your package is installed as a dependency", unless `engine-strict` is set. It states what a published package supports.
 - **`devEngines.runtime`** (npm 10.9.0 and later) runs "before `install`, `ci`, and `run` commands" for people working on the repo; `onFail` is `warn`, `error` or `ignore`, defaulting to `error`.
 - **Docker** pins its own base image tag (`kb-docker-node.md`).
-- **`@types/node`** at the runtime's major: on 2026-10-17 a bare `npm i -D @types/node` installs 26.6.5, whose types offer APIs Node 24 lacks (NODE-011). Pin `@types/node@^24` on Node 24.
+- **`@types/node`** at the runtime's major: on 2026-10-17 a bare `npm i -D @types/node` installs 26.6.5, whose types offer APIs Node 24 lacks (NODE-011). Pin `@types/node@^24` on Node 24. DefinitelyTyped keeps per-major folders (`types/node/v22`, `v24`, `v25`) and says "only the major and minor release numbers are aligned"; the pin itself is our inference. `types: []` in TypeScript 6 is TS-003.
 
 ## [NODE-015] npm 12 and Corepack: neither ships with Node 24 or 26
 - Type: fact
@@ -361,7 +362,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 1. **Stay on Node 24; move the apps to 26 by hand once it's LTS (from 2026-10-28), with no deadline before 2028-04-30** (NODE-001). The Dependabot configs already keep Node majors manual and name what moves together: the Dockerfile, CI's setup-node, `engines` and `@types/node`. Add NODE-012's list to that checklist. A grep on 2026-10-17 found none of NODE-012's removed or deprecated APIs, `module.register()`, ts-node, nodemon or dotenv in the four repos, so no issue is opened now.
 2. **Keep osrs-tracker-api importing `fetch` and `Agent` from the installed undici** (NODE-013). That pairing worked on every line tested, while Node 24's global `fetch` rejected an undici 8 `Agent`. Through undici 8 its requests already offer HTTP/2 (undici 8's `allowH2` default; inferred, not observed in production).
 3. **Keep `@types/node` at the runtime's major** (NODE-014). In place: the apps pin `^24.19.2`, and osrs-tracker-api's Dependabot skips all majors.
-4. **New scripts: `.ts` run with plain `node`, erasable syntax only** (NODE-003, NODE-005), not tsx or ts-node. This repo's `scripts/check-kb.ts` already runs that way. Existing `.js` and `.mjs` scripts stay as they are.
+4. **New scripts: `.ts` run with plain `node`, erasable syntax only** (NODE-003, NODE-005), not tsx or ts-node. This repo's `scripts/check-kb.ts` and `mcp-server/` already run that way (TS-013). Existing `.js` and `.mjs` scripts stay as they are.
 5. **Won't do: replace Vitest with `node:test`** (NODE-008). The Angular and NestJS builders and our testing rules use Vitest, and `node:test`'s coverage and module mocks are experimental.
 6. **Won't do now: move claude-skills' CI off Node 22** (NODE-001, NODE-014). The job uses Node only to install Claude Code, and 22 is supported until 2027-04-30; switch it to a `.node-version` file when the workflow is next changed, and before that date.
 
@@ -369,7 +370,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 
 - **`--watch-path` on Linux** (NODE-007): the v24.22.0 and v26.12.0 docs say macOS and Windows only, but it worked on Linux (WSL2) for 22, 24 and 26. Not tested on a native Linux kernel, nor whether the doc sentence is just stale.
 - **npm 12 in Node 27** (NODE-015): only a community comment expects it in the Alpha of 2026-10-28; re-check CHANGELOG_V27.md and `npm view npm engines` then.
-- **ts-node on Node 24 and 26 ESM projects** (NODE-005): the reported `ERR_UNKNOWN_FILE_EXTENSION` issues have no maintainer reply, and ts-node wasn't run (community code).
+- **ts-node on Node 24 and 26 ESM projects** (NODE-005): open issues report `ERR_UNKNOWN_FILE_EXTENSION` for `.ts` in ESM projects on Node 20 and later, and #2174 says it doesn't work with TypeScript 7.0.2; no maintainer replied in the threads read, and ts-node wasn't run (community code).
 - **Does the published tsx 4.23.15 use `module.registerHooks()`** on 24.22 and 26 (NODE-010)? Read from tsx's `master` source only.
 - **The Node 27 phases** (NODE-002): the blog has one 30-month LTS phase; `schedule.json` still has a `maintenance` date for 27 and no `lts` key. Whether Active LTS and Maintenance merge isn't stated, and nodejs/Release#1142 (closed) proposed renaming Alpha.
 - **Installed undici 7 with Node 26's bundled 8**: worked in NODE-013's test, but the undici README describes only the bridge in the other direction.
