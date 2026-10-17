@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-26
+tags: [claude-kb-lookup, should-load]
+description: "CSS and Baseline browser support (kb-css-baseline.md)."
+execution:
+  prompt: "Can an Angular 22 app use anchor positioning and @starting-style without a fallback, given the CLI's default browser targets?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'

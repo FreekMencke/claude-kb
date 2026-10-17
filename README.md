@@ -178,10 +178,10 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 24 + 10 | 72/72 | 29/30 | Opus 5.5 | 2.1.296 | 2026-10-17 |
+| 28 + 13 | 84/84 | 38/39 | Opus 5.5 | 2.1.296 | 2026-10-17 |
 
 The one miss (2026-10-17): `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs after the description
-gained the stack topics (FreekMencke/claude-kb#175).
+gained the stack topics (FreekMencke/claude-kb#175), and again after batch 2's (FreekMencke/claude-kb#180).
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
