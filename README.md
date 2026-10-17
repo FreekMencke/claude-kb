@@ -129,6 +129,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-github-actions.md](topics/kb-github-actions.md) | `GHA` | GitHub Actions: changes and hardening |
 | [kb-js-testing.md](topics/kb-js-testing.md) | `JSTEST` | Testing Node/TS code, and tests written by agents |
 | [kb-css-baseline.md](topics/kb-css-baseline.md) | `CSS` | Modern CSS and Baseline browser support |
+| [kb-fonts.md](topics/kb-fonts.md) | `FONT` | Type design pipeline and web font delivery |
 
 | Other files | What it holds |
 |---|---|
