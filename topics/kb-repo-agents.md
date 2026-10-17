@@ -1495,7 +1495,7 @@ Open gaps only; convention review, the shared reviewer and docs drift are covere
    - Point the skill's "Browser check" section at it.
    - The main session still starts and stops the server and sends the screenshot.
    - Measure with the token-audit approach in TOK-013 after two weeks: image tokens in main-session transcripts should drop (REPO-021).
-   - Landed 2026-10-12; #223 stays open for the measurement. Count own-app and re-read screenshots, not raw images, which swing with design work; window 2026-10-13 to 10-26, before the baseline transcripts expire about 2026-11-06.
+   - Landed 2026-10-12. #223 closed early on 2026-10-14, by the user's choice, on interim numbers: 8 runs from 11:47 to 14:30 UTC, with 0 page loads, own-app screenshots or re-reads in main sessions, against about 23 screenshots and 43 page loads a day before. The final count is a reminder in osrs-tracker-web's auto memory: from 2026-10-27, before the baseline transcripts expire about 2026-11-06, run #223's scripts over 2026-10-15 to 10-26 and post the result on #223 and FreekMencke/claude-kb#101. Count own-app and re-read screenshots, not raw images, which swing with design work.
 
 **Not recommended now:**
 - A Claude review job in CI or managed Code Review. Managed review needs Team or Enterprise, and local review already covers every PR. If ever added, follow REPO-038.
