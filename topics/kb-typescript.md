@@ -6,7 +6,7 @@ Prefix: TS. Researched 2026-10-17 against the TypeScript team's announcements, t
 
 | Question | Answer | Entries |
 |---|---|---|
-| Can I upgrade an Angular, NestJS or typescript-eslint repo to `typescript@latest`? | No. `latest` is 7.0.2 (2026-07-08), which ships no compiler API; Angular 22.2.3 peers `>=6.0 <6.1`, typescript-eslint 8.71.2 `<6.1.0`, and Nest CLI 12.0.8 refuses to run. `npm install` stops with ERESOLVE; forcing it breaks at runtime. | TS-011, TS-009, TS-008 |
+| Can I upgrade an Angular, NestJS or typescript-eslint repo to `typescript@latest`? | No. `latest` is 7.0.2 (2026-07-08), which ships no compiler API; Angular 22.2.3 peers `>=6.0 <6.1`, typescript-eslint 8.71.2 `<6.1.0`, and Nest CLI 12.0.8 refuses to run. In an existing repo `npm install` only warns ("ERESOLVE overriding peer dependency") and the tools then break at runtime; run `npm ls --all` after a bump. | TS-011, TS-009, TS-008, JSUP-002 |
 | Which TypeScript versions exist, and when were they released? | 6.0.2 on 2026-03-23 (the 6.0 release), 6.0.3 on 2026-04-16, 7.0.1-rc on 2026-06-18, 7.0.2 on 2026-07-08 (`latest`). There is no 6.1 and none is planned. | TS-001, TS-014 |
 | Why do I get "Cannot find name 'process'" or "describe" after moving to TypeScript 6? | 6.0 defaults `types` to `[]`, so `@types/*` packages no longer load on their own. Add `"types": ["node"]` (plus your test runner's). | TS-003 |
 | Which tsconfig defaults changed in 6.0? | `strict` true, `module` esnext, `target` the newest ES (es2025), `noUncheckedSideEffectImports` true, `libReplacement` false, `rootDir` the tsconfig's folder, `types` `[]`. | TS-002 |
@@ -272,18 +272,18 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0: with the two aliases, `tsc --versi
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [npm registry: typescript](https://www.npmjs.com/package/typescript), [Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [typescript-eslint#12518](https://github.com/typescript-eslint/typescript-eslint/issues/12518), [nest-cli#3477](https://github.com/nestjs/nest-cli/issues/3477)
-- Related: TS-009, TS-015, TS-010
+- Related: TS-009, TS-015, TS-010, JSUP-002
 
 Since 2026-07-08 `latest` is a major that most of the Node and Angular toolchain can't load. An agent told to "upgrade TypeScript" or "update dependencies to latest" moves an Angular, NestJS or typescript-eslint repo from 6.0.x to 7.0.2 and breaks its build.
 
 What it sees (npm 11.19.0, Node 24.21.0, 2026-10-17):
-1. `npm install -D typescript@latest` with typescript-eslint 8.71.2 present stops with `ERESOLVE unable to resolve dependency tree` … `peer typescript@">=4.8.4 <6.1.0" from typescript-eslint@8.71.2`. The same happens against `@angular/compiler-cli`'s `>=6.0 <6.1`.
-2. Retrying with `--force` or `--legacy-peer-deps`, the error message's own suggestion, installs it, and the tools then fail at runtime (TS-009).
+1. In a repo that already has typescript 6.0.3, `npm install -D typescript@latest` beside typescript-eslint 8.71.2 or `@angular/compiler-cli` 22.2.3 exits 0 with `ERESOLVE overriding peer dependency` warnings and writes `^7.0.2` (JSUP-002). Only installing both into an empty project, or `--strict-peer-deps` beside typescript-eslint, stops with `ERESOLVE unable to resolve dependency tree` … `peer typescript@">=4.8.4 <6.1.0" from typescript-eslint@8.71.2`.
+2. `npm ls --all` then exits 1 (`invalid`), CI's `npm ci` fails on typescript-eslint's peer but not on Angular's optional one, and the tools fail at runtime (TS-009).
 
 Instead:
 - Read the ranges first: `npm view @angular/compiler-cli@<version> peerDependencies`, the same for typescript-eslint and anything else in `npm ls typescript` (TS-015).
 - Keep `typescript` on `~6.0.3` (or `^6.0.3`, since no 6.1 is planned) until every tool in that list accepts 7. On 2026-10-17 Angular, typescript-eslint and the Nest CLI all wait for TypeScript 7.1's API (TS-014).
-- Treat a peer conflict on a TypeScript major as a stop sign, not something to force.
+- Treat an `ERESOLVE` warning or error on a TypeScript major as a stop sign, not something to force or ignore.
 - Want 7.0's speed now? Use the side-by-side aliases (TS-010).
 
 ## [TS-012] Claude Code's `typescript-lsp` plugin and TypeScript 7

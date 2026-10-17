@@ -173,6 +173,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | INFRA-026 | Before changing a config value, read the code that consumes it | pattern | config, lambda, retries, issues |
 | INFRA-027 | Change one Lambda environment variable without printing the others | pattern | lambda, env, credentials, transcripts |
 
+## Dependency upgrades and codemods in Node/TS repos (`topics/kb-js-upgrades.md`, JSUP)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| JSUP-001 | Before a bump: versions, dates and peer ranges from the registry | recommendation | npm-view, npm-outdated, peer-dependencies, versions |
+| JSUP-002 | npm overrides a peer range with only a warning in an existing repo | fact | peer-dependencies, eresolve, strict-peer-deps, npm-ls |
+| JSUP-003 | Official migration tools on our stack, and what they leave to you | comparison | migrations, nest-upgrade, eslint-codemods, vitest, node-codemods |
+| JSUP-004 | Codemod, type-aware rename or agent edit: which for which change | recommendation | codemods, refactoring, lsp, rename |
+| JSUP-005 | ast-grep, ts-morph and jscodeshift: what each sees and how it runs | comparison | ast-grep, ts-morph, jscodeshift, codemods |
+| JSUP-006 | Having an agent write and run a codemod | pattern | codemods, workflow, verification |
+| JSUP-007 | What published LLM-assisted migrations did: Google, Airbnb, Anthropic | fact | llm-migrations, google, case-studies |
+| JSUP-008 | Splitting a major upgrade into PRs | pattern | major-upgrades, pull-requests, commits |
+| JSUP-009 | Verifying an upgrade: clean `npm ci`, `npm ls --all`, build and tests | recommendation | verification, npm-ci, clean-checkout |
+| JSUP-010 | Deleting `package-lock.json` to fix an install | anti-pattern | lockfile, package-lock, npm-install |
+| JSUP-011 | Resolving `package-lock.json` conflicts on rebase | pattern | lockfile, rebase, merge-conflicts |
+| JSUP-012 | Dependabot options for npm and GitHub Actions | fact | dependabot, groups, cooldown, schedule |
+| JSUP-013 | Dependabot auto-merge: GitHub's recipe and what it needs | recommendation | dependabot, auto-merge, fetch-metadata |
+| JSUP-014 | Triaging a Dependabot PR | pattern | dependabot, triage, comment-commands |
+| JSUP-015 | When the model's training predates the versions in use | recommendation | knowledge-cutoff, docs, llms-txt |
+
 ## MCP servers: configuration, access control, surfaces and vetting (`topics/kb-mcp.md`, MCP)
 
 | ID | Title | Type | Tags |

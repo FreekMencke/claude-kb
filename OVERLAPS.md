@@ -103,6 +103,10 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Node versions: SURF-027 (what cloud sessions have installed: Node 20 to 22, 22 on `PATH`), NODE-001 (which lines are supported), NODE-003 (type stripping from 22.18, which `scripts/check-kb.ts` relies on).
 - Type stripping: NODE-003 and NODE-004 (what Node runs and what it rejects at startup), TS-013 (the tsconfig flags that reject the same syntax at compile time). `@types/node`: NODE-014 (keep it at the runtime's major), TS-003 (`types: []` in 6.0).
 - Containing code with client-side controls: INFRA-006 (read-only flags don't bind; the credential does), NODE-009 (Node's permission model "does not protect against malicious code").
+- Dependency upgrades next to the other stack topics (batch 1 of FreekMencke/claude-kb#167): `kb-js-upgrades.md` holds the general procedure and links the specifics. Peer ranges: TS-011 and TS-015 (TypeScript's case and where to read its versions), NG-002 (Angular's ranges), JSUP-001 and JSUP-002 (the registry queries, and npm only warning when a bump breaks a peer range; TS-011 corrected to match). `ng update`: NG-010 (what it migrates and skips), JSUP-003 (the other tools on the stack), JSUP-008 (splitting the upgrade into PRs). npm's own behaviour (lockfile format, `npm ci`, overrides) is for `kb-npm.md`, Actions pinning for `kb-github-actions.md`.
+- Mechanical changes across many files: JSUP-004 to JSUP-007 (codemod or agent edit, the tools, the procedure, published LLM migrations), REPO-019 (the code-modernization plugin and an upgrade skill), ORCH-012 (`/batch`), TOK-041 (LSP plugins for search).
+- Update PRs: SESS-024 (merge queue against auto-merge), JSUP-013 and JSUP-014 (Dependabot auto-merge and triage), DOC-018 (our changelog rule for Dependabot bumps).
+- Verifying an install: SESS-008 (a worktree uses the main checkout's `node_modules`), FLOW-011 and FLOW-013 (verification in general), JSUP-009 (the upgrade checks in a clean checkout).
 
 ## Merges
 
