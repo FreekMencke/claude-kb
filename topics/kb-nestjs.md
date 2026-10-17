@@ -92,7 +92,7 @@ So a CI image or Dockerfile on an old 22.x or 24.x patch release can run the bui
 
 Switching later is a separate pass: `"type": "module"` in `package.json`, `"module"`/`"moduleResolution": "nodenext"` in tsconfig (projects from `@nestjs/schematics` 11.0.6 or later already have them), `.js` on every relative import, and `import.meta.dirname` for `__dirname`. "Adding `"type": "module"` therefore changes how **every** `.ts` file in the project is emitted ... Expect to fix them in the same pass rather than incrementally." The docs' samples use ESM; in a CommonJS project "drop the `.js` extensions, keep `__dirname`, and call `bootstrap()` without `await`."
 
-What still breaks a CommonJS app: a runtime with `require(esm)` off (Lambda, NEST-012), and Jest before Node 24.9 (JSTEST-009).
+What still breaks a CommonJS app: a runtime with `require(esm)` off (Lambda, NEST-014, LAMBDA-003), and Jest before Node 24.9 (JSTEST-009).
 
 Tested 2026-10-17, `@nestjs/core`, `common` and `platform-express` 12.1.3, TypeScript 6.0.3 with `"module": "commonjs"`, Node 24.21.0: the compiled `require("@nestjs/common")` app started and served requests with no warning. With `node --no-experimental-require-module` it failed at that line with `ERR_REQUIRE_ESM`.
 
