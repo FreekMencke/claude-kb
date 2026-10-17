@@ -126,6 +126,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-angular.md](topics/kb-angular.md) | `NG` | Angular 21–22 changes and Angular's AI tooling |
 | [kb-js-upgrades.md](topics/kb-js-upgrades.md) | `JSUP` | Dependency upgrades and codemods in Node/TS repos |
 | [kb-npm.md](topics/kb-npm.md) | `NPM` | npm 12, packages and publishing |
+| [kb-github-actions.md](topics/kb-github-actions.md) | `GHA` | GitHub Actions: changes and hardening |
 
 | Other files | What it holds |
 |---|---|

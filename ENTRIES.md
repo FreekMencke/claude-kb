@@ -100,6 +100,35 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DOC-023 | Runbooks in `docs/` or in a skill | comparison | our-setup, runbooks, skills |
 | DOC-024 | Our weekly docs-drift routine: first runs | fact | our-setup, drift, routines, refresh-md-files |
 
+## GitHub Actions: changes and hardening (`topics/kb-github-actions.md`, GHA)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| GHA-001 | Runner labels on 2026-10-17, and `ubuntu-latest` moving to Ubuntu 26.04 | fact | runners, ubuntu-26-04, ubuntu-latest, shellcheck |
+| GHA-002 | `ubuntu-slim` and arm64 standard runners: specs, limits, when to use | fact | runners, ubuntu-slim, arm64 |
+| GHA-003 | Node 20 is gone from the runners: `node20` actions are forced onto Node 24 | fact | node-24, node20, deprecation, runners |
+| GHA-004 | Core action majors on 2026-10-17: checkout v7, setup-node v7, cache v6, artifacts v7 and v8 | fact | actions-checkout, actions-cache, artifacts, upgrades |
+| GHA-005 | setup-node v5 to v7: automatic npm caching, ESM, no dummy `NODE_AUTH_TOKEN` | fact | setup-node, caching, publishing |
+| GHA-006 | Workflow syntax added since 2025: parallel steps, `$/`, `cache-mode`, `queue`, `case()` | fact | syntax, parallel-steps, concurrency, expressions |
+| GHA-007 | Limits and retention that changed in 2025–2026 | fact | limits, retention, cache, reruns |
+| GHA-008 | CI for agent-driven PRs: cancel superseded runs, cache dependencies, keep required checks reporting | pattern | concurrency, required-checks, caching, agents |
+| GHA-009 | Pinning actions: tag, full SHA, immutable release or lockfile | comparison | pinning, sha-pinning, supply-chain, policy |
+| GHA-010 | Workflow lockfiles with `gh actions-lock` (public preview) | tool | lockfile, gh-actions-lock, pinning |
+| GHA-011 | Immutable releases: what they lock, and why a tag still isn't a SHA pin | fact | immutable-releases, attestations, pinning |
+| GHA-012 | Dependabot for action pins: what it updates, skips and doesn't alert on | fact | dependabot, pinning, composite-actions, lockfile |
+| GHA-013 | `GITHUB_TOKEN` permissions: defaults, the `permissions` key and what the token can't start | recommendation | github-token, permissions, least-privilege |
+| GHA-014 | GitHub App installation tokens: when, how to scope, and the 520-character format | fact | github-app, tokens, create-github-app-token |
+| GHA-015 | OIDC to AWS: trust policy conditions and `configure-aws-credentials` v6 | recommendation | oidc, aws, iam, trust-policy |
+| GHA-016 | Immutable OIDC `sub` claims: which repos send them, and moving a trust policy over | fact | oidc, sub-claim, aws, trust-policy |
+| GHA-017 | `pull_request_target` and `workflow_run`: what GitHub changed from 2025-12 to 2026-11 | fact | pull-request-target, workflow-run, forks, checkout |
+| GHA-018 | When `pull_request_target` or `workflow_run` is still safe | recommendation | pull-request-target, workflow-run, pwn-request |
+| GHA-019 | Cache poisoning, read-only cache tokens and `cache-mode` | fact | cache, cache-poisoning, cache-mode |
+| GHA-020 | Script injection and secrets: untrusted input goes through `env:` | recommendation | script-injection, secrets, redaction |
+| GHA-021 | Fork PR approvals and workflow execution protections | fact | fork-prs, approvals, actions-policies, execution-protections |
+| GHA-022 | npm trusted publishing: the workflow side | recommendation | npm, trusted-publishing, oidc, provenance |
+| GHA-023 | Workflow linters and hardening tools: zizmor, actionlint, CodeQL, harden-runner, Scorecard | comparison | zizmor, actionlint, codeql, harden-runner, scorecard |
+| GHA-024 | Incidents 2024–2026 and the control that would have stopped each | fact | incidents, tj-actions, ultralytics, tanstack, supply-chain |
+
 ## Hooks (`topics/kb-hooks.md`, HOOK)
 
 | ID | Title | Type | Tags |
