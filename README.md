@@ -140,6 +140,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-og-images.md](topics/kb-og-images.md) | `OG` | Open Graph images with satori and resvg |
 | [kb-aws-lambda-node.md](topics/kb-aws-lambda-node.md) | `LAMBDA` | AWS Lambda on the Node.js runtime |
 | [kb-github.md](topics/kb-github.md) | `GH` | GitHub through `gh` and the API: issues, rulesets, releases, Copilot cloud agent |
+| [kb-web-security.md](topics/kb-web-security.md) | `WEBSEC` | Security of agent-written web code: OWASP Top 10:2025, headers and CSP nonces in Angular SSR, SSRF, cookies, CSRF, review tools |
 
 | Other files | What it holds |
 |---|---|

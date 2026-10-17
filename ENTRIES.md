@@ -1095,6 +1095,24 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | WEBPERF-013 | Compression from Express: brotli, zstd and which level | fact | compression, brotli, zstd, express, node-zlib |
 | WEBPERF-014 | Traefik's compress middleware sends gzip unless `br` comes first | anti-pattern | traefik, compression, brotli, accept-encoding |
 
+## Security of agent-written web code (`topics/kb-web-security.md`, WEBSEC)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| WEBSEC-001 | OWASP Top 10:2025: what changed from 2021 | fact | owasp, top-10, ssrf, supply-chain, exceptional-conditions |
+| WEBSEC-002 | The Top 10:2025 for an Angular SSR and NestJS app | recommendation | owasp, angular, nestjs, ssr, threat-model |
+| WEBSEC-003 | Security headers: helmet 8.3 and Nest 12.1's `useSecurityHeaders()` | fact | helmet, security-headers, hsts, permissions-policy, corp, nestjs |
+| WEBSEC-004 | A per-request CSP nonce in Angular SSR | pattern | csp, nonce, angular, ssr, ngcspnonce, beasties |
+| WEBSEC-005 | CSP details that decide whether a nonce policy works | fact | csp, strict-dynamic, unsafe-inline, report-to, meta |
+| WEBSEC-006 | Express 5 and Nest 12 defaults that leak or allow too much | fact | express-5, nestjs, cors, error-handling, x-powered-by, body-limit |
+| WEBSEC-007 | SSRF in outbound `fetch` from Node | pattern | ssrf, fetch, undici, redirects, blocklist, dns-rebinding |
+| WEBSEC-008 | Cookie defaults: Express, express-session and browsers | fact | cookies, samesite, httponly, host-prefix, express-session |
+| WEBSEC-009 | CSRF: Angular's XSRF client half and Nest 12.1's `enableCsrfProtection()` | fact | csrf, xsrf, fetch-metadata, sec-fetch-site, angular, nestjs |
+| WEBSEC-010 | Angular XSS: the sanitizer, `bypassSecurityTrust*` and Trusted Types | fact | xss, angular, domsanitizer, bypasssecuritytrust, trusted-types |
+| WEBSEC-011 | What coding agents get wrong in web security | anti-pattern | agents, xss, csp, cors, secrets, logging |
+| WEBSEC-012 | What `/security-review`, security-guidance and Claude Security check | comparison | security-review, security-guidance, claude-security, review |
+| WEBSEC-013 | Deterministic checks and log redaction behind the model reviews | tool | codeql, semgrep, eslint, security-patterns, redaction, logging |
+
 ## Session workflows (`topics/kb-workflows.md`, FLOW)
 
 | ID | Title | Type | Tags |
