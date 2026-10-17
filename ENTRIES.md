@@ -55,6 +55,22 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | NG-017 | angular/skills follows Angular's `main` branch | fact | skills, angular-developer, third-party |
 | NG-018 | In-page WebMCP and AI debugging tools (v22) | fact | webmcp, devtools, experimental |
 
+## AWS Lambda on the Node.js runtime (`topics/kb-aws-lambda-node.md`, LAMBDA)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| LAMBDA-001 | Node.js runtime identifiers and their deprecation, create-block and update-block dates | fact | runtimes, deprecation, nodejs24, nodejs26, preview |
+| LAMBDA-002 | Finding functions on a deprecated runtime, and how runtime updates reach them | fact | deprecation, list-functions, runtime-updates, trusted-advisor |
+| LAMBDA-003 | Lambda's Node isn't upstream Node: `require(esm)` and module detection off, Temporal missing on 26 | fact | require-esm, esm, nodejs26, experimental-flags, temporal |
+| LAMBDA-004 | Handlers: ESM with top-level `await`, and callback handlers rejected from `nodejs24.x` | fact | handler, esm, callback, top-level-await, nodejs24 |
+| LAMBDA-005 | Bundling a small function with esbuild: CJS or ESM output, and SAM and CDK defaults | pattern | esbuild, bundling, esm, create-require, cdk, sam |
+| LAMBDA-006 | The runtime's AWS SDK is a pinned minor: bundle your own clients | recommendation | aws-sdk, bundling, runtime-sdk, cdk |
+| LAMBDA-007 | Cold starts on Node: what moves them, no SnapStart, and init is billed | fact | cold-start, init, snapstart, memory, provisioned-concurrency |
+| LAMBDA-008 | Lambda Web Functions: a Node HTTP server on Lambda without an adapter | fact | web-functions, express, http, nodejs24, pricing |
+| LAMBDA-009 | EventBridge Scheduler or scheduled rules for cron triggers | comparison | eventbridge, scheduler, cron, time-zones, pricing |
+| LAMBDA-010 | Retries for scheduled functions: two by default, and how to turn them off | fact | retries, async-invocation, event-invoke-config, alerts |
+| LAMBDA-011 | Cost of a small scheduled function: logs, memory, architecture | fact | cost, cloudwatch-logs, retention, memory, arm64 |
+
 ## Building on the Claude API, Agent SDK and Managed Agents (`topics/kb-claude-api.md`, CAPI)
 
 | ID | Title | Type | Tags |

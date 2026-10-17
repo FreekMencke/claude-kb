@@ -92,7 +92,7 @@ So a CI image or Dockerfile on an old 22.x or 24.x patch release can run the bui
 
 Switching later is a separate pass: `"type": "module"` in `package.json`, `"module"`/`"moduleResolution": "nodenext"` in tsconfig (projects from `@nestjs/schematics` 11.0.6 or later already have them), `.js` on every relative import, and `import.meta.dirname` for `__dirname`. "Adding `"type": "module"` therefore changes how **every** `.ts` file in the project is emitted ... Expect to fix them in the same pass rather than incrementally." The docs' samples use ESM; in a CommonJS project "drop the `.js` extensions, keep `__dirname`, and call `bootstrap()` without `await`."
 
-What still breaks a CommonJS app: a runtime with `require(esm)` off (Lambda, NEST-012), and Jest before Node 24.9 (JSTEST-009).
+What still breaks a CommonJS app: a runtime with `require(esm)` off (Lambda, NEST-014, LAMBDA-003), and Jest before Node 24.9 (JSTEST-009).
 
 Tested 2026-10-17, `@nestjs/core`, `common` and `platform-express` 12.1.3, TypeScript 6.0.3 with `"module": "commonjs"`, Node 24.21.0: the compiled `require("@nestjs/common")` app started and served requests with no warning. With `node --no-experimental-require-module` it failed at that line with `ERR_REQUIRE_ESM`.
 
@@ -302,7 +302,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 - **`nest upgrade` not run** (NEST-006): the schematic's steps were read at 12.0.7, not executed; its GraphQL, NATS and Observe steps and most of `cli-config.step.ts` weren't read, nor the report's exact layout.
 - **Upstream report for the lazy-import gap** (NEST-004): no issue was found in nestjs/nest-cli or nestjs/nest; whether to report it is the user's call.
 - **path-to-regexp edge cases** (NEST-009): `ab*cd` read as a wildcard named `cd`, and `/:id?` failing at boot, come from reading path-to-regexp 8.4.2's source, not from a run.
-- **`require(esm)` on Lambda's Node 26 runtime** (NEST-014): AWS's experimental-features table lists Node.js 20, 22 and 24 only; whether `nodejs26.x` enables `require(esm)` by default is for `kb-aws-lambda-node.md`.
+- Answered 2026-10-18: **`require(esm)` on Lambda's Node 26 runtime** (NEST-014). The `nodejs26.x` preview disables it too, though AWS's table lists Node.js 20, 22 and 24 only (LAMBDA-003, tested). Whether GA keeps it is LAMBDA's open question.
 - **`@codegenie/serverless-express` 5.0.0 on Node 22** (NEST-014): it declares `>=24` ("though earlier versions may work") while Nest's example uses `nodejs22.x` and a `callback`; not tested.
 - **MongoDB compatibility matrix** (NEST-013): mongodb.com's driver compatibility page renders its tables client-side and wasn't readable raw; the 4.4 floor comes from the README, the upgrade page and the 7.6.0 release.
 - **Atlas's Lambda MONGODB-AWS sample** (NEST-012, NEST-014) passes `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` as `auth` options, while the driver 7 notes say explicitly provided credentials are "no longer accepted" in "the URI or options". Not tested on 7.7.0; INDEX.md's Conflicts has the pair.
