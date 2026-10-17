@@ -488,6 +488,25 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | MEM-034 | Our instruction files and memory, measured | fact | our-setup, measurement |
 | MEM-035 | Our auto memory: misplaced and stale entries | comparison | our-setup, auto-memory, staleness |
 
+## NestJS 12 backends: Express 5, MongoDB driver 7 (`topics/kb-nestjs.md`, NEST)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| NEST-001 | Nest 12.0.0: what changed, and the behaviour changes `nest upgrade` can't migrate | fact | nestjs, nest-12, migration, lifecycle-hooks, logging |
+| NEST-002 | Node floors: running Nest 12 needs 20.19 or 22.12, the CLI needs 22.22.3, 24.15 or 26 | fact | nestjs, node-version, require-esm, nest-cli |
+| NEST-003 | A CommonJS app can stay CommonJS on ESM-only Nest 12 | fact | nestjs, esm, commonjs, require-esm |
+| NEST-004 | Bundling `node_modules` into a Nest 12 build: the CLI's lazy-import list misses `.js` | fact | nestjs, rspack, webpack, bundling, ignore-plugin |
+| NEST-005 | What Nest 11 changed (2025-01): Express 5, Node 20, hook order, Keyv, config precedence | fact | nestjs, nest-11, migration, express-5, cache-manager |
+| NEST-006 | `nest upgrade`: what the v12 schematic bumps, rewrites, reports and refuses | fact | nestjs, nest-upgrade, schematics, migration |
+| NEST-007 | Standard Schema validation: the `schema` option and `StandardSchemaValidationPipe` | fact | nestjs, standard-schema, zod, validation, pipes |
+| NEST-008 | class-validator or a Standard Schema library for a Nest 12 app | comparison | nestjs, class-validator, zod, standard-schema, nestjs-config |
+| NEST-009 | Express 5 route paths in Nest: `*` needs a name, and the converter that hides it | fact | express-5, path-to-regexp, routing, wildcards, nestjs |
+| NEST-010 | Express 5 behaviour a Nest app notices: flat `req.query`, `req.body`, async errors | fact | express-5, query-parser, body-parser, async-errors, nestjs |
+| NEST-011 | Which Express a Nest 12 app runs: pinned 5.2.1, and where 5.3.0's security fixes come from | fact | express-5, express-4, security, transitive-dependencies, nestjs |
+| NEST-012 | MongoDB Node driver 7.0: Node 20.19, removed options, `batchSize`, AWS auth | fact | mongodb, mongodb-driver-7, migration, bson |
+| NEST-013 | MongoDB driver 7.1 to 7.7: server 4.4 floor in a minor, ESM bundles, `close()`, Mongoose 9 | fact | mongodb, mongoose, server-version, esm, bundling |
+| NEST-014 | Nest on Lambda or in a container | comparison | nestjs, lambda, serverless, containers, cold-start |
+
 ## Node.js 24/26 runtime and the modern JS baseline (`topics/kb-nodejs.md`, NODE)
 
 | ID | Title | Type | Tags |

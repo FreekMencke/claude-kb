@@ -136,6 +136,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-js-lint-build.md](topics/kb-js-lint-build.md) | `JSTOOL` | Node/TS lint, format and build tools |
 | [kb-web-performance.md](topics/kb-web-performance.md) | `WEBPERF` | Web performance beyond Core Web Vitals: INP, bfcache, Speculation Rules, priority hints, images, caching, compression |
 | [kb-kubernetes-flux.md](topics/kb-kubernetes-flux.md) | `KUBE` | Small-cluster Kubernetes with Flux GitOps and Grafana/Prometheus observability |
+| [kb-nestjs.md](topics/kb-nestjs.md) | `NEST` | NestJS 12 backends: Express 5, MongoDB driver 7 |
 
 | Other files | What it holds |
 |---|---|
