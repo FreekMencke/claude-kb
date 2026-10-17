@@ -130,6 +130,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-js-testing.md](topics/kb-js-testing.md) | `JSTEST` | Testing Node/TS code, and tests written by agents |
 | [kb-css-baseline.md](topics/kb-css-baseline.md) | `CSS` | Modern CSS and Baseline browser support |
 | [kb-fonts.md](topics/kb-fonts.md) | `FONT` | Type design pipeline and web font delivery |
+| [kb-accessibility.md](topics/kb-accessibility.md) | `ACCESS` | Web accessibility: WCAG 2.2, the EU Accessibility Act, axe and its limits |
 
 | Other files | What it holds |
 |---|---|
