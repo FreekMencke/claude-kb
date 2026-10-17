@@ -96,6 +96,9 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Report formats: REPO-049 and REPO-050 (reviewer severity and findings), WEB-029 (audit findings ranked by impact and effort).
 - Code-intelligence plugins: TOK-041 (LSP plugins save tokens over grep and read), TS-012 (the official `typescript-lsp` plugin needs a `tsserver.js`, which TypeScript 7 and the `@typescript/typescript6` alias lack).
 - TypeScript next to the other stack topics (batch 1 of FreekMencke/claude-kb#167): `kb-typescript.md` covers the TypeScript side and links the others by file name. Node's type stripping is in `kb-nodejs.md` (TS-013 keeps only the tsconfig flags), Angular's TypeScript range and its TS 7 compiler plans in `kb-angular.md` (TS-009 keeps one table row), the upgrade procedure and peer-range checks in `kb-js-upgrades.md` (TS-011 and TS-015 keep the TypeScript-specific traps), npm's peer-dependency handling in `kb-npm.md`.
+- Node versions: SURF-027 (what cloud sessions have installed: Node 20 to 22, 22 on `PATH`), NODE-001 (which lines are supported), NODE-003 (type stripping from 22.18, which `scripts/check-kb.ts` relies on).
+- Type stripping: NODE-003 and NODE-004 (what Node runs and what it rejects at startup), TS-013 (the tsconfig flags that reject the same syntax at compile time). `@types/node`: NODE-014 (keep it at the runtime's major), TS-003 (`types: []` in 6.0).
+- Containing code with client-side controls: INFRA-006 (read-only flags don't bind; the credential does), NODE-009 (Node's permission model "does not protect against malicious code").
 
 ## Merges
 

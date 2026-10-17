@@ -236,6 +236,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | MEM-034 | Our instruction files and memory, measured | fact | our-setup, measurement |
 | MEM-035 | Our auto memory: misplaced and stale entries | comparison | our-setup, auto-memory, staleness |
 
+## Node.js 24/26 runtime and the modern JS baseline (`topics/kb-nodejs.md`, NODE)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| NODE-001 | Node release lines on 2026-10-17: Current, Active LTS, Maintenance | fact | release-schedule, lts, node-24, node-26 |
+| NODE-002 | From Node 27: one major a year, every line LTS, and an Alpha channel | fact | release-schedule, node-27, alpha |
+| NODE-003 | Running `.ts` files with plain `node`: type stripping by version | fact | typescript, type-stripping, tsconfig |
+| NODE-004 | What type stripping rejects: enums, namespaces, parameter properties, decorators | fact | typescript, type-stripping, enums, decorators |
+| NODE-005 | ts-node, tsx or plain `node` for TypeScript | comparison | ts-node, tsx, typescript |
+| NODE-006 | `--env-file` instead of dotenv: format, precedence and what it lacks | fact | env-file, dotenv |
+| NODE-007 | `--watch` instead of nodemon, and where it differs | fact | watch-mode, nodemon |
+| NODE-008 | `node:test`: stable runner, experimental coverage and module mocks | fact | node-test, testing, coverage |
+| NODE-009 | `node:sqlite` and the permission model: status and limits | fact | sqlite, permission-model, security |
+| NODE-010 | `require(esm)` works, and `module.register()` is deprecated in 26 | fact | require-esm, esm, loaders, deprecation |
+| NODE-011 | Language features on by default in Node 22, 24 and 26 | fact | temporal, javascript, v8, polyfills |
+| NODE-012 | Removals and deprecations that hit app code on 25 and 26 | fact | breaking-changes, deprecation, node-26 |
+| NODE-013 | Bundled undici: fetch versions, HTTP/2 on 26, and when to install undici | fact | undici, fetch, http2, proxy |
+| NODE-014 | Pinning a repo's Node version: `.node-version`, `engines`, `devEngines`, setup-node | recommendation | node-version, engines, setup-node, types-node |
+| NODE-015 | npm 12 and Corepack: neither ships with Node 24 or 26 | fact | npm-12, corepack |
+
 ## Orchestration, parallelization and model selection (`topics/kb-orchestration.md`, ORCH)
 
 | ID | Title | Type | Tags |
