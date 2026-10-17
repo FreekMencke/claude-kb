@@ -35,6 +35,28 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | NG-017 | angular/skills follows Angular's `main` branch | fact | skills, angular-developer, third-party |
 | NG-018 | In-page WebMCP and AI debugging tools (v22) | fact | webmcp, devtools, experimental |
 
+## Modern CSS and Baseline browser support (`topics/kb-css-baseline.md`, CSS)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| CSS-001 | Baseline: what "newly available" and "widely available" mean | fact | baseline, web-features, definitions |
+| CSS-002 | Checking a feature's Baseline status from a shell | tool | baseline, web-features, webstatus, jq |
+| CSS-003 | A feature's status can hide per-property support: anchor positioning | anti-pattern | baseline, compat-keys, anchor-positioning |
+| CSS-004 | browserslist Baseline queries, and the versions they gave on 2026-10-17 | tool | browserslist, baseline, browser-targets |
+| CSS-005 | Widely available since 2025: use these without a fallback | fact | widely-available, has, nesting, container-queries |
+| CSS-006 | Newly available 2024–2026: dates, and when each becomes widely available | fact | newly-available, popover, light-dark, scope |
+| CSS-007 | Nesting, `:has()` and container queries: the rules that fail silently | pattern | nesting, has, container-queries, specificity |
+| CSS-008 | Popover, `<dialog>`, invoker commands and `@starting-style` instead of JavaScript | pattern | popover, dialog, invoker-commands, starting-style |
+| CSS-009 | `@scope`, `@property`, relative colours, `field-sizing`, view transitions: one trap each | pattern | scope, at-property, relative-color, view-transitions |
+| CSS-010 | Not Baseline on 2026-10-17: what each feature does without support | fact | not-baseline, scroll-driven-animations, customizable-select, if |
+| CSS-011 | Progressive enhancement with `@supports`: patterns and blind spots | pattern | supports, progressive-enhancement, fallbacks |
+| CSS-012 | ESLint's `css/use-baseline` (`@eslint/css`): setup for Tailwind 4, and what it misses | tool | eslint, use-baseline, tailwind, lint |
+| CSS-013 | Other Baseline linters: stylelint, HTML, JavaScript, and browserslist-based `compat` | comparison | stylelint, html-eslint, eslint-plugin-compat, lint |
+| CSS-014 | Interop 2026: what it targets, and what the 2025 round predicts | fact | interop-2026, browsers, roadmap |
+| CSS-015 | Tailwind CSS 4: browser floor, the CSS it relies on, and its fixed Lightning CSS targets | fact | tailwind, browser-support, lightningcss |
+| CSS-016 | Angular CLI: browser targets are Baseline widely available on a fixed date, and esbuild lowers CSS to them | fact | angular, browser-support, esbuild, browserslist |
+| CSS-017 | Anchor positioning on 2026-10-17: the core that works everywhere, and the gaps | recommendation | anchor-positioning, position-area, polyfill |
+
 ## Visual and UI design with Claude (`topics/kb-design.md`, DESIGN)
 
 | ID | Title | Type | Tags |
