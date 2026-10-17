@@ -27,9 +27,9 @@ test('initialize declares resources, without subscriptions', () => {
   expect(client.getServerCapabilities()?.resources).toEqual({ listChanged: false });
 });
 
-test("resources/list: INDEX.md's Quick answers, each topic's, and each entry but the merged ones", async () => {
+test("resources/list: INDEX.md's Quick answers and each topic's, not the entries", async () => {
   const { resources } = await client.listResources();
-  expect(resources).toHaveLength(1 + index.topics.size + index.entries.size - merged().length);
+  expect(resources).toHaveLength(1 + index.topics.size);
   expect(resources[0].uri).toBe('kb://quick-answers');
   expect(resources).toContainEqual({
     uri: 'kb://topic/mcp',
@@ -37,17 +37,9 @@ test("resources/list: INDEX.md's Quick answers, each topic's, and each entry but
     title: `${index.topics.get('mcp')}: Quick answers and recommendations`,
     mimeType: 'text/markdown',
   });
-  const entry = index.entries.get('MCP-017')!;
-  expect(resources).toContainEqual({
-    uri: 'kb://entry/MCP-017',
-    name: 'MCP-017',
-    title: entry.title,
-    mimeType: 'text/markdown',
-  });
-  const uris = resources.map(r => r.uri);
-  for (const e of merged()) expect(uris).not.toContain(`kb://entry/${e.id}`);
-  // Claude Code requests the list on connecting
-  expect(JSON.stringify(resources).length).toBeLessThan(100_000);
+  expect(resources.filter(r => r.uri.startsWith('kb://entry/'))).toEqual([]);
+  // Claude Code requests the list on connecting, and ListMcpResourcesTool hands it to Claude whole
+  expect(JSON.stringify(resources).length).toBeLessThan(10_000);
 });
 
 test('resources/templates/list: an entry by ID', async () => {

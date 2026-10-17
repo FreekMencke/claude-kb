@@ -1,8 +1,8 @@
 /**
  * The knowledge base as MCP resources, for a user to attach rather than for Claude to search: in Claude Code,
- * `@claude-kb:kb://entry/MCP-017`, which the `@` menu fuzzy-searches. INDEX.md's Quick answers, each topic's with its
- * recommendations, and each entry, as the Markdown the tools return (kb-tools.ts). Merged entries aren't listed, but
- * read by ID like any other.
+ * `@claude-kb:kb://topic/mcp` or `@claude-kb:kb://entry/MCP-017`. INDEX.md's Quick answers and each topic's with its
+ * recommendations are listed; entries read by ID through the `kb://entry/{id}` template. Listing every entry passed
+ * 100,000 characters at about 810 entries (2026-10-17), about 25k tokens through Claude Code's ListMcpResourcesTool.
  */
 import type { Index } from './kb-index.ts';
 import { get, loaded, quickAnswers } from './kb-tools.ts';
@@ -30,7 +30,7 @@ export const TEMPLATES = [
   },
 ];
 
-/** INDEX.md's Quick answers, each topic's, then each entry; none before the first index. */
+/** INDEX.md's Quick answers, then each topic's; none before the first index. */
 export function listResources(index: Index | undefined): Resource[] {
   if (index === undefined) return [];
   const topics = [...index.topics].map(([topic, title]) => ({
@@ -39,13 +39,9 @@ export function listResources(index: Index | undefined): Resource[] {
     title: `${title}: Quick answers and recommendations`,
     mimeType: MIME,
   }));
-  const entries = [...index.entries.values()]
-    .filter(e => !e.mergedInto.length)
-    .map(e => ({ uri: `kb://entry/${e.id}`, name: e.id, title: e.title, mimeType: MIME }));
   return [
     { uri: QUICK_ANSWERS, name: 'quick-answers', title: 'Quick answers across the knowledge base', mimeType: MIME },
     ...topics,
-    ...entries,
   ];
 }
 
