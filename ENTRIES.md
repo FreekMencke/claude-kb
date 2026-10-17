@@ -12,6 +12,29 @@ Then read only the entries you need: `grep -n '^## \[TOK-036\]' topics/kb-*.md` 
 
 Merged entries keep their ID and a pointer, so old references still resolve.
 
+## Angular 21–22 changes and Angular's AI tooling (`topics/kb-angular.md`, NG)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| NG-001 | Release cadence and support windows: 12-month majors from v22 | fact | releases, lts, support, cadence |
+| NG-002 | TypeScript and Node ranges of each supported major | fact | typescript, node, peer-dependencies, versions |
+| NG-003 | v22 components are OnPush unless they say `Eager` | fact | change-detection, onpush, v22 |
+| NG-004 | Zoneless is the default since v21 | fact | zoneless, zone-js, testbed, v21 |
+| NG-005 | Other v22 defaults that change behaviour | fact | http, router, hydration, templates, v22 |
+| NG-006 | APIs removed or deprecated in v21 and v22 | fact | removed-apis, deprecations, migration |
+| NG-007 | `@Service`: the v22 decorator for root services | fact | di, service, injectable, v22 |
+| NG-008 | SSR: `BootstrapContext`, host validation and `CommonEngine` | fact | ssr, security, express, v21, v22 |
+| NG-009 | Unit tests: Vitest by default since v21 | fact | vitest, karma, testing |
+| NG-010 | What `ng update` migrates and what it leaves to you | fact | ng-update, migrations, schematics |
+| NG-011 | Stable, developer preview or experimental at 22.2 | fact | stability, signal-forms, resource, aria |
+| NG-012 | `ng mcp`: tools, flags and server instructions | tool | mcp, angular-cli, tools |
+| NG-013 | Context cost of `ng mcp` in Claude Code | fact | mcp, tokens, tool-search |
+| NG-014 | Running `ng mcp` from a repo's `.mcp.json` | recommendation | mcp, mcp-json, read-only, setup |
+| NG-015 | `get_best_practices` returns the guide for the installed version | fact | best-practices, versions, mcp |
+| NG-016 | Angular's rules files and llms.txt | fact | agents-md, rules-files, llms-txt |
+| NG-017 | angular/skills follows Angular's `main` branch | fact | skills, angular-developer, third-party |
+| NG-018 | In-page WebMCP and AI debugging tools (v22) | fact | webmcp, devtools, experimental |
+
 ## Visual and UI design with Claude (`topics/kb-design.md`, DESIGN)
 
 | ID | Title | Type | Tags |
