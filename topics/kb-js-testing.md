@@ -381,7 +381,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 2. **Keep Vitest 5 without `unplugin-swc` in osrs-tracker-api** (JSTEST-007, JSTEST-008): Nest 12's own template does the same, and class-typed constructor injection works on Vite 8. If a spec fails with "Nest can't resolve dependencies… (?)", check for a type-alias or `import type` parameter before adding a plugin.
 3. **Won't do now: Stryker** (JSTEST-014). On Vitest 5 its runner scores nested tests as 0% until stryker-js#6214 is released, and it doesn't support Angular's builder. Re-check `npm view @stryker-mutator/vitest-runner dist-tags` and the CHANGELOG; then pilot it on osrs-tracker-api's pipes and parsers with `--mutate`, not the whole repo.
 4. **Won't do now: a Playwright Test suite for the Angular apps** (JSTEST-011). The browser-checker subagent (REPO-021) and CD's smoke tests cover what changes, and a hydration-timing answer is still open. Reconsider when a regression slips past both.
-5. **Proposed line for the global CLAUDE.md, not a repo change** (JSTEST-016, PROMPT-028): "Never delete, skip or loosen an existing test to make a change pass; if a test looks wrong, say so." It holds in every repo, so it belongs there; the user decides.
+5. Done 2026-10-18: the global CLAUDE.md says never to delete, skip or loosen an existing test to make a change pass (JSTEST-016, PROMPT-028).
 6. **Won't do: Jest** (JSTEST-007, JSTEST-009). Our repos are on Vitest, and the global CLAUDE.md already says new tests use Vitest.
 
 ## Open questions
