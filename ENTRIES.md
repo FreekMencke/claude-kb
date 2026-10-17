@@ -1067,6 +1067,14 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | WEB-032 | A fresh sitemap's "could not be read" cleared on its own; a resubmitted index stayed pending | fact | search-console, sitemaps, sitemap-index, logs |
 | WEB-033 | Google rewrote `Brand: phrase` titles whose phrase starts in lowercase | fact | title-links, titles, search-results |
 | WEB-034 | A consent banner rendered after hydration became the LCP element | fact | core-web-vitals, lcp, consent, ssr |
+| WEB-035 | Google's JavaScript SEO clarifications, 2025-12 to 2026-03 | fact | javascript, noindex, canonical, soft-404, robots-meta |
+| WEB-036 | Angular SSR: send the status code and one canonical from the server | pattern | angular, ssr, response-init, status-codes, canonical |
+| WEB-037 | Googlebot reads only the first 2MB of an HTML file | fact | googlebot, file-size, crawling, ssr |
+| WEB-038 | Google spam-policy changes in 2026: back button hijacking and more | fact | spam-policies, back-button-hijacking, manual-actions, site-reputation |
+| WEB-039 | AI crawler tokens beyond Anthropic and Google | comparison | crawlers, robots-txt, gptbot, oai-searchbot, perplexitybot, applebot-extended |
+| WEB-040 | Google's AI controls: Googlebot, Google-Extended and Google-Agent | fact | google-extended, google-agent, ai-overviews, web-bot-auth, robots-txt |
+| WEB-041 | AI usage preferences in robots.txt: the IETF aipref drafts | fact | aipref, content-usage, robots-txt, ietf |
+| WEB-042 | hreflang basics for a site that adds a language | fact | hreflang, i18n, multilingual, x-default, angular-localize |
 
 ## Web performance beyond Core Web Vitals (`topics/kb-web-performance.md`, WEBPERF)
 
