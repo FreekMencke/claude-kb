@@ -299,6 +299,32 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | NODE-014 | Pinning a repo's Node version: `.node-version`, `engines`, `devEngines`, setup-node | recommendation | node-version, engines, setup-node, types-node |
 | NODE-015 | npm 12 and Corepack: neither ships with Node 24 or 26 | fact | npm-12, corepack |
 
+## npm 12, packages and publishing (`topics/kb-npm.md`, NPM)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| NPM-001 | npm versions on 2026-10-17, and getting npm 12 | fact | versions, dist-tags, npm-12, node |
+| NPM-002 | What npm 12.0.0 changed | fact | npm-12, breaking-changes, allow-git, allow-remote |
+| NPM-003 | What npm 11 changed, and what the 11.x line backported | fact | npm-11, breaking-changes, backports |
+| NPM-004 | The `allowScripts` policy: what's blocked and how entries match | fact | allowScripts, install-scripts, supply-chain, node-gyp |
+| NPM-005 | Approving install scripts: `npm install-scripts`, and the `approve-scripts` alias | fact | allowScripts, install-scripts, approve-scripts, commands |
+| NPM-006 | Common packages with install scripts, and what blocking them costs | fact | allowScripts, esbuild, sharp, native-addons |
+| NPM-007 | Version-pinned approvals stop matching after a bump | anti-pattern | allowScripts, dependabot, upgrades |
+| NPM-008 | npm tokens since 2025-12-09: session and granular | fact | tokens, granular-tokens, 2fa, authentication |
+| NPM-009 | Trusted publishing: what the registry requires | fact | trusted-publishing, oidc, publishing, npm-trust |
+| NPM-010 | Staged publishing, stage-only tokens and publish-time scanning | fact | staged-publishing, stage-only-tokens, malware-scanning |
+| NPM-011 | What CI should use to install and to publish | recommendation | ci, tokens, trusted-publishing, publishing |
+| NPM-012 | Provenance: what it proves, and `npm audit signatures` | fact | provenance, sigstore, audit-signatures, supply-chain |
+| NPM-013 | `npm audit` in CI: what it checks and how to gate it | recommendation | npm-audit, vulnerabilities, ci |
+| NPM-014 | Ship new packages ESM-only | recommendation | esm, require-esm, packaging, exports |
+| NPM-015 | `exports` with types for ESM-only and dual packages, and how to check them | pattern | exports, types, dual-package, publint, attw |
+| NPM-016 | `npm ci` vs `npm install`, and lockfile v3 | fact | npm-ci, lockfile, package-lock |
+| NPM-017 | Optional platform packages missing from a lockfile made on another OS | anti-pattern | optional-dependencies, lockfile, cross-platform, native-binaries |
+| NPM-018 | `overrides`, `packageExtensions` and `npm patch` | fact | overrides, packageExtensions, npm-patch, transitive-dependencies |
+| NPM-019 | Peer dependency conflicts: ERESOLVE, `--legacy-peer-deps` and `--force` | fact | peer-dependencies, eresolve, legacy-peer-deps |
+| NPM-020 | npm 12 or pnpm for a handful of small repos | comparison | pnpm, package-managers, worktrees |
+| NPM-021 | Installing Claude Code with npm 12: allow its postinstall | fact | claude-code, install, allowScripts, global-install |
+
 ## Orchestration, parallelization and model selection (`topics/kb-orchestration.md`, ORCH)
 
 | ID | Title | Type | Tags |

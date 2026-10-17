@@ -125,6 +125,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-nodejs.md](topics/kb-nodejs.md) | `NODE` | Node.js 24/26 runtime and the modern JS baseline |
 | [kb-angular.md](topics/kb-angular.md) | `NG` | Angular 21–22 changes and Angular's AI tooling |
 | [kb-js-upgrades.md](topics/kb-js-upgrades.md) | `JSUP` | Dependency upgrades and codemods in Node/TS repos |
+| [kb-npm.md](topics/kb-npm.md) | `NPM` | npm 12, packages and publishing |
 
 | Other files | What it holds |
 |---|---|
