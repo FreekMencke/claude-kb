@@ -202,6 +202,28 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | INFRA-026 | Before changing a config value, read the code that consumes it | pattern | config, lambda, retries, issues |
 | INFRA-027 | Change one Lambda environment variable without printing the others | pattern | lambda, env, credentials, transcripts |
 
+## Testing Node/TS code, and tests written by agents (`topics/kb-js-testing.md`, JSTEST)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| JSTEST-001 | Vitest 5.0: the breaking changes agents trip over | fact | vitest, vitest-5, migration, mocks |
+| JSTEST-002 | Vitest 4.0: breaking changes from 3.x, and the upgrade path | fact | vitest, vitest-4, migration, coverage |
+| JSTEST-003 | Vitest 5's file-system module cache can test stale code | fact | vitest, vitest-5, cache, angular |
+| JSTEST-004 | Angular's `unit-test` builder: options, defaults and what it overrides | fact | angular, unit-test-builder, vitest, configuration |
+| JSTEST-005 | jsdom, happy-dom or browser mode under Angular's builder, and `vi.mock` | fact | angular, jsdom, happy-dom, browser-mode, mocks |
+| JSTEST-006 | The Jasmine-to-Vitest refactor: what it leaves for you | fact | angular, jasmine, vitest, migrations |
+| JSTEST-007 | NestJS 12: Vitest for ESM projects, Jest for CommonJS, and moving a suite | comparison | nestjs, vitest, jest, esm, migration |
+| JSTEST-008 | Nest's dependency injection under Vitest 5 without `unplugin-swc` | fact | nestjs, vitest, decorators, oxc, swc |
+| JSTEST-009 | Jest 30: experimental ESM, `require(esm)` and upgrade traps | fact | jest, esm, ts-jest, migration |
+| JSTEST-010 | Playwright 1.64: flakiness controls and defaults | fact | playwright, e2e, flakiness, retries |
+| JSTEST-011 | Playwright against an SSR app: `webServer`, `baseURL` and server HTML | pattern | playwright, ssr, webserver, e2e |
+| JSTEST-012 | Playwright in an agent's loop: tests, Test Agents, MCP or CLI | comparison | playwright, agents, mcp, reporters |
+| JSTEST-013 | Coverage doesn't show whether tests catch bugs; mutation testing does | fact | coverage, mutation-testing, agent-tests |
+| JSTEST-014 | StrykerJS 10 with Vitest: setup, cost, and the Vitest 5 bug | tool | stryker, mutation-testing, vitest |
+| JSTEST-015 | Feeding surviving mutants back to an agent | pattern | stryker, mutation-testing, agent-tests |
+| JSTEST-016 | What agents get wrong in tests, and the checks that catch it | anti-pattern | agent-tests, mocks, reward-hacking, review |
+| JSTEST-017 | Test-first with an agent: when it pays off | recommendation | tdd, agent-tests, workflow |
+
 ## Dependency upgrades and codemods in Node/TS repos (`topics/kb-js-upgrades.md`, JSUP)
 
 | ID | Title | Type | Tags |
