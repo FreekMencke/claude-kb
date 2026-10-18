@@ -721,6 +721,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | PROMPT-036 | Gemini CLI, Cline, Aider, Cursor, Amp, Copilot: ideas | comparison | gemini, aider, cursor, leaks |
 | PROMPT-037 | Community prompt and agent collections: what to copy | comparison | community, collections |
 | PROMPT-038 | How Anthropic's newest agent bodies are written | pattern | agents, official-example, wording |
+| PROMPT-039 | The Concise output style on our sessions: shorter text, same output tokens | fact | output-styles, verbosity, measurement |
 
 ## Agents in repositories (`topics/kb-repo-agents.md`, REPO)
 

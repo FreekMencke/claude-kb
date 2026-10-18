@@ -13,7 +13,7 @@ How Fable 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 read instructions, and how to 
 | How do I prompt a `claude -p` or unattended run? | Say nobody is watching ("You are operating autonomously…"), proceed on reversible steps, stop only for destructive ones or scope changes, and check the last paragraph for unkept promises. Cap turns and budget. | PROMPT-014, PROMPT-022 |
 | How should a CLAUDE.md rule be worded? | Concrete enough to verify, with its reason, no hedging ("try to"), no emphasis by default, and explicit when it overrides another rule. | PROMPT-015, PROMPT-016 |
 | Which model needs more scaffolding, and which overdoes things? | Haiku 5.5 needs the most nudges (date, search, verify, keep going), most at `low` effort and with long prompts. Sonnet 5.5 (at every effort, more at higher) and Fable 5.1 add unrequested work; Opus 5.5 stops unattended runs to report. | PROMPT-019 to PROMPT-023 |
-| How do I get shorter answers? | Prompt for length, because on Opus 5 effort sets thinking, not visible length. "Lead with the outcome", be selective rather than terse, show a short example; or the Concise output style in Claude Code. | PROMPT-024, PROMPT-026 |
+| How do I get shorter answers? | Prompt for length, because on Opus 5 effort sets thinking, not visible length. "Lead with the outcome", be selective rather than terse, show a short example; or the Concise output style in Claude Code, which cut our visible text by a third but not our output tokens. | PROMPT-024, PROMPT-026, PROMPT-039 |
 | How do I get fewer clarifying questions, or more? | Fewer: auto mode, the Proactive style, "check in only when different readings would lead to materially different work". More: plan mode, `AskUserQuestion` interviews, "give ideas and stop". | PROMPT-025 |
 | How do I stop "done" claims without a check? | Ask for a real check that exercises the change, and for every claim to rest on a result from this session; gate unattended runs with `/goal`, a Stop hook or a verifier. | PROMPT-027, PROMPT-034 |
 | How do I stop unrequested tests, files and refactors? | Name the extras to leave out and send them to the final summary; end with "implement every behavior the task asks for, completely". | PROMPT-031 |
@@ -64,6 +64,7 @@ How Fable 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 read instructions, and how to 
 | PROMPT-036 | Gemini CLI, Cline, Aider, Cursor, Amp, Copilot: ideas | comparison | gemini, aider, cursor, leaks |
 | PROMPT-037 | Community prompt and agent collections: what to copy | comparison | community, collections |
 | PROMPT-038 | How Anthropic's newest agent bodies are written | pattern | agents, official-example, wording |
+| PROMPT-039 | The Concise output style on our sessions: shorter text, same output tokens | fact | output-styles, verbosity, measurement |
 
 ## [PROMPT-001] Where Anthropic's prompting guidance lives
 - Type: fact
@@ -517,7 +518,7 @@ Front-load the task: underspecified prompts spread "over multiple user turns ten
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Output styles](https://code.claude.com/docs/en/output-styles), [Environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
-- Related: PROMPT-018, PROMPT-024, PROMPT-025, SKILL-021
+- Related: PROMPT-018, PROMPT-024, PROMPT-025, SKILL-021, PROMPT-039
 
 An output style is a session-wide instruction for voice, length or role; "nothing enforces it".
 
@@ -749,6 +750,25 @@ Older official agents ("You are an elite error handling auditor with zero tolera
 
 Note the scan-verifier asks for a reason tied to `file:line`, not for its thinking, which keeps it clear of `reasoning_extraction` refusals (PROMPT-011).
 
+## [PROMPT-039] The Concise output style on our sessions: shorter text, same output tokens
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-18
+- Sources: [Trial results, FreekMencke/claude-kb#49](https://github.com/FreekMencke/claude-kb/issues/49#issuecomment-6252205664), [Output styles](https://code.claude.com/docs/en/output-styles)
+- Related: PROMPT-026, PROMPT-024, TOK-113, TOK-008
+
+On our sessions the Concise style cut visible text by about a third, while output tokens per message didn't fall, because thinking makes up most of them. It shortens replies; it doesn't cut cost.
+
+Local measurement, main thread of desktop Code tab sessions (v2.1.296), Opus 5.5 messages deduplicated by message id, scripts `outtok.py` and `vis.py` in the source comment:
+
+| Window | Messages | Output tokens per message | Visible chars per message | Chars per final reply |
+|---|---|---|---|---|
+| 2026-10-06T00:00Z to 2026-10-13T11:00Z, Default | 16,908 | 650 | 211 | 1,381 |
+| 2026-10-13T11:00Z to 2026-10-18T16:15Z, Concise | 20,804 | 694 | 140 | 978 |
+
+A final reply is a message with text and no tool call (2,177 and 2,548 of them). At an estimated 4 characters a token, visible text is under a tenth of output tokens, so the saving is roughly 18 tokens a message: under 3% of output and under 1% of cost (output is 17% of ours, TOK-008). That matches TOK-113. The weeks' work differed, so the rise in output per message isn't the style's doing. Not compared: a one-line "be concise" CLAUDE.md rule (PROMPT-024).
+
 ---
 
 ## Recommendations for our setup
@@ -761,7 +781,7 @@ Ranked by impact against effort. A grep on 2026-10-12 of `~/.claude/CLAUDE.md`, 
 4. **Done 2026-10-12: the autonomy opener in both routines** (FreekMencke/claude-kb#51). Repeat it in any new routine or scripted `claude -p` prompt, not in interactive sessions. PROMPT-014, PROMPT-022.
 5. **Reviewer wording check when editing reviewers**: keep concrete exclusions, avoid vague bars ("be conservative", "only important issues"); in find-then-verify setups ask the finding stage for coverage with confidence and severity. The `conventions-reviewer` copies have no vague bars today (grep 2026-10-12). PROMPT-032, REPO-047, REPO-048.
 6. **New CLAUDE.md and agent rules**: write the scope, the reason and the concrete action; no IMPORTANT unless a single rule keeps being skipped; write overrides as overrides. Ongoing, no change now. PROMPT-015, PROMPT-003, PROMPT-004, PROMPT-005, PROMPT-016.
-7. **Try the Concise output style** (`/output-style concise`) for a week of interactive sessions and compare output tokens in `/usage`; it keeps errors, failing tests and destructive-action confirmations in full. In trial since 2026-10-13 in FreekMencke/claude-kb#49 (review from 2026-10-20). PROMPT-026, PROMPT-024.
+7. **Done 2026-10-18: keep the Concise output style** (`"outputStyle": "Concise"` in user settings) after a 5-day trial (FreekMencke/claude-kb#49): replies a third shorter, output tokens unchanged, so it's kept for readability, not cost. PROMPT-039, PROMPT-026.
 8. **Keep asking for "why" or evidence, never for thinking**, in any new agent or skill output format. Already true of ours. PROMPT-011.
 
 ## Open questions
