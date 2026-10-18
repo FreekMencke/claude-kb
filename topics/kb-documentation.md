@@ -314,7 +314,7 @@ None of these checks whether a doc is true, only its form and links.
 | markdown-link-check | Broken links | Its common GitHub Action wrapper is archived; prefer lychee |
 | Vale | Prose style and terminology | 6,235 stars; config overhead too high for small repos |
 
-**Ours.** osrs-tracker-web, osrs-tracker-aws and osrs-tracker-api run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same three run `lychee --offline --include-fragments --hidden` on every push. home-cluster has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files.
+**Ours.** osrs-tracker-web, osrs-tracker-aws, osrs-tracker-api and osrs-tracker-packages (since 2026-10-18) run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same four run `lychee --offline --include-fragments --hidden` on every push. home-cluster has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files.
 
 ## [DOC-015] Agents that detect or fix doc drift
 - Type: pattern
@@ -360,10 +360,10 @@ Community guides (Fern, Mintlify, Sentry) give the same advice. A subagent saw t
 - Applies to: general
 - Confidence: single-source
 - Last verified: 2026-10-14
-- Sources: [osrs-tracker org repos](https://github.com/osrs-tracker), [FreekMencke repos](https://github.com/FreekMencke); read with `git ls-tree origin/main` and `git show origin/main:<file>` in each local checkout after `git fetch`, 2026-10-13
+- Sources: [osrs-tracker org repos](https://github.com/osrs-tracker), [FreekMencke repos](https://github.com/FreekMencke); read with `git ls-tree origin/main` and `git show origin/main:<file>` in each local checkout after `git fetch`, 2026-10-13; the osrs-tracker-aws and osrs-tracker-packages rows re-read on GitHub `main`, 2026-10-18
 - Related: DOC-018, DOC-021, DOC-022, DOC-023
 
-All eight active repos: FreekMencke's five, plus the three osrs-tracker repos. The osrs-tracker org's other repos are archived (2019), apart from `.github`, which holds only a profile README.
+All nine active repos: FreekMencke's five, plus the four osrs-tracker repos. The osrs-tracker org's other repos are archived (2019), apart from `.github`, which holds only a profile README.
 
 | Repo | CHANGELOG | README | Other docs |
 |---|---|---|---|
@@ -372,7 +372,8 @@ All eight active repos: FreekMencke's five, plus the three osrs-tracker repos. T
 | freek-mencke-web | None | Angular CLI template, says CLI 19.0.6; `package.json` has `@angular/cli` `^22.2.2` (2026-10-14) | — |
 | home-cluster | `## YYYY-MM-DD` | Overview, usage, "Known differences and decisions", access | `docs/rebuild.md`, `docs/upgrade-plan-kubernetes-1.37.md`, two Lambda READMEs |
 | osrs-tracker-api | `## YYYY-MM-DD`, area subtitles | Provides, fits together, local, checks, built with | — |
-| osrs-tracker-aws | Root plus 4 package changelogs | Jobs, packages, fits together | `DATA-MODEL.md`, a README per Lambda, `DEPLOY.md`, `INFRA.md` and `PACKAGES.md` in the skill |
+| osrs-tracker-aws | `## YYYY-MM-DD` | Jobs, link to the packages, fits together, local runs | `DATA-MODEL.md`, a README per Lambda, `DEPLOY.md` and `INFRA.md` in the skill |
+| osrs-tracker-packages | Root (tooling) plus 4 package changelogs | How they relate, development, licence | A README per package; publishing rules in the skill (aws's `PACKAGES.md` until 2026-10-18) |
 | osrs-tracker-web | `## YYYY-MM-DD`, public at `/about/changelog` | Features, fits together, local, contributing | `docs/decisions.md` (484 lines on 2026-10-14), `docs/runbook.md` |
 | solix | Versioned with ISO dates, Added/Changed/Fixed | Download, use, build, release, history | — |
 
@@ -445,6 +446,9 @@ Our reviewers check pairs of files "against the whole diff". Each pair is a doc 
 - **osrs-tracker-aws.**
   - A Mongo write, query or index and `DATA-MODEL.md` ("its rows must match the change").
   - A Lambda's trigger or env vars and its README (a CLAUDE.md rule in aws, not in its review-rule pairs).
+- **osrs-tracker-packages** (since 2026-10-18, read that day).
+  - A change to the stored hiscore format or a stored document's type in `models` and osrs-tracker-aws's `DATA-MODEL.md` (or an issue there).
+  - A change that breaks a consumer and its `**Breaking:**` entry; a version bump and its `## X.Y.Z - YYYY-MM-DD` entry.
 - **osrs-tracker-web.** A new route and `route-label.ts`.
 - **home-cluster.** A chart or version change and the README's versions table, `docs/rebuild.md` and `CHARTS`.
 
@@ -545,7 +549,9 @@ Ranked by impact against effort.
 2. **Done 2026-10-13: the changelog brief aligned with Keep a Changelog 2.0 across the four Claude-maintained repos**: the reason in the text, a **Breaking:** marker in api and aws, and a `# Changelog` preamble in api, aws and home-cluster; "every change" and "Behind the scenes" kept on purpose (the issues in item 1). DOC-001, DOC-002, DOC-003, DOC-018.
 3. **Decided and done 2026-10-13: doc-only changes get no entry, and Dependabot bumps get one only when they change behaviour**; home-cluster's push hook exempts doc-only commits (the issues in item 1). DOC-002, DOC-018.
 4. **Done 2026-10-13: ISO `YYYY-MM-DD` changelog headings in all four repos on the same day**, one aws package heading format (`## X.Y.Z - YYYY-MM-DD`), and every rule that names the format (osrs-tracker/osrs-tracker-api#153, osrs-tracker/osrs-tracker-web#265, osrs-tracker/osrs-tracker-aws#95, FreekMencke/home-cluster#7). DOC-004.
+   Update 2026-10-18: the package changelogs moved to osrs-tracker-packages with that heading format.
 5. **Done 2026-10-13: `lychee --offline --include-fragments --hidden` with `fail: true` in CI for api, web and aws, and api's `prettier:ci` over Markdown** (the issues in item 4). `--hidden` reaches `.claude/` and `.github/`; a glob input doesn't skip `.gitignore`d paths, so exclude `node_modules` by hand. DOC-014.
+   Update 2026-10-18: osrs-tracker-packages runs the same lychee and Prettier checks.
 6. **Replace freek-mencke-web's template README** (low impact, trivial effort). It's the only stale README found. DOC-017. Dropped 2026-10-13: that app is due for an overhaul.
 7. **Give long-lived plan docs a due-date issue** (low impact, trivial effort). Start with home-cluster's Kubernetes 1.37 plan, due when cert-manager 1.22 ships. DOC-022. Opened 2026-10-13 as FreekMencke/home-cluster#8 (check 2026-11-30). It also adds the convention to home-cluster's CLAUDE.md.
 8. **Already running, so not a recommendation:** the weekly docs-drift routine (REPO-018, DOC-024). This file first listed it under "not now", having missed REPO-018; corrected 2026-10-13. Watch whether its findings are pairs that a cross-file rule (DOC-020) should have caught, and add those rules. **Not now:** MADR files (the one-file log works at 33 decisions (2026-10-14); DOC-021), and a changelog check in CI for PR repos (the reviewer pair is the reminder; DOC-008). 
