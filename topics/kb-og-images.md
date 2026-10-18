@@ -224,8 +224,8 @@ Google picks a page's preview image itself ("completely automated"), for "a text
 
 Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-tracker-web (satori `^0.56.2` and `@resvg/resvg-wasm` `~2.6.2`, bundled into the SSR server; item and player cards on request; `og:image` with width, height and alt; `twitter:card` `summary_large_image`) and freek-mencke-web (prerendered home, no `og:image`, `twitter:card` `summary`).
 
-1. **freek-mencke-web: add a static 1200×630 card** with `og:image`, its width, height and alt, and `summary_large_image` (OG-006, OG-007, OG-009). Built once, no server route. Issue: [FreekMencke/freek-mencke-web#22](https://github.com/FreekMencke/freek-mencke-web/issues/22).
-2. **osrs-tracker-web: add `max-image-preview:large`** to every indexable page, so Google may show the cards large in Discover and Search (OG-008). Issue: [osrs-tracker/osrs-tracker-web#358](https://github.com/osrs-tracker/osrs-tracker-web/issues/358).
+1. Done 2026-10-18: freek-mencke-web has a static `og:image` card with `summary_large_image` (FreekMencke/freek-mencke-web#22; OG-006, OG-007, OG-009).
+2. Done 2026-10-18: osrs-tracker-web's indexable pages send `max-image-preview:large` (osrs-tracker/osrs-tracker-web#358; OG-008).
 3. **Keep resvg-wasm** (OG-005): it renders the same resvg 0.34 as resvg-js and is the only one of the three that bundles into a `dist/`-only image. Revisit if thx/resvg-js#422 ships a newer resvg.
 4. **On each satori bump, read the compare view and render every card** (OG-001). The repo's rule (check a bump in the production build) already covers it; the 0.42 `content-box` change is already handled by `el()` in `og/card-kit.ts`.
 

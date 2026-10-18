@@ -377,7 +377,7 @@ Two guards make it work. The test must fail first for the right reason: run it b
 
 Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-tracker-web, osrs-tracker-api and freek-mencke-web.
 
-1. **Bump `@angular/build` to 22.2.3 or later in both Angular apps and delete the `fsModuleCache` workaround** (JSTEST-003, JSTEST-004): both lockfiles have 22.2.2, whose builder doesn't turn the cache off, and each repo carries a `vitest-base.config.ts` whose own comment says to delete it, and `runnerConfig`, once the builder does. Issues: osrs-tracker/osrs-tracker-web#354, FreekMencke/freek-mencke-web#19.
+1. Done 2026-10-18: both Angular apps are on `@angular/build` 22.2.3 without the `fsModuleCache` workaround (osrs-tracker/osrs-tracker-web#354, FreekMencke/freek-mencke-web#19; JSTEST-003, JSTEST-004).
 2. **Keep Vitest 5 without `unplugin-swc` in osrs-tracker-api** (JSTEST-007, JSTEST-008): Nest 12's own template does the same, and class-typed constructor injection works on Vite 8. If a spec fails with "Nest can't resolve dependencies… (?)", check for a type-alias or `import type` parameter before adding a plugin.
 3. **Won't do now: Stryker** (JSTEST-014). On Vitest 5 its runner scores nested tests as 0% until stryker-js#6214 is released, and it doesn't support Angular's builder. Re-check `npm view @stryker-mutator/vitest-runner dist-tags` and the CHANGELOG; then pilot it on osrs-tracker-api's pipes and parsers with `--mutate`, not the whole repo.
 4. **Won't do now: a Playwright Test suite for the Angular apps** (JSTEST-011). The browser-checker subagent (REPO-021) and CD's smoke tests cover what changes, and a hydration-timing answer is still open. Reconsider when a regression slips past both.

@@ -439,7 +439,7 @@ Every one of them except `tsc` and the Angular compiler strips types without che
 
 Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-tracker-web, osrs-tracker-api and freek-mencke-web.
 
-1. **Turn on `no-floating-promises` and `no-misused-promises` with `projectService` in both Angular apps, and move their configs to `defineConfig`** (JSTOOL-003, JSTOOL-004, JSTOOL-005): typed linting found 5 floating promises in osrs-tracker-web (among them `bootstrapApplication()` without a `catch` and a shutdown `then()` with no rejection handler) and 1 in freek-mencke-web, for about 2.5 s more per lint. osrs-tracker-api already runs the same two rules. Issues: osrs-tracker/osrs-tracker-web#356, FreekMencke/freek-mencke-web#21.
+1. Done 2026-10-18: both Angular apps run typed `no-floating-promises` and `no-misused-promises` with `projectService`, in a `defineConfig` config (osrs-tracker/osrs-tracker-web#356, FreekMencke/freek-mencke-web#21; JSTOOL-003, JSTOOL-004, JSTOOL-005).
 2. **Keep the Prettier `overrides` for Angular templates in osrs-tracker-web** (JSTOOL-011): without it, its suffix-less `*.html` templates would be formatted as plain HTML. freek-mencke-web has only inline templates and `index.html`, so it needs none.
 3. **Keep osrs-tracker-api's guard in `rspack.config.js`** that throws when `fork-ts-checker-webpack-plugin` is missing (JSTOOL-018): the Nest CLI would skip the type check silently.
 4. **Won't do now: move to Oxlint or Biome** (JSTOOL-010). The Angular apps need angular-eslint's template rules; osrs-tracker-api's custom `no-restricted-syntax` selectors and typed rules run in seconds on ESLint. Revisit for the API if typescript-eslint still lacks TypeScript 7 when the API moves to it (JSTOOL-007).
