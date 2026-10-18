@@ -507,8 +507,8 @@ Not found: whether personal-account repos get the default policy. `gh api repos/
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [npm: trusted publishers](https://docs.npmjs.com/trusted-publishers), [npm: generating provenance statements](https://docs.npmjs.com/generating-provenance-statements), [setup-node advanced usage](https://raw.githubusercontent.com/actions/setup-node/main/docs/advanced-usage.md), [GitHub: publishing Node.js packages](https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages), [Changelog 2026-10-02: unvalidated npm trusted publishing configurations expire](https://github.blog/changelog/2026-10-02-unvalidated-npm-trusted-publishing-configurations-now-expire), [TanStack postmortem](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem)
+- Last verified: 2026-10-18
+- Sources: [npm: trusted publishers](https://docs.npmjs.com/trusted-publishers), [npm: generating provenance statements](https://docs.npmjs.com/generating-provenance-statements), [setup-node advanced usage](https://raw.githubusercontent.com/actions/setup-node/main/docs/advanced-usage.md), [Node.js release index](https://nodejs.org/dist/index.json), [GitHub: publishing Node.js packages](https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages), [Changelog 2026-10-02: unvalidated npm trusted publishing configurations expire](https://github.blog/changelog/2026-10-02-unvalidated-npm-trusted-publishing-configurations-now-expire), [TanStack postmortem](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem)
 - Related: NPM-009, NPM-010, NPM-011, NPM-012, GHA-005, GHA-019, GHA-024, GHA-015
 
 The registry side (the trusted publisher's fields, allowed actions, staged publishing, provenance) is in NPM-009 to NPM-012. In the workflow:
@@ -532,7 +532,7 @@ jobs:
       - run: npm publish
 ```
 
-- "Trusted publishing requires npm CLI version 11.5.1 or later and Node version 22.14.0 or higher", on GitHub-hosted runners: "Self-hosted runners are not currently supported".
+- "Trusted publishing requires npm CLI version 11.5.1 or later and Node version 22.14.0 or higher", on GitHub-hosted runners: "Self-hosted runners are not currently supported". Node 24's bundled npm is enough, also for `npm stage publish` (11.15.0+): Node 24.22.0, the latest 24.x on 2026-10-18 (released 2026-10-14), bundles npm 11.19.1, and 24.20.0 and 24.21.0 bundle 11.19.0 (`npm` field of `https://nodejs.org/dist/index.json`, read 2026-10-18). No `npm install -g npm` step is needed with `node-version: '24.x'`.
 - No token and no `--provenance`: provenance is automatic for a public repo and public package.
 - **Plain `npm publish` can fail**: a trusted publisher created after 2026-09-03 allows only `npm stage publish` unless direct publish was ticked (NPM-009, NPM-010).
 - **Trigger**: npm "rejects trusted publishing tokens from GitHub Actions issue_comment events, alongside the existing pull_request_target restriction" (2026-10-02); publish on `push`, `release` or `workflow_dispatch`.
