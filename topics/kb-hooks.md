@@ -887,7 +887,7 @@ Ranked by impact against effort.
 3. **Keep the push gates fail-open; don't add `onFailure: "block"`** (decision). A broken script would then block every Bash call, and CI lints anyway. HOOK-013.
 4. **No `prompt` or `agent` hooks on tool events** (decision). Use `/goal` for ad-hoc "keep going until X", and the reviewer agents for judgement. HOOK-010, HOOK-031, REPO-025.
 5. **When scripting `claude -p` over a repo we didn't write, pass `--settings '{"disableAllHooks": true}'` or `--bare`** (high impact if it ever happens, trivial effort). Our repos' hooks are ours, so this only matters for third-party clones. HOOK-025.
-6. **Optional: a user-level `Notification` hook with `terminalSequence`** for terminal sessions on WSL (low impact, low effort). Skip if the desktop app and push notifications already cover it. HOOK-030.
+6. **Won't do (2026-10-18): a user-level `Notification` hook for WSL terminal sessions**: in 2026-10-13 to 2026-10-18 all 498 sessions on this machine ran in the desktop app and none in the terminal (FreekMencke/claude-kb#49). Revisit if terminal sessions come back. HOOK-030.
 7. **Test hook edits the HOOK-023 way** (sample JSON piped in, then one capped `-p` probe with `--debug-file`), because one invalid matcher drops a file's hooks, silently under `-p` before v2.1.299. HOOK-024.
 
 ## Open questions

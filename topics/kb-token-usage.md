@@ -2085,7 +2085,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 **Subagent handoff and script output (TOK-103 to TOK-115, 2026-10-16).** Ranked by impact against effort:
 - R14, done 2026-10-16: osrs-tracker-api's `verify.sh` keeps failed check logs and prints their path and tail, like web and aws (osrs-tracker/osrs-tracker-api#183). TOK-108, TOK-109.
 - R15: leave this repo's research readers returning inline (the `research` skill's brief). Subagents can't write `report.md` or `findings*.md` files, and a report over 50K characters already arrived as a file plus a 2 KB preview in an interactive session, so ask for a 10-line summary first and one `##` section per question (TOK-105, TOK-106, TOK-107). No change needed: the brief already asks for per-question sections.
-- R16: for the output-style trial (FreekMencke/claude-kb#49), compare against TOK-113: a plain concise instruction gets most of what terse styles save, and output is 17% of our cost (TOK-008).
+- R16, done 2026-10-18: compared in FreekMencke/claude-kb#49. The Concise style cut visible text by a third but saved under 1% of cost, as TOK-113 predicts; kept for readability (PROMPT-039).
 - Not now: turning off prompt suggestions or `!` replies (TOK-112). Both are small, cache-read requests or ones we ask for.
 
 ## Open questions

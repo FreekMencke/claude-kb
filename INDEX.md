@@ -11,7 +11,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | `topics/kb-sessions.md` | SESS | Several sessions in one repo | 36 (0 merged into other entries) |
 | `topics/kb-hooks.md` | HOOK | Hooks: events, handler types, cost, debugging, security, patterns | 36 (0 merged into other entries) |
 | `topics/kb-infra-agents.md` | INFRA | Agents with cloud and cluster access | 27 (0 merged into other entries) |
-| `topics/kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 38 (0 merged into other entries) |
+| `topics/kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 39 (0 merged into other entries) |
 | `topics/kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 | `topics/kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
 | `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 35 (0 merged into other entries) |
