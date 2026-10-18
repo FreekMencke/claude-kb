@@ -19,7 +19,7 @@ Prefix: HOOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live th
 | My hook "does nothing". Why? | Shell profile echoes before the JSON, a field outside `hookSpecificOutput`, wrong matcher case, exit 1 instead of 2, or one invalid matcher dropping the whole file's hooks. | HOOK-024 |
 | Is a hook a security boundary? | No. Hooks run with your full permissions and parse text the model wrote. Hard limits belong in deny rules and the sandbox. | HOOK-025, HOOK-026 |
 | Which proven hooks should I copy? | Format after edit, block dangerous commands or protected files, context at SessionStart, notifications, a Stop gate with a loop guard. | HOOK-027–HOOK-031 |
-| What hooks do we run? | Prettier after edit and a lint-before-push gate in the three osrs-tracker repos, each parsing the command in `pre-push-check.sh`; all three filter it with `"if": "Bash(git *)"`. At user level only a `SessionStart` worktree fast-forward hook. | HOOK-036 |
+| What hooks do we run? | Prettier after edit and a lint-before-push gate in the four osrs-tracker repos (osrs-tracker-packages since 2026-10-18), each parsing the command in `pre-push-check.sh`; all four filter it with `"if": "Bash(git *)"`. At user level only a `SessionStart` worktree fast-forward hook. | HOOK-036 |
 
 ## Index
 

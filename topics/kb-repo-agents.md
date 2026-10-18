@@ -116,7 +116,7 @@ Repo-level Claude configuration at `3c76cc2` (2026-10-10). It was added between 
 
 At user level: `defaultMode: "auto"`, plugins `typescript-lsp`, `playwright`, `frontend-design` and `claude-md-management`. One user-level agent was added on 2026-10-12: an Explore override (`~/.claude/agents/explore.md`: Haiku, `effort: medium`, `omitClaudeMd`). The repo is **public**, with 0 forks. The `main` ruleset requires a PR and status checks, and the admin can bypass it.
 
-The sibling repos `osrs-tracker-api` and `osrs-tracker-aws` have the same shape: a CLAUDE.md, a repo skill, a `conventions-reviewer` and the same two hooks (REPO-043).
+The sibling repos `osrs-tracker-api`, `osrs-tracker-aws` and `osrs-tracker-packages` (since 2026-10-18) have the same shape: a CLAUDE.md, a repo skill, a `conventions-reviewer` and the same two hooks (REPO-043).
 
 ## [REPO-002] The `conventions-reviewer` agent: definition, tools, model
 - Type: fact
@@ -976,7 +976,7 @@ The docs don't say this either way. They say only "The subagent gets the tools; 
    - `git` `diff`, `log`, `show`, `status`, `fetch`, `rev-parse`, `merge-base`, `ls-files`, `blame`;
    - `gh pr` `view`, `diff`, `checks`, and `gh issue view` (the issue a change is for);
    - reject `;`, `&&`, `|`, `>`, `$(`, and backticks.
-   Our live version (`.claude/hooks/read-only-bash.sh` in the three osrs-tracker repos, template T1) also allows `git grep` and plain `grep`, and blocks `<`, newlines, `--output`, `--upload-pack`, `--exec` and the `-O`, `-Q`, `--pager`, `--query`, `--filter` and `--view` options.
+   Our live version (`.claude/hooks/read-only-bash.sh` in the four osrs-tracker repos, template T1) also allows `git grep` and plain `grep`, and blocks `<`, newlines, `--output`, `--upload-pack`, `--exec` and the `-O`, `-Q`, `--pager`, `--query`, `--filter` and `--view` options.
    This mirrors the official security-review command's tool scope: `git diff/status/log/show`, Read, Glob, Grep, no web.
 3. **Know where layer 2 doesn't run.** Project frontmatter hooks are skipped until the folder is trusted and in `-p` (REPO-007). In CI, use `--allowedTools` with `dontAsk` instead.
 4. **The sandbox** (REPO-035) is the only layer that stops a script from writing, since "arbitrary subprocesses" escape Read and Edit deny rules.
@@ -1222,6 +1222,8 @@ Since 2026-10-12 the web, api and aws `conventions-reviewer.md` files are the sh
 **Shared shape:** `tools: Read, Grep, Glob, Bash`, `model: sonnet`, `effort: medium`, the repo skill preloaded with `skills:`, the frontmatter hook, a do-not-flag list, an untrusted-content rule, a first-line `VERDICT:` and at most 3 **check** items (template T1).
 
 **Repo rules moved into each skill's `## Review rules` section:** cross-file rules, extra files to read (web: `docs/decisions.md`; aws: `PACKAGES.md`/`INFRA.md`/`DEPLOY.md`/`DATA-MODEL.md` by diff) and extra **breaks** cases (web: scripts blocked by the CSP, refetch on hydration; api: corrupted stored data; aws: a write to production in a dry run, a leaked secret, account ID or resource ID).
+
+Update 2026-10-18: the `@osrs-tracker/*` packages moved to osrs-tracker-packages, and aws's skill no longer has `PACKAGES.md`. osrs-tracker-packages' `conventions-reviewer.md` is a fourth copy of v2 (only the names and two line wraps differ from aws's) with the same `read-only-bash.sh`. Its skill's `## Review rules` read aws's `DATA-MODEL.md` for a stored-format change; its extra **breaks** cases are a stored-format change without a migration and a build that drops `dist/cjs`, `dist/esm` or `dist/types`.
 
 **Before** (pinned SHAs above, 2026-10-12): the copies differed in rule sources, scope rules and **breaks** definitions, about 60% of each file was shared, and aws alone forbade mutating `aws`, `npm publish` and git writes in its prompt. Option (b), specifics in the skill so drift shows in a `diff`, was the recommendation; it is what the repos did. Option (c), a user-level or plugin agent, would lose the hook-based read-only guard (REPO-041).
 

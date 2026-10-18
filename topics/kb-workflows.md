@@ -716,7 +716,7 @@ Read 2026-10-12: global CLAUDE.md, user settings, claude-skills at `ed6c8ba`, an
 | Finding | Ours | Gap |
 |---|---|---|
 | Verify command (FLOW-011) | Each repo's CLAUDE.md has one; roadmap issues carry `## Verify`; orchestrator's "done-when is a command" | None |
-| `verify` skill (FLOW-013) | All three repos since 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81); each runs every check at once from a `verify.sh` in one Bash call and reports every failure | None |
+| `verify` skill (FLOW-013) | All three repos since 2026-10-12 (osrs-tracker/osrs-tracker-web#235, osrs-tracker/osrs-tracker-api#139, osrs-tracker/osrs-tracker-aws#81), and osrs-tracker-packages since 2026-10-18; each runs every check at once from a `verify.sh` in one Bash call and reports every failure | None |
 | Evidence (FLOW-015) | Compact instructions keep verify results; global CLAUDE.md "Reporting work": name the verify command and its result | Doesn't ask to show the output |
 | Stuck (FLOW-021) | `handoff` skill: state, dead ends, `/clear`; global CLAUDE.md: stop after two failed fixes | None |
 | Plan mode (FLOW-006–009) | `defaultMode: auto`; Opus at `high` for research; `showClearContextOnPlanAccept: true` | None |
