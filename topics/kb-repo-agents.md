@@ -615,9 +615,9 @@ Both are workflow plus command, not repo subagents. For a solo repo where every 
 ## [REPO-021] Browser or visual checker to keep screenshots out of the main context
 - Type: pattern
 - Applies to: Claude Code
-- Confidence: unverified
-- Last verified: 2026-10-14
-- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline), local test in osrs-tracker-web 2026-10-12 (osrs-tracker/osrs-tracker-web#223), local transcripts 2026-10-13 to 10-14; [wshobson ui-visual-validator](https://github.com/wshobson/agents)
+- Confidence: single-source
+- Last verified: 2026-10-18
+- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline), local test in osrs-tracker-web 2026-10-12 (osrs-tracker/osrs-tracker-web#223), local transcripts 2026-10-13 to 10-18 (FreekMencke/claude-kb#101); [wshobson ui-visual-validator](https://github.com/wshobson/agents)
 - Related: template T3, TOK-043, REPO-053
 
 **Purpose:** run a Playwright check and return a short report (pass or fail, failed requests, console errors, screenshot paths). Screenshots stay in the subagent's context.
@@ -627,19 +627,18 @@ Both are workflow plus command, not repo subagents. For a solo repo where every 
 | Setting | Value |
 |---|---|
 | Trigger | The repo skill's "browser check" step: after visible or request-changing work, and after a deploy |
-| Tools | Read plus Playwright tools named per tool, no Bash. The live agent's own `mcpServers` server (since 2026-10-13) gives it all its tools anyway, so `disallowedTools` blocks `browser_run_code_unsafe` and `browser_file_upload` (REPO-053) |
+| Tools | Read plus Playwright tools named per tool, no Bash. An own `mcpServers` server gives it all that server's tools anyway, so `disallowedTools` blocks `browser_run_code_unsafe` and `browser_file_upload` (REPO-053) |
 | Model | Sonnet 5.5 at `medium`: following a checklist doesn't need Opus |
 
 **Why it helps.** Each screenshot costs up to about 4,784 tokens on Claude 4.7 and later (1,568 on older models) and is re-read on every later turn of the session that took it (TOK-043, TOK-009). A subagent pays for screenshots once, in a context that is thrown away.
 
-**No official precedent;** community `ui-visual-validator` agents are generic. Interim measurement (osrs-tracker/osrs-tracker-web#223), own-app screenshots in main sessions:
-- 2026-10-07 to 10-11: about 23 a day (and 43 page loads). 2026-10-12: 3.
-- 2026-10-13: 32, plus 13 re-reads of the agent's, from sessions needing hover, keys or `browser_evaluate`.
-- osrs-tracker/osrs-tracker-web@8143bea added those tools and banned re-reads. 2026-10-14 11:47 to 14:30 UTC: 8 agent runs, 0 main-session page loads, screenshots or re-reads. Too short to call; the 2026-10-15 to 10-26 count follows in FreekMencke/claude-kb#101.
+**No official precedent;** community `ui-visual-validator` agents are generic. Measured in osrs-tracker-web (FreekMencke/claude-kb#101), own-app screenshots in main sessions:
+- 2026-10-07 to 10-11: about 23 a day. 2026-10-13: 32, plus 13 re-reads of the agent's, from sessions needing hover, keys or `browser_evaluate`.
+- After osrs-tracker/osrs-tracker-web@8143bea added those tools and banned re-reads, 2026-10-14 11:47 to 10-18 16:10 UTC: **28 agent runs, 0 screenshots, 0 re-reads**; the 8 page loads left weren't visual checks.
 
 **Constraints:**
 - With the plugin's tools there is one shared browser: run one checker at a time. An own `--isolated` server in `mcpServers` lifts that, but loads only once the agent file's folder is trusted (REPO-007).
-- The subagent can't send files to the user; the caller sends the saved screenshot.
+- The caller, not the subagent, sends screenshots to the user.
 
 Template: template T3.
 
@@ -1479,7 +1478,7 @@ Scope: `osrs-tracker-web` as inspected on 2026-10-12 (REPO-001 to REPO-004). Whe
 Done, through roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-tracker/osrs-tracker-web/issues/220), and now in the repos themselves:
 - Changes 1 and 4, done 2026-10-12: `conventions-reviewer` follows T1 in all three repos (osrs-tracker/osrs-tracker-web#221, osrs-tracker/osrs-tracker-api#134, osrs-tracker/osrs-tracker-aws#75).
 - Change 2, done 2026-10-13: fresh-context bug review is the built-in `/code-review high`, run beside `conventions-reviewer` in release step 2, not T2 (osrs-tracker/osrs-tracker-web#222). REPO-015, REPO-048, ORCH-039.
-- Change 3, landed 2026-10-12: `browser-checker` (T3; osrs-tracker/osrs-tracker-web#223, closed early on 2026-10-14 on interim numbers). The final count, of own-app and re-read screenshots rather than raw images over 2026-10-15 to 10-26, is due from 2026-10-27 and before the baseline transcripts expire about 2026-11-06, on #223 and FreekMencke/claude-kb#101 (a reminder in osrs-tracker-web's auto memory). REPO-021, TOK-043.
+- Change 3, done 2026-10-12: `browser-checker` (T3; osrs-tracker/osrs-tracker-web#223). Final count 2026-10-18 (FreekMencke/claude-kb#101): after osrs-tracker/osrs-tracker-web@8143bea, 28 agent runs and no own-app screenshots or re-reads in main sessions. REPO-021, TOK-043.
 - Change 5, done 2026-10-12: the review step of `parallel-code-orchestrator` spawns repo agents without `model` (ORCH-003, REPO-026).
 - Change 6, done 2026-10-12: the cloud routine "osrs-tracker weekly docs drift" runs `refresh-md-files` over each week's merged PRs in all three repos, cloning FreekMencke/claude-skills for the skill (SKILL-060) and using `gh api` (ORCH-017). REPO-018.
 
