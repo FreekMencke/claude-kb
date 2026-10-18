@@ -1,0 +1,16 @@
+# Weekly PRs bumping the actions in .github/workflows/, including the third-party ones pinned by SHA in deploy.yml
+# (GHA-012): Dependabot sends no security alerts for SHA pins, so these PRs are how their fixes arrive. No auto-merge:
+# merging a bump to mcp-server.yml or deploy.yml runs MCP server CI on main and then the CD workflow, which deploys,
+# so review those like any server change (mcp-server/README.md).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    # No local actions in .github/actions/, so the workflows are all there is
+    directories: [/]
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      github-actions:
+        patterns: ['*']
