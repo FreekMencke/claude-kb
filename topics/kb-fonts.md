@@ -34,7 +34,7 @@ Research basis:
 | Is UFO 4 out? Which source format should I use? | No: UFO 3 (published March 2012) is current, UFO 4 is "In development" with no date, and fontTools 4.67.0 reads UFO 1 to 3. Use UFO 3 masters plus a designspace 5 file; Glyphs files convert through glyphsLib. | FONT-001, FONT-002 |
 | How do I compile-check a `.fea` file? | `fonttools feaLib -o /tmp/out.ttf features.fea font.ttf`: exit 1 with the file, line and column on a syntax error or a glyph missing from the font. No `--lazy` option. It needs a compiled font with the same glyph names. | FONT-010, FONT-009 |
 | Do I write `kern` and `mark` by hand? | No: ufo2ft writes `kern`, `mark`, `mkmk`, `curs` and `GDEF` from kerning groups and anchors, and skips any feature `features.fea` already defines. Mark the spot with `# Automatic Code` to mix both. Hand-write `liga`, `case`, `ss01`, `tnum`. | FONT-005, FONT-009 |
-| Should I hint the fonts? | Static TTF: ttfautohint (1.8.4; fontmake `--autohint` runs it on TTFs only); static OTF: AFDKO's `otfautohint`, which replaced psautohint in AFDKO 4.0.0. Variable fonts: leave unhinted (Google Fonts' advice), with `gasp` 0x000F and a minimal `prep` from `gftools fix-nonhinting`. | FONT-011, FONT-012, FONT-013 |
+| Should I hint the fonts? | Static TTF: ttfautohint (1.8.4; fontmake `--autohint` runs it on TTFs only); static OTF: `afdko otfautohint` (the bare `otfautohint` wrapper is deprecated since AFDKO 5.0.0), which replaced psautohint in AFDKO 4.0.0. Variable fonts: leave unhinted (Google Fonts' advice), with `gasp` 0x000F and a minimal `prep` from `gftools fix-nonhinting`. | FONT-011, FONT-012, FONT-013 |
 | Font Bakery or Fontspector, and how do I run it in CI? | Fontspector 1.9.0 (2026-10-09), "a Rust port of fontbakery"; Font Bakery's last release is 1.1.0 (2025-10-02) and Google Fonts now uses Fontspector. Profile `universal` (default; includes the `opentype` checks) unless submitting to Google Fonts. In CI: `fonttools/setup-fontspector`; it exits 1 on FAIL by default (`-e warn` to fail on warnings too). | FONT-014, FONT-015 |
 | Which files should a release ship? | Static OTF and TTF, a variable TTF named `Family[wght].ttf`, and WOFF2 for the web, each format in its own folder. WOFF (1) isn't needed: WOFF2 is Baseline since 2016. Keep statics next to the VF for desktop apps and tools that can't read a VF. | FONT-016 |
 | How do I set a font's version? | UFO `versionMajor` and `versionMinor`: ufo2ft writes `head.fontRevision` and name ID 5 "Version 1.000" from them, zero-padding the minor to three digits, so minor `3` is 1.003, not 1.3. Keep both fields equal; Fontspector fails a mismatch over 1/2000. | FONT-017 |
@@ -326,7 +326,7 @@ AFDKO's equivalent is now `afdko makeotf` or `afdko addfeatures`: 5.0.0 (2026-03
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-10-18
 - Sources: [ttfautohint manual](https://freetype.org/ttfautohint/doc/ttfautohint.html), [ttfautohint 1.8.4 tarball (NEWS)](https://download.savannah.gnu.org/releases/freetype/ttfautohint-1.8.4.tar.gz), [ttfautohint-py on PyPI](https://pypi.org/project/ttfautohint-py/), [fontmake font_project.py at v3.12.2](https://github.com/googlefonts/fontmake/blob/v3.12.2/Lib/fontmake/font_project.py), [AFDKO NEWS](https://github.com/adobe-type-tools/afdko/blob/develop/NEWS.md), [GF guide: statics](https://googlefonts.github.io/gf-guide/statics.html)
 - Related: FONT-012, FONT-013, FONT-017
 
@@ -339,7 +339,9 @@ Autohint static TTFs with ttfautohint and static OTFs with AFDKO's `otfautohint`
 
 **In fontmake**, `--autohint` runs ttfautohint on static TTFs only, never on OTFs or variable fonts.
 
-**OTF:** AFDKO 4.0.0 (2023-09-11): "The Python port of psautohint was (re)integrated into the AFDKO repository as 'otfautohint'", and psautohint development stopped. Run `otfautohint Family-Regular.otf` after the build; AFDKO 5.0.1 (2026-05-18) still fixes it.
+**OTF:** AFDKO 4.0.0 (2023-09-11): "The Python port of psautohint was (re)integrated into the AFDKO repository as 'otfautohint'", and psautohint development stopped. Run `afdko otfautohint Family-Regular.otf` after the build; AFDKO 5.0.1 (2026-05-18) still fixes it. AFDKO 5.0.0 (2026-03-22) deprecated the bare wrappers, which "work silently" unless `AFDKO_WRAPPER_MODE=warn` (FONT-010).
+
+Tested 2026-10-18, AFDKO 5.0.1, with that variable: `otfautohint` warned it "will be removed in the next major version after March 2027" and "should now be run as "afdko otfautohint [options]""; `afdko otfautohint` gave the same tables apart from `head`.
 
 **When to skip it:** the same Google Fonts page says if ttfautohint "results look poor on Windows browsers, it's better to release the fonts unhinted" (FONT-013 for the `gasp` value). Variable fonts: FONT-012.
 
@@ -413,26 +415,35 @@ For a family not bound for Google Fonts, run `universal`. 1.9.0's release notes 
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-17
-- Sources: [setup-fontspector](https://github.com/fonttools/setup-fontspector), [Fontspector USING.md](https://github.com/fonttools/fontspector/blob/main/USING.md), [googlefonts-project-template build.yaml](https://github.com/googlefonts/googlefonts-project-template/blob/main/.github/workflows/build.yaml), [googlefonts-project-template Makefile](https://github.com/googlefonts/googlefonts-project-template/blob/main/Makefile)
+- Last verified: 2026-10-18
+- Sources: [setup-fontspector](https://github.com/fonttools/setup-fontspector), [Fontspector USING.md](https://github.com/fonttools/fontspector/blob/main/USING.md), [configuration.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-cli/src/configuration.rs), [context.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-checkapi/src/context.rs), [status.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-checkapi/src/status.rs), [args.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-cli/src/args.rs), [googlefonts-project-template build.yaml](https://github.com/googlefonts/googlefonts-project-template/blob/main/.github/workflows/build.yaml), [googlefonts-project-template Makefile](https://github.com/googlefonts/googlefonts-project-template/blob/main/Makefile)
 - Related: FONT-014, FONT-008, GHA-009
 
 Install with `fonttools/setup-fontspector` and let the exit code gate the job:
 
 ```yaml
-- uses: fonttools/setup-fontspector@main   # pin a SHA in practice
+- uses: fonttools/setup-fontspector@main   # README's ref; pin a SHA (GHA-009)
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 - run: fontspector -p universal --succinct --ghmarkdown report.md fonts/ttf/*.ttf fonts/variable/*.ttf
 ```
 
-**Exit code:** `-e, --error-code-on <STATUS>`: "Threshold for emitting process error code 1. (default: fail)", values `skip`, `pass`, `info`, `warn`, `fail`, `error`. So FAIL and ERROR fail the job and WARN doesn't; `-e warn` makes warnings fail too. Tested 2026-10-17, 1.9.0: exit 1 on fonts with FAILs, with and without `-e warn`.
+**Exit code:** `-e, --error-code-on <STATUS>`: "Threshold for emitting process error code 1. (default: fail)", so FAIL and ERROR fail the job and WARN doesn't; `-e warn` makes warnings fail too. Tested 2026-10-17, 1.9.0: exit 1 on fonts with FAILs, with and without `-e warn`.
 
-**Reports:** `--json`, `--csv`, `--ghmarkdown` (for a job summary or PR comment), `--html`, `--badges <dir>`. `--skip-network` skips checks that query servers; `--configuration` takes a TOML file whose `[[overrides]]` change a check's status, for accepting a known FAIL.
+**Reports:** `--json`, `--csv`, `--ghmarkdown` (for a job summary or PR comment), `--html`, `--badges <dir>`. `--skip-network` skips checks that query servers.
 
-**The template doesn't gate:** its `make test` ends in `|| echo '::warning …'` and its workflow step has `continue-on-error: true`, so Google Fonts' template reports and never fails. Drop both to make QA a gate. It checks `fonts/variable` if there is one, else `fonts/ttf`.
+**Accepting a known FAIL:** `--configuration` takes a TOML or JSON file with one flat `overrides` list of `{code, status, reason}`. Every check gets the whole list and matches on the result code alone, so an override applies to that code in every check; only a profile scopes one to a check (1.9.0 source).
 
-The action's README suggests `@main`; pin it to a commit SHA with a version comment (GHA-009).
+```toml
+[[overrides]]
+code = "missing-rupee"
+status = "INFO"
+reason = "Latin-only font."
+```
+
+Tested 2026-10-18, Fontspector 1.9.0 Linux binary: overridden results read "… (Overriden: <reason>)" in `--json` and drop out of `--succinct` output and the exit code. INFO overrides are missing from `--ghmarkdown`, which `-l/--loglevel` (default `warn`) filters.
+
+**The template doesn't gate:** its `make test` ends in `|| echo '::warning …'` and its workflow step has `continue-on-error: true`, so it reports and never fails; drop both to gate. It checks `fonts/variable` if there is one, else `fonts/ttf`.
 
 ## [FONT-016] Release layout: which formats, folders and file names
 - Type: recommendation
@@ -668,12 +679,12 @@ Verify with the tools (FONT-007, FONT-010, FONT-014) and a proof, and judge shap
 
 ## Recommendations for our setup
 
-Ranked by impact against effort. Checked 2026-10-17 against local checkouts of osrs-tracker-web and freek-mencke-web, and of our typeface project (private): five UFO masters and a designspace 5 file built with fontmake 3.12 into nine static OTF (`otfautohint`) and TTF (ttfautohint through `--autohint`) weights and an unhinted variable TTF, with WOFF and WOFF2 re-encoded from them unsubset and every feature kept. It has its own glyph checks and no Fontspector run or CI. Both sites self-host one variable WOFF2 of it (39,520 and 50,600 bytes, `font-weight: 300 700` and `100 700`), with `font-display: block`, a `crossorigin` preload and a `?v=` query string; neither subsets it or has fallback metric overrides.
+Ranked by impact against effort. Checked 2026-10-17 against local checkouts of osrs-tracker-web and freek-mencke-web, and of our typeface project (private), whose part was updated 2026-10-18: five UFO masters and a designspace 5 file built with fontmake 3.12 into nine static OTF (`afdko otfautohint`) and TTF (ttfautohint `-n` through `--autohint`) weights and an unhinted variable TTF, `Family[wght].ttf` and `.woff2` as FONT-016 names them, with WOFF2 re-encoded unsubset and every feature kept (WOFF 1 dropped). The build runs `fonttools varLib.interpolatable` on the designspace before fontmake and Fontspector `universal` before packaging, gating on FAIL; there is still no CI. Its README gives a metric-matched Arial fallback computed with Capsize's `createFontStack` (FONT-022), and its changelog follows Keep a Changelog 2.0.0 (DOC-001). Both sites self-host one variable WOFF2 of it (39,520 and 50,600 bytes, `font-weight: 300 700` and `100 700`), with `font-display: block`, a `crossorigin` preload and a `?v=` query string; neither subsets it or has fallback metric overrides.
 
-1. **Run Fontspector's `universal` profile and `varLib.interpolatable` in the typeface build** (FONT-014, FONT-015, FONT-007, FONT-017, FONT-013). The family's checks look at outlines; nothing checks the compiled tables (version fields, `gasp`, name records, metrics). Add both to the build script first; a CI job later. Opened as an issue in the typeface repo (private, so not linked here).
+1. Done 2026-10-18: the typeface build runs `varLib.interpolatable` and Fontspector `universal`, gating on FAIL; a CI job is a later step there (FONT-014, FONT-015, FONT-007, FONT-017, FONT-013).
 2. **Decision: keep fontmake; don't move the typeface to fontc 1.0.0** (FONT-003, FONT-004). fontc can build only the variable font, and drops the designspace 5 labels the family uses for STAT. Re-check when fontc#837 and fontc#717 close.
-3. **Done: statics and OTF next to the VF; the VF unhinted; statics autohinted** (FONT-011, FONT-012, FONT-016). The build already matches Google Fonts' advice, and the satori OG cards need the static TTFs. Before releasing, confirm the VF's `gasp` is `0x000F` (FONT-013); recommendation 1's check covers it.
-4. **Rule: when a site's font is re-cut, keep its features** (FONT-019, FONT-006, FONT-023). If a narrowed or subset copy is made with `pyftsubset`, pass `--layout-features='*'`: the defaults drop `tnum` and `case`, which the family documents and osrs-tracker-web uses (`tabular-nums`). The 232-glyph Latin-1 font gains little from `unicode-range` slicing (FONT-020).
+3. **Done: statics and OTF next to the VF; the VF unhinted; statics autohinted** (FONT-011, FONT-012, FONT-016). The build already matches Google Fonts' advice, and the satori OG cards need the static TTFs. The VF had no `gasp` or `prep`; since 2026-10-18 the build writes `gasp` `{0xFFFF: 0x000F}` and gftools' `prep` (FONT-012, FONT-013), and Fontspector's `smart_dropout` passes.
+4. **Rule: when a site's font is re-cut, keep its features** (FONT-019, FONT-006, FONT-023). If a narrowed or subset copy is made with `pyftsubset`, pass `--layout-features='*'`: the defaults drop `tnum` and `case`, which the family documents and osrs-tracker-web uses (`tabular-nums`). The 229-glyph Latin-1 font gains little from `unicode-range` slicing (FONT-020).
 5. **Decision: keep `font-display: block` with the preload for now** (FONT-021, FONT-022). The one file is small, same-origin and preloaded, so the block period is short, and `block` never swaps, so it adds no CLS. `swap` would need a metric-matched fallback, and Safari ignores the vertical overrides. Revisit if field data appears (WEB-010) or the font grows; then switch to `swap` with a fallback generated from the font's metrics.
 6. **Won't do: an OFL-style RFN review** (FONT-018). The family isn't under the OFL.
 
