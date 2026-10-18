@@ -26,7 +26,7 @@ Research basis:
 | Is `pull_request_target` still dangerous, and what changed? | Yes if it runs PR code. Since 2025-12-08 it always runs the default branch's workflow; checkout refuses fork code (2026-07-20); the cache is read-only for it (2026-06-26); public repos block it by default from 2026-11-02. | GHA-017, GHA-018, GHA-021 |
 | Can an untrusted run poison the Actions cache? | Not the default branch's scope from `pull_request_target`, `issue_comment` or `workflow_run` since 2026-06-26, unless the workflow sets `cache-mode: write`. Release jobs still shouldn't restore shared caches. | GHA-019, GHA-024 |
 | How do I avoid script injection? | Never put `${{ github.event.* }}` text in `run:`; pass it through `env:` and quote `"$VAR"`. Redaction of secrets is best effort. | GHA-020 |
-| Which workflow linter should be a required check? | zizmor (pinning, injection, permissions, triggers, cache poisoning), with `advanced-security: false` so findings fail the job; actionlint as a cheap second. Scorecard and harden-runner aren't PR gates. | GHA-023 |
+| Which workflow linter should be a required check? | zizmor (pinning, injection, permissions, triggers, cache poisoning), with `advanced-security: false` so findings fail the job; actionlint as a cheap second. Scorecard and harden-runner aren't PR gates. First-rollout findings and inline ignores: GHA-025. | GHA-023, GHA-025 |
 | How should CI handle agent PRs that push often? | Cancel superseded PR runs by `head_ref`, never deploys; cache dependencies; skip work with a changes job and an `if: always()` aggregate job as the one required check. | GHA-008 |
 
 ## Index
@@ -57,6 +57,7 @@ Research basis:
 | GHA-022 | npm trusted publishing: the workflow side | recommendation | npm, trusted-publishing, oidc, provenance |
 | GHA-023 | Workflow linters and hardening tools: zizmor, actionlint, CodeQL, harden-runner, Scorecard | comparison | zizmor, actionlint, codeql, harden-runner, scorecard |
 | GHA-024 | Incidents 2024–2026 and the control that would have stopped each | fact | incidents, tj-actions, ultralytics, tanstack, supply-chain |
+| GHA-025 | Rolling out zizmor: the findings every repo gets, and inline ignores | pattern | zizmor, artipacked, dependabot-cooldown, dangerous-triggers, inline-ignores |
 
 ## [GHA-001] Runner labels on 2026-10-17, and `ubuntu-latest` moving to Ubuntu 26.04
 - Type: fact
@@ -546,7 +547,7 @@ GitHub's "Publishing Node.js packages" tutorial still uses `secrets.NPM_TOKEN` w
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [zizmor audits](https://docs.zizmor.sh/audits/), [zizmor usage: exit codes](https://docs.zizmor.sh/usage/), [zizmor-action README](https://github.com/zizmorcore/zizmor-action), [actionlint checks](https://github.com/rhysd/actionlint/blob/main/docs/checks.md), [CodeQL queries for Actions](https://docs.github.com/en/code-security/reference/code-scanning/codeql/codeql-queries/actions-built-in-queries), [harden-runner README](https://github.com/step-security/harden-runner), [scorecard-action README](https://github.com/ossf/scorecard-action)
-- Related: GHA-009, GHA-019, GHA-020, GHA-002, HOOK-004
+- Related: GHA-009, GHA-019, GHA-020, GHA-002, HOOK-004, GHA-025
 
 | Tool (latest) | Checks | As a PR gate |
 |---|---|---|
@@ -558,7 +559,7 @@ GitHub's "Publishing Node.js packages" tutorial still uses `secrets.NPM_TOKEN` w
 
 Which to require: zizmor, the only one covering pinning, injection, permissions, triggers and cache poisoning together, with actionlint beside it for syntax and ShellCheck. Scorecard runs on a schedule; harden-runner in audit mode shows egress.
 
-To keep `actions/*` on tags, zizmor's documented config: `rules: unpinned-uses: config: policies: {"actions/*": ref-pin}`.
+To keep `actions/*` on tags, zizmor's documented config: `rules: unpinned-uses: config: policies: {"actions/*": ref-pin}`. What it finds in a first rollout, and how to handle each: GHA-025.
 
 ## [GHA-024] Incidents 2024–2026 and the control that would have stopped each
 - Type: fact
@@ -578,6 +579,28 @@ From GitHub's advisories and the affected projects' postmortems:
 
 The pattern: a privileged trigger runs untrusted code, and a cache or token carries it across. GitHub's 2026-07-28 post on compromised credentials pushing malicious workflows names no incident.
 
+## [GHA-025] Rolling out zizmor: the findings every repo gets, and inline ignores
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-18
+- Sources: [zizmor audits](https://docs.zizmor.sh/audits/), [zizmor configuration: ignoring results](https://docs.zizmor.sh/usage/#ignoring-results), [osrs-tracker-web zizmor pilot](https://github.com/osrs-tracker/osrs-tracker-web/pull/367), [claude-kb rollout](https://github.com/FreekMencke/claude-kb/issues/229)
+- Related: GHA-023, GHA-012, GHA-013, GHA-017, GHA-008
+
+Two rollouts (osrs-tracker/osrs-tracker-web#367, FreekMencke/claude-kb#229) got the same findings: fix most, and ignore the deliberate ones inline, one line at a time.
+
+| Finding | Handle it |
+|---|---|
+| `artipacked` on a checkout without `persist-credentials: false` | add it; a checkout that pushes with a deploy key keeps it, with an inline ignore |
+| `dependabot-cooldown` | `cooldown: default-days: 7` per ecosystem; security updates skip cooldowns |
+| `excessive-permissions`, no `permissions:` block | `contents: read` at the top (GHA-013) |
+| `dangerous-triggers` on a `workflow_run` deploy | inline ignore when its `if:` admits only same-repo pushes; moving CD into CI is a redesign |
+| `self-repository` on `uses: ./...` | inline ignore while actionlint runs too: it rejects `$/...` |
+
+An inline ignore is `# zizmor: ignore[<audit>]` on the flagged line, with the reason in a comment beside it. Don't list a bare file under `rules.<audit>.ignore` in `.github/zizmor.yml`: that ignores that audit's findings in it "regardless of line/column location", later ones too, and a `file.yml:line` entry drifts when lines move.
+
+Tested 2026-10-18, zizmor 1.31.1 and actionlint 1.7.12 via `uvx`: the first four on this repo's workflows; `self-repository` fires on `uses: ./.github/actions/a`, and actionlint fails `uses: $/.github/actions/a` with "invalid format because ref is missing".
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-tracker-web, osrs-tracker-api, osrs-tracker-aws, freek-mencke-web, claude-skills and this repo. None of them uses `pull_request_target` or assumes an AWS role through OIDC, and the deploy workflows already run only for same-repo `push` runs (GHA-018).
@@ -586,7 +609,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 2. **Before 2026-10-19, expect `ubuntu-latest` to become 26.04** (GHA-001). Three repos run the image's ShellCheck, which goes from 0.9.0 to 0.11.0. If a ShellCheck step fails during the migration window, fix the new findings; pin `ubuntu-24.04` only as a stopgap. Nothing to change before then, so no issue.
 3. **Move off `node20` majors** (GHA-003, GHA-004): claude-skills' workflows still use checkout and setup-node v4 and show the forced-to-Node-24 annotation. FreekMencke/claude-skills#80.
 4. **Dependabot's `github-actions` ecosystem wherever actions are pinned, covering `/.github/actions/*`, and full SHAs for every third-party action** (GHA-009, GHA-012, JSUP-012): osrs-tracker/osrs-tracker-aws#146, FreekMencke/claude-skills#80, FreekMencke/claude-kb#201.
-5. **zizmor as a required check**, with `advanced-security: false`, its `version` input pinned (it defaults to `latest`), and `unpinned-uses` at `ref-pin` for `actions/*` to match decision 6; actionlint beside it later (GHA-023). Pilot: osrs-tracker/osrs-tracker-web#353, which then opens one issue per other repo.
+5. **zizmor as a required check**, with `advanced-security: false`, its `version` input pinned (it defaults to `latest`), and `unpinned-uses` at `ref-pin` for `actions/*` to match decision 6; actionlint beside it later (GHA-023). Pilot: osrs-tracker/osrs-tracker-web#353, which then opens one issue per other repo; this repo: FreekMencke/claude-kb#229.
 6. **Decision: `actions/*` stay on major tags, third-party actions on full SHAs with a version comment.** GitHub-owned majors received checkout's security backport through the tag (GHA-004, GHA-017), setup-node's releases are immutable, and the tj-actions chain was third-party (GHA-024). Revisit if the SHA-pinning policy is turned on.
 7. **Won't do now: workflow lockfiles** (GHA-010). Public preview since 2026-10-14, pre-1.0 with a schema change between releases, an open report of a fork-only commit passing verification, unreadable to zizmor until its 1.32, and not tested here. Revisit when zizmor reads `actions.lock` or the preview ends.
 8. **When a repo first assumes an AWS role from Actions**: a `sub` with an exact branch or environment, the immutable format for repos created after 2026-07-15, and a rename or transfer treated as a trust-policy change (GHA-015, GHA-016, INFRA-020).

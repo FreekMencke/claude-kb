@@ -259,6 +259,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | GHA-022 | npm trusted publishing: the workflow side | recommendation | npm, trusted-publishing, oidc, provenance |
 | GHA-023 | Workflow linters and hardening tools: zizmor, actionlint, CodeQL, harden-runner, Scorecard | comparison | zizmor, actionlint, codeql, harden-runner, scorecard |
 | GHA-024 | Incidents 2024–2026 and the control that would have stopped each | fact | incidents, tj-actions, ultralytics, tanstack, supply-chain |
+| GHA-025 | Rolling out zizmor: the findings every repo gets, and inline ignores | pattern | zizmor, artipacked, dependabot-cooldown, dangerous-triggers, inline-ignores |
 
 ## GitHub through `gh` and the API: issues, rulesets, releases, Copilot cloud agent (`topics/kb-github.md`, GH)
 
