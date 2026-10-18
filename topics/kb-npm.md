@@ -218,19 +218,21 @@ Doc conflicts: `npm login`'s page still says it creates "a legacy token of `publ
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Trusted publishing for npm packages](https://docs.npmjs.com/trusted-publishers), [npm trust docs v12](https://docs.npmjs.com/cli/v12/commands/npm-trust), [GitHub changelog 2025-07-31](https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available), [2026-09-03](https://github.blog/changelog/2026-09-03-multiple-trusted-publishing-configurations-for-npm), [2026-09-30](https://github.blog/changelog/2026-09-30-opt-in-dist-tag-permissions-for-npm-trusted-publishing), [2026-10-02](https://github.blog/changelog/2026-10-02-unvalidated-npm-trusted-publishing-configurations-now-expire)
+- Last verified: 2026-10-18
+- Sources: [Trusted publishing for npm packages](https://docs.npmjs.com/trusted-publishers), [npm trust docs v12](https://docs.npmjs.com/cli/v12/commands/npm-trust), [npm/cli `trust-cmd.js`](https://github.com/npm/cli/blob/latest/lib/trust-cmd.js), [GitHub changelog 2025-07-31](https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available), [2026-09-03](https://github.blog/changelog/2026-09-03-multiple-trusted-publishing-configurations-for-npm), [2026-09-30](https://github.blog/changelog/2026-09-30-opt-in-dist-tag-permissions-for-npm-trusted-publishing), [2026-10-02](https://github.blog/changelog/2026-10-02-unvalidated-npm-trusted-publishing-configurations-now-expire)
 - Related: NPM-010, NPM-011, NPM-012
 
 Trusted publishing lets a CI workflow publish with a short-lived OIDC token instead of a stored npm token. Registry side (workflow side: `kb-github-actions.md`):
 - **Versions:** "npm CLI version 11.5.1 or later and Node version 22.14.0 or higher".
 - **Providers:** GitHub Actions (GitHub-hosted runners), GitLab.com shared runners, CircleCI cloud. "Self-hosted runners are not currently supported".
-- **Configuration** (package settings, or `npm trust` from npm 11.15.0 with interactive 2FA): owner, repository, workflow filename ("only the filename"), optional environment. `repository.url` in `package.json` "must exactly match your GitHub repository". Up to 10 per package; replace rather than edit them; npm doesn't check them when saved.
+- **Configuration** (package settings, or `npm trust` from npm 11.15.0 with 2FA): owner, repository, workflow filename ("only the filename"), optional environment. `repository.url` in `package.json` "must exactly match your GitHub repository". Up to 10 per package; replace rather than edit them; npm doesn't check them when saved.
 - **First publish within 2 days**, or the configuration expires (since 2026-10-02).
 - **Allowed actions:** "`npm stage publish` is always allowed"; direct `npm publish` and `npm dist-tag` are separate opt-ins (dist-tag needs npm 11.21.0 or 12.2.0). Configurations created after 2026-09-03 stage only unless you tick publish; those from before 2026-05-20 allow `npm publish` only.
 - **Reusable workflows:** "validation checks the calling workflow's name".
 - **Events:** the 2026-10-02 changelog says npm rejects OIDC tokens from `issue_comment` "alongside the existing pull_request_target restriction"; the docs mention neither.
 - Provenance is automatic for a public package from a public repo (not on CircleCI).
+
+**Non-interactive `npm trust`:** `npm trust github <pkg> … --allow-stage-publish --otp=<code> -y` works without a prompt; one OTP covered four calls (npm 11.19.0, 2026-10-18). The page doesn't list `--otp`; the command sends it through npm's `otplease` (`trust-cmd.js`).
 
 Then set publishing access to "Require two-factor authentication and disallow tokens": tokens stop working, trusted publishers don't. Doc conflict: the trusted-publishers page says "up to 10" three times, matching the 2026-09-03 changelog, but its "Managing" section and the `npm trust` page still say one per package. Trust 10.
 
@@ -238,8 +240,8 @@ Then set publishing access to "Require two-factor authentication and disallow to
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Staged publishing for npm packages](https://docs.npmjs.com/staged-publishing), [npm stage docs v12](https://docs.npmjs.com/cli/v12/commands/npm-stage), [GitHub changelog 2026-05-22](https://github.blog/changelog/2026-05-22-staged-publishing-and-new-install-time-controls-for-npm), [2026-07-28](https://github.blog/changelog/2026-07-28-npm-publish-time-malware-scanning-and-dual-use-metadata), [2026-09-18](https://github.blog/changelog/2026-09-18-stage-only-npm-tokens-for-safer-automation), [2026-10-02](https://github.blog/changelog/2026-10-02-npm-staged-publishing-now-supports-creating-new-packages)
+- Last verified: 2026-10-18
+- Sources: [Staged publishing for npm packages](https://docs.npmjs.com/staged-publishing), [npm stage docs v12](https://docs.npmjs.com/cli/v12/commands/npm-stage), [npm/cli `npm-stage.md`](https://raw.githubusercontent.com/npm/cli/latest/docs/lib/content/commands/npm-stage.md), [GitHub changelog 2026-05-22](https://github.blog/changelog/2026-05-22-staged-publishing-and-new-install-time-controls-for-npm), [2026-07-28](https://github.blog/changelog/2026-07-28-npm-publish-time-malware-scanning-and-dual-use-metadata), [2026-09-18](https://github.blog/changelog/2026-09-18-stage-only-npm-tokens-for-safer-automation), [2026-10-02](https://github.blog/changelog/2026-10-02-npm-staged-publishing-now-supports-creating-new-packages)
 - Related: NPM-008, NPM-009, NPM-011
 
 `npm stage publish` uploads the tarball to a queue instead of releasing it: "A maintainer must then review and explicitly approve the staged package — with two-factor authentication". It needs "npm CLI … 11.15.0 or later and Node version 22.14.0 or higher", publish access and 2FA on the account; staging itself "does not require 2FA". Generally available since 2026-05-22.
@@ -249,6 +251,8 @@ What it combines with:
 - **Stage-only tokens** (2026-09-18): "npm rejects direct npm publish attempts with that token, even if you've configured it to bypass 2FA". They can still move dist-tags and deprecate versions. This is npm's path for token-based CI before bypass-2FA tokens lose direct publish in January 2027.
 - **New packages** (2026-10-02): `npm stage publish` can create a package; the first version waits for approval, with a public `0.0.0-stage` placeholder meanwhile.
 - **Malware scanning** (2026-07-28): every publish is scanned before it becomes installable, "typically around five minutes", sometimes 15 or more, and a staged version can be approved only after its scan. Automation that installs a version right after publishing must wait.
+
+**Like `npm publish`.** `npm stage publish [<package-spec>]` with no argument "packs the current working directory", and the page says it "has parity with `npm publish`" only about refusing `"private": true`. It doesn't say it runs lifecycle scripts, but it does: `prepublishOnly`, then `prepack`, so a package that builds in `prepublishOnly` needs no separate build step before staging. Tested 2026-10-18, npm 11.19.0, Node 24.21.0: `npm stage publish --dry-run` in a scratch package ran both scripts, then printed "(staged)"; the same held in osrs-tracker-packages' `packages/logger`.
 
 `npm stage list`, `view`, `approve` and `reject` need an interactive login; OIDC can't approve.
 
@@ -276,7 +280,7 @@ What it combines with:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-10-18
 - Sources: [Generating provenance statements](https://docs.npmjs.com/generating-provenance-statements), [Introducing npm package provenance (GitHub blog, 2023-04-19)](https://github.blog/security/supply-chain-security/introducing-npm-package-provenance/), [GitHub changelog 2023-07-25](https://github.blog/changelog/2023-07-25-publishing-with-npm-provenance-from-private-source-repositories-is-no-longer-supported/), [npm audit docs v12](https://docs.npmjs.com/cli/v12/commands/npm-audit), [npm/cli `verify-signatures.js`](https://github.com/npm/cli/blob/latest/lib/utils/verify-signatures.js), [TanStack postmortem](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem), [Snyk on the TanStack compromise](https://snyk.io/blog/tanstack-npm-packages-compromised)
 - Related: NPM-009, NPM-011, NPM-013
 
@@ -286,7 +290,7 @@ What it combines with:
 
 **Checking it.** `npm audit signatures` verifies the installed tree's registry signatures (npm 8.15.0+) and provenance attestations (9.5.0+). In npm's code it exits 1 on an invalid signature or attestation, or a missing registry signature, but not on missing provenance ("not all packages have provenance"). So it detects tampering between registry and disk, not malicious packages. The "Viewing package provenance" page says missing attestations return an error; the code doesn't.
 
-Our `@osrs-tracker/*` packages carry none: they are published by hand (`npm view @osrs-tracker/hiscores@4.2.0 dist` shows signatures and no attestations, 2026-10-17). Since 2026-10-18 they are published from osrs-tracker-packages, still by hand, and the first release from there carries none either (`npm view @osrs-tracker/hiscores@6.0.0 dist`, 2026-10-18).
+Our `@osrs-tracker/*` packages carry none: they are published by hand (`npm view @osrs-tracker/hiscores@4.2.0 dist` shows signatures and no attestations, 2026-10-17). The first releases from osrs-tracker-packages (2026-10-18) were by hand too and carry none (`npm view @osrs-tracker/<pkg> dist.attestations` empty for models 3.0.0, hiscores 6.0.0, logger 0.3.0 and express-metrics 0.2.0, 2026-10-18). Since 2026-10-18 that repo's Publish workflow stages them over trusted publishing (osrs-tracker/osrs-tracker-packages#14), so each package carries provenance from its next release; nothing had been staged by 2026-10-18. Once one is approved, check `npm view @osrs-tracker/<pkg>@<version> dist` for an `attestations` field and record it here.
 
 ## [NPM-013] `npm audit` in CI: what it checks and how to gate it
 - Type: recommendation
@@ -498,9 +502,9 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 1. **Approve the install scripts that npm 12 will block, in the two repos that lack them** (NPM-004, NPM-005, NPM-007). Opened FreekMencke/freek-mencke-web#18 (esbuild, lmdb, msgpackr-extract and @parcel/watcher approved, unrs-resolver denied, as osrs-tracker-web does) and osrs-tracker/osrs-tracker-aws#145 (esbuild and mongodb-memory-server in `lambda/` and `@osrs-tracker/models`). osrs-tracker-api's lock and this repo's `mcp-server/` lock have only the macOS-only `fsevents`, so they need nothing.
    Update 2026-10-18: osrs-tracker/osrs-tracker-aws#145 is closed, and the packages moved to osrs-tracker-packages, whose root `package.json` approves `mongodb-memory-server@11.3.0` in `allowScripts`.
 2. **User action, after 1: `strict-allow-scripts=true` and `allow-scripts=@anthropic-ai/claude-code` in `~/.npmrc` on the dev machine** (NPM-004, NPM-007, NPM-021). On npm 11.16 and later, any local install, `npx` or `-g` install that would run an unreviewed dependency script then fails instead of running it, in every repo and every worktree; the second line keeps a global npm install of Claude Code working. Tested on npm 11.19.0 through a scratch user npmrc. CI is unaffected (it doesn't read `~/.npmrc`), and so is Dependabot, which passes `--ignore-scripts`.
-3. **User action: set the four `@osrs-tracker/*` packages' publishing access to "Require two-factor authentication and disallow tokens"** (NPM-008, NPM-011). They're published by hand with `npm publish --otp=<code>` (the `## Publishing` section of osrs-tracker-packages' repo skill; osrs-tracker-aws's PACKAGES.md until 2026-10-18), which that setting allows ("they must publish interactively"); it stops any granular token, leaked or forgotten, from publishing. Check the current setting first on npmjs.com; it isn't visible from outside.
+3. **User action: set the four `@osrs-tracker/*` packages' publishing access to "Require two-factor authentication and disallow tokens"** (NPM-008, NPM-011). They're staged from osrs-tracker-packages' Publish workflow over trusted publishing and approved with 2FA, with `npm publish --otp=<code>` by hand as the fallback (the `## Publishing` section of osrs-tracker-packages' repo skill). The setting allows both: trusted publishers can still stage (NPM-009), and by hand "they must publish interactively"; it stops any granular token, leaked or forgotten, from publishing. Check the current setting first on npmjs.com; it isn't visible from outside.
 4. **Re-approve pins in the dependency PR that bumps them** (NPM-007): esbuild, lmdb and @parcel/watcher move often, and nothing (Dependabot included) does it automatically. Already the habit in osrs-tracker-web (7fad45e); the two issues above say the same.
-5. **Won't do now: trusted or staged publishing for `@osrs-tracker/*`** (NPM-009, NPM-010, NPM-011). Releases are rare, manual and 2FA-protected, so OIDC buys provenance (NPM-012) and little else. Revisit if releases move to CI (osrs-tracker-packages' CLAUDE.md: "Publishing stays manual, with an OTP"): then stage-only trusted publishing from osrs-tracker-packages' workflow, approved with 2FA, not direct publish.
+5. Done 2026-10-18: `@osrs-tracker/*` stage-publish from osrs-tracker-packages' Publish workflow (`workflow_dispatch` from `main`) over trusted publishers that allow stage publish only, approved on npm with 2FA (osrs-tracker/osrs-tracker-packages#14; NPM-009, NPM-010, NPM-012).
 6. **Won't do now: ESM-only `@osrs-tracker/*`** (NPM-014, NPM-015). They dual-publish with one shared `.d.ts` and no `type` field, and every consumer works: the Lambdas bundle them with esbuild, and osrs-tracker-api compiles with TypeScript `module: commonjs`, which would need checking against an ESM-only package first. Revisit at a package's next major; run publint and attw on its tarball then.
    Update 2026-10-18: the majors released that day from osrs-tracker-packages (models 3.0.0, hiscores 6.0.0, logger 0.3.0, express-metrics 0.2.0) stayed dual (`dist/cjs`, `dist/esm`, `dist/types`). That repo's CI now packs each package and loads it with both `require` and `import`.
 7. **Won't do now: npm 12 in CI before a Node release bundles it** (NPM-001). Dependabot's own npm is 11.19.0 and npm 12 support is an open request there, so lockfiles would be written by two majors. Revisit when Node 27 ships with npm 12 (alpha from 2026-10-28) or a Dependabot changelog names npm 12.
