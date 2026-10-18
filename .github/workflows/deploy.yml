@@ -4,8 +4,9 @@ run-name: ${{ github.event.workflow_run.display_title }}
 
 # Deploys the MCP server once its CI (mcp-server.yml) passes on main: builds and pushes the image, then commits its
 # digest to mcp-server/claude-kb-mcp.yaml on main. Flux in the cluster applies that commit and reports it as the
-# `Flux / sync` commit status; nothing here has cluster access. Copied from freek-mencke-web's CD; rolling back:
-# "Deploy" in mcp-server/README.md.
+# `Flux / sync` commit status; nothing here has cluster access. The digest commit is pushed with the DEPLOY_KEY deploy
+# key, which bypasses main's ruleset (a pull request and the `check-kb` check). Copied from freek-mencke-web's CD;
+# rolling back: "Deploy" in mcp-server/README.md.
 on:
   workflow_run:
     workflows: ['MCP server CI']
@@ -27,11 +28,10 @@ jobs:
     concurrency:
       group: deploy
       cancel-in-progress: false
-    # contents: write to push the digest commit (main has no branch protection). The token is only given to the steps
-    # that need it; the build runs inside Docker, which doesn't see it.
+    # Read-only: the digest commit is pushed with the deploy key, since main's ruleset would refuse the token's push
     permissions:
       actions: read
-      contents: write
+      contents: read
       statuses: read
     env:
       IMAGE: freekmencke/claude-kb-mcp
@@ -77,12 +77,13 @@ jobs:
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ steps.plan.outputs.sha }}
 
-      # Checked out only now, with credentials to push
+      # Checked out only now, so the key isn't on disk while the image builds
       - if: steps.plan.outputs.deploy == 'true'
         uses: actions/checkout@v7
         with:
           ref: main
           path: .deploy
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - id: commit
         if: steps.plan.outputs.deploy == 'true'
