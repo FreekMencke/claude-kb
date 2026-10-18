@@ -356,7 +356,7 @@ Claude Code's docs say only "Give URLs for documentation and API references". co
 
 Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-tracker-web, osrs-tracker-api, freek-mencke-web and claude-skills: all three apps are on ESLint 10, Vitest 5 and TypeScript 6.0, Angular 22 or NestJS 12; npm updates are by hand in web and freek-mencke-web and grouped minor-and-patch in api; none auto-merges Dependabot PRs.
 
-1. **Add JSUP-002's check to `angular-conventions`' `## Upgrades` section** (high impact, low effort): an existing repo's `npm install -D typescript@latest` only warns, and `npm ci` passes Angular's optional peer, so the rule should be "after any bump, `npm ls --all` exits 0", not "npm refuses". It was [a comment](https://github.com/FreekMencke/claude-skills/issues/79#issuecomment-6239623606) on FreekMencke/claude-skills#79, which closed 2026-10-18 without it (FreekMencke/claude-skills#86); now [FreekMencke/claude-skills#94](https://github.com/FreekMencke/claude-skills/issues/94). (JSUP-002, NG-010)
+1. Done 2026-10-18: `angular-conventions`' `## Upgrades` section says `npm ls --all` must exit 0 after any dependency bump, since npm only warns on an overridden peer (FreekMencke/claude-skills#94, FreekMencke/claude-skills#95; JSUP-002, NG-010).
 2. Done 2026-10-18: the global CLAUDE.md's pull-request section resolves `package-lock.json` conflicts with `npm install --package-lock-only` (JSUP-011, JSUP-010).
 3. **For NestJS 13, start from `nest upgrade --dry-run`** after updating the global CLI, instead of the old hand-run npm-check-updates flow (JSUP-003). Nothing to change before then.
 4. **Keep Dependabot's default 3-day cooldown**; no config needed. Revisit only if a compromised release slips through (JSUP-012).
