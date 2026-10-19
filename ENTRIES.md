@@ -230,6 +230,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | FONT-022 | Fallback metric overrides and `font-size-adjust`: what's Baseline | fact | size-adjust, ascent-override, font-size-adjust, cls |
 | FONT-023 | Variable-font and OpenType-feature CSS: use the high-level properties | recommendation | variable-fonts, font-weight, font-variation-settings, font-variant-numeric |
 | FONT-024 | What Claude can and can't do in type design | fact | claude, type-design, fea, glif |
+| FONT-025 | Straight edges in whole-unit outlines: nodes and handles on whole steps | pattern | outlines, glif, rounding, masters |
 
 ## GitHub Actions: changes and hardening (`topics/kb-github-actions.md`, GHA)
 
