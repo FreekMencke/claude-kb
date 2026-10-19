@@ -5,7 +5,7 @@ Prefix `FONT`. This file covers building a font family from sources with the fon
 instancer, gftools builder), OpenType feature code, hinting and the `gasp` table, QA with Fontspector, release
 layout, version fields and the OFL, and serving the fonts on the web: WOFF2, subsetting, `unicode-range`,
 `font-display`, preload, fallback metric overrides, variable-font CSS and OpenType features in CSS. It ends with what
-Claude can and can't do in type design. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
+Claude can and can't do in type design, and with keeping straight edges straight in whole-unit outlines. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
 DESIGN-020, DESIGN-032 to DESIGN-035); LCP and CLS measurement is in `kb-web-analytics-seo.md` (WEB-010, WEB-011).
 
 Research basis:
@@ -25,6 +25,9 @@ Research basis:
 - Our setup was read on 2026-10-17 from local checkouts of osrs-tracker-web and freek-mencke-web, and of our own
   typeface project, which is private and described here only as a pattern: a family with nine static weights and a
   variable font built from UFO sources.
+- FONT-025 was added 2026-10-19 from outline work on that project. Its sources were read raw: ufo-spec's
+  `versions/ufo3/glyphs/glif.md` (branch `gh-pages`), the `glyf` spec page, and ufo2ft v3.9.1's `__init__.py` and
+  `outlineCompiler.py`.
 
 ## Quick answers
 
@@ -44,6 +47,7 @@ Research basis:
 | Are `size-adjust` and `ascent-override` Baseline? | `size-adjust` yes (widely available since 2023-09-18, Safari 17). `ascent-override`, `descent-override` and `line-gap-override` no: not in Safari. `font-size-adjust` is newly available since 2024-07-25 (web-features 3.43.0). | FONT-022 |
 | `font-weight` range or `font-variation-settings` for a variable font? | `font-weight: 100 900` in `@font-face`, then plain `font-weight`. `font-variation-settings` only for axes with no property; it overrides `font-weight` and must repeat every axis. Likewise `font-variant-numeric: tabular-nums` over `font-feature-settings: "tnum"`. | FONT-023 |
 | Can Claude do type design? | It edits the text sources well: `.fea`, designspace XML, `.glif` anchors and build configs (Haiku 5.5 did all three probe tasks correctly for $0.02). It can script outlines derived from existing ones, but not draw new letterforms well; a person judges every outline at large size. | FONT-024 |
+| Why does a straight edge bend slightly after a script edits it? | Builds round to whole units (TrueType `glyf` is integer; ufo2ft rounds CFF to tolerance 0.5), and short handles rounded off the line turn by up to about 14°. Put every node and handle on whole steps (a, b) of the edge's direction, two steps per curve, and turn the next curve's first handle into the line. | FONT-025 |
 
 ## Index
 
@@ -73,6 +77,7 @@ Research basis:
 | FONT-022 | Fallback metric overrides and `font-size-adjust`: what's Baseline | fact | size-adjust, ascent-override, font-size-adjust, cls |
 | FONT-023 | Variable-font and OpenType-feature CSS: use the high-level properties | recommendation | variable-fonts, font-weight, font-variation-settings, font-variant-numeric |
 | FONT-024 | What Claude can and can't do in type design | fact | claude, type-design, fea, glif |
+| FONT-025 | Straight edges in whole-unit outlines: nodes and handles on whole steps | pattern | outlines, glif, rounding, masters |
 
 ## [FONT-001] Source formats: UFO 3 is current, UFO 4 isn't published, Glyphs files go through glyphsLib
 - Type: fact
@@ -664,7 +669,7 @@ All of these are Baseline widely available. A feature only works if the served f
 - Confidence: single-source
 - Last verified: 2026-10-17
 - Sources: [VecGlypher (arXiv 2602.21461, CVPR 2026)](https://arxiv.org/abs/2602.21461), [fontmake 3.12.2 test data](https://github.com/googlefonts/fontmake/tree/v3.12.2/tests/data)
-- Related: FONT-001, FONT-007, FONT-010, DESIGN-007
+- Related: FONT-001, FONT-007, FONT-010, FONT-025, DESIGN-007
 
 Claude is useful on a type project's text: feature code, designspace and UFO XML, build scripts and checks. It doesn't draw letterforms well.
 
@@ -677,6 +682,25 @@ Claude is useful on a type project's text: feature code, designspace and UFO XML
 
 Verify with the tools (FONT-007, FONT-010, FONT-014) and a proof, and judge shapes yourself.
 
+## [FONT-025] Straight edges in whole-unit outlines: nodes and handles on whole steps
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-19
+- Sources: [UFO 3 glif spec](https://unifiedfontobject.org/versions/ufo3/glyphs/glif/), [OpenType `glyf` table](https://learn.microsoft.com/en-us/typography/opentype/spec/glyf), [ufo2ft 3.9.1 `__init__.py`](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/__init__.py)
+- Related: FONT-007, FONT-024
+
+A straight edge drawn as curves, to stay compatible with masters where it bends, is exactly straight in whole units only when every node and handle sits on a whole step of its direction. Those points lie (a, b) apart: the direction divided by its greatest common divisor.
+
+**Why whole units:** a `.glif` point's `x` and `y` may be "integer or float", but builds round them. TrueType `glyf` stores coordinates as "uint8 or int16", and ufo2ft rounds CFF outlines too: "By default, all floats are rounded to integer (tolerance 0.5)". A 2-unit handle rounded 0.5 units off its line turns by about 14°.
+
+**How:** give each curve at least two steps, so a whole-unit point lies inside it, and put its handles there. An edge of n curves needs 2n steps, so a short edge takes a nearby direction with a smaller step. Where the edge runs into a curve, turn that curve's first handle into the edge's line.
+
+**Tested 2026-10-19 on our typeface project (fontTools 4.67.0, ufo2ft 3.9.1):**
+- A counter's tip in a drawn Bold had bends of 12° and 18°, with nodes up to 0.7 units off the line. On lines of step (−4, 5) and (5, 3) every bend went to 0°, and the outline moved at most 0.71 units.
+- The tip copied, scaled, into the derived Black and rounded got 8–10° bends back.
+- A first fix there moved a node 1.4 units across the edge. The edge then turned about 2° against the curve beyond it, and the designer saw it as a dip.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Checked 2026-10-17 against local checkouts of osrs-tracker-web and freek-mencke-web, and of our typeface project (private), whose part was updated 2026-10-18: five UFO masters and a designspace 5 file built with fontmake 3.12 into nine static OTF (`afdko otfautohint`) and TTF (ttfautohint `-n` through `--autohint`) weights and an unhinted variable TTF, `Family[wght].ttf` and `.woff2` as FONT-016 names them, with WOFF2 re-encoded unsubset and every feature kept (WOFF 1 dropped). The build runs `fonttools varLib.interpolatable` on the designspace before fontmake and Fontspector `universal` before packaging, gating on FAIL; there is still no CI. Its README gives a metric-matched Arial fallback computed with Capsize's `createFontStack` (FONT-022), and its changelog follows Keep a Changelog 2.0.0 (DOC-001). Both sites self-host one variable WOFF2 of it (39,520 and 50,600 bytes, `font-weight: 300 700` and `100 700`), with `font-display: block`, a `crossorigin` preload and a `?v=` query string; neither subsets it or has fallback metric overrides.
@@ -687,6 +711,7 @@ Ranked by impact against effort. Checked 2026-10-17 against local checkouts of o
 4. **Rule: when a site's font is re-cut, keep its features** (FONT-019, FONT-006, FONT-023). If a narrowed or subset copy is made with `pyftsubset`, pass `--layout-features='*'`: the defaults drop `tnum` and `case`, which the family documents and osrs-tracker-web uses (`tabular-nums`). The 229-glyph Latin-1 font gains little from `unicode-range` slicing (FONT-020).
 5. **Decision: keep `font-display: block` with the preload for now** (FONT-021, FONT-022). The one file is small, same-origin and preloaded, so the block period is short, and `block` never swaps, so it adds no CLS. `swap` would need a metric-matched fallback, and Safari ignores the vertical overrides. Revisit if field data appears (WEB-010) or the font grows; then switch to `swap` with a fallback generated from the font's metrics.
 6. **Won't do: an OFL-style RFN review** (FONT-018). The family isn't under the OFL.
+7. Done 2026-10-19: in the typeface's sources, the straight edges into one counter tip (Bold, and its derived Black) sit on whole-unit lines, by a script the derivation reruns (FONT-025).
 
 ## Open questions
 
