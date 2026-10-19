@@ -5,7 +5,7 @@ Prefix `FONT`. This file covers building a font family from sources with the fon
 instancer, gftools builder), OpenType feature code, hinting and the `gasp` table, QA with Fontspector, release
 layout, version fields and the OFL, and serving the fonts on the web: WOFF2, subsetting, `unicode-range`,
 `font-display`, preload, fallback metric overrides, variable-font CSS and OpenType features in CSS. It ends with what
-Claude can and can't do in type design, keeping straight edges straight in whole-unit outlines, and deriving and repairing extrapolated Thin and Black weights. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
+Claude can and can't do in type design, keeping straight edges straight in whole-unit outlines, deriving and repairing extrapolated Thin and Black weights, and keeping joins and smooth nodes smooth across masters and static instances. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
 DESIGN-020, DESIGN-032 to DESIGN-035); LCP and CLS measurement is in `kb-web-analytics-seo.md` (WEB-010, WEB-011).
 
 Research basis:
@@ -34,6 +34,11 @@ Research basis:
   4.67.0 at the tag, the OpenType variations overview, Glyphs and LucasFonts tutorials, a TypeDrawers thread, the
   skia-pathops 0.9.2 and Speed Punk READMEs, scikit-image 0.26.0's `medial_axis`) were read raw. "Broken outline
   spots" and "visible or growing problems" are that audit's two worst classes.
+- FONT-034 to FONT-036 were added 2026-10-19 (following FreekMencke/claude-kb#240) from that test's sixth round, which
+  edited & in the drawn Light and Regular. Glyphs' "Drawing good paths" and "Multiple Masters part 2", fontTools
+  4.67.0's `interpolatable.py`, fontmake 3.12.2's `__main__.py` and `font_project.py`, and the OpenType variations
+  overview were read raw. Tests ran fontTools 4.67.0, ufo2ft 3.9.1 and fontmake 3.12.2 on Python 3.12.3 (WSL2) against
+  the round's sources and the round before.
 
 ## Quick answers
 
@@ -52,7 +57,7 @@ Research basis:
 | Are `size-adjust` and `ascent-override` Baseline? | `size-adjust` yes (widely available since 2023-09-18, Safari 17). `ascent-override`, `descent-override` and `line-gap-override` no: not in Safari. `font-size-adjust` is newly available since 2024-07-25 (web-features 3.43.0). | FONT-022 |
 | `font-weight` range or `font-variation-settings` for a variable font? | `font-weight: 100 900` in `@font-face`, then plain `font-weight`. `font-variation-settings` only for axes with no property; it overrides `font-weight` and must repeat every axis. Likewise `font-variant-numeric: tabular-nums` over `font-feature-settings: "tnum"`. | FONT-023 |
 | Can Claude do type design? | It edits the text sources well: `.fea`, designspace XML, `.glif` anchors and build configs (Haiku 5.5 did all three probe tasks correctly for $0.02). It can script outlines derived from existing ones, but not draw new letterforms well; a person judges every outline at large size. | FONT-024 |
-| Why does a straight edge bend slightly after a script edits it? | Builds round to whole units (TrueType `glyf` is integer; ufo2ft rounds CFF to tolerance 0.5), and short handles rounded off the line turn by up to about 14°. Put every node and handle on whole steps (a, b) of the edge's direction, two steps per curve, and turn the next curve's first handle into the line. | FONT-025 |
+| Why does a straight edge bend slightly after a script edits it, or at an in-between weight? | Builds round to whole units (TrueType `glyf` is integer; ufo2ft rounds CFF to tolerance 0.5), and short handles rounded off the line turn by up to about 14°. Put every node and handle on whole steps (a, b) of the edge's direction, two steps per curve, turn the next curve's first handle into the line, and let that curve's curvature rise gently. Static instances round again however straight the masters are (up to 14° on a 5.7-unit handle); the variable font doesn't. | FONT-025, FONT-034, FONT-036 |
 | How do I derive a Thin or Black from drawn masters, and fix what breaks? | Extrapolate along measured stem width, not weight numbers (6–16 units off on average against under 1), and make them masters: a variable font clamps to its axis. At Thin set each stroke to Light × the stem ratio, then move whole strokes at collapsed joins. Keep later fixes in a recipe rerun after every derivation. A clean audit isn't enough: the master's own faults show as pinches and lumps, so judge filled, large renders beside it. | FONT-026, FONT-027, FONT-028, FONT-029, FONT-032 |
 
 ## Index
@@ -92,6 +97,9 @@ Research basis:
 | FONT-031 | Build a derived glyph the way it is drawn: ¢ as c plus a bar | pattern | outlines, boolean, union, compatibility |
 | FONT-032 | Judge derived weights filled and large, beside the nearest master | recommendation | proofing, review, symmetry, extrapolation |
 | FONT-033 | Measure stroke width two ways: inscribed disc and rays square to the edge | pattern | stroke-width, medial-axis, measurement, outlines |
+| FONT-034 | A straight edge into a curve: continue the edge with the first handle, then let the curvature rise gently | pattern | outlines, curvature, g2, joins |
+| FONT-035 | A smooth node needs one handle ratio in every master, or the weights between kink | pattern | interpolation, kinks, masters, interpolatable |
+| FONT-036 | Static instances round every point: short handles on straight edges bend at in-between weights | fact | static-instances, rounding, fontmake, cff |
 
 ## [FONT-001] Source formats: UFO 3 is current, UFO 4 isn't published, Glyphs files go through glyphsLib
 - Type: fact
@@ -860,6 +868,55 @@ Next to a stroke-end cut the disc runs past the end, since the cut mustn't limit
 - &'s loop keeps Light's taper from 53 to 47 units over 150 units into its crossing; the discs read 0.97–1.03 of the target there.
 - The rebuilt 9 tapered to 21 units at the baseline where Light × k gives 27, set from discs next to the cut. The designer saw it; keeping the width from just before the cut fixed it.
 
+## [FONT-034] A straight edge into a curve: continue the edge with the first handle, then let the curvature rise gently
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [Glyphs, Drawing good paths](https://glyphsapp.com/learn/drawing-good-paths), [Speed Punk README](https://github.com/yanone/speedpunk/blob/master/README.md)
+- Related: FONT-025, FONT-032, FONT-035
+
+A straightened edge (FONT-025) with the next curve's first handle on its line meets that curve without a corner, but not yet smoothly. The edge has no curvature, and if the curve bunches its two handles together it makes its whole turn in a short stretch: a knee. Lay the curve out so its first handle continues the edge and its curvature rises from near zero to a modest peak; where the edge leaves too little room, end it a step earlier.
+
+Glyphs on a bump at a join: it vanishes when "the two curves have the same curvature where they meet each other" ("G2"). Speed Punk shows it: "If you see a jump in the curvature illustration, curvature is discontinuous." At a cubic's start the curvature is ⅔·d/h², h the first handle's length and d the second handle's distance from the edge's line: a long first handle and a second handle near the line start gently.
+
+**Tested 2026-10-19 on our typeface project**, &'s loop counter, the curve from the tip's straight right edge into the bowl:
+- Straightened, Regular's edge ran into a curve whose two handles sat almost on top of each other: a curvature peak of 24.6 (1000/radius: a 41-unit radius), against about 10 in Light and Bold.
+- A search over whole-unit layouts ended the edge one step earlier (13 units in Light), its first handle on the edge's line: peak 8.0 (radius 125). The designer approved it.
+
+## [FONT-035] A smooth node needs one handle ratio in every master, or the weights between kink
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-19
+- Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible), [fontTools 4.67.0 `varLib/interpolatable.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/interpolatable.py)
+- Related: FONT-007, FONT-025, FONT-034, FONT-036
+
+A smooth node, its handles in line, can be smooth in every master and still kink in the weights between: interpolation moves each point on its own, so the node "knows nothing of the handles next to it" (Glyphs). Glyphs names the three conditions that together make a kink: "three points in line to form a smooth connection, angles are different in the masters, ratios between the points are different". Remove one: no triplet, the same angle in every master (horizontal or vertical extremes), or "the last resort: keep the distance ratio between the points the same".
+
+`fonttools varLib.interpolatable` (FONT-007) checks for kinks, but at its defaults (`--tolerance 0.95`, `--kinkiness 0.5`) only where the midway weight turns more than about 12° (it skips when `abs(sin_mid) * (tolerance * kinkiness) <= t`, t = 0.1) and the first handle's share of the two differs by 0.1 or more, whatever the kinkiness (2:1 against 3:1 never counts). Raise `--kinkiness`, but below 10: "if kinkiness >= 10: kinkiness *= 0.01".
+
+**Tested 2026-10-19 on our typeface project (fontTools 4.67.0)**, &'s loop counter, node 27:
+- Light and Bold split its handles 2:1, Regular 3.5:1 (and bent 3.8° there); the node's direction differs by up to 11.5°.
+- Regular made exactly smooth with 3.5:1 kept: the weights between still bent up to 1.6°. At 2:1: 0.0°.
+- `interpolatable` at defaults reported nothing either way. `--kinkiness 5` flagged node 27 before the fix and not after, and four other nodes that are slight corners (2–6°) in a master: a list to review, not a gate.
+
+## [FONT-036] Static instances round every point: short handles on straight edges bend at in-between weights
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-19
+- Sources: [fontmake 3.12.2 `__main__.py`](https://github.com/googlefonts/fontmake/blob/v3.12.2/Lib/fontmake/__main__.py), [OpenType variations overview](https://learn.microsoft.com/en-us/typography/opentype/spec/otvaroverview), [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
+- Related: FONT-016, FONT-025, FONT-035
+
+A static weight between masters is interpolated, then rounded to whole units, so an edge that is exactly straight in every master (FONT-025) bends again where its handles are short. fontmake leaves instances unrounded unless asked (`--round-instances`: "Apply integer rounding to all geometry when interpolating"), but compiling rounds them: TrueType stores integers, and for CFF "By default, all floats are rounded to integer (tolerance 0.5); 0 disables rounding" (`--cff-round-tolerance`). Glyphs: after rounding "tiny sub-unit kinks will be hard to avoid", up to "0.707 units". Each point moves up to that far, so a handle h units long can turn by up to about atan(1.4/h): 14° at 5.7 units, 8° at 10.
+
+A variable font isn't rounded that way: the OpenType spec "has no other requirements for instance coordinates, scaled deltas or derived instance values to be rounded".
+
+**Tested 2026-10-19 on our typeface project** (ufo2ft 3.9.1's `Instantiator`, which fontmake 3.12.2 uses), &'s loop counter, its tip's edges on whole-unit lines in every master:
+- Unrounded, its smooth nodes bend at most 0.3° at any static weight. Rounded: up to 7.1° at ExtraLight and Medium, 5.8° at SemiBold, 14.0° at ExtraBold, on handles 5.7–8.3 units long.
+- SemiBold compiled to OTF with `roundTolerance=0` kept 146 of &'s 160 coordinates fractional, the default none. Its file size and hinting: not tested.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Checked 2026-10-17 against local checkouts of osrs-tracker-web and freek-mencke-web, and of our typeface project (private), whose part was updated 2026-10-18: five UFO masters and a designspace 5 file built with fontmake 3.12 into nine static OTF (`afdko otfautohint`) and TTF (ttfautohint `-n` through `--autohint`) weights and an unhinted variable TTF, `Family[wght].ttf` and `.woff2` as FONT-016 names them, with WOFF2 re-encoded unsubset and every feature kept (WOFF 1 dropped). The build runs `fonttools varLib.interpolatable` on the designspace before fontmake and Fontspector `universal` before packaging, gating on FAIL; there is still no CI. Its README gives a metric-matched Arial fallback computed with Capsize's `createFontStack` (FONT-022), and its changelog follows Keep a Changelog 2.0.0 (DOC-001). Both sites self-host one variable WOFF2 of it (39,520 and 50,600 bytes, `font-weight: 300 700` and `100 700`), with `font-display: block`, a `crossorigin` preload and a `?v=` query string; neither subsets it or has fallback metric overrides.
@@ -871,6 +928,7 @@ Ranked by impact against effort. Checked 2026-10-17 against local checkouts of o
 5. **Decision: keep `font-display: block` with the preload for now** (FONT-021, FONT-022). The one file is small, same-origin and preloaded, so the block period is short, and `block` never swaps, so it adds no CLS. `swap` would need a metric-matched fallback, and Safari ignores the vertical overrides. Revisit if field data appears (WEB-010) or the font grows; then switch to `swap` with a fallback generated from the font's metrics.
 6. **Won't do: an OFL-style RFN review** (FONT-018). The family isn't under the OFL.
 7. Done 2026-10-19: in the typeface's sources, the straight edges into one counter tip (Bold, and its derived Black) sit on whole-unit lines, by a script the derivation reruns (FONT-025).
+8. Done 2026-10-19: the same tip in Light and Regular (and the derived Thin) is straightened too, the curve from its edge into the bowl relaid, and the node where Regular split its handles 3.5:1 now splits them 2:1 like Light and Bold (FONT-034, FONT-035).
 
 ## Open questions
 
@@ -883,3 +941,4 @@ Ranked by impact against effort. Checked 2026-10-17 against local checkouts of o
 - **How Google Fonts slices `unicode-range`** (FONT-020): no official page found (developers.google.com/fonts getting started, css2, technical considerations).
 - **Does `font-display: block` hold text for 3 s in Safari** (FONT-021)? web.dev describes Safari's default ("indefinitely"), not its `block` timing. Not tested.
 - **At Black, should the master's thinning into crossings be strengthened** (FONT-029)? At Thin it reads as a pinch and filling the widths fixed it; the Black counterpart wasn't tried.
+- **Should the typeface's in-between statics keep their straight edges** (FONT-036)? Rounding bends &'s smooth nodes up to 14° at ExtraBold. `--cff-round-tolerance 0` keeps the OTF statics' coordinates fractional, not the TTF's; straightening the instances in a recipe after interpolation would cover both. Neither tried; the designer's call.
