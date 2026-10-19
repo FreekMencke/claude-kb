@@ -35,7 +35,8 @@ Research basis:
   skia-pathops 0.9.2 and Speed Punk READMEs, scikit-image 0.26.0's `medial_axis`) were read raw. "Broken outline
   spots" and "visible or growing problems" are that audit's two worst classes.
 - FONT-034 to FONT-036 were added 2026-10-19 (following FreekMencke/claude-kb#240) from that test's sixth round, which
-  edited & in the drawn Light and Regular. Glyphs' "Drawing good paths" and "Multiple Masters part 2", fontTools
+  edited & in the drawn Light and Regular. FontLab 8's "Fixing the S problem" tutorial, the Glyphs 4 announcement,
+  Glyphs' "Multiple Masters part 2", fontTools
   4.67.0's `interpolatable.py`, fontmake 3.12.2's `__main__.py` and `font_project.py`, and the OpenType variations
   overview were read raw. Tests ran fontTools 4.67.0, ufo2ft 3.9.1 and fontmake 3.12.2 on Python 3.12.3 (WSL2) against
   the round's sources and the round before.
@@ -873,12 +874,12 @@ Next to a stroke-end cut the disc runs past the end, since the cut mustn't limit
 - Applies to: general
 - Confidence: single-source
 - Last verified: 2026-10-19
-- Sources: [Glyphs, Drawing good paths](https://glyphsapp.com/learn/drawing-good-paths), [Speed Punk README](https://github.com/yanone/speedpunk/blob/master/README.md)
+- Sources: [FontLab 8, PROJECT: Fixing the S problem](https://help.fontlab.com/fontlab/8/tutorials/calfonts/2.%20Honing/2c-0a%20PROJECT%20Fixing%20the%20S%20Problem/), [Glyphs 4 announcement (2026-07-27)](https://glyphsapp.com/news/glyphs-4-create-love-the-process)
 - Related: FONT-025, FONT-032, FONT-035
 
 A straightened edge (FONT-025) with the next curve's first handle on its line meets that curve without a corner, but not yet smoothly. The edge has no curvature, and if the curve bunches its two handles together it makes its whole turn in a short stretch: a knee. Lay the curve out so its first handle continues the edge and its curvature rises from near zero to a modest peak; where the edge leaves too little room, end it a step earlier.
 
-Glyphs on a bump at a join: it vanishes when "the two curves have the same curvature where they meet each other" ("G2"). Speed Punk shows it: "If you see a jump in the curvature illustration, curvature is discontinuous." At a cubic's start the curvature is ⅔·d/h², h the first handle's length and d the second handle's distance from the edge's line: a long first handle and a second handle near the line start gently.
+FontLab: "Kinks are to G1 continuity, as crimps are to G2 continuity"; it fixes a crimp by moving the handles beside the join, watching the curvature comb. Glyphs 4's star node makes the smooth transition "on curve-to-line transitions" too, but "technically expands the curve into the line segment, so pay extra attention if the straight line is very short". At a cubic's start the curvature is ⅔·d/h², h the first handle's length and d the second handle's distance from the edge's line: a long first handle and a second handle near the line start gently.
 
 **Tested 2026-10-19 on our typeface project**, &'s loop counter, the curve from the tip's straight right edge into the bowl:
 - Straightened, Regular's edge ran into a curve whose two handles sat almost on top of each other: a curvature peak of 24.6 (1000/radius: a 41-unit radius), against about 10 in Light and Bold.
