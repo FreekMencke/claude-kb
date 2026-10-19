@@ -231,6 +231,14 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | FONT-023 | Variable-font and OpenType-feature CSS: use the high-level properties | recommendation | variable-fonts, font-weight, font-variation-settings, font-variant-numeric |
 | FONT-024 | What Claude can and can't do in type design | fact | claude, type-design, fea, glif |
 | FONT-025 | Straight edges in whole-unit outlines: nodes and handles on whole steps | pattern | outlines, glif, rounding, masters |
+| FONT-026 | Place extrapolated masters by measured stem, not by weight number | recommendation | extrapolation, masters, designspace, stems |
+| FONT-027 | Derived thin weights: set stroke thickness first, then fix joins by moving whole strokes | pattern | extrapolation, thin, contrast, joins |
+| FONT-028 | Keep derived-weight fixes in a recipe and re-run it after every derivation | pattern | extrapolation, recipe, regeneration, masters |
+| FONT-029 | At extreme weights the master's small faults show | fact | extrapolation, crossings, counters, black |
+| FONT-030 | A stroke that passes under another is one stroke | pattern | outlines, crossings, centre-line, overlaps |
+| FONT-031 | Build a derived glyph the way it is drawn: ¢ as c plus a bar | pattern | outlines, boolean, union, compatibility |
+| FONT-032 | Judge derived weights filled and large, beside the nearest master | recommendation | proofing, review, symmetry, extrapolation |
+| FONT-033 | Measure stroke width two ways: inscribed disc and rays square to the edge | pattern | stroke-width, medial-axis, measurement, outlines |
 
 ## GitHub Actions: changes and hardening (`topics/kb-github-actions.md`, GHA)
 

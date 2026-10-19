@@ -5,7 +5,7 @@ Prefix `FONT`. This file covers building a font family from sources with the fon
 instancer, gftools builder), OpenType feature code, hinting and the `gasp` table, QA with Fontspector, release
 layout, version fields and the OFL, and serving the fonts on the web: WOFF2, subsetting, `unicode-range`,
 `font-display`, preload, fallback metric overrides, variable-font CSS and OpenType features in CSS. It ends with what
-Claude can and can't do in type design, and with keeping straight edges straight in whole-unit outlines. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
+Claude can and can't do in type design, keeping straight edges straight in whole-unit outlines, and deriving and repairing extrapolated Thin and Black weights. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
 DESIGN-020, DESIGN-032 to DESIGN-035); LCP and CLS measurement is in `kb-web-analytics-seo.md` (WEB-010, WEB-011).
 
 Research basis:
@@ -28,6 +28,12 @@ Research basis:
 - FONT-025 was added 2026-10-19 from outline work on that project. Its sources were read raw: ufo-spec's
   `versions/ufo3/glyphs/glif.md` (branch `gh-pages`), the `glyf` spec page, and ufo2ft v3.9.1's `__init__.py` and
   `outlineCompiler.py`.
+- FONT-026 to FONT-033 were added 2026-10-19 (FreekMencke/claude-kb#240) from that project's regeneration test, which
+  rebuilt Thin and Black from its three drawn masters in rounds reviewed by its designer, a reviewer subagent and an
+  outline audit. Its report and outline-repair skill are private; quoted sources (designspace spec and fontTools
+  4.67.0 at the tag, the OpenType variations overview, Glyphs and LucasFonts tutorials, a TypeDrawers thread, the
+  skia-pathops 0.9.2 and Speed Punk READMEs, scikit-image 0.26.0's `medial_axis`) were read raw. "Broken outline
+  spots" and "visible or growing problems" are that audit's two worst classes.
 
 ## Quick answers
 
@@ -41,13 +47,13 @@ Research basis:
 | Font Bakery or Fontspector, and how do I run it in CI? | Fontspector 1.9.0 (2026-10-09), "a Rust port of fontbakery"; Font Bakery's last release is 1.1.0 (2025-10-02) and Google Fonts now uses Fontspector. Profile `universal` (default; includes the `opentype` checks) unless submitting to Google Fonts. In CI: `fonttools/setup-fontspector`; it exits 1 on FAIL by default (`-e warn` to fail on warnings too). | FONT-014, FONT-015 |
 | Which files should a release ship? | Static OTF and TTF, a variable TTF named `Family[wght].ttf`, and WOFF2 for the web, each format in its own folder. WOFF (1) isn't needed: WOFF2 is Baseline since 2016. Keep statics next to the VF for desktop apps and tools that can't read a VF. | FONT-016 |
 | How do I set a font's version? | UFO `versionMajor` and `versionMinor`: ufo2ft writes `head.fontRevision` and name ID 5 "Version 1.000" from them, zero-padding the minor to three digits, so minor `3` is 1.003, not 1.3. Keep both fields equal; Fontspector fails a mismatch over 1/2000. | FONT-017 |
-| Does subsetting or converting an OFL font mean renaming it? | Only if it declares a Reserved Font Name: subsetting is modification ("Yes"), and WOFF compression of unchanged data isn't. Google Fonts wants no RFNs; the OFL FAQ encourages them. | FONT-018 |
-| Why did `pyftsubset` drop my `tnum` or `case`? | Its default keeps only `calt ccmp clig curs dnom frac kern liga locl mark mkmk numr rclt rlig rvrn` plus shaping features. Pass `--layout-features='*'` or `--layout-features+=tnum,case,ss01`. It also keeps only name IDs 0 to 6. | FONT-019 |
+| Why did `pyftsubset` drop my `tnum` or `case`, and does a subset OFL font need renaming? | Its default keeps only `calt ccmp clig curs dnom frac kern liga locl mark mkmk numr rclt rlig rvrn` plus shaping features: pass `--layout-features='*'` or `--layout-features+=tnum,case,ss01`. It also keeps only name IDs 0 to 6. Renaming only if the font declares a Reserved Font Name: subsetting is modification ("Yes"), WOFF compression of unchanged data isn't. Google Fonts wants no RFNs; the OFL FAQ encourages them. | FONT-019, FONT-018 |
 | Which `font-display`, and does it affect LCP and CLS? | `swap` or `optional` for body text; `block` hides text (up to about 3 s in Chromium and Firefox) and text in its block period doesn't count as rendered for LCP. `optional` plus preload avoids swap shifts; `swap` needs a metric-matched fallback. Preload only the critical file, with `crossorigin`. | FONT-021, FONT-020, FONT-022 |
 | Are `size-adjust` and `ascent-override` Baseline? | `size-adjust` yes (widely available since 2023-09-18, Safari 17). `ascent-override`, `descent-override` and `line-gap-override` no: not in Safari. `font-size-adjust` is newly available since 2024-07-25 (web-features 3.43.0). | FONT-022 |
 | `font-weight` range or `font-variation-settings` for a variable font? | `font-weight: 100 900` in `@font-face`, then plain `font-weight`. `font-variation-settings` only for axes with no property; it overrides `font-weight` and must repeat every axis. Likewise `font-variant-numeric: tabular-nums` over `font-feature-settings: "tnum"`. | FONT-023 |
 | Can Claude do type design? | It edits the text sources well: `.fea`, designspace XML, `.glif` anchors and build configs (Haiku 5.5 did all three probe tasks correctly for $0.02). It can script outlines derived from existing ones, but not draw new letterforms well; a person judges every outline at large size. | FONT-024 |
 | Why does a straight edge bend slightly after a script edits it? | Builds round to whole units (TrueType `glyf` is integer; ufo2ft rounds CFF to tolerance 0.5), and short handles rounded off the line turn by up to about 14°. Put every node and handle on whole steps (a, b) of the edge's direction, two steps per curve, and turn the next curve's first handle into the line. | FONT-025 |
+| How do I derive a Thin or Black from drawn masters, and fix what breaks? | Extrapolate along measured stem width, not weight numbers (6–16 units off on average against under 1), and make them masters: a variable font clamps to its axis. At Thin set each stroke to Light × the stem ratio, then move whole strokes at collapsed joins. Keep later fixes in a recipe rerun after every derivation. A clean audit isn't enough: the master's own faults show as pinches and lumps, so judge filled, large renders beside it. | FONT-026, FONT-027, FONT-028, FONT-029, FONT-032 |
 
 ## Index
 
@@ -78,6 +84,14 @@ Research basis:
 | FONT-023 | Variable-font and OpenType-feature CSS: use the high-level properties | recommendation | variable-fonts, font-weight, font-variation-settings, font-variant-numeric |
 | FONT-024 | What Claude can and can't do in type design | fact | claude, type-design, fea, glif |
 | FONT-025 | Straight edges in whole-unit outlines: nodes and handles on whole steps | pattern | outlines, glif, rounding, masters |
+| FONT-026 | Place extrapolated masters by measured stem, not by weight number | recommendation | extrapolation, masters, designspace, stems |
+| FONT-027 | Derived thin weights: set stroke thickness first, then fix joins by moving whole strokes | pattern | extrapolation, thin, contrast, joins |
+| FONT-028 | Keep derived-weight fixes in a recipe and re-run it after every derivation | pattern | extrapolation, recipe, regeneration, masters |
+| FONT-029 | At extreme weights the master's small faults show | fact | extrapolation, crossings, counters, black |
+| FONT-030 | A stroke that passes under another is one stroke | pattern | outlines, crossings, centre-line, overlaps |
+| FONT-031 | Build a derived glyph the way it is drawn: ¢ as c plus a bar | pattern | outlines, boolean, union, compatibility |
+| FONT-032 | Judge derived weights filled and large, beside the nearest master | recommendation | proofing, review, symmetry, extrapolation |
+| FONT-033 | Measure stroke width two ways: inscribed disc and rays square to the edge | pattern | stroke-width, medial-axis, measurement, outlines |
 
 ## [FONT-001] Source formats: UFO 3 is current, UFO 4 isn't published, Glyphs files go through glyphsLib
 - Type: fact
@@ -701,6 +715,151 @@ A straight edge drawn as curves, to stay compatible with masters where it bends,
 - The tip copied, scaled, into the derived Black and rounded got 8–10° bends back.
 - A first fix there moved a node 1.4 units across the edge. The edge then turned about 2° against the curve beyond it, and the designer saw it as a dip.
 
+## [FONT-026] Place extrapolated masters by measured stem, not by weight number
+- Type: recommendation
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [Glyphs, Multiple Masters part 1](https://glyphsapp.com/learn/multiple-masters-part-1-setting-up-masters), [LucasFonts, Interpolation theory](https://www.lucasfonts.com/learn/interpolation-theory), [designspace XML spec, fontTools 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Doc/source/designspaceLib/xml.rst), [fontTools 4.67.0 `varLib/models.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/models.py), [OpenType variations overview](https://learn.microsoft.com/en-us/typography/opentype/spec/otvaroverview), [TypeDrawers, How extreme do you make your light and bold masters (2018)](https://typedrawers.com/discussion/comment/35730)
+- Related: FONT-002, FONT-007, FONT-027, FONT-028
+
+To derive a Thin or Black from drawn masters, extrapolate along measured stem width (the `n` stem at half the x-height), not the weight numbers: those are labels, the stems are what grows.
+
+Designers place masters this way. Glyphs: "Many designers like to pick the approximate stroke width for their weight axis." De Groot: "all I want to know are the desired stem weights". A designspace `<map>` turns each "user space coordinate" (the weight number) into a "designspace coordinate", which can be the stem.
+
+fontTools' `VariationModel` extrapolates only "If the extrapolate argument is set to True". A variable font never does: the OpenType spec says to "Force the user-scale coordinate value to be in range by clamping", so 100 and 900 must be masters before `wght` reaches them. How far extrapolation holds depends on the masters: one designer on TypeDrawers can "add or subtract 10 - 20 units" with "pretty solid results".
+
+**Tested 2026-10-19 with our outline-repair scripts (fontTools version not recorded):**
+- On a test family with real ExtraLight and Black weights, extrapolating by weight number missed them by 6–16 units on average (43 at worst); by stem, under 1 on average.
+- On our typeface project, pick the target stem by deriving at a few and counting broken outline spots: Black at stem 153 had 38 in 14 glyphs, at 145 19 in 7, with even steps Bold → ExtraBold → Black (×1.11 each). The weights in between then interpolate linearly, with no `avar`.
+
+## [FONT-027] Derived thin weights: set stroke thickness first, then fix joins by moving whole strokes
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [LucasFonts, Interpolation theory](https://www.lucasfonts.com/learn/interpolation-theory)
+- Related: FONT-026, FONT-028, FONT-029
+
+Straight extrapolation keeps each stroke's rate of growth: a stroke that grows faster than the stem across the masters shrinks faster toward Thin, and shallow corners where strokes meet overshoot. Fix thickness first: set each stroke to the nearest master's (Light, at Thin) times the stem ratio k, where extrapolation put it. Then check the joins: where one is still collapsed, move the whole stroke that meets it, both sides together; at a crotch move both strokes, which narrows the foot.
+
+At Black, only stop strokes from getting thinner than in Bold: scaling every stroke up closes dots and counters (de Groot, toward the bold end: "the horizontals cannot get any thicker, because then the letter will disappear").
+
+**Tested 2026-10-19 on our typeface project** (Thin at stem 28.4 from Light's 61.1, k = 0.465):
+- Straight extrapolation: f and t crossbars 9 units where Light × k gives 18 (Bold's is 2.3 times Light's, the stem 1.9 times), v's crotch at height 0, the counter of 4 through the cap height.
+- Moving corner points alone leaned stems (N, M, 4) and wedged bars (Z, z, 2, 7): 73 turned edges and 38 wedges, against 0 and 2.
+- Setting strokes but still moving a collapsed corner left v, w, W, <, > and ^ 15–40% heavier than x, y and k.
+- Strokes first, then whole strokes: crossbars 18, v's crotch 19 (Light × k: 19); broken spots at Thin from 40 in 14 glyphs to 15 in 5.
+
+## [FONT-028] Keep derived-weight fixes in a recipe and re-run it after every derivation
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [TypeDrawers, How extreme do you make your light and bold masters (2018)](https://typedrawers.com/discussion/comment/35730)
+- Related: FONT-026, FONT-027, FONT-029, FONT-032
+
+A fix made in a derived Thin or Black lives only in that UFO, so the next derivation (after a master edit, a new target stem or a tool change) undoes it. Keep each fix as a scripted call in a recipe, one recipe per review round, and one rebuild script that derives from the drawn masters and runs the contrast step (FONT-027) and every recipe in order. Never hand-edit a derived UFO that will be rebuilt; fix a fault that comes from a master in that master.
+
+The common alternative, extrapolating once and redrawing by hand (one TypeDrawers designer takes "this extrapolated bold, which looks like pure hell" and sculpts a proper one from it), cuts that weight off from later master edits.
+
+**Tested 2026-10-19 on our typeface project:**
+- Five recipes took the audit from 33 broken outline spots and 923 visible or growing problems to 0 and 785, with advance widths and master compatibility unchanged.
+- Check that the rebuild reproduces the last round exactly before trusting it.
+- After changing a fixing tool, rerun every recipe and compare each glyph with the round before: a fix aimed at one glyph moved others (a new direction estimate for C took & from 3 problems to 11).
+- Test a change to one step from the state just before it: rebuilding an already rebuilt glyph isn't idempotent.
+- Don't edit a recipe while it runs: GNU bash 5.2.21 executed a line appended to a running script.
+
+## [FONT-029] At extreme weights the master's small faults show
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible), [fontTools 4.67.0 `misc/transform.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/misc/transform.py)
+- Related: FONT-025, FONT-027, FONT-030, FONT-031, FONT-033
+
+A derived weight at exactly the nearest master times the stem ratio k scales up that master's small faults, and at Thin or Black they show. In interpolation "Each of the three points walks its own way" (Glyphs); extrapolation carries each path further. Repair them in the derived glyph.
+
+**Tested 2026-10-19 on our typeface project:**
+- **Thin** (from Light, k = 0.465):
+  - Light thins &'s loop from 53 to 47 units into its crossing: a pinch at Thin. Fill the widths across crossings.
+  - Bends of 5° and 9° in Light's centre line just above that crossing became two lumps. Smooth the centre lines over about a stem, leaving straight edges out (smoothed, flat counter sides tilted 1–2 units).
+  - Parts that don't line up across a bar stay misaligned (FONT-031).
+- **Black** (from Bold, k = 1.229):
+  - Small pieces where &'s arm and bowl meet the leg passed zero and turned round (3 broken spots). Slide such a node back along its edge only when its piece has nearly vanished or turned round: sliding every short piece put a step on B's waist.
+  - Bold's small counter-tip pieces crowded into steps in Black's smaller counters. Copying Bold's tips whole fixed both: a similarity transform (rotate and uniform scale, fontTools `Transform`) between two good nodes. A per-axis copy blew up the loop tip, whose two ends sit at nearly one height. Rounding the copy then needs FONT-025.
+  - Strengthening the master's thinning into crossings at Black: not tried.
+
+## [FONT-030] A stroke that passes under another is one stroke
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
+- Related: FONT-029, FONT-031, FONT-032
+
+When a derived glyph is rebuilt about the master's centre lines, carry a stroke that passes under another through the crossing as one stroke: both edges on one centre line (its own on each side, bridged by a curve that matches both), then cut it with the other stroke. Do this only where the stroke turns (over 20°); at &'s straight top crossing it put bumps where the fitted stretch met the rest.
+
+That is how the letter is drawn, and Glyphs advises keeping sources that way: "Keeping the leg and the bowl separate ensures interpolation." Our masters, converted from compiled fonts, have their crossings merged, so the rebuild has to recover the stroke.
+
+**Tested 2026-10-19 on our typeface project, & at Thin** (the bowl running into the arm under the leg). Every per-edge or per-side variant failed in the designer's eye:
+- each edge carried on alone: a pinch, since near a three-way join the master's centre line, seen from one edge, is dragged into the junction;
+- one curve fitted to each edge across the crossing: a flare and "an inward curve" before it;
+- each side carried on alone: "misaligned" across the leg;
+- a single polynomial taking over: a kink.
+
+Carried through as one stroke, & was confirmed by an independent reviewer, with no broken spots and 3 visible or growing problems in the audit.
+
+## [FONT-031] Build a derived glyph the way it is drawn: ¢ as c plus a bar
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [skia-pathops 0.9.2 README](https://github.com/fonttools/skia-pathops/blob/v0.9.2/README.md), [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
+- Related: FONT-029, FONT-030, FONT-032
+
+Derive a glyph that is another glyph plus a bar or slash (¢ is c with a bar) the way it is drawn. Take the derived part (the Thin c), fix it first, move it by the masters' offset trend, and unite it with a straight bar at the master's width times k: skia-pathops does "boolean operations on paths (intersection, union, difference, xor)". A boolean result has its own points, so fit the glyph's own points back onto it to keep the derived master compatible.
+
+Sources that keep overlaps (FONT-030) hold the parts apart already; ours store ¢ as one merged outline, an outer contour plus its counter.
+
+**Tested 2026-10-19 on our typeface project:**
+- In the three drawn masters ¢'s c sits 102, 99 and 95 units above the c glyph.
+- Rebuilt by itself, the Thin ¢ kept Light's misalignment across the bar. Built as the Thin c (its barbs at both terminals fixed first) moved by that trend, plus a straight bar at Light × 0.465, it lined up.
+- Nodes a unit or two off the master's exact meeting point landed past it at Thin and curled; snapping them onto the union's corner fixed that.
+- The fix came from the designer: "take a C and overlay a /"; "imagine the curve continuing and do a boolean". When a fix keeps failing, ask how they would draw it.
+
+## [FONT-032] Judge derived weights filled and large, beside the nearest master
+- Type: recommendation
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [Speed Punk README](https://github.com/yanone/speedpunk/blob/master/README.md)
+- Related: FONT-024, FONT-028, FONT-030, FONT-031, FONT-033
+
+Point views and curvature combs show smoothness, not weight: Speed Punk's README, "If you see a jump in the curvature illustration, curvature is discontinuous". Before calling a derived weight done, look at every changed glyph filled black and enlarged, whole and in a window on each crossing and join, beside the nearest drawn master, and show the designer the same. Also compare the mirrored halves of symmetric glyphs (C, O), and extreme weights against siblings (c against o).
+
+**Tested 2026-10-19 on our typeface project:**
+- With the audit's broken spots gone, the designer, glyph by glyph in filled renders, still saw a 122° barb and 10–13° kinks in &, a crossing 30–47% too heavy, pinches, lumps, parts out of line across a bar and a tapering stroke end (FONT-033). Their remarks drove six more rounds on &, ¢, c and C at Thin.
+- An independent reviewer (a fresh subagent given the fonts, renders and audit, told to measure strokes against the master × k) found the Thin C 14% heavier in its lower left than its upper left, where Light is symmetric, and c and C overshooting o and O by 3–4 units, where Light's match. The C's lean came from estimating an edge's direction at a smooth node by a chord into each segment, which leans toward the longer one; averaging each side's second-order direction took it to 4%.
+
+## [FONT-033] Measure stroke width two ways: inscribed disc and rays square to the edge
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-19
+- Sources: [scikit-image 0.26.0 `medial_axis`](https://github.com/scikit-image/scikit-image/blob/v0.26.0/src/skimage/morphology/_skeletonize.py)
+- Related: FONT-029, FONT-032
+
+To check a derived stroke against the master times k, measure its width two ways, since each misreads a different case:
+- **The largest disc in the ink** touching each edge point (twice its radius). It holds where strokes cross or join, but reads a long gentle taper as no dip. For bitmaps, scikit-image's `medial_axis` "computes the medial axis transform of an image as the ridges of its distance transform"; with `return_distance=True` the distance on a ridge is that disc's radius.
+- **Rays square to one edge**, every few units along a stretch. They show the taper, but read it too large near joins and where the stroke curves.
+
+Next to a stroke-end cut the disc runs past the end, since the cut mustn't limit it, and comes out too large; a rebuild that sets widths from it pulls the edge in. Within half a stem of a cut, keep the width each side has just before it.
+
+**Tested 2026-10-19 on our typeface project, Thin (k = 0.465):**
+- &'s loop keeps Light's taper from 53 to 47 units over 150 units into its crossing; the discs read 0.97–1.03 of the target there.
+- The rebuilt 9 tapered to 21 units at the baseline where Light × k gives 27, set from discs next to the cut. The designer saw it; keeping the width from just before the cut fixed it.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Checked 2026-10-17 against local checkouts of osrs-tracker-web and freek-mencke-web, and of our typeface project (private), whose part was updated 2026-10-18: five UFO masters and a designspace 5 file built with fontmake 3.12 into nine static OTF (`afdko otfautohint`) and TTF (ttfautohint `-n` through `--autohint`) weights and an unhinted variable TTF, `Family[wght].ttf` and `.woff2` as FONT-016 names them, with WOFF2 re-encoded unsubset and every feature kept (WOFF 1 dropped). The build runs `fonttools varLib.interpolatable` on the designspace before fontmake and Fontspector `universal` before packaging, gating on FAIL; there is still no CI. Its README gives a metric-matched Arial fallback computed with Capsize's `createFontStack` (FONT-022), and its changelog follows Keep a Changelog 2.0.0 (DOC-001). Both sites self-host one variable WOFF2 of it (39,520 and 50,600 bytes, `font-weight: 300 700` and `100 700`), with `font-display: block`, a `crossorigin` preload and a `?v=` query string; neither subsets it or has fallback metric overrides.
@@ -723,3 +882,4 @@ Ranked by impact against effort. Checked 2026-10-17 against local checkouts of o
 - **feaLib's gaps against spec 1.27** (FONT-009): its docs list none; `parser.py` wasn't read.
 - **How Google Fonts slices `unicode-range`** (FONT-020): no official page found (developers.google.com/fonts getting started, css2, technical considerations).
 - **Does `font-display: block` hold text for 3 s in Safari** (FONT-021)? web.dev describes Safari's default ("indefinitely"), not its `block` timing. Not tested.
+- **At Black, should the master's thinning into crossings be strengthened** (FONT-029)? At Thin it reads as a pinch and filling the widths fixed it; the Black counterpart wasn't tried.
