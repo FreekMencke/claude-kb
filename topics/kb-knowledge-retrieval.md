@@ -437,7 +437,7 @@ So effort pays off most in triggering, coverage and verification. A better ranke
 - Sources: [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [RAG guide](https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/retrieval_augmented_generation/guide.ipynb), [mcp-server/tests/kb-index.test.ts](https://github.com/FreekMencke/claude-kb/blob/main/mcp-server/tests/kb-index.test.ts), local measurement
 - Related: RETR-010, RETR-012, RETR-005, CAPI-015, SKILL-025
 
-**Our test is optimistic.** `kb-index.test.ts` asks whether each Quick-answer question finds a cited entry in the top 5. The questions are written from the entries, in their words. The test found 208 of 253 in the top 5 on 2026-10-15, and 513 of 574 (89.4%) at `c1ffe45`. On hard rewordings of 100 of them, the same search scored 73 (RETR-010).
+**Our test is optimistic.** `kb-index.test.ts` asks whether each Quick-answer question finds a cited entry in the top 5. The questions are written from the entries, in their words. The test found 208 of 253 in the top 5 on 2026-10-15, and 513 of 574 (89.4%) at `c1ffe45`. On hard rewordings of 100 of them, the same search scored 73 (RETR-010). Since 2026-10-20 the test also fails if the natural rewordings drop below 85% or the hard ones below 65%.
 
 **A better set:**
 - **Reworded questions,** in plain and situation-only wording, generated once and committed. The cited IDs become the labels.
@@ -488,7 +488,7 @@ Ranked by impact against effort.
    - `ENTRIES.md` in the prompt scored best (99–100%), but at about 49k tokens it is over the 25,000-token MCP output cap (TOK-023) and grows with every entry. Keep it as the next step if search misses, behind a tool that returns one topic's index.
    - Entries: RETR-010, RETR-011, RETR-020, RETR-009.
 2. **Spend effort where lookups fail: invocation, coverage, verification** (high impact, ongoing). The trigger evals and the re-verification routine already cover two of these. RETR-018.
-3. **Commit the reworded and uncovered question sets as a retrieval eval** (medium impact, low effort). Done 2026-10-20 as `evals/retrieval/`; a harder set with multi-entry questions, near-miss negatives and all-cited scoring is still to write. A follow-up for the server's own test, which asserts only the vocabulary-matched 75%, needs a change in `mcp-server/` and so its own issue. RETR-019, RETR-010.
+3. **Commit the reworded and uncovered question sets as a retrieval eval** (medium impact, low effort). Done 2026-10-20 as `evals/retrieval/`; a harder set with multi-entry questions, near-miss negatives and all-cited scoring is still to write. Done 2026-10-20: the server's search test also asserts the natural (85%) and hard (65%) rewordings, not only the vocabulary-matched 75%. RETR-019, RETR-010.
 4. **Decide whether the server should log queries and returned IDs** (medium impact, low effort; a privacy call for the owner). Without them the server's metrics can't show a miss (RETR-012), and an eval can't sample real questions (RETR-019). The server is public and unauthenticated, so logging query text means storing strangers' questions. A middle way is to log only returned and fetched IDs.
 5. **If misses appear: first an LLM pick from BM25's top 30, then hybrid search** (low effort, then medium). The rerank arm reached 94–99% with no new infrastructure, capped by BM25's top 30 (RETR-010). sqlite-vec with RRF and Voyage embeddings would be the step after (RETR-016).
 
