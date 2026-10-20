@@ -118,7 +118,9 @@ export function createApp(state: KbState, { logger = serverLogger }: { logger?: 
 
   // The kubelet's probes, one every few seconds: before the metrics and the request log, so they show up in neither
   app.get('/healthz', (_req, res) => void res.type('text/plain').send('ok'));
-  app.use(httpMetrics(metricsApp), requestLogger({ logger, route: req => routeLabel(req) }));
+  // No client IP on the request line (README, "Logs"); /mcp adds the tools it ran and the entry IDs they returned
+  const fields = (_req: Request, res: Response) => ({ clientIp: undefined, tools: res.locals.tools });
+  app.use(httpMetrics(metricsApp), requestLogger({ logger, route: req => routeLabel(req), fields }));
 
   for (const [path, file] of Object.entries(ICON_FILES)) {
     // `root`, so only the file name is checked for dotfiles (a checkout under .claude/worktrees would 404)
@@ -160,6 +162,7 @@ export function createApp(state: KbState, { logger = serverLogger }: { logger?: 
 }
 
 function send(res: Response, reply: McpReply): void {
+  if (reply.tools?.length) res.locals.tools = reply.tools;
   if (reply.body === undefined) res.status(reply.status).end();
   else res.status(reply.status).json(reply.body);
 }

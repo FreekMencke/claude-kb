@@ -9,7 +9,7 @@
  */
 import packageJson from './package.json' with { type: 'json' };
 import { listResources, readResource, TEMPLATES } from './kb-resources.ts';
-import { type Args, INSTRUCTIONS, type Tool, ToolError, TOOLS } from './kb-tools.ts';
+import { type Args, INSTRUCTIONS, type Note, type Tool, ToolError, type ToolLog, TOOLS } from './kb-tools.ts';
 import { resourceReads, type ToolName, timedTool } from './metrics.ts';
 import type { KbState } from './server.ts';
 
@@ -42,10 +42,10 @@ const BY_NAME = new Map(TOOLS.map(tool => [tool.definition.name, timedTool(tool.
 const TOOL_LIST = { tools: TOOLS.map(tool => tool.definition) };
 
 /** A tool's result, with a ToolError's message (a bad argument, or no index yet) as an `isError` result. */
-function call(tool: Tool): (state: KbState, args: Args) => ToolResult {
-  return (state, args) => {
+function call(tool: Tool): (state: KbState, args: Args, note: Note) => ToolResult {
+  return (state, args, note) => {
     try {
-      return { content: [{ type: 'text', text: tool.run(state, args) }] };
+      return { content: [{ type: 'text', text: tool.run(state, args, note) }] };
     } catch (error) {
       if (!(error instanceof ToolError)) throw error;
       return { content: [{ type: 'text', text: error.message }], isError: true };
@@ -57,7 +57,12 @@ function call(tool: Tool): (state: KbState, args: Args) => ToolResult {
 export interface McpReply {
   status: number;
   body?: unknown;
+  /** One per tool call answered, for the request's log line */
+  tools?: ToolCallLog[];
 }
+
+/** A tool call on a request's log line: the tool and the entry IDs it returned (ToolLog), no arguments */
+export type ToolCallLog = { tool: string } & ToolLog;
 
 type Message = { jsonrpc?: unknown; id?: unknown; method?: unknown; params?: unknown };
 
@@ -74,12 +79,14 @@ export function handle(body: unknown, protocolVersion: string | undefined, state
   // 2025-03-26 allowed batches; later revisions dropped them
   if (Array.isArray(body)) {
     if (!body.length) return { status: 400, body: error(null, INVALID_REQUEST, 'Empty batch') };
-    const replies = body.map(message => answer(message, state, onError)).filter(reply => reply !== undefined);
-    return replies.length ? { status: 200, body: replies } : { status: 202 };
+    const tools: ToolCallLog[] = [];
+    const replies = body.map(message => answer(message, state, onError, tools)).filter(reply => reply !== undefined);
+    return replies.length ? { status: 200, body: replies, tools } : { status: 202, tools };
   }
-  const reply = answer(body, state, onError);
-  if (reply === undefined) return { status: 202 };
-  return { status: 'error' in reply && reply.error.code === INVALID_REQUEST ? 400 : 200, body: reply };
+  const tools: ToolCallLog[] = [];
+  const reply = answer(body, state, onError, tools);
+  if (reply === undefined) return { status: 202, tools };
+  return { status: 'error' in reply && reply.error.code === INVALID_REQUEST ? 400 : 200, body: reply, tools };
 }
 
 /**
@@ -104,7 +111,7 @@ type Reply =
   | { jsonrpc: '2.0'; id: unknown; result: unknown }
   | { jsonrpc: '2.0'; id: unknown; error: { code: number; message: string; data?: unknown } };
 
-function answer(message: unknown, state: KbState, onError: OnError): Reply | undefined {
+function answer(message: unknown, state: KbState, onError: OnError, tools: ToolCallLog[]): Reply | undefined {
   if (typeof message !== 'object' || message === null) return error(null, INVALID_REQUEST, 'Not a JSON-RPC message');
   const { jsonrpc, id, method, params } = message as Message;
   if (jsonrpc !== '2.0') return error(id ?? null, INVALID_REQUEST, 'Not a JSON-RPC 2.0 message');
@@ -132,7 +139,12 @@ function answer(message: unknown, state: KbState, onError: OnError): Reply | und
         const run = BY_NAME.get(p.name as ToolName);
         if (!run) return error(id, INVALID_PARAMS, `Unknown tool: ${String(p.name)}`);
         const args = typeof p.arguments === 'object' && p.arguments !== null ? (p.arguments as Args) : {};
-        return result(id, run(state, args));
+        const logged: ToolCallLog = { tool: p.name as string };
+        tools.push(logged);
+        return result(
+          id,
+          run(state, args, log => Object.assign(logged, log)),
+        );
       }
       case 'resources/list':
         return result(id, { resources: listResources(state.index) });
