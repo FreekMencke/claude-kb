@@ -1,5 +1,5 @@
 /** kb-index: parsing a checkout into entries, and searching them, on fixture files and on this repo. */
-import { mkdirSync, readdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { entries as parseEntries, readText } from '../../scripts/kb-parse.ts';
@@ -285,5 +285,25 @@ describe('this repo', () => {
     const found = rows.filter(([q, cited]) => ids(repo.search(q, { limit: 5 })).some(id => cited.has(id))).length;
     expect(rows.length).toBeGreaterThanOrEqual(200);
     expect(found / rows.length, `${found} of ${rows.length}`).toBeGreaterThanOrEqual(0.75);
+  });
+
+  // The questions above use the entries' own words. evals/retrieval/questions.json rewords 100 of them (RETR-010):
+  // natural in free wording, hard describing the situation without the entries' terms. Raw-question search found a
+  // cited entry in the top 5 for 90 natural and 73 hard on 2026-10-20; a ranking change that drops either fails here.
+  // kb-knowledge-retrieval.md quotes these questions, so its entries don't count.
+  test.each([
+    ['natural', 0.85],
+    ['hard', 0.65],
+  ] as const)('most %s rewordings of Quick-answer questions find a cited entry in the top 5', (set, floor) => {
+    const questions: { natural: string; hard: string; cited: string[] }[] = JSON.parse(
+      readFileSync(join(REPO, 'evals/retrieval/questions.json'), 'utf8'),
+    );
+    const top5 = (q: string) =>
+      ids(repo.search(q, { limit: 30 }))
+        .filter(id => !id.startsWith('RETR-'))
+        .slice(0, 5);
+    const found = questions.filter(q => top5(q[set]).some(id => q.cited.includes(id))).length;
+    expect(questions.length).toBe(100);
+    expect(found / questions.length, `${found} of ${questions.length}`).toBeGreaterThanOrEqual(floor);
   });
 });
