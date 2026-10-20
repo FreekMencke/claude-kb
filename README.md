@@ -181,7 +181,7 @@ node scripts/check-kb.ts
 Edit [SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR. A new topic file goes into its description in the
 same PR: the topic words there decide when it loads (SKILL-015).
 
-After changing the description, run the trigger evals by hand (about $15 a run at 57 cases, so not in CI; `--case
+After changing the description, run the trigger evals by hand (about $17 a run at 59 cases, so not in CI; `--case
 <glob>` reruns one case). `loads-*` cases should load the skill, `skips-*` near misses shouldn't:
 
 ```bash
@@ -192,7 +192,7 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 40 + 17 | 120/120 | 51/51 | Opus 5.5 | 2.1.296 | 2026-10-18 |
+| 41 + 18 | 123/123 | 54/54 | Opus 5.5 | 2.1.304 | 2026-10-20 |
 
 `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
 once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
