@@ -242,6 +242,13 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | FONT-034 | A straight edge into a curve: continue the edge with the first handle, then let the curvature rise gently | pattern | outlines, curvature, g2, joins |
 | FONT-035 | A smooth node needs one handle ratio in every master, or the weights between kink | pattern | interpolation, kinks, masters, interpolatable |
 | FONT-036 | Static instances round every point: short handles on straight edges bend at in-between weights | fact | static-instances, rounding, fontmake, cff |
+| FONT-037 | Letters collide at an extrapolated heavy weight without any kerning: check clearance, not kern values | fact | kerning, collisions, extrapolation, black |
+| FONT-038 | A clearance floor for a derived weight must hold at every built weight between the masters | recommendation | kerning, collisions, static-instances, rounding |
+| FONT-039 | Re-deriving a derived master's kerning from the drawn masters drops the room it was given | anti-pattern | kerning, extrapolation, recipe, fontmath |
+| FONT-040 | Check a master edit at the built weights between the masters: one construction in every master | pattern | interpolation, masters, compatibility, proofing |
+| FONT-041 | Repair a spot by copying the nearest master's shape over it, not by rebuilding the glyph | pattern | outlines, repair, transform, extrapolation |
+| FONT-042 | A part scaled down to fit inside a heavier ring gets lighter than its sibling | fact | scaling, stems, composites, black |
+| FONT-043 | Measuring outlines in a script: flatten curves, fill nonzero, skip glyph 0 | pattern | measurement, winding, notdef, harfbuzz |
 
 ## GitHub Actions: changes and hardening (`topics/kb-github-actions.md`, GHA)
 

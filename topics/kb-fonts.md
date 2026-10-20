@@ -5,7 +5,7 @@ Prefix `FONT`. This file covers building a font family from sources with the fon
 instancer, gftools builder), OpenType feature code, hinting and the `gasp` table, QA with Fontspector, release
 layout, version fields and the OFL, and serving the fonts on the web: WOFF2, subsetting, `unicode-range`,
 `font-display`, preload, fallback metric overrides, variable-font CSS and OpenType features in CSS. It ends with what
-Claude can and can't do in type design, keeping straight edges straight in whole-unit outlines, deriving and repairing extrapolated Thin and Black weights, and keeping joins and smooth nodes smooth across masters and static instances. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
+Claude can and can't do in type design, keeping straight edges straight in whole-unit outlines, deriving and repairing extrapolated Thin and Black weights, keeping joins and smooth nodes smooth across masters and static instances, and keeping letter pairs apart, checking master edits and repairing spots at derived and in-between weights. Choosing and pairing typefaces, numerals and optical sizes are in `kb-design.md` (DESIGN-006,
 DESIGN-020, DESIGN-032 to DESIGN-035); LCP and CLS measurement is in `kb-web-analytics-seo.md` (WEB-010, WEB-011).
 
 Research basis:
@@ -40,6 +40,13 @@ Research basis:
   4.67.0's `interpolatable.py`, fontmake 3.12.2's `__main__.py` and `font_project.py`, and the OpenType variations
   overview were read raw. Tests ran fontTools 4.67.0, ufo2ft 3.9.1 and fontmake 3.12.2 on Python 3.12.3 (WSL2) against
   the round's sources and the round before.
+- FONT-037 to FONT-043 were added 2026-10-20 (FreekMencke/claude-kb#246) from that project's release work on its
+  derived Black. mekkablue's Glyphs-Scripts README and `kernanalysis.py` (`master`, 2026-10-18), FontLab 8's "Auto
+  Kerning Exceptions" tutorial and metrics-and-kerning page, Fontspector's `intercharacter_spacing.rs`, ufo2ft
+  v3.9.1's `instantiator.py`, fontMath 0.10.0's `mathKerning.py`, Glyphs' "Making small caps" and "Multiple Masters
+  part 2", the UFO 3 glif spec, FreeType's `ftimage.h`, the OpenType `cmap` and recommendations pages and HarfBuzz's
+  `hb-buffer.cc` (`main`) were read raw. Tests ran fontTools 4.67.0, fontmake 3.12.2 (ufo2ft 3.9.1) and uharfbuzz
+  0.56.3 on Python 3.12 (WSL2).
 
 ## Quick answers
 
@@ -54,12 +61,12 @@ Research basis:
 | Which files should a release ship? | Static OTF and TTF, a variable TTF named `Family[wght].ttf`, and WOFF2 for the web, each format in its own folder. WOFF (1) isn't needed: WOFF2 is Baseline since 2016. Keep statics next to the VF for desktop apps and tools that can't read a VF. | FONT-016 |
 | How do I set a font's version? | UFO `versionMajor` and `versionMinor`: ufo2ft writes `head.fontRevision` and name ID 5 "Version 1.000" from them, zero-padding the minor to three digits, so minor `3` is 1.003, not 1.3. Keep both fields equal; Fontspector fails a mismatch over 1/2000. | FONT-017 |
 | Why did `pyftsubset` drop my `tnum` or `case`, and does a subset OFL font need renaming? | Its default keeps only `calt ccmp clig curs dnom frac kern liga locl mark mkmk numr rclt rlig rvrn` plus shaping features: pass `--layout-features='*'` or `--layout-features+=tnum,case,ss01`. It also keeps only name IDs 0 to 6. Renaming only if the font declares a Reserved Font Name: subsetting is modification ("Yes"), WOFF compression of unchanged data isn't. Google Fonts wants no RFNs; the OFL FAQ encourages them. | FONT-019, FONT-018 |
-| Which `font-display`, and does it affect LCP and CLS? | `swap` or `optional` for body text; `block` hides text (up to about 3 s in Chromium and Firefox) and text in its block period doesn't count as rendered for LCP. `optional` plus preload avoids swap shifts; `swap` needs a metric-matched fallback. Preload only the critical file, with `crossorigin`. | FONT-021, FONT-020, FONT-022 |
-| Are `size-adjust` and `ascent-override` Baseline? | `size-adjust` yes (widely available since 2023-09-18, Safari 17). `ascent-override`, `descent-override` and `line-gap-override` no: not in Safari. `font-size-adjust` is newly available since 2024-07-25 (web-features 3.43.0). | FONT-022 |
+| Which `font-display`, does it affect LCP and CLS, and are the fallback metric overrides Baseline? | `swap` or `optional` for body text; `block` hides text (up to about 3 s in Chromium and Firefox) and text in its block period doesn't count as rendered for LCP. `optional` plus preload avoids swap shifts; `swap` needs a metric-matched fallback. Preload only the critical file, with `crossorigin`. `size-adjust` is Baseline widely available since 2023-09-18 (Safari 17); `ascent-override`, `descent-override` and `line-gap-override` aren't (not in Safari); `font-size-adjust` is newly available since 2024-07-25 (web-features 3.43.0). | FONT-021, FONT-020, FONT-022 |
 | `font-weight` range or `font-variation-settings` for a variable font? | `font-weight: 100 900` in `@font-face`, then plain `font-weight`. `font-variation-settings` only for axes with no property; it overrides `font-weight` and must repeat every axis. Likewise `font-variant-numeric: tabular-nums` over `font-feature-settings: "tnum"`. | FONT-023 |
 | Can Claude do type design? | It edits the text sources well: `.fea`, designspace XML, `.glif` anchors and build configs (Haiku 5.5 did all three probe tasks correctly for $0.02). It can script outlines derived from existing ones, but not draw new letterforms well; a person judges every outline at large size. | FONT-024 |
 | Why does a straight edge bend slightly after a script edits it, or at an in-between weight? | Builds round to whole units (TrueType `glyf` is integer; ufo2ft rounds CFF to tolerance 0.5), and short handles rounded off the line turn by up to about 14°. Put every node and handle on whole steps (a, b) of the edge's direction, two steps per curve, turn the next curve's first handle into the line, and let that curve's curvature rise gently. Static instances round again however straight the masters are (up to 14° on a 5.7-unit handle); the variable font doesn't. | FONT-025, FONT-034, FONT-036 |
 | How do I derive a Thin or Black from drawn masters, and fix what breaks? | Extrapolate along measured stem width, not weight numbers (6–16 units off on average against under 1), and make them masters: a variable font clamps to its axis. At Thin set each stroke to Light × the stem ratio, then move whole strokes at collapsed joins. Keep later fixes in a recipe rerun after every derivation. A clean audit isn't enough: the master's own faults show as pinches and lumps, so judge filled, large renders beside it. | FONT-026, FONT-027, FONT-028, FONT-029, FONT-032 |
+| Why do letters touch at a derived Black, and how do I keep pairs apart? | A heavier weight shrinks every gap by about the same amount, so pairs that nearly touch in Bold (TT 2 units) overlap at Black (−12) with no kerning involved. Measure clearance between the edges, not kern values. Add a floor as kerning exceptions in the derived master only (ours: 10 units, or the Bold gap if smaller), check it at the statics between the masters too, and re-apply it after every derivation: kerning extrapolated from the drawn masters drops it. | FONT-037, FONT-038, FONT-039 |
 
 ## Index
 
@@ -101,6 +108,13 @@ Research basis:
 | FONT-034 | A straight edge into a curve: continue the edge with the first handle, then let the curvature rise gently | pattern | outlines, curvature, g2, joins |
 | FONT-035 | A smooth node needs one handle ratio in every master, or the weights between kink | pattern | interpolation, kinks, masters, interpolatable |
 | FONT-036 | Static instances round every point: short handles on straight edges bend at in-between weights | fact | static-instances, rounding, fontmake, cff |
+| FONT-037 | Letters collide at an extrapolated heavy weight without any kerning: check clearance, not kern values | fact | kerning, collisions, extrapolation, black |
+| FONT-038 | A clearance floor for a derived weight must hold at every built weight between the masters | recommendation | kerning, collisions, static-instances, rounding |
+| FONT-039 | Re-deriving a derived master's kerning from the drawn masters drops the room it was given | anti-pattern | kerning, extrapolation, recipe, fontmath |
+| FONT-040 | Check a master edit at the built weights between the masters: one construction in every master | pattern | interpolation, masters, compatibility, proofing |
+| FONT-041 | Repair a spot by copying the nearest master's shape over it, not by rebuilding the glyph | pattern | outlines, repair, transform, extrapolation |
+| FONT-042 | A part scaled down to fit inside a heavier ring gets lighter than its sibling | fact | scaling, stems, composites, black |
+| FONT-043 | Measuring outlines in a script: flatten curves, fill nonzero, skip glyph 0 | pattern | measurement, winding, notdef, harfbuzz |
 
 ## [FONT-001] Source formats: UFO 3 is current, UFO 4 isn't published, Glyphs files go through glyphsLib
 - Type: fact
@@ -918,6 +932,114 @@ A variable font isn't rounded that way: the OpenType spec "has no other requirem
 - Unrounded, its smooth nodes bend at most 0.3° at any static weight. Rounded: up to 7.1° at ExtraLight and Medium, 5.8° at SemiBold, 14.0° at ExtraBold, on handles 5.7–8.3 units long.
 - SemiBold compiled to OTF with `roundTolerance=0` kept 146 of &'s 160 coordinates fractional, the default none. Its file size and hinting: not tested.
 
+## [FONT-037] Letters collide at an extrapolated heavy weight without any kerning: check clearance, not kern values
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-20
+- Sources: [mekkablue Glyphs-Scripts README, Kerning](https://github.com/mekkablue/Glyphs-Scripts/blob/master/README.md#kerning), [KernCrasher's `kernanalysis.py`](https://github.com/mekkablue/Glyphs-Scripts/blob/master/Kerning/kernanalysis.py), [FontLab 8, Metrics and kerning: Kern to distance](https://help.fontlab.com/fontlab/8/whats-new/whats-new-06-metrics-kerning/), [Fontspector `iso15008/intercharacter_spacing`](https://github.com/fonttools/fontspector/blob/main/profile-iso15008/src/checks/iso15008/intercharacter_spacing.rs)
+- Related: FONT-026, FONT-029, FONT-038, FONT-043
+
+A heavier weight eats into every sidebearing at once, so letters that reach past their sidebearings and nearly touch in Bold (T, V, W, Y, L, f, j) overlap in an extrapolated Black with no kern pair involved. Reviewing the kerning table misses them: measure clearance, the shortest distance between the two glyphs' edges as set.
+
+Type-design tools measure it horizontally, one master at a time. mekkablue's KernCrasher "Opens a new tab with Kerning Combos that crash in the current fontmaster", adding the two sidebearings at each height (default "Min distance" 10 units); FontLab 8's Kern to Distance sets "the smallest horizontal distance between the contours". Rows find overlaps, but a diagonal pair is closer than any one row shows, so also compare edge points on nearby rows. Fontspector has no general check: a code search of fonttools/fontspector for "collision" found only the ISO 15008 profile's spacing check, which tests a few pairs ("diagonal characters should not touch (e.g. "vv")").
+
+**Tested 2026-10-20 on our typeface project (fontTools 4.67.0, uharfbuzz 0.56.3, Python 3.12, WSL2)**, clearance from edge points on rows up to 60 units apart:
+- Bold to Black shrank every gap by about the same amount: HH 117 to 102 units, nn 99 to 85.
+- Pairs close in Bold (TT 2, WW 8) overlapped at Black: TT −12, WT −17, gj −13, LA −2, none of them kerned.
+- The released Black, shaped with HarfBuzz and its kerning on, had 66 touching pairs.
+
+## [FONT-038] A clearance floor for a derived weight must hold at every built weight between the masters
+- Type: recommendation
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-20
+- Sources: [ufo2ft 3.9.1 `instantiator.py`](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/instantiator.py), [FontLab 8, Auto Kerning Exceptions](https://help.fontlab.com/fontlab/8/tutorials/calfonts/3.%20Fitting%20and%20Spacing/3e-1%20Auto%20Kerning%20Exceptions/), [mekkablue Glyphs-Scripts README, Kerning](https://github.com/mekkablue/Glyphs-Scripts/blob/master/README.md#kerning)
+- Related: FONT-028, FONT-036, FONT-037, FONT-039
+
+Keep pairs at a derived weight apart with a floor, added as kerning exceptions in the derived master only, and check it at the static weights between that master and its neighbour, not only at the master. Static instances interpolate kerning between masters (ufo2ft's `Instantiator` wraps each source's kerning in `fontMath.MathKerning` and, when rounding geometry, calls `kerning_instance.round()`), but the outlines change shape too, so a gap isn't linear between two weights. Rounding then moves each point by up to 0.707 units (FONT-036).
+
+Tools add such exceptions per master: mekkablue's Auto Bumper ("Specify a minimum distance, left and right glyphs, and Auto Bumper will add the minimum necessary kerning for the current master"), and FontLab from a threshold in Preferences > Spacing. FontLab's tutorial finds 10 units at 1000 UPM "not enough for most any font": "10 – 25 units" for tight fonts, "30 – 60 units" for text fonts, "Otherwise rounding errors will make the pixels or dots crash anyways". That is a spacing threshold for a whole font; ours only stops a derivation closing pairs.
+
+**Tested 2026-10-20 on our typeface project (fontmake 3.12.2, ufo2ft 3.9.1):**
+- The designer's rule: no pair at Black closer than 10 units, or than its Bold gap where that is smaller. It added 196 glyph-pair exceptions, Black only.
+- L before `]`: 20 units in Bold, 10 at Black, 6 at ExtraBold, so the rule had to hold at 750, 800 and 850 too.
+- After rounding, a few pairs still measured 8–9 at ExtraBold.
+
+## [FONT-039] Re-deriving a derived master's kerning from the drawn masters drops the room it was given
+- Type: anti-pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-20
+- Sources: [fontMath 0.10.0 `mathKerning.py`](https://github.com/robotools/fontMath/blob/0.10.0/Lib/fontMath/mathKerning.py), [ufo2ft 3.9.1 `instantiator.py`](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/instantiator.py)
+- Related: FONT-026, FONT-028, FONT-038
+
+Extrapolating kerning from the drawn masters gives a derived Black only what Light, Regular and Bold say about each pair, so an exception the pipeline added at Black alone (FONT-038's floor) is gone after the next derivation. Derive the kerning, then re-apply the derived weight's own exceptions as a recipe step (FONT-028), after the outlines, since the floor is measured on them.
+
+A pair a master doesn't list isn't skipped in the arithmetic. fontMath's `MathKerning`, which ufo2ft's instantiator wraps each source's kerning in, looks a missing pair up through the master's groups and otherwise returns 0 (`else: return 0`). The instantiator also says "Always take the groups from the default source", so a derived master's exceptions have to use the default source's groups.
+
+**Tested 2026-10-20 on our typeface project:** L before `].case`, opened to +13 at Black only, came back as the masters' −53 when Black's kerning was extrapolated from them, and the pair overlapped by 29 units.
+
+## [FONT-040] Check a master edit at the built weights between the masters: one construction in every master
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-20
+- Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
+- Related: FONT-007, FONT-031, FONT-032, FONT-035
+
+Interpolation needs only matching structure. Glyphs lists what compatibility takes: "all masters have the same amount of paths, nodes and handles, anchors as well as components" and these are "in the same order across all masters". Two masters can meet that and still build a part differently; each looks right, and the weights between mix the two constructions. After editing a master, render the static weights between it and its neighbours, not only the masters. Glyphs gives the same check for glyphs that can interpolate wrongly: "switch it to Show All Instances" in the preview and "see if the interpolation is OK for each glyph". FONT-035 is the same for handle ratios; this is for shape.
+
+**Tested 2026-10-20 on our typeface project (fontmake 3.12.2):** a generated æ (a + e) put its stem's corners on the e's outline in Bold, but on a straight cut in Light and Regular. Each master looked right; Medium and SemiBold mixed the two and showed white spikes. Building it the same way in every master fixed it. Whether `varLib.interpolatable` (FONT-007) flags such a glyph: not tested.
+
+## [FONT-041] Repair a spot by copying the nearest master's shape over it, not by rebuilding the glyph
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-20
+- Sources: [fontTools 4.67.0 `misc/transform.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/misc/transform.py)
+- Related: FONT-028, FONT-029, FONT-034
+
+When one spot of a derived glyph fails, copy the nearest master's outline between two good nodes either side of it, mapped onto those nodes, and leave the rest alone. Rebuilding the whole glyph from the master re-fits curves that were fine and can kink them, and refitting handles while keeping their incoming direction can't move a node that sits off the edge it should run into.
+
+Map per axis (fontTools `Transform.scale(x, y)` with separate factors, so both ends land) when the two nodes are well apart in both x and y. A per-axis map divides by each span, so where the ends sit at nearly one height it blows up; there use a similarity transform (rotate and uniform scale), as FONT-029 did on a loop tip.
+
+**Tested 2026-10-20 on our typeface project, at Black:**
+- A notch had closed to a 3-unit slit (Bold: 24) and a stem edge dented.
+- Rebuilding the glyph from Bold opened the notch but kinked the tail below it, with a handle at tension 2.4.
+- A handle refit that kept the incoming direction left a node 3 units off its edge.
+- Copying Bold's shape between two good nodes, per axis, fixed both and took the glyph's audit findings from 7 to 4.
+
+## [FONT-042] A part scaled down to fit inside a heavier ring gets lighter than its sibling
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-20
+- Sources: [Glyphs, Making small caps](https://glyphsapp.com/learn/making-small-caps)
+- Related: FONT-027, FONT-031, FONT-032
+
+Scaling a part scales its stems with it, so the R of ®, shrunk to clear a ring that grew at Black, ends up lighter than the C of ©. Glyphs says the same of small caps: you "need to ‘scale’ your glyphs, but keep the stem width intact at the same time", which Tim Ahrens' RMX Scaler "tries to preserve" from the stem widths set for each master. Size, weight and placement trade off: a part that keeps its sibling's stem may no longer fit, so settle the three together, with the designer.
+
+**Tested 2026-10-20 on our typeface project, Black:**
+- ®'s R, scaled ×0.855 to clear its ring, had a stem of 98 units against ©'s C at 115 (equal in Bold).
+- At the C's stem the R no longer fit: its own crotch closed at any size that cleared the ring.
+- The designer chose a stem of 106, the R 6.5% larger than before, centred.
+
+## [FONT-043] Measuring outlines in a script: flatten curves, fill nonzero, skip glyph 0
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-20
+- Sources: [UFO 3 glif spec](https://unifiedfontobject.org/versions/ufo3/glyphs/glif/), [FreeType `ftimage.h`](https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/include/freetype/ftimage.h), [OpenType `cmap` table](https://learn.microsoft.com/en-us/typography/opentype/spec/cmap), [OpenType recommendations](https://learn.microsoft.com/en-us/typography/opentype/spec/recom), [HarfBuzz `hb-buffer.cc`](https://github.com/harfbuzz/harfbuzz/blob/main/src/hb-buffer.cc)
+- Related: FONT-033, FONT-037, FONT-038
+
+Three traps in scripted checks of stroke widths and gaps:
+- **Measure the outline, not the point list.** An `offcurve` point "is part of a curve segment" (glif spec): a handle, off the drawn outline. Flatten each curve into short lines first. Read from the points, a stem measured 13 units instead of 98.
+- **Fill with the nonzero winding rule.** FreeType: "By default, outlines are filled using the non-zero winding rule". Even-odd shows overlapping parts of a composite as holes, and subtracting every counter from every fill blanks a part inside a ring (®'s R).
+- **Skip glyph 0.** The `cmap` spec: "character codes that do not correspond to any glyph in the font should be mapped to glyph index 0", the `.notdef` glyph (glyph 0 "must be assigned to a .notdef glyph"). HarfBuzz: "The not-found glyph defaults to zero, sometimes known as the ".notdef" glyph" (`hb_buffer_set_not_found_glyph`, since 3.1.0). A pair check that shapes a character list must drop pairs with glyph 0.
+
+**Tested 2026-10-20, uharfbuzz 0.56.3 (HarfBuzz 14.6.0), fonttools 4.67.0, Python 3.12.3, WSL2:** in a font with only `.notdef` and A, "AÆA" shaped to glyphs 1, 0, 1. With `Buffer.not_found_glyph = 1`, "AB" gave 1, 1.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Checked 2026-10-17 against local checkouts of osrs-tracker-web and freek-mencke-web, and of our typeface project (private), whose part was updated 2026-10-18: five UFO masters and a designspace 5 file built with fontmake 3.12 into nine static OTF (`afdko otfautohint`) and TTF (ttfautohint `-n` through `--autohint`) weights and an unhinted variable TTF, `Family[wght].ttf` and `.woff2` as FONT-016 names them, with WOFF2 re-encoded unsubset and every feature kept (WOFF 1 dropped). The build runs `fonttools varLib.interpolatable` on the designspace before fontmake and Fontspector `universal` before packaging, gating on FAIL; there is still no CI. Its README gives a metric-matched Arial fallback computed with Capsize's `createFontStack` (FONT-022), and its changelog follows Keep a Changelog 2.0.0 (DOC-001). Both sites self-host one variable WOFF2 of it (39,520 and 50,600 bytes, `font-weight: 300 700` and `100 700`), with `font-display: block`, a `crossorigin` preload and a `?v=` query string; neither subsets it or has fallback metric overrides.
@@ -930,6 +1052,7 @@ Ranked by impact against effort. Checked 2026-10-17 against local checkouts of o
 6. **Won't do: an OFL-style RFN review** (FONT-018). The family isn't under the OFL.
 7. Done 2026-10-19: in the typeface's sources, the straight edges into one counter tip (Bold, and its derived Black) sit on whole-unit lines, by a script the derivation reruns (FONT-025).
 8. Done 2026-10-19: the same tip in Light and Regular (and the derived Thin) is straightened too, the curve from its edge into the bowl relaid, and the node where Regular split its handles 3.5:1 now splits them 2:1 like Light and Bold (FONT-034, FONT-035).
+9. Done 2026-10-20: the typeface's release pipeline keeps letter pairs at Black at least 10 units apart, or as close as in Bold where Bold is closer (196 exceptions, Black only, re-applied after every derivation), and builds æ the same way in every master (FONT-037 to FONT-040; FreekMencke/claude-kb#246).
 
 ## Open questions
 
@@ -943,3 +1066,5 @@ Ranked by impact against effort. Checked 2026-10-17 against local checkouts of o
 - **Does `font-display: block` hold text for 3 s in Safari** (FONT-021)? web.dev describes Safari's default ("indefinitely"), not its `block` timing. Not tested.
 - **At Black, should the master's thinning into crossings be strengthened** (FONT-029)? At Thin it reads as a pinch and filling the widths fixed it; the Black counterpart wasn't tried.
 - **Should the typeface's in-between statics keep their straight edges** (FONT-036)? Rounding bends &'s smooth nodes up to 14° at ExtraBold. `--cff-round-tolerance 0` keeps the OTF statics' coordinates fractional, not the TTF's; straightening the instances in a recipe after interpolation would cover both. Neither tried; the designer's call.
+- **Should the clearance floor cover Thin too** (FONT-038)? The released Thin had no touching pairs, so the floor covers Black only; a lighter Thin or a tighter spacing would change that. Not measured beyond the touching count.
+- **Does `varLib.interpolatable` flag a glyph built two ways in different masters** (FONT-040)? Its underweight check might (4.67.0 skips the overweight one: `continue  # disabled`); not tested on the æ before its fix.
