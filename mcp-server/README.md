@@ -68,6 +68,13 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   `/icon.svg` (and the PNG at `/favicon.ico`) without a token: the MCP spec asks clients to fetch icons only from the
   server's own origin. Claude's docs say a custom connector appears as "Custom", so claude.ai may show its generic
   icon anyway.
+- **Logs.** One JSON line per request (`type: "incoming"`, `@osrs-tracker/logger`): method, route, URL, status, response
+  time, user agent and referer. It doesn't record the client's IP address (2026-10-20). A `/mcp` request also gets a `tools`
+  field: each tool it ran, with the entry IDs `kb_search` returned or `kb_get` found, and how many asked-for IDs
+  `kb_get` didn't know. Queries, IDs that matched nothing and other arguments are never logged, since they're free
+  text from other people's sessions. The IDs show which entries searches return and which ones callers then read
+  (RETR-012, RETR-019). The lines go to Grafana Cloud with the cluster's other logs, under its retention. Questions about
+  what's logged: open an issue on this repo.
 - **Metrics** (FreekMencke/claude-kb#136). `/metrics` on port 9090, which neither the Service nor the Ingress routes;
   the pod's `prometheus.io/*` annotations have Alloy scrape it once a minute into Grafana Cloud, like the Node apps.
   - `http_request_duration_seconds{method,path,status_code}` and `up`, from `@osrs-tracker/express-metrics` as in the

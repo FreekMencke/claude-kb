@@ -442,7 +442,7 @@ So effort pays off most in triggering, coverage and verification. A better ranke
 **A better set:**
 - **Reworded questions,** in plain and situation-only wording, generated once and committed. The cited IDs become the labels.
 - **Uncovered questions,** to test that the lookup abstains (RETR-012).
-- **Real queries,** once there are any to sample. The server logs none today.
+- **Real queries,** which the server doesn't log. Since 2026-10-20 it logs the entry IDs each search returned and each `kb_get` read, which shows what gets used but not how it was asked.
 
 **Metrics:**
 - Recall@5 and MRR per arm, compared on the same questions.
@@ -489,7 +489,7 @@ Ranked by impact against effort.
    - Entries: RETR-010, RETR-011, RETR-020, RETR-009.
 2. **Spend effort where lookups fail: invocation, coverage, verification** (high impact, ongoing). The trigger evals and the re-verification routine already cover two of these. RETR-018.
 3. **Commit the reworded and uncovered question sets as a retrieval eval** (medium impact, low effort). Done 2026-10-20 as `evals/retrieval/`; a harder set with multi-entry questions, near-miss negatives and all-cited scoring is still to write. A follow-up for the server's own test, which asserts only the vocabulary-matched 75%, needs a change in `mcp-server/` and so its own issue. RETR-019, RETR-010.
-4. **Decide whether the server should log queries and returned IDs** (medium impact, low effort; a privacy call for the owner). Without them the server's metrics can't show a miss (RETR-012), and an eval can't sample real questions (RETR-019). The server is public and unauthenticated, so logging query text means storing strangers' questions. A middle way is to log only returned and fetched IDs.
+4. Done 2026-10-20: the server logs the entry IDs `kb_search` returned and `kb_get` read, never query text, and no longer logs client IPs. Query text stays out: it is strangers' free text on a public server (RETR-012, RETR-019; `mcp-server/README.md`, "Logs").
 5. **If misses appear: first an LLM pick from BM25's top 30, then hybrid search** (low effort, then medium). The rerank arm reached 94–99% with no new infrastructure, capped by BM25's top 30 (RETR-010). sqlite-vec with RRF and Voyage embeddings would be the step after (RETR-016).
 
 ## Open questions
