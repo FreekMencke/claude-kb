@@ -38,9 +38,19 @@ export class ToolError extends Error {}
 
 export type Args = Record<string, unknown>;
 
+/**
+ * What a tool call adds to its request's log line: the entry IDs it returned, never the query or other free text
+ * (README, "Logs"). For kb_get, the IDs found and how many asked-for IDs weren't.
+ */
+export interface ToolLog {
+  ids?: string[];
+  unknown?: number;
+}
+export type Note = (log: ToolLog) => void;
+
 export interface Tool {
   definition: { name: ToolName; title: string; description: string; inputSchema: object; annotations: object };
-  run: (state: KbState, args: Args) => string;
+  run: (state: KbState, args: Args, note: Note) => string;
 }
 
 // Read-only tools can run without a per-call prompt
@@ -85,13 +95,14 @@ export const TOOLS: Tool[] = [
       },
       annotations: READ_ONLY,
     },
-    run: (state, args) =>
+    run: (state, args, note) =>
       search(
         state.index,
         string(args, 'query'),
         optionalString(args, 'topic'),
         optionalString(args, 'type'),
         integer(args, 'limit', LIMIT.default),
+        note,
       ),
   },
   {
@@ -116,7 +127,7 @@ export const TOOLS: Tool[] = [
       },
       annotations: READ_ONLY,
     },
-    run: (state, args) => get(state.index, strings(args, 'ids')),
+    run: (state, args, note) => get(state.index, strings(args, 'ids'), note),
   },
   {
     definition: {
@@ -221,6 +232,7 @@ export function search(
   topic?: string,
   type?: string,
   limit = LIMIT.default,
+  note: Note = () => {},
 ): string {
   const kb = loaded(index);
   if (!query.trim()) throw new ToolError('Pass a query: some words, a phrase, or entry IDs such as MCP-017.');
@@ -233,6 +245,7 @@ export function search(
   }
   const name = resolveTopic(kb, topic);
   const hits = kb.search(query, { topic: name, type: wantedType, limit });
+  note({ ids: hits.map(h => h.entry.id) });
   if (!hits.length) {
     searchEmpty.inc();
     const where = name ? ` in topic ${name}` : '';
@@ -247,7 +260,7 @@ export function search(
   return [...kept, corpus(kb)].join('\n\n');
 }
 
-export function get(index: Index | undefined, ids: string[]): string {
+export function get(index: Index | undefined, ids: string[], note: Note = () => {}): string {
   const kb = loaded(index);
   const asked = ids.map(id => id.trim()).filter(Boolean);
   if (asked.length < IDS.min || asked.length > IDS.max) {
@@ -259,6 +272,7 @@ export function get(index: Index | undefined, ids: string[]): string {
   const targets = found.flatMap(e => kb.get(e.mergedInto)).filter(t => !known.has(t.id));
   const entries = [...new Map([...found, ...targets].map(e => [e.id, e])).values()];
   const notes = asked.filter(i => !kb.get([i]).length).map(i => unknown(kb, i));
+  note({ ids: entries.map(e => e.id), unknown: notes.length });
   if (!entries.length) throw new ToolError(notes.join('\n'));
   const blocks = fit(
     entries.map(e => [e.id, e.body]),

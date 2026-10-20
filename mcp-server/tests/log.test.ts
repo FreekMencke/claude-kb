@@ -1,6 +1,6 @@
 /** The JSON log lines: the Node apps' shape (`@osrs-tracker/logger`), and one request line per request except the probes. */
 import { expect, test } from 'vitest';
-import { collectLogs, kbState, serve } from './helpers.ts';
+import { collectLogs, kbState, MCP_HEADERS, serve } from './helpers.ts';
 
 test("lines are JSON with pino's level names, a type and a message", () => {
   const { logger, lines } = collectLogs();
@@ -35,5 +35,31 @@ test('requests are logged by route, except the probes', async () => {
   ]);
   expect(requests[0].level).toBe('warn');
   expect(requests[0].responseTime).toMatch(/^\d+ms$/);
-  expect(requests[0].clientIp).toBe('127.0.0.1');
+  // No client IP: README, "Logs"
+  expect(requests.every(line => !('clientIp' in line))).toBe(true);
+});
+
+test('a tool call logs the entry IDs it returned, never its arguments', async () => {
+  const { logger, lines } = collectLogs();
+  const { base, close } = await serve(kbState().state, logger);
+  const call = (id: number, name: string, args: object) =>
+    fetch(`${base}/mcp`, {
+      method: 'POST',
+      headers: MCP_HEADERS,
+      body: JSON.stringify({ jsonrpc: '2.0', id, method: 'tools/call', params: { name, arguments: args } }),
+    });
+  try {
+    await call(1, 'kb_search', { query: 'secret-word Second' });
+    await call(2, 'kb_get', { ids: ['tst-2', 'TST-404'] });
+    await call(3, 'kb_status', {});
+  } finally {
+    await close();
+  }
+  const requests = lines.filter(line => line.type === 'incoming');
+  expect(requests.map(line => line.tools)).toEqual([
+    [{ tool: 'kb_search', ids: ['TST-002'] }],
+    [{ tool: 'kb_get', ids: ['TST-002'], unknown: 1 }],
+    [{ tool: 'kb_status' }],
+  ]);
+  expect(JSON.stringify(lines)).not.toMatch(/secret-word|TST-404/);
 });
