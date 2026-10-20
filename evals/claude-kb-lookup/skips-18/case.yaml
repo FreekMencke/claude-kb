@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: claude-kb-lookup-skips-18
+tags: [claude-kb-lookup, near-miss]
+description: "Near miss: implementing a search feature in app code."
+execution:
+  prompt: "Add a full-text search endpoint over the products collection to this NestJS API, using a MongoDB text index."
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-not-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'
+    min: 0
+    max: 0
+    arm: both

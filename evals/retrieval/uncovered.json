@@ -1,0 +1,82 @@
+[
+  {
+    "n": 1,
+    "question": "How do I migrate a Svelte 4 component to Svelte 5 runes?"
+  },
+  {
+    "n": 2,
+    "question": "Does Deno 2 run npm packages with lifecycle scripts by default?"
+  },
+  {
+    "n": 3,
+    "question": "Which PostgreSQL 18 setting controls asynchronous I/O?"
+  },
+  {
+    "n": 4,
+    "question": "How should I configure Redis eviction for a session cache?"
+  },
+  {
+    "n": 5,
+    "question": "What does Vue 3.5's useTemplateRef replace?"
+  },
+  {
+    "n": 6,
+    "question": "How do I set up Prisma migrations in CI for a NestJS app?"
+  },
+  {
+    "n": 7,
+    "question": "Which Kafka consumer setting avoids rebalancing storms?"
+  },
+  {
+    "n": 8,
+    "question": "How do I write a Python uv workspace with two packages?"
+  },
+  {
+    "n": 9,
+    "question": "Does Bun support node:sqlite?"
+  },
+  {
+    "n": 10,
+    "question": "How do I lazy-load islands in Astro 5?"
+  },
+  {
+    "n": 11,
+    "question": "How do I enable React Compiler in a Vite app?"
+  },
+  {
+    "n": 12,
+    "question": "How do I define a Custom Element with form participation via ElementInternals?"
+  },
+  {
+    "n": 13,
+    "question": "What's the default connection pool size in the Go pgx driver?"
+  },
+  {
+    "n": 14,
+    "question": "How do I run Cypress component tests for Angular?"
+  },
+  {
+    "n": 15,
+    "question": "Which Gemini model should a code-review agent use?"
+  },
+  {
+    "n": 16,
+    "question": "How do I configure Cursor rules files for a monorepo?"
+  },
+  {
+    "n": 17,
+    "question": "What's the rate limit of the OpenAI Responses API on tier 1?"
+  },
+  {
+    "n": 18,
+    "question": "How do I set up Redux Toolkit Query cache invalidation by tags?"
+  },
+  {
+    "n": 19,
+    "question": "How do I configure Helm chart dependencies with OCI registries?"
+  },
+  {
+    "n": 20,
+    "question": "Which SvelteKit adapter should I use for AWS Lambda?"
+  }
+]
