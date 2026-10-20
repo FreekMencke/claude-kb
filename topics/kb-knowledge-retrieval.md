@@ -12,14 +12,14 @@ Research basis:
 
 | Question | Answer | Entries |
 |---|---|---|
-| Should this knowledge base move to RAG or vector search? | No. With Haiku writing the queries, our BM25 search found a cited entry in the top 5 for 97–100% of 300 test questions, reworded ones included. Embeddings would fix a gap the agent already closes. | RETR-010, RETR-011, RETR-020 |
+| Should this knowledge base move to RAG or vector search? | Not on current evidence. With Haiku writing the queries, our BM25 search put a cited entry in the top 5 for 97–100% of 300 synthetic questions (all cited entries: 72–79%). The test shows no gap for embeddings to close, but it is at its ceiling and has no real queries. | RETR-010, RETR-011, RETR-020 |
 | What is a knowledge base like this one actually for? | A compiled layer of verified, dated, sourced facts that override stale training data. The value is made when entries are written and re-verified, not when they're retrieved. | RETR-001, RETR-018 |
 | Does Anthropic recommend RAG or agentic search for agents? | Agentic search first: "only adding semantic search if you need faster results or more variations". Claude Code uses glob and grep just-in-time, "bypassing the issues of stale indexing". | RETR-002, RETR-003 |
-| Can the whole knowledge base go in the prompt instead? | Not for long. Without Quick answers it measured about 934k tokens on Haiku 5.5, 93% of a 1M window, and it grows by about 80 entries a day. Each lookup would cost about $0.05 warm and $0.94 cold, against $0.002 for a search. | RETR-009, RETR-008 |
+| Can the whole knowledge base go in the prompt instead? | Not for long. Without Quick answers it measured about 934k tokens on Haiku 5.5, 93% of a 1M window; about 70 more entries fill it. Each lookup would cost about $0.05 warm and $0.94 cold, against $0.002 for a search. | RETR-009, RETR-008 |
 | When is keyword search weak, and what fixes it? | Questions worded away from the entry's terms: BM25 on the raw question fell from 90% to 73% top-5. Letting Haiku write two to five keywords brought it back to 93%, and the full search-and-read loop to 99%. | RETR-011, RETR-010 |
 | What did Anthropic's Contextual Retrieval measure? | Top-20 retrieval failures fell from 5.7% to 3.7% with contextual embeddings, 2.9% with contextual BM25 added, and 1.9% with reranking, on chunks of long documents. Our entries are self-contained already. | RETR-004, RETR-005 |
 | Is there a size below which no search is needed? | Anthropic (2024): under 200,000 tokens, put it all in the prompt. Karpathy (2026): an index file works at "~100 sources, ~hundreds of pages". We're past both. | RETR-004, RETR-014 |
-| Does the lookup admit when the knowledge base has no answer? | Yes: 20 of 20 questions on topics it doesn't cover came back "not answered" with no IDs. The server's empty-search counter can't detect misses, because OR matching nearly always returns hits. | RETR-012 |
+| Does the lookup admit when the knowledge base has no answer? | For absent technologies, yes: 20 of 20 came back "not answered" with no IDs. Near-but-wrong entries weren't tested. The server's empty-search counter can't detect misses, because OR matching nearly always returns hits. | RETR-012 |
 | When do claude.ai Projects use RAG? | Automatically, on paid plans, when project knowledge nears the context limit, "by up to 10x" capacity; they switch back when it shrinks. The threshold and the method aren't published. | RETR-006 |
 | What retrieval does the Claude API give you? | Search-result blocks and citations for your own retrieval, and tool search with regex and BM25 variants. No hosted vector store; Managed Agents memory stores are directories read with file tools. | RETR-007 |
 | Would GraphRAG help? | Not for lookups. It targets "global sensemaking questions" over a whole corpus, indexing is "an expensive operation", and GraphRAG-Bench notes it "frequently underperforms vanilla RAG". | RETR-015 |
@@ -63,7 +63,7 @@ Research basis:
 What this knowledge base does: an agent about to make a decision gets a few facts that are newer or more exact than its training, each with a source, a date and a confidence. That job splits in two:
 
 - **Write time:** research from primary sources, quote checks, one idea per entry, IDs, cross-links, re-verification. This is where the cost and the value are.
-- **Read time:** find 1 to 4 entries out of about 1,000. At this size it's an easy retrieval problem (RETR-010).
+- **Read time:** find 1 to 4 entries out of about 1,000. Finding one right entry measured as easy; finding all of them for a multi-part question less so (RETR-010).
 
 Karpathy's LLM Wiki names the same split: "The knowledge is compiled once and then kept current, not re-derived on every query." Classic RAG does the opposite, re-deriving answers from raw chunks on every query. Its machinery (chunking, contextualizing chunks, embeddings, reranking: RETR-004) repairs chunks that lost their context. A curated entry has a title, tags and a self-contained summary, so it starts where that repair ends.
 
@@ -82,11 +82,11 @@ So the questions that matter are about write time and invocation (RETR-018). The
 Anthropic's engineering posts recommend letting the agent search with tools first, and adding embeddings only for speed or variety.
 
 - **Agent SDK post (2025-09-29):** "Semantic search is usually faster than agentic search, but less accurate, more difficult to maintain, and less transparent." Also: "we suggest starting with agentic search, and only adding semantic search if you need faster results or more variations."
-- **Context engineering (2025-09-29):** "Claude Code is an agent that employs this hybrid model: CLAUDE.md files are naively dropped into context up front, while primitives like glob and grep allow it to navigate its environment and retrieve files just-in-time, effectively bypassing the issues of stale indexing and complex syntax trees." Agents keep "lightweight identifiers (file paths, stored queries, web links, etc.)" and load data at runtime.
+- **Context engineering (2025-09-29):** "Claude Code is an agent that employs this hybrid model: CLAUDE.md files are naively dropped into context up front, while primitives like glob and grep allow it to navigate its environment and retrieve files just-in-time, effectively bypassing the issues of stale indexing and complex syntax trees." 
 - **Large codebases page:** "if your organization already runs a code search or RAG index over the repository, expose it as an MCP tool so Claude queries it instead of reading files directly". RAG is an add-on behind a tool, not built in.
-- **Multi-agent research (2025-06-13):** contrasts RAG's "static retrieval" with "a multi-step search that dynamically finds relevant information". Agents should "start with short, broad queries, evaluate what's available, then progressively narrow focus".
+- **Multi-agent research (2025-06-13):** contrasts RAG's "static retrieval" with "a multi-step search that dynamically finds relevant information".
 
-Our server follows this shape: up-front Quick answers, then search and fetch by ID (MCP-034).
+**Context:** the SDK advice comes from an email-agent example where agentic search means grep over files. The same context-engineering post describes teams "augmenting these retrieval systems with “just in time” context strategies", and says "The hybrid strategy might be better suited for contexts with less dynamic content, such as legal or finance work". There, hybrid means up-front plus just-in-time, not lexical plus semantic. A curated knowledge base is low-churn content. Our server already does both: Quick answers up front, then search and fetch by ID (MCP-034).
 
 ## [RETR-003] Claude Code dropped RAG and a local vector database
 - Type: fact
@@ -227,14 +227,14 @@ Measured 2026-10-20, Claude Code 2.1.304, cloud session, `claude -p --model haik
 
 | Prompt | Bytes | Haiku 5.5 tokens |
 |---|---|---|
-| All `topics/kb-*.md`, Quick answers removed | 2,264,497 | about 934k |
+| All `topics/kb-*.md`, Quick answers removed | 2,266,363 | about 934k |
 | `ENTRIES.md` (ID, title, type, tags) | 115,702 | about 49k |
 
 The token counts are `cache_creation_input_tokens` minus about 1.4k for an empty system prompt. Text, URLs and tables come to about 2.4 bytes a token, not the usual 4.
 
-**Fit:** that is 93% of a 1M window. The repo docs give 504 entries on 2026-10-13, 580 on 2026-10-16 and 990 on 2026-10-19, so about 70 more entries fill it.
+**Fit:** that is 93% of a 1M window, so about 70 more entries fill it. Growth comes in bursts: README.md gives 504 entries on 2026-10-13, `mcp-server/README.md` 580 on 2026-10-16, and git 976 at the end of 2026-10-17, then 2 to 20 a day to 1,010 on 2026-10-20.
 
-**Cost per lookup on Haiku 5.5**, measured: $0.94 for the first call (a 1-hour cache write at "$1 / MTok" for prompts "over 100,000 tokens"), then about $0.055 per call that reads the cache. Each call took 9–16 s. The search loop cost a median $0.002 (RETR-010). On Opus 5.5 a cache read is "$0.20 / MTok", about $0.19 a lookup, before any cache write.
+**Cost per lookup on Haiku 5.5**, measured: $0.94 for the first call (a 1-hour cache write at "$1 / MTok" for prompts "over 100,000 tokens"), then about $0.055 per call that reads the cache. Each call took 9–16 s. The search loop cost a median $0.002 (RETR-010). At the server's traffic, 54 searches in 30 days (RETR-012), nearly every lookup would miss the cache and pay the write. In-prompt scored as well as any arm (RETR-010), so this rules it out on cost and headroom, not accuracy. On Opus 5.5 a cache read is "$0.20 / MTok", about $0.19 a lookup, before any cache write.
 
 ## [RETR-010] Seven retrieval options measured on this knowledge base
 - Type: comparison
@@ -242,24 +242,31 @@ The token counts are `cache_creation_input_tokens` minus about 1.4k for an empty
 - Confidence: single-source
 - Last verified: 2026-10-20
 - Sources: local measurement, [evals/retrieval](https://github.com/FreekMencke/claude-kb/tree/main/evals/retrieval)
-- Related: RETR-011, RETR-009, RETR-012, MCP-041, SKILL-009
+- Related: RETR-011, RETR-009, RETR-012, RETR-019, MCP-041
 
-Tested 2026-10-20, Claude Code 2.1.304, cloud session, Node 22.22.0, commit `c1ffe45` (990 entries). The questions are 100 Quick-answer rows, each also reworded by Sonnet 5.5 in *natural* and *hard* wording; *hard* avoids the terms in the question, answer and entry titles. A hit is a cited entry in the top 5. Search is the server's own (`kb-index.ts`, `node server.ts --local`).
+Tested 2026-10-20, Claude Code 2.1.304, cloud session, commit `c1ffe45` (990 entries).
+- **Questions:** 100 Quick-answer rows, each reworded by Sonnet 5.5 as *natural* and *hard* (situation-only).
+- **Search:** the server's own `kb-index.ts`.
+- **Score:** a hit is any cited entry in the top 5; the all-cited rate is given below the table.
 
 | Arm (Haiku 5.5) | Original | Natural | Hard |
 |---|---|---|---|
 | BM25 on the raw question | 90 | 90 | 73 |
 | Haiku writes up to 3 keyword queries, fused by RRF | 93 | 93 | 93 |
-| BM25 top 30, Haiku picks 5 from titles and summaries | 97 | 99 | 94 |
+| BM25 top 30, Haiku picks 5 | 97 | 99 | 94 |
 | Haiku picks from `ENTRIES.md` in its prompt | 99 | 100 | 100 |
 | Haiku with the whole corpus in its prompt | 98 | 100 | 100 |
 | Haiku with `kb_search` and `kb_get`, one question per run | 97 | 100 | 99 |
 
-- **Agent arm:** a median 2 searches, 1 `kb_get`, 11.5–14.4 s and $0.002 a question. Its 4 misses depend on their file ("What should we change first?") or name the wrong tool.
-- **Rerank arm:** capped by BM25's top 30, which held a cited entry for 94 hard questions.
-- **Embeddings:** not tested; no embedding API was reachable.
+- **All cited entries in the top 5:** 72, 76 and 79 for the agent; 60, 59 and 49 for raw BM25. Half the rows cite 2 to 7 entries.
+- **Agent arm:** a median 2 searches, 1 `kb_get` and $0.002 a question.
 
-The arms with a model in the loop reach the 97–100% ceiling, so this set can't rank them. A rerun of the keyword arm on hard questions gave 96 instead of 93: a few points is noise.
+**Caveats:**
+- The rewordings were written with the answer and titles visible. *Hard* ones are longer (33 words against 9) and name the answer's facets, so they are harder for raw BM25 only.
+- At n=100, 97 has a 95% interval of about 92–99, and a rerun moved one arm by 3 points.
+- BM25's weights were tuned on Quick-answer questions.
+- The `ENTRIES.md`, corpus and keyword arms asked 20 to 25 questions per call.
+- Embeddings weren't tested; no embedding API was reachable.
 
 ## [RETR-011] Keyword search fails on reworded questions; let the model write the keywords
 - Type: pattern
@@ -280,6 +287,8 @@ BM25 matches words, so it misses an entry that describes the same thing in other
 Example. Hard rewording: "Running a .ts script directly with Node throws a syntax or module-resolution error, though the same code compiles fine with tsc." Haiku searched `node typescript enum decorator`, then `node type stripping enums unsupported`, and found NODE-004.
 
 **Why it works:** the model knows the field's vocabulary, so it writes the terms an entry uses. Anthropic makes the same point about BM25 and "unique identifiers or technical terms", and its research agents rewrite queries "short, broad" first.
+
+The hard rewordings were written with the answer visible, so they are longer and more specific than real questions (RETR-010). They test vocabulary mismatch, not vague questions.
 
 **Use:**
 - Keep the search tool lexical.
@@ -303,7 +312,7 @@ A wrong "the knowledge base says" is worse than "no entry". We tested whether se
 
 **What the server's metrics can't see:** `kb_search` ORs the query's words, so almost every search returns hits. `kb_search_empty_total` read 0 over the 30 days to 2026-10-20, with 54 searches, 32 `kb_get` and 7 `kb_quick_answers` calls. The counter can't tell a good result from a miss. Only the calling model judges relevance, and nothing records its verdict.
 
-20 questions show the behaviour, not a rate. Partial coverage, where an entry is near but wrong, wasn't tested.
+**Limits:** 20 questions show the behaviour, not a rate. Most name a technology no entry mentions; near-but-wrong entries on covered technologies weren't tested, and neither was false abstention on covered questions. This file now names those technologies, so a rerun must leave it out of the index (`evals/retrieval/run.ts` does).
 
 ## [RETR-013] How AI coding tools retrieve context
 - Type: comparison
@@ -414,9 +423,9 @@ A lookup can fail at five points. With retrieval measured at 97–100% (RETR-010
 2. **Not covered.** The question falls outside the entries. The lookup then says so (RETR-012), and the caller falls back to memory or the web.
 3. **Covered but stale or wrong.** The first re-verification run changed 25 entries, and 8 of those changes were wrong (README). Errors here reach every agent and look authoritative.
 4. **Found but misread.** The forked Haiku summarises entries for an Opus caller. Answer correctness wasn't measured, only which entries were cited (MCP-041, RETR-010).
-5. **Not found.** Raw-question BM25 misses reworded questions, but the agent loop recovers them (RETR-011).
+5. **Not found.** Raw-question BM25 misses reworded questions, but the agent loop recovers them (RETR-011). Measured only on synthetic questions: all cited entries made the top 5 in 72–79% of them, so multi-part answers are often built from part of what exists.
 
-So effort pays off most in triggering, coverage and verification, and least in a better ranker.
+So effort pays off most in triggering, coverage and verification. A better ranker comes after real queries show misses. The server's 54 searches in 30 days (RETR-012) fit point 1.
 
 *Ordering by our judgment from these measurements and the README's history, not a measured rate.*
 
@@ -439,7 +448,7 @@ So effort pays off most in triggering, coverage and verification, and least in a
 - Recall@5 and MRR per arm, compared on the same questions.
 - Retrieval and the final answer judged separately, as the cookbook does.
 
-**Size:** Anthropic's research team "started with a set of about 20 queries representing real usage patterns": "With effect sizes this large, you can spot changes with just a few test cases". Our arms differ by 17 to 27 points on hard rewordings, so 100 questions separate them. They can't separate arms at the 97–100% ceiling. A harder set needs questions that combine several entries.
+**Size:** Anthropic's research team "started with a set of about 20 queries representing real usage patterns": "With effect sizes this large, you can spot changes with just a few test cases". Our arms differ by 17 to 27 points on hard rewordings, so 100 questions separate them. They can't separate arms at the 97–100% ceiling. A harder set needs questions that combine several entries, scored on all cited entries, and rewordings written without the answer in view. Leave this file out when scoring: it quotes test questions.
 
 ## [RETR-020] Adding vector RAG before an eval shows misses
 - Type: anti-pattern
@@ -457,7 +466,7 @@ So effort pays off most in triggering, coverage and verification, and least in a
 - Results you can't explain by reading the query: Anthropic calls semantic search "less transparent" and "more difficult to maintain" (RETR-002).
 - More moving parts in a server that's down to one `node:sqlite` table.
 
-**What it buys here:** on our measurement, nothing the agent loop doesn't already give. The search-and-read loop found a cited entry in 99–100% of reworded questions (RETR-010).
+**What it buys here:** nothing we could measure. The search-and-read loop found a cited entry in 99–100% of reworded questions (RETR-010). That test is synthetic and at its ceiling, so it shows no gap, not that none exists.
 
 **When it would be right:**
 - Callers that can't rewrite queries: a single-shot pipeline with no agent, or a UI search box.
@@ -472,14 +481,20 @@ The README's rule already says this: "Revisit if lookups start failing."
 
 Ranked by impact against effort.
 
-1. **Keep keyword search, the agent loop and plain Markdown; won't add embeddings, a vector store, GraphRAG or whole-corpus prompting** (decision 2026-10-20). With a model writing the queries, BM25 reached 97–100% top-5 on 300 questions. The corpus fills 93% of a 1M window (RETR-009), and Anthropic recommends agentic search first (RETR-002). Revisit only on a measured miss: RETR-010, RETR-011, RETR-020, RETR-009.
+1. **Keep keyword search, the agent loop and plain Markdown; won't add embeddings, a vector store, GraphRAG or whole-corpus prompting for now** (decision 2026-10-20).
+   - With a model writing the queries, BM25 reached 97–100% any-cited top-5 on 300 synthetic questions.
+   - The corpus fills 93% of a 1M window (RETR-009), and Anthropic recommends agentic search first (RETR-002).
+   - Revisit on a miss in real queries (recommendation 4) or a harder eval (RETR-019).
+   - `ENTRIES.md` in the prompt scored best (99–100%), but at about 49k tokens it is over the 25,000-token MCP output cap (TOK-023) and grows with every entry. Keep it as the next step if search misses, behind a tool that returns one topic's index.
+   - Entries: RETR-010, RETR-011, RETR-020, RETR-009.
 2. **Spend effort where lookups fail: invocation, coverage, verification** (high impact, ongoing). The trigger evals and the re-verification routine already cover two of these. RETR-018.
-3. **Commit the reworded and uncovered question sets as a retrieval eval** (medium impact, low effort). Done in this PR as `evals/retrieval/`. A follow-up for the server's own test, which asserts only the vocabulary-matched 75%, needs a change in `mcp-server/` and so its own issue. RETR-019, RETR-010.
+3. **Commit the reworded and uncovered question sets as a retrieval eval** (medium impact, low effort). Done 2026-10-20 as `evals/retrieval/`; a harder set with multi-entry questions, near-miss negatives and all-cited scoring is still to write. A follow-up for the server's own test, which asserts only the vocabulary-matched 75%, needs a change in `mcp-server/` and so its own issue. RETR-019, RETR-010.
 4. **Decide whether the server should log queries and returned IDs** (medium impact, low effort; a privacy call for the owner). Without them the server's metrics can't show a miss (RETR-012), and an eval can't sample real questions (RETR-019). The server is public and unauthenticated, so logging query text means storing strangers' questions. A middle way is to log only returned and fetched IDs.
 5. **If misses appear: first an LLM pick from BM25's top 30, then hybrid search** (low effort, then medium). The rerank arm reached 94–99% with no new infrastructure, capped by BM25's top 30 (RETR-010). sqlite-vec with RRF and Voyage embeddings would be the step after (RETR-016).
 
 ## Open questions
 
+- **Real queries, multi-entry answers and near misses.** All 300 test questions derive from Quick answers and were reworded with the answer in view. All-cited recall (72–79%), near-but-wrong entries and false abstention are unmeasured beyond RETR-010 and RETR-012.
 - **Real query distribution.** All 300 test questions derive from Quick answers. How agents phrase real lookups is unknown, since the server logs no queries (recommendation 4).
 - **Answer correctness.** Only retrieval was measured. Whether the forked Haiku's summary matches the entries, and whether that depends on how many entries an answer combines, wasn't tested (RETR-018).
 - **Embeddings on our data.** Not tested: no embedding API or model host was reachable from the session (RETR-010).

@@ -1,6 +1,6 @@
 /**
  * Scores the results of run.ts: per arm and question set, how many questions had a cited entry at rank 1, in the top 3
- * and in the top 5, and the mean reciprocal rank over the top 5.
+ * and in the top 5, the mean reciprocal rank over the top 5, and how many had every cited entry in the top 5.
  *
  *   node evals/retrieval/score.ts
  */
@@ -11,8 +11,8 @@ const OUT = join(import.meta.dirname, '../results/retrieval');
 const questions: { n: number; cited: string[] }[] = JSON.parse(readFileSync(join(import.meta.dirname, 'questions.json'), 'utf8'));
 const norm = (id: string) => id.replace(/[[\]\s]/g, '').toUpperCase();
 
-console.log('| Arm | Set | n | @1 | @3 | @5 | MRR@5 |');
-console.log('|---|---|---|---|---|---|---|');
+console.log('| Arm | Set | n | @1 | @3 | @5 | MRR@5 | All cited @5 |');
+console.log('|---|---|---|---|---|---|---|---|');
 for (const arm of ['bm25', 'kw', 'rerank', 'index', 'long', 'agent']) {
   for (const set of ['original', 'natural', 'hard']) {
     const file = join(OUT, `${arm}-${set}.json`);
@@ -22,6 +22,7 @@ for (const arm of ['bm25', 'kw', 'rerank', 'index', 'long', 'agent']) {
     const rank = (q: (typeof rows)[number]) => (results[q.n].top ?? []).slice(0, 5).map(norm).findIndex((id: string) => q.cited.includes(id));
     const at = (k: number) => rows.filter(q => rank(q) >= 0 && rank(q) < k).length;
     const mrr = rows.reduce((a, q) => a + (rank(q) >= 0 ? 1 / (rank(q) + 1) : 0), 0) / rows.length;
-    console.log(`| ${arm} | ${set} | ${rows.length} | ${at(1)} | ${at(3)} | ${at(5)} | ${mrr.toFixed(2)} |`);
+    const all = rows.filter(q => { const t = (results[q.n].top ?? []).slice(0, 5).map(norm); return q.cited.every(id => t.includes(id)); }).length;
+    console.log(`| ${arm} | ${set} | ${rows.length} | ${at(1)} | ${at(3)} | ${at(5)} | ${mrr.toFixed(2)} | ${all} |`);
   }
 }

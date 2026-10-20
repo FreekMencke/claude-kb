@@ -17,9 +17,24 @@ node evals/retrieval/run.ts bm25 && node evals/retrieval/score.ts
 ```
 
 Every other arm calls `claude -p` on Haiku. On 2026-10-20 a full run of all arms and sets cost about $3, more than half of it
-the `long` arm's 934k-token prompt. The `agent` and `uncovered` arms need the server running locally
-(`node server.ts --local --port 8765` from `mcp-server/` after `npm ci`). Results go to `evals/results/retrieval/`,
-which git ignores; delete a result file to rerun that arm and set.
+the `long` arm's 934k-token prompt. Results go to `evals/results/retrieval/`, which git ignores; delete a result file to rerun
+that arm and set.
+
+`topics/kb-knowledge-retrieval.md` quotes these questions and names the uncovered technologies, so every arm leaves it
+out. The `agent` and `uncovered` arms query the server, which indexes every topic file, so run it from a worktree
+without that file:
+
+```bash
+git worktree add /tmp/kb-eval HEAD && rm /tmp/kb-eval/topics/kb-knowledge-retrieval.md
+```
+
+```bash
+cd /tmp/kb-eval/mcp-server && npm ci && node server.ts --local --port 8765
+```
+
+The scores in RETR-010 are any cited entry in the top 5. Half the questions cite several entries; count all of them
+too before trusting a ceiling score. The rewordings were written with the answer in view, so they are easier for a
+model than real questions (RETR-010).
 
 New entries change the labels: a later entry may answer a question better than the cited one, which would then show
 as a miss. Check misses by hand before reading them as a ranking problem.

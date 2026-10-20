@@ -9,8 +9,8 @@
  * prompt, about 934k tokens), agent (Haiku with the server's kb_search and kb_get, one question per run), uncovered
  * (the agent on questions no entry answers). Sets: original, natural, hard (default: all three).
  *
- * Every arm but bm25 runs `claude -p` on Haiku. The agent arms need the server running locally first:
- *   cd mcp-server && npm ci && node server.ts --local --port 8765
+ * Every arm but bm25 runs `claude -p` on Haiku. The agent arms need the server running locally, from a worktree without
+ * kb-knowledge-retrieval.md (it quotes these questions); see README.md.
  * Results go to evals/results/retrieval/ (ignored); score them with score.ts.
  */
 import { execFile, execFileSync } from 'node:child_process';
@@ -34,7 +34,11 @@ interface Question {
 const repo = load(ROOT);
 const questions: Question[] = JSON.parse(readFileSync(join(import.meta.dirname, 'questions.json'), 'utf8'));
 const text = (q: Question, set: Set) => (set === 'original' ? q.question : q[set]);
-const top = (query: string, k: number) => repo.search(query, { limit: k }).map(h => h.entry.id);
+// This eval's own topic file quotes its questions and names the uncovered technologies, so every arm leaves it out
+const OWN = 'kb-knowledge-retrieval.md';
+const OWN_PREFIX = 'RETR-';
+const hits = (query: string, k: number) => repo.search(query, { limit: k + 25 }).filter(h => !h.entry.id.startsWith(OWN_PREFIX)).slice(0, k);
+const top = (query: string, k: number) => hits(query, k).map(h => h.entry.id);
 const batches = <T>(a: T[], n: number) => Array.from({ length: Math.ceil(a.length / n) }, (_, i) => a.slice(i * n, i * n + n));
 const IDS = {
   type: 'object',
@@ -86,6 +90,8 @@ async function agent(items: { n: number; question: string }[], uncovered: boolea
         `\n\nQuestion: ${item.question}`;
       const args = ['-p', prompt, '--model', 'haiku', '--max-turns', '12', '--max-budget-usd', '0.5', '--strict-mcp-config'];
       args.push('--mcp-config', mcp, '--tools', '', '--allowedTools', 'mcp__kb__kb_search,mcp__kb__kb_get');
+      // kb_quick_answers returns the Quick-answer tables these questions come from
+      args.push('--disallowedTools', 'mcp__kb__kb_quick_answers,mcp__kb__kb_status');
       args.push('--output-format', 'stream-json', '--verbose', '--json-schema', JSON.stringify(schema));
       const started = Date.now();
       execFile('claude', args, { cwd: OUT, maxBuffer: 1 << 26, encoding: 'utf8' }, (err, stdout) => {
@@ -133,7 +139,7 @@ async function run(arm: string, set: Set): Promise<{ results: Record<number, any
       const items = b.map(q => ({
         n: q.n,
         question: text(q, set),
-        candidates: repo.search(text(q, set), { limit: 30 }).map(h => `${h.entry.id}: ${h.entry.title} [${h.entry.tags.join(', ')}] ${h.entry.summary}`),
+        candidates: hits(text(q, set), 30).map(h => `${h.entry.id}: ${h.entry.title} [${h.entry.tags.join(', ')}] ${h.entry.summary}`),
       }));
       const r = ask(`For each question, pick the up to 5 candidates most likely to answer it, best first, by their IDs. Pick only from that question's candidates.\n\n${JSON.stringify(items, null, 1)}`, IDS);
       cost += r.cost;
@@ -142,10 +148,11 @@ async function run(arm: string, set: Set): Promise<{ results: Record<number, any
   } else if (arm === 'index' || arm === 'long') {
     const file = join(OUT, `${arm}-system.md`);
     if (arm === 'index') {
-      writeFileSync(file, "You answer lookups against this knowledge base's index: every entry's ID, title, type and tags.\n\n" + readFileSync(join(ROOT, 'ENTRIES.md'), 'utf8'));
+      const entries = readFileSync(join(ROOT, 'ENTRIES.md'), 'utf8').split('\n').filter(l => !l.startsWith(`| ${OWN_PREFIX}`)).join('\n');
+      writeFileSync(file, "You answer lookups against this knowledge base's index: every entry's ID, title, type and tags.\n\n" + entries);
     } else {
       // Every topic file without its Quick answers, which hold the original questions and their answers
-      const topics = readdirSync(join(ROOT, 'topics')).filter(f => /^kb-.*\.md$/.test(f)).sort();
+      const topics = readdirSync(join(ROOT, 'topics')).filter(f => /^kb-.*\.md$/.test(f) && f !== OWN).sort();
       const corpus = topics.map(f => readFileSync(join(ROOT, 'topics', f), 'utf8')).join('').replace(/^## Quick answers\n[\s\S]*?(?=^## )/gm, '');
       writeFileSync(file, 'You answer lookups against this knowledge base. It follows in full.\n\n' + corpus);
     }
