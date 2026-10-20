@@ -143,6 +143,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-github.md](topics/kb-github.md) | `GH` | GitHub through `gh` and the API: issues, rulesets, releases, Copilot cloud agent |
 | [kb-web-security.md](topics/kb-web-security.md) | `WEBSEC` | Security of agent-written web code: OWASP Top 10:2025, headers and CSP nonces in Angular SSR, SSRF, cookies, CSRF, review tools |
 | [kb-oss-licensing.md](topics/kb-oss-licensing.md) | `OSS` | Open-source licensing and repo hygiene: licences, SPDX, dependency and font licences, community health files |
+| [kb-knowledge-retrieval.md](topics/kb-knowledge-retrieval.md) | `RETR` | Giving agents knowledge: agentic search, RAG, long context and curated knowledge bases, measured on this one |
 
 | Other files | What it holds |
 |---|---|
@@ -154,6 +155,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
+| [evals/retrieval/](evals/retrieval/README.md) | The retrieval eval behind RETR-010 to RETR-012 |
 | [.claude-plugin/](.claude-plugin/plugin.json) | The `kb-lookup` plugin (the skill plus the server) and its marketplace, `freek-kb`. No `version`, so installs follow each commit (SKILL-062) |
 | [mcp-server/](mcp-server/README.md) | The remote MCP server that serves this knowledge base |
 | [assets/](assets) | Logo, and the banner in light and dark with its source (`banner.html`) |
@@ -231,7 +233,9 @@ a PR from `claude/reverify-<YYYY-MM-DD>`. Its prompt lives in the routine, not i
 <summary>Why the knowledge base is built this way</summary>
 
 - **Plain Markdown in git, keyword search, no vector search.** At this size an index plus keyword search (grep, or the
-  server's SQLite FTS5) beats semantic search, and files stay reviewable. Revisit if lookups start failing.
+  server's SQLite FTS5) beats semantic search, and files stay reviewable. Measured 2026-10-20: with the model writing the
+  queries, BM25 found a cited entry in the top 5 for 97–100% of 300 questions, reworded ones included (RETR-010). Revisit
+  if lookups start failing; `evals/retrieval/` reruns the measurement.
 - **Opus leads, Sonnet readers.** Research ran with an Opus 5.5 lead at high effort and Sonnet subagents (or a
   workflow) reading sources. Judging sources is the hard part; Haiku readers risk errors every agent inherits.
 - **Only the lead writes files.** Research subagents return findings with source URLs.

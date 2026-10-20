@@ -433,6 +433,31 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | JSUP-014 | Triaging a Dependabot PR | pattern | dependabot, triage, comment-commands |
 | JSUP-015 | When the model's training predates the versions in use | recommendation | knowledge-cutoff, docs, llms-txt |
 
+## Giving agents knowledge: retrieval, RAG, long context and curated knowledge bases (`topics/kb-knowledge-retrieval.md`, RETR)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| RETR-001 | A knowledge base for agents is a compiled layer, not a search problem | pattern | essence, curation, compiled-knowledge |
+| RETR-002 | Anthropic: start with agentic search, add semantic search only if needed | recommendation | agentic-search, rag, claude-code, context-engineering |
+| RETR-003 | Claude Code dropped RAG and a local vector database | fact | claude-code, rag, history |
+| RETR-004 | Contextual Retrieval: what it measured and what it means for curated entries | fact | contextual-retrieval, embeddings, bm25, reranking |
+| RETR-005 | The contextual embeddings cookbook: Pass@k on 248 code queries | fact | cookbook, evaluation, pass-at-k |
+| RETR-006 | claude.ai Projects switch to RAG near the context limit | fact | projects, claude-ai, rag-mode |
+| RETR-007 | Retrieval building blocks in the Claude API | fact | api, search-results, citations, tool-search |
+| RETR-008 | Context rot: more context lowers recall | fact | context-rot, long-context, nolima |
+| RETR-009 | This knowledge base no longer fits in the prompt | fact | long-context, tokens, cost, measurement |
+| RETR-010 | Seven retrieval options measured on this knowledge base | comparison | measurement, bm25, rerank, index-in-context |
+| RETR-011 | Keyword search fails on reworded questions; let the model write the keywords | pattern | bm25, query-rewriting, vocabulary-mismatch |
+| RETR-012 | The lookup says "no entry" for uncovered questions | fact | abstention, negatives, metrics |
+| RETR-013 | How AI coding tools retrieve context | comparison | cursor, cline, codex, copilot, sourcegraph, augment |
+| RETR-014 | Karpathy's LLM Wiki: an index file until hundreds of pages | pattern | llm-wiki, index-file, qmd, community |
+| RETR-015 | GraphRAG answers global questions, not lookups | fact | graphrag, lightrag, knowledge-graph |
+| RETR-016 | Hybrid search in a small Node server | tool | sqlite-vec, orama, voyage, rrf |
+| RETR-017 | Published evidence on lexical, dense and long-context retrieval | comparison | beir, browsecomp-plus, self-route, lara |
+| RETR-018 | Where knowledge-base lookups fail, in order | recommendation | failure-modes, triggering, staleness |
+| RETR-019 | Evaluating retrieval for a knowledge base | recommendation | evaluation, recall, mrr, negatives |
+| RETR-020 | Adding vector RAG before an eval shows misses | anti-pattern | rag, embeddings, premature |
+
 ## Small-cluster Kubernetes with Flux GitOps and Grafana/Prometheus observability (`topics/kb-kubernetes-flux.md`, KUBE)
 
 | ID | Title | Type | Tags |

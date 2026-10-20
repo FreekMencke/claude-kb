@@ -1,0 +1,1096 @@
+[
+  {
+    "n": 1,
+    "topic": "nodejs",
+    "question": "Why does `node file.ts` fail on an enum, decorator or import?",
+    "natural": "Why does Node refuse to run my TypeScript file that uses an enum or a decorator?",
+    "hard": "Running a .ts script directly with Node throws a syntax or module-resolution error, though the same code compiles fine with tsc. Which constructs aren't supported when Node just erases annotations?",
+    "cited": [
+      "NODE-004"
+    ]
+  },
+  {
+    "n": 2,
+    "topic": "github",
+    "question": "How do I add a sub-issue or a blocked-by link with `gh`?",
+    "natural": "What gh command flags let me set a parent issue or mark an issue as blocked by another?",
+    "hard": "I want to link GitHub issues into a hierarchy and dependency chain from the terminal and read those relationships back as JSON. Which CLI version and options do that?",
+    "cited": [
+      "GH-001"
+    ]
+  },
+  {
+    "n": 3,
+    "topic": "web-performance",
+    "question": "Which Cache-Control for bundles, other static files and SSR HTML?",
+    "natural": "What Cache-Control headers should I set for my Angular build's JS bundles, assets and server-rendered pages?",
+    "hard": "After deploying an Angular SSR app behind Express, users either get stale pages or re-download everything every visit. What caching header values suit fingerprinted files, other assets and the rendered markup, and what does the server set by default?",
+    "cited": [
+      "WEBPERF-012"
+    ]
+  },
+  {
+    "n": 4,
+    "topic": "js-lint-build",
+    "question": "How do I keep `ng build` output short?",
+    "natural": "How can I get much shorter output from ng build?",
+    "hard": "Angular's build prints a huge table of files that eats my agent's context window. How do I make it emit something compact?",
+    "cited": [
+      "JSTOOL-020"
+    ]
+  },
+  {
+    "n": 5,
+    "topic": "kubernetes-flux",
+    "question": "Which Kubernetes versions does Flux 2.9 support? Can I go to 1.37?",
+    "natural": "Is Kubernetes 1.37 supported by Flux 2.9, and which versions are?",
+    "hard": "I'm about to upgrade my cluster to the newest Kubernetes minor release and run GitOps with Flux 2.9 and cert-manager. Will the controllers keep working, and when is support expected?",
+    "cited": [
+      "KUBE-003",
+      "KUBE-009"
+    ]
+  },
+  {
+    "n": 6,
+    "topic": "skills",
+    "question": "Should I add a \"forced skill evaluation\" hook?",
+    "natural": "Is it worth adding a hook that forces Claude to evaluate skills before every prompt?",
+    "hard": "I saw a blog claiming a prompt-time hook makes skills activate far more reliably. Should I adopt it in my project's setup?",
+    "cited": [
+      "SKILL-029"
+    ]
+  },
+  {
+    "n": 7,
+    "topic": "npm",
+    "question": "How do I force a transitive dependency's version?",
+    "natural": "How do I pin a nested dependency to a specific version in npm?",
+    "hard": "A vulnerable package deep in my dependency tree keeps resolving to an old release that my direct dependency requires. How do I make npm install a fixed version, and how can I patch or amend third-party packages?",
+    "cited": [
+      "NPM-018"
+    ]
+  },
+  {
+    "n": 8,
+    "topic": "infra-agents",
+    "question": "What does auto mode block for `terraform`, `kubectl`, `helm` and `aws`?",
+    "natural": "Which terraform, kubectl, helm and aws actions does Claude Code's auto mode block?",
+    "hard": "If I let the agent run infrastructure commands without prompting, which risky operations will the safety classifier still stop, and how reliable is it?",
+    "cited": [
+      "INFRA-009"
+    ]
+  },
+  {
+    "n": 9,
+    "topic": "mcp",
+    "question": "Local, project or user scope?",
+    "natural": "Which MCP server scope should I use, and which wins if names collide?",
+    "hard": "I have the same server configured in several places for different repos and for myself. Where should credentials versus shared team config go, and which definition takes effect when they conflict?",
+    "cited": [
+      "MCP-001"
+    ]
+  },
+  {
+    "n": 10,
+    "topic": "nestjs",
+    "question": "What breaks upgrading Nest 11 to 12?",
+    "natural": "What are the breaking changes when migrating from NestJS 11 to 12?",
+    "hard": "My Nest app compiles after bumping major versions, but I worry about runtime differences in startup hooks, inheritance, logging and config validation. What changes and what does the upgrade tool leave to me?",
+    "cited": [
+      "NEST-001",
+      "NEST-006"
+    ]
+  },
+  {
+    "n": 11,
+    "topic": "nodejs",
+    "question": "Does Node 26 ship npm 12 or Corepack?",
+    "natural": "Is npm 12 or Corepack bundled with Node 26?",
+    "hard": "On a fresh Node 26 install, I can't find corepack and npm is an older major. Which Node versions include which, and when does the newer npm arrive?",
+    "cited": [
+      "NODE-015"
+    ]
+  },
+  {
+    "n": 12,
+    "topic": "npm",
+    "question": "What does trusted publishing require on the npm side?",
+    "natural": "What are the requirements to publish to npm via OIDC trusted publishing?",
+    "hard": "I want to publish from CI without a long-lived token. What tool versions, runner type, registry-side setup and package.json fields must be in place?",
+    "cited": [
+      "NPM-009"
+    ]
+  },
+  {
+    "n": 13,
+    "topic": "prompting",
+    "question": "Why does my reviewer miss bugs after \"only report high severity\"?",
+    "natural": "Why does my code review prompt miss real bugs when I tell it to report only important issues?",
+    "hard": "After I told an automated reviewer to flag only serious problems, it surfaces far fewer defects than before even though they exist. What's going on and how should I word the prompt?",
+    "cited": [
+      "PROMPT-032"
+    ]
+  },
+  {
+    "n": 14,
+    "topic": "index",
+    "question": "Which CSS can an agent use without a fallback, and how does it check?",
+    "natural": "Which modern CSS features can I use without fallbacks, and how do I check browser support?",
+    "hard": "When an agent writes stylesheets for an Angular app, how does it decide which newer features are safe to use unguarded, and how can it verify a feature's support status from the command line?",
+    "cited": [
+      "CSS-005",
+      "CSS-006",
+      "CSS-002",
+      "CSS-016",
+      "CSS-003"
+    ]
+  },
+  {
+    "n": 15,
+    "topic": "angular",
+    "question": "Are Angular's AGENTS.md, rules files and llms.txt worth loading?",
+    "natural": "Should I load Angular's AGENTS.md, rules files or llms.txt into Claude Code?",
+    "hard": "There are several AI-oriented guidance files published for Angular. With an MCP server already connected, is it worth feeding them to the agent, given version mismatches and size?",
+    "cited": [
+      "NG-015",
+      "NG-016"
+    ]
+  },
+  {
+    "n": 16,
+    "topic": "web-security",
+    "question": "Is Angular's XSRF support enough against CSRF?",
+    "natural": "Does Angular's built-in XSRF handling protect my app from CSRF?",
+    "hard": "My front end sends requests via HttpClient and I assumed cross-site forgery is covered. What does the client actually do, what must the backend add, and is there a tokenless option in NestJS?",
+    "cited": [
+      "WEBSEC-009"
+    ]
+  },
+  {
+    "n": 17,
+    "topic": "index",
+    "question": "How literally do the 5.x models follow instructions, and should I write MUST or IMPORTANT?",
+    "natural": "How literally do Claude 5 models follow prompts, and should I use MUST and IMPORTANT in them?",
+    "hard": "My old prompts shout in capitals to get compliance, and the newer models now seem to overreact or do exactly and only what's written. How should I adjust the wording and emphasis?",
+    "cited": [
+      "PROMPT-003",
+      "PROMPT-021",
+      "PROMPT-004",
+      "PROMPT-005",
+      "SKILL-020"
+    ]
+  },
+  {
+    "n": 18,
+    "topic": "sessions",
+    "question": "Is `/model` or `/effort` safe with several sessions open?",
+    "natural": "Is it safe to use /model or /effort when I have multiple Claude Code sessions running?",
+    "hard": "I changed the model in one terminal and another running session started behaving differently. How do I give each concurrent session its own configuration?",
+    "cited": [
+      "SESS-011"
+    ]
+  },
+  {
+    "n": 19,
+    "topic": "oss-licensing",
+    "question": "What must an agent never do with third-party code?",
+    "natural": "What shouldn't an AI agent do with third-party code and licenses?",
+    "hard": "My agent is copying snippets from other repos and docs into our codebase. Which licensing mistakes must it avoid, and does the tool filter public code for us?",
+    "cited": [
+      "OSS-011"
+    ]
+  },
+  {
+    "n": 20,
+    "topic": "index",
+    "question": "What do parallel sessions in worktrees share, and can I `git stash`?",
+    "natural": "What is shared between parallel Claude Code sessions in git worktrees, and is git stash safe?",
+    "hard": "I run several agents each in its own checkout of the same repo. What state leaks between them, and why might saved uncommitted changes vanish or get applied by another agent?",
+    "cited": [
+      "SESS-001",
+      "SESS-002",
+      "SESS-004"
+    ]
+  },
+  {
+    "n": 21,
+    "topic": "repo-agents",
+    "question": "Which model and effort for each repo agent?",
+    "natural": "What model and effort level should each subagent in my repo use?",
+    "hard": "I'm defining reviewers, a test writer, a docs writer and a browser checker as helper agents. How do I assign capability tiers to each, and where should that be configured?",
+    "cited": [
+      "REPO-022",
+      "ORCH-030"
+    ]
+  },
+  {
+    "n": 22,
+    "topic": "claude-api",
+    "question": "Agent SDK or `claude -p`?",
+    "natural": "Should I use the Agent SDK or claude -p for automation?",
+    "hard": "I need to run Claude from a script or a backend service with approval callbacks and cost limits. When is a one-shot CLI call enough and when do I need the programmatic library?",
+    "cited": [
+      "CAPI-011",
+      "CAPI-012"
+    ]
+  },
+  {
+    "n": 23,
+    "topic": "kubernetes-flux",
+    "question": "ingress-nginx is retired: what does that mean?",
+    "natural": "What does the retirement of ingress-nginx mean for my cluster?",
+    "hard": "My cluster routes traffic through the popular NGINX-based controller and I heard it's end of life. Will it stop working, is the Ingress resource going away, and what should I migrate to?",
+    "cited": [
+      "KUBE-006"
+    ]
+  },
+  {
+    "n": 24,
+    "topic": "infra-agents",
+    "question": "How do I debug an incident without flooding context?",
+    "natural": "How can an agent investigate a production incident from logs without filling up its context?",
+    "hard": "During an outage, pulling raw log output into the conversation blows up the token budget. What's a way to query narrowly and keep only a digest in the main session?",
+    "cited": [
+      "INFRA-018",
+      "INFRA-019"
+    ]
+  },
+  {
+    "n": 25,
+    "topic": "github",
+    "question": "Why did `gh release create` tag the wrong commit?",
+    "natural": "Why did gh release create use the wrong commit for the tag?",
+    "hard": "I published a GitHub release from the command line for a tag that didn't exist yet, and the release points at a commit I didn't intend, not my feature branch. How do I control that?",
+    "cited": [
+      "GH-006"
+    ]
+  },
+  {
+    "n": 26,
+    "topic": "surfaces",
+    "question": "Can an artifact show live data or collect input?",
+    "natural": "Can an artifact pull in live data from connectors, let people download files, or store input from users?",
+    "hard": "I'm building a shareable page that should display current numbers from an outside service under each person's own access, offer an export, and let colleagues leave feedback that reaches Claude. Is any of that supported, and is there somewhere to persist what people enter?",
+    "cited": [
+      "SURF-012",
+      "SURF-013",
+      "SURF-014"
+    ]
+  },
+  {
+    "n": 27,
+    "topic": "repo-agents",
+    "question": "What does osrs-tracker-web have?",
+    "natural": "What Claude Code setup (agents, hooks, skills, CI) does the osrs-tracker-web repo have, and how has it changed recently?",
+    "hard": "I'm auditing a particular web repo for how it uses Claude: which review helpers, automatic scripts around edits and pushes, and instruction files exist, whether automation runs on pull requests, and how often the checker came back with nothing to report. What was added later, and what was tried and abandoned?",
+    "cited": [
+      "REPO-001",
+      "REPO-004"
+    ]
+  },
+  {
+    "n": 28,
+    "topic": "token-usage",
+    "question": "How big is the fixed overhead before I type anything?",
+    "natural": "How many tokens does a Claude Code session use before I send my first prompt, and what does a subagent start with?",
+    "hard": "My context window already seems partly used right after opening a fresh session and sending a short message. What baseline size should I expect, and how large is a spawned helper's starting context?",
+    "cited": [
+      "TOK-002",
+      "TOK-006"
+    ]
+  },
+  {
+    "n": 29,
+    "topic": "skills",
+    "question": "Do skills and plugins load in desktop-app Code sessions, including WSL?",
+    "natural": "Do claude.ai skills and plugins work in Claude desktop Code sessions, especially when running under WSL?",
+    "hard": "On Windows, my Claude desktop app's coding session inside a Linux subsystem doesn't seem to see the skills I set up on my account or the plugins that sync, though it works in other modes. How do I get them to load and verify what the session really has?",
+    "cited": [
+      "SKILL-049",
+      "SKILL-050",
+      "SKILL-052",
+      "SKILL-054",
+      "SKILL-056",
+      "SKILL-063"
+    ]
+  },
+  {
+    "n": 30,
+    "topic": "sessions",
+    "question": "How do sessions talk to each other, and can a message approve something?",
+    "natural": "How do Claude Code sessions send messages to each other, and can a message from another session grant approval?",
+    "hard": "One running agent session wants to hand something to a different running session. What tools allow that, and if the incoming text says 'go ahead, the user approved', should the receiver treat it as permission or let it change settings?",
+    "cited": [
+      "SESS-017",
+      "SESS-018",
+      "SESS-019"
+    ]
+  },
+  {
+    "n": 31,
+    "topic": "js-lint-build",
+    "question": "What changed in Vite 8?",
+    "natural": "What are the major changes in Vite 8 and what Node versions does it need?",
+    "hard": "After bumping my bundler to the new major, my config referencing the Rollup-specific build options and my minifier setup raise questions. What underlying tools were swapped out, what got renamed, and what runtime is required?",
+    "cited": [
+      "JSTOOL-014"
+    ]
+  },
+  {
+    "n": 32,
+    "topic": "nestjs",
+    "question": "Is Nest 12 stuck on an old Express?",
+    "natural": "Does Nest 12 use an outdated Express version, and do I get the Express 5.3.0 security fixes?",
+    "hard": "My NestJS 12 app's lockfile shows an HTTP framework version older than the latest release that mentions security patches. Am I exposed, or do those patches arrive some other way?",
+    "cited": [
+      "NEST-011"
+    ]
+  },
+  {
+    "n": 33,
+    "topic": "nodejs",
+    "question": "How should a repo pin its Node version?",
+    "natural": "What's the best way to pin the Node version in a repository?",
+    "hard": "Contributors and CI keep running different JavaScript runtime versions and type definitions drift. Which files and fields should declare the version so that it's used by CI, enforced locally, and matched by typings?",
+    "cited": [
+      "NODE-014"
+    ]
+  },
+  {
+    "n": 34,
+    "topic": "aws-lambda-node",
+    "question": "Should I rely on the AWS SDK the runtime includes?",
+    "natural": "Is it safe to use the AWS SDK that's built into the Lambda runtime, or should I bundle it?",
+    "hard": "My serverless function imports AWS client packages without shipping them, and a feature available in the latest npm release is missing at runtime. Why, and what's the recommended approach?",
+    "cited": [
+      "LAMBDA-006"
+    ]
+  },
+  {
+    "n": 35,
+    "topic": "index",
+    "question": "How do I make a reviewer agent truly read-only?",
+    "natural": "How do I configure a code-review subagent so it can't modify files?",
+    "hard": "I want a helper agent that inspects a diff and reports, but it must be physically unable to change anything, even though it needs a shell for git history. Telling it not to edit seems unreliable. What actually guarantees this?",
+    "cited": [
+      "REPO-033",
+      "REPO-031",
+      "REPO-032"
+    ]
+  },
+  {
+    "n": 36,
+    "topic": "prompting",
+    "question": "Should I write IMPORTANT, MUST or CRITICAL?",
+    "natural": "Should I use all-caps words like IMPORTANT, MUST or CRITICAL in prompts and CLAUDE.md?",
+    "hard": "Claude keeps ignoring one of my instructions, so I'm tempted to shout it in uppercase throughout my instruction file. Does that help with current models, or is there a better way?",
+    "cited": [
+      "PROMPT-004",
+      "PROMPT-005",
+      "SKILL-020"
+    ]
+  },
+  {
+    "n": 37,
+    "topic": "design",
+    "question": "Why do Claude's pages look generic?",
+    "natural": "Why do websites generated by Claude all look the same, and what clichés should I avoid?",
+    "hard": "Every landing page Claude produces for me has the same safe color schemes, typography and card layouts. What explains this sameness, and which specific look patterns are now considered telltale signs?",
+    "cited": [
+      "DESIGN-003"
+    ]
+  },
+  {
+    "n": 38,
+    "topic": "memory",
+    "question": "In what order do they load, and which wins?",
+    "natural": "In what order are CLAUDE.md files loaded, and which one takes precedence on conflict?",
+    "hard": "I have instruction files at the organization, personal, repo and subfolder levels that say contradictory things. How are they combined, and does the more specific one reliably beat the broader?",
+    "cited": [
+      "MEM-002"
+    ]
+  },
+  {
+    "n": 39,
+    "topic": "index",
+    "question": "What breaks in a Vitest 5 upgrade, and how do I check that an agent's tests catch bugs?",
+    "natural": "What are the breaking changes in Vitest 5, and how do I verify that AI-written tests actually catch bugs (mutation testing with Stryker)?",
+    "hard": "After upgrading my test runner to the newest major, mocks behave differently, a stale result survives a config change, and my agent's suite shows full coverage yet I doubt it. What should I watch for and how can I measure real test strength, including tool compatibility issues?",
+    "cited": [
+      "JSTEST-001",
+      "JSTEST-003",
+      "JSTEST-013",
+      "JSTEST-014"
+    ]
+  },
+  {
+    "n": 40,
+    "topic": "workflows",
+    "question": "How long do checkpoints last?",
+    "natural": "How many checkpoints does Claude Code keep and for how long?",
+    "hard": "I want to rewind file changes from a coding session I ran a few weeks ago, possibly after resuming it. How far back and how many restore points are retained before they get cleaned up?",
+    "cited": [
+      "FLOW-016"
+    ]
+  },
+  {
+    "n": 41,
+    "topic": "index",
+    "question": "How should an Angular SSR + Nest server set CSP and security headers, and what do agents get wrong?",
+    "natural": "How should I set up CSP and security headers for an Angular SSR app on Nest, and what security mistakes do coding agents make?",
+    "hard": "My server-rendered Angular frontend behind a Node API throws inline script/style violations, and I'm tempted to relax the policy. How do I do per-response nonces and header middleware correctly, and what risky shortcuts do AI assistants tend to take and which automated reviews miss them?",
+    "cited": [
+      "WEBSEC-003",
+      "WEBSEC-004",
+      "WEBSEC-005",
+      "WEBSEC-011",
+      "WEBSEC-012"
+    ]
+  },
+  {
+    "n": 42,
+    "topic": "accessibility",
+    "question": "Which accessibility standard should a site target in 2026, and can I build to WCAG 3.0?",
+    "natural": "Which WCAG version should I target in 2026, and is WCAG 3.0 ready to build against?",
+    "hard": "A client asks for accessibility compliance on a new site, and mentions the newest draft of the guidelines. Which published standard and conformance level should we actually design and test to, and can the draft be cited?",
+    "cited": [
+      "ACCESS-001"
+    ]
+  },
+  {
+    "n": 43,
+    "topic": "github-actions",
+    "question": "How do I keep SHA-pinned actions current?",
+    "natural": "How do I keep GitHub Actions pinned to commit SHAs up to date automatically?",
+    "hard": "We pin third-party workflow steps to full hashes for safety but they go stale. What automation bumps them along with the version comments, and will we be warned if a pinned one has a vulnerability?",
+    "cited": [
+      "GHA-012",
+      "JSUP-012"
+    ]
+  },
+  {
+    "n": 44,
+    "topic": "workflows",
+    "question": "Is plan mode read-only?",
+    "natural": "Is plan mode in Claude Code strictly read-only, and where are plans stored?",
+    "hard": "While Claude is drafting a proposal before I approve anything, I noticed commands still executing without asking me. What does that mode actually prevent, why do some commands go through, and where does the draft live on disk?",
+    "cited": [
+      "FLOW-006",
+      "FLOW-008"
+    ]
+  },
+  {
+    "n": 45,
+    "topic": "js-lint-build",
+    "question": "How do I find unused files, exports and dependencies?",
+    "natural": "How do I find unused files, exports, and dependencies in a JS/TS project with knip?",
+    "hard": "My TypeScript repo has accumulated dead code and stale packages, and I want a machine-readable report restricted to shipped code, plus to know what the process exit codes mean before I let a tool auto-delete things.",
+    "cited": [
+      "JSTOOL-013"
+    ]
+  },
+  {
+    "n": 46,
+    "topic": "js-lint-build",
+    "question": "Can Oxlint replace ESLint?",
+    "natural": "Can Oxlint fully replace ESLint in a TypeScript project?",
+    "hard": "Linting takes many seconds in CI and I'm considering a much faster Rust-based linter. What rule coverage, type-aware checks and limitations (templates, old config formats, custom parsers) would I face switching?",
+    "cited": [
+      "JSTOOL-006",
+      "JSTOOL-007",
+      "JSTOOL-010"
+    ]
+  },
+  {
+    "n": 47,
+    "topic": "documentation",
+    "question": "Where do our repos' changelog rules disagree?",
+    "natural": "Where do the changelog conventions differ between our repos?",
+    "hard": "Release notes in our web, api and aws repositories seem to be written inconsistently, with headings, markers for incompatible changes and links varying. Which rules still diverge, and which differences were already fixed?",
+    "cited": [
+      "DOC-018",
+      "DOC-019"
+    ]
+  },
+  {
+    "n": 48,
+    "topic": "aws-lambda-node",
+    "question": "What does a small scheduled function cost, and what makes it cost more?",
+    "natural": "How much does a small scheduled Lambda function cost, and what can drive the cost up?",
+    "hard": "I run a tiny cron-style serverless job and my AWS bill has unexpected line items. Normally what would it cost, and which settings quietly add charges?",
+    "cited": [
+      "LAMBDA-011"
+    ]
+  },
+  {
+    "n": 49,
+    "topic": "github-actions",
+    "question": "What should `permissions:` be?",
+    "natural": "What should I set for `permissions:` in GitHub Actions workflows?",
+    "hard": "I want my CI pipeline's automatic credential to have only the access it needs, but I'm unsure what happens when the setting is omitted or when I list only one scope. What's the recommended baseline?",
+    "cited": [
+      "GHA-013"
+    ]
+  },
+  {
+    "n": 50,
+    "topic": "css-baseline",
+    "question": "Which CSS can I use without a fallback now?",
+    "natural": "Which modern CSS features can I use now without fallbacks?",
+    "hard": "I'm writing a stylesheet in late 2026 and want to know which newer selectors, layout and color capabilities have reached broad browser support so I can skip progressive-enhancement workarounds.",
+    "cited": [
+      "CSS-005"
+    ]
+  },
+  {
+    "n": 51,
+    "topic": "memory",
+    "question": "How do memories go stale, and what to do?",
+    "natural": "Do Claude Code auto memory entries ever expire, and how should I clean up old ones?",
+    "hard": "Notes the agent saved weeks ago keep steering it toward work that's long finished. Nothing seems to age them out. How do I tell how old they are and keep the saved notes tidy?",
+    "cited": [
+      "MEM-018",
+      "MEM-035"
+    ]
+  },
+  {
+    "n": 52,
+    "topic": "nestjs",
+    "question": "Lambda or a container for a Nest API?",
+    "natural": "Should I deploy my NestJS API on AWS Lambda or in a container?",
+    "hard": "I'm choosing a runtime for a full HTTP backend written with Nest on AWS, and a ESM/CommonJS Nest 12 build on a serverless function needs a special Node flag. Is serverless worth it or should I ship an image?",
+    "cited": [
+      "NEST-014"
+    ]
+  },
+  {
+    "n": 53,
+    "topic": "og-images",
+    "question": "Does satori need `display: flex` on every `div`, and does it do grid?",
+    "natural": "Do I still need display: flex on every div in satori, and does it support CSS grid now?",
+    "hard": "Rendering images from JSX with satori, older versions threw errors unless every element had an explicit layout mode. After upgrading past 0.37, what layout defaults changed, and what unsupported value still errors?",
+    "cited": [
+      "OG-001",
+      "OG-002"
+    ]
+  },
+  {
+    "n": 54,
+    "topic": "skills",
+    "question": "Why don't users get my plugin update?",
+    "natural": "Why aren't my users receiving the new version of my Claude Code plugin?",
+    "hard": "I pushed fixes to my plugin's marketplace repo, but installed users still run the old code and nothing refreshes on its own. What's keeping them on the old release?",
+    "cited": [
+      "SKILL-035",
+      "SKILL-036"
+    ]
+  },
+  {
+    "n": 55,
+    "topic": "fonts",
+    "question": "How do I compile-check a `.fea` file?",
+    "natural": "How can I check that a .fea OpenType feature file compiles without building the whole font?",
+    "hard": "I edited ligature and kerning rules for a typeface and want a fast command that reports the line and column of a typo or an unknown glyph name, using the existing built binary font.",
+    "cited": [
+      "FONT-010",
+      "FONT-009"
+    ]
+  },
+  {
+    "n": 56,
+    "topic": "infra-agents",
+    "question": "Is a read-only MCP server enough to keep an agent read-only?",
+    "natural": "If an MCP server is set to read-only, can the agent still modify my cluster or AWS account?",
+    "hard": "I configured the Kubernetes tool integration so it can't write, but the agent also has shell access and my kubeconfig and AWS profile are on the machine. Is that enough to guarantee it can't change anything, and what really enforces it?",
+    "cited": [
+      "INFRA-006",
+      "INFRA-004",
+      "INFRA-005"
+    ]
+  },
+  {
+    "n": 57,
+    "topic": "accessibility",
+    "question": "Where should focus go after an Angular route change?",
+    "natural": "How should I manage keyboard focus after navigating between routes in an Angular app?",
+    "hard": "In my single-page Angular app, screen reader and keyboard users get lost after clicking a link because the page swaps without a reload and focus stays at the top of the document. What should I do on navigation?",
+    "cited": [
+      "ACCESS-012"
+    ]
+  },
+  {
+    "n": 58,
+    "topic": "infra-agents",
+    "question": "What should we change in our setup first?",
+    "natural": "What changes have we already made to our AWS, Kubernetes and MCP access setup, and what did we decide next?",
+    "hard": "I need a status recap of the security hardening for our agents' cloud and cluster access: what was finished in mid-October 2026 and which follow-up recommendations were accepted or dropped?",
+    "cited": [
+      "INFRA-024"
+    ]
+  },
+  {
+    "n": 59,
+    "topic": "design",
+    "question": "How do I prompt for distinctive design?",
+    "natural": "How do I write prompts that get Claude to produce distinctive, non-generic frontend designs?",
+    "hard": "Every UI Claude builds for me looks like the same bland template. What should I put in the request so the result has its own character, and what should I avoid saying when I correct it?",
+    "cited": [
+      "DESIGN-004",
+      "DESIGN-027"
+    ]
+  },
+  {
+    "n": 60,
+    "topic": "typescript",
+    "question": "What does 7.0 remove outright?",
+    "natural": "What does TypeScript 7.0 remove completely compared with 6.0?",
+    "hard": "After upgrading the compiler, my tsconfig now fails with errors saying options have been removed, and silencing the deprecation warnings no longer works. What changed and what else behaves differently?",
+    "cited": [
+      "TS-005"
+    ]
+  },
+  {
+    "n": 61,
+    "topic": "token-usage",
+    "question": "WebSearch `standard` or `extended`?",
+    "natural": "Should I use the standard or extended setting for Claude's WebSearch tool?",
+    "hard": "The web lookup tool has two depth modes, one costing much more time and money. Which should an agent pick by default, and how many lookups can it make in a session?",
+    "cited": [
+      "TOK-093",
+      "TOK-092"
+    ]
+  },
+  {
+    "n": 62,
+    "topic": "hooks",
+    "question": "Which hook event do I need?",
+    "natural": "Which Claude Code hook event should I use for a given job?",
+    "hard": "I want a script to veto a shell command before it runs, another to lint after edits, and another to inject context when a session opens. Which lifecycle trigger fits each?",
+    "cited": [
+      "HOOK-001",
+      "HOOK-002"
+    ]
+  },
+  {
+    "n": 63,
+    "topic": "skills",
+    "question": "How long may a description be?",
+    "natural": "What is the maximum length of a skill description?",
+    "hard": "My skill's trigger text is long and I'm worried it's getting cut off. What character limits apply on the different surfaces, and when does Claude Code trim it in its list?",
+    "cited": [
+      "SKILL-003",
+      "TOK-005"
+    ]
+  },
+  {
+    "n": 64,
+    "topic": "surfaces",
+    "question": "What's missing in a desktop WSL session?",
+    "natural": "What features aren't available in Claude Code desktop when running a WSL session?",
+    "hard": "I connected the desktop app to my Linux environment inside Windows and some panels and commands I use elsewhere are gone. Which capabilities don't work there?",
+    "cited": [
+      "SURF-004"
+    ]
+  },
+  {
+    "n": 65,
+    "topic": "index",
+    "question": "What should an agent change for web performance beyond the Core Web Vitals scores?",
+    "natural": "What should an agent change to improve web performance beyond just chasing Core Web Vitals scores?",
+    "hard": "Lighthouse numbers are fine, but real users still see sluggish clicks, slow back navigation and heavy page loads on our Angular site behind a reverse proxy. What concrete changes to code, headers, hints and server config should be made?",
+    "cited": [
+      "WEBPERF-001",
+      "WEBPERF-003",
+      "WEBPERF-004",
+      "WEBPERF-007",
+      "WEBPERF-008",
+      "WEBPERF-012",
+      "WEBPERF-014"
+    ]
+  },
+  {
+    "n": 66,
+    "topic": "web-performance",
+    "question": "Can I use Speculation Rules?",
+    "natural": "Can I use Speculation Rules in production, and which browsers support them?",
+    "hard": "I want to make next-page loads feel instant by having the browser load likely links ahead of time. Will Safari and Firefox users break, and what are the default aggressiveness levels?",
+    "cited": [
+      "WEBPERF-006"
+    ]
+  },
+  {
+    "n": 67,
+    "topic": "npm",
+    "question": "Which npm is current, and does my Node ship npm 12?",
+    "natural": "What is the current npm version, and does my Node.js install include npm 12?",
+    "hard": "I need to know which package manager release is the latest as of mid-October 2026 and whether my installed runtime bundles it or I have to install it separately, and what runtime version it requires.",
+    "cited": [
+      "NPM-001"
+    ]
+  },
+  {
+    "n": 68,
+    "topic": "npm",
+    "question": "Is `npm audit` worth running in CI?",
+    "natural": "Should I run npm audit in CI, and how do I gate on it?",
+    "hard": "Our pipeline gets flooded with vulnerability warnings from build tooling dependencies. Is it worth failing builds on them, and how do we also verify packages came from where they claim?",
+    "cited": [
+      "NPM-013",
+      "NPM-012"
+    ]
+  },
+  {
+    "n": 69,
+    "topic": "memory",
+    "question": "What survives `/compact`?",
+    "natural": "Which instructions and memory survive a /compact in Claude Code?",
+    "hard": "After the conversation got summarized to free up context, the agent stopped following conventions from a subdirectory's instructions file and path-specific rules. What gets reloaded and what gets lost?",
+    "cited": [
+      "MEM-003"
+    ]
+  },
+  {
+    "n": 70,
+    "topic": "skills",
+    "question": "How do I share skills with a team?",
+    "natural": "How can I share Claude skills with my team?",
+    "hard": "I've written some useful skills and want all my colleagues, including non-developers using the web app, to have them. Which distribution routes exist, and where won't they show up?",
+    "cited": [
+      "SKILL-034",
+      "SKILL-038",
+      "SKILL-059",
+      "SKILL-060"
+    ]
+  },
+  {
+    "n": 71,
+    "topic": "repo-agents",
+    "question": "How do I share one agent across several repos?",
+    "natural": "How do I share one Claude Code subagent across multiple repositories?",
+    "hard": "Three of our repos each carry a reviewer agent definition that has drifted apart. How can we keep one version, and what gets lost or doesn't work in remote runs if we package it?",
+    "cited": [
+      "REPO-040",
+      "REPO-043"
+    ]
+  },
+  {
+    "n": 72,
+    "topic": "design",
+    "question": "Screenshot or computed styles to check a design?",
+    "natural": "Should I verify a design with a screenshot or with computed styles?",
+    "hard": "Claude built a page and I need to confirm the padding, font sizes, colours and text legibility are right. Is eyeballing a rendered image enough, and what can't the model do about producing pictures?",
+    "cited": [
+      "DESIGN-007",
+      "DESIGN-008"
+    ]
+  },
+  {
+    "n": 73,
+    "topic": "og-images",
+    "question": "Which tags does a link preview need?",
+    "natural": "Which meta tags are needed for link previews on social sites?",
+    "hard": "When our URL is pasted into chat or a social feed, the card shows no big image or title. What head tags should the page include to get a proper large preview?",
+    "cited": [
+      "OG-006"
+    ]
+  },
+  {
+    "n": 74,
+    "topic": "repo-agents",
+    "question": "How do user, project and plugin levels combine?",
+    "natural": "How do user-level, project-level and plugin-level Claude Code configs combine and which wins?",
+    "hard": "The same setting, permission, hook, agent or skill is defined in several places on my machine and in the repo. Which definition takes effect, and which ones are merged rather than replaced?",
+    "cited": [
+      "REPO-005",
+      "REPO-006"
+    ]
+  },
+  {
+    "n": 75,
+    "topic": "index",
+    "question": "Can fontc replace fontmake, and how should a self-hosted web font be served?",
+    "natural": "Can fontc replace fontmake for building my font family, and how should I serve a self-hosted web font?",
+    "hard": "We build nine static weights plus a variable font and are tempted by the new Rust compiler for fonts. Should we switch, and how do we ship the result to browsers without layout shift or losing OpenType features when trimming glyphs?",
+    "cited": [
+      "FONT-003",
+      "FONT-004",
+      "FONT-019",
+      "FONT-020",
+      "FONT-021",
+      "FONT-022"
+    ]
+  },
+  {
+    "n": 76,
+    "topic": "js-upgrades",
+    "question": "What if the version in use is newer than the model's training?",
+    "natural": "How should I handle a library release that came out after the model's knowledge cutoff?",
+    "hard": "I'm writing code against a framework release that shipped well after the assistant's knowledge ends, and the APIs it suggests don't seem to exist. Where should it look to get correct usage?",
+    "cited": [
+      "JSUP-015"
+    ]
+  },
+  {
+    "n": 77,
+    "topic": "js-lint-build",
+    "question": "Does typescript-eslint support ESLint 10 and TypeScript 7?",
+    "natural": "Which typescript-eslint version works with ESLint 10, and does it work with TypeScript 7?",
+    "hard": "My linter setup fails to install after I bumped the compiler to the newest major and the linter to its newest major. Which parts are supported, and what config helper should I use instead of the old one?",
+    "cited": [
+      "JSTOOL-004",
+      "TS-009"
+    ]
+  },
+  {
+    "n": 78,
+    "topic": "memory",
+    "question": "API memory tool or Claude Code auto memory?",
+    "natural": "What's the difference between the Anthropic API memory tool and Claude Code's auto memory?",
+    "hard": "I have a model that reads and writes notes in a folder of files, either through the raw API or inside the CLI agent. Which one needs me to implement path safety and loading myself, and which does it for me?",
+    "cited": [
+      "MEM-030",
+      "MEM-031"
+    ]
+  },
+  {
+    "n": 79,
+    "topic": "angular",
+    "question": "What changed for SSR servers?",
+    "natural": "What SSR changes in recent Angular versions do I need to handle on my server?",
+    "hard": "After upgrading, my server-rendered Angular app returns 400 for requests from some hostnames behind a proxy, and my bootstrap function errors about a missing argument. What changed and how do I fix it?",
+    "cited": [
+      "NG-008"
+    ]
+  },
+  {
+    "n": 80,
+    "topic": "aws-lambda-node",
+    "question": "Can a CommonJS handler `require()` an ESM-only package on Lambda?",
+    "natural": "Can I require() an ESM-only npm package from a CommonJS Lambda function?",
+    "hard": "My AWS serverless Node function written in the old module style crashes with an error about loading an ES module from a dependency, though it works locally on recent Node. How do I get around it?",
+    "cited": [
+      "LAMBDA-003"
+    ]
+  },
+  {
+    "n": 81,
+    "topic": "skills",
+    "question": "What goes in a description?",
+    "natural": "What should I put in a skill's description field?",
+    "hard": "My skill never gets picked up automatically, or gets picked when another skill should handle it. How should I word the metadata text that tells the agent when to use it?",
+    "cited": [
+      "SKILL-011",
+      "SKILL-012",
+      "SKILL-013"
+    ]
+  },
+  {
+    "n": 82,
+    "topic": "og-images",
+    "question": "resvg-js, resvg-wasm or sharp for the PNG?",
+    "natural": "Should I use resvg-js, resvg-wasm or sharp to convert SVG to PNG?",
+    "hard": "I generate SVGs from satori and need rasterising to images, including in a bundled serverless deployment. Which rendering library fits and what are the tradeoffs?",
+    "cited": [
+      "OG-005"
+    ]
+  },
+  {
+    "n": 83,
+    "topic": "typescript",
+    "question": "Which tsconfig flags matter for Node's type stripping?",
+    "natural": "Which tsconfig options should I set when running TypeScript directly in Node with type stripping?",
+    "hard": "I run .ts files directly with Node without a compile step, and some code fails because of syntax that can't simply be erased or import paths with extensions. Which compiler settings keep me safe?",
+    "cited": [
+      "TS-013"
+    ]
+  },
+  {
+    "n": 84,
+    "topic": "mcp",
+    "question": "How do I use a private repo's knowledge without a checkout?",
+    "natural": "How can Claude use knowledge from a private repository without checking it out?",
+    "hard": "I want my docs kept in a private git repo to be available to the assistant in chat, on my phone and in remote runs, without cloning it each time. What are the options?",
+    "cited": [
+      "MCP-037",
+      "MCP-038",
+      "MCP-040",
+      "MCP-034",
+      "MCP-035"
+    ]
+  },
+  {
+    "n": 85,
+    "topic": "prompting",
+    "question": "How do I stop \"done\" claims without a check?",
+    "natural": "How do I stop Claude from claiming a task is done without verifying it?",
+    "hard": "The agent keeps reporting that work is finished, but later I find it never ran anything to confirm. How can I force proof, especially for unattended runs?",
+    "cited": [
+      "PROMPT-027",
+      "PROMPT-034"
+    ]
+  },
+  {
+    "n": 86,
+    "topic": "index",
+    "question": "How many research subagents, and what should they return?",
+    "natural": "How many subagents should I use for research and what should they report back?",
+    "hard": "I'm delegating web research to parallel helper agents and the lead often gets unsupported or wrongly negative findings. How should I size the team and structure what they return?",
+    "cited": [
+      "TOK-099",
+      "TOK-100",
+      "TOK-101"
+    ]
+  },
+  {
+    "n": 87,
+    "topic": "orchestration",
+    "question": "How do I cap cost?",
+    "natural": "How do I limit spending in Claude Code runs, the SDK, subagents and workflows?",
+    "hard": "An automated agent job ran up an unexpectedly large bill. What settings can put a ceiling on spend for scripted runs, delegated helpers and multi-step pipelines?",
+    "cited": [
+      "ORCH-038",
+      "ORCH-049"
+    ]
+  },
+  {
+    "n": 88,
+    "topic": "index",
+    "question": "Is a read-only MCP server enough to keep an agent read-only on AWS or Kubernetes?",
+    "natural": "Does using a read-only MCP server guarantee my agent can't change AWS or Kubernetes resources?",
+    "hard": "I gave my agent a cluster tool configured not to write, but it also has a shell. Can it still modify infrastructure, and where should the restriction really be enforced?",
+    "cited": [
+      "INFRA-006",
+      "INFRA-004",
+      "INFRA-005"
+    ]
+  },
+  {
+    "n": 89,
+    "topic": "repo-agents",
+    "question": "Which agents are worth having in a repo?",
+    "natural": "Which custom agents are actually worth defining in a repository?",
+    "hard": "I'm deciding which specialised helper definitions to commit to my project, given that many roles seem to overlap with what the tool already ships. Which are worth the effort?",
+    "cited": [
+      "REPO-013",
+      "REPO-022"
+    ]
+  },
+  {
+    "n": 90,
+    "topic": "kubernetes-flux",
+    "question": "Do Let's Encrypt's shorter certificates need a cert-manager change?",
+    "natural": "Do I need to change cert-manager config for Let's Encrypt's shorter certificate lifetimes?",
+    "hard": "Our CA is cutting certificate validity to about two months and later six weeks. Will our Kubernetes certificate automation keep renewing on time, or do we have to edit settings?",
+    "cited": [
+      "KUBE-010"
+    ]
+  },
+  {
+    "n": 91,
+    "topic": "oss-licensing",
+    "question": "Which licence for code, docs and fonts?",
+    "natural": "What licence should I use for code, documentation and fonts?",
+    "hard": "My project bundles source, written guides and typefaces, and I need to pick sensible open terms for each kind of material. What should I choose?",
+    "cited": [
+      "OSS-001"
+    ]
+  },
+  {
+    "n": 92,
+    "topic": "web-analytics-seo",
+    "question": "Can an agent validate structured data through an API?",
+    "natural": "Is there an API an agent can use to validate structured data / JSON-LD?",
+    "hard": "I want an automated check that my page's schema markup is eligible for search enhancements, without opening a web tool by hand. Is there a programmatic way?",
+    "cited": [
+      "WEB-019"
+    ]
+  },
+  {
+    "n": 93,
+    "topic": "claude-api",
+    "question": "Does the TypeScript SDK retry, and when must I stream?",
+    "natural": "Does the Anthropic TypeScript SDK retry automatically, and when do I have to use streaming?",
+    "hard": "My SDK call with a very large output limit throws before sending anything, complaining about how long it may take. What are the default failure handling and timeout, and what should I do?",
+    "cited": [
+      "CAPI-009"
+    ]
+  },
+  {
+    "n": 94,
+    "topic": "index",
+    "question": "What licence for code, docs and fonts, and what must an agent keep when it copies code?",
+    "natural": "Which licences should I use for code, docs and fonts, and what do I need to retain when copying third-party code?",
+    "hard": "I'm setting up legal hygiene for a repo with source, prose and typefaces, borrowing snippets from others and auditing dependencies. What terms, notices and checks are needed, and why does the hosting site label it 'Other'?",
+    "cited": [
+      "OSS-001",
+      "OSS-002",
+      "OSS-004",
+      "OSS-007",
+      "OSS-008",
+      "OSS-010",
+      "OSS-011"
+    ]
+  },
+  {
+    "n": 95,
+    "topic": "js-testing",
+    "question": "How do I point Playwright at an SSR app?",
+    "natural": "How do I configure Playwright to test a server-side rendered app?",
+    "hard": "My end-to-end tests need the app built and running before they start, locally and in the pipeline, and I want to assert on the HTML sent before any scripts run. How do I set that up?",
+    "cited": [
+      "JSTEST-011"
+    ]
+  },
+  {
+    "n": 96,
+    "topic": "fonts",
+    "question": "Which files should a release ship?",
+    "natural": "Which font file formats and folders should a release include?",
+    "hard": "I'm packaging a typeface for publishing and unsure which binary flavours to include for desktop and web users, how to name the flexible one, and whether older web formats are still needed.",
+    "cited": [
+      "FONT-016"
+    ]
+  },
+  {
+    "n": 97,
+    "topic": "github-actions",
+    "question": "How should CI handle agent PRs that push often?",
+    "natural": "How should I set up CI for pull requests from coding agents that push frequently?",
+    "hard": "Our pipeline is flooded by many commits per PR from automated authors, wasting minutes and blocking merges when jobs are skipped. How should workflows be organised?",
+    "cited": [
+      "GHA-008"
+    ]
+  },
+  {
+    "n": 98,
+    "topic": "sessions",
+    "question": "What state do parallel sessions share in `~/.claude`?",
+    "natural": "Which files in ~/.claude are shared between concurrent Claude Code sessions?",
+    "hard": "I run several agent sessions at once on one machine and worry about them clobbering each other's config, history or notes. What do they all read and write in the home config directory?",
+    "cited": [
+      "SESS-009",
+      "SESS-010"
+    ]
+  },
+  {
+    "n": 99,
+    "topic": "repo-agents",
+    "question": "How do I run a repo agent in GitHub Actions?",
+    "natural": "How can I run a repo's custom agent in GitHub Actions with claude-code-action?",
+    "hard": "I defined a specialised helper in my project and want my pull-request workflow to invoke it automatically. How do I do that, and which config is trusted on PRs?",
+    "cited": [
+      "REPO-027",
+      "REPO-028"
+    ]
+  },
+  {
+    "n": 100,
+    "topic": "memory",
+    "question": "Do subagents get CLAUDE.md and auto memory?",
+    "natural": "Do subagents receive CLAUDE.md and auto memory?",
+    "hard": "I delegate work to a helper agent and want to know whether it sees my project instructions and saved notes, or whether I must repeat them in its prompt.",
+    "cited": [
+      "MEM-011"
+    ]
+  }
+]

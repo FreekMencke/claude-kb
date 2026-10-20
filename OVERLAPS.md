@@ -22,6 +22,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Breaking changes for API callers: CAPI-001 and CAPI-002 (per-model 400s and thinking blocks, from the migration guides), PROMPT-002 (what a prompt written for 4.x must change). PROMPT-002 now scopes the sampling 400 as the deprecations page does, "Claude 4.7 and later models", and links CAPI-001 for the per-model table (FreekMencke/claude-kb#194).
 - Agent SDK: CAPI-011 and CAPI-012 (choosing it over `claude -p`, permission order, hooks, the bundled binary), ORCH-015 (subagents, budgets, cost), MCP-024 (MCP and in-process tools), MEM-028 (setting sources), ORCH-014 (`claude -p`).
 - Evals: CAPI-015 (an LLM feature, Anthropic's test-and-evaluate guide), SKILL-025 and SKILL-028 (skills), JSTEST-013 (mutation testing for agent-written tests).
+- Knowledge-base retrieval: MCP-034 (how docs servers shape tools; quotes Contextual Retrieval's 200,000-token line), RETR-004 (that post's numbers), MCP-041 (search tool against a checkout), RETR-010 (seven retrieval options), MEM-033 (memory servers against plain files), RETR-020 (vector RAG before an eval), TOK-084 (code-index servers), RETR-013 (how coding tools retrieve), DOC-016 (writing docs agents retrieve), RETR-014 (Karpathy's index-file threshold).
 - Keeping the orchestrator's context lean: ORCH-034 (results), TOK-035 (when to delegate).
 - Caching: ORCH-040 (in fan-outs), TOK-052 (TTLs and settings).
 - Skill frontmatter: SKILL-014 (invocation controls), TOK-064 (token effects).
