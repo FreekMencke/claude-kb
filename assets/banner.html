@@ -1,12 +1,12 @@
 <!doctype html>
 <!--
   Source of assets/banner.png (light) and assets/banner-dark.png, 1280x640 (GitHub's social preview size).
-  To render: copy SOLIX-Variable.woff2 from freek-mencke-web's public/fonts/ next to this file, serve the folder over
-  HTTP, open banner.html#light and banner.html#dark at a 1280x640 viewport and screenshot each once fonts are loaded.
+  To render: copy variable/SOLIX[wght].woff2 from a FreekMencke/solix release zip next to this file, serve the folder
+  over HTTP, open banner.html#light and banner.html#dark at a 1280x640 viewport and screenshot each once fonts are loaded.
 -->
 <html><head><meta charset="utf-8">
 <style>
-@font-face { font-family: 'SOLIX'; font-weight: 100 700; font-display: block; src: url(SOLIX-Variable.woff2) format('woff2'); }
+@font-face { font-family: 'SOLIX'; font-weight: 100 700; font-display: block; src: url('SOLIX[wght].woff2') format('woff2'); }
 /* freek-mencke-web's tokens: theme.css (light) and base.css .dark */
 :root { --ground:#f4f5f7; --ink:#172033; --accent:#047857; --muted:#586274; --meta:#7d8798; --shadow:rgba(12,59,47,.25); }
 .dark { --ground:#0b1613; --ink:#e3ebe7; --accent:#34d399; --muted:#93a59d; --meta:#6b7f77; --shadow:rgba(0,0,0,.55); }
