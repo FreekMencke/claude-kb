@@ -1,7 +1,7 @@
 # claude-kb MCP server
 
 A remote, read-only MCP server that serves this knowledge base to claude.ai (as a custom connector) and Claude Code,
-at `https://claude-kb.freekmencke.com/mcp`, from the home cluster, without a sign-in. Plan: roadmap
+at `https://claude-kb.freekmencke.com/mcp`, from our single-node cluster, without a sign-in. Plan: roadmap
 FreekMencke/claude-kb#109.
 
 ## Tools
@@ -91,7 +91,7 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
     tell a quiet repo from a stuck sync.
 
   Alloy drops histogram buckets, so durations are averages (`_sum / _count`), not percentiles. Container memory and
-  CPU, restarts and OOM kills come from cAdvisor and kube-state-metrics, and home-cluster's cluster-wide alert rules
+  CPU, restarts and OOM kills come from cAdvisor and kube-state-metrics, and fremen-cluster's cluster-wide alert rules
   cover the Deployment.
 - **Protocol** (`mcp.ts`). JSON-RPC over `POST /mcp`, answered as JSON: `initialize`, `ping`, `tools/list`,
   `tools/call`, `resources/list`, `resources/templates/list` and `resources/read`, the 2025 revisions (2024-11-05 to 2025-11-25), no session and no stream, so `GET` and `DELETE` get 405.
@@ -200,13 +200,13 @@ Flux's `Flux / sync` status and smoke-tests the public URL. A change to files ou
 
 Flux may only apply Deployments, Services, Ingresses, Traefik Middlewares and PodDisruptionBudgets in the `claude-kb`
 namespace. Anything else (a ConfigMap, a Secret, a volume claim) fails the deploy with "forbidden" until it's added to
-the Role in FreekMencke/home-cluster `cluster/claude-kb/flux.yaml`.
+the Role in FreekMencke/fremen-cluster `cluster/claude-kb/flux.yaml`.
 
 CD needs the repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
 
 ## Connecting
 
-Before connecting (from outside the LAN, such as a phone hotspot or a cloud session): run
+Before connecting: run
 `.github/scripts/deploy-smoke-test.sh` and check the `A` record. "There is no separate staging environment, so you
 test in production."
 

@@ -1,5 +1,5 @@
 # claude-kb's MCP server at https://claude-kb.freekmencke.com/mcp. Flux applies this file, the only one it reads from
-# this repo, within a minute of a push to main (FreekMencke/home-cluster cluster/claude-kb/flux.yaml). Flux's
+# this repo, within a minute of a push to main (FreekMencke/fremen-cluster cluster/claude-kb/flux.yaml). Flux's
 # flux-deployer may only manage Deployments, Services, Ingresses, Traefik Middlewares and PodDisruptionBudgets here.
 # The server has no sign-in and needs no Secret or volume claim (FreekMencke/claude-kb#142). CD (.github/workflows/
 # deploy.yml) updates the image digest.

@@ -371,6 +371,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | INFRA-025 | `kubectl auth can-i` reads `resource/x` as a resource name, not a subresource | anti-pattern | kubernetes, rbac, kubectl, testing |
 | INFRA-026 | Before changing a config value, read the code that consumes it | pattern | config, lambda, retries, issues |
 | INFRA-027 | Change one Lambda environment variable without printing the others | pattern | lambda, env, credentials, transcripts |
+| INFRA-028 | The claude.ai Grafana Cloud connector: what it can and can't write | fact | grafana-cloud, connectors, alerting, permissions |
 
 ## Node/TS lint, format and build tools (`topics/kb-js-lint-build.md`, JSTOOL)
 
@@ -485,6 +486,18 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | KUBE-014 | Alloy or the OpenTelemetry Collector for one small cluster | comparison | alloy, opentelemetry-collector, otlp, k8s-monitoring |
 | KUBE-015 | Kubernetes release cadence, support period and version skew | fact | kubernetes-versions, version-skew, support-period, release-cadence |
 | KUBE-016 | Upgrading a small kubeadm cluster: one minor at a time, gated by add-ons | pattern | kubeadm, upgrade, kubernetes-versions, add-ons |
+| KUBE-017 | mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.35 | fact | mongodb, ubuntu-26-04, kernel, setarch |
+| KUBE-018 | A one-member replica set behind a Service: `directConnection=true`, and when `authSource` matters | fact | mongodb, replica-set, connection-string, statefulset |
+| KUBE-019 | A MongoDB keyFile from a Secret needs an initContainer to copy it | pattern | mongodb, keyfile, secrets, init-containers |
+| KUBE-020 | Run a database's metrics exporter as its own Deployment, not a sidecar | pattern | mongodb, exporter, sidecar, labels |
+| KUBE-021 | Alloy's `prometheus.exporter.mongodb`: a URI Go can't parse stops all of Alloy | fact | alloy, mongodb, exporter, config-errors |
+| KUBE-022 | Moving a database from Atlas to the cluster with no data lost | pattern | mongodb, atlas, migration, flux-suspend |
+| KUBE-023 | `envFrom`: when two Secrets set the same key, the last one listed wins | fact | envfrom, secrets, environment-variables, precedence |
+| KUBE-024 | Grafana Cloud's free 10k series: one exporter can use most of them | pattern | grafana-cloud, active-series, alloy, relabel |
+| KUBE-025 | `grafanacloud_instance_active_series` lags: count live series before cutting | fact | grafana-cloud, active-series, billing, promql |
+| KUBE-026 | CrowdSec's Traefik bouncer 1.7.1 stops pulling bans on multi-CPU hosts; use 1.8.0 or later | fact | crowdsec, traefik, plugins, yaegi |
+| KUBE-027 | Flannel or Calico on a single node | comparison | flannel, calico, cni, network-policy |
+| KUBE-028 | A fresh Ubuntu 26.04 server: chrony, fwupd's hourly refresh and `adm` | fact | ubuntu-26-04, chrony, fwupd, journald |
 
 ## MCP servers: configuration, access control, surfaces and vetting (`topics/kb-mcp.md`, MCP)
 

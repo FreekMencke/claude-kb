@@ -1,31 +1,32 @@
 # Small-cluster Kubernetes with Flux GitOps and Grafana/Prometheus observability
 
-Prefix `KUBE`. This file covers running a small (single-node or few-node) Kubernetes cluster reconciled by Flux on 2026-10-17: what Flux 2.8 and 2.9 changed and how to upgrade across them, the Flux Operator against `flux bootstrap`, which Kubernetes minors Flux and cert-manager support, what replaces ingress-nginx (Gateway API or another Ingress controller), cert-manager with Gateway API and Let's Encrypt's shorter certificates, Prometheus 3 and Loki 3 upgrade points, Promtail's end of life and `alloy convert`, Alloy against the OpenTelemetry Collector, and Kubernetes' release cadence, version skew and upgrade order. Agent access to clusters and the Flux MCP server are in `kb-infra-agents.md` (INFRA); building and signing images in `kb-docker-node.md` (DOCKER).
+Prefix `KUBE`. This file covers running a small (single-node or few-node) Kubernetes cluster reconciled by Flux on 2026-10-17: what Flux 2.8 and 2.9 changed and how to upgrade across them, the Flux Operator against `flux bootstrap`, which Kubernetes minors Flux and cert-manager support, what replaces ingress-nginx (Gateway API or another Ingress controller), cert-manager with Gateway API and Let's Encrypt's shorter certificates, Prometheus 3 and Loki 3 upgrade points, Promtail's end of life and `alloy convert`, Alloy against the OpenTelemetry Collector, and Kubernetes' release cadence, version skew and upgrade order. Added 2026-10-22: running MongoDB on the cluster (mongod 8.0 on Ubuntu's 7.0 kernel, one-member replica sets, keyFiles, the exporter, a cutover from Atlas, `envFrom` precedence), Grafana Cloud's free series budget, the CrowdSec Traefik plugin, Flannel against Calico and a fresh Ubuntu 26.04 host. Agent access to clusters and the Flux MCP server are in `kb-infra-agents.md` (INFRA); building and signing images in `kb-docker-node.md` (DOCKER).
 
 Research basis:
 - Researched 2026-10-17 (FreekMencke/claude-kb#186, part of roadmap #167) by an Opus 5.5 lead with three Sonnet 5.5 readers (Flux 2.8/2.9 and the Operator; ingress-nginx, Gateway API and cert-manager; Prometheus, Loki, Alloy and the OpenTelemetry Collector).
 - Docs read as raw Markdown from `raw.githubusercontent.com`: fluxcd/website, kubernetes/website, kubernetes-sigs/gateway-api, cert-manager/website, letsencrypt/website, prometheus/prometheus and prometheus/docs, grafana/loki, grafana/alloy, traefik/traefik (at `v3.7.15`), open-telemetry/opentelemetry.io; release dates and bodies from the GitHub releases API (`gh api repos/<owner>/<repo>/releases/tags/<tag>`); the Flux upgrade discussion through `gh api graphql`.
 - Tested on Linux amd64 (WSL2) with official release binaries, checksums verified: the `flux` CLI 2.9.6 and `alloy` 1.20.1, against local files only. Nothing was applied to a cluster.
 - Our setup was compared read-only against the docs; the recommendations describe it by pattern only.
+- KUBE-017 to KUBE-028 added 2026-10-22 (FreekMencke/claude-kb#249) from our server move and MongoDB cutover (FreekMencke/fremen-cluster#20, #22, private), each checked against its upstream source: MongoDB's Jira through its REST API, MongoDB and Grafana Cloud docs as HTML stripped of tags, Kubernetes, Alloy, Grafana, Flannel, fwupd and systemd sources from `raw.githubusercontent.com`, the CrowdSec plugin's PR and releases through `gh`, image tags from Docker Hub's API. KUBE-021 tested with the official `alloy` v1.21.1 binary, checksum verified, against local files only.
 
 ## Quick answers
 
 | Question | Answer | Entries |
 |---|---|---|
-| What changed in Flux 2.8 and 2.9, and what needs action? | 2.8 (2026-02-24): Helm v4 in helm-controller (server-side apply and kstatus health checks by default), `v1beta2`/`v2beta2` source, kustomize and helm APIs removed. 2.9 (2026-06-30): post-render default `combined`, image and notification `v1beta2` removed, GCR Receivers need `email` and `audience`. Latest 2.9.6 (2026-10-01). | KUBE-001, KUBE-004 |
+| What changed in Flux 2.8 and 2.9, and what needs action? | 2.8 (2026-02-24): Helm v4 in helm-controller (server-side apply and kstatus health checks by default), `v1beta2`/`v2beta2` source, kustomize and helm APIs removed. 2.9 (2026-06-30): post-render default `combined`, image and notification `v1beta2` removed, GCR Receivers need `email` and `audience`. Latest 2.9.6 (2026-10-01). Existing HelmReleases keep client-side apply until `serverSideApply: enabled`; `UseHelm3Defaults` restores Helm 3 behaviour. | KUBE-001, KUBE-004 |
 | How do I upgrade Flux to 2.9 without breaking on removed APIs? | `flux migrate -f .` in the Git repo (rewrites old `apiVersion`s; Alert goes to `v1beta3`, not `v1`), push, then `flux migrate` against the cluster to rewrite etcd, then upgrade the controllers (rerun `flux bootstrap`, or set the Operator's version). | KUBE-002 |
 | Which Kubernetes versions does Flux 2.9 support? Can I go to 1.37? | 1.34, 1.35 and 1.36 only. Kubernetes 1.37 (2026-08-26) waits for Flux 2.10 ("mid Q4 2026", provisional); cert-manager 1.21 also stops at 1.36. | KUBE-003, KUBE-009 |
-| Does a HelmRelease behave differently after Flux 2.8? | New releases use server-side apply; existing ones keep client-side apply until `serverSideApply: enabled`. Health checks switch to kstatus for all. From 2.9, hooks go through post-renderers (`combined`). `UseHelm3Defaults` restores Helm 3 behaviour. | KUBE-004 |
 | Flux Operator or `flux bootstrap`? | fluxcd.io still calls bootstrap "the recommended way"; the Operator (ControlPlane, AGPL-3.0) is the documented alternative, with automatic upgrades through `FluxInstance` `distribution.version` and a zero-downtime migration from bootstrap. | KUBE-005 |
-| ingress-nginx is retired: what does that mean? | No releases or security fixes since March 2026; the repo is archived. Kubernetes recommends Gateway API, or another Ingress controller. The Ingress API is frozen but GA, with no plan to remove it. | KUBE-006 |
+| ingress-nginx is retired: what does that mean, and what replaces it on a single node? | No releases or security fixes since March 2026; the Ingress API is frozen but GA, with no plan to remove it. Use any conformant Gateway API implementation (17 have v1.6 reports, Traefik, Envoy Gateway and NGINX Gateway Fabric among them), or Traefik's ingress-nginx provider (v3.6.2+) to keep Ingress objects and annotations. `ingress2gateway` 1.x converts 30+ annotations. | KUBE-006, KUBE-008 |
 | What's in Gateway API's Standard channel now? | v1.6.3 (2026-10-06) `standard-install.yaml` ships 10 CRDs: Gateway, GatewayClass, HTTPRoute, GRPCRoute, TLSRoute, TCPRoute, UDPRoute, ListenerSet, ReferenceGrant, BackendTLSPolicy, plus a `safe-upgrades` admission policy that blocks downgrades. CRDs install separately from the controller. | KUBE-007 |
-| What should replace ingress-nginx on a single node? | Any conformant Gateway API implementation (17 have v1.6 reports, Traefik, Envoy Gateway and NGINX Gateway Fabric among them), or Traefik's ingress-nginx provider (v3.6.2+) to keep Ingress objects and annotations unchanged. `ingress2gateway` 1.x converts 30+ annotations. | KUBE-008 |
-| Can cert-manager issue certificates for a Gateway? | Yes: `cert-manager.io/cluster-issuer` on the Gateway, enabled with `config.gatewayAPI.enabled: true` (beta since 1.15, no feature gate); HTTP-01 through the `gatewayHTTPRoute` solver needs a port-80 listener. ListenerSet support is alpha. | KUBE-009 |
-| Do Let's Encrypt's shorter certificates need a cert-manager change? | Not with defaults: cert-manager renews at 2/3 of the lifetime, which Let's Encrypt asks for. 64-day certificates become the default on 2027-02-10, 45-day on 2028-02-16. Avoid a fixed `renewBefore`; use `renewBeforePercentage`. | KUBE-010 |
+| Can cert-manager issue certificates for a Gateway, and do Let's Encrypt's shorter certificates need a change? | Yes: `cert-manager.io/cluster-issuer` on the Gateway, with `config.gatewayAPI.enabled: true`; HTTP-01 needs a port-80 listener. Shorter certificates (64-day default from 2027-02-10, 45-day from 2028-02-16) need nothing with the default 2/3 renewal; avoid a fixed `renewBefore`. | KUBE-009, KUBE-010 |
 | What breaks moving from Prometheus 2 to 3? | Regex `.` matches newlines, range selectors are left-open, `le`/`quantile` values normalise to floats (`le="1"` breaks), scrapes without a valid Content-Type fail, Alertmanager v1 API is gone; downgrade only to 2.55. Alloy took the same changes in 1.11.0. | KUBE-011 |
 | Loki 3 on a small setup? | Monolithic mode (`-target=all`) up to about 20 GB/day. 3.0 requires the `tsdb` index and `v13` schema for structured metadata and OTLP; simple scalable mode and the legacy index stores are removed in 4.0. | KUBE-012 |
 | Promtail is EOL: how do I move to Alloy? | EOL since 2026-03-02. `alloy convert --source-format=promtail --output=out.alloy promtail.yaml`, with `--report`; tested on 1.20.1: Kubernetes discovery, pipeline stages, journal and positions file converted. Set `HOSTNAME` to the node name in the DaemonSet. | KUBE-013 |
 | Alloy or the OpenTelemetry Collector for one small cluster? | Alloy's default engine for Prometheus scrapes and Loki logs (one binary, UI, the k8s-monitoring chart); the Collector, or Alloy's preview `alloy otel` engine, when the pipeline is OTLP end to end. | KUBE-014 |
+| Why does mongod 8.0 exit at startup on Ubuntu 26.04? | 8.0.21+ refuses kernels from 6.19 (tcmalloc and rseq) and reads Ubuntu's `7.0.0-38` as 7.0.0, though it's upstream 7.0.14 with the fix. Fixed in 8.0.35 (unreleased 2026-10-22) and 9.0.4; until then start it through `setarch x86_64 --uname-2.6 docker-entrypoint.sh`. | KUBE-017 |
+| How do I run a single MongoDB on Kubernetes? | One-member replica set; clients use `directConnection=true` (member names resolve only in-cluster); copy the keyFile in with an initContainer (0400, uid 999); exporter as its own Deployment, not a sidecar; for a second Secret overriding keys, `envFrom` takes the last one listed. | KUBE-018, KUBE-019, KUBE-020, KUBE-023 |
+| How do I stay under Grafana Cloud's free 10k series? | Count live series with `count({__name__=~".+"})`, not the lagging `grafanacloud_instance_active_series`; drop what no dashboard reads in Alloy's relabel step. One MongoDB exporter offered 5.8k series; 58 kept. | KUBE-024, KUBE-025 |
 | How often must a small cluster upgrade Kubernetes, and can it skip a minor? | Three minors a year, each patched about 14 months; kubeadm can't skip a minor, so plan one minor upgrade every four months or two a year at least. Check add-on support (Flux, cert-manager, CNI, ingress) before each. | KUBE-015, KUBE-016 |
 
 ## Index
@@ -48,6 +49,18 @@ Research basis:
 | KUBE-014 | Alloy or the OpenTelemetry Collector for one small cluster | comparison | alloy, opentelemetry-collector, otlp, k8s-monitoring |
 | KUBE-015 | Kubernetes release cadence, support period and version skew | fact | kubernetes-versions, version-skew, support-period, release-cadence |
 | KUBE-016 | Upgrading a small kubeadm cluster: one minor at a time, gated by add-ons | pattern | kubeadm, upgrade, kubernetes-versions, add-ons |
+| KUBE-017 | mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.35 | fact | mongodb, ubuntu-26-04, kernel, setarch |
+| KUBE-018 | A one-member replica set behind a Service: `directConnection=true`, and when `authSource` matters | fact | mongodb, replica-set, connection-string, statefulset |
+| KUBE-019 | A MongoDB keyFile from a Secret needs an initContainer to copy it | pattern | mongodb, keyfile, secrets, init-containers |
+| KUBE-020 | Run a database's metrics exporter as its own Deployment, not a sidecar | pattern | mongodb, exporter, sidecar, labels |
+| KUBE-021 | Alloy's `prometheus.exporter.mongodb`: a URI Go can't parse stops all of Alloy | fact | alloy, mongodb, exporter, config-errors |
+| KUBE-022 | Moving a database from Atlas to the cluster with no data lost | pattern | mongodb, atlas, migration, flux-suspend |
+| KUBE-023 | `envFrom`: when two Secrets set the same key, the last one listed wins | fact | envfrom, secrets, environment-variables, precedence |
+| KUBE-024 | Grafana Cloud's free 10k series: one exporter can use most of them | pattern | grafana-cloud, active-series, alloy, relabel |
+| KUBE-025 | `grafanacloud_instance_active_series` lags: count live series before cutting | fact | grafana-cloud, active-series, billing, promql |
+| KUBE-026 | CrowdSec's Traefik bouncer 1.7.1 stops pulling bans on multi-CPU hosts; use 1.8.0 or later | fact | crowdsec, traefik, plugins, yaegi |
+| KUBE-027 | Flannel or Calico on a single node | comparison | flannel, calico, cni, network-policy |
+| KUBE-028 | A fresh Ubuntu 26.04 server: chrony, fwupd's hourly refresh and `adm` | fact | ubuntu-26-04, chrony, fwupd, journald |
 
 ## [KUBE-001] Flux 2.8 and 2.9: what changed and what needs action
 - Type: fact
@@ -341,11 +354,270 @@ Per minor:
 
 A failed upgrade can be retried with `kubeadm upgrade apply --force` at the current version. k3s ships matching lines (`v1.37.1+k3s1`, 2026-09-30) and has its own upgrade controller; not covered here.
 
+## [KUBE-017] mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.35
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [SERVER-121912](https://jira.mongodb.org/browse/SERVER-121912), [SERVER-125742](https://jira.mongodb.org/browse/SERVER-125742), [SERVER-131779](https://jira.mongodb.org/browse/SERVER-131779) (read through Jira's REST API), [Ubuntu: identifying a kernel](https://ubuntu.com/kernel), [setarch(8)](https://github.com/util-linux/util-linux/blob/master/sys-utils/setarch.8.adoc), [mongo 8.0 Dockerfile](https://github.com/docker-library/mongo/blob/master/8.0/Dockerfile), [mongo tags on Docker Hub](https://hub.docker.com/_/mongo/tags), FreekMencke/fremen-cluster `cluster/mongodb/mongodb.yaml` (private)
+- Related: KUBE-018, KUBE-019, KUBE-028, NEST-013
+
+Linux 6.19 changed rseq behaviour in a way that breaks tcmalloc: MongoDB 8.0.0–8.0.20 there "crashes after ~60 seconds, potential corruption", so 8.0.21 and later exit at startup on kernels from 6.19 (SERVER-121912). "Linux kernel versions 7.0.14+ and 7.1.0+ (inclusive) restore previous userspace behavior", and 8.0.30 and 8.3.9 stop exiting on them (SERVER-125742).
+
+Ubuntu's kernel version isn't upstream's. Ubuntu 26.04's `7.0.0-38-generic` reads as 7.0.0; `/proc/version_signature` names the upstream base (Ubuntu's example: `Ubuntu 5.4.0-12.15-generic 5.4.8`), here 7.0.14. So 8.0.34 still exits on it. SERVER-131779 ("Add linux the kernel 7.0.14 exemption for ubuntu") fixes that in 9.0.4 (released 2026-09-30), 8.3.14 and 8.0.35. On 2026-10-22 the last two are unreleased in Jira, and Docker Hub's newest 8.0 tag is `8.0.34` (2026-10-17).
+
+Workaround until 8.0.35: run the image's entrypoint through `setarch`, whose `--uname-2.6` "Causes the specified program to see a kernel version number beginning with 2.6":
+
+```yaml
+command: [setarch, x86_64, --uname-2.6, docker-entrypoint.sh]
+args: [--replSet=rs0, --keyFile=/keyfile/keyfile, --bind_ip_all]
+```
+
+`command` replaces the image's `ENTRYPOINT ["docker-entrypoint.sh"]`, which prepends `mongod` when the first argument starts with `-`. Drop the wrapper at 8.0.35: on a kernel without the fix it would hide a real hazard.
+
+Observed 2026-10-21 (single-source), kubeadm 1.36.5 on Ubuntu 26.04, `mongo:8.0.34`: mongod exited at startup without the wrapper and has run with it since.
+
+## [KUBE-018] A one-member replica set behind a Service: `directConnection=true`, and when `authSource` matters
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [MongoDB: connection string options](https://www.mongodb.com/docs/manual/reference/connection-string-options/), FreekMencke/fremen-cluster `cluster/osrs-tracker/secrets.example.yaml` and README "Access" (private)
+- Related: KUBE-017, KUBE-020, KUBE-022, NEST-012
+
+A client that discovers a replica set connects to the member names in the set's config, not to the host in its URI. In a StatefulSet those are pod DNS names (`mongodb-0.mongodb-headless.<namespace>.svc.cluster.local`), which resolve only inside the cluster, and not at all through an SSH tunnel to localhost.
+
+MongoDB's docs: with `directConnection=false`, the default, "The client attempts to discover all servers in the replica set"; with `true` it "sends operations only to the specified host and does not attempt to discover other replica set members". They name the container case: a set that exposes "only one MongoDB endpoint" is "not discoverable".
+
+So with one member (kept for `mongodump --oplog`, transactions and change streams), every client's URI gets `directConnection=true`: apps through the Service, the exporter, Compass through a tunnel.
+
+```text
+mongodb://mongodb.mongodb.svc:27017/?directConnection=true&authSource=admin
+```
+
+With several members, list them with `replicaSet=` instead: a direct connection pins one host and loses failover.
+
+`authSource` "Defaults to defaultauthdb if specified, otherwise defaults to admin". So users created in `admin` need `authSource=admin` only when the URI's path names a database (`/osrs-tracker`). We set it anyway, so adding a path later doesn't break sign-in.
+
+## [KUBE-019] A MongoDB keyFile from a Secret needs an initContainer to copy it
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [MongoDB: internal authentication](https://www.mongodb.com/docs/manual/core/security-internal-authentication/), [MongoDB: deploy a replica set with keyfile access control](https://www.mongodb.com/docs/manual/tutorial/deploy-replica-set-with-keyfile-access-control/), [Kubernetes core/v1 `SecretVolumeSource`](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/core/v1/types.go), [Kubernetes volumes: user ownership](https://kubernetes.io/docs/concepts/storage/volumes/), [AtomicWriteVolumeUserFields](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/), FreekMencke/fremen-cluster `cluster/mongodb/mongodb.yaml` (private)
+- Related: KUBE-017, KUBE-018
+
+"On UNIX systems, the keyfile must not have group or world permissions"; MongoDB's tutorial uses `chmod 400`. The official image runs mongod as uid 999. A Secret volume can't produce that file: `defaultMode` (default `0644`) sets the mode but not the owner, and `fsGroup` adds group ownership, which "might be in conflict with" the mode and gives the group-read bit mongod refuses.
+
+Copy it in an initContainer of the same image into a memory `emptyDir`, and mount that read-only in mongod:
+
+```yaml
+initContainers:
+  - name: prepare
+    image: mongo:8.0.34
+    command: [sh, -c, install -o 999 -g 999 -m 0400 /secret/keyfile /keyfile/keyfile]
+    securityContext:
+      runAsUser: 0
+      allowPrivilegeEscalation: false
+      capabilities: { drop: [ALL], add: [CHOWN, FOWNER] }
+```
+
+Ours also `chown`s the hostPath data directory, which the kubelet creates as root.
+
+Kubernetes 1.37 adds `defaultUser` and per-item `user` to secret, configMap, downwardAPI and projected volumes: the kubelet "sets the owner UID of the volume's data files during file creation". It's alpha, behind the `AtomicWriteVolumeUserFields` gate (default off, from 1.37). With it, `defaultUser: 999` and `defaultMode: 0400` could replace the initContainer; 1.36 has neither.
+
+## [KUBE-020] Run a database's metrics exporter as its own Deployment, not a sidecar
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-22
+- Sources: [Kubernetes: StatefulSet rolling updates](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#rolling-updates), [Kubernetes: Service](https://kubernetes.io/docs/concepts/services-networking/service/), FreekMencke/fremen-cluster `ef551c9` and CHANGELOG 2026-10-22 (private)
+- Related: KUBE-018, KUBE-021, KUBE-024
+
+A sidecar is part of the pod template, so a new exporter image is a template change, and the StatefulSet controller "will delete and recreate each Pod" to roll it out, database included. On 2026-10-22, updating Percona's `mongodb_exporter` from 0.53.0 to 0.54.0 in a sidecar of `mongodb-0` took MongoDB down for about 30 s. Removing the sidecar cost one last restart, of 14 s.
+
+As its own Deployment, the exporter reaches the database through the Service with `directConnection=true` (KUBE-018) and updates without touching mongod. Two traps when moving it out:
+
+- **Labels.** A Service's controller "continuously scans for Pods that match its selector". If the exporter's pod keeps the database's label (`app: mongodb`), the database Services route clients to a pod that doesn't serve MongoDB. Give it its own (`app: mongodb-exporter`).
+- **Rules keyed on the old pod.** A relabel rule or dashboard query that matches the sidecar's pod labels stops matching. Our keep rule (KUBE-024) matched both labels during the switch, so the unfiltered series never went out. Dashboards that filter on the namespace alone kept their history.
+
+A sidecar still fits what must share the pod's lifecycle or files, such as a log shipper reading a file the main container writes.
+
+## [KUBE-021] Alloy's `prometheus.exporter.mongodb`: a URI Go can't parse stops all of Alloy
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [alloy run](https://grafana.com/docs/alloy/latest/reference/cli/run/), [prometheus.exporter.mongodb](https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.exporter.mongodb/), [Alloy source at v1.21.1: `mongodb_exporter.go`](https://github.com/grafana/alloy/blob/v1.21.1/internal/static/integrations/mongodb_exporter/mongodb_exporter.go), FreekMencke/fremen-cluster CHANGELOG 2026-10-21 (private)
+- Related: KUBE-013, KUBE-014, KUBE-020, KUBE-024
+
+`alloy run` builds every component first, and if the configuration "contains errors during the initial load, the `run` command immediately exits". `prometheus.exporter.mongodb` parses `mongodb_uri` with Go's `url.Parse` while it's built, for the `instance` label. A URI Go rejects, such as a password with an unencoded `%`, fails the whole load. In a pod, Alloy then restarts in a loop, and all of that instance's metrics and logs stop. On a later reload Alloy "continues functioning in the last valid state", but a pod restart is an initial load.
+
+Tested 2026-10-22, alloy v1.21.1 (official release, checksum verified), Linux amd64, no MongoDB reachable:
+
+| `mongodb_uri` | Result |
+|---|---|
+| a password containing `%zz` | exit 1: `could not parse mongodb_uri: invalid URL escape "%zz"`, then `could not perform the initial load successfully` |
+| an invalid option, a wrong scheme, unencoded `@` and `/` in the password, an unset `sys.env` | keeps running, component `healthy`; one log line `Cannot connect to MongoDB … invalid dsn` |
+| an unreachable host | keeps running, `healthy` |
+
+So a URI only the driver rejects fails quietly, and one Go rejects takes Alloy down. Percent-encode credentials. Percona's `mongodb_exporter` in its own pod (KUBE-020) keeps either failure there, and its `mongodb_up` shows it.
+
+The component's `collect_all` defaults to `true` and overrides every `enable_*` argument, so set it to `false` to choose collectors (KUBE-024).
+
+## [KUBE-022] Moving a database from Atlas to the cluster with no data lost
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-22
+- Sources: [flux suspend kustomization](https://github.com/fluxcd/flux2/blob/main/cmd/flux/suspend_kustomization.go), [flux resume kustomization](https://github.com/fluxcd/flux2/blob/main/cmd/flux/resume_kustomization.go), [mongodump](https://www.mongodb.com/docs/database-tools/mongodump/), [mongorestore](https://www.mongodb.com/docs/database-tools/mongorestore/), FreekMencke/fremen-cluster#20 and CHANGELOG 2026-10-22 (private)
+- Related: KUBE-018, KUBE-023, INFRA-014
+
+Our cutover of a small app on 2026-10-22 (8,402 documents in 7 collections), whose writers read from a queue:
+
+1. `flux suspend kustomization <app>`, which "disables the reconciliation", so Flux doesn't undo the scale-down: it reapplies the manifest's replicas on every reconcile.
+2. Scale every writer to 0. Work waits in the queue in front of them (SQS here).
+3. `mongodump` the database from Atlas, then `mongorestore` it into the new server as `admin`. With the writers stopped, the dump is consistent without `--oplog`.
+4. Compare every collection's document count and indexes on both sides.
+5. Point the app's Secrets at the new URI (KUBE-018), with users made for the new server and new random passwords.
+6. `flux resume kustomization <app>`, which "waits for it to finish the apply" and so restores the replicas.
+
+The API was down for about 3 minutes and no scrape was lost: the queue held them until the ingester came back.
+
+Rollback: leave the source untouched and stop its writers for good instead of deleting it, until the new side has run for a while (here, osrs-tracker/osrs-tracker-aws#168). Keep the dump somewhere other than the new server, so one failure can't take both copies.
+
+## [KUBE-023] `envFrom`: when two Secrets set the same key, the last one listed wins
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [Kubernetes API: Pod, `envFrom`](https://kubernetes.io/docs/reference/kubernetes-api/core/pod-v1/), [core/v1 `types.go`](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/core/v1/types.go), FreekMencke/fremen-cluster `cluster/osrs-tracker/secrets.example.yaml` (private)
+- Related: KUBE-022
+
+The Pod API on `envFrom`: "When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence." So a shared Secret listed first and a per-workload Secret listed after it lets one Deployment override a few keys:
+
+```yaml
+envFrom:
+  - secretRef: { name: aws-mongodb-credentials } # URI, database, the API's user
+  - secretRef: { name: osrs-tracker-ingester } # its own MONGODB_USERNAME and MONGODB_PASSWORD win
+```
+
+That's how our ingester got its own MongoDB user on 2026-10-22 while sharing the URI with the API. An `env` entry with the same name beats both.
+
+Nothing warns about the override: swapping the two lines switches the user without an error. Say it in a comment next to the override keys in the Secret's template and next to the list, as we do.
+
+## [KUBE-024] Grafana Cloud's free 10k series: one exporter can use most of them
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [Grafana pricing](https://grafana.com/pricing/), [Grafana Cloud: metrics pricing](https://grafana.com/docs/grafana-cloud/platform/pricing-and-usage/metrics/), [mongodb_exporter v0.54.0 REFERENCE.md](https://github.com/percona/mongodb_exporter/blob/v0.54.0/REFERENCE.md), FreekMencke/fremen-cluster `cluster/monitoring/alloy/values.yaml` (private)
+- Related: KUBE-014, KUBE-020, KUBE-021, KUBE-025
+
+The free tier is "Limited to 10k active series per month" with "14 days retention" (pricing page, 2026-10-22), measured at the 95th percentile of `grafanacloud_instance_active_series` over the period (KUBE-025).
+
+One exporter can use most of that. Percona's `mongodb_exporter` 0.53–0.54, with only `--collector.diagnosticdata`, `--collector.replicasetstatus` and `--collector.dbstats`, offered about 5.8k series for one small database (measured 2026-10-21). `--collect-all` adds per-collection and per-index collectors, which grow with the data.
+
+Keep only what a dashboard or alert reads, in the `prometheus.relabel` every scrape forwards to. Mark the names to keep, then drop everything unmarked from the exporter's pod only:
+
+```alloy
+rule {
+  source_labels = ["__name__"]
+  regex         = "mongodb_(up|myState|ss_connections|ss_opcounters|...)"
+  target_label  = "mongodb_keep"
+  replacement   = "true"
+}
+rule {
+  source_labels = ["namespace", "app", "mongodb_keep"]
+  regex         = "mongodb;mongodb-exporter;"
+  action        = "drop"
+}
+rule {
+  regex  = "mongodb_keep"
+  action = "labeldrop"
+}
+```
+
+A plain `keep` on `__name__` there would drop every other job's series too. Result: 58 series (54, plus 4 per database). The same step drops `_bucket` and `go_*` series cluster-wide; the whole cluster sent about 5.1k live series after 2026-10-21.
+
+## [KUBE-025] `grafanacloud_instance_active_series` lags: count live series before cutting
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [Grafana Cloud: metrics pricing](https://grafana.com/docs/grafana-cloud/platform/pricing-and-usage/metrics/), [Prometheus: querying basics, staleness](https://prometheus.io/docs/prometheus/latest/querying/basics/#staleness)
+- Related: KUBE-024, INFRA-028
+
+Grafana Cloud: "An active series is a time series that has received new data points within the previous 20 minutes". The count is `grafanacloud_instance_active_series` on the `grafanacloud-usage` datasource, and the bill takes its 95th percentile over the period (`quantile_over_time(0.95, …[30d:])`).
+
+Anything that replaces series counts old and new together until the old ones age out: pods restarting with new `pod` labels, a relabel change, or two clusters sending during a move. On 2026-10-21, with the old and new cluster overlapping, it showed 12.9k against the 10k limit while about 5.1k series were live (single-source).
+
+Count live series on the metrics datasource itself:
+
+```promql
+count({__name__=~".+"})                 # series with a sample in the lookback
+count by (job) ({__name__=~".+"})       # where they come from
+```
+
+A series counts if its newest sample is within the lookback period, "5 minutes by default". Cut series only when the live count is over budget. A spike from churn passes, and the 95th percentile ignores the highest 5% of the period, about 36 hours of a 30-day month.
+
+## [KUBE-026] CrowdSec's Traefik bouncer 1.7.1 stops pulling bans on multi-CPU hosts; use 1.8.0 or later
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [crowdsec-bouncer-traefik-plugin#399](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pull/399), [#377](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/issues/377), [v1.8.0 release notes](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/releases/tag/v1.8.0), [Traefik v3.7.16 `go.mod`](https://github.com/traefik/traefik/blob/v3.7.16/go.mod), FreekMencke/fremen-cluster CHANGELOG 2026-10-21 (private)
+- Related: KUBE-008, KUBE-027
+
+Traefik runs plugins in its Go interpreter, yaegi (v0.16.1 in Traefik v3.7.16's `go.mod`). yaegi "builds the case list of a `select` once per statement and shares it between every goroutine that runs it", and the plugin's ban-list pull and metrics loops ran the same `select`. When both tickers fired together, the pull loop could wait on the metrics channel: "there is no stream poll until it receives a metrics tick, so the gap is exactly one or two metrics intervals". New bans waited that long.
+
+The symptom (#377): the plugin "periodically stops calling GET /v1/decisions/stream for exactly ~20 minutes, while POST /v1/usage-metrics keeps working", visible in CrowdSec's local API logs. "The race needs the two loops running on separate CPUs. At `GOMAXPROCS=1` it is about 1000× rarer", so a 1-CPU limit hides it.
+
+PR #399 fixed it in v1.8.0 (2026-10-18). v1.8.1 followed the same day and has only a release commit. We hit it on v1.7.1 (2026-07-31) after moving to a 6-vCPU host on 2026-10-21, and run v1.8.1 since. Pin the plugin's version in Traefik's `experimental.plugins` and read the release notes before bumping it, as with a chart.
+
+## [KUBE-027] Flannel or Calico on a single node
+- Type: comparison
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-22
+- Sources: [Flannel README](https://github.com/flannel-io/flannel/blob/master/README.md), [Flannel v0.28.10 `kube-flannel.yml`](https://github.com/flannel-io/flannel/releases/tag/v0.28.10), [Kubernetes: network policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/), [kube-network-policies](https://github.com/kubernetes-sigs/kube-network-policies), FreekMencke/fremen-cluster `cluster/flannel/` and CHANGELOG 2026-10-21 (private)
+- Related: KUBE-016, KUBE-026, INFRA-025
+
+Measured on our one-node kubeadm cluster, 2026-10-21:
+
+| | Flannel v0.28.10 (2026-10-08) | Calico |
+|---|---|---|
+| Pods | one DaemonSet | seven |
+| Memory | about 50 MiB | about 660 MiB |
+| NetworkPolicy | not enforced | enforced |
+
+The README: "the `flanneld` binary does not natively enforce Network Policies". Kubernetes: "Creating a NetworkPolicy resource without a controller that implements it will have no effect". Nothing fails: policies are accepted and ignored. On our cluster only Flux's default policies in `flux-system` existed.
+
+Flannel's manifest uses VXLAN on `10.244.0.0/16`, so set kubeadm's `podSubnet` to match, clear of the service range.
+
+To enforce policies later, Flannel's Helm chart has a `netpol.enabled` option that deploys kube-network-policies (Kubernetes SIGs; v1.1.2, 2026-09-28). The README also lists Calico for policy alongside Flannel.
+
+Changing the CNI on a running cluster is an outage; we switched while building a new cluster for a server move, where it cost nothing extra. kubeadm doesn't upgrade the CNI (KUBE-016). A host firewall must not `flush ruleset`, or it wipes the rules Kubernetes and Flannel wrote.
+
+## [KUBE-028] A fresh Ubuntu 26.04 server: chrony, fwupd's hourly refresh and `adm`
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-22
+- Sources: [Ubuntu WSL docs: time synchronisation](https://documentation.ubuntu.com/wsl/stable/explanation/time-sync/), [Ubuntu Server: serve NTP with chrony](https://documentation.ubuntu.com/server/how-to/networking/serve-ntp-with-chrony/), [fwupd `fwupd-refresh.timer`](https://github.com/fwupd/fwupd/blob/main/data/motd/fwupd-refresh.timer), [journalctl(1)](https://github.com/systemd/systemd/blob/main/man/journalctl.xml), FreekMencke/fremen-cluster `host/bootstrap.sh` and `.claude/skills/server-health/` (private)
+- Related: KUBE-016, KUBE-017
+
+Three things that tripped a bootstrap script and health check written for Ubuntu 24.04, on an Ubuntu 26.04 VPS image (2026-10-21):
+
+- **Time sync is chrony.** "Starting with Ubuntu 25.10, we migrated from systemd-timesyncd to chrony", for NTS support; "As of Ubuntu 25.10 chrony is installed by default". A check for `systemd-timesyncd` fails; check the `chrony` unit and `chronyc tracking`.
+- **fwupd's refresh fails hourly on a VM.** `fwupd-refresh.timer` runs at `OnCalendar=*-*-* *:00:00`, skipped only by `ConditionVirtualization=!container`, so it runs on virtual machines. A VPS has no firmware fwupd can update, and LVFS's CDN timed out (from home too), so the unit failed all day and filled `systemctl --failed`. Turn it off: `systemctl disable --now fwupd-refresh.timer` and `systemctl reset-failed fwupd-refresh.service`.
+- **A hand-made admin user isn't in `adm`.** journalctl: "Members of the groups systemd-journal, adm, and wheel can read all journal files". Our admin user was created by hand, outside the bootstrap script, so the health check, run as that user, saw only its own journal and missed the failed `fwupd-refresh`. The script now runs `usermod -aG adm`.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Compared on 2026-10-17, read-only, with a single-node kubeadm cluster reconciled by Flux from GitHub (each app repo's manifests applied by a Flux Kustomization, Flux's own install kept in a private repo), Traefik serving `Ingress` objects with cert-manager ACME HTTP-01 certificates, and Alloy shipping metrics and logs to a hosted Grafana stack. No issue was opened: nothing below needs a change in another repo now.
 
-1. **Hold the cluster's Kubernetes minor until Flux 2.10 and the next cert-manager list 1.37** (KUBE-003, KUBE-009, KUBE-016). Both supported tables stop at 1.36 on 2026-10-17; check them, and the CNI's, before each minor. Tracked in FreekMencke/home-cluster#8, which gained the Flux 2.10 wait on 2026-10-18.
+1. **Hold the cluster's Kubernetes minor until Flux 2.10 and the next cert-manager list 1.37** (KUBE-003, KUBE-009, KUBE-016). Both supported tables stop at 1.36 on 2026-10-17; check them, and the CNI's, before each minor. Tracked in FreekMencke/fremen-cluster#8 (named home-cluster until 2026-10-21), which gained the Flux 2.10 wait on 2026-10-18.
 2. **Run `flux migrate -f` on every repo holding Flux objects before each Flux minor upgrade, and `flux migrate` against the cluster** (KUBE-002). The CLI's dry run shows what it would rewrite; Alert, Provider and Event move again when 2.10 promotes them to `v1`.
 3. **Plan Kubernetes minor upgrades three times a year, one minor each, in a downtime window** (KUBE-015, KUBE-016). On one node a drain evicts everything; a two-a-year rhythm can't keep up with 14-month support.
 4. **Won't do now: move from Ingress to Gateway API** (KUBE-006, KUBE-008). The retirement is ingress-nginx's, not Ingress's; Traefik is maintained and serves both, so routes can move one at a time when a Gateway-only feature is needed.
@@ -353,6 +625,9 @@ Ranked by impact against effort. Compared on 2026-10-17, read-only, with a singl
 6. **Nothing to change for 64-day certificates** (KUBE-010): cert-manager's default 2/3 renewal matches Let's Encrypt's advice. Don't add a fixed `renewBefore`; use `renewBeforePercentage` if one is ever needed.
 7. **Keep Alloy; no OpenTelemetry Collector** (KUBE-014). The pipelines are Prometheus scrapes and logs, the Default Engine's case. Promtail conversion (KUBE-013) doesn't apply.
 8. **When images are signed (DOCKER-012), check signatures at admission** (DOCKER-013): Flux's `verify` covers only its own sources.
+9. **Drop the `setarch` wrapper from mongod when `mongo:8.0.35` ships** (KUBE-017), and only then: on a kernel without the rseq fix, the wrapper would hide the hazard. The cluster check already flags new 8.0 patches.
+10. **Done 2026-10-21 and 2026-10-22: the server move and MongoDB on the cluster** (FreekMencke/fremen-cluster#20, #22): Flannel instead of Calico (KUBE-027), the CrowdSec plugin on 1.8.1 (KUBE-026), host fixes (KUBE-028), MongoDB with its own exporter Deployment and a keep rule (KUBE-017 to KUBE-024).
+11. **Won't do: Alloy's built-in MongoDB exporter** (KUBE-021): a URI Go can't parse stops every pipeline in Alloy, against one pod for Percona's exporter.
 
 ## Open questions
 
@@ -363,4 +638,6 @@ Ranked by impact against effort. Compared on 2026-10-17, read-only, with a singl
 - **cert-manager and Let's Encrypt profiles** (KUBE-010): whether the ACME issuer can select a profile (`tlsserver`, `shortlived`) wasn't checked; nor DNS-PERSIST-01 support.
 - **Loki 4.0** (KUBE-012): which release removes simple scalable mode and the legacy index stores; only `main`'s upgrade page says so. Loki 3.x's support window wasn't found.
 - **`alloy otel` maturity** (KUBE-014): first exposed in 1.13.0 by the CHANGELOG's position; still public preview in 1.20.
+- **The Grafana connector's 403 on the notification policy** (INFRA-028) and whether the App Platform routing-tree API would accept the write: not tried.
+- **Calico's footprint** (KUBE-027) is one measurement on our node; no official figure for either CNI was found in their READMEs.
 - **Not read:** CVE-2026-40109's advisory (Flux GCR Receivers), Envoy Gateway and NGINX Gateway Fabric docs, the OpenTelemetry Operator, k3s's upgrade controller.

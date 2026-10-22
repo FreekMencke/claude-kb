@@ -108,7 +108,7 @@ Keep a Changelog 2.0 names coding agents directly:
 
 Anthropic's own SDK does this in its CLAUDE.md: "**User-visible changes get a changelog note,** even when they fix a bug."
 
-**How we apply it.** Since 2026-10-13 each of our four repos states its changelog rule once in CLAUDE.md, keeps the format in the repo skill, and the reviewer's pair points to the rule (DOC-019 has the earlier duplication). Our briefs add three rules the spec lacks, which are worth keeping: "reread the whole day", "extend an existing entry rather than add a near-duplicate", and the audience ("write for users" in osrs-tracker-web). All four now ask for the reason ("say why, not only what"), and api and the aws packages start a consumer-breaking entry with **Breaking:**; web and home-cluster have no such marker.
+**How we apply it.** Since 2026-10-13 each of our four repos states its changelog rule once in CLAUDE.md, keeps the format in the repo skill, and the reviewer's pair points to the rule (DOC-019 has the earlier duplication). Our briefs add three rules the spec lacks, which are worth keeping: "reread the whole day", "extend an existing entry rather than add a near-duplicate", and the audience ("write for users" in osrs-tracker-web). All four now ask for the reason ("say why, not only what"), and api and the aws packages start a consumer-breaking entry with **Breaking:**; web and fremen-cluster (home-cluster until 2026-10-21) have no such marker.
 
 ## [DOC-004] Changelogs without version numbers
 - Type: fact
@@ -208,7 +208,7 @@ The Claude Code style, symptom plus trigger plus what's now possible, is the mod
 - **tarides/changelog-check-action**: `changelog` defaults to `CHANGES.md`, `labels` to "no changelog".
 - **Anthropic's SDK** runs its own `changelog.yml` check (in the private repo only). Its failure message: "Add your line to CHANGELOG.md, or add the skip-changelog label to this pull request."
 
-**Ours.** home-cluster has the strictest gate: a `PreToolUse` hook on `git push` exits 2 if no commit since upstream touches CHANGELOG.md. The reviewer agents check the pairing in api, aws and web. home-cluster pushes straight to `main` with no PR CI and logs every infra change on purpose, so the spec's noise argument weighs less there. For PR repos, the reviewer check plus a doc-only exemption is the "reminder" the spec allows. Since 2026-10-13 home-cluster's hook exempts doc-only pushes too.
+**Ours.** fremen-cluster (named home-cluster until 2026-10-21) has the strictest gate: a `PreToolUse` hook on `git push` exits 2 if no commit since upstream touches CHANGELOG.md. The reviewer agents check the pairing in api, aws and web. fremen-cluster pushes straight to `main` with no PR CI and logs every infra change on purpose, so the spec's noise argument weighs less there. For PR repos, the reviewer check plus a doc-only exemption is the "reminder" the spec allows. Since 2026-10-13 its hook exempts doc-only pushes too.
 
 ## [DOC-009] What Anthropic's docs say about repo docs beyond CLAUDE.md
 - Type: fact
@@ -314,7 +314,7 @@ None of these checks whether a doc is true, only its form and links.
 | markdown-link-check | Broken links | Its common GitHub Action wrapper is archived; prefer lychee |
 | Vale | Prose style and terminology | 6,235 stars; config overhead too high for small repos |
 
-**Ours.** osrs-tracker-web, osrs-tracker-aws, osrs-tracker-api and osrs-tracker-packages (since 2026-10-18) run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same four run `lychee --offline --include-fragments --hidden` on every push. home-cluster has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files.
+**Ours.** osrs-tracker-web, osrs-tracker-aws, osrs-tracker-api and osrs-tracker-packages (since 2026-10-18) run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same four run `lychee --offline --include-fragments --hidden` on every push. fremen-cluster (home-cluster until 2026-10-21) has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files.
 
 ## [DOC-015] Agents that detect or fix doc drift
 - Type: pattern
@@ -370,14 +370,14 @@ All nine active repos: FreekMencke's five, plus the four osrs-tracker repos. The
 | claude-kb | Table, ISO dates | Layout, routine, design decisions | INDEX, ENTRIES (generated), OVERLAPS |
 | claude-skills | None (installs track commits) | Install, checks, trigger evals | — |
 | freek-mencke-web | None | Angular CLI template, says CLI 19.0.6; `package.json` has `@angular/cli` `^22.2.2` (2026-10-14) | — |
-| home-cluster | `## YYYY-MM-DD` | Overview, usage, "Known differences and decisions", access | `docs/rebuild.md`, `docs/upgrade-plan-kubernetes-1.37.md`, two Lambda READMEs |
+| fremen-cluster (home-cluster until 2026-10-21) | `## YYYY-MM-DD` | Overview, usage, "Known differences and decisions", access | `docs/rebuild.md`, `docs/upgrade-plan-kubernetes-1.37.md`, two Lambda READMEs |
 | osrs-tracker-api | `## YYYY-MM-DD`, area subtitles | Provides, fits together, local, checks, built with | — |
 | osrs-tracker-aws | `## YYYY-MM-DD` | Jobs, link to the packages, fits together, local runs | `DATA-MODEL.md`, a README per Lambda, `DEPLOY.md` and `INFRA.md` in the skill |
 | osrs-tracker-packages | Root (tooling) plus 4 package changelogs | How they relate, development, licence | A README per package; publishing rules in the skill (aws's `PACKAGES.md` until 2026-10-18) |
 | osrs-tracker-web | `## YYYY-MM-DD`, public at `/about/changelog` | Features, fits together, local, contributing | `docs/decisions.md` (484 lines on 2026-10-14), `docs/runbook.md` |
 | solix | Versioned with ISO dates, Added/Changed/Fixed | Download, use, build, release, history | — |
 
-A spot check of README version claims against `package.json` and Dockerfiles found them current in api and web. home-cluster's versions table matches its latest changelog entry (Traefik v3.7.14, chart 41.7.1). The only stale README found is freek-mencke-web's (last push 2026-05-06). This was a spot check, not a full `refresh-md-files` audit.
+A spot check of README version claims against `package.json` and Dockerfiles found them current in api and web. home-cluster's (now fremen-cluster) versions table matched its latest changelog entry on 2026-10-14 (Traefik v3.7.14, chart 41.7.1). The only stale README found is freek-mencke-web's (last push 2026-05-06). This was a spot check, not a full `refresh-md-files` audit.
 
 ## [DOC-018] Our changelog conventions and where they deviate
 - Type: comparison
@@ -387,7 +387,7 @@ A spot check of README version claims against `package.json` and Dockerfiles fou
 - Sources: each repo's `CHANGELOG.md`, `CLAUDE.md`, repo skill and `conventions-reviewer.md` on `origin/main`, 2026-10-13, re-read 2026-10-14; [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-001, DOC-002, DOC-004, DOC-019, SESS-026
 
-**Shared convention** (api, aws, web, home-cluster):
+**Shared convention** (api, aws, web, fremen-cluster, named home-cluster until 2026-10-21):
 - A hand-written entry in the same change, under today's `## YYYY-MM-DD` (slashes until 2026-10-13), newest first. Doc-only changes get none.
 - `###` area subtitles on busy days, with "Behind the scenes" last.
 - Extend an entry rather than add a near-duplicate, and fold parallel PRs' headings on rebase.
@@ -398,12 +398,12 @@ A spot check of README version claims against `package.json` and Dockerfiles fou
 | Point | Deviation |
 |---|---|
 | Doc-only changes | No entry in all four (decided 2026-10-13) |
-| Dependabot | api, web: a follow-up "Dependency updates" line only when a bump changes behaviour. aws: an entry only then. home-cluster: none configured |
-| `# Changelog` title | All but web (web's page supplies its own title); api, aws and home-cluster have a one-line preamble |
+| Dependabot | api, web: a follow-up "Dependency updates" line only when a bump changes behaviour. aws: an entry only then. fremen-cluster: none configured |
+| `# Changelog` title | All but web (web's page supplies its own title); api, aws and fremen-cluster have a one-line preamble |
 | Package headings (aws) | `## X.Y.Z - YYYY-MM-DD` in all four; logger and models also keep `## Unreleased` |
 | References | api: `(#N)` 22 times. aws: `(issue #88)` and full refs. web: none (public) |
 | "Reread the whole day" | All four |
-| Tense | home-cluster's rule: past tense for what was done, present for the state it leaves |
+| Tense | fremen-cluster's rule (in its `apply-before-push` skill): past tense for what was done, present for the state it leaves |
 
 **Against Keep a Changelog 2.0:**
 - Every change except doc-only ones logged where the spec says notable ones (DOC-002).
@@ -424,7 +424,7 @@ Each osrs-tracker repo states its changelog rule in CLAUDE.md, again in the repo
 
 - **osrs-tracker-api.** CLAUDE.md: "Every change gets a `CHANGELOG.md` entry". Review rules: "a user-visible change and `CHANGELOG.md`". The reviewer won't flag a missing entry for a tooling change that CLAUDE.md requires.
 - **osrs-tracker-web.** CLAUDE.md: "Every change to the app, its dependencies or tooling (except Dependabot PRs)". Review rules: "a user-visible change and `CHANGELOG.md`". Same gap.
-- **osrs-tracker-aws and home-cluster** are consistent ("a change and its `CHANGELOG.md` entry", "any change and `CHANGELOG.md`").
+- **osrs-tracker-aws and home-cluster (now fremen-cluster)** were consistent ("a change and its `CHANGELOG.md` entry", "any change and `CHANGELOG.md`").
 
 The repos already apply this fix to agents: "keep rules here, not in the agent". Apply it one level further. State the rule once (CLAUDE.md for the hard rule, or the skill for its details), and make the review-rule pair point to it: "a change that needs an entry under CLAUDE.md's changelog rule and `CHANGELOG.md`". A copy that's only a pointer can't drift.
 
@@ -433,7 +433,7 @@ The repos already apply this fix to agents: "keep rules here, not in the agent".
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-14
-- Sources: review rules in the [osrs-tracker-api](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [osrs-tracker-aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/SKILL.md) and [osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/skills/osrs-tracker-web/SKILL.md) skills, [home-cluster conventions-reviewer.md](https://github.com/FreekMencke/home-cluster/blob/main/.claude/agents/conventions-reviewer.md), read on `origin/main` 2026-10-13
+- Sources: review rules in the [osrs-tracker-api](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [osrs-tracker-aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/SKILL.md) and [osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/skills/osrs-tracker-web/SKILL.md) skills, [fremen-cluster conventions-reviewer.md](https://github.com/FreekMencke/fremen-cluster/blob/main/.claude/agents/conventions-reviewer.md) (private), read on `origin/main` 2026-10-13
 - Related: DOC-013, DOC-015, DOC-019, REPO-044
 
 Our reviewers check pairs of files "against the whole diff". Each pair is a doc that must change with a piece of code. It turns Google's "same change" rule (DOC-013) into something a reviewer can check:
@@ -450,7 +450,7 @@ Our reviewers check pairs of files "against the whole diff". Each pair is a doc 
   - A change to the stored hiscore format or a stored document's type in `models` and osrs-tracker-aws's `DATA-MODEL.md` (or an issue there).
   - A change that breaks a consumer and its `**Breaking:**` entry; a version bump and its `## X.Y.Z - YYYY-MM-DD` entry.
 - **osrs-tracker-web.** A new route and `route-label.ts`.
-- **home-cluster.** A chart or version change and the README's versions table, `docs/rebuild.md` and `CHARTS`.
+- **fremen-cluster** (home-cluster until 2026-10-21). A chart or version change and the README's versions table, `docs/rebuild.md` and the `CHARTS` lists.
 
 **Why it works.** Each pair is narrow enough for a reviewer at `medium` effort to check from the diff. The rule sits in the skill, so the implementing session sees it too. It covers only the pairs someone wrote down, so a periodic audit (`refresh-md-files`) is still needed for the rest.
 
@@ -461,7 +461,7 @@ Our reviewers check pairs of files "against the whole diff". Each pair is a doc 
 - Applies to: general
 - Confidence: single-source
 - Last verified: 2026-10-14
-- Sources: [osrs-tracker-web docs/decisions.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/decisions.md), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [home-cluster README.md](https://github.com/FreekMencke/home-cluster/blob/main/README.md), read on `origin/main` 2026-10-13
+- Sources: [osrs-tracker-web docs/decisions.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/decisions.md), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [fremen-cluster README.md](https://github.com/FreekMencke/fremen-cluster/blob/main/README.md) (private), read on `origin/main` 2026-10-13
 - Related: DOC-011, DOC-020, REPO-044
 
 osrs-tracker-web's `docs/decisions.md` (484 lines, 33 decisions from 2026-10-04 to 2026-10-13, on 2026-10-14) opens: "Choices that look like accidents without their context: what was decided, why, and when to revisit. Newest first."
@@ -475,7 +475,7 @@ Each entry:
 Compared with MADR, it drops status and numbering and adds the revisit condition. CLAUDE.md says: "Read `docs/decisions.md` before 'fixing' something that looks odd". The reviewer reads it every review and "never flag[s] what it explains", which is what makes it pay: it stops sessions from undoing deliberate choices.
 
 **Elsewhere.**
-- home-cluster keeps the same idea as a README section ("Known differences and decisions", "Host edits kept on purpose").
+- fremen-cluster (home-cluster until 2026-10-21) keeps the same idea as a README section, "Known differences and decisions" (re-read 2026-10-22; the "Host edits kept on purpose" section of 2026-10-13 is gone).
 - api and aws have no decisions file. api's review rules say so ("No decisions document to read"), and its rationale lives inline in the skill ("Not used on purpose: …").
 
 That's fine at their size. Move the rationale to a decisions file once the skill's inline "on purpose" notes reach a few, or once the reviewer flags a deliberate choice.
@@ -485,10 +485,10 @@ That's fine at their size. Move the rationale to a decisions file once the skill
 - Applies to: general
 - Confidence: single-source
 - Last verified: 2026-10-14
-- Sources: [home-cluster docs/upgrade-plan-kubernetes-1.37.md](https://github.com/FreekMencke/home-cluster/blob/main/docs/upgrade-plan-kubernetes-1.37.md), read on `origin/main` 2026-10-13
+- Sources: [fremen-cluster docs/upgrade-plan-kubernetes-1.37.md](https://github.com/FreekMencke/fremen-cluster/blob/main/docs/upgrade-plan-kubernetes-1.37.md) (private), read on `origin/main` 2026-10-13 and 2026-10-22
 - Related: DOC-013, FLOW-003
 
-home-cluster's Kubernetes upgrade plan opens with a status line and its own expiry: "**Status (8 Oct 2026): waiting for cert-manager 1.22.** … Delete this file once every step is done." Then come the rules for every step, and the steps.
+fremen-cluster's (home-cluster until 2026-10-21) Kubernetes upgrade plan opens with a status line and its own expiry: "**Status (8 Oct 2026): waiting for cert-manager 1.22.** … Delete this file once every step is done." On 2026-10-22 it read "**Status (21 Oct 2026): waiting for cert-manager 1.22 and Flux 2.10.** Tracked in FreekMencke/fremen-cluster#8, which says when to check again." Then come the rules for every step, and the steps.
 
 **Why it works.**
 - A session that opens the file learns at once whether it's current and what blocks it.
@@ -502,7 +502,7 @@ home-cluster's Kubernetes upgrade plan opens with a status line and its own expi
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-14
-- Sources: [osrs-tracker-web docs/runbook.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/runbook.md), [osrs-tracker-aws DEPLOY.md](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/DEPLOY.md), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [home-cluster docs/rebuild.md](https://github.com/FreekMencke/home-cluster/blob/main/docs/rebuild.md), read on `origin/main` 2026-10-13
+- Sources: [osrs-tracker-web docs/runbook.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/runbook.md), [osrs-tracker-aws DEPLOY.md](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/DEPLOY.md), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [fremen-cluster docs/rebuild.md](https://github.com/FreekMencke/fremen-cluster/blob/main/docs/rebuild.md) (private), read on `origin/main` 2026-10-13
 - Related: DOC-012, SKILL-021, REPO-044
 
 Our repos split operational docs two ways:
@@ -510,7 +510,7 @@ Our repos split operational docs two ways:
 | Repo | Where | Reader |
 |---|---|---|
 | osrs-tracker-web | `docs/runbook.md`: roll back, a failed `CD` run, site down, health checks, the GE tax recheck | People and sessions; workflows link to it in comments |
-| home-cluster | `docs/rebuild.md` plus skills (`apply-before-push`, health checks) | Rebuild by a person; routine work by sessions |
+| fremen-cluster (home-cluster until 2026-10-21) | `docs/rebuild.md` plus skills (`apply-before-push`, health checks) | Rebuild by a person; routine work by sessions |
 | osrs-tracker-aws | `DEPLOY.md` (with "Rollback") and `INFRA.md` inside the skill folder | Sessions, loaded on demand |
 | osrs-tracker-api | Rollback and release steps inside `SKILL.md` | Sessions |
 
@@ -553,7 +553,7 @@ Ranked by impact against effort.
 5. **Done 2026-10-13: `lychee --offline --include-fragments --hidden` with `fail: true` in CI for api, web and aws, and api's `prettier:ci` over Markdown** (the issues in item 4). `--hidden` reaches `.claude/` and `.github/`; a glob input doesn't skip `.gitignore`d paths, so exclude `node_modules` by hand. DOC-014.
    Update 2026-10-18: osrs-tracker-packages runs the same lychee and Prettier checks.
 6. **Replace freek-mencke-web's template README** (low impact, trivial effort). It's the only stale README found. DOC-017. Dropped 2026-10-13: that app is due for an overhaul.
-7. **Give long-lived plan docs a due-date issue** (low impact, trivial effort). Start with home-cluster's Kubernetes 1.37 plan, due when cert-manager 1.22 ships. DOC-022. Opened 2026-10-13 as FreekMencke/home-cluster#8 (check 2026-11-30). It also adds the convention to home-cluster's CLAUDE.md.
+7. **Give long-lived plan docs a due-date issue** (low impact, trivial effort). Start with the cluster repo's Kubernetes 1.37 plan, due when cert-manager 1.22 ships. DOC-022. Opened 2026-10-13 as FreekMencke/fremen-cluster#8 (then home-cluster; check 2026-11-30). It also adds the convention to that repo's CLAUDE.md.
 8. **Already running, so not a recommendation:** the weekly docs-drift routine (REPO-018, DOC-024). This file first listed it under "not now", having missed REPO-018; corrected 2026-10-13. Watch whether its findings are pairs that a cross-file rule (DOC-020) should have caught, and add those rules. **Not now:** MADR files (the one-file log works at 33 decisions (2026-10-14); DOC-021), and a changelog check in CI for PR repos (the reviewer pair is the reminder; DOC-008). 
 
 ## Open questions
