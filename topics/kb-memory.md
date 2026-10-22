@@ -761,7 +761,7 @@ No controlled study shows a memory server beating CLAUDE.md plus auto memory on 
 
 **Settings:** no auto-memory keys, so auto memory is on everywhere; `claude-md-management` is enabled at user level.
 
-**Auto memory** (`~/.claude/projects/*/memory/`): osrs-tracker-web 25 topic files (index 25 lines, 3.9 KB, far below 200 lines/25 KB); osrs-tracker-aws 3; -api 1; home-cluster 2; solix 2; claude-kb and claude-skills none. Of 33 topic files: 17 `feedback`, 10 `project`, 5 `reference`, 1 `user`; 29 carry `modified`. 20 empty memory folders belong to `claude -p` probe directories. Re-read 2026-10-14, after FreekMencke/claude-kb#48 and osrs-tracker/osrs-tracker-web#234: osrs-tracker-web 6 topic files (index 6 lines, 1.1 KB), home-cluster, -aws and -api 1 each, the rest none; 9 topic files in all (4 `reference`, 3 `project`, 2 `feedback`); 34 empty memory folders.
+**Auto memory** (`~/.claude/projects/*/memory/`): osrs-tracker-web 25 topic files (index 25 lines, 3.9 KB, far below 200 lines/25 KB); osrs-tracker-aws 3; -api 1; home-cluster (now fremen-cluster) 2; solix 2; claude-kb and claude-skills none. Of 33 topic files: 17 `feedback`, 10 `project`, 5 `reference`, 1 `user`; 29 carry `modified`. 20 empty memory folders belong to `claude -p` probe directories. Re-read 2026-10-14, after FreekMencke/claude-kb#48 and osrs-tracker/osrs-tracker-web#234: osrs-tracker-web 6 topic files (index 6 lines, 1.1 KB), home-cluster, -aws and -api 1 each, the rest none; 9 topic files in all (4 `reference`, 3 `project`, 2 `feedback`); 34 empty memory folders.
 
 **Use** (main-session transcripts, worktree folders counted with their repo, 2026-10-06 to 2026-10-12; counted Read, Bash reads and Write/Edit tool calls on paths under `~/.claude/projects/*/memory/`):
 
@@ -771,7 +771,7 @@ No controlled study shows a memory server beating CLAUDE.md plus auto memory on 
 | osrs-tracker-api | 59 | 2 | 1 |
 | osrs-tracker-aws | 36 | 1 | 3 |
 | claude-kb | 25 | 1 | 0 |
-| home-cluster | 10 | 2 | 2 |
+| home-cluster (now fremen-cluster) | 10 | 2 | 2 |
 
 Memory matters in osrs-tracker-web (a quarter of sessions recall a topic, a fifth write one) and barely elsewhere.
 

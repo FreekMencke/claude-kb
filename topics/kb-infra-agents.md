@@ -25,7 +25,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | How do I debug an incident without flooding context? | Filtered MCP reads (Flux `since`/`grep`/`limit`, Logs Insights aggregates), done by a read-only subagent that returns a short summary. | INFRA-018, INFRA-019 |
 | Do credentials end up in transcripts? | Yes, anything a tool prints is written to the plaintext `.jsonl` and sent to the model. Settings `env` reaches every subprocess. | INFRA-021, INFRA-020 |
 | Which guardrail would have prevented published agent incidents? | Scoped or read-only credentials first, then a human-run apply, then deletion protection and backups out of reach. Prompt instructions failed every time. | INFRA-022, INFRA-023 |
-| Can a session query Loki, or only pod logs? | Not the local Loki any more: it was removed on 2026-10-14 (home-cluster 50b1a31), with the agent's Loki grant. Logs and metrics are in Grafana Cloud, read through the claude.ai Grafana connector (`query_loki_logs` on the `grafanacloud-logs` datasource; history from 2026-10-13 about 20:00 UTC); pod logs through the flux MCP server cover the current pods only. From 2026-10-13 to 2026-10-14, `kubectl get --raw` on the Loki gateway's service proxy worked for GET queries. | INFRA-024, INFRA-025 |
+| Can a session query Loki, and what can it change in Grafana Cloud? | Not the local Loki: it was removed on 2026-10-14 (fremen-cluster, then named home-cluster, 50b1a31). Logs and metrics are in Grafana Cloud, read through the claude.ai Grafana connector (`query_loki_logs` on `grafanacloud-logs`); pod logs through the flux MCP server cover the current pods only. The connector can import rules and create contact points, but gets a 403 writing the notification policy and a 500 from Adaptive Metrics. | INFRA-024, INFRA-025, INFRA-028 |
 | How do I check a subresource permission with `kubectl auth can-i`? | With `--subresource`: `can-i get services --subresource=proxy`. `can-i get services/proxy` checks a service named `proxy`, and gave a false `yes` here. Against a grant limited by `resourceNames`, add the name (`services/loki-gateway:80 --subresource=proxy`): without it the answer is `no`. | INFRA-025 |
 | What should we change in our setup first? | Done 2026-10-12: read-only cluster identity, pinned MCP servers, `autoMode.environment`, deny rules, root keys gone, agent policy tightened. Decided 2026-10-13: MCP `run_script` first, the CLI only where MCP can't (rec 9); short-lived AWS credentials dropped for now (rec 10). | INFRA-024, Recommendations |
 
@@ -60,6 +60,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | INFRA-025 | `kubectl auth can-i` reads `resource/x` as a resource name, not a subresource | anti-pattern | kubernetes, rbac, kubectl, testing |
 | INFRA-026 | Before changing a config value, read the code that consumes it | pattern | config, lambda, retries, issues |
 | INFRA-027 | Change one Lambda environment variable without printing the others | pattern | lambda, env, credentials, transcripts |
+| INFRA-028 | The claude.ai Grafana Cloud connector: what it can and can't write | fact | grafana-cloud, connectors, alerting, permissions |
 
 ## Identities and isolation
 
@@ -260,7 +261,7 @@ So a production namespace or bucket named after the product is judged as ordinar
 { "autoMode": { "environment": [
   "$defaults",
   "Cloud provider(s): AWS, one account; the agent uses the claude profile",
-  "Sensitive remote targets: the <app> namespace on the home cluster is production",
+  "Sensitive remote targets: the <app> namespace on the cluster is production",
   "Protected IaC scopes: the site buckets, the scheduled-job rules, the Lambda functions"
 ] } }
 ```
@@ -560,6 +561,7 @@ Read from local config and read-only AWS and cluster calls. Names, exact grants 
 
 **Kubernetes:**
 - Both MCP servers and `kubectl` use `~/.kube/config`: a ServiceAccount token bound to `view` (which includes Flux through `flux-view`), plus read on a few cluster-scoped resources. No Secrets, exec, port-forward or `nodes/proxy`.
+- Since 2026-10-21 the cluster runs on a VPS, rebuilt from the cluster repo with the same identity pattern; its API server isn't public, so local `kubectl` and both MCP servers reach it through an SSH tunnel.
 - Logs and metrics moved to Grafana Cloud on 2026-10-14, ending the agent's day-old Loki grant (INFRA-025). Tested 2026-10-14 (desktop, WSL) through the claude.ai Grafana connector: logs since 2026-10-13 about 20:00 UTC; write tools kept (recommendation 11).
 - The admin kubeconfig is kept out of the default path, behind a Read deny rule. Cluster writes go through the cluster repo, applied by the user.
 - Both servers are read-only and pinned. The kubernetes server has no `helm` toolset, because `helm_list` reads Secrets.
@@ -589,9 +591,9 @@ Tested 2026-10-13, kubectl v1.36.5, desktop Code tab (WSL), as the `view`-bound 
 
 The reverse trap, once a grant is limited by `resourceNames`: the unnamed `--subresource` check asks about every service and says `no`. Name the resource when you know it.
 
-Tested 2026-10-13, v2.1.296, kubectl v1.36.5, desktop Code tab (WSL), as `claude-agent` with the Loki Role (INFRA-024): `can-i get services/loki-gateway:80 --subresource=proxy -n grafana-loki` gave `yes`; `can-i create` on it, another service name, and the unnamed check gave `no`. Real Loki queries matched (labels, and a 7-day `count_over_time` in about 1 s). The grant was removed on 2026-10-14, so these commands no longer reproduce; the `resourceNames` lesson stands.
+Tested 2026-10-13, v2.1.296, kubectl v1.36.5, desktop Code tab (WSL), as `claude-agent` with the Loki Role (INFRA-024): `can-i get services/loki-gateway:80 --subresource=proxy -n grafana-loki` gave `yes`; `can-i create` on it, another service name, and the unnamed check gave `no`. Real Loki queries matched. The grant was removed on 2026-10-14; the `resourceNames` lesson stands.
 
-Calico has the same trap (tested 2026-10-14, kubectl v1.36.5, as `claude-agent`): `can-i --list` shows write verbs on `projectcalico.org` network policies, yet a real `kubectl get globalnetworkpolicies.projectcalico.org` is `Forbidden: operation on Calico tiered policy is forbidden`. Don't read `--list` as the effective permission.
+Calico has the same trap (tested 2026-10-14, kubectl v1.36.5, as `claude-agent`): `can-i --list` shows write verbs on `projectcalico.org` network policies, yet a real `kubectl get globalnetworkpolicies.projectcalico.org` is `Forbidden: operation on Calico tiered policy is forbidden`. Don't read `--list` as the effective permission. Our cluster runs Flannel since 2026-10-21 (KUBE-027), so this no longer reproduces there.
 
 ## Changing configuration
 
@@ -638,6 +640,32 @@ rm "$f"
 Afterwards re-read the key list and check that none went missing.
 
 Asking for approval: the session showed the exact command and its rollback (the same command with the old value), then asked one `AskUserQuestion` that combined how to ship with the approval ("PR, then release: deploy, run the env command above, merge"). One answer covered the release; single-source.
+
+## [INFRA-028] The claude.ai Grafana Cloud connector: what it can and can't write
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-22
+- Sources: [Grafana: import data source-managed rules](https://grafana.com/docs/grafana/latest/alerting/alerting-rules/alerting-migration/), [Grafana: alerting provisioning HTTP API](https://grafana.com/docs/grafana/latest/developer-resources/api-reference/http-api/alerting_provisioning/), [Grafana: alerting RBAC](https://grafana.com/docs/grafana/latest/alerting/set-up/configure-rbac/), [Grafana: webhook contact point](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/), [grafana/alerting webhook `config.go`](https://github.com/grafana/alerting/blob/main/receivers/webhook/v1/config.go), [FreekMencke/claude-kb#249](https://github.com/FreekMencke/claude-kb/issues/249)
+- Related: INFRA-024, MCP-010, MCP-028, KUBE-024, KUBE-025
+
+The connector signs in through OAuth as the user (Editor on our stack). Observed 2026-10-14 to 2026-10-22 in Claude Code sessions:
+
+| Action | Result |
+|---|---|
+| Read dashboards, rules, contact points, Prometheus and Loki | works |
+| Import Prometheus rule files: `POST /api/convert/prometheus/config/v1/rules/<folder>` with header `X-Grafana-Alerting-Datasource-UID` | works |
+| Create a contact point | works |
+| Read the notification policy (`alerting_manage_routing`) | works |
+| Write it: `/api/v1/provisioning/policies` | 403 |
+| The Adaptive Metrics plugin API (`/api/plugins/grafana-adaptive-metrics-app/resources/...`) | 500 |
+
+The 403's cause isn't established. Grafana's RBAC table gives Editor "Create, edit, and delete policies", but the deprecated actions are "granted exclusively to organization Admins", and the provisioning API's notification policy endpoints "are deprecated" in favour of the App Platform alerting APIs (not tried). We edit the policy in the UI and export it to the cluster repo.
+
+In practice:
+- Its tools can arrive minutes into a session (MCP-010): search again (ToolSearch "grafana") before calling it missing.
+- A webhook contact point's token goes in **Authentication Header Credentials**, which Grafana decrypts on use and masks on read. The Scheme field is ordinary settings, so a token typed there is stored in plain text.
+- Adaptive Metrics recommendations have to be pasted by the user. On 2026-10-17 we left 109 (−3.13k series) unapplied and trimmed in Alloy instead (KUBE-024).
 
 ## Recommendations for our setup
 
