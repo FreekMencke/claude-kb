@@ -1184,6 +1184,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | WEB-041 | AI usage preferences in robots.txt: the IETF aipref drafts | fact | aipref, content-usage, robots-txt, ietf |
 | WEB-042 | hreflang basics for a site that adds a language | fact | hreflang, i18n, multilingual, x-default, angular-localize |
 
+## Native web animation in Angular 22 (`topics/kb-web-animation.md`, ANIM)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| ANIM-001 | `@angular/animations` in Angular 22: deprecated since 20.2, not removed | fact | angular, animations, deprecation, angular-22 |
+| ANIM-002 | Migrating from `@angular/animations`: what replaces each API | pattern | angular, animations, migration, css |
+| ANIM-003 | `animate.enter` and `animate.leave`: timing, removal and the function form | fact | angular, animate-enter, animate-leave, timeout |
+| ANIM-004 | `animate.enter` replays at hydration; use `@starting-style` for server-rendered content | anti-pattern | angular, ssr, hydration, animate-enter, starting-style |
+| ANIM-005 | Animated content must be visible without JavaScript and before hydration | pattern | ssr, hydration, progressive-enhancement, zoneless, afterNextRender |
+| ANIM-006 | Route transitions with `withViewTransitions()` | fact | angular, router, view-transitions, developer-preview |
+| ANIM-007 | CSS, view transitions or the Web Animations API: which to use, with Baseline status | comparison | css, waapi, starting-style, view-transitions, baseline |
+| ANIM-008 | Compositor-only properties and `will-change` | fact | performance, compositor, transform, opacity, will-change |
+| ANIM-009 | Animation and Core Web Vitals: INP, LoAF, CLS and LCP | fact | performance, inp, cls, lcp, long-animation-frames |
+| ANIM-010 | Reduced motion: replace motion, don't only remove it | recommendation | accessibility, prefers-reduced-motion, vestibular, animate-leave |
+| ANIM-011 | WCAG motion rules beyond reduced motion: 2.2.2, 2.3.1 and parallax | fact | accessibility, wcag, flashing, parallax, pause |
+| ANIM-012 | Focus, `inert` and the accessibility tree during exit animations | pattern | accessibility, focus, inert, animate-leave, dialog |
+| ANIM-013 | Motion durations and easing: the numbers and their sources | comparison | motion-design, duration, easing, material, nngroup |
+| ANIM-014 | Testing animations: jsdom, TestBed and Playwright | tool | testing, vitest, jsdom, playwright, reduced-motion |
+| ANIM-015 | Choosing a duration: purpose, distance and frequency | recommendation | motion-design, duration, nngroup, frequency |
+
 ## Web performance beyond Core Web Vitals (`topics/kb-web-performance.md`, WEBPERF)
 
 | ID | Title | Type | Tags |

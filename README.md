@@ -144,6 +144,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-web-security.md](topics/kb-web-security.md) | `WEBSEC` | Security of agent-written web code: OWASP Top 10:2025, headers and CSP nonces in Angular SSR, SSRF, cookies, CSRF, review tools |
 | [kb-oss-licensing.md](topics/kb-oss-licensing.md) | `OSS` | Open-source licensing and repo hygiene: licences, SPDX, dependency and font licences, community health files |
 | [kb-ui-review.md](topics/kb-ui-review.md) | `UIREV` | Interface guidelines and UI review: Vercel's guidelines and skill, machine checks against judgement, heuristic evaluation, design-review agents |
+| [kb-web-animation.md](topics/kb-web-animation.md) | `ANIM` | Native web animation in Angular 22: `animate.enter`/`animate.leave`, view transitions, performance, reduced motion |
 | [kb-knowledge-retrieval.md](topics/kb-knowledge-retrieval.md) | `RETR` | Giving agents knowledge: agentic search, RAG, long context and curated knowledge bases, measured on this one |
 
 | Other files | What it holds |
