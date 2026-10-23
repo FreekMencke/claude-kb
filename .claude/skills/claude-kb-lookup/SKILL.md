@@ -30,7 +30,7 @@ The tools' full names depend on how the session got the server: `mcp__claude-kb_
 - **Find entries:** `kb_search` with two to five keywords from the question. Search again with other words if nothing fits. Each hit shows its type, confidence and last-verified date, and a summary.
 - **Read them:** `kb_get` the best IDs, usually one to four, in one call (up to 10). A merged entry comes with the entry it points to; follow a `Related:` ID when the entry doesn't answer the question or calls the answer unconfirmed.
 - **Our own setup:** for "what should we do" questions, `kb_quick_answers` with the entry's topic (its ID prefix, e.g. `MCP`) also returns that file's Recommendations.
-- **Conflicts:** the tools don't return the index's Conflicts section. If two entries disagree, say so in the answer.
+- **Conflicts:** `kb_get` adds `Conflict (INDEX.md): <topic> — <which the sources support>` after an entry in an open conflict, and `kb_search` marks such a hit "open conflict". Pass those lines on in the answer with the entry IDs, and say which side the sources support; if two entries disagree without one, say so.
 - **Dates:** a search hit last verified more than 60 days ago says "check its sources"; list it under "Due for re-check". Also note entries whose confidence is `single-source` or `unverified`.
 - **Corpus:** every result ends with `corpus: <commit>`. Add it as the answer's last line: `Corpus: <commit>`.
 - **Stop** once you have the answer. Usually one search and one `kb_get` are enough.

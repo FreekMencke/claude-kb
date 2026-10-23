@@ -1,10 +1,11 @@
 /**
  * The knowledge base as MCP resources, for a user to attach rather than for Claude to search: in Claude Code,
- * `@claude-kb:kb://topic/mcp` or `@claude-kb:kb://entry/MCP-017`. INDEX.md's Quick answers and each topic's with its
- * recommendations are listed; entries read by ID through the `kb://entry/{id}` template. Listing every entry passed
- * 100,000 characters at about 810 entries (2026-10-17), about 25k tokens through Claude Code's ListMcpResourcesTool.
+ * `@claude-kb:kb://topic/mcp` or `@claude-kb:kb://entry/MCP-017`. INDEX.md's Quick answers (the stack's as
+ * `kb://topic/stack`) and each topic's with its recommendations are listed; entries read by ID through the
+ * `kb://entry/{id}` template. Listing every entry passed 100,000 characters at about 810 entries (2026-10-17), about
+ * 25k tokens through Claude Code's ListMcpResourcesTool.
  */
-import type { Index } from './kb-index.ts';
+import { type Index, STACK_TOPIC } from './kb-index.ts';
 import { get, loaded, quickAnswers } from './kb-tools.ts';
 import type { ResourceKind } from './metrics.ts';
 
@@ -40,7 +41,18 @@ export function listResources(index: Index | undefined): Resource[] {
     mimeType: MIME,
   }));
   return [
-    { uri: QUICK_ANSWERS, name: 'quick-answers', title: 'Quick answers across the knowledge base', mimeType: MIME },
+    { uri: QUICK_ANSWERS, name: 'quick-answers', title: 'Quick answers on using Claude', mimeType: MIME },
+    // INDEX.md's second table, which the tools' no-topic answer leaves out: `kb://topic/stack`
+    ...(index.quickAnswers.has(STACK_TOPIC)
+      ? [
+          {
+            uri: `kb://topic/${STACK_TOPIC}`,
+            name: STACK_TOPIC,
+            title: 'Quick answers on the stack Claude works on',
+            mimeType: MIME,
+          },
+        ]
+      : []),
     ...topics,
   ];
 }
@@ -50,7 +62,8 @@ export function readResource(index: Index | undefined, uri: string): { kind: Res
   const kb = loaded(index);
   if (uri === QUICK_ANSWERS) return { kind: 'index', text: quickAnswers(kb) };
   const topic = TOPIC_URI.exec(uri)?.[1];
-  if (topic !== undefined && kb.topics.has(topic)) return { kind: 'topic', text: quickAnswers(kb, topic) };
+  if (topic !== undefined && (kb.topics.has(topic) || (topic === STACK_TOPIC && kb.quickAnswers.has(topic))))
+    return { kind: 'topic', text: quickAnswers(kb, topic) };
   const id = ENTRY_URI.exec(uri)?.[1];
   if (id !== undefined && kb.get([id]).length) return { kind: 'entry', text: get(kb, [id]) };
   return undefined;

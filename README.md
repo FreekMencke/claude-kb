@@ -278,8 +278,10 @@ this repo.
 - **Link, don't repeat.** Topic files link to neighbouring entries instead of covering them; overlaps kept on purpose
   are listed in OVERLAPS.md, and duplicates are merged with a pointer, never renumbered. An open question raised in two
   files lives in one. Cross-file pointers name entry IDs, not issues.
-- **INDEX.md holds only what answers a lookup**, because `kb_quick_answers` returns its Quick answers whole. The Claude
-  rows stay near 30 (each topic file keeps its own 10–15): they had drifted to 57 and were trimmed back to 33, keeping
+- **INDEX.md holds only what answers a lookup**, because `kb_quick_answers` returns its Quick answers: the Claude rows
+  without a topic (18.7 KB on 2026-10-23), the stack rows with `topic: stack` (the server splits the section at the
+  `### The stack Claude works on` heading, so keep it). The Claude rows stay near 30 (each topic file keeps its own
+  10–15): they had drifted to 57 and were trimmed back to 33, keeping
   each question whose entries no topic table lists (FreekMencke/claude-kb#194, 2026-10-18). Stack topics get at most one
   row per file, in their own table under "The stack Claude works on", so the 23 planned files add about 23 rows, not 70
   (FreekMencke/claude-kb#175, 2026-10-17). Curation records and history live in OVERLAPS.md and CHANGELOG.md.
@@ -292,7 +294,8 @@ this repo.
   entries in 12 of 12 runs against 10 of 12 (FreekMencke/claude-kb#114, 2026-10-15).
 - **The lookup skill reads only the server**, never a checkout (2026-10-15): the same forked skill answered in a median
   22.7 s through `kb_search` and `kb_get` against 32.4 s fetching and grepping a checkout, with 138k against 207k Haiku
-  input tokens and the same accuracy (MCP-041). It gives up unmerged entries and the index's Conflicts section.
+  input tokens and the same accuracy (MCP-041). It gave up unmerged entries and the index's Conflicts section; the server has added the open conflicts to `kb_get` since
+  FreekMencke/claude-kb#275 (2026-10-23).
 - **One lookup skill, split only when the description can't hold the topics.** claude.ai caps a description at 1,024
   characters (SKILL-003), and its topic words decide when the skill loads (SKILL-015). On 2026-10-23 five new topics fit
   by naming domains rather than files (1,023 characters) and every trigger case still passed (FreekMencke/claude-kb#259).

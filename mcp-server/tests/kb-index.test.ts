@@ -1,118 +1,10 @@
 /** kb-index: parsing a checkout into entries, and searching them, on fixture files and on this repo. */
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, test } from 'vitest';
-import { entries as parseEntries, readText } from '../../scripts/kb-parse.ts';
-import { type Hit, type Index, INDEX_TOPIC, load, SUMMARY_CHARS, summary } from '../kb-index.ts';
-import { REPO, tempDir } from './helpers.ts';
-
-const ALPHA = `# Alpha things (ALP)
-
-## Quick answers
-
-| Question | Answer | Entries |
-|---|---|---|
-| How do widgets rotate? | Clockwise. | ALP-001 |
-
-## Index
-
-| ID | Title | Type | Tags |
-|---|---|---|---|
-| ALP-001 | Widgets rotate clockwise | fact | widgets, rotation |
-| ALP-002 | Gadget pricing | recommendation | gadgets, pricing-model |
-| ALP-003 | Old widget notes (merged into ALP-001) | fact | widgets |
-
-## [ALP-001] Widgets rotate clockwise
-- Type: fact
-- Applies to: Claude Code
-- Confidence: official-docs
-- Last verified: 2026-10-15
-- Sources: [Widget docs](https://example.com/widgets)
-- Related: ALP-002, BET-001
-
-A widget always turns clockwise when seen from above. The spindle sets the direction.
-
-Second paragraph about gearing.
-
-### A subheading inside the entry
-
-Still part of ALP-001.
-
-## [ALP-002] Gadget pricing
-- Type: recommendation
-- Applies to: general
-- Confidence: single-source
-- Last verified: 2026-10-14
-- Sources: [Gadget blog](https://example.com/gadgets)
-- Related: none
-
-Gadgets cost more in winter (bid-ask spread).
-
-## [ALP-003] Old widget notes
-- Type: fact
-- Applies to: Claude Code
-- Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Widget docs](https://example.com/widgets)
-- Related: ALP-001
-
-Merged into ALP-001 (kb-alpha.md) on 2026-10-12. Widgets widgets widgets.
-
-## Recommendations for our setup
-
-1. Buy gadgets in summer (ALP-002).
-
-## Open questions
-
-- Do widgets rotate on the moon?
-`;
-
-const BETA = `# Beta (BET)
-
-## Index
-
-| ID | Title | Type | Tags |
-|---|---|---|---|
-| BET-001 | Widget storage | fact | widgets |
-
-## [BET-001] Widget storage
-- Type: fact
-- Applies to: general
-- Confidence: unverified
-- Last verified: 2026-10-15
-- Sources: [Storage](https://example.com/storage)
-- Related: ALP-001
-
-Store widgets dry.
-`;
-
-const EMPTY = `# Empty (EMP)
-
-## Quick answers
-
-Nothing yet.
-`;
-
-const INDEX = `# Index
-
-## Quick answers
-
-| Question | Answer | Entries |
-|---|---|---|
-| Where do widgets go? | Somewhere dry. | BET-001 |
-
-## Conflicts
-`;
-
-function fixtureIndex(): Index {
-  const root = join(tempDir(), '0123abc');
-  mkdirSync(join(root, 'topics'), { recursive: true });
-  for (const [name, text] of Object.entries({ 'kb-alpha.md': ALPHA, 'kb-beta.md': BETA, 'kb-empty.md': EMPTY })) {
-    writeFileSync(join(root, 'topics', name), text, 'utf8');
-  }
-  writeFileSync(join(root, 'INDEX.md'), INDEX, 'utf8');
-  return load(root);
-}
+import { APPLIES_TO, CONFIDENCE, entries as parseEntries, readText, tableRows } from '../../scripts/kb-parse.ts';
+import { type Hit, type Index, INDEX_TOPIC, load, STACK_TOPIC, SUMMARY_CHARS, summary } from '../kb-index.ts';
+import { fixtureIndex, REPO } from './helpers.ts';
 
 function ids(hits: Hit[]): string[] {
   return hits.map(h => h.entry.id);
@@ -161,6 +53,26 @@ describe('fixture files', () => {
     expect(Object.fromEntries(index.recommendations)).toEqual({ alpha: '1. Buy gadgets in summer (ALP-002).' });
   });
 
+  test("the Quick answers' stack table is kept apart", () => {
+    expect(index.quickAnswers.get(INDEX_TOPIC)).not.toContain('gadget turn');
+    expect(index.quickAnswers.get(INDEX_TOPIC)).not.toContain('The stack Claude works on');
+    expect(index.quickAnswers.get(STACK_TOPIC)).toMatch(/^One row per stack topic\./);
+    expect(index.quickAnswers.get(STACK_TOPIC)).toContain('| Which way does a gadget turn? |');
+  });
+
+  test('open conflicts by entry, from the rows naming it in their first two columns', () => {
+    const sentence = (id: string) => (index.conflicts.get(id) ?? []).map(c => [c.topic, c.supported]);
+    expect(sentence('ALP-001')).toEqual([
+      ['Widget spin (ALP-001, BET-001)', 'ALP-001, as e.g. the spindle shows.'],
+      // An ID and a full stop is not a sentence end
+      ['Widget spin, again (ALP-001)', 'ALP-001. The newest page wins here.'],
+    ]);
+    expect(sentence('BET-001')).toEqual([['Widget spin (ALP-001, BET-001)', 'ALP-001, as e.g. the spindle shows.']]);
+    expect(sentence('ALP-002')).toEqual([['Gadget price (ALP-002)', 'Unresolved; one source.']]);
+    // Named only outside the table or in the last column, and the header row, name nothing
+    expect([...index.conflicts.keys()].sort()).toEqual(['ALP-001', 'ALP-002', 'BET-001']);
+  });
+
   test('commit and build time', () => {
     expect(index.commit).toBe('0123abc');
     expect(index.buildSeconds).toBeGreaterThanOrEqual(0);
@@ -200,6 +112,24 @@ describe('fixture files', () => {
     expect(ids(index.search('ALP-001', { topic: 'beta' }))).toEqual([]);
   });
 
+  test('the confidence and applies_to filters', () => {
+    // ALP-003 is merged, so only its ID finds it
+    expect(ids(index.search('widgets gadgets', { confidence: 'official-docs' }))).toEqual(['ALP-001']);
+    expect(ids(index.search('widgets gadgets', { confidence: 'single-source' }))).toEqual(['ALP-002']);
+    expect(ids(index.search('widgets gadgets', { confidence: 'unverified' }))).toEqual(['BET-001']);
+    expect(ids(index.search('widgets gadgets', { appliesTo: 'Claude Code' }))).toEqual(['ALP-001']);
+    expect(ids(index.search('widgets gadgets', { appliesTo: 'general' }))).toEqual(['ALP-002']);
+    // An entry listing several values matches each of them, and not a value that merely contains one
+    expect(ids(index.search('widgets', { appliesTo: 'Claude API' }))).toEqual(['BET-001']);
+    expect(ids(index.search('widgets', { appliesTo: 'claude.ai' }))).toEqual(['BET-001']);
+    expect(ids(index.search('widgets', { appliesTo: 'Claude' }))).toEqual([]);
+    // Together with each other, the topic and an ID in the query
+    expect(ids(index.search('widgets', { confidence: 'unverified', appliesTo: 'Claude Code' }))).toEqual([]);
+    expect(ids(index.search('widgets', { confidence: 'unverified', topic: 'beta' }))).toEqual(['BET-001']);
+    expect(ids(index.search('ALP-001 BET-001', { confidence: 'official-docs' }))).toEqual(['ALP-001']);
+    expect(ids(index.search('ALP-001', { appliesTo: 'general' }))).toEqual([]);
+  });
+
   test.each(['(', '-', '"', 'widget (spindle', 'bid-ask "spread', 'AND OR NOT', 'NEAR(', 'col:x'])(
     'FTS5 syntax in a query never throws: %s',
     query => {
@@ -212,10 +142,35 @@ describe('fixture files', () => {
   });
 });
 
+test('tableRows: cells, literal pipes, and the lines that are not rows', () => {
+  expect(tableRows('Intro | not a row\n| a | b \\| c | |\n|---|---|---|\n  | d |  e  | f |  \n\ntext')).toEqual([
+    ['a', 'b | c', ''],
+    ['---', '---', '---'],
+    ['d', 'e', 'f'],
+  ]);
+});
+
 describe('this repo', () => {
   let repo: Index;
   beforeAll(() => {
     repo = load(REPO, 'worktree');
+  });
+
+  test('open conflicts name entries that exist, and APPLIES_TO and CONFIDENCE hold every entry', () => {
+    expect(repo.conflicts.size).toBeGreaterThan(0);
+    for (const [id, list] of repo.conflicts) {
+      expect(repo.entries.has(id), id).toBe(true);
+      for (const c of list) expect(c.supported.length, id).toBeGreaterThan(0);
+    }
+    for (const e of repo.entries.values()) {
+      expect(CONFIDENCE, e.id).toContain(e.confidence);
+      expect(
+        e.appliesTo.split(', ').every(v => APPLIES_TO.includes(v)),
+        e.id,
+      ).toBe(true);
+    }
+    expect(repo.quickAnswers.has(STACK_TOPIC)).toBe(true);
+    expect(repo.quickAnswers.get(INDEX_TOPIC)).not.toContain('| Can Node run TypeScript directly');
   });
   const topicFiles = readdirSync(join(REPO, 'topics')).filter(f => /^kb-.*\.md$/.test(f));
 

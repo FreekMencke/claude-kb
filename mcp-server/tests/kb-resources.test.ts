@@ -29,8 +29,9 @@ test('initialize declares resources, without subscriptions', () => {
 
 test("resources/list: INDEX.md's Quick answers and each topic's, not the entries", async () => {
   const { resources } = await client.listResources();
-  expect(resources).toHaveLength(1 + index.topics.size);
-  expect(resources[0].uri).toBe('kb://quick-answers');
+  // Quick answers, the stack's, and one for each topic
+  expect(resources).toHaveLength(2 + index.topics.size);
+  expect(resources.slice(0, 2).map(r => r.uri)).toEqual(['kb://quick-answers', 'kb://topic/stack']);
   expect(resources).toContainEqual({
     uri: 'kb://topic/mcp',
     name: 'mcp',
@@ -51,7 +52,8 @@ test.each([
   ['kb://entry/MCP-017', '## [MCP-017]'],
   ['kb://entry/mcp-17', '## [MCP-017]'],
   ['kb://topic/mcp', ': Quick answers\n'],
-  ['kb://quick-answers', '# Quick answers across the knowledge base'],
+  ['kb://quick-answers', '# Quick answers on using Claude'],
+  ['kb://topic/stack', '# The stack Claude works on: Quick answers'],
 ])('resources/read %s', async (uri, expected) => {
   const { contents } = await client.readResource({ uri });
   expect(contents).toEqual([{ uri, mimeType: 'text/markdown', text: expect.stringContaining(expected) }]);

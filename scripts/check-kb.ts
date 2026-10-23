@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { SequenceMatcher } from './difflib.ts';
 import {
   APPLIES_TO,
+  CONFIDENCE,
   entries,
   escapeRegExp,
   FIELDS,
@@ -31,7 +32,6 @@ import {
 } from './kb-parse.ts';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CONFIDENCE = new Set(['official-docs', 'official-example', 'community-consensus', 'single-source', 'unverified']);
 // The word limit of an entry's text (CLAUDE.md asks for 50-250 and allows up to this).
 const MAX_WORDS = 300;
 // Entries that are syntheses of other entries and cite IDs instead of URLs.
@@ -207,7 +207,7 @@ function checkTopic(t: string, where: Map<string, string[]>): string[] {
       if (!new RegExp(`^- ${name}:`, 'm').test(body)) issues.push(`${eid}: missing field ${name}`);
     }
     const confidence = field(body, 'Confidence:[ \\t]*(.+)$');
-    if (confidence !== undefined && !CONFIDENCE.has(confidence.trim())) {
+    if (confidence !== undefined && !CONFIDENCE.includes(confidence.trim())) {
       issues.push(`${eid}: Confidence '${confidence.trim()}' is not one of the allowed values`);
     }
     const applies = field(body, 'Applies to:[ \\t]*(.*)$');

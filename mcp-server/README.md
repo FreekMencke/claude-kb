@@ -8,37 +8,38 @@ FreekMencke/claude-kb#109.
 
 All read-only, returning plain text with entry IDs and a last `corpus: <commit>` line (FreekMencke/claude-kb#112).
 
-| Tool | Arguments | Returns | Cap |
-|---|---|---|---|
-| `kb_search` | `query`; optional `topic` (`mcp` or `MCP`), `type`, `limit` 1 to 20 (default 8) | One block per hit: `ID: title (type, confidence, last verified date)`, flagged when over 60 days old, then the entry's summary (at most 300 characters). Named IDs come first. No hits: says so and lists the topics | 8,000 characters (8 hits are about 3 KB) |
-| `kb_get` | `ids`: 1 to 10 IDs, any case, `mcp-17` works | Each entry's full Markdown, separated by `---`; a merged entry brings the entry it points to; an unknown ID gets a line with the closest IDs (an error only when none was found) | 40,000 characters, about 10,000 tokens, where Claude Code starts warning (ten of the longest entries are 28,000) |
-| `kb_quick_answers` | optional `topic` | `INDEX.md`'s Quick answers and the topic list; for a topic, its Quick answers and its Recommendations for our setup | None needed: 18 KB for `INDEX.md` |
-| `kb_status` | none | The synced commit, the entry count and when and how fast it was indexed | |
+| Tool               | Arguments                                                                                                                                                                                                                                                                                                                    | Returns                                                                                                                                                                                                                                                                                                                                       | Cap                                                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `kb_search`        | `query`; optional `topic` (`mcp` or `MCP`), `type`, `confidence` (one of `official-docs`, `official-example`, `community-consensus`, `single-source`, `unverified`), `applies_to` (one of `Claude Code`, `Claude API`, `claude.ai`, `general`; matches an entry whose `Applies to` list has it), `limit` 1 to 20 (default 8) | One block per hit: `ID: title (type, confidence, last verified date)`, flagged when over 60 days old or in an open conflict, then the entry's summary (at most 300 characters). Named IDs come first. The filters combine, and a value outside its list is an error naming the list. No hits: says so, names the filters and lists the topics | 8,000 characters (8 hits are about 3 KB)                                                                         |
+| `kb_get`           | `ids`: 1 to 10 IDs, any case, `mcp-17` works                                                                                                                                                                                                                                                                                 | Each entry's full Markdown, separated by `---`, and after an entry in an open conflict a `Conflict (INDEX.md): <topic> — <which the sources support>` line for each row naming it; a merged entry brings the entry it points to; an unknown ID gets a line with the closest IDs (an error only when none was found)                           | 40,000 characters, about 10,000 tokens, where Claude Code starts warning (ten of the longest entries are 28,000) |
+| `kb_quick_answers` | optional `topic`                                                                                                                                                                                                                                                                                                             | Without one: `INDEX.md`'s Claude rows, a line pointing to the stack rows and the topic list. `topic: stack`: `INDEX.md`'s stack rows. For another topic, its Quick answers and its Recommendations for our setup                                                                                                                              | None needed: 18.7 KB without a topic (35.7 KB with the stack rows, 2026-10-23), 17.1 KB for `stack`              |
+| `kb_status`        | none                                                                                                                                                                                                                                                                                                                         | The synced commit, the entry count and when and how fast it was indexed                                                                                                                                                                                                                                                                       |                                                                                                                  |
 
 A cap cuts whole entries or hits and names the IDs it cut. A bad argument returns `isError: true` with what to pass
 instead. The usage rules (search first, then `kb_get` the 1 to 4 best IDs; cite IDs; check entries last verified over
-60 days ago) are in `kb_search`'s description and in the server `instructions`: claude.ai web and desktop drop
+60 days ago; the filters) are in `kb_search`'s description and in the server `instructions`: claude.ai web and desktop drop
 `instructions` (anthropics/claude-ai-mcp#93), Claude Code keeps them. Keep the descriptions stable: claude.ai's "Always
-allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087).
+allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087), so a change to a description or to
+`instructions` goes in one PR with the rest of the tools' changes.
 
 ## Files
 
-| File | What it is |
-|---|---|
-| `server.ts` | The server: Express, the KB index's refresh, the `/mcp`, icon and health routes, the run modes |
-| `mcp.ts` | MCP itself, without the SDK: stateless Streamable HTTP with JSON replies, the 2025 protocol revisions |
-| `kb-tools.ts` | The tools: their schemas and descriptions, argument checks, and the text each returns, with its caps and error messages |
-| `kb-resources.ts` | INDEX.md's and each topic's Quick answers as listed resources, and each entry through the `kb://entry/{id}` template, with the tools' text |
-| `kb-index.ts` | The entries, parsed by `scripts/kb-parse.ts`, and their search: SQLite FTS5 in memory (`node:sqlite`), ranked by `bm25()` |
-| `log.ts` | The logger: `@osrs-tracker/logger`, the Node apps' JSON lines |
-| `metrics.ts` | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index |
-| `shutdown.ts` | Graceful shutdown on `SIGTERM`, as osrs-tracker-web does it |
-| `tests/` | Vitest: the HTTP contract without a token, the tools through the SDK's client over HTTP (so its version negotiation is tested too), the index and search on fixtures and on this repo, logs, metrics, and the checker (`scripts/check-kb.ts`) |
-| `build.ts` | The rspack bundle the image runs: the server and all of `node_modules` in `dist/server.mjs` (`npm run build`), like osrs-tracker-api |
-| `Dockerfile`, `Dockerfile.dockerignore` | The image: a build stage runs `build.ts`, and the image holds `server.mjs` and `assets/logo.{png,svg}` only, no `node_modules`, never KB content or secrets |
-| `package.json`, `package-lock.json` | Dependencies, pinned by the lockfile; `engines` and the repo's `.node-version` name Node 24 |
-| `tsconfig.json` | The type check (`npx tsc`), which covers `../scripts` too; nothing is emitted |
-| `claude-kb-mcp.yaml` | The Kubernetes manifest, the only file Flux reads from this repo |
+| File                                    | What it is                                                                                                                                                                                                                                    |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `server.ts`                             | The server: Express, the KB index's refresh, the `/mcp`, icon and health routes, the run modes                                                                                                                                                |
+| `mcp.ts`                                | MCP itself, without the SDK: stateless Streamable HTTP with JSON replies, the 2025 protocol revisions                                                                                                                                         |
+| `kb-tools.ts`                           | The tools: their schemas and descriptions, argument checks, and the text each returns, with its caps and error messages                                                                                                                       |
+| `kb-resources.ts`                       | INDEX.md's and each topic's Quick answers as listed resources, and each entry through the `kb://entry/{id}` template, with the tools' text                                                                                                    |
+| `kb-index.ts`                           | The entries, parsed by `scripts/kb-parse.ts`, and their search: SQLite FTS5 in memory (`node:sqlite`), ranked by `bm25()`                                                                                                                     |
+| `log.ts`                                | The logger: `@osrs-tracker/logger`, the Node apps' JSON lines                                                                                                                                                                                 |
+| `metrics.ts`                            | Prometheus metrics on port 9090: `@osrs-tracker/express-metrics` for HTTP requests, plus tool calls, empty searches, the index                                                                                                                |
+| `shutdown.ts`                           | Graceful shutdown on `SIGTERM`, as osrs-tracker-web does it                                                                                                                                                                                   |
+| `tests/`                                | Vitest: the HTTP contract without a token, the tools through the SDK's client over HTTP (so its version negotiation is tested too), the index and search on fixtures and on this repo, logs, metrics, and the checker (`scripts/check-kb.ts`) |
+| `build.ts`                              | The rspack bundle the image runs: the server and all of `node_modules` in `dist/server.mjs` (`npm run build`), like osrs-tracker-api                                                                                                          |
+| `Dockerfile`, `Dockerfile.dockerignore` | The image: a build stage runs `build.ts`, and the image holds `server.mjs` and `assets/logo.{png,svg}` only, no `node_modules`, never KB content or secrets                                                                                   |
+| `package.json`, `package-lock.json`     | Dependencies, pinned by the lockfile; `engines` and the repo's `.node-version` name Node 24                                                                                                                                                   |
+| `tsconfig.json`                         | The type check (`npx tsc`), which covers `../scripts` too; nothing is emitted                                                                                                                                                                 |
+| `claude-kb-mcp.yaml`                    | The Kubernetes manifest, the only file Flux reads from this repo                                                                                                                                                                              |
 
 The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (CI), `workflows/deploy.yml` (CD) and
 `scripts/`.
@@ -50,10 +51,14 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   on a timer and re-indexes when the commit changed, never in a request. A KB push reaches the server in
   about a minute, with no image build.
 - **Index.** `kb-index.ts`'s `load` parses the checkout with `scripts/kb-parse.ts` (one parser for CI's checker and
-  the server) into an immutable `Index`: every entry's fields, the Quick answers of `INDEX.md` and each topic file, and
-  each file's Recommendations. The server builds a new one and swaps it in with one assignment, so a request reads
-  the old index or the new one, whole. Building all 580 entries took 0.07 s on 2026-10-16 in WSL; the build blocks
-  the event loop that long, once per KB push.
+  the server) into an immutable `Index`: every entry's fields, the Quick answers of `INDEX.md` (its Claude table and,
+  apart, the stack table under "The stack Claude works on") and of each topic file, each file's Recommendations, and
+  the open rows of `INDEX.md`'s Conflicts table. A conflict row is a table row with entry IDs in its first two
+  columns (`Topic (entries) | Claims | Which the sources support`); it is attached to every entry it names, with the
+  first sentence of its last column, and `kb_get` prints it after the entry (`kb_search` flags the hit). The server
+  builds a new one and swaps it in with one assignment, so a request reads the old index or the new one, whole.
+  Building all 1,118 entries took 0.13 to 0.16 s on 2026-10-23 in WSL (0.07 s for 580 on 2026-10-16); the build blocks the event loop that long, once per KB
+  push.
 - **Search.** Node's built-in `node:sqlite`, FTS5 with Porter stemming, ranked by `bm25()` with column weights (ID 10, title
   3, tags 2, body 1). Entry IDs named in the query come first, then entries matching any of its words. Every word is
   quoted before `MATCH`, so `(`, `-` or `"` in a query never raise. Merged entries are found by ID only. The weights
@@ -93,6 +98,7 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   Alloy drops histogram buckets, so durations are averages (`_sum / _count`), not percentiles. Container memory and
   CPU, restarts and OOM kills come from cAdvisor and kube-state-metrics, and fremen-cluster's cluster-wide alert rules
   cover the Deployment.
+
 - **Protocol** (`mcp.ts`). JSON-RPC over `POST /mcp`, answered as JSON: `initialize`, `ping`, `tools/list`,
   `tools/call`, `resources/list`, `resources/templates/list` and `resources/read`, the 2025 revisions (2024-11-05 to 2025-11-25), no session and no stream, so `GET` and `DELETE` get 405.
   An unsupported `MCP-Protocol-Version` header gets 400, and an `Origin` other than the server's own or localhost gets
@@ -102,10 +108,13 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   about 20 MiB at idle and peaked at 275 MiB instead of 110 under a burst of 50 parallel calls (2026-10-16).
 - **Tools** have a `title`, `readOnlyHint: true`, `destructiveHint: false`, and return text content only, with no
   output schema: with one, Claude Code hands Claude the JSON instead of the text. Arguments are checked in
-  `kb-tools.ts`, by type and by bounds, so a bad value gets an `isError` result saying what to pass.
+  `kb-tools.ts`, by type, by bounds and, for `type`, `confidence` and `applies_to`, against their lists of values, so a
+  bad value gets an `isError` result saying what to pass. `confidence` and `applies_to` use the lists the checker
+  enforces (`CONFIDENCE` and `APPLIES_TO` in `scripts/kb-parse.ts`); filter values are never logged (see Logs).
 - **Resources** are for a user to attach, where the tools are for Claude to search: in Claude Code,
   `@claude-kb:kb://entry/MCP-017`, `kb://topic/mcp` (its Quick answers and recommendations) or `kb://quick-answers`.
-  Only `kb://quick-answers` and the topics are listed; entries read by ID through the `kb://entry/{id}` template, since
+  Only `kb://quick-answers`, `kb://topic/stack` (the stack rows `kb_quick_answers` leaves out of its no-topic answer) and
+  the topics are listed; entries read by ID through the `kb://entry/{id}` template, since
   listing every entry passed 100,000 characters at about 810 entries (2026-10-17), about 25k tokens when
   `ListMcpResourcesTool` returns it. No subscriptions, which claude.ai
   doesn't support. A missing one gets `-32002`, the 2025 revisions' code (2026-07-28 moved it to `-32602` and asks
@@ -173,10 +182,10 @@ docker build -f mcp-server/Dockerfile -t claude-kb-mcp:ci . && .github/scripts/c
 
 Read from the environment, set in the manifest. No secrets.
 
-| Variable | What it is |
-|---|---|
+| Variable  | What it is                          |
+| --------- | ----------------------------------- |
 | `KB_LINK` | git-sync's link (default `/git/kb`) |
-| `PORT` | Default 8000; `--port` overrides it |
+| `PORT`    | Default 8000; `--port` overrides it |
 
 ## Dependencies
 
@@ -228,8 +237,8 @@ Express's error handler) or `index`. In Grafana Cloud: `{app="claude-kb-mcp", jo
 or the logs panel of the MCP Server Dashboard.
 
 - Each request but the `/healthz` probes has a `type: incoming` line with `method`, `route` (the metric's `path`),
-  `url`, `status`, `responseTime`, `clientIp` (from Traefik's `X-Forwarded-For`), `userAgent`, `host`, `referer` and
-  `contentLength`; a 4XX is `warn`, a 5XX `error`.
+  `url`, `status`, `responseTime`, `userAgent`, `host`, `referer` and `contentLength` (no client IP: `server.ts`
+  blanks the logger's `clientIp` field, 2026-10-20); a 4XX is `warn`, a 5XX `error`.
 - `Indexed commit <hash>: <n> entries in <s> s` (`type: index`) follows each new commit from git-sync; git-sync's own
   log is container `git-sync`.
 - Metrics, in Grafana Cloud's Explore: `sum by (tool, outcome) (increase(kb_tool_calls_total[1d]))` for use,

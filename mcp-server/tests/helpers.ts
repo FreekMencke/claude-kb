@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import type { Logger } from '@osrs-tracker/logger';
 import { register } from '@osrs-tracker/express-metrics';
+import { type Index, load } from '../kb-index.ts';
 import { createServerLogger } from '../log.ts';
 import { createApp, KbState } from '../server.ts';
 
@@ -133,4 +134,130 @@ export async function sample(name: string, labels: Record<string, string> = {}):
     }
   }
   return 0;
+}
+
+/** Three topic files and an INDEX.md in a temporary checkout, loaded (the directory's name is the commit). */
+export const ALPHA = `# Alpha things (ALP)
+
+## Quick answers
+
+| Question | Answer | Entries |
+|---|---|---|
+| How do widgets rotate? | Clockwise. | ALP-001 |
+
+## Index
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| ALP-001 | Widgets rotate clockwise | fact | widgets, rotation |
+| ALP-002 | Gadget pricing | recommendation | gadgets, pricing-model |
+| ALP-003 | Old widget notes (merged into ALP-001) | fact | widgets |
+
+## [ALP-001] Widgets rotate clockwise
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-15
+- Sources: [Widget docs](https://example.com/widgets)
+- Related: ALP-002, BET-001
+
+A widget always turns clockwise when seen from above. The spindle sets the direction.
+
+Second paragraph about gearing.
+
+### A subheading inside the entry
+
+Still part of ALP-001.
+
+## [ALP-002] Gadget pricing
+- Type: recommendation
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-14
+- Sources: [Gadget blog](https://example.com/gadgets)
+- Related: none
+
+Gadgets cost more in winter (bid-ask spread).
+
+## [ALP-003] Old widget notes
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-12
+- Sources: [Widget docs](https://example.com/widgets)
+- Related: ALP-001
+
+Merged into ALP-001 (kb-alpha.md) on 2026-10-12. Widgets widgets widgets.
+
+## Recommendations for our setup
+
+1. Buy gadgets in summer (ALP-002).
+
+## Open questions
+
+- Do widgets rotate on the moon?
+`;
+
+export const BETA = `# Beta (BET)
+
+## Index
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| BET-001 | Widget storage | fact | widgets |
+
+## [BET-001] Widget storage
+- Type: fact
+- Applies to: Claude API, claude.ai
+- Confidence: unverified
+- Last verified: 2026-10-15
+- Sources: [Storage](https://example.com/storage)
+- Related: ALP-001
+
+Store widgets dry.
+`;
+
+export const EMPTY = `# Empty (EMP)
+
+## Quick answers
+
+Nothing yet.
+`;
+
+export const INDEX = `# Index
+
+## Quick answers
+
+| Question | Answer | Entries |
+|---|---|---|
+| Where do widgets go? | Somewhere dry. | BET-001 |
+
+### The stack Claude works on
+
+One row per stack topic.
+
+| Question | Answer | Entries |
+|---|---|---|
+| Which way does a gadget turn? | Counter-clockwise. | ALP-002 |
+
+## Conflicts
+
+Open rows only. A row naming ALP-003 here, outside the table, is not one.
+
+| Topic (entries) | Claims | Which the sources support |
+|---|---|---|
+| Widget spin (ALP-001, BET-001) | ALP-001: clockwise. BET-001: "dry \\| flat". | ALP-001, as e.g. the spindle shows. Settled in the v2.1 docs. |
+| Gadget price (ALP-002) | ALP-002: dear in winter. | Unresolved; one source. Wait for more. |
+| Widget spin, again (ALP-001) | ALP-001: anticlockwise on the moon. | ALP-001. The newest page wins here. |
+| Prose only (none) | Names no entry in its first two columns. | BET-001 is right. |
+`;
+
+export function fixtureIndex(indexMd = INDEX): Index {
+  const root = join(tempDir(), '0123abc');
+  mkdirSync(join(root, 'topics'), { recursive: true });
+  for (const [name, text] of Object.entries({ 'kb-alpha.md': ALPHA, 'kb-beta.md': BETA, 'kb-empty.md': EMPTY })) {
+    writeFileSync(join(root, 'topics', name), text, 'utf8');
+  }
+  writeFileSync(join(root, 'INDEX.md'), indexMd, 'utf8');
+  return load(root);
 }
