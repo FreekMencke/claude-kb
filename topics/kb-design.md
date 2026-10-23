@@ -12,17 +12,18 @@ Research basis:
 - A 2026-10-16 deep-research report from a claude.ai chat supplied leads only; it isn't cited.
 - A third round on 2026-10-18 (DESIGN-032 to DESIGN-035, FreekMencke/claude-kb#191): typography choices. The lead read Google Fonts Knowledge as raw Markdown from its source in google/fonts (`cc-by-sa/knowledge/`, CC BY-SA 4.0; the site itself renders in JavaScript), MDN's `font-variant-numeric` and `font-optical-sizing` pages from mdn/content, the OpenType feature and `opsz` registry pages, CSS Fonts 4 from csswg-drafts, Butterick's pages and the web-features 3.43.0 data, and tested Google Fonts files with fontTools and headless Chrome. No readers, no web searches.
 - A fourth round on 2026-10-23 (DESIGN-036 to DESIGN-040, FreekMencke/claude-kb#253): DESIGN.md files. The lead read Google's DESIGN.md spec, README and PHILOSOPHY at a pinned commit, the `@google/design.md` 0.4.0 and `typeui.sh` 0.7.1 tarballs (`npm pack`, not run except the official linter), four collections' READMEs and all 84 of VoltAgent's brand files, Impeccable's `init` and `document` references, Claude Code's memory, artifacts and security pages (`.md`), the USPTO's likelihood-of-confusion page, 15 U.S.C. § 1125 and two Supreme Court opinions (HTML stripped of tags). It ran a 26-run `claude -p` test (DESIGN-037, DESIGN-038). A Sonnet 5.5 subagent tried to refute the claims the recommendations rest on, and a visual designer and a supply-chain security reviewer (Sonnet 5.5) reviewed the drafts.
+- A fifth round on 2026-10-23 (DESIGN-041 to DESIGN-045, FreekMencke/claude-kb#292): shadows and elevation. Two Sonnet 5.5 readers covered design systems' elevation models (docs, and `npm pack` tarballs of their token packages) and CSS behaviour (CSS Backgrounds 3, Filter Effects 1, CSS Color Adjust 1, MDN from mdn/content, WCAG understanding, Tailwind 4.3.3, web-features 3.44.0); the lead read frontend-design, artifact-design and the community skills at pinned commits, re-checked the quotes used against the downloads, and ran a Playwright test (Tailwind 4.3.3, Chromium 156) and six `claude -p` runs. A Sonnet 5.5 subagent tried to refute the claims; a UX/UI designer, an accessibility specialist and a front-end engineer (Sonnet 5.5) reviewed the drafts.
 
 ## Quick answers
 
 | Question | Answer | Entries |
 |---|---|---|
 | How do I see and iterate on a design in Claude Code? | Ask for variants side by side in one artifact ("four distinctly different layouts… as a grid"), tune one with sliders, or run `/design <brief>` for a canvas of editable artboards. Then build the pick in code and check it in the desktop Browser pane or with Playwright. | DESIGN-001 |
-| Why do Claude's pages look generic? | "Distributional convergence": without direction it samples safe defaults. The 2025 tell was Inter and purple gradients; the 2026-09 frontend-design skill names cream-plus-serif-plus-terracotta, near-black with one acid accent, broadsheet hairlines, the SaaS-card kit and template chrome. | DESIGN-003 |
+| Why do Claude's pages, and Tailwind and shadcn sites, look generic? | "Distributional convergence": without direction Claude samples safe defaults. The 2025 tell was Inter and purple gradients; the 2026-09 frontend-design skill names cream-plus-serif-plus-terracotta, near-black with one acid accent, broadsheet hairlines, the SaaS-card kit and template chrome. Tailwind and shadcn add stock fonts, radii, shadows and an achromatic theme: clear namespaces with `@theme { --color-*: initial; }` or set shadcn's CSS variables from the repo's tokens. | DESIGN-003, DESIGN-023 |
 | How do I prompt for distinctive design, and which strategy varied most in tests? | Name the subject, audience and the page's one job; give a concrete spec (hex palette, typefaces, radius, motion timing) or ask for 4 directions first; ban the specific patterns you got last time, not "the AI look", and expect a new default; use real copy. Most varied in tests: one small choice at a time, not whole designs (audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then 5 combined variants); on two subjects the user called 4 of 5 variants good. Earlier tests on the same bakery brief (Sonnet 5.5): the bare brief gave five cream-and-Fraunces pages, a banned list one new look, text directions repeated two options every run, and a one-page visual chooser varied colour and type but not page structure. | DESIGN-004, DESIGN-027, DESIGN-029, DESIGN-030 |
 | How do I get an original, consistent colour scheme? | Pick the brand hue from the subject, then fill named roles (Radix's 12 steps or Material's roles), generate the ramp in OKLCH with a script library and check WCAG 2 contrast in light and dark. | DESIGN-015, DESIGN-016, DESIGN-018, DESIGN-019 |
-| Why do Tailwind and shadcn sites look alike, and how do I theme them away? | Stock fonts, radii, shadows and an achromatic shadcn theme. Clear namespaces with `@theme { --color-*: initial; }`, set shadcn's CSS variables or a `shadcn create` style, from the repo's tokens. | DESIGN-023 |
 | How do I get past hero, three cards and a CTA? | Name a layout (bento, magazine, split screen, zigzag, broken grid…), default to no cards, one job per section, and carry the ASCII wireframe into `grid-template-areas`. | DESIGN-022 |
+| When should something cast a shadow, and what about dark mode and forced colours? | What floats or overlaps (menus, popovers, dialogs, overlapping screenshots); systems split on resting cards, so default to flat with a border or tone step. Write one rule per kind of surface and layout state. Dark mode: lighter surfaces per level plus a hairline border, not just a darker shadow. Forced colours turns every `box-shadow` (Tailwind `ring-*` too) to `none`: add a transparent border or outline, and focus with `outline`. `drop-shadow()` for transparent images. | DESIGN-041, DESIGN-042, DESIGN-043, DESIGN-044, DESIGN-045 |
 | Where do design tokens go, does a DESIGN.md work, and how do I keep a multi-page site consistent? | Where Claude reads them: CLAUDE.md, a theme file or a repo skill; your prompt beats them, and they beat Claude's defaults. Claude Code doesn't load a DESIGN.md (Google's "alpha" spec) by itself: in a 26-run test one in the root was read in 1 of 9 runs; import it with `@DESIGN.md` or name it in the prompt, and any format read was applied in full. Give every session the role tokens, a component inventory and page templates, and check every page for off-token values, visual diffs and raw hexes. Artifacts load fonts only from Google Fonts; other faces are inlined. | DESIGN-006, DESIGN-037, DESIGN-036, DESIGN-024, DESIGN-021 |
 | Can I start from a brand's DESIGN.md from awesome-design-md or a similar list? | To study, yes; to ship, no. The files are scraped from public sites (84 in VoltAgent's list) and name proprietary fonts; MIT covers the collection's text, not the brand, and a look that causes confusion is actionable trade dress in the US. A copied file is instruction text: read it, strip commands and URLs, pin it. | DESIGN-038, DESIGN-039, DESIGN-040 |
 | Which type details should a UI specify: pairing, optical sizes, numerals? | One family first; add a second face only for a job the first can't do, from the same form model or designer. `tabular-nums` for data and changing values, `"case"` on all-caps labels, `slashed-zero` for codes; check the font has the feature. Optical sizes matter when one family runs from captions to display sizes; browsers apply them by CSS px without any CSS. A `fonts.googleapis.com` link drops `case`, `zero`, `onum` and stylistic sets, and `opsz` unless the URL names it. | DESIGN-033, DESIGN-034, DESIGN-032, DESIGN-035 |
@@ -77,6 +78,11 @@ Research basis:
 | DESIGN-038 | Brand DESIGN.md collections: what's in them and how they were made | comparison | design-md, awesome-design-md, brand-systems, collections |
 | DESIGN-039 | Building on a named brand's design system: trademark, trade dress and fonts | anti-pattern | trademark, trade-dress, brand-systems, fonts, licensing |
 | DESIGN-040 | A copied DESIGN.md is instruction text: read it like a skill | anti-pattern | prompt-injection, supply-chain, design-md, typeui |
+| DESIGN-041 | When to cast a shadow, and the shadow rule to give Claude | recommendation | shadows, elevation, cards, overlap, rules |
+| DESIGN-042 | A shadow scale as tokens: levels and values by design system | comparison | shadows, elevation, tokens, dtcg, tailwind |
+| DESIGN-043 | Elevation in dark mode: lighter surfaces, a hairline, a stronger shadow | comparison | shadows, elevation, dark-mode, surfaces |
+| DESIGN-044 | Shadows in forced colours and WCAG: give every shadow an edge that stays | fact | shadows, forced-colors, wcag, focus, accessibility |
+| DESIGN-045 | `box-shadow` or `drop-shadow()`, and what clips or prints them | fact | shadows, drop-shadow, filter, print, overflow |
 
 ## [DESIGN-001] Visualising and iterating on a design in Claude Code
 - Type: pattern
@@ -172,13 +178,13 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Confidence: official-docs
 - Last verified: 2026-10-18
 - Sources: [Artifacts: improve the visual design, page constraints](https://code.claude.com/docs/en/artifacts), [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design)
-- Related: DESIGN-002, DSKILL-001, DESIGN-034, DESIGN-035, DESIGN-036, DESIGN-037, SURF-016, MEM, REPO-044
+- Related: DESIGN-002, DSKILL-001, DESIGN-034, DESIGN-035, DESIGN-036, DESIGN-037, DESIGN-041, DESIGN-042, DESIGN-043, DESIGN-044, DESIGN-045, SURF-016, MEM, REPO-044
 
 **Where.** Anthropic: record tokens "where Claude can find them, such as the project's CLAUDE.md or a theme file in your repository". Any clear list works: "The heading and format above are an example; any clear list of colors, fonts, and spacing works." For a repo with agents, a repo skill that reviewers preload works too (REPO-044). A `DESIGN.md` is a community convention, not an Anthropic one (DESIGN-036), and Claude Code reads it only when it's imported or named (DESIGN-037).
 
 **Precedence:** "Claude treats your design system as higher precedence than its own choices, and your prompt as higher precedence than both." For `/design` canvases and artifact templates, a Design System artifact does the same job (DESIGN-002).
 
-**What a token block needs:** colours by role (surface, text, accent, borders, states), typefaces and their roles (with the figure style per role, such as tabular for data, DESIGN-034), a type scale, a spacing scale, radii by surface type, shadow and motion rules, and real examples. Roles beat raw hexes: Claude can apply "accent for links and primary actions", not "#10b981 somewhere".
+**What a token block needs:** colours by role (surface, text, accent, borders, states), typefaces and their roles (with the figure style per role, such as tabular for data, DESIGN-034), a type scale, a spacing scale, radii by surface type, shadow rules per kind of surface (DESIGN-041) and motion rules, and real examples. Roles beat raw hexes: Claude can apply "accent for links and primary actions", not "#10b981 somewhere".
 
 **Fonts in artifacts:** Google Fonts is "the one external font source an artifact page can load from"; Claude inlines any other typeface as a `@font-face` data URI with a fallback stack. External images are blocked by the CSP. A private brand font in an artifact therefore costs data-URI tokens on every publish. Google's served files also lack most OpenType features (`case`, `zero`, stylistic sets), so an artifact that needs them inlines the font too (DESIGN-035).
 
@@ -871,6 +877,117 @@ A DESIGN.md imported from CLAUDE.md or read on request is text Claude acts on, l
 
 **Do:** copy at a pinned commit (`raw.githubusercontent.com/<repo>/<sha>/…`), read it in full, check skill frontmatter (`allowed-tools`), pin any command it names (`npx @google/design.md@0.4.0`), rewrite agent-directed lines as plain design rules, and review later diffs like code (SKILL-068, SKILL-069).
 
+## [DESIGN-041] When to cast a shadow, and the shadow rule to give Claude
+- Type: recommendation
+- Applies to: Claude Code, general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [Atlassian: elevation](https://atlassian.design/foundations/elevation), [Primer: box-shadow](https://github.com/primer/design/blob/main/content/foundations/css-utilities/box-shadow.mdx), [Material Components Android: cards](https://github.com/material-components/material-components-android/blob/master/docs/components/Card.md), [Fluent 2: elevation](https://fluent2.microsoft.design/elevation), [artifact-design (Claude Code 2.1.296)](https://code.claude.com/docs/en/artifacts), [Taste Skill @6010f91 (community)](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Impeccable craft-floor @5cb95ee (community)](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [FreekMencke/freek-mencke-web#43](https://github.com/FreekMencke/freek-mencke-web/pull/43), local test
+- Related: DESIGN-006, DESIGN-022, DESIGN-037, DESIGN-042, DESIGN-044, DSKILL-001, DSKILL-002, ANIM-008
+
+A shadow says "this lies over that". Every system shadows what floats: menus, popovers, dialogs, a dragged card. Primer adds content "on top of (overlapping) other elements", such as overlapping screenshots.
+
+**Resting cards split the systems.** Material's elevated card rests at `1dp`, Fluent shadows "Cards without an edge", and Primer's `resting-medium` is "for cards and content panels". Atlassian keeps them flat: "To create flat cards, pair with a border". Default to flat, with a border, whitespace or a tone step (DESIGN-022; Taste Skill: "Shadows only on what truly floats").
+
+**Don't lift** content groups ("don't use to group content when a border or white space would suffice"), inputs and buttons at rest, or a card inside a card. A sticky header gets a hairline: "A border is the default approach for scrolled content". Draw attention with size, contrast or colour; Atlassian allows a raised card for emphasis, "limit to one section or focal point". Hover: Atlassian changes the surface colour or, "sparingly", lifts one level. artifact-design: "the same radius and shadow to every block flattens the hierarchy". Hard offset shadows only in a site that's "actually neobrutalist" (Impeccable).
+
+**The rule for Claude:** a line per kind of surface and layout state, in the tokens and CLAUDE.md or an imported DESIGN.md (DESIGN-006, DESIGN-037). For example: "Cards: none, 1px `--line` border. Menus, popovers: `--shadow-overlay` and a transparent outline. Overlapping screenshots: `--shadow-raised`; stacked: none." freek-mencke-web#43 lacked one: three rounds on the stacked layout.
+
+Tested 2026-10-23, v2.1.296, Sonnet 5.5, `claude -p` with DESIGN-028's flags, one prompt, 3 runs per arm, $0.29: without a rule, 3/3 gave all five screenshots one shadow, stacked or not, and nothing else; with a one-line rule, 3/3 used its value. 0/6 added a forced-colours edge (DESIGN-044).
+
+## [DESIGN-042] A shadow scale as tokens: levels and values by design system
+- Type: comparison
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [Material Web 2.5.0 elevation tokens](https://github.com/material-components/material-web/blob/v2.5.0/tokens/versions/v0_192/_md-sys-elevation.scss), [Fluent 2: elevation](https://fluent2.microsoft.design/elevation), [Atlassian: elevation](https://atlassian.design/foundations/elevation), [Primer primitives 11.10.0](https://www.npmjs.com/package/@primer/primitives), [Radix Themes: shadows](https://www.radix-ui.com/themes/docs/theme/shadows), [Open Props 1.7.23](https://www.npmjs.com/package/open-props), [Carbon styles 1.118.0](https://www.npmjs.com/package/@carbon/styles), [Tailwind `theme.css` v4.3.3](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css), [DTCG Format 2025.10: shadow](https://www.designtokens.org/TR/2025.10/format/), [MDN: light-dark()](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark), [web-features 3.44.0](https://www.npmjs.com/package/web-features), local test
+- Related: DESIGN-021, DESIGN-023, DESIGN-016, DESIGN-018, DESIGN-041, DESIGN-043, CSS-006, CSS-015
+
+Systems name a few levels by job, mostly a key plus an ambient shadow (versions: `npm view`; values: `npm pack`, 2026-10-23).
+
+| System | Levels and jobs |
+|---|---|
+| Material Web 2.5.0 (maintenance mode) | 0–5 (0 to 12 dp); menu 2, dialog 3; black, key 30% + ambient 15% |
+| Fluent tokens 1.0.0-alpha.24 | 6, named by blur (2–64); 64 for dialogs; black 12%/14% |
+| Atlassian tokens 20.7.0 | raised (movable cards), overlay (menus, dialogs), overflow |
+| Primer 11.10.0 | 3 resting (cards), 4 floating (menus to sheets), inset |
+| Radix Themes 3.3.0 | 5 plus inset; 4–5 popovers, 6 dialogs |
+| Open Props 1.7.23 | 6, no jobs; one `--shadow-color` |
+| Carbon styles 1.118.0 | one, for menus: `0 2px 6px` |
+| Tailwind 4.3.3 | 7 sizes, no jobs; black at 5% to 25% |
+
+**A starting scale** from those values: raised, Primer resting-medium `0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f`; overlay, Atlassian `0px 8px 12px #1E1F2126, 0px 0px 1px #1E1F214F`; dialog, Primer floating-large `0 40px 80px 0 #25292e3d`. Atlassian, Primer and Open Props tint toward blue-black.
+
+**Platform first:** plain `--shadow-*` custom properties on `box-shadow`, coloured with `color-mix(in oklab, var(--ink) 15%, transparent)` (Baseline widely available 2025-11-09). `light-dark()` (newly available 2024-05-13, CSS-006) needs `color-scheme: light dark` and swaps colours only. Install a package for its components, not its shadows.
+
+**DTCG 2025.10 `shadow`:** `color`, `offsetX`, `offsetY`, `blur`, `spread`, optional `inset`, or "an array of shadow objects and/or references".
+
+Tested 2026-10-23, tailwindcss@4.3.3, Node 24.21.0: `@theme { --shadow-*: initial; … }` dropped `shadow-md` and `shadow-md/20` but kept `inset-shadow-*`, `drop-shadow-*` and `text-shadow-*`. `shadow-md/20` compiled to relative colour, `oklab(from … / 20%)`, replacing the alpha, with no fallback.
+
+## [DESIGN-043] Elevation in dark mode: lighter surfaces, a hairline, a stronger shadow
+- Type: comparison
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [Atlassian: elevation](https://atlassian.design/foundations/elevation), [Apple HIG: Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode), [Material Components Android: color theming](https://github.com/material-components/material-components-android/blob/master/docs/theming/Color.md), [Carbon: color overview](https://carbondesignsystem.com/elements/color/overview/), [Primer primitives 11.10.0](https://www.npmjs.com/package/@primer/primitives), [Fluent tokens 1.0.0-alpha.24](https://www.npmjs.com/package/@fluentui/tokens), [Open Props 1.7.23](https://www.npmjs.com/package/open-props), [Hallmark dark-mode.md @7ec8682 (community)](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/dark-mode.md), local test
+- Related: DESIGN-018, DESIGN-015, DESIGN-017, DESIGN-042, DESIGN-044
+
+A shadow can't get much darker than a dark ground, so dark mode adds lighter surfaces, a hairline or a stronger shadow, usually several.
+
+- **Lighter surfaces.** Atlassian: "the higher the elevation, the lighter the surface looks" (`#1F1F21`, raised `#242528`, overlay `#2B2C2F`, shadows kept). Apple: "the elevated colors are brighter". Carbon: "layers become one step lighter with each added layer". Material: "tonal surface color roles… instead of elevation overlays", shadows kept. Open Props steps `--surface-1` to `-4` from `gray-9` to `gray-6`.
+- **A hairline.** Primer's dark floating shadows start with `0 0 0 1px #3d444d`, Atlassian's overlay with `0px 0px 0px 1px #BDBDBD1F`; Radix strengthens its ring from `gray-a3` to `gray-a6`.
+- **Stronger shadows.** Fluent doubles its alpha (key 0.14 to 0.28); Open Props goes from 1% to 25% base strength.
+
+Primer's dark overlays (`#010409`) are darker than its page (`#0d1117`).
+
+**For a small site:** step each level about 0.03 (Hallmark, community) to 0.06 (our test) lighter in OKLCH (DESIGN-016, DESIGN-018), give overlays a hairline as a `border` or `outline`, not a `box-shadow` ring (forced colours removes rings and tone steps, DESIGN-044), and keep the shadow under popovers. Atlassian: "Check the contrast ratio for UI on overlay surfaces in dark mode" (DESIGN-017). A tone step isn't a 3:1 boundary: 0.20 to 0.26 is about 1.2:1.
+
+Tested 2026-10-23, tailwindcss@4.3.3, Chromium 156, one page, summed RGB difference at one pixel column: on `oklch(0.2 0.02 250)`, 0.5-alpha black shadows changed the pixels below an edge by at most 18, against 40 to 86 in light; the step to `oklch(0.26 0.02 250)` changed the surface by 42. Hairlines weren't measured. All six DESIGN-041 probe pages used a stronger shadow alone (alpha 0.6 to 0.8).
+
+## [DESIGN-044] Shadows in forced colours and WCAG: give every shadow an edge that stays
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [CSS Color Adjustment 1 (CR Snapshot, 7 May 2026)](https://www.w3.org/TR/css-color-adjust-1/), [MDN: forced-colors](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/forced-colors), [Edge blog: styling for forced colors (2020-09-17, read from the Wayback copy)](https://blogs.windows.com/msedgedev/2020/09/17/styling-for-windows-high-contrast-with-new-standards-for-forced-colors/), [Understanding WCAG 1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [WCAG 2.2: 2.4.13 Focus Appearance](https://www.w3.org/TR/WCAG22/#focus-appearance), local test
+- Related: ACCESS-014, UIREV-007, DESIGN-041, DESIGN-043, DESIGN-045
+
+Forced colours removes shadows, and a blurred one never reaches 3:1, so it can't be a control's only boundary or its focus indicator.
+
+**Forced colours:** "box-shadow and text-shadow compute to none", as do gradient backgrounds, and border and outline colours are forced to system colours. So a transparent `border` or `outline` is invisible normally and an edge in forced colours (the Edge team shows the outline). Unseen, it keeps Hallmark's "a border or a shadow, never both". Tailwind's `ring-*` is a `box-shadow` too. Don't opt out with `forced-color-adjust: none`: it overrides the user's palette.
+
+**WCAG 1.4.11:** a boundary needs 3:1 "only… when there is no other visual way to identify the presence of the control"; a drop shadow on an input "is considered to be subsumed" into the nearest colour, so it can't provide that boundary. Cards aren't controls, but a control "will still need to have a sufficiently contrasting focus indication": use `outline`. 2.4.13 (AAA) asks for "a 2 CSS pixel thick perimeter" at 3:1, and a component's perimeter "does not include shadow and glow effects".
+
+Tested 2026-10-23, tailwindcss@4.3.3, playwright@1.64.1, Chromium 156 `forcedColors: 'active'` emulation (default palette; not Windows High Contrast, Firefox or Safari), Node 24.21.0:
+- Every `box-shadow` (cards, popover, `ring-1`) computed to `none`; two same-colour overlapping screenshots merged.
+- The transparent border and outline painted full-contrast edges.
+- Focus: `ring-2` with `outline-none` showed nothing; with `outline-hidden` (a transparent 2px outline under `forced-colors: active`) an outline appeared; plain `outline` stayed.
+- `filter: drop-shadow()` kept its value and painted, but black on the black forced-dark canvas it was invisible: not an edge.
+- `forced-color-adjust-none` kept the shadow.
+- On screen the darkest shadow pixel was about 1.3:1 against the ground (estimated).
+
+## [DESIGN-045] `box-shadow` or `drop-shadow()`, and what clips or prints them
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [CSS Backgrounds 3: box-shadow](https://drafts.csswg.org/css-backgrounds-3/#box-shadow), [Filter Effects 1](https://drafts.csswg.org/filter-effects-1/), [MDN: drop-shadow()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow), [CSS Color Adjustment 1: print-color-adjust](https://www.w3.org/TR/css-color-adjust-1/#print-color-adjust), [CSSWG wiki: print backgrounds](https://wiki.csswg.org/ideas/print-backgrounds), [web.dev: simplify paint complexity](https://web.dev/articles/simplify-paint-complexity-and-reduce-paint-areas), local test
+- Related: DESIGN-042, DESIGN-044, ANIM-008, CSS-015
+
+`box-shadow` shadows the box, `drop-shadow()` the pixels: the first for cards and rectangular screenshots, the second for transparent PNGs and irregular shapes.
+
+**`box-shadow`:** follows `border-radius`, takes a spread and `inset`, and layers ("the first shadow is on top"). It is "clipped inside the border-box", so it doesn't show through a translucent background and is a rectangle under a transparent image.
+
+**`drop-shadow()`:** "a blurred, offset version of the input image's alpha mask", children and their shadows included. "the `inset` keyword and `spread` parameters are not allowed", and its blur is a "standard deviation instead of blur radius"; `box-shadow`'s blur is twice its standard deviation, so the same number blurs about twice as far. Several `drop-shadow()`s chain: each shadows the result before it. Any `filter` also creates a stacking context and a containing block for fixed and absolute descendants.
+
+**Clipping:** an ancestor's `overflow: hidden` cuts shadows off; leave room or move the clip.
+
+**Print:** economy printing "might ignore any backgrounds"; no spec or MDN page mentions `box-shadow`. A dated CSSWG wiki note says IE9 dropped shadows too.
+
+**Cost:** web.dev: anything with a blur "is going to take longer to paint than, say, drawing a red box"; animate a pseudo-element's `opacity` instead (ANIM-008). No source read (web.dev, Chrome DevTools, Josh Comeau, Tobias Ahlin) gives a blur threshold.
+
+Tested 2026-10-23, tailwindcss@4.3.3, playwright@1.64.1, Chromium 156: `drop-shadow-lg` followed an SVG's rounded corners; a parent's `overflow: hidden` cut a child's shadow off. `page.pdf()` printed box and drop shadows with `printBackground` false and true; false dropped the ground and card backgrounds, leaving a shadow-only card as a faint blur on white. The dark-scheme page printed with its light values, so dark print is untested; so are print dialogs, Firefox and Safari.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -887,6 +1004,8 @@ Ranked by impact against effort.
 10. **A DESIGN.md has to be loaded to count** (DESIGN-037): in any repo that adopts one, import it from CLAUDE.md (`@DESIGN.md`) or name it in the repo's design skill. Our repos keep tokens in theme CSS plus a repo skill, so nothing changes now. Decided 2026-10-23 (FreekMencke/claude-kb#260): `design-workshop`'s hand-over makes sure the token file gets loaded, FreekMencke/claude-skills#108; no DESIGN.md output, since loading decided the result, not format.
 11. **Don't start a site from a brand's DESIGN.md** (DESIGN-038, DESIGN-039): read one to see how a system is written, then pick your own values. One imported for a bike shop reproduced the brand's look. No repo change.
 12. **Treat a copied DESIGN.md or style skill as third-party instruction text** (DESIGN-040, SKILL-041): pin it to a commit, read it, pin commands it names. Don't use `typeui.sh pull`, which installs whatever is on the registry's `main`.
+13. **Give every site one shadow rule per kind of surface before Claude builds** (DESIGN-041, DESIGN-042, DESIGN-043): a token per job (raised, overlay, dialog) in the theme CSS, and a line per surface and layout state in the repo skill. osrs-tracker-web already does this (one tinted `--shadow-float`, per-scheme colour, "cards are flat"), and freek-mencke-web's depth rules came out of FreekMencke/freek-mencke-web#43. No change.
+14. **Never let a shadow be the only edge or focus state** (DESIGN-044): in our Tailwind repos, focus with `outline`, not `ring-*`; give floating layers a border. osrs-tracker-web's floating layers have one. freek-mencke-web's screenshot and bar hairlines are `box-shadow`s that forced colours removes; low impact, noted for FreekMencke/freek-mencke-web#43 rather than a new issue.
 
 ## Open questions
 
@@ -908,3 +1027,7 @@ Ranked by impact against effort.
 - **DESIGN-037's limits:** one 874-byte fixture, one prompt, Sonnet 5.5 only, `claude -p`, not artifacts or `/design` (whose skill "looks for an existing design system"), and no larger repo. Whether a 7,000-token brand file is followed as closely as our small one is untested beyond one run.
 - **How VoltAgent's files were made** (DESIGN-038): only the Claude file was compared with a live page (4 of 23 colours matched). getdesign.md's terms and Land-book (blocked by a bot check) weren't read.
 - **Does a PRODUCT.md beside a DESIGN.md change output?** Impeccable's split (DESIGN-036) wasn't tested.
+- **Shadows on real Windows High Contrast, Firefox and Safari** (DESIGN-044, DESIGN-045): only Chromium 156's `forcedColors` emulation and `page.pdf()` were run; a print dialog's "Background graphics" setting and other engines weren't. No spec says whether forced colours should leave `filter: drop-shadow()` alone. Chromium also printed the light values of `light-dark()` from a dark-emulated page (not investigated).
+- **Material 3's own elevation guidance** (DESIGN-042, DESIGN-043): m3.material.io renders only with JavaScript; Material Web's docs and tokens were read instead. Apple's base and elevated colour values weren't found on the HIG pages read.
+- **A blur-radius cost threshold** (DESIGN-045): web.dev, Tobias Ahlin and Josh Comeau say blur and layered shadows cost paint time, with no number.
+- **The shadow-rule probe's limits** (DESIGN-041): one prompt, Sonnet 5.5 only, `claude -p`; it didn't reproduce the overlap-only first pass from FreekMencke/freek-mencke-web#43, and a rule that names the forced-colours edge wasn't tried. Radius per stack ("one radius per stack") may deserve its own entry.
