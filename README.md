@@ -152,9 +152,9 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 
 | Other files | What it holds |
 |---|---|
-| [INDEX.md](INDEX.md) | Start here: the topic files, combined Quick answers, Conflicts |
+| [INDEX.md](INDEX.md) | Start here: the topic files, combined Quick answers, open Conflicts |
 | [ENTRIES.md](ENTRIES.md) | Every entry's ID, title and tags; generated, so grep it |
-| [OVERLAPS.md](OVERLAPS.md) | Overlaps kept on purpose, merges, similar-but-distinct pairs |
+| [OVERLAPS.md](OVERLAPS.md) | Resolved conflicts, overlaps kept on purpose, merges, similar-but-distinct pairs |
 | [CHANGELOG.md](CHANGELOG.md) | What changed, newest first |
 | [CLAUDE.md](CLAUDE.md) | This knowledge base's research rules on top of the `research` skill, and the entry format |
 | [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md and fills INDEX.md's entry counts. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |

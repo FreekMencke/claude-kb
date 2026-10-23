@@ -134,7 +134,7 @@ Drop "CRITICAL" and "YOU MUST" written to push older models; keep emphasis for t
 - **Anthropic's own snippets** still use the odd NEVER or MUST (`<investigate_before_answering>`: "you MUST read the file"), so a single capital is not banned.
 - **Tooling:** `/doctor prompt-audit` (v2.1.283) flags "prompting patterns written for older models" (PROMPT-017).
 
-The two official pages agree on direction (less emphasis) and differ in tone; see INDEX.md Conflicts. No 5.x page measures emphasis directly, so the claim that capitals hurt the 5.x models is inferred from the 4.5/4.6 finding. The claude-api skill's prompt-audit rubric (anthropics/skills, official-example) says it for current models: "current models are highly responsive to the system prompt, so the same text over-applies", and calls emphasis "a tested, scoped fix for one demonstrably underweighted instruction, not a first-draft register".
+The two official pages agree on direction (less emphasis) and differ in tone; see OVERLAPS.md, Resolved conflicts. No 5.x page measures emphasis directly, so the claim that capitals hurt the 5.x models is inferred from the 4.5/4.6 finding. The claude-api skill's prompt-audit rubric (anthropics/skills, official-example) says it for current models: "current models are highly responsive to the system prompt, so the same text over-applies", and calls emphasis "a tested, scoped fix for one demonstrably underweighted instruction, not a first-draft register".
 
 ## [PROMPT-005] Give the reason behind a rule
 - Type: pattern

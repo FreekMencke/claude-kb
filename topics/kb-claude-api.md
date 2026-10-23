@@ -66,7 +66,7 @@ Research basis:
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-10-23
 - Sources: [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Define tools: forcing tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools), [Model deprecations: API parameter deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations), [Haiku 5.5 migration guide](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide), [Sonnet 5.5 migration guide](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide), [Opus 5.5 migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide), [Release notes](https://platform.claude.com/docs/en/release-notes/overview)
 - Related: PROMPT-002, ORCH-028, CAPI-002, CAPI-004
 
@@ -81,6 +81,8 @@ Code written for a 4.x model or Sonnet 5 can fail on the current models with `in
 | Final assistant turn (prefill) | 400 | 400 | 400 | 400 |
 
 The deprecations page scopes the sampling 400 to "Claude 4.7 and later models". On Haiku 5.5, `temperature` "must be `1`" and `top_p` "must be `0.99`", and sending both is rejected. On the Claude API and Google Cloud, computer use needs `computer_toolset_20260801`: Opus and Sonnet 5.5 reject `computer_20251124`, and Haiku 5.5 rejects `computer_20250124`.
+
+The advisor tool is narrower too. The 2026-09-28 release note says it "rejects Claude Opus 4.8, Claude Opus 4.7, and Claude Sonnet 5 as advisors"; the Sonnet 5.5 migration guide has the full list: those three plus Opus 4.6, Sonnet 4.6 and Haiku 5.5 "return a 400 error". It accepts Opus 5, Opus 5.5, Sonnet 5.5, Fable 5, Fable 5.1, Mythos 5 and Mythos 5.1. Trust the guide.
 
 The release notes summarise each launch: Sonnet 5 code "can break on Claude Sonnet 5.5 in five ways" (2026-09-28), and Haiku 4.5 code "can break on Claude Haiku 5.5" (2026-10-07). In Claude Code, `/claude-api migrate this project to <model>` applies the swaps for you (migration guides).
 
