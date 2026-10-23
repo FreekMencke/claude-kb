@@ -1,6 +1,6 @@
 # Writing, testing and distributing skills
 
-Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2026-10-14; each entry's Last verified date is authoritative. "Local CLI" means `--help` output or a command run on Claude Code 2.1.296 on that date.
+Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2026-10-14; each entry's Last verified date is authoritative. SKILL-064 to SKILL-073 (finding and vetting community skills) were added 2026-10-23 (FreekMencke/claude-kb#256) from the Claude Code docs, vercel-labs/skills at commit a80e4c9 (skills@1.7.4), the lists' and directories' own pages and the GitHub API, read by an Opus 5.5 lead and two Sonnet 5.5 readers. "Local CLI" means `--help` output or a command run on Claude Code 2.1.296 on that date.
 
 ## Quick answers
 
@@ -8,8 +8,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 |---|---|---|
 | What does Claude see of a skill before using it? | Only `name` + `description` (≈100 tokens each) in the skill listing; the body loads when the skill is invoked, bundled files only when read. | SKILL-004 |
 | How long may a description be? | 1,024 chars on claude.ai, the API and the open spec. Claude Code truncates `description` + `when_to_use` at 1,536 chars in its listing. | SKILL-003, TOK-005 |
-| Why doesn't my skill trigger? | Vague description, no user-vocabulary keywords, listing budget overflow dropped it, broken YAML, or the task was too simple to need a skill. | SKILL-015, TOK-005 |
-| What goes in a description? | What it does + when to use it, third person, the words users type, and a "not for X" line for neighbouring skills. Don't summarise a multi-step workflow. | SKILL-011, SKILL-012, SKILL-013 |
+| What goes in a description, and why doesn't my skill trigger? | What it does + when to use it, third person, the words users type, and a "not for X" line for neighbouring skills; don't summarise a multi-step workflow. It fails to trigger with a vague description, no user-vocabulary keywords, a listing-budget overflow, broken YAML, or a task too simple to need a skill. | SKILL-011 to SKILL-013, SKILL-015, TOK-005 |
 | How big may SKILL.md be? | Under 500 lines / ~5k tokens; push detail into one-level-deep reference files and scripts. | SKILL-016, SKILL-017 |
 | Skill, CLAUDE.md, hook, subagent or MCP? | CLAUDE.md = always-true facts; skill = on-demand procedure; hook = must-happen guarantee; subagent = isolated side task; MCP = access to external systems. | SKILL-021, SKILL-023 |
 | How do I test a skill? | Triggering: `claude plugin eval` with a `tool_used: Skill` grader, or skill-creator's `run_loop`; ~20 queries, half near-miss negatives, 3 runs each. Usefulness: run the same prompts with and without it in fresh sessions; compare the score delta and the token/time cost. | SKILL-025 to SKILL-028, SKILL-032 |
@@ -17,10 +16,11 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. A personal Git marketplace added on claude.ai reaches chat, Cowork and local Claude Code, but not cloud sessions or routines. | SKILL-034, SKILL-038, SKILL-059, SKILL-060 |
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
 | Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload, except inside a plugin, where claude.ai accepts them. | SKILL-002, SKILL-040, SKILL-062 |
-| Which published collections are worth studying? | anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. | SKILL-042 to SKILL-044 |
 | How many skills is too many, and how do I prune? | No official number; one measurement saw a skill's invocation rate drop as the roster grew. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
 | Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills and `<name>@synced` plugins no (local tests), so symlink the skills you need into the distro's `~/.claude/skills` and install plugins with the distro's CLI (`claude plugin install <plugin>@<marketplace name>`); those load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054, SKILL-056, SKILL-063 |
 | Where should skills live with desktop and WSL? | WSL uses the distro's Linux `~/.claude`; Windows and WSL share no skills, plugins, settings or credentials. Keep skills in a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-051, SKILL-056 |
+| Where do I find community skills, which collections are worth studying, and what do installs and stars prove? | Worth studying: anthropics/skills (skill-creator, docx/pdf), obra/superpowers (testing discipline), plugin-dev, trailofbits/skills. Only Anthropic's directory has human review (and `claude-community` is SHA-pinned); skills.sh runs automated partner audits. The awesome-claude-skills lists and skillselion are for discovery only. A skills.sh install count is deduplicated `npx skills add` telemetry, not quality, and partner audit badges often disagree. | SKILL-042 to SKILL-044, SKILL-064, SKILL-065 |
+| How do I vet, pin and update a third-party skill? | Read hooks, `bin/`, scripts, network calls and telemetry, settings writes, `allowed-tools`, embedded instructions, hidden Unicode (it reaches the model; grep given) and the licence. Pin a full commit and diff before you move it; a pin doesn't cover a plugin's dependencies or `command` source. `skills update`/`check` reinstall with no diff, and a symlink to a clone you `git pull` changes the skill mid-session. | SKILL-069, SKILL-068, SKILL-066, SKILL-072, SKILL-073 |
 
 ## Index
 
@@ -89,6 +89,16 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 | SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
 | SKILL-063 | Desktop WSL: synced plugins didn't load, a CLI install from the marketplace did | fact | desktop, wsl, plugins, sync |
+| SKILL-064 | Where to find community skills, and what each source reviews | comparison | discovery, security, awesome-lists, skills-sh, marketplaces |
+| SKILL-065 | Install counts and stars: what they measure | fact | discovery, install-counts, skills-sh, audits |
+| SKILL-066 | `npx skills`: where it installs, its lock files, and `update` | tool | npx-skills, lock-file, pinning, update |
+| SKILL-067 | `npx skills`: telemetry, the advisory audit and agent mode | fact | npx-skills, telemetry, security, audits |
+| SKILL-068 | Pinning and updating a community skill | recommendation | pinning, update, symlink, supply-chain |
+| SKILL-069 | Vetting checklist for a community skill or plugin | recommendation | security, supply-chain, vetting, hidden-unicode |
+| SKILL-070 | Anti-pattern: skill text fetched from a server at run time | anti-pattern | security, prompt-injection, mcp, load-skill |
+| SKILL-071 | What vetting catches in small animation and scroll kits | fact | security, vetting, examples, animation |
+| SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
+| SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
 
 ---
 
@@ -985,7 +995,7 @@ Portability rules:
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Plugin security](https://code.claude.com/docs/en/plugins/security), [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
-- Related: SKILL-010, SKILL-037
+- Related: SKILL-010, SKILL-037, SKILL-069, SKILL-068, SKILL-064
 
 "Only use skills from trusted sources." Installing a skill or plugin is installing software. "A Claude Code plugin you install can execute arbitrary code on your machine with your user privileges."
 - Hooks, monitors, MCP and LSP servers (and any process a mod starts) run *outside* the sandbox. A `bin/` executable runs as a Claude Bash command, so permission rules apply to it; `bin/` is on the shell's `PATH`, so read every file in it before installing.
@@ -1471,6 +1481,243 @@ Tested 2026-10-17, desktop Code tab on WSL (bundled CLI 2.1.295 or 2.1.299; whic
 3. **CLI install:** in the next desktop WSL session the skill was listed once, as `kb-lookup:claude-kb-lookup`, though `kb-lookup@synced` was still `true`. With no user-scope `claude-kb` server, the tools were `mcp__plugin_kb-lookup_claude-kb__kb_*` (MCP-009), so allow rules naming `mcp__claude-kb__*` don't cover them.
 4. **Auto-update** was off for `freek-kb`, as SKILL-036 says for third-party marketplaces, and was turned on with `"autoUpdate": true` on its `extraKnownMarketplaces` entry. Later that day the install was still at the commit it was installed from, two commits behind `main`: no update seen yet.
 
+---
+
+## Finding and vetting community skills
+
+## [SKILL-064] Where to find community skills, and what each source reviews
+- Type: comparison
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [Publish to the directory: prepare for review](https://claude.com/docs/directory/publish), [claude-plugins-community README](https://github.com/anthropics/claude-plugins-community/blob/main/README.md), [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Anthropic's marketplaces](https://code.claude.com/docs/en/plugins/anthropic-marketplaces), [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills), [its PR-labelling workflow](https://github.com/ComposioHQ/awesome-claude-skills/blob/master/.github/workflows/label-ready-skill.yml), [travisvn/awesome-claude-skills CONTRIBUTING](https://github.com/travisvn/awesome-claude-skills/blob/main/CONTRIBUTING.md), [BehiSecc/awesome-claude-skills](https://github.com/BehiSecc/awesome-claude-skills), [skills.sh about](https://skills.sh/about), [Skillselion FAQ](https://skillselion.com/faq), [SkillsMP about](https://skillsmp.com/about); stars from the GitHub API, 2026-10-23
+- Related: SKILL-034, SKILL-041, SKILL-042, SKILL-065, SKILL-069, MCP-020, OSS-001
+
+Only Anthropic's directory puts a person in the loop. skills.sh runs automated partner audits and drops a skill only if it fails all of them. The other lists and directories run no review: use them to find skills, not to trust them.
+
+| Source | Review | Pinned |
+|---|---|---|
+| Anthropic directory, `claude-community` | "every version gets automated validation and a security scan, and a person reviews a new listing before it goes live" | Community, per the security page: "nearly every entry" is pinned by SHA, and Claude Code "refuses to install a different commit" |
+| `claude-plugins-official` | "Most of what it lists comes from partners and other authors" | Per entry (not checked) |
+| Third-party marketplaces | "Anthropic doesn't review third-party marketplaces" | Owner's choice |
+| ComposioHQ list (77,710★) | A workflow labels a PR ready when it adds one alphabetical README link with no crypto keywords. The list opens with Composio's own product | No |
+| travisvn list (15,513★) | PRs under "a basic 10 stars" are closed, and AI-written PRs are refused. Warns "Skills can execute arbitrary code". Last push 2026-04-28 | No |
+| BehiSecc list (10,288★) | Fork and PR, no criteria; paid sponsors at the top | No |
+| skills.sh (Vercel) | Listed on first `npx skills add`; "cannot guarantee the quality or security of every skill" | No |
+| skillselion.com | "Do you check listings for security? Not ourselves." | No |
+| skillsmp.com | A "map" of "3M+ skills" | No |
+
+None of the three lists has a licence in the GitHub API or a LICENSE file (Composio's README claims Apache 2.0). Without a licence, copying is not allowed (OSS-001).
+
+## [SKILL-065] Install counts and stars: what they measure
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [skills.sh about](https://skills.sh/about), [skills.sh FAQ](https://skills.sh/docs/faq), [skills.sh audits](https://skills.sh/audits), [Skillselion about](https://skillselion.com/about), [Skillselion research methodology](https://skillselion.com/research/methodology), [Skillselion security census 2026-08](https://skillselion.com/research/agent-skill-security-census-2026-08), [find-skills SKILL.md at a80e4c9](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/skills/find-skills/SKILL.md)
+- Related: SKILL-064, SKILL-067, SKILL-069
+
+An install count is the deduplicated count of `npx skills add` telemetry events: it doesn't count users or use. Stars are bookmarks. Neither says anything about safety, and both can be gamed.
+
+- **skills.sh**: "Rankings come from anonymous, deduplicated install counts collected by the skills CLI when users opt in … Deduplication runs hourly to prevent artificial inflation."
+  - In fact the CLI sends them unless you opt out (SKILL-067).
+  - Plugin installs, clones, `install.sh` scripts and private GitHub repos are never counted.
+- **Skillselion** ranks "installs first, then GitHub stars", taken from skills.sh.
+  - "Install counts are cumulative registry install events, not active users. Bundle installs … count each bundled skill separately."
+  - Its stars lag: the design page, dated 2026-10-22, gave taste-skill 84.6k, and the GitHub API gave 101,256 the next day.
+- **Audit badges disagree.** skills.sh's `/audits` rated `design-mobile-apps` "Safe" (Gen) and "High Risk" (Snyk).
+  - Skillselion's census of 2026-08-12 found "87.8% of listings have never been audited".
+  - On "12.7% of the multi-rated set", one auditor said HIGH/CRITICAL where another said LOW/SAFE.
+  - That is single-source: its CC BY 4.0 dataset wasn't recomputed.
+- **Agents are taught to trust popularity.** The CLI's bundled `skills/find-skills/SKILL.md` says "Prefer skills with 1K+ installs. Be cautious with anything under 100".
+
+Use the numbers to choose what to read first, never in place of reading (SKILL-069).
+
+## [SKILL-066] `npx skills`: where it installs, its lock files, and `update`
+- Type: tool
+- Applies to: general
+- Confidence: official-example
+- Last verified: 2026-10-23
+- Sources: [vercel-labs/skills at a80e4c9 (skills@1.7.4)](https://github.com/vercel-labs/skills/tree/a80e4c9d12d607631249d4d7d059f835d4b2f13a), read 2026-10-23: `src/add.ts`, `src/installer.ts`, `src/agents.ts`, `src/skill-lock.ts`, `src/local-lock.ts`, `src/update.ts`, `src/cli.ts`, `src/git.ts`, `docs/commands.md`; [vercel-labs/skills#954](https://github.com/vercel-labs/skills/issues/954); `npm view skills 'time[1.7.4]'`
+- Related: SKILL-040, SKILL-067, SKILL-068
+
+`npx skills add <source>` installs vercel-labs/skills, whose 1.7.4 was published 2026-10-19. It copies a skill to `.agents/skills/<name>` and symlinks `.claude/skills/<name>` to that copy. With `-g` it uses `~/.agents/skills` and `~/.claude/skills`, or `$CLAUDE_CONFIG_DIR/skills`; `--copy` makes plain copies. It writes no settings, hooks or plugins and runs no scripts. File modes are kept, so scripts stay executable.
+
+- **Sources**: `owner/repo[@skill]`, git URLs, `.well-known/agent-skills` endpoints and archives. Without a ref, skills from `vercel`, `vercel-labs`, `heygen-com` and `remotion-dev` come from a skills.sh snapshot, not from git.
+- **Lock files.** The global `~/.agents/.skill-lock.json` stores the skill folder's GitHub tree SHA. The project `skills-lock.json` stores a SHA-256 of paths and contents. Neither stores the commit. Both come from the same fetch as the files, so they catch later local edits, not an upstream swap. A restore doesn't check them.
+- **Pin**: `owner/repo#<ref>` or a `/tree/<ref>/` URL. It accepts a full 40-character SHA and rejects abbreviated ones.
+- **`skills update`** compares tree SHAs on the stored ref, or on HEAD, `main` or `master`. On a change it deletes the folder and re-runs `add -y`, with no diff and no confirm. A SHA pin never updates; a branch or tag pin follows the branch or tag.
+- **`skills check`** shares `update`'s code (`cli.ts` 420–423) and reinstalls too. That contradicts `docs/commands.md`, "without reinstalling them", and #954 (open since 2026-04-17) reports it.
+
+Read from source; not run.
+
+## [SKILL-067] `npx skills`: telemetry, the advisory audit and agent mode
+- Type: fact
+- Applies to: general
+- Confidence: official-example
+- Last verified: 2026-10-23
+- Sources: [vercel-labs/skills at a80e4c9 (skills@1.7.4)](https://github.com/vercel-labs/skills/tree/a80e4c9d12d607631249d4d7d059f835d4b2f13a), read 2026-10-23: `src/telemetry.ts`, `src/add.ts`, `src/source-parser.ts`, `src/sanitize.ts`, `skills/find-skills/SKILL.md`, `README.md`
+- Related: SKILL-065, SKILL-066, SKILL-069
+
+The CLI reports installs by default, and it shows partner audits that never block an install. When an AI agent runs it, it skips its confirm prompt.
+
+- **Telemetry** goes as a GET to `https://www.skills.sh/tele/t`. It carries the CLI version, the detected agent and `ci=1` in CI, plus per event:
+  - install: source, skills, agents, file paths, install URL;
+  - remove;
+  - update counts;
+  - find: the query text.
+
+  Any non-empty `DISABLE_TELEMETRY` or `DO_NOT_TRACK`, even `0`, turns it off, and so does the audit fetch; CI doesn't. A GitHub install is reported only if an unauthenticated API call says the repo is public.
+- **Audit.** `add` fetches "Security Risk Assessments" (Gen, Socket, Snyk) from `https://www.skills.sh/tele/audit` for public GitHub repos, with a 3-second timeout. The code says it "never blocks installation" and is "advisory only". A person sees it before the "Proceed with installation?" prompt. No data, a timeout and telemetry off all look the same: no table.
+- **Agent mode.** When the CLI detects an AI agent it sets `--yes`, so nothing is confirmed. `find-skills` offers `npx skills add <owner/repo@skill> -g -y` once the user agrees.
+- **Sanitising.** `sanitize.ts` strips terminal escapes from names and descriptions. Nothing scans the SKILL.md body.
+
+So run `npx skills add` yourself, or have the agent show the command first. Read from source; not run.
+
+## [SKILL-068] Pinning and updating a community skill
+- Type: recommendation
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [Marketplace reference: ref, sha, sha256](https://code.claude.com/docs/en/plugins/marketplace-reference), [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Skills: symlinked folders, live change detection](https://code.claude.com/docs/en/skills), [taste-skill install.sh at 6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91a9935f1c167dfc500fb1a475681892e6b/install.sh), local test
+- Related: SKILL-035, SKILL-036, SKILL-066, SKILL-069, SKILL-070, SKILL-072, GHA-009
+
+Pin a full commit, write down the SHA and the date you read it, and read the diff before you move the pin.
+
+| Route | Pin | Update |
+|---|---|---|
+| Plugin, git source | A marketplace entry you control with `"sha": "<40 chars>"`. Claude Code installs it even if `ref` was deleted, "as long as the commit is still reachable" | Diff, then change `sha`; keep auto-update off (SKILL-036) |
+| Plugin, `archive` source | `sha256`, which Claude Code enforces. It's independent only if you computed it from the copy you read | New digest after reading |
+| `claude-community` | Anthropic pins "nearly every entry" | Leave auto-update off |
+| `npx skills` | `owner/repo#<full sha>` | Diff, then re-add; `update` and `check` show no diff (SKILL-066) |
+| Copy in `.claude/skills/` | Commit it with its source SHA | Diff upstream, copy, commit |
+
+**The symlink trap.** Claude Code reads a symlinked skill folder's target and watches skill folders (except in bare mode). A `git pull` in a clone that `~/.claude/skills` links to therefore changes live instructions without review. taste-skill's `install.sh` is built for this: "this links instead of copying, so `git pull` updates every installed skill in place".
+
+Tested 2026-10-23, v2.1.296, terminal `-p`, Haiku: a skill was invoked, its symlink target was edited with `sed`, and the next invocation in the same run returned the edited text.
+
+Before moving a pin, check that history wasn't rewritten:
+
+```bash
+git -C <clone> fetch
+git -C <clone> merge-base --is-ancestor <pinned-sha> origin/main && echo fast-forward
+git -C <clone> log --oneline <pinned-sha>..origin/main -- <skill-dir>
+git -C <clone> diff <pinned-sha>..origin/main -- <skill-dir>
+```
+
+A pin doesn't cover dependencies, `command` sources or run-time fetches (SKILL-072, SKILL-070).
+
+## [SKILL-069] Vetting checklist for a community skill or plugin
+- Type: recommendation
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Plugin loading: Node.js package dependencies](https://code.claude.com/docs/en/plugins/loading), [Skills: allowed-tools and workspace trust](https://code.claude.com/docs/en/skills), `npm view gsap@3.15.0 license`
+- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001
+
+This extends SKILL-041. Check the owner and repo name letter by letter against the author's own site, then read every file at the commit you'll pin. Take behaviour from the code, not the README.
+
+1. **Code that runs**: hooks, monitors, `.mcp.json`, mods, `bin/` (on the Bash tool's `PATH`), `scripts/`. Hooks, monitors and servers run outside the sandbox. Pin a downloaded binary by a hash you computed. A checksum file next to it only catches corrupt downloads.
+2. **Later installs.** Plugin npm dependencies install from an exact lockfile, registry packages only, with `--ignore-scripts`. Anything else (Python, git dependencies, build steps) comes from a hook or script, so read those.
+3. **Network**: every host, telemetry field, default and opt-out.
+4. **Config writes and installs**: settings files, `claude mcp add`, and instructions to install other skills, plugins or servers. Treat each as stop-and-ask, and vet the target too.
+5. **`allowed-tools`**, which workspace trust doesn't gate (SKILL-010).
+6. **Instructions**: fetching URLs, running commands without asking, "ignore previous", hiding actions, reading files outside the skill.
+7. **Hidden Unicode**: it reaches the model unchanged (SKILL-073).
+8. **Licence**: no licence means you can't copy the skill (OSS-001). Check code it copies too: GSAP's licence is "Standard 'no charge' license", not OSI.
+9. **Run-time content**: CDN scripts without SRI, a WebFetch of a branch URL or `llms.txt` on each run, `load_skill` (SKILL-070).
+
+Greps for items 3, 4 and 7:
+
+```bash
+rg -n -i 'https?://|curl|wget|fetch\(' <dir>
+rg -n 'settings(\.local)?\.json|claude (mcp|plugin) |npx skills add|enabledPlugins' <dir>
+rg -n -P '[\x{00AD}\x{180E}\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{2064}\x{2066}-\x{2069}\x{FEFF}\x{E0000}-\x{E007F}]' <dir>
+```
+
+## [SKILL-070] Anti-pattern: skill text fetched from a server at run time
+- Type: anti-pattern
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-10-23
+- Sources: [skillselion-mcp 0.9.11 (npm)](https://www.npmjs.com/package/skillselion-mcp/v/0.9.11), [skillselion/skillselion-mcp](https://github.com/skillselion/skillselion-mcp), [Skillselion FAQ](https://skillselion.com/faq), [web-design-guidelines SKILL.md at 063bee9](https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md)
+- Related: SKILL-068, SKILL-069, MCP-019, REPO-037
+
+Some tools pull skill text from a server whenever the agent asks. That skips every pin and review: the text can change between runs and reaches the context as instructions.
+
+- **skillselion-mcp 0.9.11** (npm, published 2026-08-21, MIT). Its `index.js` was read in full but not run.
+  - `load_skill` fetches a skill's files from `skillselion.com/api/skills/<id>/files`, or from GitHub `main` or `master`, into a temp folder. It returns "Read <dir>/SKILL.md and follow it", with no hash or commit check.
+  - The server instructions say "DEFAULT TO LOADING … call load_skill FIRST" and "safe to over-ask". They call the skills "community-vetted", and the tool adds "Always verify the loaded skill against your project before trusting it". The site's FAQ says it doesn't check security itself.
+  - Network: listings and "lessons" that bias ranking come from `skillselion.com/api/upstream`. A scrubbed query goes to `/mcp/demand`, which `DO_NOT_TRACK` or `SK_NO_DEMAND` turns off.
+  - The user-run `setup` command runs `claude mcp add --scope user` and adds a SessionStart hook to `~/.claude/settings.json` that primes every session. Opt-in `--history` scans local Claude Code and Codex transcripts for keywords.
+- **vercel-labs/agent-skills `web-design-guidelines`** says "Fetch fresh guidelines before each review" with WebFetch, from `web-interface-guidelines/main/command.md`, which "contains all the rules and output format instructions". Each review follows whatever that branch holds that day.
+
+Install a reviewed, pinned copy instead (SKILL-068). For an MCP server, see MCP-019.
+
+## [SKILL-071] What vetting catches in small animation and scroll kits
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-23
+- Sources: [zubair-trabzada/scroll-cinematic-claude](https://github.com/zubair-trabzada/scroll-cinematic-claude), [prantikmedhi/motioncraft](https://github.com/prantikmedhi/motioncraft), [KailasMahavarkar/agentic-skills](https://github.com/KailasMahavarkar/agentic-skills); found with `gh search code "lenis" --filename SKILL.md`, 2026-10-23
+- Related: SKILL-069, ACCESS-014, OSS-001
+
+Three Lenis and "awwwards-style" scroll skills, found 2026-10-23 and read on their default branches, show what SKILL-069 catches. None had a licence, so none may be copied.
+
+- **scroll-cinematic-claude** (76★):
+  - Its "Step 0" runs a script that curls a static ffmpeg build from a third-party site, with no checksum, and executes it.
+  - Its template loads Lenis from unpkg without SRI, and it has no reduced-motion handling.
+  - It needs a paid image MCP.
+- **motioncraft** (0★): its `install-*.sh` scripts copy into agent folders such as `.claude/skills/`. Its Lenis skill reads a plugin-root file, which an install of the skill alone wouldn't have.
+- **agentic-skills** (2★): its `lenis-react` skill has GSAP ScrollTrigger code and an unpinned `npm install lenis`. It does handle `prefers-reduced-motion`.
+
+Fonts, images and settings writes weren't checked. What each skill teaches about animation is covered by FreekMencke/claude-kb#252 and FreekMencke/claude-kb#258.
+
+## [SKILL-072] What a plugin pin doesn't cover: dependencies and `command` sources
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [Plugin dependencies](https://code.claude.com/docs/en/plugins/dependencies), [Plugin loading: when a command source re-runs](https://code.claude.com/docs/en/plugins/loading), [Marketplace reference: command source](https://code.claude.com/docs/en/plugins/marketplace-reference)
+- Related: SKILL-068, SKILL-069, SKILL-036
+
+A `sha` pins one plugin's own files. Two things around it still move.
+
+**Dependencies.** A plugin's `dependencies` resolve separately.
+- "Each dependency tracks the latest version its marketplace provides unless you declare a version constraint."
+- With a range, it "installs at the highest git tag that satisfies this range", and the dependency's maintainer can tag new versions inside that range.
+- `"name@marketplace"` or a `marketplace` field resolves in another marketplace. That only works if the root marketplace lists it in `allowCrossMarketplaceDependenciesOn`.
+
+So read each dependency as a plugin of its own, and install it pinned yourself.
+
+**`command` sources.** A marketplace entry can name "a shell command that prints the plugin directory's absolute path". Claude Code "shows users the whole string for review before it runs"; it is at most 500 printable ASCII characters. It runs again:
+- on every install and update;
+- "Once per session for each enabled command-sourced plugin, in the background … This run doesn't depend on the marketplace's auto-update setting or on `DISABLE_AUTOUPDATER`";
+- when the cached version is missing.
+
+`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` skips the background runs. The directory it prints can differ on every run, so review the tool the command calls as well as the string.
+
+## [SKILL-073] Hidden Unicode in a skill body reaches the model
+- Type: fact
+- Applies to: Claude Code
+- Confidence: unverified
+- Last verified: 2026-10-23
+- Sources: [claude-code CHANGELOG 2.1.277, 2.1.280, 2.1.284](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [Skills: characters a skill name can't hold](https://code.claude.com/docs/en/skills), local test
+- Related: SKILL-069, MEM-019, REPO-037
+
+Claude Code removes invisible Unicode from some inputs, but nothing documents doing so for a skill body, and a test shows it doesn't.
+
+Documented:
+- **Prompts**: invisible formatting and tag characters are "removed and the cleaned prompt is shown for review" (2.1.277; in VS Code also "from anything else before it is sent", 2.1.280).
+- **MEMORY.md**: invisible characters are "neutralized … before they reach Claude" (2.1.284).
+- **Skill names**: outside a plugin, a skill folder doesn't load when its name holds "a zero-width space".
+
+The docs and the CHANGELOG through 2.1.309 say nothing about skill bodies or plugin files.
+
+Tested 2026-10-23, v2.1.296, terminal `-p`, Haiku, with only the Write tool. A project skill's body held a zero-width space, an RLO override and two tag characters. The model wrote the lines to a file, and `od -c` showed all three byte sequences intact. So they reached the model. The same ripgrep pattern (SKILL-069) flagged all five test characters in a sample file and left the clean line alone.
+
+Grep every text file in a skill before installing it. Text the model reads but you can't see is an injection channel.
+
 ## Recommendations for our setup
 
 Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. Their source is now FreekMencke/claude-skills (SKILL-050, SKILL-056, SKILL-059).
@@ -1484,6 +1731,8 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 10. **Medium impact, low effort: test skill edits outside the desktop worktree session.** Desktop worktree sessions read `.claude/` from the main checkout (SKILL-053). `CLAUDE.md` and `.claude/rules/` still load from the worktree, so CLAUDE.md edits do take effect there.
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
 12. **Done 2026-10-12: unused account skills pruned**: `name-only` in WSL Claude Code's `skillOverrides` (kb-token-usage R8), and `morning` and `import-memory` disabled on claude.ai. The rest are kept on purpose, since disabling one there removes it from every surface. SKILL-058, SKILL-005.
+13. **Medium impact, low effort: install a third-party skill only as a pinned, reviewed copy.** Our own skills come from our own repo, so their symlinks and auto-update are fine (SKILL-056, SKILL-059). A third-party skill should go in after SKILL-069's checklist, either as a plugin pinned by `sha` in a marketplace we control or as a committed copy with its source commit noted. It should never arrive through an `install.sh` symlink to a clone, `npx skills update` or `check`, or a directory MCP server's `load_skill` (SKILL-068, SKILL-066, SKILL-070). For the global CLAUDE.md, proposed rather than edited here: "Install third-party skills only pinned to a full commit, after reading every file; diff before moving the pin."
+14. **Skill idea, posted to [FreekMencke/claude-kb#260](https://github.com/FreekMencke/claude-kb/issues/260#issuecomment-6359167748): turn SKILL-069 into a vetting procedure.** It would read a candidate skill or plugin at a pinned commit, run the hidden-Unicode grep, list hooks, `bin/`, scripts, hosts and settings writes, and report without installing. It could be a mode of `skill-workshop` or a skill of its own; #260 decides which.
 
 ## Open questions
 
@@ -1502,3 +1751,8 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 - **Auto-update for a third-party marketplace.** Does `"autoUpdate": true` on the `freek-kb` entry make Claude Code update `kb-lookup@freek-kb` to a newer commit (SKILL-063, SKILL-036)? Turned on 2026-10-17; no update seen that day. Check `gitCommitSha` for `kb-lookup@freek-kb` in `~/.claude/plugins/installed_plugins.json` against `main`.
 - **ZIP size.** The claude.ai skill ZIP size limit is not stated anywhere found. Uploaded plugins may hold up to 5,000 files and 200 MB ([claude.com plugins platform support](https://claude.com/docs/plugins/platform-support), read 2026-10-14).
 - **TOC threshold.** Anthropic's best-practices page says reference files over 100 lines need a TOC; skill-creator says over 300.
+- **skills.sh server side.** What do the partner audits (Gen, Socket, Snyk) scan, and how often? The CLI receives `analyzedAt` but doesn't show it. Is "when users opt in" (skills.sh about page) wrong, or does the server drop events the CLI sends by default? Looked in: vercel-labs/skills at a80e4c9 (client only), skills.sh `/about`, `/docs`, `/docs/faq`, `/audits` (SKILL-065, SKILL-067).
+- **`skills check`.** Is reinstalling on `check` intended, given docs/commands.md says "without reinstalling them"? It was read from source at a80e4c9, not run (SKILL-066).
+- **Hidden Unicode in skill bodies.** Undocumented; a v2.1.296 test showed it reaches the model (SKILL-073). Does a later version strip it? Looked in: the skills, plugins security and plugins loading docs, and the claude-code CHANGELOG through 2.1.309.
+- **"Anthropic verified."** What does the label on claude.com/marketplace/plugins require beyond the directory's scan and human review? The publish page doesn't say (SKILL-064).
+- **Skillselion's hosted `/mcp`.** Does it behave like the npm client's `load_skill`? Only the npm package 0.9.11 was read (SKILL-070).

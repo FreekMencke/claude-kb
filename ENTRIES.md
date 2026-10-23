@@ -947,6 +947,16 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 | SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
 | SKILL-063 | Desktop WSL: synced plugins didn't load, a CLI install from the marketplace did | fact | desktop, wsl, plugins, sync |
+| SKILL-064 | Where to find community skills, and what each source reviews | comparison | discovery, security, awesome-lists, skills-sh, marketplaces |
+| SKILL-065 | Install counts and stars: what they measure | fact | discovery, install-counts, skills-sh, audits |
+| SKILL-066 | `npx skills`: where it installs, its lock files, and `update` | tool | npx-skills, lock-file, pinning, update |
+| SKILL-067 | `npx skills`: telemetry, the advisory audit and agent mode | fact | npx-skills, telemetry, security, audits |
+| SKILL-068 | Pinning and updating a community skill | recommendation | pinning, update, symlink, supply-chain |
+| SKILL-069 | Vetting checklist for a community skill or plugin | recommendation | security, supply-chain, vetting, hidden-unicode |
+| SKILL-070 | Anti-pattern: skill text fetched from a server at run time | anti-pattern | security, prompt-injection, mcp, load-skill |
+| SKILL-071 | What vetting catches in small animation and scroll kits | fact | security, vetting, examples, animation |
+| SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
+| SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
 
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 
