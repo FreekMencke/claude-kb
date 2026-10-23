@@ -1120,6 +1120,23 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TS-014 | Release cadence, the 7.1 plan and 6.0 servicing | fact | release-cadence, iteration-plan, typescript-7, versions |
 | TS-015 | Where to check the current version and a package's TypeScript range | recommendation | versions, peer-dependencies, npm, dist-tags |
 
+## Interface guidelines and UI review (`topics/kb-ui-review.md`, UIREV)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| UIREV-001 | Vercel's Web Interface Guidelines: three files, what they cover | fact | web-interface-guidelines, vercel, checklist |
+| UIREV-002 | Universal, React-only, Tailwind and Vercel-only rules in the guidelines | comparison | web-interface-guidelines, react, angular, copywriting |
+| UIREV-003 | Where the guidelines contradict WCAG, this knowledge base or themselves | comparison | apca, contrast, zoom, wcag, conflicts |
+| UIREV-004 | The `web-design-guidelines` skill: an unpinned fetch and a file-only review | fact | skills, webfetch, pinning, static-review |
+| UIREV-005 | Pinning interface guidelines for a review | recommendation | pinning, skills, supply-chain |
+| UIREV-006 | Which UI-review rules a script can check, and which need judgement | comparison | automation, judgement, playwright, axe |
+| UIREV-007 | Test: four running-page checks in Playwright against axe | pattern | playwright, reduced-motion, focus, target-size |
+| UIREV-008 | Heuristic evaluation: evaluators and severity (NN/g) | fact | heuristic-evaluation, nngroup, severity |
+| UIREV-009 | LLM heuristic evaluation: what studies found | fact | heuristic-evaluation, llm, studies, false-positives |
+| UIREV-010 | Design-review agents and skills: rubric, tools, write access | comparison | community, design-review, least-privilege |
+| UIREV-011 | A cheap read-only UI review in Claude Code | recommendation | subagents, playwright, tokens, workflow |
+| UIREV-012 | What one agent's UI review can and can't claim | recommendation | heuristic-evaluation, evidence, reporting, severity |
+
 ## Claude for web analytics and SEO work (`topics/kb-web-analytics-seo.md`, WEB)
 
 | ID | Title | Type | Tags |
