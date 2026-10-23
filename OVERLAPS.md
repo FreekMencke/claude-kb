@@ -99,7 +99,9 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - llms.txt: TOK-090 (reading Anthropic's to find docs), WEB-021 (publishing one, and what Google and Anthropic say it does for search), NG-016 (Angular's, next to its per-tool rules files).
 - Angular's MCP server: NG-012 to NG-014 (its tools, measured context cost and the `.mcp.json` line), TOK-020 (tool search), MCP-012 (cost in scripted runs), MCP-028 (our inventory), MCP-039 (cost per surface).
 - Framework rules files: NG-016 (Angular's `AGENTS.md`, `GEMINI.md` and rules files), MEM-008 (when Claude Code reads `AGENTS.md`), REPO-045 (cross-tool instruction files).
-- Third-party skills: NG-017 (angular/skills, which our `angular-developer` mirrors), SKILL-041 (security review), SKILL-042 (Anthropic's collections).
+- Third-party skills: NG-017 (angular/skills, which our `angular-developer` mirrors), SKILL-041 (security review) and SKILL-069 (the checklist that extends it), SKILL-042 (Anthropic's collections), SKILL-064 (where to find skills and what each source reviews).
+- Pinning third-party code: GHA-009 (actions), MCP-019 (MCP servers, rug pulls), SKILL-036 (plugin auto-update), SKILL-068 and SKILL-072 (community skills and what a plugin pin leaves open).
+- Remote text as instructions: MCP-019 (server tool lists), REPO-037 (repo agents), SKILL-070 (skills loaded at run time), SKILL-073 (hidden Unicode in skill bodies).
 - Angular's TypeScript and Node ranges: NG-002 (each supported major's ranges from the registry, and Angular's TypeScript 7 plan), TS-009 and TS-015 (which tools wait for TypeScript 7.1, where to read a range), NODE-001 (the Node release lines).
 - The credential is the control: INFRA-006 (AWS and Kubernetes), WEB-012 (Google read-only scopes).
 - Report formats: REPO-049 and REPO-050 (reviewer severity and findings), WEB-029 (audit findings ranked by impact and effort).
