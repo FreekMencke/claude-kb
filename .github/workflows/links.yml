@@ -1,0 +1,166 @@
+name: Source link check
+
+# Weekly check that the URLs on the entries' `Sources:` lines still resolve, so a moved or deleted source shows up
+# before the next re-verification (README.md, "Re-verification routine"). A schedule and workflow_dispatch only: external
+# links would make a pull request check flaky. The run fails on broken links, which makes GitHub email the failed
+# scheduled run, and lists them in the job summary with the entry IDs that cite them. It opens no issues.
+on:
+  schedule:
+    # Mondays 05:17 UTC, off the hour: scheduled runs at :00 are delayed and dropped when GitHub is busy
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # lychee has no way to read only some lines of a file, so the Sources lines go into sources.md first, each one
+      # prefixed with its entry's ID (`ACCESS-001: [WCAG 2.2](https://…), …`). The report step maps a broken URL back to
+      # the IDs through the line numbers and text of this file. `^## ` resets the ID, so a `- Sources:` line outside an
+      # entry (an example in a code block) is skipped.
+      - name: Extract the Sources lines
+        run: |
+          awk '
+            FNR == 1 || /^## / { id = "" }
+            /^## \[[A-Z]+-[0-9]+\]/ { match($0, /\[[A-Z]+-[0-9]+\]/); id = substr($0, RSTART + 1, RLENGTH - 2) }
+            /^- Sources:/ && id != "" { sub(/^- Sources: */, ""); print id ": " $0 }
+          ' topics/kb-*.md > sources.md
+          echo "Extracted $(wc -l < sources.md) Sources lines"
+
+      # restore + save instead of actions/cache: its post step saves nothing when the job fails, and a run that finds
+      # broken links is the one whose results are worth keeping
+      - name: Restore lychee cache
+        id: cache
+        uses: actions/cache/restore@v6
+        with:
+          path: .lycheecache
+          key: lychee-${{ github.run_id }}
+          restore-keys: lychee-
+
+      # --cache keeps results for 1 day (--max-cache-age's default), so the weekly run checks everything again and a
+      # manual rerun the same day, after fixing a source, doesn't hit every host twice. Accepted besides 2xx: 429 (the
+      # host throttles us) and, like 5xx, left out of the cache so the next run asks again; 405 and 406, which a URL
+      # that exists answers when a GET isn't what it serves (the MCP endpoints MCP-034 cites). --scheme: a Sources line
+      # can also cite a repo file (DSKILL-013's `../assets/` pictures, relative to topics/), which sources.md in the
+      # root can't resolve. Hosts that block the runner with a 403, and a private repo, are skipped in .lycheeignore,
+      # which lychee reads from the working directory; the summary counts them.
+      # The token is the action's default, github.token, in GITHUB_TOKEN. lychee 0.24.2 still requests github.com links
+      # anonymously and uses the token only for its API fallback when such a request fails; a throttled request
+      # answers 429, which is accepted, so a rate-limited github.com link passes unchecked. format json, because the report step needs the line of each
+      # broken URL; the action only writes its own job summary for markdown. fail false: the report step fails the job.
+      - name: Check the links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --no-progress
+            --cache
+            --cache-exclude-status '429, 500..'
+            --accept '100..=103,200..=299,405,406,429'
+            --scheme http
+            --scheme https
+            sources.md
+          format: json
+          output: lychee/out.json
+          token: ${{ github.token }}
+          fail: false
+          failIfEmpty: false
+
+      - name: Save lychee cache
+        if: always() && steps.cache.outputs.cache-primary-key != ''
+        uses: actions/cache/save@v6
+        with:
+          path: .lycheecache
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
+      # Fails when lychee left no report (a crash or a bad argument), found no links, or found a broken one. Timeouts and
+      # 5xx answers are listed apart and don't fail the run: a slow or struggling host isn't a moved source.
+      - name: Report broken links
+        if: always()
+        run: |
+          node - <<'EOF'
+          const fs = require('node:fs');
+          const summary = (text) => {
+            console.log(text);
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, text + '\n');
+          };
+
+          let report;
+          try {
+            report = JSON.parse(fs.readFileSync('lychee/out.json', 'utf8'));
+          } catch (error) {
+            summary(`## Source link check failed\n\nlychee wrote no readable report (${error.message}). See the "Check the links" step.`);
+            process.exit(1);
+          }
+
+          const lines = fs.readFileSync('sources.md', 'utf8').split('\n');
+          const idOfLine = (n) => /^([A-Z]+-\d+): /.exec(lines[n - 1] ?? '')?.[1];
+          const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+          // Every entry citing the URL. lychee reports a URL once, at its first line, so look for the others in the
+          // text: the URL must not run on into more path, query or extension (`…/a` is not `…/a/b` or `…/a.md`).
+          const citedBy = ({ url, span }) => {
+            const ids = new Set([idOfLine(span?.line)]);
+            const cited = new RegExp(escapeRegExp(url) + '(?![\\w/%?#=&~+@:.-])');
+            lines.forEach((line, i) => cited.test(line) && ids.add(idOfLine(i + 1)));
+            ids.delete(undefined);
+            return [...ids].sort();
+          };
+          // One row per URL: lychee can list a URL once per line that cites it
+          const rows = (map) => {
+            const byUrl = new Map();
+            for (const result of Object.values(map).flat()) {
+              // Keep the first result: a repeat can say only "Error (cached)"
+              const first = byUrl.get(result.url) ?? result;
+              const ids = [...new Set([...(first.ids ?? []), ...citedBy(result)])].sort();
+              byUrl.set(result.url, { ...first, ids });
+            }
+            return [...byUrl.values()].sort((a, b) => a.url.localeCompare(b.url));
+          };
+          const table = (results) =>
+            [
+              '| URL | Status | Cited by |',
+              '|---|---|---|',
+              ...results.map(
+                ({ url, status, ids }) => `| ${url.replace(/\|/g, '%7C')} | ${status.text.slice(0, 120).replace(/\|/g, '/')} | ${ids.join(', ')} |`,
+              ),
+            ].join('\n');
+
+          // A 5xx is the host having a bad day (web.archive.org answers 503 now and then), not a moved source
+          const errors = rows(report.error_map);
+          const broken = errors.filter(({ status }) => !(status.code >= 500));
+          const unreachable = [...errors.filter(({ status }) => status.code >= 500), ...rows(report.timeout_map)];
+          const parts = [
+            `## Source link check: ${broken.length} broken, ${unreachable.length} unreachable`,
+            `${report.total} links on ${lines.filter(Boolean).length} Sources lines (${report.unique} unique URLs). Counted per link, not per URL: ${report.successful} ok, ${report.errors} failed, ${report.timeouts} timed out, ${report.cached} answered from the cache, ${report.excludes} excluded. Lychee ran ${report.duration.secs} s.`,
+          ];
+          if (broken.length) parts.push('### Broken', table(broken));
+          if (unreachable.length) parts.push('### Timed out or server error (not counted as broken)', table(unreachable));
+          const excluded = {};
+          for (const { url } of Object.values(report.excluded_map).flat()) {
+            const host = new URL(url).host || new URL(url).protocol;
+            excluded[host] = (excluded[host] ?? 0) + 1;
+          }
+          const hosts = Object.entries(excluded).sort((a, b) => b[1] - a[1]);
+          if (hosts.length) {
+            parts.push(
+              `### Excluded from the check (.lycheeignore and lychee's built-in excludes)\n\n${hosts.map(([host, count]) => `${host} (${count})`).join(', ')}`,
+            );
+          }
+          summary(parts.join('\n\n'));
+
+          if (report.total === 0) {
+            summary('lychee found no links in sources.md: the extraction is broken.');
+            process.exit(1);
+          }
+          if (broken.length) process.exit(1);
+          EOF
