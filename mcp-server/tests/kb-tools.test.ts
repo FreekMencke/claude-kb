@@ -43,8 +43,10 @@ test('tools/list', async () => {
   expect(description).toContain('kb_get the 1 to 4 best IDs');
   expect(description).toContain('60 days');
   expect(description).toContain('knowledge retrieval and RAG');
+  expect(description).toContain('data visualisation and charts');
   expect(description).toContain('Filter by topic, type, confidence or applies_to');
   expect(INSTRUCTIONS).toContain('knowledge retrieval and RAG');
+  expect(INSTRUCTIONS).toContain('data visualisation');
   expect(INSTRUCTIONS).toContain('confidence and applies_to');
   expect(Object.keys((tools[0].inputSchema as { properties: object }).properties)).toEqual([
     'query',

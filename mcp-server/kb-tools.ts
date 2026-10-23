@@ -30,8 +30,9 @@ const DAY_MS = 86_400_000;
 export const INSTRUCTIONS =
   'claude-kb is a knowledge base on using Claude and Claude Code efficiently, and on the stack it works in (Angular,' +
   ' TypeScript, Node.js, npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, web animation (Motion,' +
-  ' GSAP, Lenis), UI states and forms, web fonts, accessibility, web performance and security, GitHub and its Actions,' +
-  ' Docker, Kubernetes and Flux, AWS Lambda, licences), and on knowledge retrieval and RAG. Search' +
+  ' GSAP, Lenis), data visualisation (charts, tables, colour, formatting), UI states and forms, web fonts,' +
+  ' accessibility, web performance and security, GitHub and its Actions, Docker, Kubernetes and Flux, AWS Lambda,' +
+  ' licences), and on knowledge retrieval and RAG. Search' +
   ' with kb_search (it can filter by topic, type, confidence and applies_to), then kb_get the 1 to 4 best IDs for the' +
   ' full entries; kb_get adds a line when an entry is in an open conflict. Cite entry IDs (such as MCP-017) in answers.' +
   ` Check an entry last verified more than ${STALE_DAYS} days ago against its sources before relying on it.`;
@@ -77,8 +78,8 @@ export const TOOLS: Tool[] = [
         ' and UI design, community' +
         ' design skills, UI review, typography; and versions, defaults and upgrade traps in Angular, TypeScript, Node.js,' +
         ' npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, web animation (Angular, Motion, GSAP,' +
-        ' Lenis), UI states and forms, web fonts, accessibility, web performance and security (CSP, cookies, OWASP), OG' +
-        ' images, GitHub' +
+        ' Lenis), data visualisation and charts, UI states and forms, web fonts, accessibility, web performance and' +
+        ' security (CSP, cookies, OWASP), OG images, GitHub' +
         ' and gh, GitHub Actions, Docker, Kubernetes and Flux, AWS Lambda and open-source licences. Returns entry IDs' +
         ' with title, type, confidence, last-verified date' +
         ' and a summary. Filter by topic, type, confidence or applies_to. Search first, then kb_get the 1 to 4 best IDs.' +
