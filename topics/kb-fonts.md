@@ -1046,13 +1046,13 @@ Ranked by impact against effort. Checked 2026-10-17 against local checkouts of o
 
 1. Done 2026-10-18: the typeface build runs `varLib.interpolatable` and Fontspector `universal`, gating on FAIL; a CI job is a later step there (FONT-014, FONT-015, FONT-007, FONT-017, FONT-013).
 2. **Decision: keep fontmake; don't move the typeface to fontc 1.0.0** (FONT-003, FONT-004). fontc can build only the variable font, and drops the designspace 5 labels the family uses for STAT. Re-check when fontc#837 and fontc#717 close.
-3. **Done: statics and OTF next to the VF; the VF unhinted; statics autohinted** (FONT-011, FONT-012, FONT-016). The build already matches Google Fonts' advice, and the satori OG cards need the static TTFs. The VF had no `gasp` or `prep`; since 2026-10-18 the build writes `gasp` `{0xFFFF: 0x000F}` and gftools' `prep` (FONT-012, FONT-013), and Fontspector's `smart_dropout` passes.
+3. **Done 2026-10-17 (`gasp` and `prep` 2026-10-18): statics and OTF next to the VF; the VF unhinted with `gasp` and `prep`; statics autohinted** (FONT-011, FONT-012, FONT-013, FONT-016). The satori OG cards need the static TTFs (OG-003).
 4. **Rule: when a site's font is re-cut, keep its features** (FONT-019, FONT-006, FONT-023). If a narrowed or subset copy is made with `pyftsubset`, pass `--layout-features='*'`: the defaults drop `tnum` and `case`, which the family documents and osrs-tracker-web uses (`tabular-nums`). The 229-glyph Latin-1 font gains little from `unicode-range` slicing (FONT-020).
 5. **Decision: keep `font-display: block` with the preload for now** (FONT-021, FONT-022). The one file is small, same-origin and preloaded, so the block period is short, and `block` never swaps, so it adds no CLS. `swap` would need a metric-matched fallback, and Safari ignores the vertical overrides. Revisit if field data appears (WEB-010) or the font grows; then switch to `swap` with a fallback generated from the font's metrics.
 6. **Won't do: an OFL-style RFN review** (FONT-018). The family isn't under the OFL.
 7. Done 2026-10-19: in the typeface's sources, the straight edges into one counter tip (Bold, and its derived Black) sit on whole-unit lines, by a script the derivation reruns (FONT-025).
 8. Done 2026-10-19: the same tip in Light and Regular (and the derived Thin) is straightened too, the curve from its edge into the bowl relaid, and the node where Regular split its handles 3.5:1 now splits them 2:1 like Light and Bold (FONT-034, FONT-035).
-9. Done 2026-10-20: the typeface's release pipeline keeps letter pairs at Black at least 10 units apart, or as close as in Bold where Bold is closer (196 exceptions, Black only, re-applied after every derivation), and builds æ the same way in every master (FONT-037 to FONT-040; FreekMencke/claude-kb#246).
+9. Done 2026-10-20: the typeface's release pipeline keeps letter pairs at Black at least 10 units apart, or as close as in Bold where Bold is closer (196 exceptions, Black only), and builds æ the same way in every master (FONT-037 to FONT-040; FreekMencke/claude-kb#246).
 
 ## Open questions
 

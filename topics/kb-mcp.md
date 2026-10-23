@@ -480,7 +480,7 @@ The spec's local-server guide treats a stdio server as "untrusted code with exac
 1. Prefer the vendor's remote server where one exists.
 2. Check the publisher and exact package name (typosquats); pin the version. Pinning in `npx`/`uvx` "fixes only the top-level package"; an image digest freezes the tree.
 3. Read the tool list and descriptions before relying on it (MCP Inspector or `/mcp`).
-4. Give each server its own narrowly scoped token; never pass your session's credentials (MCP-005).
+4. Give each server its own narrowly scoped token; never pass your session's credentials (MCP-005). Ours for a write-capable database server: a `readWrite` user on one database, `ask` rules on each write tool, and a dump or preview `find` before multi-document writes (MCP-028).
 5. Restrict filesystem roots and network egress, e.g. a container with `--network=none` where possible.
 6. Avoid one session holding private data, untrusted content and an exfiltration path at once (the lethal trifecta).
 
@@ -919,14 +919,14 @@ So `claude-kb-lookup` uses only the server since 2026-10-15. It gives up unmerge
 
 Ranked by impact against effort.
 
-1. **Done 2026-10-13: the MongoDB Atlas connector replaced by a scoped local server that can write** (osrs-tracker/osrs-tracker-api#148): a `readWrite` user on the one database, the official server pinned in that repo's `.mcp.json` with `--disabledTools atlas`, `ask` rules on each write tool, and a dump or preview `find` before multi-document writes. MCP-010, MCP-028, MCP-004, MCP-019, INFRA-006.
-2. **Done 2026-10-14: `--strict-mcp-config` in scripted `claude -p` runs that need no MCP server**, in this repo's probe recipe and the global "Scripted Claude runs" rule ([FreekMencke/claude-kb#103](https://github.com/FreekMencke/claude-kb/issues/103)). It saves about 6,600 tokens per request. MCP-012, ORCH-014.
-3. **Done 2026-10-14: `analytics-mcp` moved from user scope to local scope in osrs-tracker-web**, its only user ([FreekMencke/claude-kb#104](https://github.com/FreekMencke/claude-kb/issues/104)), since each desktop session starts its own copy of every user-scope stdio server (SESS-013). MCP-001, MCP-008.
+1. **Done 2026-10-13: the MongoDB Atlas connector replaced by a scoped local server that can write** (osrs-tracker/osrs-tracker-api#148): a `readWrite` user on the one database, the official server pinned, `ask` rules on each write tool. MCP-010, MCP-028, MCP-004, MCP-019, INFRA-006.
+2. **Done 2026-10-14: `--strict-mcp-config` in scripted `claude -p` runs that need no MCP server**, in this repo's probe recipe and the global "Scripted Claude runs" rule (FreekMencke/claude-kb#103). MCP-012, ORCH-014.
+3. **Done 2026-10-14: `analytics-mcp` moved from user scope to local scope in osrs-tracker-web**, its only user (FreekMencke/claude-kb#104), because each desktop session starts its own copy of every user-scope stdio server (SESS-013). MCP-001, MCP-008.
 4. **Keep the Playwright plugin; pin `browser-checker`'s server** (low impact, low effort). Decided by 2026-10-14: osrs-tracker-web keeps the plugin as the session's headed browser, for sites that need a sign-in and for mocking API responses, and `browser-checker` runs its own headless, isolated server for osrs-tracker page checks (the repo's skill, read 2026-10-14). Disabling the plugin would drop the headed uses. The agent's `@playwright/mcp` was pinned on 2026-10-14 ([osrs-tracker/osrs-tracker-web#329](https://github.com/osrs-tracker/osrs-tracker-web/issues/329)). The plugin's own `@latest` is in the marketplace's `.mcp.json`, not ours to pin. REPO-021, MCP-019.
 5. **Re-read a server's tool list after upgrading it** (low impact, trivial effort). Claude Code doesn't re-approve changed tools (MCP-014). Do this for `kubernetes-mcp-server` and `analytics-mcp` when their pins move. MCP-019.
 6. **Don't add `deniedMcpServers` or `allowedMcpServers` for a solo setup beyond item 1**. Without a managed source they are guards, not boundaries, and a blocked server disappears silently. MCP-016, MCP-003.
 7. **Done 2026-10-13: route MCP questions to this file** ([FreekMencke/claude-skills#40](https://github.com/FreekMencke/claude-skills/pull/40)). SKILL-015.
-8. **Done 2026-10-15: this knowledge base as a remote MCP server on the home cluster**, connected as the claude.ai connector "Claude KB" and at user scope (roadmap [FreekMencke/claude-kb#109](https://github.com/FreekMencke/claude-kb/issues/109)). Open and read-only since the repo went public (FreekMencke/claude-kb#142); TypeScript with hand-written JSON-RPC since 2026-10-16 (FreekMencke/claude-kb#146). MCP-029 to MCP-041.
+8. **Done 2026-10-15: this knowledge base as a remote MCP server on the home cluster**, as the claude.ai connector "Claude KB" and at user scope (roadmap FreekMencke/claude-kb#109). Open and read-only since FreekMencke/claude-kb#142; TypeScript since FreekMencke/claude-kb#146. MCP-029 to MCP-041.
 9. **Done 2026-10-15: allow the claude-kb tools by rule** in `~/.claude/settings.json` (`mcp__claude-kb__*`, `mcp__claude_ai_Claude_KB__*`): auto mode denied `kb_get` on the desktop WSL session's connector. MCP-039, MCP-004.
 10. **Done by 2026-10-17: the `kb-lookup` plugin on claude.ai**, from this repo's marketplace with Sync automatically (FreekMencke/claude-kb#116), so chat reaches for the KB without being named. MCP-040, SKILL-062, SKILL-059.
 

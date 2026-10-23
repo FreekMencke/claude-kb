@@ -300,7 +300,7 @@ It also asks that design docs "serve as archives of these decisions, not as half
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-10-23
 - Sources: [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2), [lychee](https://github.com/lycheeverse/lychee), [markdown-link-check](https://github.com/tcort/markdown-link-check), [Vale](https://github.com/vale-cli/vale), [Prettier options: proseWrap](https://prettier.io/docs/options#prose-wrap)
 - Related: DOC-013, DOC-015, DOC-020
 
@@ -314,7 +314,7 @@ None of these checks whether a doc is true, only its form and links.
 | markdown-link-check | Broken links | Its common GitHub Action wrapper is archived; prefer lychee |
 | Vale | Prose style and terminology | 6,235 stars; config overhead too high for small repos |
 
-**Ours.** osrs-tracker-web, osrs-tracker-aws, osrs-tracker-api and osrs-tracker-packages (since 2026-10-18) run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same four run `lychee --offline --include-fragments --hidden` on every push. fremen-cluster (home-cluster until 2026-10-21) has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files.
+**Ours.** osrs-tracker-web, osrs-tracker-aws, osrs-tracker-api and osrs-tracker-packages (since 2026-10-18) run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same four run `lychee --offline --include-fragments --hidden` on every push. fremen-cluster (home-cluster until 2026-10-21) has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files. `--hidden` ("Do not skip hidden directories and files") should therefore reach `.claude/` and `.github/` (inferred from that text), and `--exclude-path` keeps out `node_modules`; our CI found a glob input still scanning `.gitignore`d paths, so exclude by hand.
 
 ## [DOC-015] Agents that detect or fix doc drift
 - Type: pattern
@@ -546,11 +546,11 @@ By that rule, api's and aws's rollback steps are in the wrong place. Today only 
 Ranked by impact against effort.
 
 1. **Done 2026-10-13: each repo states its changelog rule once, and its reviewer pair points to it** (osrs-tracker/osrs-tracker-api#150, osrs-tracker/osrs-tracker-web#264, osrs-tracker/osrs-tracker-aws#94, FreekMencke/home-cluster#6). DOC-019, DOC-020.
-2. **Done 2026-10-13: the changelog brief aligned with Keep a Changelog 2.0 across the four Claude-maintained repos**: the reason in the text, a **Breaking:** marker in api and aws, and a `# Changelog` preamble in api, aws and home-cluster; "every change" and "Behind the scenes" kept on purpose (the issues in item 1). DOC-001, DOC-002, DOC-003, DOC-018.
+2. **Done 2026-10-13: the changelog brief aligned with Keep a Changelog 2.0 across the four Claude-maintained repos**, with "every change" and "Behind the scenes" kept on purpose (the issues in item 1). DOC-001, DOC-002, DOC-003, DOC-018.
 3. **Decided and done 2026-10-13: doc-only changes get no entry, and Dependabot bumps get one only when they change behaviour**; home-cluster's push hook exempts doc-only commits (the issues in item 1). DOC-002, DOC-018.
-4. **Done 2026-10-13: ISO `YYYY-MM-DD` changelog headings in all four repos on the same day**, one aws package heading format (`## X.Y.Z - YYYY-MM-DD`), and every rule that names the format (osrs-tracker/osrs-tracker-api#153, osrs-tracker/osrs-tracker-web#265, osrs-tracker/osrs-tracker-aws#95, FreekMencke/home-cluster#7). DOC-004.
+4. **Done 2026-10-13: ISO `YYYY-MM-DD` changelog headings in all four repos on the same day**, and one aws package heading format (osrs-tracker/osrs-tracker-api#153, osrs-tracker/osrs-tracker-web#265, osrs-tracker/osrs-tracker-aws#95, FreekMencke/home-cluster#7). DOC-004.
    Update 2026-10-18: the package changelogs moved to osrs-tracker-packages with that heading format.
-5. **Done 2026-10-13: `lychee --offline --include-fragments --hidden` with `fail: true` in CI for api, web and aws, and api's `prettier:ci` over Markdown** (the issues in item 4). `--hidden` reaches `.claude/` and `.github/`; a glob input doesn't skip `.gitignore`d paths, so exclude `node_modules` by hand. DOC-014.
+5. **Done 2026-10-13: `lychee --offline --include-fragments --hidden` with `fail: true` in CI for api, web and aws, and api's `prettier:ci` over Markdown** (the issues in item 4). DOC-014.
    Update 2026-10-18: osrs-tracker-packages runs the same lychee and Prettier checks.
 6. **Replace freek-mencke-web's template README** (low impact, trivial effort). It's the only stale README found. DOC-017. Dropped 2026-10-13: that app is due for an overhaul.
 7. **Give long-lived plan docs a due-date issue** (low impact, trivial effort). Start with the cluster repo's Kubernetes 1.37 plan, due when cert-manager 1.22 ships. DOC-022. Opened 2026-10-13 as FreekMencke/fremen-cluster#8 (then home-cluster; check 2026-11-30). It also adds the convention to that repo's CLAUDE.md.
