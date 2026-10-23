@@ -42,7 +42,7 @@ const TAGS_SHARED = 0.6;
 // Sections where IDs on one line count as already reviewed together.
 const REVIEWED_SECTIONS: Record<string, string[]> = {
   'INDEX.md': ['Conflicts'],
-  'OVERLAPS.md': ['Overlaps kept on purpose', 'Merges', 'Similar but distinct'],
+  'OVERLAPS.md': ['Resolved conflicts', 'Overlaps kept on purpose', 'Merges', 'Similar but distinct'],
 };
 // Files that name entry IDs, checked for IDs that don't exist.
 const ID_FILES = ['INDEX.md', 'OVERLAPS.md', 'CHANGELOG.md'];

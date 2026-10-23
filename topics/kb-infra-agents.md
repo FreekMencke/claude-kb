@@ -474,7 +474,7 @@ Community SRE agents are broader. In `wshobson/agents` (40,471 stars), `devops-t
 
 **Claude Code's AWS settings are for Bedrock, not for tools.** `awsAuthRefresh` (for example `aws sso login`) runs when model credentials expire. `awsCredentialExport` returns credentials that it "scopes… to its own Bedrock client, so the shell commands Claude runs still see your ambient credentials". Neither changes what Bash or MCP servers can use.
 
-**A conflict between two pages.** The Bedrock page suggests settings files for "environment variables like `AWS_PROFILE` that you don't want to leak to other processes". The settings reference says `env` values "reach every subprocess Claude Code starts". The second describes the mechanism: setting `AWS_PROFILE` in `env` is a way to give Bash a default profile, not to hide one.
+**A conflict between two pages.** The Bedrock page suggests settings files for "environment variables like `AWS_PROFILE` that you don't want to leak to other processes". The settings reference says `env` values "reach every subprocess Claude Code starts". The second describes the mechanism. Our reading: setting `AWS_PROFILE` in `env` is a way to give Bash a default profile, not to hide one.
 
 ## [INFRA-021] How credentials leak into transcripts, environments and telemetry
 - Type: fact

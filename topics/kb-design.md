@@ -182,7 +182,7 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 
 **Fonts in artifacts:** Google Fonts is "the one external font source an artifact page can load from"; Claude inlines any other typeface as a `@font-face` data URI with a fallback stack. External images are blocked by the CSP. A private brand font in an artifact therefore costs data-URI tokens on every publish. Google's served files also lack most OpenType features (`case`, `zero`, stylistic sets), so an artifact that needs them inlines the font too (DESIGN-035).
 
-**Note:** the docs' sample block uses "Inter for body", which Anthropic's own design guidance lists as a generic default (INDEX.md Conflicts). It is a format example; choose your own type.
+**Note:** the docs' sample block uses "Inter for body", which Anthropic's own design guidance lists as a generic default (OVERLAPS.md, Resolved conflicts). It is a format example; choose your own type.
 
 ## [DESIGN-007] Verify a design by measuring, not only by looking
 - Type: pattern
@@ -700,7 +700,7 @@ Optical sizes are versions of a face drawn for a size. Small ones "have less str
 
 **When they matter:** when one family runs from captions to display sizes: "if we're creating a brand that will require text to be set very small and also very large, optical sizes will undoubtedly be useful." The axis costs bytes: "the font file-size will typically double… it can range between 1.2× and 2.6×". The axis range caps the effect: `opsz` runs 14–32 in Inter, 7–72 in Literata, 9–144 in Fraunces (google/fonts files).
 
-**What browsers do:** nothing to write. `font-optical-sizing: auto` is the initial value, Baseline widely available since 2022-09-24 (web-features 3.43.0). The units differ: OpenType values "can be interpreted as text size, in typographic points"; CSS Fonts 4 expects a value "close to the used value for 'font-size'", clamped to the font's range, and Google's glossary says browsers "match it to the CSS `px` unit". So 16 px text gets `opsz` 16, not 12 (INDEX.md Conflicts). To choose another value, such as the sturdier body size Google suggests for TV screens, `font-variation-settings: 'opsz' N` is the only route (FONT-023's override caveat applies).
+**What browsers do:** nothing to write. `font-optical-sizing: auto` is the initial value, Baseline widely available since 2022-09-24 (web-features 3.43.0). The units differ: OpenType values "can be interpreted as text size, in typographic points"; CSS Fonts 4 expects a value "close to the used value for 'font-size'", clamped to the font's range, and Google's glossary says browsers "match it to the CSS `px` unit". So 16 px text gets `opsz` 16, not 12 (OVERLAPS.md, Resolved conflicts). To choose another value, such as the sturdier body size Google suggests for TV screens, `font-variation-settings: 'opsz' N` is the only route (FONT-023's override caveat applies).
 
 Google Fonts serves the axis only when the URL names it (DESIGN-035).
 

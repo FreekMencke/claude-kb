@@ -330,7 +330,7 @@ All of these are plain files, so they work in every surface that clones the repo
   - creating the *first* agent file in a new `agents` directory for that scope;
   - editing agents in `--add-dir` directories (loaded, not watched);
   - starting with `--disable-slash-commands`.
-- **Silently skipped files.** A file whose frontmatter doesn't parse (for example `: ` inside a multi-line plain `description`, osrs-tracker/osrs-tracker-web#222), or that lacks `name` or `description`, is skipped without a message in the session; the reason goes to the debug log. Check with `claude plugin validate .claude/agents` (v2.1.233+).
+- **Silently skipped files.** A file whose frontmatter doesn't parse (for example `: ` inside a multi-line plain `description`, osrs-tracker/osrs-tracker-web#222), or that lacks `name` or `description`, is skipped without a message in the session; the reason goes to the debug log. Check with `claude plugin validate .claude/agents` (v2.1.233+), but it misses the `: ` case: our v2.1.296 run passed it (SKILL-037), so read the debug log.
 - **Desktop worktree sessions** read project config from the main checkout, so an agent edited on a branch isn't live there (SKILL-053).
 
 **`/agents` changed.** "Running `/agents` prints a reminder to ask Claude or edit `.claude/agents/` and `~/.claude/agents/` directly." The interactive wizard existed only up to v2.1.197. Older posts that describe the wizard are stale. The documented path is "Ask Claude to create the subagent… Review the file".

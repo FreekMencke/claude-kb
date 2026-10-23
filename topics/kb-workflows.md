@@ -306,7 +306,7 @@ Behaviour:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-10-23
 - Sources: [Skills: run and verify your app](https://code.claude.com/docs/en/skills), [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Claude Code CHANGELOG 2.1.215, 2.1.286](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-011, FLOW-014, SKILL-021, TOK-108, TOK-109
 
@@ -317,7 +317,7 @@ Three bundled skills check a change against the running app, not just tests:
 
 Claude doesn't run `/verify` or `/code-review` on its own (v2.1.215); they are user-invoked and reach a `/loop` fire as plain text.
 
-**Commit hook-in (v2.1.286+).** "When a session starts with a skill named `verify` or `simplify` in place, Claude Code's commit instructions tell Claude to run it right before each commit, except for changes to docs or tests." It counts only enterprise, personal, project or added-directory skills (not plugin or claude.ai ones), and not when the skill has `disable-model-invocation: true` or `includeGitInstructions` is off.
+**Commit hook-in (v2.1.286+).** "When a session starts with a skill named `verify` or `simplify` in place, Claude Code's commit instructions tell Claude to run it right before each commit, except for changes to docs or tests." It counts only enterprise, personal, project or added-directory skills (not plugin or claude.ai ones), and not when the skill has `disable-model-invocation: true` or `includeGitInstructions` is off. The 2.1.286 CHANGELOG line names only `verify` ("when your project or user skills include one named `verify`"); the skills page, the newer text, names `verify` or `simplify`, so trust the page. Both skip docs-only and tests-only changes.
 
 So a repo's own `.claude/skills/verify/SKILL.md` that runs its verify command turns "verify before committing" from a CLAUDE.md line into built-in commit guidance.
 
