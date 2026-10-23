@@ -329,6 +329,25 @@ describe('a fixture with one valid topic file', () => {
     expect(check(root).output).not.toContain('words');
   });
 
+  test('a Done recommendation over 300 characters warns, without failing', () => {
+    const root = tempDir();
+    mkdirSync(join(root, 'topics'));
+    const topic = goodTopic('GOO', [['general']]);
+    const done = (n: number, chars: number) => {
+      const head = `${n}. Done 2026-10-23: `;
+      return head + 'x'.repeat(chars - head.length);
+    };
+    const recs = `1. None.\n${done(2, 301)}\n${done(3, 300)}\n4. **Done 2026-10-23:** ${'y'.repeat(300)}`;
+    writeFileSync(join(root, 'topics', 'kb-good.md'), topic.replace('1. None.', recs), 'utf8');
+    check(root, true);
+    const { status, output } = check(root);
+    expect(output).toContain('Long Done recommendations (2, warnings only)');
+    expect(output).toContain('kb-good.md recommendation 2: 301 characters');
+    expect(output).not.toContain('recommendation 3:');
+    expect(output).toContain('kb-good.md recommendation 4:');
+    expect(status).toBe(0);
+  });
+
   test("a topic file missing from README.md's Layout table fails, a wrong prefix too", () => {
     const missing = run(
       ['general'],

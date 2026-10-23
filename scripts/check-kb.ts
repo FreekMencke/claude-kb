@@ -5,8 +5,8 @@
  * Usage: node scripts/check-kb.ts [--write]
  * --write regenerates ENTRIES.md from the topic files' index tables and fills the entry counts in INDEX.md's file table
  * first. Without it, a stale ENTRIES.md or a wrong count is a problem.
- * Exits with status 1 when it finds a problem, so it can run in CI. Possible duplicates across files are printed as
- * warnings and never fail the run.
+ * Exits with status 1 when it finds a problem, so it can run in CI. Possible duplicates across files and long Done
+ * recommendations are printed as warnings and never fail the run.
  *
  * Node built-ins only (Node 22.18 or later runs the .ts directly): research sessions run it without an `npm install`.
  */
@@ -39,6 +39,9 @@ const SYNTHESIS_SOURCE = /synthesis of/i;
 // Possible duplicates across files: titles this similar (difflib ratio), or this share of tags (Jaccard, at least 2).
 const TITLE_SIMILAR = 0.72;
 const TAGS_SHARED = 0.6;
+// A done recommendation is cut to one line (CLAUDE.md); decisions keep their reason, so longer ones only warn.
+const DONE_CHARS = 300;
+const DONE_ITEM = /^\d+\. (?:\*\*)?Done\b.*$/gm;
 // Sections where IDs on one line count as already reviewed together.
 const REVIEWED_SECTIONS: Record<string, string[]> = {
   'INDEX.md': ['Conflicts'],
@@ -165,6 +168,18 @@ function possibleDuplicates(texts: Texts, reviewed: Set<string>): string[] {
       if ((shared >= 2 && shared / union >= TAGS_SHARED) || similar(a, b)) {
         found.push(`${a} '${titleA}' and ${b} '${titleB}'`);
       }
+    }
+  }
+  return found;
+}
+
+/** Warnings, not failures: Done recommendations longer than DONE_CHARS, as `file rec N: length`. */
+function longDoneItems(texts: Texts): string[] {
+  const found: string[] = [];
+  for (const [name, t] of texts) {
+    for (const [line] of (section(t, 'Recommendations for our setup') ?? '').matchAll(DONE_ITEM)) {
+      if (line.length <= DONE_CHARS) continue;
+      found.push(`${name} recommendation ${line.split('.')[0]}: ${line.length} characters`);
     }
   }
   return found;
@@ -353,6 +368,15 @@ export function main(root: string, write = false): number {
       );
       for (const w of warnings) console.log(`  - ${w}`);
     }
+  }
+
+  const longDone = longDoneItems(texts);
+  if (longDone.length) {
+    console.log(
+      `\nLong Done recommendations (${longDone.length}, warnings only). Cut each to one line, unless it's a decision` +
+        ' that keeps its reason:',
+    );
+    for (const w of longDone) console.log(`  - ${w}`);
   }
 
   const readmeFile = join(root, 'README.md');
