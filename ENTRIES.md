@@ -152,6 +152,11 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-033 | Pairing typefaces: one family first, then a second face with a job | pattern | typography, font-pairing, superfamily, font-matrix |
 | DESIGN-034 | Numerals and `case` in a UI: tabular for data, `case` for capitals | recommendation | typography, numerals, tabular-nums, font-variant-numeric, opentype-features |
 | DESIGN-035 | The Google Fonts API serves fewer features and axes than the family has | fact | google-fonts, opentype-features, opsz, self-hosting |
+| DESIGN-036 | The DESIGN.md format: eight sections, version "alpha", and its linter | fact | design-md, spec, linter, tokens, product-md |
+| DESIGN-037 | Test: DESIGN.md, CLAUDE.md or a theme file, does Claude Code use it? | comparison | design-md, claude-md, imports, experiment, tokens |
+| DESIGN-038 | Brand DESIGN.md collections: what's in them and how they were made | comparison | design-md, awesome-design-md, brand-systems, collections |
+| DESIGN-039 | Building on a named brand's design system: trademark, trade dress and fonts | anti-pattern | trademark, trade-dress, brand-systems, fonts, licensing |
+| DESIGN-040 | A copied DESIGN.md is instruction text: read it like a skill | anti-pattern | prompt-injection, supply-chain, design-md, typeui |
 
 ## Docker images for Node apps (`topics/kb-docker-node.md`, DOCKER)
 

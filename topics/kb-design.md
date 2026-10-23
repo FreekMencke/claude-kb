@@ -11,6 +11,7 @@ Research basis:
 - `/design-sync`'s framework support was read from the installed v2.1.296 CLI bundle and the session's `DesignSync` tool description, because the docs say only "React components".
 - A 2026-10-16 deep-research report from a claude.ai chat supplied leads only; it isn't cited.
 - A third round on 2026-10-18 (DESIGN-032 to DESIGN-035, FreekMencke/claude-kb#191): typography choices. The lead read Google Fonts Knowledge as raw Markdown from its source in google/fonts (`cc-by-sa/knowledge/`, CC BY-SA 4.0; the site itself renders in JavaScript), MDN's `font-variant-numeric` and `font-optical-sizing` pages from mdn/content, the OpenType feature and `opsz` registry pages, CSS Fonts 4 from csswg-drafts, Butterick's pages and the web-features 3.43.0 data, and tested Google Fonts files with fontTools and headless Chrome. No readers, no web searches.
+- A fourth round on 2026-10-23 (DESIGN-036 to DESIGN-040, FreekMencke/claude-kb#253): DESIGN.md files. The lead read Google's DESIGN.md spec, README and PHILOSOPHY at a pinned commit, the `@google/design.md` 0.4.0 and `typeui.sh` 0.7.1 tarballs (`npm pack`, not run except the official linter), four collections' READMEs and all 84 of VoltAgent's brand files, Impeccable's `init` and `document` references, Claude Code's memory, artifacts and security pages (`.md`), the USPTO's likelihood-of-confusion page, 15 U.S.C. § 1125 and two Supreme Court opinions (HTML stripped of tags). It ran a 26-run `claude -p` test (DESIGN-037, DESIGN-038). A Sonnet 5.5 subagent tried to refute the claims the recommendations rest on, and a visual designer and a supply-chain security reviewer (Sonnet 5.5) reviewed the drafts.
 
 ## Quick answers
 
@@ -18,12 +19,12 @@ Research basis:
 |---|---|---|
 | How do I see and iterate on a design in Claude Code? | Ask for variants side by side in one artifact ("four distinctly different layouts… as a grid"), tune one with sliders, or run `/design <brief>` for a canvas of editable artboards. Then build the pick in code and check it in the desktop Browser pane or with Playwright. | DESIGN-001 |
 | Why do Claude's pages look generic? | "Distributional convergence": without direction it samples safe defaults. The 2025 tell was Inter and purple gradients; the 2026-09 frontend-design skill names cream-plus-serif-plus-terracotta, near-black with one acid accent, broadsheet hairlines, the SaaS-card kit and template chrome. | DESIGN-003 |
-| How do I prompt for distinctive design? | Name the subject, audience and the page's one job; give a concrete spec (hex palette, typefaces, radius, motion timing) or ask for 4 directions first; ban the specific patterns you got last time, not "the AI look", and expect a new default; use real copy. | DESIGN-004, DESIGN-027 |
-| Which prompting strategy gave the most varied pages in a test? | One small choice at a time, not whole designs: audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then 5 combined variants; on two subjects the user called 4 of 5 variants good. Earlier tests on the same bakery brief (Sonnet 5.5): the bare brief gave five cream-and-Fraunces pages, a banned list one new look, text directions repeated two options every run, and a one-page visual chooser varied colour and type but not page structure. | DESIGN-027, DESIGN-029, DESIGN-030 |
+| How do I prompt for distinctive design, and which strategy varied most in tests? | Name the subject, audience and the page's one job; give a concrete spec (hex palette, typefaces, radius, motion timing) or ask for 4 directions first; ban the specific patterns you got last time, not "the AI look", and expect a new default; use real copy. Most varied in tests: one small choice at a time, not whole designs (audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then 5 combined variants); on two subjects the user called 4 of 5 variants good. Earlier tests on the same bakery brief (Sonnet 5.5): the bare brief gave five cream-and-Fraunces pages, a banned list one new look, text directions repeated two options every run, and a one-page visual chooser varied colour and type but not page structure. | DESIGN-004, DESIGN-027, DESIGN-029, DESIGN-030 |
 | How do I get an original, consistent colour scheme? | Pick the brand hue from the subject, then fill named roles (Radix's 12 steps or Material's roles), generate the ramp in OKLCH with a script library and check WCAG 2 contrast in light and dark. | DESIGN-015, DESIGN-016, DESIGN-018, DESIGN-019 |
 | Why do Tailwind and shadcn sites look alike, and how do I theme them away? | Stock fonts, radii, shadows and an achromatic shadcn theme. Clear namespaces with `@theme { --color-*: initial; }`, set shadcn's CSS variables or a `shadcn create` style, from the repo's tokens. | DESIGN-023 |
 | How do I get past hero, three cards and a CTA? | Name a layout (bento, magazine, split screen, zigzag, broken grid…), default to no cards, one job per section, and carry the ASCII wireframe into `grid-template-areas`. | DESIGN-022 |
-| Where do design tokens go, and how do I keep a multi-page site consistent? | Where Claude reads them: CLAUDE.md, a theme file or a repo skill; your prompt beats them, and they beat Claude's defaults. Give every session the role tokens, a component inventory and page templates, and check every page for off-token values, visual diffs and raw hexes. Artifacts load fonts only from Google Fonts; other faces are inlined. | DESIGN-006, DESIGN-024, DESIGN-021 |
+| Where do design tokens go, does a DESIGN.md work, and how do I keep a multi-page site consistent? | Where Claude reads them: CLAUDE.md, a theme file or a repo skill; your prompt beats them, and they beat Claude's defaults. Claude Code doesn't load a DESIGN.md (Google's "alpha" spec) by itself: in a 26-run test one in the root was read in 1 of 9 runs; import it with `@DESIGN.md` or name it in the prompt, and any format read was applied in full. Give every session the role tokens, a component inventory and page templates, and check every page for off-token values, visual diffs and raw hexes. Artifacts load fonts only from Google Fonts; other faces are inlined. | DESIGN-006, DESIGN-037, DESIGN-036, DESIGN-024, DESIGN-021 |
+| Can I start from a brand's DESIGN.md from awesome-design-md or a similar list? | To study, yes; to ship, no. The files are scraped from public sites (84 in VoltAgent's list) and name proprietary fonts; MIT covers the collection's text, not the brand, and a look that causes confusion is actionable trade dress in the US. A copied file is instruction text: read it, strip commands and URLs, pin it. | DESIGN-038, DESIGN-039, DESIGN-040 |
 | Which type details should a UI specify: pairing, optical sizes, numerals? | One family first; add a second face only for a job the first can't do, from the same form model or designer. `tabular-nums` for data and changing values, `"case"` on all-caps labels, `slashed-zero` for codes; check the font has the feature. Optical sizes matter when one family runs from captions to display sizes; browsers apply them by CSS px without any CSS. A `fonts.googleapis.com` link drops `case`, `zero`, `onum` and stylistic sets, and `opsz` unless the URL names it. | DESIGN-033, DESIGN-034, DESIGN-032, DESIGN-035 |
 | frontend-design or `artifact-design`? | frontend-design is the plugin skill for UI in code and is identical in all three Anthropic repos (last changed 2026-09-01 to 09-03). `artifact-design` is bundled with the Artifact tool and governs published pages. Community skills (Impeccable, Taste Skill) are unofficial: borrow their ideas rather than install them. | DESIGN-005, DESIGN-012 |
 | How do I get a design system out of existing code? | React: `/design-sync`. Anything else, Angular included (the v2.1.296 sync adapters read `.tsx`/`.jsx` and React Storybook only): have Claude read the theme files, CSS custom properties and components into one token list per role. | DESIGN-002, DESIGN-010 |
@@ -71,6 +72,11 @@ Research basis:
 | DESIGN-033 | Pairing typefaces: one family first, then a second face with a job | pattern | typography, font-pairing, superfamily, font-matrix |
 | DESIGN-034 | Numerals and `case` in a UI: tabular for data, `case` for capitals | recommendation | typography, numerals, tabular-nums, font-variant-numeric, opentype-features |
 | DESIGN-035 | The Google Fonts API serves fewer features and axes than the family has | fact | google-fonts, opentype-features, opsz, self-hosting |
+| DESIGN-036 | The DESIGN.md format: eight sections, version "alpha", and its linter | fact | design-md, spec, linter, tokens, product-md |
+| DESIGN-037 | Test: DESIGN.md, CLAUDE.md or a theme file, does Claude Code use it? | comparison | design-md, claude-md, imports, experiment, tokens |
+| DESIGN-038 | Brand DESIGN.md collections: what's in them and how they were made | comparison | design-md, awesome-design-md, brand-systems, collections |
+| DESIGN-039 | Building on a named brand's design system: trademark, trade dress and fonts | anti-pattern | trademark, trade-dress, brand-systems, fonts, licensing |
+| DESIGN-040 | A copied DESIGN.md is instruction text: read it like a skill | anti-pattern | prompt-injection, supply-chain, design-md, typeui |
 
 ## [DESIGN-001] Visualising and iterating on a design in Claude Code
 - Type: pattern
@@ -166,9 +172,9 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Confidence: official-docs
 - Last verified: 2026-10-18
 - Sources: [Artifacts: improve the visual design, page constraints](https://code.claude.com/docs/en/artifacts), [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design)
-- Related: DESIGN-002, DESIGN-012, DESIGN-034, DESIGN-035, SURF-016, MEM, REPO-044
+- Related: DESIGN-002, DESIGN-012, DESIGN-034, DESIGN-035, DESIGN-036, DESIGN-037, SURF-016, MEM, REPO-044
 
-**Where.** Anthropic: record tokens "where Claude can find them, such as the project's CLAUDE.md or a theme file in your repository". Any clear list works: "The heading and format above are an example; any clear list of colors, fonts, and spacing works." For a repo with agents, a repo skill that reviewers preload works too (REPO-044). A `DESIGN.md` is a community convention, not an Anthropic one (DESIGN-012).
+**Where.** Anthropic: record tokens "where Claude can find them, such as the project's CLAUDE.md or a theme file in your repository". Any clear list works: "The heading and format above are an example; any clear list of colors, fonts, and spacing works." For a repo with agents, a repo skill that reviewers preload works too (REPO-044). A `DESIGN.md` is a community convention, not an Anthropic one (DESIGN-036), and Claude Code reads it only when it's imported or named (DESIGN-037).
 
 **Precedence:** "Claude treats your design system as higher precedence than its own choices, and your prompt as higher precedence than both." For `/design` canvases and artifact templates, a Design System artifact does the same job (DESIGN-002).
 
@@ -274,7 +280,7 @@ Validate the result by building one or two test pages from the tokens alone and 
 - Confidence: single-source
 - Last verified: 2026-10-16
 - Sources: [pbakaus/impeccable](https://github.com/pbakaus/impeccable), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill), [google-labs-code/design.md](https://github.com/google-labs-code/design.md), [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md), [Manavarya09/design-extract](https://github.com/Manavarya09/design-extract), [OneRedOak/claude-code-workflows design review](https://github.com/OneRedOak/claude-code-workflows), [wmedia.es: verify with Playwright MCP](https://wmedia.es/en/tips/claude-code-playwright-mcp-verify-own-work), [wmedia.es: /design-sync](https://wmedia.es/en/tips/claude-code-design-sync-your-components)
-- Related: DESIGN-005, DESIGN-006, DESIGN-007, DESIGN-010, SKILL
+- Related: DESIGN-005, DESIGN-006, DESIGN-007, DESIGN-010, DESIGN-036, DESIGN-038, SKILL
 
 None of these is Anthropic's. Read on 2026-10-16, not installed; stars from the GitHub API that day.
 
@@ -282,7 +288,7 @@ None of these is Anthropic's. Read on 2026-10-16, not installed; stars from the 
 |---|---|---|
 | Impeccable (81,936 stars, Apache-2.0) | "1 skill, 24 commands, live browser iteration, and 59 deterministic detector rules"; "Impeccable started from" Anthropic's frontend-design | Ships hooks on SessionStart, PostToolUse and Stop, downloads a binary, and calls `impeccable.style` on every roll, with anonymous telemetry |
 | Taste Skill (97,949, MIT) | A family of skills (`design-taste-frontend` and variants) with lint and browser-measurement scripts | "a few hundred thousand tokens" a build; scripts fetch images from public archives and run headless Chrome |
-| DESIGN.md (Google, 28,394, Apache-2.0) | A spec: YAML tokens plus eight fixed sections, with a linter (`npx @google/design.md lint`) | Format version "alpha". VoltAgent's collection (121,750) of DESIGN.md files for well-known sites uses nine sections |
+| DESIGN.md (Google, 28,394, Apache-2.0) | A spec: YAML tokens plus eight fixed sections, with a linter (`npx @google/design.md lint`) | Format version "alpha" (DESIGN-036). Brand collections such as VoltAgent's: DESIGN-038 |
 | designlang (4,246, MIT) | Reads computed styles of up to 5,000 elements from a URL and emits tokens, Tailwind config and DESIGN.md | `--smart` sends data to an external model endpoint |
 | Design-review agents | OneRedOak's `design-review-agent.md` (Sonnet, Playwright, a 7-phase checklist, also given Edit and Write) | A reviewer shouldn't need write tools |
 
@@ -777,6 +783,106 @@ Tested 2026-10-18, fontTools 4.46.0, the `latin` files the API served to a Chrom
 
 Both served sets fall within `pyftsubset`'s defaults plus `tnum` and `pnum` (FONT-019). Inter's `latin` file was 48,256 bytes with `wght` only and 72,920 with `opsz,wght`.
 
+## [DESIGN-036] The DESIGN.md format: eight sections, version "alpha", and its linter
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [google-labs-code/design.md README](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/README.md), [DESIGN.md spec](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/docs/spec.md), [PHILOSOPHY.md](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/PHILOSOPHY.md), [@google/design.md on npm](https://www.npmjs.com/package/@google/design.md), [Impeccable `init` and `document`](https://github.com/pbakaus/impeccable/tree/5cb95eea9c96479f57afe0732a45470d30183326/.agent/skills/impeccable/reference)
+- Related: DESIGN-006, DESIGN-012, DESIGN-021, DESIGN-037
+
+Google Labs' spec (Apache-2.0, read at commit `6e5da53`, 2026-10-16): "A format specification for describing a visual identity to coding agents." YAML tokens (`colors`, `typography`, `rounded`, `spacing`, `components`, with `{colors.primary}` references) in front matter or fenced blocks, then `##` sections that "can be omitted, but those present must appear in this order": Overview (alias Brand & Style), Colors, Typography, Layout (Layout & Spacing), Elevation & Depth (Elevation), Shapes, Components, Do's and Don'ts. "The DESIGN.md format is at version `alpha`… Expect changes." PHILOSOPHY.md: "The token values serve as context and are not rendering instructions." It holds colour, type, shape and spacing; layout only as prose, and no page structure or copy, so it fixes a look, not originality (DESIGN-004).
+
+**Linter** `@google/design.md` 0.4.0, the only dist-tag, published 2026-07-27 through Google's publishing proxy, no provenance attestation (`npm view @google/design.md dist-tags 'time[0.4.0]' gitHead`). `spec --rules-only` lists eleven rules: `broken-ref` (error), `missing-primary`, `contrast-ratio` (component pairs "below WCAG AA minimum (4.5:1)"), `orphaned-tokens`, `missing-typography`, `section-order`, `unknown-key`, `token-like-ignored` (warnings), `token-summary`, `missing-sections`, `omitted-rules` (info). Its bundled README still says "seven rules". Tarball read 2026-10-23: no install scripts, no `fetch`, `http`, `net` or `child_process`. Pin it (`npm i -D @google/design.md@0.4.0`); bare `npx` runs whatever `latest` is.
+
+Tested 2026-10-23, 0.4.0, Node 24.21.0: our fixture linted clean; VoltAgent's 84 brand files gave 0 errors, and 49 had a `contrast-ratio` warning.
+
+**PRODUCT.md beside it:** Impeccable's `init` "captures durable product truth in PRODUCT.md" (users, purpose, positioning, brand commitments); "DESIGN.md is strictly visual."
+
+## [DESIGN-037] Test: DESIGN.md, CLAUDE.md or a theme file, does Claude Code use it?
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-23
+- Sources: [Memory: CLAUDE.md, AGENTS.md and imports](https://code.claude.com/docs/en/memory), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts), local test
+- Related: DESIGN-006, DESIGN-027, DESIGN-028, DESIGN-036, MEM-005
+
+**Docs:** Claude Code loads CLAUDE.md (or `AGENTS.md`) at launch; `@path` imports "are expanded and loaded into context". No Claude Code page, `llms.txt` or DESIGN-006's help articles mention `DESIGN.md` (grepped 2026-10-23).
+
+**Test** (2026-10-23, v2.1.296, Sonnet 5.5, `claude -p` from desktop WSL, 26 runs, $1.72). One 874-byte token set (five hexes, two fonts, 2px radius, no shadows) in one place; one prompt, "Build a one-page website for Spoke & Chain, a bicycle repair shop in Utrecht…"; `--setting-sources project --disable-slash-commands`, tools Read, Write, Edit, Glob, Grep.
+
+| Where the tokens were | Applied |
+|---|---|
+| CLAUDE.md list | 3/3 |
+| `DESIGN.md` in the root | 1/6; with Bash also allowed, 0/3 |
+| `styles/theme.css` | 0/3 |
+| Nothing | 0/1 |
+| `DESIGN.md` imported with `@DESIGN.md` | 3/3 |
+| `DESIGN.md` or `theme.css`, prompt adds "Follow this project's design system." | 6/6 |
+
+"Applied": all five hexes, both fonts, no other 6-digit hex, 2px radius, no shadow, checked by script; roles, layout and quality weren't judged. Every run that read the file applied it (no difference seen between formats, 3 runs each); the one unprompted read began with a Glob. Plain `Write`, so the artifact design skill, which "looks for an existing design system", wasn't exercised.
+
+**So:** loading decided it, not format. Import a DESIGN.md or name it in the prompt. Without tokens, all 12 runs that read none picked the same slate ink and orange accent. An import loads every session: VoltAgent's brand files have a median of 28,368 bytes, about 7,000 tokens (4 characters a token). Not repeated on Opus, in a larger repo or interactively.
+
+## [DESIGN-038] Brand DESIGN.md collections: what's in them and how they were made
+- Type: comparison
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-23
+- Sources: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md/tree/3b605329240ce735b510037cca322f1831fdd7f8), [VoltAgent/awesome-claude-design](https://github.com/VoltAgent/awesome-claude-design/tree/8f746b5bbb69cc7544fa850c126a71f754091951), [bergside/awesome-design-skills](https://github.com/bergside/awesome-design-skills/tree/f631a09b4fcc0166f2e2c1a8c81906ef680c57e8), [rohitg00/awesome-claude-design](https://github.com/rohitg00/awesome-claude-design/tree/7f60ee56b9340f8c2671a08c2d8aab4037546a64), [The Component Gallery](https://component.gallery), [Mobbin](https://mobbin.com)
+- Related: DESIGN-012, DESIGN-036, DESIGN-039, DESIGN-040, OSS-009
+
+Read 2026-10-23 at pinned commits; stars from the GitHub API (not a quality signal). All four are MIT.
+
+| Collection | Stars | Contents |
+|---|---|---|
+| VoltAgent/awesome-design-md | 123,022 | 84 brand files "extracted from real websites", tokens that "represent publicly visible CSS values"; 74 follow the spec's sections plus extras, 10 an older format. Brand READMEs point to getdesign.md (terms not read) |
+| VoltAgent/awesome-claude-design | 4,181 | README only; links 68 getdesign.md files for Claude Design |
+| bergside/awesome-design-skills | 3,311 | 67 style skills (SKILL.md plus DESIGN.md), some brand-named (`claude`, `sega`, `roku`, `tetris`), installed with `npx typeui.sh pull <slug>` (DESIGN-040) |
+| rohitg00/awesome-claude-design | 1,160 | 35 files by "aesthetic family" (8 two-brand "remixes"), homepage screenshots, a recipe to "Reverse-engineer a brand's design system" |
+
+**Contents:** hexes, a type scale, component specs and font names. 44 of VoltAgent's 84 say "proprietary"; Stripe's names Söhne, "licensed from Klim Type Foundry", with Inter as the fallback. No logo files or data URIs, but nav specs describe the wordmark.
+
+How they were made isn't documented, and the values may be approximate: of the 23 colour tokens in VoltAgent's Claude file, which describes Claude.com, 4 occur in claude.com/product/design's HTML and CSS (2026-10-23), and its accent `#cc785c` doesn't (the page uses `#D97757`).
+
+**Output:** imported for an unrelated bike shop (DESIGN-037's setup, 1 run), Stripe's file gave a page with 15 of its 19 hexes, Söhne then Inter, `ss01`, weight 300 and its gradient: the brand's look, not a starting point.
+
+**Galleries** (Mobbin, The Component Gallery, Land-book) are references to look at, not files an agent loads.
+
+## [DESIGN-039] Building on a named brand's design system: trademark, trade dress and fonts
+- Type: anti-pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-23
+- Sources: [15 U.S.C. § 1125 (Lanham Act § 43)](https://www.law.cornell.edu/uscode/text/15/1125), [Wal-Mart v. Samara Bros., 529 U.S. 205 (2000)](https://www.law.cornell.edu/supremecourt/text/529/205), [Two Pesos v. Taco Cabana, 505 U.S. 763 (1992)](https://www.law.cornell.edu/supremecourt/text/505/763), [USPTO: likelihood of confusion](https://www.uspto.gov/trademarks/search/likelihood-confusion), [VoltAgent/awesome-claude-design: licence and disclaimer](https://github.com/VoltAgent/awesome-claude-design/blob/8f746b5bbb69cc7544fa850c126a71f754091951/README.md)
+- Related: DESIGN-038, DESIGN-004, DESIGN-010, OSS-009, OSS-011
+
+Not legal advice; US sources only (EU and Benelux law not read). MIT covers a collection's text, not the brand: VoltAgent's files "are not affiliated with, endorsed by, or sponsored by the companies named", and "Users are responsible for ensuring their own downstream usage complies with the trademark, copyright, and brand-usage policies".
+
+**Why it's a risk:**
+- **The test is confusion.** Lanham Act § 43(a) covers a "word, term, name, symbol, or device" that "is likely to cause confusion… as to the affiliation, connection, or association". USPTO: marks "don't have to be identical to be confusingly similar"; a "similar commercial impression" can do it.
+- **A look can be protected.** *Two Pesos* (a restaurant's decor): inherently distinctive trade dress "is protectable under § 43(a) without a showing that it has acquired secondary meaning". *Samara*: product design needs secondary meaning, and courts "should err on the side of caution and classify ambiguous trade dress as product design". Whether a website's look counts wasn't researched.
+- **Fonts are licences:** a proprietary face named in a file isn't licensed to you (OSS-009). Screenshots of brand homepages are the brands' content, whatever the repo's licence.
+
+**Do instead:** your own tokens from your subject (DESIGN-004, DESIGN-010); a stripped brand file leaves Claude's default look (DESIGN-037). No brand name, logo, wordmark or proprietary font; change the accent hue, the typeface and the layout skeleton, and compare with the brand's homepage: would a visitor assume a connection? Building for the brand, with its permission, is the exception.
+
+## [DESIGN-040] A copied DESIGN.md is instruction text: read it like a skill
+- Type: anti-pattern
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-23
+- Sources: [Claude Code security: prompt injection](https://code.claude.com/docs/en/security), [Memory: imports](https://code.claude.com/docs/en/memory), [typeui.sh 0.7.1 on npm](https://www.npmjs.com/package/typeui.sh), [bergside/awesome-design-skills](https://github.com/bergside/awesome-design-skills/tree/f631a09b4fcc0166f2e2c1a8c81906ef680c57e8)
+- Related: DESIGN-037, DESIGN-038, SKILL-041, SKILL-068, SKILL-069, SKILL-070, SKILL-073
+
+A DESIGN.md imported from CLAUDE.md or read on request is text Claude acts on, like a skill (our inference; no Anthropic page names DESIGN.md). Anthropic defines prompt injection as "inserting malicious text" to "override or manipulate an AI assistant's instructions"; its advice for untrusted content starts "Review suggested commands before approval".
+
+**What we found** (2026-10-23, read, not run):
+- **Commands.** 34 of VoltAgent's 84 files tell the agent to run `npx @google/design.md lint`, unpinned. `ollama.md` and `opencode.ai.md` quote `curl -fsSL … | sh` and `| bash` install lines as page copy.
+- **Remote, unpinned text.** `typeui.sh` 0.7.1 (`gitHead` `de5559f`, no install scripts, no telemetry) `pull` fetches `skills/index.json`, then the path it names, from `raw.githubusercontent.com/bergside/awesome-design-skills/main`: a branch, checked only for a text content type. It writes `.agents/skills/design-system/SKILL.md` always, plus one per chosen tool (Claude: `.claude/skills/design-system/SKILL.md`), merging between `TYPEUI_SH_MANAGED` markers; `--format design` replaces `./DESIGN.md`. It writes no settings or hooks.
+- No HTML comments or data URIs in VoltAgent's files, and no hidden Unicode (format, private-use or tag characters, SKILL-073) in the 97 files read. Nothing found was malicious; permission prompts still gate the commands.
+
+**Do:** copy at a pinned commit (`raw.githubusercontent.com/<repo>/<sha>/…`), read it in full, check skill frontmatter (`allowed-tools`), pin any command it names (`npx @google/design.md@0.4.0`), rewrite agent-directed lines as plain design rules, and review later diffs like code (SKILL-068, SKILL-069).
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -790,6 +896,9 @@ Ranked by impact against effort.
 7. **Don't install Impeccable or Taste Skill user-wide** (DESIGN-012). They add hooks, a downloaded binary, telemetry or image fetching, and overlap with frontend-design. Borrow their banned lists and measuring ideas instead.
 8. **Test design-prompt or skill changes with DESIGN-028's isolation flags**, measured as in DESIGN-027, so CLAUDE.md, the frontend-design plugin and the output style don't leak into the result. The measuring scripts aren't in the repo; adding them under `evals/` would make the test re-runnable. Decided 2026-10-17 (FreekMencke/claude-kb#43): a habit, not an issue; add the scripts the next time a design test runs.
 9. **Considered, not adopted: `--color-*: initial` in osrs-tracker-web's `@theme`** (DESIGN-023). On 2026-10-16 its templates used no default palette colour classes, so clearing them would turn an off-token colour into a build error. Its repo skill already says "a value the scale lacks becomes a token", and osrs-tracker/osrs-tracker-web#337 added a computed-colour check; a change would first have to check what `@tailwindcss/forms` reads from the default palette. Not worth an issue now.
+10. **A DESIGN.md has to be loaded to count** (DESIGN-037): in any repo that adopts one, import it from CLAUDE.md (`@DESIGN.md`) or name it in the repo's design skill. Our repos keep tokens in theme CSS plus a repo skill, so nothing changes now. design-workshop's brief as a DESIGN.md and making sure its hand-over gets loaded went to FreekMencke/claude-kb#260 as a comment, not an issue (https://github.com/FreekMencke/claude-kb/issues/260#issuecomment-6359195461).
+11. **Don't start a site from a brand's DESIGN.md** (DESIGN-038, DESIGN-039): read one to see how a system is written, then pick your own values. One imported for a bike shop reproduced the brand's look. No repo change.
+12. **Treat a copied DESIGN.md or style skill as third-party instruction text** (DESIGN-040, SKILL-041): pin it to a commit, read it, pin commands it names. Don't use `typeui.sh pull`, which installs whatever is on the registry's `main`.
 
 ## Open questions
 
@@ -806,3 +915,8 @@ Ranked by impact against effort.
 - **`/design-sync` on a non-React repo:** concluded from the bundle and docs, not run, because a run writes to claude.ai. A run against a scratch design-system project would confirm what it reports for an Angular library (DESIGN-002).
 - **The issue's "Claude 4 best-practices page suggests Inter for headings" conflict doesn't hold on 2026-10-16:** the general prompting page names Inter three times, all as fonts to avoid. Not added to Conflicts.
 - **No benchmark compares Claude models on design quality as people judge it, beyond pairwise preference** (DESIGN-011, DESIGN-026). Design Creativity Bench measures originality with an embedding metric; we didn't check how it was validated (its Appendix B).
+- **EU and Benelux law on copying a brand's look** (DESIGN-039): not read. EUR-Lex returned an empty challenge page to curl and to WebFetch on 2026-10-23, and EUIPO's guidelines page wasn't found at the guessed path. US district courts have heard website trade-dress claims (*Lepton Labs v. Walker*, C.D. Cal. 2014; *Ingrid & Isabel v. Baby Be Mine*, N.D. Cal. 2014, found by the refuter through CourtListener metadata); the opinions weren't read.
+- **Does Claude Design accept a DESIGN.md upload?** VoltAgent's README says so; Anthropic's three Claude Design help articles list connected apps, files, Figma, decks, logos and fonts, and don't name it (DESIGN-037). Stitch's DESIGN.md docs render in JavaScript and weren't read.
+- **DESIGN-037's limits:** one 874-byte fixture, one prompt, Sonnet 5.5 only, `claude -p`, not artifacts or `/design` (whose skill "looks for an existing design system"), and no larger repo. Whether a 7,000-token brand file is followed as closely as our small one is untested beyond one run.
+- **How VoltAgent's files were made** (DESIGN-038): only the Claude file was compared with a live page (4 of 23 colours matched). getdesign.md's terms and Land-book (blocked by a bot check) weren't read.
+- **Does a PRODUCT.md beside a DESIGN.md change output?** Impeccable's split (DESIGN-036) wasn't tested.
