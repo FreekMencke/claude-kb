@@ -26,7 +26,7 @@ Research basis:
 | Where do design tokens go, does a DESIGN.md work, and how do I keep a multi-page site consistent? | Where Claude reads them: CLAUDE.md, a theme file or a repo skill; your prompt beats them, and they beat Claude's defaults. Claude Code doesn't load a DESIGN.md (Google's "alpha" spec) by itself: in a 26-run test one in the root was read in 1 of 9 runs; import it with `@DESIGN.md` or name it in the prompt, and any format read was applied in full. Give every session the role tokens, a component inventory and page templates, and check every page for off-token values, visual diffs and raw hexes. Artifacts load fonts only from Google Fonts; other faces are inlined. | DESIGN-006, DESIGN-037, DESIGN-036, DESIGN-024, DESIGN-021 |
 | Can I start from a brand's DESIGN.md from awesome-design-md or a similar list? | To study, yes; to ship, no. The files are scraped from public sites (84 in VoltAgent's list) and name proprietary fonts; MIT covers the collection's text, not the brand, and a look that causes confusion is actionable trade dress in the US. A copied file is instruction text: read it, strip commands and URLs, pin it. | DESIGN-038, DESIGN-039, DESIGN-040 |
 | Which type details should a UI specify: pairing, optical sizes, numerals? | One family first; add a second face only for a job the first can't do, from the same form model or designer. `tabular-nums` for data and changing values, `"case"` on all-caps labels, `slashed-zero` for codes; check the font has the feature. Optical sizes matter when one family runs from captions to display sizes; browsers apply them by CSS px without any CSS. A `fonts.googleapis.com` link drops `case`, `zero`, `onum` and stylistic sets, and `opsz` unless the URL names it. | DESIGN-033, DESIGN-034, DESIGN-032, DESIGN-035 |
-| frontend-design or `artifact-design`? | frontend-design is the plugin skill for UI in code and is identical in all three Anthropic repos (last changed 2026-09-01 to 09-03). `artifact-design` is bundled with the Artifact tool and governs published pages. Community skills (Impeccable, Taste Skill) are unofficial: borrow their ideas rather than install them. | DESIGN-005, DESIGN-012 |
+| frontend-design or `artifact-design`? | frontend-design is the plugin skill for UI in code and is identical in all three Anthropic repos (last changed 2026-09-01 to 09-03). `artifact-design` is bundled with the Artifact tool and governs published pages. Community skills (Impeccable, Taste Skill, Hallmark and others) are unofficial: borrow their ideas rather than install them. | DESIGN-005, DSKILL-001 |
 | How do I get a design system out of existing code? | React: `/design-sync`. Anything else, Angular included (the v2.1.296 sync adapters read `.tsx`/`.jsx` and React Storybook only): have Claude read the theme files, CSS custom properties and components into one token list per role. | DESIGN-002, DESIGN-010 |
 | Screenshot or computed styles to check a design? | Screenshots for overall look and hierarchy; computed styles (`getComputedStyle`, a contrast check) for exact spacing, sizes, colours and contrast, because Claude's localisation is "approximate". Claude can't generate images; its design output is HTML, CSS, SVG or canvas. | DESIGN-007, DESIGN-008 |
 | How do I improve an existing design rather than redesign it? | Give the highest-fidelity input you have (code plus the running app, then a URL, then a screenshot), lock the tokens, audit against a checklist and change one thing at a time; redesign only when asked, on a branch. For staged picks, extract the current design first and re-open only the steps that should change. | DESIGN-009, DESIGN-031 |
@@ -48,7 +48,7 @@ Research basis:
 | DESIGN-009 | Improving an existing design: inputs, audit, polish or redesign | pattern | audit, redesign, polish, accessibility, variants |
 | DESIGN-010 | Extracting a design system from code or a URL | pattern | design-system, extraction, tokens, computed-styles |
 | DESIGN-011 | Models and effort for design work | recommendation | models, effort, opus, sonnet, inference |
-| DESIGN-012 | Community design skills (unofficial) | comparison | community, impeccable, taste-skill, design-md |
+| DESIGN-012 | Community design skills (unofficial) (merged into DSKILL-001) | comparison | community, impeccable, taste-skill, design-md |
 | DESIGN-013 | Design pitfalls | anti-pattern | pitfalls, verification, drift, animation, css |
 | DESIGN-014 | Anthropic's other design skills in `anthropics/skills` | tool | theme-factory, canvas-design, brand-guidelines, web-artifacts-builder |
 | DESIGN-015 | Colour roles: name tokens by job, not by hue | pattern | colour, roles, semantic-tokens, radix, material |
@@ -172,7 +172,7 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Confidence: official-docs
 - Last verified: 2026-10-18
 - Sources: [Artifacts: improve the visual design, page constraints](https://code.claude.com/docs/en/artifacts), [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design)
-- Related: DESIGN-002, DESIGN-012, DESIGN-034, DESIGN-035, DESIGN-036, DESIGN-037, SURF-016, MEM, REPO-044
+- Related: DESIGN-002, DSKILL-001, DESIGN-034, DESIGN-035, DESIGN-036, DESIGN-037, SURF-016, MEM, REPO-044
 
 **Where.** Anthropic: record tokens "where Claude can find them, such as the project's CLAUDE.md or a theme file in your repository". Any clear list works: "The heading and format above are an example; any clear list of colors, fonts, and spacing works." For a repo with agents, a repo skill that reviewers preload works too (REPO-044). A `DESIGN.md` is a community convention, not an Anthropic one (DESIGN-036), and Claude Code reads it only when it's imported or named (DESIGN-037).
 
@@ -244,13 +244,13 @@ Image cost and context effects are in TOK-043.
 - Confidence: official-docs
 - Last verified: 2026-10-16
 - Sources: [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design), [Get started with Claude Design: known limitations](https://support.claude.com/en/articles/14604416-get-started-with-claude-design), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts)
-- Related: DESIGN-002, DESIGN-006, DESIGN-007, DESIGN-012
+- Related: DESIGN-002, DESIGN-006, DESIGN-007, DSKILL-001
 
 | Source | Route |
 |---|---|
 | React component library | `/design-sync` reads tokens and components; "works best for product design systems in code" (DESIGN-002) |
 | Other code (Angular, Vue, plain CSS, a Tailwind theme) | Ask Claude to read the theme files, CSS custom properties and components and write one token list by role into CLAUDE.md, a theme file or the repo skill (DESIGN-006) |
-| A live website | Measure computed styles in a browser (`getComputedStyle` over the page, DESIGN-007), or a community extractor (DESIGN-012) |
+| A live website | Measure computed styles in a browser (`getComputedStyle` over the page, DESIGN-007), or a community extractor (DSKILL-001) |
 
 Clean while extracting: one token per role, duplicates and one-off values listed for a decision rather than copied in. Anthropic warns that "Design system import is only as good as its source. A messy codebase or an incomplete file will show up in the output", and advises "Include real examples, not just specs": a finished page tells Claude more about the feel than a palette alone.
 
@@ -278,23 +278,11 @@ Validate the result by building one or two test pages from the tokens alone and 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-16
-- Sources: [pbakaus/impeccable](https://github.com/pbakaus/impeccable), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill), [google-labs-code/design.md](https://github.com/google-labs-code/design.md), [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md), [Manavarya09/design-extract](https://github.com/Manavarya09/design-extract), [OneRedOak/claude-code-workflows design review](https://github.com/OneRedOak/claude-code-workflows), [wmedia.es: verify with Playwright MCP](https://wmedia.es/en/tips/claude-code-playwright-mcp-verify-own-work), [wmedia.es: /design-sync](https://wmedia.es/en/tips/claude-code-design-sync-your-components)
-- Related: DESIGN-005, DESIGN-006, DESIGN-007, DESIGN-010, DESIGN-036, DESIGN-038, SKILL
+- Last verified: 2026-10-23
+- Sources: [pbakaus/impeccable](https://github.com/pbakaus/impeccable), [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill), [google-labs-code/design.md](https://github.com/google-labs-code/design.md)
+- Related: DSKILL-001, DESIGN-036, DESIGN-038
 
-None of these is Anthropic's. Read on 2026-10-16, not installed; stars from the GitHub API that day.
-
-| Project | What it is | Notes |
-|---|---|---|
-| Impeccable (81,936 stars, Apache-2.0) | "1 skill, 24 commands, live browser iteration, and 59 deterministic detector rules"; "Impeccable started from" Anthropic's frontend-design | Ships hooks on SessionStart, PostToolUse and Stop, downloads a binary, and calls `impeccable.style` on every roll, with anonymous telemetry |
-| Taste Skill (97,949, MIT) | A family of skills (`design-taste-frontend` and variants) with lint and browser-measurement scripts | "a few hundred thousand tokens" a build; scripts fetch images from public archives and run headless Chrome |
-| DESIGN.md (Google, 28,394, Apache-2.0) | A spec: YAML tokens plus eight fixed sections, with a linter (`npx @google/design.md lint`) | Format version "alpha" (DESIGN-036). Brand collections such as VoltAgent's: DESIGN-038 |
-| designlang (4,246, MIT) | Reads computed styles of up to 5,000 elements from a URL and emits tokens, Tailwind config and DESIGN.md | `--smart` sends data to an external model endpoint |
-| Design-review agents | OneRedOak's `design-review-agent.md` (Sonnet, Playwright, a 7-phase checklist, also given Edit and Write) | A reviewer shouldn't need write tools |
-
-**Worth adopting as ideas:** an explicit banned-pattern list, a contrast floor, and a measuring check (wmedia.es: "A screenshot to look at produces an opinion. A getComputedStyle produces a fact."). A DESIGN.md is a reasonable token file; Anthropic only asks for "a theme file" or CLAUDE.md (DESIGN-006).
-
-**Caution:** hooks, binaries and network calls run with your permissions. Read them, as with any plugin (MCP, SKILL).
+Merged into DSKILL-001 (kb-design-skills.md) on 2026-10-23. Read that file for the community design skills by mechanism, their security surface (DSKILL-010), licences (DSKILL-011), a test (DSKILL-013) and what to borrow (DSKILL-014). DSKILL-001 also keeps this entry's lines on designlang, OneRedOak's design-review agent and the DESIGN.md spec; the DESIGN.md format is now DESIGN-036 and brand collections DESIGN-038.
 
 ## [DESIGN-013] Design pitfalls
 - Type: anti-pattern
@@ -302,7 +290,7 @@ None of these is Anthropic's. Read on 2026-10-16, not installed; stars from the 
 - Confidence: official-docs
 - Last verified: 2026-10-16
 - Sources: [Best practices: verify your work](https://code.claude.com/docs/en/best-practices), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
-- Related: DESIGN-007, DESIGN-009, DESIGN-003, DESIGN-012
+- Related: DESIGN-007, DESIGN-009, DESIGN-003, DSKILL-001
 
 | Pitfall | Guard |
 |---|---|
@@ -455,7 +443,7 @@ All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS fil
 - Confidence: official-docs
 - Last verified: 2026-10-16
 - Sources: [DTCG Format 2025.10](https://www.designtokens.org/TR/2025.10/format/), [DTCG Color 2025.10](https://www.designtokens.org/TR/2025.10/color/), [Material Web: theming](https://github.com/material-components/material-web/blob/main/docs/theming/README.md), [Style Dictionary: DTCG](https://styledictionary.com/info/dtcg/), [Terrazzo docs](https://terrazzo.app/docs/), [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4)
-- Related: DESIGN-006, DESIGN-012, DESIGN-015, DESIGN-024
+- Related: DESIGN-006, DSKILL-001, DESIGN-015, DESIGN-024
 
 **DTCG.** The Design Tokens Community Group's format 2025.10 is a "Final Community Group Report 28 October 2025", "considered stable", and "not a W3C Standard nor is it on the W3C Standards Track". A token is `{"$value": …, "$type": …}`; groups nest; aliases are `"{colors.blue}"`. Types include color (with an `oklch` colour space in the Color module), dimension, fontFamily, fontWeight, duration, cubicBezier, number, and composites: border, shadow, gradient, transition, typography. The `/tr/drafts/` copy is a preview: "Do not attempt to implement".
 
@@ -531,7 +519,7 @@ A checker subagent can run these and return numbers (REPO-021).
 - Confidence: community-consensus
 - Last verified: 2026-10-16
 - Sources: [Dow et al.: parallel prototyping (submitted version)](https://hci.stanford.edu/publications/2010/parallel-prototyping/ParallelPrototyping2010-submitted.pdf), [Design Council: the Double Diamond](https://www.designcouncil.org.uk/our-resources/the-double-diamond/), [NN/g: 10 usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/), [NN/g: design critiques](https://www.nngroup.com/articles/design-critiques/), [Impeccable: critique.md](https://github.com/pbakaus/impeccable/blob/main/.agent/skills/impeccable/reference/critique.md), [OneRedOak: design-review agent](https://github.com/OneRedOak/claude-code-workflows/blob/main/design-review/design-review-agent.md)
-- Related: DESIGN-001, DESIGN-004, DESIGN-009, DESIGN-012, DESIGN-027, DESIGN-029, REPO-021
+- Related: DESIGN-001, DESIGN-004, DESIGN-009, DSKILL-001, DESIGN-027, DESIGN-029, REPO-021
 
 **Diverge before refining.** Dow et al. (2010): novice designers who made several prototypes before feedback beat those who refined one at a time, "as measured by click-through data and expert ratings", and raters "found Parallel prototypes to be more diverse". The Double Diamond's second diamond "encourages people to give different answers to the clearly defined problem". So ask for 3–4 directions (DESIGN-004) and have a person pick, shown as swatches and type samples rather than hex codes and font names. In our tests, half of Claude's proposed directions repeated across runs (DESIGN-029), and its own pick added template chrome (DESIGN-027).
 
@@ -789,7 +777,7 @@ Both served sets fall within `pyftsubset`'s defaults plus `tnum` and `pnum` (FON
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [google-labs-code/design.md README](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/README.md), [DESIGN.md spec](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/docs/spec.md), [PHILOSOPHY.md](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/PHILOSOPHY.md), [@google/design.md on npm](https://www.npmjs.com/package/@google/design.md), [Impeccable `init` and `document`](https://github.com/pbakaus/impeccable/tree/5cb95eea9c96479f57afe0732a45470d30183326/.agent/skills/impeccable/reference)
-- Related: DESIGN-006, DESIGN-012, DESIGN-021, DESIGN-037
+- Related: DESIGN-006, DSKILL-001, DESIGN-021, DESIGN-037
 
 Google Labs' spec (Apache-2.0, read at commit `6e5da53`, 2026-10-16): "A format specification for describing a visual identity to coding agents." YAML tokens (`colors`, `typography`, `rounded`, `spacing`, `components`, with `{colors.primary}` references) in front matter or fenced blocks, then `##` sections that "can be omitted, but those present must appear in this order": Overview (alias Brand & Style), Colors, Typography, Layout (Layout & Spacing), Elevation & Depth (Elevation), Shapes, Components, Do's and Don'ts. "The DESIGN.md format is at version `alpha`… Expect changes." PHILOSOPHY.md: "The token values serve as context and are not rendering instructions." It holds colour, type, shape and spacing; layout only as prose, and no page structure or copy, so it fixes a look, not originality (DESIGN-004).
 
@@ -830,7 +818,7 @@ Tested 2026-10-23, 0.4.0, Node 24.21.0: our fixture linted clean; VoltAgent's 84
 - Confidence: single-source
 - Last verified: 2026-10-23
 - Sources: [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md/tree/3b605329240ce735b510037cca322f1831fdd7f8), [VoltAgent/awesome-claude-design](https://github.com/VoltAgent/awesome-claude-design/tree/8f746b5bbb69cc7544fa850c126a71f754091951), [bergside/awesome-design-skills](https://github.com/bergside/awesome-design-skills/tree/f631a09b4fcc0166f2e2c1a8c81906ef680c57e8), [rohitg00/awesome-claude-design](https://github.com/rohitg00/awesome-claude-design/tree/7f60ee56b9340f8c2671a08c2d8aab4037546a64), [The Component Gallery](https://component.gallery), [Mobbin](https://mobbin.com)
-- Related: DESIGN-012, DESIGN-036, DESIGN-039, DESIGN-040, OSS-009
+- Related: DSKILL-001, DESIGN-036, DESIGN-039, DESIGN-040, OSS-009
 
 Read 2026-10-23 at pinned commits; stars from the GitHub API (not a quality signal). All four are MIT.
 
@@ -893,7 +881,7 @@ Ranked by impact against effort.
 4. **For a new page or redesign in any repo, prompt with DESIGN-004:** subject, audience and job; one small choice at a time, picked by you rather than by Claude, instead of whole designs, with DESIGN-030's prompt: audience, feel, tone of voice, 20 palettes as squares, font pairings, whole-page wireframes, then combined variants, keeping several picks per stage (4 of 5 variants were good on both subjects; in DESIGN-027 the self-pick added template chrome, in DESIGN-029 half the options repeated across runs, and a one-page chooser left one section skeleton); a banned list grown from the last result. On an existing site, extract first and re-open only the steps that should change (DESIGN-031). A skill that runs this, rotating batches included, is `design-workshop`, added 2026-10-16 in [FreekMencke/claude-skills#75](https://github.com/FreekMencke/claude-skills/issues/75). It ends with a design brief, and `frontend-design` implements that brief as a fixed spec: its craft rules and quality floor without its own direction-setting (DESIGN-005). In a Tailwind or shadcn repo, theme the defaults away first (DESIGN-023). No change needed: the `frontend-design` plugin we have installed is the current upstream text (identical checksum, 2026-10-16).
 5. Done 2026-10-18: `design-workshop`'s Type step and brief check figure styles and Google Fonts' feature limits (FreekMencke/claude-skills#84, FreekMencke/claude-skills#89; DESIGN-034, DESIGN-035, DESIGN-032).
 6. **No change for osrs-tracker-web or freek-mencke-web** (DESIGN-034, DESIGN-032): both self-host one variable font family (`wght` only, 300–700 and 100–700 cuts, no `opsz`) whose files keep `tnum` and `case`, and osrs-tracker-web already sets `tabular-nums` on its values (checked 2026-10-18 with fontTools 4.46.0). Optical sizes would need a font with the axis; not worth changing the face for.
-7. **Don't install Impeccable or Taste Skill user-wide** (DESIGN-012). They add hooks, a downloaded binary, telemetry or image fetching, and overlap with frontend-design. Borrow their banned lists and measuring ideas instead.
+7. **Don't install community design skills; borrow their ideas** (DSKILL-014). Updated 2026-10-23: `kb-design-skills.md` read Impeccable, Taste Skill, Hallmark, ui-ux-pro-max and huashu-design at pinned commits: hooks, a downloaded binary, remote text in context and image fetching (DSKILL-010), and a text-only test where each converged on one look per brief (DSKILL-013).
 8. **Test design-prompt or skill changes with DESIGN-028's isolation flags**, measured as in DESIGN-027, so CLAUDE.md, the frontend-design plugin and the output style don't leak into the result. The measuring scripts aren't in the repo; adding them under `evals/` would make the test re-runnable. Decided 2026-10-17 (FreekMencke/claude-kb#43): a habit, not an issue; add the scripts the next time a design test runs.
 9. **Considered, not adopted: `--color-*: initial` in osrs-tracker-web's `@theme`** (DESIGN-023). On 2026-10-16 its templates used no default palette colour classes, so clearing them would turn an off-token colour into a build error. Its repo skill already says "a value the scale lacks becomes a token", and osrs-tracker/osrs-tracker-web#337 added a computed-colour check; a change would first have to check what `@tailwindcss/forms` reads from the default palette. Not worth an issue now.
 10. **A DESIGN.md has to be loaded to count** (DESIGN-037): in any repo that adopts one, import it from CLAUDE.md (`@DESIGN.md`) or name it in the repo's design skill. Our repos keep tokens in theme CSS plus a repo skill, so nothing changes now. design-workshop's brief as a DESIGN.md and making sure its hand-over gets loaded went to FreekMencke/claude-kb#260 as a comment, not an issue (https://github.com/FreekMencke/claude-kb/issues/260#issuecomment-6359195461).

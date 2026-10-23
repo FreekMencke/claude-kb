@@ -113,6 +113,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CSS-016 | Angular CLI: browser targets are Baseline widely available on a fixed date, and esbuild lowers CSS to them | fact | angular, browser-support, esbuild, browserslist |
 | CSS-017 | Anchor positioning on 2026-10-17: the core that works everywhere, and the gaps | recommendation | anchor-positioning, position-area, polyfill |
 
+## Community design skills: mechanisms, security surface, a test (`topics/kb-design-skills.md`, DSKILL)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| DSKILL-001 | Five community design skills and frontend-design, by mechanism | comparison | community-skills, impeccable, taste-skill, hallmark, ui-ux-pro-max, huashu-design |
+| DSKILL-002 | Taste Skill: a scripted deal of 3 of 20 directions, a user-level history, house bans | tool | taste-skill, deal, history, bans |
+| DSKILL-003 | Hallmark: dealt themes, a project log, and Floor, Reflex and Finish gates | tool | hallmark, deal, log, gates |
+| DSKILL-004 | Impeccable: a remote roll of directions, modes and a craft floor | tool | impeccable, roll, modes, craft-floor |
+| DSKILL-005 | ui-ux-pro-max: a fixed lookup from product type to style and palette | tool | ui-ux-pro-max, lookup, category-defaults, csv |
+| DSKILL-006 | huashu-design: three drafted directions, a seconds roulette and a look ledger | tool | huashu-design, directions, ledger, roulette |
+| DSKILL-007 | Where the design skills disagree with each other and with frontend-design | comparison | conflicts, bans, near-black, hairlines, eyebrows |
+| DSKILL-008 | A fixed catalogue becomes its own default | fact | catalogue, convergence, defaults, rotation |
+| DSKILL-009 | Impeccable's detector and Hallmark's `sloplint`: what AI-look linters check | tool | linters, detector, sloplint, thresholds |
+| DSKILL-010 | Security surface, part 1: install paths, hooks and binaries | fact | security, hooks, install, binaries, supply-chain |
+| DSKILL-011 | Licences of the skills' code and the assets they pull in | fact | licences, apache-2.0, mit, photos, cc-by-sa |
+| DSKILL-012 | Token cost per build and release cadence | fact | tokens, cost, maintenance, releases |
+| DSKILL-013 | Test: Hallmark, ui-ux-pro-max and frontend-design as text only on two briefs | comparison | experiment, convergence, text-only, isolation |
+| DSKILL-014 | What to borrow from the design skills, and the notice it needs | recommendation | borrow, log, floor-rules, guidelines, licences |
+| DSKILL-015 | Security surface, part 2: network, remote text in context and telemetry | fact | security, network, telemetry, remote-text, prompt-injection |
+
 ## Visual and UI design with Claude (`topics/kb-design.md`, DESIGN)
 
 | ID | Title | Type | Tags |
@@ -128,7 +148,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-009 | Improving an existing design: inputs, audit, polish or redesign | pattern | audit, redesign, polish, accessibility, variants |
 | DESIGN-010 | Extracting a design system from code or a URL | pattern | design-system, extraction, tokens, computed-styles |
 | DESIGN-011 | Models and effort for design work | recommendation | models, effort, opus, sonnet, inference |
-| DESIGN-012 | Community design skills (unofficial) | comparison | community, impeccable, taste-skill, design-md |
+| DESIGN-012 | Community design skills (unofficial) (merged into DSKILL-001) | comparison | community, impeccable, taste-skill, design-md |
 | DESIGN-013 | Design pitfalls | anti-pattern | pitfalls, verification, drift, animation, css |
 | DESIGN-014 | Anthropic's other design skills in `anthropics/skills` | tool | theme-factory, canvas-design, brand-guidelines, web-artifacts-builder |
 | DESIGN-015 | Colour roles: name tokens by job, not by hue | pattern | colour, roles, semantic-tokens, radix, material |
