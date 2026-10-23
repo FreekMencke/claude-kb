@@ -146,6 +146,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-oss-licensing.md](topics/kb-oss-licensing.md) | `OSS` | Open-source licensing and repo hygiene: licences, SPDX, dependency and font licences, community health files |
 | [kb-ui-review.md](topics/kb-ui-review.md) | `UIREV` | Interface guidelines and UI review: Vercel's guidelines and skill, machine checks against judgement, heuristic evaluation, design-review agents |
 | [kb-web-animation.md](topics/kb-web-animation.md) | `ANIM` | Native web animation in Angular 22: `animate.enter`/`animate.leave`, view transitions, performance, reduced motion |
+| [kb-animation-libraries.md](topics/kb-animation-libraries.md) | `ANIMLIB` | Animation libraries and their agent tooling: Motion, GSAP, Lenis |
 | [kb-knowledge-retrieval.md](topics/kb-knowledge-retrieval.md) | `RETR` | Giving agents knowledge: agentic search, RAG, long context and curated knowledge bases, measured on this one |
 | [kb-ui-patterns.md](topics/kb-ui-patterns.md) | `UIPAT` | UI states, feedback timing, forms, URL state and interface copy |
 
