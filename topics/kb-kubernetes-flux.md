@@ -626,7 +626,7 @@ Ranked by impact against effort. Compared on 2026-10-17, read-only, with a singl
 7. **Keep Alloy; no OpenTelemetry Collector** (KUBE-014). The pipelines are Prometheus scrapes and logs, the Default Engine's case. Promtail conversion (KUBE-013) doesn't apply.
 8. **When images are signed (DOCKER-012), check signatures at admission** (DOCKER-013): Flux's `verify` covers only its own sources.
 9. **Drop the `setarch` wrapper from mongod when `mongo:8.0.35` ships** (KUBE-017), and only then: on a kernel without the rseq fix, the wrapper would hide the hazard. The cluster check already flags new 8.0 patches.
-10. **Done 2026-10-21 and 2026-10-22: the server move and MongoDB on the cluster** (FreekMencke/fremen-cluster#20, #22): Flannel instead of Calico (KUBE-027), the CrowdSec plugin on 1.8.1 (KUBE-026), host fixes (KUBE-028), MongoDB with its own exporter Deployment and a keep rule (KUBE-017 to KUBE-024).
+10. **Done 2026-10-21 and 2026-10-22: the server move and MongoDB on the cluster** (FreekMencke/fremen-cluster#20, FreekMencke/fremen-cluster#22): Flannel instead of Calico (KUBE-027), CrowdSec plugin 1.8.1 (KUBE-026), host fixes (KUBE-028), MongoDB with its own exporter (KUBE-017 to KUBE-024).
 11. **Won't do: Alloy's built-in MongoDB exporter** (KUBE-021): a URI Go can't parse stops every pipeline in Alloy, against one pod for Percona's exporter.
 
 ## Open questions

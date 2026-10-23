@@ -1066,7 +1066,7 @@ Ranked by impact against effort.
 7. **Decision 2026-10-18: keep osrs-tracker-web's and freek-mencke-web's allow-all robots.txt.** Both want to appear in AI answers, and blocking a training token gains them nothing. If a site ever opts out of training only, disallow the training tokens (`GPTBot`, `Google-Extended`, `Applebot-Extended`, `meta-externalagent`, `CCBot`, `ClaudeBot`) and keep the search ones; user-triggered fetchers may ignore it anyway. WEB-039, WEB-040, WEB-020.
 8. **No change: osrs-tracker-web already sends 404s and one server-side canonical** (tested 2026-10-18). WEB-036.
 9. **Before adding a second language:** decide on per-locale paths with hreflang, and turn off or avoid the `Accept-Language` redirect of Angular's i18n server output. No issue until a language is planned. WEB-042.
-10. **Done 2026-10-13, superseded 2026-10-14: historical server logs.** Logs and metrics are in Grafana Cloud, read through the claude.ai Grafana connector with its write tools kept on purpose (INFRA recommendation 11); the cluster Loki route it replaced (FreekMencke/home-cluster#5) is gone. WEB-013, INFRA-024, INFRA-025.
+10. **Done 2026-10-13, superseded 2026-10-14: historical server logs**, now in Grafana Cloud through the claude.ai Grafana connector with its write tools kept on purpose (INFRA recommendation 11); the cluster Loki route (FreekMencke/home-cluster#5) is gone. WEB-013, INFRA-024, INFRA-025.
 
 ## Open questions
 

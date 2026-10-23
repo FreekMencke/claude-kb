@@ -299,7 +299,7 @@ Tested 2026-10-18, gh 2.102.0, `gh api repos/<o>/<r>/community/profile`: the `fi
 Ranked by impact against effort. Checked 2026-10-18 against claude-kb, claude-skills, freek-mencke-web, osrs-tracker-web, osrs-tracker-api and osrs-tracker-aws.
 
 1. Done 2026-10-18: each README says which paths its licence doesn't cover; osrs-tracker-web's fonts in osrs-tracker/osrs-tracker-web#360, while freek-mencke-web and this repo already did (OSS-003, OSS-009).
-2. Done 2026-10-18: osrs-tracker/.github#3 adds a default `SECURITY.md` that every org repo without its own now shows as its policy; private vulnerability reporting is on for every active public repo of the org and the personal account (OSS-012). The personal account still has no `.github` repo for a default.
+2. Done 2026-10-18: osrs-tracker/.github#3 adds a default `SECURITY.md` for every org repo without its own; private vulnerability reporting is on for every active public repo of the org and the personal account (OSS-012). The personal account has no `.github` repo for a default.
 3. Done 2026-10-18: `actions/dependency-review-action` checks the licences of new dependencies in osrs-tracker-web and osrs-tracker-api (osrs-tracker/osrs-tracker-web#361, osrs-tracker/osrs-tracker-api#192; OSS-007, OSS-008).
 4. Done 2026-10-18: the global CLAUDE.md keeps licence and copyright notices and bars pasting unlicensed or GPL/AGPL code (OSS-011).
 5. **Won't do: REUSE compliance or SPDX headers in every file** (OSS-005, OSS-006). Each repo has one or two licences, which a README section and per-folder files state well enough; revisit if a repo takes in third-party code.

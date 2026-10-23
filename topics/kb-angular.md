@@ -426,7 +426,7 @@ chrome-devtools-mcp dispatches that event and lists the tools with `list_3p_deve
 
 Ranked by impact against effort. Our Angular apps are osrs-tracker-web and freek-mencke-web, both on Angular 22.2 with TypeScript 6.0.3 (2026-10-17).
 
-1. Done 2026-10-18: `angular-conventions` has an `## Upgrades` section: one major at a time, optional migrations run by name, `typescript` inside `@angular/compiler-cli`'s peer range, opt-outs reviewed (FreekMencke/claude-skills#79, FreekMencke/claude-skills#86; NG-002, NG-010, NG-001). JSUP-002's `npm ls --all` check didn't make it in: FreekMencke/claude-skills#94.
+1. Done 2026-10-18: `angular-conventions` has an `## Upgrades` section (FreekMencke/claude-skills#79, FreekMencke/claude-skills#86; NG-002, NG-010, NG-001). Open: JSUP-002's `npm ls --all` check, FreekMencke/claude-skills#94.
 2. **Keep `npx ng mcp --read-only` in each Angular repo's `.mcp.json`** (decision, in place 2026-10-17). It runs the installed CLI and costs about 765 tokens a request. NG-014, NG-013.
 3. **Don't run `ng generate ai-config` or `ng new --ai-config=claude-code` in our repos** (decision). It writes `npx -y @angular/cli mcp` without `--read-only`, and a CLAUDE.md that copies the best-practices guide, which `get_best_practices` and `angular-developer` already supply, and which goes stale with the next major. NG-014, NG-015.
 4. **Mirror only `angular-developer` from angular/skills** (decision). `angular-new-app`'s `--ai-config` values fail on 22.2.3, and we rarely create apps. NG-017.

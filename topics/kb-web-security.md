@@ -398,7 +398,7 @@ Ranked by impact against effort. Checked 2026-10-18 against `main` of our two An
 
 1. Done 2026-10-18: CodeQL default setup is on in the three app repos (osrs-tracker/osrs-tracker-web#359, osrs-tracker/osrs-tracker-api#186, FreekMencke/freek-mencke-web#23; WEBSEC-013, GHA-023).
 2. **Keep CSP, CORS and header rules in each repo's reviewer rules, not only in `/security-review`** (decision; in place since 2026-10-18 through 3). `/security-review` excludes "lack of hardening" and names no headers, so the 2026-10-14 decision in `kb-repo-agents.md` that it plus the conventions rules cover CSP stands only through the conventions rules (WEBSEC-012).
-3. Done 2026-10-18: the three app repos' skills, which each `conventions-reviewer` preloads, bar `bypassSecurityTrust*` and `innerHTML` for stripped markup, loosening the CSP, tokens or `Authorization` headers in logs and hard-coded secret fallbacks; osrs-tracker-api's also keeps CORS to an explicit origin list (osrs-tracker/osrs-tracker-web#383, osrs-tracker/osrs-tracker-api#202, FreekMencke/freek-mencke-web#36; WEBSEC-011).
+3. Done 2026-10-18: the three app repos' skills bar `bypassSecurityTrust*` and `innerHTML` for stripped markup, a loosened CSP, secrets in logs and hard-coded secret fallbacks (osrs-tracker/osrs-tracker-web#383, osrs-tracker/osrs-tracker-api#202, FreekMencke/freek-mencke-web#36; WEBSEC-011).
 4. **Decision: no security-guidance plugin for now.** Its model reviews run on Opus at every turn end and commit, which costs usage on every session. Its per-edit layer misses Angular templates and `bypassSecurityTrust` without custom rules (WEBSEC-012). Revisit if CodeQL and the reviewer rules miss something.
 
 ## Open questions
