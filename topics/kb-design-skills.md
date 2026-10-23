@@ -8,12 +8,13 @@ Research basis:
 - Three Sonnet 5.5 readers covered security and licences; ui-ux-pro-max, huashu-design, cost and upkeep; and Impeccable's detector and Hallmark's `sloplint`. The lead re-read every quote used here against the downloaded files, and the Impeccable roll, the hook manifests and the photo licences in the source.
 - The lead ran a text-only test (DSKILL-013): 24 `claude -p` runs on Sonnet 5.5, measured with Playwright 1.64.1, judged from contact sheets.
 - Stars and install counts are popularity signals that can be gamed; nothing here rests on them.
+- Added 2026-10-24: Emil Kowalski's skills (emilkowalski/skills `2d22863`, cloned and read, not run) for DSKILL-001's note; they aren't compared or tested here.
 
 ## Quick answers
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which community design skills exist, and how do they differ? | Impeccable (a remote roll of directions, a 62-rule detector, hooks), Taste Skill (a script deals 3 of 20 directions, strict house bans), Hallmark (deals from 48 themes against a project log, Floor gates), ui-ux-pro-max (a fixed lookup by product type) and huashu-design (three drafted directions, a seconds roulette and a look ledger). frontend-design is text only: a calibration list and a plan-review-build process. | DSKILL-001 |
+| Which community design skills exist, and how do they differ? | Impeccable (a remote roll of directions, a 62-rule detector, hooks), Taste Skill (a script deals 3 of 20 directions, strict house bans), Hallmark (deals from 48 themes against a project log, Floor gates), ui-ux-pro-max (a fixed lookup by product type) and huashu-design (three drafted directions, a seconds roulette and a look ledger). frontend-design is text only: a calibration list and a plan-review-build process. Emil Kowalski's `prototype` works on one component instead: 3 to 5 variants on named axes, behind a picker, for you to choose. | DSKILL-001 |
 | What actually stops a skill converging on one look? | Something outside the model's choice: a script's random deal, a log of past builds checked by the next deal, or a person picking. Text alone doesn't: run without their scripts, Hallmark and ui-ux-pro-max gave one look per brief in 4 of 4 runs. | DSKILL-001, DSKILL-008, DSKILL-013 |
 | Does a fixed catalogue of themes become its own default? | Yes. Hallmark ranks its 48 themes by keyword and genre fit and uses its seeded random to break ties; picking by hand (its no-Node fallback), the model took Cobalt for the webhook brief 4 times of 4. Its own roadmap says parts of its catalogue "now read as generated looks". ui-ux-pro-max maps "Bakery/Cafe" to "Warm Brown + Cream" every time. | DSKILL-008, DSKILL-005 |
 | Is ui-ux-pro-max a good way to pick a style? | No for originality: it routes back to category defaults (SaaS: glassmorphism and "Trust blue"; bakery: cream and brown), and in our test gave the cream, serif, italic-accent look frontend-design names as a tell in 4 of 4 runs. Its UX guideline rows are worth borrowing. | DSKILL-005, DSKILL-013, DSKILL-014 |
@@ -51,8 +52,8 @@ Research basis:
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-23
-- Sources: [Impeccable SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md)
-- Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-012, DSKILL-008, DSKILL-013
+- Sources: [Impeccable SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Kowalski prototype SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/prototype/SKILL.md), [Kowalski emil-design-eng SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md)
+- Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-012, DSKILL-008, DSKILL-013, ANIMLIB-013
 
 None is Anthropic's. Each fights convergence with a different mechanism; most need their scripts to do it.
 
@@ -66,6 +67,8 @@ None is Anthropic's. Each fights convergence with a different mechanism; most ne
 | huashu-design (MIT) | Six candidates from three logics, one a random style by the clock's seconds; three drafted directions; a ledger of past looks | Python, Playwright |
 
 DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mode sends data to an external model), OneRedOak's design-review agent (given Edit and Write, which a reviewer shouldn't need) and Google's DESIGN.md spec, now covered by DESIGN-036 to DESIGN-040 (FreekMencke/claude-kb#253); DESIGN-006 holds where tokens live.
+
+**Not compared:** Emil Kowalski's skills (MIT, `2d22863`) pick no look for a page. `prototype` builds 3 to 5 variants of one UI piece on named axes behind a picker, and "the choice belongs to the user" (DSKILL-008); `emil-design-eng` and `apple-design` are craft text, mostly motion (ANIMLIB-013).
 
 ## [DSKILL-002] Taste Skill: a scripted deal of 3 of 20 directions, a user-level history, house bans
 - Type: tool

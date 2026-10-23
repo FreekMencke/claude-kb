@@ -6,6 +6,7 @@ Research basis:
 - Researched 2026-10-23 (FreekMencke/claude-kb#258, part of roadmap #251) by an Opus 5.5 lead with two Sonnet 5.5 readers (licences and agent tooling: 148k tokens, 43 tool calls, 6.2 min; library docs and source: 198k tokens, 71 tool calls, 7.9 min), then a Sonnet refuter (125k tokens, 46 tool calls, 4.8 min; it found the Lenis anchor flash) and a Sonnet review panel: front-end engineer (103k, 23, 2.9 min), accessibility specialist (77k, 11, 1.5 min), supply-chain security (99k, 30, 3.0 min).
 - Read as raw text: motion.dev's `.md` pages and `llms.txt`, gsap.com's `.md` docs and `llms.txt`, the Lenis README, the libraries' source at tags `v14.6.0` (motiondivision/motion), `3.15.0` (greensock/GSAP) and `v1.3.27` (darkroomengineering/lenis), the npm tarballs, WCAG 2.2's Understanding pages, and the tooling repos at the commits each entry names.
 - Tested in a scratch Angular 22.2.3 app (`@angular/build` 22.2.4, zoneless, SSR with prerender) on Node 24.21.0, with `motion@14.6.0`, `gsap@3.15.0` and `lenis@1.3.27` installed with `--ignore-scripts`, and Playwright 1.64.1 driving Chromium 156.0.8078.4 and WebKit 27.2 headless. Firefox wasn't tested. No community code was installed or run.
+- ANIMLIB-017 was added 2026-10-24 (session on Opus 5.5): Kowalski's seven articles through WebFetch (the session's shell couldn't reach emilkowal.ski, and WebFetch returns a model's answer, not the page), and Sonner and Vaul read at their tags and in their npm tarballs (`npm pack sonner@2.0.8 vaul@1.1.2`). emilkowalski/skills was still at `2d22863` (`git ls-remote`, 2026-10-24).
 
 ## Quick answers
 
@@ -24,6 +25,7 @@ Research basis:
 | Why is my scroll-revealed text invisible when printing or searching? | GSAP `from({autoAlpha: 0})` sets `visibility: hidden` inline until the trigger fires: not printable, not findable. Opacity-only reveals stay findable but print blank. | ANIMLIB-011 |
 | Should I install gsap-skills or Motion's AI Kit? | Read them rather than install: gsap-skills is markdown only but tells agents to recommend GSAP by default; AI Kit wires a live remote MCP server and a skill that runs an unpinned `npx` package. The `npx skills add` installer sends telemetry by default and pins nothing unless given `#<sha>` (SKILL-066, SKILL-067). | ANIMLIB-012, ANIMLIB-016 |
 | What durations and easings do the animation skills recommend? | Emil Kowalski: UI animations under 300 ms, `ease-out` to enter or leave, never `ease-in`; Motion's AI Kit: 150 to 300 ms for small elements, up to about 500 ms for large surfaces. | ANIMLIB-013 |
+| Do Kowalski's articles and libraries match his skills? | Mostly. His articles give modals 200–300 ms where the skills give 200–500, his Vaul drawer runs 500 ms, and his Sonner turns all motion off under reduced motion, while the skills say "not zero". No article mentions reduced motion. | ANIMLIB-017 |
 
 ## Index
 
@@ -45,6 +47,7 @@ Research basis:
 | ANIMLIB-014 | When not to use each library | recommendation | native-css, motion, gsap, lenis, decision |
 | ANIMLIB-015 | Lenis drops keys mid-animation, hijacks nested scroll boxes and flashes on anchors | anti-pattern | lenis, keyboard, nested-scroll, anchors, scroll-jacking |
 | ANIMLIB-016 | Vendor `llms.txt` files: size, pinning and what they tell agents | tool | llms-txt, pinning, motion, gsap, lenis |
+| ANIMLIB-017 | Emil Kowalski's articles and libraries against his skills | comparison | kowalski, durations, reduced-motion, sonner, vaul |
 
 ## [ANIMLIB-001] Motion, GSAP and Lenis on 2026-10-23: versions, licences, peers
 - Type: fact
@@ -360,8 +363,8 @@ Neither covers Angular. Borrow by reading: gsap-skills' `matchMedia` and cleanup
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-23
-- Sources: [emilkowalski/skills at 2d22863](https://github.com/emilkowalski/skills/tree/2d228630ba1446365f614a108cb8252f1feda202), [STANDARDS.md](https://raw.githubusercontent.com/emilkowalski/skills/2d228630ba1446365f614a108cb8252f1feda202/skills/review-animations/STANDARDS.md), [Motion AI Kit best practices](https://raw.githubusercontent.com/motiondivision/ai-kit/78a83b1485fa70dab9037c480de0c7cf53930df7/plugins/motion/skills/motion/best-practices/index.md), [Motion: performance](https://motion.dev/docs/performance.md)
-- Related: ANIMLIB-012, ANIMLIB-007, ANIM-013, ANIM-015, DESIGN-013
+- Sources: [emilkowalski/skills at 2d22863](https://github.com/emilkowalski/skills/tree/2d228630ba1446365f614a108cb8252f1feda202), [STANDARDS.md](https://raw.githubusercontent.com/emilkowalski/skills/2d228630ba1446365f614a108cb8252f1feda202/skills/review-animations/STANDARDS.md), [emil-design-eng SKILL.md](https://raw.githubusercontent.com/emilkowalski/skills/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md), [Motion AI Kit best practices](https://raw.githubusercontent.com/motiondivision/ai-kit/78a83b1485fa70dab9037c480de0c7cf53930df7/plugins/motion/skills/motion/best-practices/index.md), [Motion: performance](https://motion.dev/docs/performance.md)
+- Related: ANIMLIB-012, ANIMLIB-017, ANIMLIB-007, ANIM-013, ANIM-015, DESIGN-013
 
 emilkowalski/skills (MIT, read at `2d22863`, 2026-10-11) has 15 skills, nine about animation (`animate`, `review-animations`, `improve-animations`, `animation-performance`, `emil-design-eng` and others). No hooks or scripts, and the skills make no network calls themselves; `improve-animations` and `break-ui` write files into the project. Installed with `npx skills add` (SKILL-066). `pick-ui-library` is a list of recommended third-party libraries, steering like gsap-skills'. No Angular; examples mix CSS and WAAPI with React and Motion.
 
@@ -374,7 +377,7 @@ From `review-animations/STANDARDS.md`:
 
 Motion's AI Kit agrees on range: "about 150 to 300 ms for small elements, and up to about 500 ms for large surfaces". These are one practitioner's and one vendor's guidance, not research; ANIM-013 has NN/g's and Material's numbers.
 
-Out of date: `animation-performance` says Motion's `x`/`y`/`scale` shorthands "are implemented with CSS variables, and animated CSS variables aren't accelerated"; Motion's performance page now says independent transforms "are hardware accelerated, just like animating `transform` directly" (Motion CHANGELOG 14.2.0, 2026-10-13: "Hardware accelerated independent transforms like `x`, `y`, `scaleX` etc."; AI Kit changelog 7.0.1, 2026-10-15). The skill predates that release. That's the vendor's claim, 10 days old with a fix since; no independent compositor test was found.
+Out of date: `animation-performance` says Motion's `x`/`y`/`scale` shorthands "are implemented with CSS variables, and animated CSS variables aren't accelerated" (`emil-design-eng` and STANDARDS.md: they run on the main thread); Motion's performance page now says independent transforms "are hardware accelerated, just like animating `transform` directly" (Motion CHANGELOG 14.2.0, 2026-10-13: "Hardware accelerated independent transforms like `x`, `y`, `scaleX` etc."; AI Kit changelog 7.0.1, 2026-10-15). The skill predates that release. That's the vendor's claim, 10 days old with a fix since; no independent compositor test was found.
 
 ## [ANIMLIB-014] When not to use each library
 - Type: recommendation
@@ -438,6 +441,23 @@ All three vendors publish an `llms.txt`; none is versioned or kept in the librar
 So keep a dated copy and grep it rather than fetching on every run, and prefer the vendor's `.md` docs page or the README at a tag for a figure. Motion's file also steers agents towards its MCP server and Motion+, like the skills in ANIMLIB-012.
 
 gsap-skills and Emil Kowalski's skills install with `npx skills add`: its telemetry, lock files and pinning (`owner/repo#<full sha>`) are in SKILL-066 and SKILL-067.
+
+## [ANIMLIB-017] Emil Kowalski's articles and libraries against his skills
+- Type: comparison
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-24
+- Sources: [Agents with Taste](https://emilkowal.ski/ui/agents-with-taste), [7 Practical Animation Tips](https://emilkowal.ski/ui/7-practical-animation-tips), [You Don't Need Animations](https://emilkowal.ski/ui/you-dont-need-animations), [Building a Drawer Component](https://emilkowal.ski/ui/building-a-drawer-component), [Building a Toast Component](https://emilkowal.ski/ui/building-a-toast-component), [The Magic of Clip Path](https://emilkowal.ski/ui/the-magic-of-clip-path), [Developing Taste](https://emilkowal.ski/ui/developing-taste), [Sonner `src/styles.css` at v2.0.8](https://github.com/emilkowalski/sonner/blob/6739aca5f668a33a4fd1d2fd9f758dff95c57466/src/styles.css), [Vaul `src/style.css` at v1.1.2](https://github.com/emilkowalski/vaul/blob/73d06cdd3fd990bf4b83214cfe240c246908af0d/src/style.css)
+- Related: ANIMLIB-013, ANIM-008, ANIM-010, ANIM-015, DSKILL-005
+
+His seven articles at emilkowal.ski/ui carry no dates. They were read 2026-10-24 through WebFetch, twice with different prompts, because the site wasn't reachable as raw text: figures are read through a fetch, not checked against raw text. The libraries were read at their tags and in the npm packages (`sonner@2.0.8` `dist/styles.css`, `vaul@1.1.2` `dist/index.mjs`).
+
+- **Modals and drawers.** Agents with Taste's table gives 100–150 ms for micro-interactions, 150–250 ms for standard UI and 200–300 ms for modals and drawers, and says "Exit animations can be ~20% faster than entrance". His skills give 200–500 ms (ANIMLIB-013). His own drawer, Vaul, runs `transform 0.5s cubic-bezier(0.32, 0.72, 0, 1)` to match iOS's sheet (his drawer article), and Sonner's toasts run `transform 400ms ease`. Both are over the 300 ms cap his tips and You Don't Need Animations set for UI.
+- **Frequency** matches: his tips and You Don't Need Animations drop animation for keyboard-initiated or very frequent actions (ANIM-015).
+- **Reduced motion.** No article mentions it. Sonner 2.0.8 sets `transition: none !important; animation: none !important` on toasts under `@media (prefers-reduced-motion)`: no motion, not the skills' "fewer and gentler animations, not zero" (ANIM-010). Vaul 1.1.2 has no reduced-motion handling in `src/` or `dist/`.
+- **Advice this KB qualifies.** Agents with Taste: `will-change: transform` for jittery animations (ANIM-008: a "last resort") and a 44 px minimum hit area (WCAG 2.2 AA asks 24 CSS px; 44 is AAA, DSKILL-005). The clip-path article calls `clip-path` hardware-accelerated; ANIM-008 finds that in Chromium only, through native paint worklets.
+
+Developing Taste gives no rules; the toast, drawer and clip-path techniques are already in `emil-design-eng`.
 
 ## Recommendations for our setup
 
