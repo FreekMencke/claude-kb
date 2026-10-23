@@ -198,6 +198,11 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DESIGN-038 | Brand DESIGN.md collections: what's in them and how they were made | comparison | design-md, awesome-design-md, brand-systems, collections |
 | DESIGN-039 | Building on a named brand's design system: trademark, trade dress and fonts | anti-pattern | trademark, trade-dress, brand-systems, fonts, licensing |
 | DESIGN-040 | A copied DESIGN.md is instruction text: read it like a skill | anti-pattern | prompt-injection, supply-chain, design-md, typeui |
+| DESIGN-041 | When to cast a shadow, and the shadow rule to give Claude | recommendation | shadows, elevation, cards, overlap, rules |
+| DESIGN-042 | A shadow scale as tokens: levels and values by design system | comparison | shadows, elevation, tokens, dtcg, tailwind |
+| DESIGN-043 | Elevation in dark mode: lighter surfaces, a hairline, a stronger shadow | comparison | shadows, elevation, dark-mode, surfaces |
+| DESIGN-044 | Shadows in forced colours and WCAG: give every shadow an edge that stays | fact | shadows, forced-colors, wcag, focus, accessibility |
+| DESIGN-045 | `box-shadow` or `drop-shadow()`, and what clips or prints them | fact | shadows, drop-shadow, filter, print, overflow |
 
 ## Docker images for Node apps (`topics/kb-docker-node.md`, DOCKER)
 
