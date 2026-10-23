@@ -271,7 +271,7 @@ Tested 2026-10-17, `angular-eslint@22.6.0`, `eslint@10.13.0`, Node 24.21.0, on a
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Angular: accessibility best practices, focus management after navigation](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/best-practices/a11y.md), `@angular/router@22.2.3` package (npm), [Helsinki accessibility model: SPAs](https://saavutettavuusmalli.hel.fi/en/toteutus-ja-ohjelmistotestaus/single-page-applications-spas-notes-on-accessibility/), [Gatsby: user testing of client-side routing (2019-07-11)](https://www.gatsbyjs.com/blog/2019-07-11-user-testing-accessible-client-routing/)
-- Related: ACCESS-013, ACCESS-015, JSTEST-011
+- Related: ACCESS-013, ACCESS-015, JSTEST-011, UIPAT-012, UIPAT-015
 
 **Angular doesn't do it.** Its guide: "When using Angular routing, you should decide where page focus goes upon navigation. Use the `NavigationEnd` event from the `Router` service to know when to update focus." "You should avoid situations where focus returns to the `body` element after a route change." The router guides say nothing more, and `@angular/router@22.2.3`'s bundles contain no "focus" (grep of the npm tarball). Only the experimental `withExperimentalPlatformNavigation()` mentions native "scroll and focus restoration" ("should not be used in production").
 
@@ -283,7 +283,7 @@ router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
 });
 ```
 
-Our additions, not Angular's: skip the first `NavigationEnd` (the server-rendered first load), so a fresh page keeps the browser's own start, and run it in the browser only (`isPlatformBrowser`) under SSR.
+Our additions, not Angular's: skip the first `NavigationEnd` (the server-rendered first load), so a fresh page keeps the browser's own start, and run it in the browser only (`isPlatformBrowser`) under SSR. Skip navigations that change only query parameters or the fragment too (a filter, sort or tab): focus stays on the control and the result is announced instead (UIPAT-012, UIPAT-015).
 
 **Announce the title** in a polite live region: Helsinki calls it "Non-mandatory but recommended", since screen readers "do not actively monitor title changes". Angular CDK's `LiveAnnouncer` does this.
 
