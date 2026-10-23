@@ -55,6 +55,27 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | NG-017 | angular/skills follows Angular's `main` branch | fact | skills, angular-developer, third-party |
 | NG-018 | In-page WebMCP and AI debugging tools (v22) | fact | webmcp, devtools, experimental |
 
+## Animation libraries and their agent tooling: Motion, GSAP, Lenis (`topics/kb-animation-libraries.md`, ANIMLIB)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| ANIMLIB-001 | Motion, GSAP and Lenis on 2026-10-23: versions, licences, peers | fact | motion, gsap, lenis, versions, licenses |
+| ANIMLIB-002 | GSAP's Standard licence: free for commercial use, not open source | fact | gsap, license, webflow, source-available |
+| ANIMLIB-003 | Bundle cost in an Angular 22 production build | fact | bundle-size, gzip, angular, motion-mini, scrolltrigger |
+| ANIMLIB-004 | SSR: importing is safe, calling on the server isn't always | fact | ssr, prerender, afternextrender, window |
+| ANIMLIB-005 | Motion's vanilla API in an Angular component | pattern | motion, angular, scopemotion, cleanup, waapi |
+| ANIMLIB-006 | GSAP in an Angular component: context, matchMedia and ScrollTrigger cleanup | pattern | gsap, angular, matchmedia, scrolltrigger, cleanup |
+| ANIMLIB-007 | Reduced motion: each library's default and what it covers | fact | prefers-reduced-motion, motion, gsap, lenis, defaults |
+| ANIMLIB-008 | An endless loop in the reduced-motion branch likely fails WCAG 2.2.2 | anti-pattern | wcag-2.2.2, reduced-motion, gsap, infinite-animation |
+| ANIMLIB-009 | Lenis at rest behaves like native scroll | fact | lenis, keyboard, find-in-page, anchors, scroll-restoration |
+| ANIMLIB-010 | Lenis setup: the options to set and the traps | pattern | lenis, nested-scroll, autoraf, anchors, destroy |
+| ANIMLIB-011 | Content hidden until a scroll trigger fires: no JS, print, find-in-page | anti-pattern | scroll-reveal, scrolltrigger, inview, print, find-in-page |
+| ANIMLIB-012 | gsap-skills and Motion's AI Kit: what they run, write and fetch | tool | gsap-skills, motion-ai-kit, mcp, supply-chain |
+| ANIMLIB-013 | Emil Kowalski's animation skills: numbers to borrow, claims to check | tool | animation-skills, durations, easing, reduced-motion |
+| ANIMLIB-014 | When not to use each library | recommendation | native-css, motion, gsap, lenis, decision |
+| ANIMLIB-015 | Lenis drops keys mid-animation, hijacks nested scroll boxes and flashes on anchors | anti-pattern | lenis, keyboard, nested-scroll, anchors, scroll-jacking |
+| ANIMLIB-016 | Vendor `llms.txt` files: size, pinning and what they tell agents | tool | llms-txt, pinning, motion, gsap, lenis |
+
 ## AWS Lambda on the Node.js runtime (`topics/kb-aws-lambda-node.md`, LAMBDA)
 
 | ID | Title | Type | Tags |
