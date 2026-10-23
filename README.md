@@ -177,11 +177,17 @@ questions, instead of pasting a prompt. Cloud sessions don't load the plugin, so
 Entries follow [CLAUDE.md](CLAUDE.md). When you add an entry or change its title or tags, update the topic file's
 index row and run `node scripts/check-kb.ts --write`: it regenerates ENTRIES.md and sets the entry counts in INDEX.md's
 file table, so don't edit the counts by hand. After any change to entries, run the check; CI runs it on every PR and
-push to `main`. It also fails when a topic file is missing from INDEX.md's file table or from the Layout table above:
+push to `main`. It also fails when a topic file is missing from INDEX.md's file table or from the Layout table above,
+and warns (without failing) on a Done recommendation over 300 characters:
 
 ```bash
 node scripts/check-kb.ts
 ```
+
+Every PR adds a row at the top of CHANGELOG.md, so parallel PRs used to conflict there on every rebase (about ten times
+across seven PRs on 2026-10-23). `.gitattributes` sets `merge=union` on it: git keeps both sides' rows, so a local
+rebase resolves on its own. GitHub's web merge doesn't use merge drivers, so a PR can still show as conflicting until
+it is rebased locally. Check the table after a rebase: union never fails, so a row edited on both sides comes out twice.
 
 ### Changing the lookup skill
 
