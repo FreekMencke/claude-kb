@@ -1,6 +1,6 @@
 # Interface guidelines and UI review
 
-Prefix `UIREV`. This file covers reviewing a web interface with Claude: what Vercel's Web Interface Guidelines contain and which of their rules are universal, how the `web-design-guidelines` skill runs a review and how to pin it, which review rules a script can check on a running page and which need judgement, what NN/g says about heuristic evaluation, what studies found about LLM reviews and what one agent's review can claim, how community design-review agents and skills are built, and how to run a read-only review in Claude Code cheaply. It links rather than repeats: verifying a design by measuring (DESIGN-007), auditing an existing design (DESIGN-009), community design skills in general (DESIGN-012), contrast (DESIGN-017), critique and rubrics (DESIGN-025), what axe finds and misses (ACCESS-005, ACCESS-006, ACCESS-008), template linting (ACCESS-011), focus and dialogs (ACCESS-012, ACCESS-013), motion rules (ACCESS-014), an agent's accessibility check (ACCESS-015), the browser-checker subagent (REPO-021) and image token cost (TOK-043). UI states, forms and copy as patterns are out of scope here (roadmap FreekMencke/claude-kb#251, `kb-ui-patterns.md`).
+Prefix `UIREV`. This file covers reviewing a web interface with Claude: what Vercel's Web Interface Guidelines contain and which of their rules are universal, how the `web-design-guidelines` skill runs a review and how to pin it, which review rules a script can check on a running page and which need judgement, what NN/g says about heuristic evaluation, what studies found about LLM reviews and what one agent's review can claim, how community design-review agents and skills are built, and how to run a read-only review in Claude Code cheaply. It links rather than repeats: verifying a design by measuring (DESIGN-007), auditing an existing design (DESIGN-009), community design skills in general (DSKILL-001), contrast (DESIGN-017), critique and rubrics (DESIGN-025), what axe finds and misses (ACCESS-005, ACCESS-006, ACCESS-008), template linting (ACCESS-011), focus and dialogs (ACCESS-012, ACCESS-013), motion rules (ACCESS-014), an agent's accessibility check (ACCESS-015), the browser-checker subagent (REPO-021) and image token cost (TOK-043). UI states, forms and copy as patterns are out of scope here (roadmap FreekMencke/claude-kb#251, `kb-ui-patterns.md`).
 
 Research basis:
 - Researched 2026-10-23 (FreekMencke/claude-kb#254, part of roadmap FreekMencke/claude-kb#251) by an Opus 5.5 lead with two Sonnet 5.5 readers, in a desktop WSL session on Claude Code.
@@ -108,7 +108,7 @@ Our sorting; the README itself marks only the copy section.
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [agent-skills web-design-guidelines SKILL.md at ba46938](https://raw.githubusercontent.com/vercel-labs/agent-skills/ba46938889d4/skills/web-design-guidelines/SKILL.md), [web-interface-guidelines install.sh at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/install.sh), [Tools reference: WebFetch](https://code.claude.com/docs/en/tools-reference)
-- Related: UIREV-005, UIREV-006, TOK-087, SKILL-034, DESIGN-012
+- Related: UIREV-005, UIREV-006, TOK-087, SKILL-034, DSKILL-001
 
 The skill (vercel-labs/agent-skills, `metadata.version: "1.0.0"`, last changed 2026-01-16; no licence in the GitHub API on 2026-10-23) is 1,231 bytes. Its steps, quoted:
 
@@ -237,7 +237,7 @@ No study read measured whether several runs or models together find more real is
 - Confidence: single-source
 - Last verified: 2026-10-23
 - Sources: [OneRedOak design-review-agent.md at 29a34c7](https://raw.githubusercontent.com/OneRedOak/claude-code-workflows/29a34c725313c7621f426f838ed31cf482473fb4/design-review/design-review-agent.md), [Impeccable critique.md at 5cb95ee](https://raw.githubusercontent.com/pbakaus/impeccable/5cb95eea9c96479f57afe0732a45470d30183326/.claude/skills/impeccable/reference/critique.md), [Impeccable finish-reviewer at 5cb95ee](https://raw.githubusercontent.com/pbakaus/impeccable/5cb95eea9c96479f57afe0732a45470d30183326/.claude/agents/impeccable-finish-reviewer.md), [emilkowalski/skills at 2d22863](https://github.com/emilkowalski/skills/tree/2d228630ba1446365f614a108cb8252f1feda202/skills), [wshobson/agents at 0874a27](https://github.com/wshobson/agents/tree/0874a27b17a22e2b7c2e2bcd725768e0803cad06/plugins), [Sub-agents: tools field](https://code.claude.com/docs/en/sub-agents)
-- Related: DESIGN-012, DESIGN-025, REPO-033, UIREV-011
+- Related: DSKILL-001, DESIGN-025, REPO-033, UIREV-011
 
 Files read at the commits in Sources on 2026-10-23, not run; licences from `gh api`. Without `tools:` an agent "Inherits every tool available to subagents"; a skill without `allowed-tools` has the session's tools.
 
