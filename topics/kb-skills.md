@@ -1613,7 +1613,7 @@ A pin doesn't cover dependencies, `command` sources or run-time fetches (SKILL-0
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Plugin loading: Node.js package dependencies](https://code.claude.com/docs/en/plugins/loading), [Skills: allowed-tools and workspace trust](https://code.claude.com/docs/en/skills), `npm view gsap@3.15.0 license`
-- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001
+- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012
 
 This extends SKILL-041. Check the owner and repo name letter by letter against the author's own site, then read every file at the commit you'll pin. Take behaviour from the code, not the README.
 
@@ -1641,7 +1641,7 @@ rg -n -P '[\x{00AD}\x{180E}\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{2064}\x
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [skillselion-mcp 0.9.11 (npm)](https://www.npmjs.com/package/skillselion-mcp/v/0.9.11), [skillselion/skillselion-mcp](https://github.com/skillselion/skillselion-mcp), [Skillselion FAQ](https://skillselion.com/faq), [web-design-guidelines SKILL.md at 063bee9](https://github.com/vercel-labs/agent-skills/blob/063bee94c3f4df8453406c830b0a7df0f2860278/skills/web-design-guidelines/SKILL.md)
-- Related: SKILL-068, SKILL-069, MCP-019, REPO-037
+- Related: SKILL-068, SKILL-069, MCP-019, REPO-037, UIREV-004
 
 Some tools pull skill text from a server whenever the agent asks. That skips every pin and review: the text can change between runs and reaches the context as instructions.
 
@@ -1671,7 +1671,7 @@ Three Lenis and "awwwards-style" scroll skills, found 2026-10-23 and read on the
 - **motioncraft** (0★): its `install-*.sh` scripts copy into agent folders such as `.claude/skills/`. Its Lenis skill reads a plugin-root file, which an install of the skill alone wouldn't have.
 - **agentic-skills** (2★): its `lenis-react` skill has GSAP ScrollTrigger code and an unpinned `npm install lenis`. It does handle `prefers-reduced-motion`.
 
-Fonts, images and settings writes weren't checked. What each skill teaches about animation is covered by FreekMencke/claude-kb#252 and FreekMencke/claude-kb#258.
+Fonts, images and settings writes weren't checked. What Lenis does to scrolling is in ANIMLIB-009, ANIMLIB-010 and ANIMLIB-015, and community design skills are in DSKILL-001.
 
 ## [SKILL-072] What a plugin pin doesn't cover: dependencies and `command` sources
 - Type: fact
@@ -1732,7 +1732,7 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 11. **Low effort: keep the Windows-side `~/.claude` empty and work in WSL.** It currently holds no skills or plugins. Adding things there would create a second setup that only Local sessions and the pre-session `/` menu see (SKILL-051, SKILL-054).
 12. **Done 2026-10-12: unused account skills pruned**: `name-only` in WSL Claude Code's `skillOverrides` (kb-token-usage R8), and `morning` and `import-memory` disabled on claude.ai. The rest are kept on purpose, since disabling one there removes it from every surface. SKILL-058, SKILL-005.
 13. **Done 2026-10-23: third-party skills only as pinned, reviewed copies.** The global `~/.claude/CLAUDE.md` now says "Install third-party skills only pinned to a full commit, after reading every file; diff before moving the pin" ([FreekMencke/claude-kb#256](https://github.com/FreekMencke/claude-kb/issues/256)). SKILL-068, SKILL-069, SKILL-066, SKILL-070.
-14. **Skill idea, posted to [FreekMencke/claude-kb#260](https://github.com/FreekMencke/claude-kb/issues/260#issuecomment-6359167748): turn SKILL-069 into a vetting procedure.** It would read a candidate skill or plugin at a pinned commit, run the hidden-Unicode grep, list hooks, `bin/`, scripts, hosts and settings writes, and report without installing. It could be a mode of `skill-workshop` or a skill of its own; #260 decides which.
+14. **Done 2026-10-23: SKILL-069 is a read-only vetting mode of `skill-workshop`** (decided on FreekMencke/claude-kb#260 over a skill of its own; FreekMencke/claude-skills#103, FreekMencke/claude-skills#104). SKILL-068 to SKILL-073.
 
 ## Open questions
 

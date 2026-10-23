@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-42
+tags: [claude-kb-lookup, should-load]
+description: "Community design skills (kb-design-skills.md)."
+execution:
+  prompt: "Is Impeccable or Taste Skill worth installing to make Claude's frontends look less generic?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'

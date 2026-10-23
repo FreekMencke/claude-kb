@@ -186,18 +186,23 @@ node scripts/check-kb.ts
 Edit [SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR. A new topic file goes into its description in the
 same PR: the topic words there decide when it loads (SKILL-015).
 
-After changing the description, run the trigger evals by hand (about $17 a run at 59 cases, so not in CI; `--case
-<glob>` reruns one case). `loads-*` cases should load the skill, `skips-*` near misses shouldn't:
+After changing the description, run the trigger evals by hand (about $17 a run at 67 cases, so not in CI).
+`loads-*` cases should load the skill, `skips-*` near misses shouldn't:
 
 ```bash
-claude plugin eval . --ablation none --model claude-opus-5-5 --no-publish -j 4 --threshold 0
+claude plugin eval . --ablation none --model claude-opus-5-5 --no-publish -j 8 --threshold 0
 ```
+
+`-j 8` is the maximum and all runs share one rate limit: on 2026-10-23 it ran 3.9 s of wall time per run with no
+throttling (24 runs), against 5.6 s at `-j 4` (201 runs in 19 minutes). While drafting a description, `--runs 1` costs a
+third; `--case <glob>` (one glob) or `--tag` reruns a subset. The run that replaces the row below is a full one, with the
+default 3 runs, since a trimmed word can affect any case.
 
 Results go to `evals/results/` (ignored). Put the before/after in the PR and replace this row:
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 41 + 18 | 123/123 | 54/54 | Opus 5.5 | 2.1.304 | 2026-10-20 |
+| 47 + 20 | 141/141 | 60/60 | Opus 5.5 | 2.1.296 | 2026-10-23 |
 
 `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
 once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
@@ -272,6 +277,12 @@ a PR from `claude/reverify-<YYYY-MM-DD>`. Its prompt lives in the routine, not i
 - **The lookup skill reads only the server**, never a checkout (2026-10-15): the same forked skill answered in a median
   22.7 s through `kb_search` and `kb_get` against 32.4 s fetching and grepping a checkout, with 138k against 207k Haiku
   input tokens and the same accuracy (MCP-041). It gives up unmerged entries and the index's Conflicts section.
+- **One lookup skill, split only when the description can't hold the topics.** claude.ai caps a description at 1,024
+  characters (SKILL-003), and its topic words decide when the skill loads (SKILL-015). On 2026-10-23 five new topics fit
+  by naming domains rather than files (1,023 characters) and every trigger case still passed (FreekMencke/claude-kb#259).
+  Split it into a Claude lookup and a stack lookup, both reading the same server, once a new topic no longer fits or a
+  `loads-*` case fails on a word that was cut. The knowledge base itself stays one: its cross-links and one search are
+  what answer a question spanning both halves.
 
 How the knowledge base was built (each research, merge and skill step's prompts and test results) is in the git
 history up to `60cd4a7`, in the former `HANDOFF.md`.

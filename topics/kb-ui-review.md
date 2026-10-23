@@ -108,7 +108,7 @@ Our sorting; the README itself marks only the copy section.
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [agent-skills web-design-guidelines SKILL.md at ba46938](https://raw.githubusercontent.com/vercel-labs/agent-skills/ba46938889d4/skills/web-design-guidelines/SKILL.md), [web-interface-guidelines install.sh at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/install.sh), [Tools reference: WebFetch](https://code.claude.com/docs/en/tools-reference)
-- Related: UIREV-005, UIREV-006, TOK-087, SKILL-034, DSKILL-001
+- Related: UIREV-005, UIREV-006, TOK-087, SKILL-034, DSKILL-001, SKILL-070
 
 The skill (vercel-labs/agent-skills, `metadata.version: "1.0.0"`, last changed 2026-01-16; no licence in the GitHub API on 2026-10-23) is 1,231 bytes. Its steps, quoted:
 
@@ -134,7 +134,7 @@ The skill itself wasn't run on our fixture, so what it flags in practice is unte
 - Confidence: community-consensus
 - Last verified: 2026-10-23
 - Sources: [agent-skills web-design-guidelines SKILL.md at ba46938](https://raw.githubusercontent.com/vercel-labs/agent-skills/ba46938889d4/skills/web-design-guidelines/SKILL.md), [web-interface-guidelines LICENSE](https://github.com/vercel-labs/web-interface-guidelines/blob/main/LICENSE), [Skills](https://code.claude.com/docs/en/skills)
-- Related: UIREV-002, UIREV-003, UIREV-004, SKILL-034, OSS-010
+- Related: UIREV-002, UIREV-003, UIREV-004, SKILL-034, OSS-010, SKILL-068
 
 Our synthesis, best first:
 
@@ -150,7 +150,7 @@ Our synthesis, best first:
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Playwright Page.emulateMedia at v1.64.1](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/api/class-page.md), [Playwright MCP README: browser_emulate_media](https://github.com/microsoft/playwright-mcp/blob/main/README.md), [axe-core 4.14.0 rules](https://github.com/dequelabs/axe-core/tree/v4.14.0/lib/rules), [Understanding 2.4.11](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html), [Understanding 1.4.10](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [command.md at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/command.md)
-- Related: UIREV-007, DESIGN-007, ACCESS-005, ACCESS-011, ACCESS-012, ACCESS-014, ACCESS-015
+- Related: UIREV-007, DESIGN-007, ACCESS-005, ACCESS-011, ACCESS-012, ACCESS-014, ACCESS-015, UIPAT-013
 
 | How | Rules (problem prevented) | Tested here |
 |---|---|---|
@@ -170,7 +170,7 @@ Our synthesis, best first:
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Playwright Page.emulateMedia at v1.64.1](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/api/class-page.md), [Understanding 2.4.11, technique C43](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html), [axe-core target-size rule at v4.14.0](https://raw.githubusercontent.com/dequelabs/axe-core/v4.14.0/lib/rules/target-size.json), local test
-- Related: UIREV-006, ACCESS-006, ACCESS-008, ACCESS-014
+- Related: UIREV-006, ACCESS-006, ACCESS-008, ACCESS-014, UIPAT-013
 
 Fixture: an 80px sticky header, a decorative spinner (`animation: spin 1s linear infinite`), a `transition: all` button, two 16×16 icon buttons, a button with `:focus-visible { outline: none }`. The "fixed" variant added `scroll-padding-top: 96px` (C43), `animation: none` under `prefers-reduced-motion: reduce` (the ring stays, static), a transition list, 24×24 icons and an outline. Checks, per element, in a context with `reducedMotion` set:
 
@@ -292,7 +292,7 @@ Ranked by impact against effort. Checked 2026-10-23 against `main` of osrs-track
 
 1. **Sites with a sticky header: `scroll-padding-top` matching it on `html`, and a scrolled keyboard walk in the checker** (UIREV-007). A Tab walk from the top doesn't scroll targets under the header, so it can't find this. osrs-tracker/osrs-tracker-web#389 (both parts); FreekMencke/freek-mencke-web#41 (the walk; its padding is already set).
 2. **Both checkers: a reduced-motion check** with `browser_emulate_media` (both agents have it): animations still running under `reduce` that also run under `no-preference` (UIREV-007, ACCESS-014). In osrs-tracker/osrs-tracker-web#389 and FreekMencke/freek-mencke-web#41.
-3. **Don't install `web-design-guidelines`** (UIREV-004, UIREV-005). A read-only `ui-review` skill with a pinned, edited subset of the rules is proposed on FreekMencke/claude-kb#260 ([comment](https://github.com/FreekMencke/claude-kb/issues/260#issuecomment-6359145247)).
+3. **Don't install `web-design-guidelines`** (UIREV-004, UIREV-005). Decided 2026-10-23 (FreekMencke/claude-kb#260): a read-only `ui-review` skill with a pinned, edited subset of the rules and a reviewer agent without write tools, FreekMencke/claude-skills#106.
 4. **Frame agent reviews as likely issues** (UIREV-012): the checkers' "Not checked" list already does this for accessibility. No change now.
 
 ## Open questions

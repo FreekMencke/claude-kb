@@ -311,7 +311,7 @@ Tested 2026-10-17, Chrome 155 through `@playwright/test@1.64.1`, Node 24.21.0: a
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [WCAG 2.2: 2.2.2 and 2.3.3](https://www.w3.org/TR/WCAG22/), [Understanding 2.3.3](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html), [Technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39.html), [Understanding 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html), [MDN: `prefers-contrast`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-contrast), [MDN: `forced-colors`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/forced-colors), web-features 3.43.0
-- Related: CSS-009, CSS-011, DESIGN-007, DESIGN-017
+- Related: CSS-009, CSS-011, DESIGN-007, DESIGN-017, ANIM-010, ANIMLIB-007
 
 - **2.2.2 Pause, Stop, Hide (A):** moving, blinking or scrolling content that starts automatically, "lasts more than five seconds" and sits beside other content needs "a mechanism for the user to pause, stop, or hide it". Its sufficient techniques are controls (G4, G186, G191); the Understanding page doesn't mention `prefers-reduced-motion`, so the media query alone doesn't meet it.
 - **2.3.3 Animation from Interactions (AAA):** "Motion animation triggered by interaction can be disabled, unless the animation is essential". Sufficient: "C39: Using the CSS prefers-reduced-motion query to prevent motion" (and SCR40 in JavaScript). Parallax and large scaling or panning are the vestibular triggers.

@@ -323,7 +323,7 @@ GOV.UK: "Many browsers will autofill password inputs, even when the `autocomplet
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Playwright: Mock APIs (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/mock.md), [Playwright: Route (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/api/class-route.md), [Playwright: BrowserContext.setOffline (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/api/class-browsercontext.md), [Playwright: Network, service workers (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/network.md)
-- Related: UIPAT-001, UIPAT-005, UIPAT-015, JSTEST-011, JSTEST-012, ACCESS-006
+- Related: UIPAT-001, UIPAT-005, UIPAT-015, JSTEST-011, JSTEST-012, ACCESS-006, UIREV-007
 
 `page.route` intercepts the page's own requests ("No requests to the API will be made"), so each state is one handler:
 
@@ -401,8 +401,8 @@ Undated native entries are widely available. **Tabs:** "activate automatically w
 
 Ranked by impact against effort. Checked 2026-10-23 against `angular-conventions` in FreekMencke/claude-skills at `595b1bc`, which already requires a `<label>` on every input ("a placeholder isn't one") and a visible failure with a retry for every failable load. The app repos weren't audited in this session.
 
-1. **A `ui-review` check that forces each state** (UIPAT-001, UIPAT-005, UIPAT-008, UIPAT-013, UIPAT-015). Per data view: force loading, empty, error, network failure and long content, and assert a visible message, a next action and that focus isn't on `<body>`; assert no empty message while loading; pass through an empty required field and assert no error; submit an empty form and assert focus moved and each field's description holds its error; assert submit isn't disabled before a submit; filter, reload and press Back. axe on each state (ACCESS-006). Proposed on #260 rather than as a claude-skills issue, as the roadmap asks.
-2. **What `angular-conventions` lacks:** one persistent status region and focus that survives re-renders, an empty state distinct from loading, the value kept while `'reloading'`, no `[disabled]="!form().valid()"`, `aria-describedby`/`aria-invalid` on fields in error with focus to the first on submit, `queryParamsHandling: 'merge'` and no focus move on query-only navigations, `autocomplete` on fields about the user (UIPAT-015, UIPAT-001, UIPAT-008, UIPAT-009, UIPAT-010, UIPAT-012). Also proposed on #260, since #260 decides what goes into which skill.
+1. **Decided 2026-10-23 (FreekMencke/claude-kb#260): forced-state and form checks go into the `ui-review` skill**, FreekMencke/claude-skills#106. UIPAT-001, UIPAT-005, UIPAT-008, UIPAT-013, UIPAT-015.
+2. **Decided 2026-10-23 (FreekMencke/claude-kb#260): the state, focus, form and URL-state rules go into `angular-conventions`**, FreekMencke/claude-skills#107. UIPAT-001, UIPAT-008, UIPAT-009, UIPAT-010, UIPAT-012, UIPAT-015.
 3. **Pick one content style** for error messages and buttons (GOV.UK's templates are the most complete) and one required-field convention, and record them in each app's CLAUDE.md (UIPAT-007, UIPAT-011). Not started: needs the user's choice.
 
 ## Open questions
