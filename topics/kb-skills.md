@@ -1612,7 +1612,7 @@ A pin doesn't cover dependencies, `command` sources or run-time fetches (SKILL-0
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-23
-- Sources: [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Plugin loading: Node.js package dependencies](https://code.claude.com/docs/en/plugins/loading), [Skills: allowed-tools and workspace trust](https://code.claude.com/docs/en/skills), `npm view gsap@3.15.0 license`
+- Sources: [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Plugin loading: Node.js package dependencies](https://code.claude.com/docs/en/plugins/loading), [Skills: allowed-tools and workspace trust](https://code.claude.com/docs/en/skills), [ripgrep GUIDE.md: Automatic filtering, 14.1.0](https://github.com/BurntSushi/ripgrep/blob/14.1.0/GUIDE.md#automatic-filtering) (accessed 2026-10-23), `npm view gsap@3.15.0 license`
 - Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012
 
 This extends SKILL-041. Check the owner and repo name letter by letter against the author's own site, then read every file at the commit you'll pin. Take behaviour from the code, not the README.
@@ -1627,13 +1627,15 @@ This extends SKILL-041. Check the owner and repo name letter by letter against t
 8. **Licence**: no licence means you can't copy the skill (OSS-001). Check code it copies too: GSAP's licence is "Standard 'no charge' license", not OSI.
 9. **Run-time content**: CDN scripts without SRI, a WebFetch of a branch URL or `llms.txt` on each run, `load_skill` (SKILL-070).
 
-Greps for items 3, 4 and 7:
+Greps for items 3, 4 and 7. ripgrep skips hidden and ignored files by default, so `--hidden --no-ignore` reaches `.mcp.json` and `.claude-plugin/`; `-g '!.git'` skips git's objects:
 
 ```bash
-rg -n -i 'https?://|curl|wget|fetch\(' <dir>
-rg -n 'settings(\.local)?\.json|claude (mcp|plugin) |npx skills add|enabledPlugins' <dir>
-rg -n -P '[\x{00AD}\x{180E}\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{2064}\x{2066}-\x{2069}\x{FEFF}\x{E0000}-\x{E007F}]' <dir>
+rg -n -i --hidden --no-ignore -g '!.git' 'https?://|curl|wget|fetch\(' <dir>
+rg -n --hidden --no-ignore -g '!.git' 'settings(\.local)?\.json|claude (mcp|plugin) |npx skills add|enabledPlugins' <dir>
+rg -n -P --hidden --no-ignore -g '!.git' '[\x{00AD}\x{180E}\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{2064}\x{2066}-\x{2069}\x{FEFF}\x{E0000}-\x{E007F}]' <dir>
 ```
+
+Tested 2026-10-23, ripgrep 14.1.0: without the flags, a URL in `.mcp.json` or a gitignored file and `settings.json` in `.claude-plugin/plugin.json` went unreported; with them, all were found.
 
 ## [SKILL-070] Anti-pattern: skill text fetched from a server at run time
 - Type: anti-pattern
@@ -1714,7 +1716,7 @@ Documented:
 
 The docs and the CHANGELOG through 2.1.309 say nothing about skill bodies or plugin files.
 
-Tested 2026-10-23, v2.1.296, terminal `-p`, Haiku, with only the Write tool. A project skill's body held a zero-width space, an RLO override and two tag characters. The model wrote the lines to a file, and `od -c` showed all three byte sequences intact. So they reached the model. The same ripgrep pattern (SKILL-069) flagged all five test characters in a sample file and left the clean line alone.
+Tested 2026-10-23, v2.1.296, terminal `-p`, Haiku, with only the Write tool. A project skill's body held a zero-width space, an RLO override and two tag characters. The model wrote the lines to a file, and `od -c` showed all three byte sequences intact. So they reached the model. The same ripgrep pattern (SKILL-069) flagged all five test characters in a sample file and left the clean line alone; to reach hidden files such as `.mcp.json` it needs SKILL-069's `--hidden --no-ignore` flags.
 
 Grep every text file in a skill before installing it. Text the model reads but you can't see is an injection channel.
 
