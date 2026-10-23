@@ -146,6 +146,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-ui-review.md](topics/kb-ui-review.md) | `UIREV` | Interface guidelines and UI review: Vercel's guidelines and skill, machine checks against judgement, heuristic evaluation, design-review agents |
 | [kb-web-animation.md](topics/kb-web-animation.md) | `ANIM` | Native web animation in Angular 22: `animate.enter`/`animate.leave`, view transitions, performance, reduced motion |
 | [kb-knowledge-retrieval.md](topics/kb-knowledge-retrieval.md) | `RETR` | Giving agents knowledge: agentic search, RAG, long context and curated knowledge bases, measured on this one |
+| [kb-ui-patterns.md](topics/kb-ui-patterns.md) | `UIPAT` | UI states, feedback timing, forms, URL state and interface copy |
 
 | Other files | What it holds |
 |---|---|

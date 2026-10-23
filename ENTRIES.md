@@ -1120,6 +1120,26 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TS-014 | Release cadence, the 7.1 plan and 6.0 servicing | fact | release-cadence, iteration-plan, typescript-7, versions |
 | TS-015 | Where to check the current version and a package's TypeScript range | recommendation | versions, peer-dependencies, npm, dist-tags |
 
+## UI patterns: states, feedback timing, forms, URL state and interface copy (`topics/kb-ui-patterns.md`, UIPAT)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| UIPAT-001 | Every data view has more states than loaded: name them | pattern | ui-states, empty, loading, error, angular-resource |
+| UIPAT-002 | Response-time limits: 0.1 s, 1 s and 10 s, and what to show at each | fact | response-time, feedback, nngroup, progress-indicator |
+| UIPAT-003 | Skeleton, spinner or progress bar, and how to avoid a flashing loader | comparison | skeleton, spinner, flicker, defer, suspense |
+| UIPAT-004 | Empty states: first use, no results and cleared | pattern | empty-state, no-results, copy, carbon, polaris |
+| UIPAT-005 | Error, partial and offline states: keep the view, offer a way out | pattern | error-state, partial-failure, offline, retry |
+| UIPAT-006 | Optimistic updates and rollback | pattern | optimistic-ui, rollback, tanstack-query, useoptimistic |
+| UIPAT-007 | Form labels, hints and placeholders | recommendation | forms, labels, placeholder, hint-text, required-fields |
+| UIPAT-008 | When to validate, and the error summary on submit | recommendation | forms, validation, error-summary, focus, signal-forms |
+| UIPAT-009 | Don't disable the submit button until the form is valid | anti-pattern | forms, disabled-button, double-submit, aria-disabled |
+| UIPAT-010 | `autocomplete` tokens and input types | fact | forms, autocomplete, wcag-1-3-5, inputmode |
+| UIPAT-011 | Error messages and button labels | recommendation | content-design, error-messages, button-labels, govuk |
+| UIPAT-012 | URL state: filters, sort, tabs and pagination | pattern | url-state, deep-links, query-params, back-button, angular-router |
+| UIPAT-013 | Forcing UI states in Playwright (tested) | pattern | playwright, mocking, ui-states, offline, testing |
+| UIPAT-014 | Native element or APG pattern: a lookup for common widgets | comparison | apg, native-html, widgets, baseline |
+| UIPAT-015 | Announcing state changes and keeping focus when the view changes | pattern | live-regions, focus, status-messages, wcag-4-1-3, toasts |
+
 ## Interface guidelines and UI review (`topics/kb-ui-review.md`, UIREV)
 
 | ID | Title | Type | Tags |
