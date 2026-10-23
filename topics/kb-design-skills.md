@@ -204,7 +204,7 @@ Read, not run. Both report findings; neither generates a fix.
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [Impeccable plugin/hooks/hooks.json @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/hooks/hooks.json), [Impeccable launcher](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/scripts/impeccable), [Impeccable crates/skills commands.rs and hook_manifest.rs](https://github.com/pbakaus/impeccable/tree/5cb95ee/crates/skills/src), [Impeccable BUNDLE-SIGNING.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/docs/BUNDLE-SIGNING.md), [Taste install.sh @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/install.sh), [Hallmark install-hook.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/install-hook.mjs), [ui-ux-pro-max cli/src @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/28327f2/cli/src), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
-- Related: SKILL-041, SKILL-036, HOOK, DSKILL-015, DSKILL-011
+- Related: SKILL-041, SKILL-036, HOOK, DSKILL-015, DSKILL-011, SKILL-069
 
 Read from source at the pinned commits, 2026-10-23. Four of the five also install as a plugin marketplace (SKILL-036: third-party auto-update is off by default).
 
@@ -307,7 +307,7 @@ Copying wording needs the licence: MIT keeps its notice; Apache-2.0 (Impeccable,
 Ranked by impact against effort.
 
 1. **Don't install Impeccable, Taste Skill, Hallmark, ui-ux-pro-max or huashu-design** (DSKILL-010, DSKILL-015, DSKILL-013). Borrow their ideas (DSKILL-014). This replaces DESIGN recommendation 7. To try one anyway: a pinned copy without its scripts, as in DSKILL-013, or for Impeccable `--no-hooks`, `DO_NOT_TRACK=1` and `IMPECCABLE_NO_UPDATE_CHECK=1`, from a marketplace with auto-update off.
-2. **Skill ideas went to FreekMencke/claude-kb#260** as a comment: a per-project log of past looks read by `design-workshop`, "add options, not bans" with a mirror test, a checker that labels WCAG rules apart from conventions, and the state and motion lists (DSKILL-014, DSKILL-008).
+2. **Decided 2026-10-23 (FreekMencke/claude-kb#260): borrow into our own skills.** The log of past looks and "add options, not bans" with the mirror test go to `design-workshop` (FreekMencke/claude-skills#108); the checker that labels WCAG rules apart from conventions, and the state lists, go to `ui-review` (FreekMencke/claude-skills#106). DSKILL-014, DSKILL-008.
 3. **Keep the measuring scripts with the next design test.** DSKILL-013's Playwright measure, contact-sheet and axe scripts weren't committed, because #252 leaves `evals/` to #259; the DESIGN recommendation 8 note still applies.
 
 ## Open questions

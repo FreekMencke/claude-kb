@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-46
+tags: [claude-kb-lookup, should-load]
+description: "Web animation in Angular (kb-web-animation.md)."
+execution:
+  prompt: "@angular/animations is deprecated. What should replace it in an SSR app on Angular 22?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'

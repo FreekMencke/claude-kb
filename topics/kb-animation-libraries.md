@@ -339,7 +339,7 @@ Tested 2026-10-23, Angular 22.2.3 SSR, `gsap@3.15.0`, `motion@14.6.0`, Chromium 
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [greensock/gsap-skills at aed9cfd](https://github.com/greensock/gsap-skills/tree/aed9cfd3277740755f6bfc1155c7aa645403b760), [motiondivision/ai-kit at 78a83b1](https://github.com/motiondivision/ai-kit/tree/78a83b1485fa70dab9037c480de0c7cf53930df7), [Motion: AI Kit install](https://motion.dev/docs/ai-kit-install.md), `motion-ai@14.2.0` and `add-mcp@2.4.1` tarballs
-- Related: ANIMLIB-016, ANIMLIB-008, ANIMLIB-013, SKILL-041, REPO-039
+- Related: ANIMLIB-016, ANIMLIB-008, ANIMLIB-013, SKILL-041, REPO-039, SKILL-069
 
 | | gsap-skills | Motion AI Kit (`npx motion-ai`) |
 |---|---|---|
@@ -382,7 +382,7 @@ Out of date: `animation-performance` says Motion's `x`/`y`/`scale` shorthands "a
 - Confidence: community-consensus
 - Last verified: 2026-10-23
 - Sources: synthesis of ANIMLIB-003, ANIMLIB-007, ANIMLIB-009, ANIMLIB-010, ANIMLIB-011, ANIMLIB-015, CSS-008, CSS-009, CSS-010
-- Related: ANIMLIB-003, ANIMLIB-009, CSS-009, CSS-010, DESIGN-013
+- Related: ANIMLIB-003, ANIMLIB-009, CSS-009, CSS-010, DESIGN-013, ANIM-007
 
 Order of preference: native CSS (transitions, `@starting-style`, view transitions, scroll-driven animations: CSS-008 to CSS-010), and Angular 22's `animate.enter`/`animate.leave` for elements it inserts and removes (ANIM-003, ANIM-007); then a library with its reason in a comment. Scroll-driven animations: Chrome 115 and Safari 26, Firefox from 159 (CSS-010).
 
@@ -425,7 +425,7 @@ Tested 2026-10-23, `lenis@1.3.27`, Angular 22.2.3 SSR, Playwright 1.64.1: Chromi
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [motion.dev/llms.txt](https://motion.dev/llms.txt), [gsap.com/llms.txt](https://gsap.com/llms.txt), [lenis.dev/llms.txt](https://lenis.dev/llms.txt), [Motion: AI Kit install](https://motion.dev/docs/ai-kit-install.md)
-- Related: ANIMLIB-012, ANIMLIB-010, SKILL-066, SKILL-067
+- Related: ANIMLIB-012, ANIMLIB-010, SKILL-066, SKILL-067, SKILL-068
 
 All three vendors publish an `llms.txt`; none is versioned or kept in the library's repo at a tag, so a live fetch puts unpinned vendor text in an agent's context. Fetched 2026-10-23 with `curl -L`:
 
@@ -445,7 +445,7 @@ Ranked by impact against effort. Neither osrs-tracker-web nor freek-mencke-web d
 
 1. **Keep animation libraries out by default**: use native CSS (ANIM-007, CSS-008 to CSS-010); add a library only with its reason in a comment, and never Lenis for "feel". ANIMLIB-014, ANIMLIB-015, ANIMLIB-010.
 2. **If one is added, write the reduced branch and the cleanup**: start in `afterNextRender`, wrap in `scopeMotion(…, { matchMedia: 'motion' })` or `gsap.matchMedia()`, revert in `DestroyRef.onDestroy`, no endless loops without a pause control, and a print rule for reveals. ANIMLIB-004 to ANIMLIB-008, ANIMLIB-011.
-3. **Skill ideas go to #260**: the Angular cleanup and reduced-motion pattern above for `angular-conventions`, and Emil's and Motion's duration ranges as cited numbers. Posted as a comment on FreekMencke/claude-kb#260. ANIMLIB-005, ANIMLIB-006, ANIMLIB-013.
+3. **Decided 2026-10-23 (FreekMencke/claude-kb#260): the Angular cleanup, reduced-motion and "no Lenis" rules go into `angular-conventions`** with the native rules, FreekMencke/claude-skills#107. ANIMLIB-005, ANIMLIB-006, ANIMLIB-013.
 4. **Don't install the vendors' agent tooling**: borrow from it by reading; if a skill is ever installed, pin it with `#<full sha>` and set `DO_NOT_TRACK=1`. ANIMLIB-012, ANIMLIB-016, SKILL-066, SKILL-067.
 5. **GSAP needs a licence exception**: a CI licence allow-list (OSS-008) won't recognise its free-text licence; record the decision where the dependency is added. ANIMLIB-002.
 

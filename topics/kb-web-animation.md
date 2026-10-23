@@ -1,6 +1,6 @@
 # Native web animation in Angular 22
 
-Prefix `ANIM`. This file covers animating an Angular 22 app without an animation library: `@angular/animations`' deprecation and what replaces each of its APIs, how `animate.enter` and `animate.leave` behave (including on the server and at hydration), route transitions with `withViewTransitions()`, when CSS or the Web Animations API is enough, compositor-only properties and Core Web Vitals, reduced motion and the other WCAG motion rules, focus during exit animations, motion durations and easing with their sources, and testing animated components. Motion, GSAP and Lenis are in the ANIMLIB file (FreekMencke/claude-kb#258); Baseline dates of the CSS features are in kb-css-baseline.md; loading, skeleton, empty and error states are in the UIPAT file (FreekMencke/claude-kb#255), and only their motion rules are here.
+Prefix `ANIM`. This file covers animating an Angular 22 app without an animation library: `@angular/animations`' deprecation and what replaces each of its APIs, how `animate.enter` and `animate.leave` behave (including on the server and at hydration), route transitions with `withViewTransitions()`, when CSS or the Web Animations API is enough, compositor-only properties and Core Web Vitals, reduced motion and the other WCAG motion rules, focus during exit animations, motion durations and easing with their sources, and testing animated components. Motion, GSAP and Lenis are in kb-animation-libraries.md (ANIMLIB); Baseline dates of the CSS features are in kb-css-baseline.md; loading, skeleton, empty and error states are in the UIPAT file (FreekMencke/claude-kb#255), and only their motion rules are here.
 
 Research basis:
 - Researched 2026-10-23 (FreekMencke/claude-kb#257, part of roadmap #251) by an Opus 5.5 lead with two Sonnet 5.5 readers (CSS techniques and performance; accessibility, motion numbers and testing), a Sonnet refuter and a three-persona review panel (front-end engineer, accessibility specialist, UX/UI designer).
@@ -182,7 +182,7 @@ Tested 2026-10-23, `@angular/router@22.2.3`, Chromium 156 and WebKit 27.2: `star
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [web-features 3.44.0 `data.json`](https://cdn.jsdelivr.net/npm/web-features@3.44.0/data.json), [MDN: Using the Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Using_the_Web_Animations_API), [MDN: `transition-behavior`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transition-behavior), [MDN: `interpolate-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/interpolate-size), [MDN: `view-transition-class`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/view-transition-class)
-- Related: CSS-006, CSS-008, CSS-009, CSS-010, CSS-011, ANIM-002
+- Related: CSS-006, CSS-008, CSS-009, CSS-010, CSS-011, ANIM-002, ANIMLIB-014
 
 Order of preference: CSS, then WAAPI, then a library (ANIMLIB file) for what neither does.
 
@@ -239,7 +239,7 @@ Diagnose with web-vitals attribution and LoAF (WEBPERF-003): `totalStyleAndLayou
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Media Queries 5: `prefers-reduced-motion`](https://drafts.csswg.org/mediaqueries-5/#prefers-reduced-motion), [MDN: `prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), [Chrome: same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document), [WCAG technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39.html), [web.dev: prefers-reduced-motion (2019-03-11)](https://web.dev/articles/prefers-reduced-motion), [NN/g: animation duration (2020-02-09)](https://www.nngroup.com/articles/animation-duration/), [Tailwind: hover, focus and other states](https://raw.githubusercontent.com/tailwindlabs/tailwindcss.com/main/src/docs/hover-focus-and-other-states.mdx), [Complex animations with CSS (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/animations/css.md)
-- Related: ACCESS-014, CSS-011, ANIM-006, ANIM-011
+- Related: ACCESS-014, CSS-011, ANIM-006, ANIM-011, ANIMLIB-007
 
 The spec defines `reduce` as a preference for an interface that "removes or replaces the types of motion-based animation that either trigger discomfort for those with vestibular motion sensitivity, or distraction"; MDN: "removes, reduces, or replaces", and its example swaps a scaling pulse for an opacity "dissolve". Chrome: "a preference for 'reduced motion' doesn't mean the user wants no motion". Against: web.dev (2019) "preferably to the point where all non-essential movement is removed", NN/g "by removing animations", C39 "…to prevent motion", Angular's guide "ensure no animations play" (INDEX.md, Conflicts). Both meet WCAG 2.3.3 for a fade, not for a replacement scale or zoom. Replace slides, zooms, parallax and spins with a short fade (100–200 ms, our choice) or nothing; keep colour and opacity feedback.
 
@@ -316,7 +316,7 @@ Tested 2026-10-23, `@angular/core@22.2.3`, Chromium 156 and WebKit 27.2, 100 ms 
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [NN/g: Executing UX Animations: Duration and Motion Characteristics (2020-02-09)](https://www.nngroup.com/articles/animation-duration/), [material-web `_md-sys-motion.scss` at `fd45953`](https://github.com/material-components/material-web/blob/fd45953c77876d7964dfe1181e1e30ae55b69a73/tokens/versions/latest/sass/_md-sys-motion.scss), `@carbon/motion` 11.55.0 `scss/generated/_tokens.scss` (npm), [Apple HIG: Motion](https://developer.apple.com/design/human-interface-guidelines/motion), [Angular components `dialog-container.ts` (v22.2.4)](https://github.com/angular/components/blob/v22.2.4/src/material/dialog/dialog-container.ts)
-- Related: DESIGN-013, ANIM-010, ANIM-012
+- Related: DESIGN-013, ANIM-010, ANIM-012, ANIMLIB-013, DSKILL-014
 
 | Source | Durations | Easing |
 |---|---|---|
@@ -369,7 +369,7 @@ Purpose first: NN/g calls motion "helpful and communicative, if used with restra
 
 Ranked by impact against effort. Checked 2026-10-23 against `main` of osrs-tracker-web and freek-mencke-web: neither imports `@angular/animations`, `animate.enter` or `withViewTransitions`; both use CSS keyframes and transitions.
 
-1. **Animation rules in `angular-conventions`** (ANIM-004, ANIM-005, ANIM-010, ANIM-012, ANIM-013, ANIM-014): `@starting-style` for server-rendered entrances, `animate.leave` for exits, end state as base style, reduced motion replaces motion and stops loops, focus out and `inert` in the leave callback, durations from a cited scale, jsdom can't test motion. Proposed to FreekMencke/claude-kb#260 (skills decision) as a comment, not as a claude-skills issue.
+1. **Decided 2026-10-23 (FreekMencke/claude-kb#260): animation rules go into `angular-conventions`**, not a skill of their own (its triggers would overlap `angular-developer`): FreekMencke/claude-skills#107. ANIM-004, ANIM-005, ANIM-010, ANIM-012, ANIM-013, ANIM-014.
 2. **osrs-tracker-web: stop the "live" dot's endless pulse** (ANIM-008, ANIM-010, ANIM-011): `--animate-live` loops a `box-shadow` forever with no `motion-reduce:` variant, unlike the skeleton and loading bar. A reduced-motion state answers 2.3.3 but not 2.2.2, so the issue also asks for a finite pulse (under five seconds): osrs-tracker/osrs-tracker-web#390.
 3. **Won't do: change freek-mencke-web's skill line on `@angular/animations`** (ANIM-001). It says "removed in v23"; Angular's JSDoc says "Intent to remove in v23", close enough for a rule that only tells agents not to use the package.
 
