@@ -134,6 +134,41 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CSS-016 | Angular CLI: browser targets are Baseline widely available on a fixed date, and esbuild lowers CSS to them | fact | angular, browser-support, esbuild, browserslist |
 | CSS-017 | Anchor positioning on 2026-10-17: the core that works everywhere, and the gaps | recommendation | anchor-positioning, position-area, polyfill |
 
+## Data visualisation and transformation: charts, tables, colour, formatting, motion (`topics/kb-dataviz.md`, VIZ)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| VIZ-001 | Choosing a chart from the question it answers | recommendation | chart-choice, ft-visual-vocabulary, stat-tile, decision-table |
+| VIZ-002 | Ranking of encodings: position first, then length, angle and area | fact | graphical-perception, cleveland-mcgill, encodings, position |
+| VIZ-003 | Chart patterns to avoid, and what to use instead | anti-pattern | anti-patterns, truncated-axis, 3d, rainbow, direct-labels, small-multiples |
+| VIZ-004 | Dual axes and pie charts: where the guides disagree | comparison | dual-axis, pie-chart, few, datawrapper, conflict |
+| VIZ-005 | Headline title, annotation and direct labels | recommendation | headline-title, annotation, direct-labels, takeaway |
+| VIZ-006 | Colour for data: palette types, named palettes and how many hues | recommendation | colour, palette, okabe-ito, viridis, categorical, sequential |
+| VIZ-007 | Checking data colours: colour vision deficiency, 1.4.1, 1.4.11 and dark mode | pattern | colour, cvd, wcag-1-4-11, wcag-1-4-1, dark-mode |
+| VIZ-008 | Chart libraries for an Angular 22 app: licences, rendering and upkeep | comparison | chart-libraries, licenses, angular, echarts, chartjs, plot |
+| VIZ-009 | What each chart library adds to an Angular 22 bundle | fact | bundle-size, gzip, angular, defer, echarts, chartjs |
+| VIZ-010 | Chart libraries under SSR and prerender, and `@defer` | fact | ssr, prerender, defer, echarts, plot, ag-charts |
+| VIZ-011 | Chart libraries' keyboard access and accessibility tree | fact | accessibility-tree, keyboard, playwright, ag-charts, echarts-aria |
+| VIZ-012 | Which chart library, in which order, and when not to | recommendation | chart-libraries, decision, native-svg, d3, when-not-to-use |
+| VIZ-013 | SVG, Canvas or WebGL by data size, and downsampling | fact | canvas, svg, webgl, lttb, decimation, web-worker |
+| VIZ-014 | An accessible chart: takeaway text, a data table and one `role="img"` | pattern | accessibility, text-alternative, data-table, role-img, graphics-aria |
+| VIZ-015 | Interactive charts: keyboard, tooltips and the WCAG criteria that apply | fact | accessibility, wcag, keyboard, tooltips, chartability |
+| VIZ-016 | Data tables: when, alignment, units and sortable headers | pattern | tables, aria-sort, alignment, apg, matsort |
+| VIZ-017 | Big tables: CDK, Material, TanStack, AG Grid, virtual scrolling and phone width | comparison | tables, cdk-table, ag-grid, tanstack-table, virtual-scroll, responsive |
+| VIZ-018 | Chart states: empty, single point, outliers and loading | pattern | chart-states, empty-state, loading, outliers, single-point |
+| VIZ-019 | Static charts for READMEs, email and social cards | fact | static-charts, mermaid, email, svg, og-image |
+| VIZ-020 | Shaping data: `Object.groupBy`, d3-array, Arquero and time buckets | recommendation | groupby, d3-array, arquero, aggregation, time-zones |
+| VIZ-021 | Formatting numbers and dates with `Intl` for axes, tooltips and tables | fact | intl, numberformat, compact-notation, d3-format, locale |
+| VIZ-022 | Parsing CSV and large inputs: RFC 4180, BOMs, Papa Parse, csv-parse, DuckDB-WASM | fact | csv, papaparse, csv-parse, bom, duckdb-wasm |
+| VIZ-023 | Claude as the analyst: query the data, don't read it into context | recommendation | data-analysis, tokens, duckdb, jq, verification |
+| VIZ-024 | The built-in `dataviz` skill: what it prescribes and how it changes | tool | dataviz-skill, bundled-skills, palette-validator, claude-code |
+| VIZ-025 | Chart MCP servers and skills: what they run, write and send | tool | mcp, chart-servers, antv, supply-chain, data-egress |
+| VIZ-026 | Animated transitions: what the research supports | fact | animated-transitions, object-constancy, heer-robertson, small-multiples |
+| VIZ-027 | Chart libraries' animation defaults and reduced motion | fact | animation, prefers-reduced-motion, echarts, chartjs, ngx-charts |
+| VIZ-028 | Count-ups, live charts and scrollytelling: pause and reduced-motion versions | recommendation | count-up, live-data, wcag-2-2-2, scrollytelling, view-transitions |
+| VIZ-029 | Commercial chart licences: Highcharts, AG Charts Enterprise, ApexCharts | fact | licenses, highcharts, ag-charts-enterprise, apexcharts, pricing |
+| VIZ-030 | Dashboards: scope, KPI tiles, sparklines and gauges | recommendation | dashboards, kpi-tile, sparkline, gauge, bullet-chart |
+
 ## Community design skills: mechanisms, security surface, a test (`topics/kb-design-skills.md`, DSKILL)
 
 | ID | Title | Type | Tags |
