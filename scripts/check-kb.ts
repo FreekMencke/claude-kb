@@ -3,7 +3,8 @@
  * tables, and INDEX.md, OVERLAPS.md and CHANGELOG.md against the entries.
  *
  * Usage: node scripts/check-kb.ts [--write]
- * --write regenerates ENTRIES.md from the topic files' index tables first. Without it, a stale ENTRIES.md is a problem.
+ * --write regenerates ENTRIES.md from the topic files' index tables and fills the entry counts in INDEX.md's file table
+ * first. Without it, a stale ENTRIES.md or a wrong count is a problem.
  * Exits with status 1 when it finds a problem, so it can run in CI. Possible duplicates across files are printed as
  * warnings and never fail the run.
  *
@@ -14,6 +15,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SequenceMatcher } from './difflib.ts';
 import {
+  APPLIES_TO,
   entries,
   escapeRegExp,
   FIELDS,
@@ -30,6 +32,8 @@ import {
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CONFIDENCE = new Set(['official-docs', 'official-example', 'community-consensus', 'single-source', 'unverified']);
+// The word limit of an entry's text (CLAUDE.md asks for 50-250 and allows up to this).
+const MAX_WORDS = 300;
 // Entries that are syntheses of other entries and cite IDs instead of URLs.
 const SYNTHESIS_SOURCE = /synthesis of/i;
 // Possible duplicates across files: titles this similar (difflib ratio), or this share of tags (Jaccard, at least 2).
@@ -73,11 +77,16 @@ function quickAnswerRows(text: string): number | undefined {
   return Math.max(rows.length - 2, 0); // minus header and separator
 }
 
+/** The prefix of a topic file's entries, from its first entry. */
+function topicPrefix(text: string): string {
+  const first = entries(text).next();
+  return first.done ? '' : first.value[0].split('-')[0];
+}
+
 export function buildEntries(texts: Texts): string {
   const parts = [ENTRIES_HEADER];
   for (const [name, t] of texts) {
-    const first = entries(t).next();
-    const prefix = first.done ? '' : first.value[0].split('-')[0];
+    const prefix = topicPrefix(t);
     const rows = indexTable(t)
       .map(([eid, title, kind, tags]) => `| ${eid} | ${title} | ${kind} | ${tags} |`)
       .join('\n');
@@ -165,6 +174,12 @@ function field(body: string, pattern: string): string | undefined {
   return new RegExp(`^- ${pattern}`, 'm').exec(body)?.[1];
 }
 
+/** Some of APPLIES_TO joined by ', ', each at most once and in the order of APPLIES_TO. */
+function validAppliesTo(value: string): boolean {
+  const indexes = value.split(', ').map(v => APPLIES_TO.indexOf(v));
+  return indexes.every((at, i) => at >= 0 && (i === 0 || at > indexes[i - 1]));
+}
+
 function checkTopic(t: string, where: Map<string, string[]>): string[] {
   const issues: string[] = [];
   for (const name of ['Quick answers', 'Index', 'Recommendations for our setup', 'Open questions']) {
@@ -191,25 +206,68 @@ function checkTopic(t: string, where: Map<string, string[]>): string[] {
     for (const name of FIELDS) {
       if (!new RegExp(`^- ${name}:`, 'm').test(body)) issues.push(`${eid}: missing field ${name}`);
     }
-    const confidence = field(body, 'Confidence:\\s*(.+)$');
+    const confidence = field(body, 'Confidence:[ \\t]*(.+)$');
     if (confidence !== undefined && !CONFIDENCE.has(confidence.trim())) {
       issues.push(`${eid}: Confidence '${confidence.trim()}' is not one of the allowed values`);
     }
-    const verified = field(body, 'Last verified:\\s*(\\S+)');
+    const applies = field(body, 'Applies to:[ \\t]*(.*)$');
+    if (applies !== undefined && !validAppliesTo(applies)) {
+      issues.push(
+        `${eid}: Applies to '${applies}' is not ${APPLIES_TO.join(', ')} (some, joined by ', ' in that order)`,
+      );
+    }
+    const verified = field(body, 'Last verified:[ \\t]*(\\S+)');
     if (verified !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(verified)) {
       issues.push(`${eid}: Last verified '${verified}' is not YYYY-MM-DD`);
     }
-    const sources = field(body, 'Sources:\\s*(.+)$');
+    const sources = field(body, 'Sources:[ \\t]*(.+)$');
     if (sources !== undefined && !sources.includes('http') && !SYNTHESIS_SOURCE.test(sources)) {
       issues.push(`${eid}: Sources has no URL`);
     }
-    const related = field(body, 'Related:\\s*(.+)$');
+    const related = field(body, 'Related:[ \\t]*(.+)$');
     for (const [ref] of related?.matchAll(/[A-Z]+-\d+/g) ?? []) {
       if (!where.has(ref)) issues.push(`${eid}: Related points to unknown ${ref}`);
     }
     const prose = body.replace(META_LINE, '').replace(/```[\s\S]*?```/g, '');
     const count = words(prose).length;
-    if (count > 300 && !SYNTHESIS_SOURCE.test(sources ?? '')) issues.push(`${eid}: about ${count} words (want 50-250)`);
+    if (count > MAX_WORDS && !SYNTHESIS_SOURCE.test(sources ?? '')) {
+      issues.push(`${eid}: about ${count} words (want at most ${MAX_WORDS})`);
+    }
+  }
+  return issues;
+}
+
+// A row of INDEX.md's file table: [row up to the count, file name, prefix, count cell, rest of the row]
+const FILE_ROW = /^(\| `topics\/(kb-[\p{L}\p{N}_-]+\.md)` \| ([A-Z]+) \| .*? \| )([^|]*)( \|)$/gmu;
+
+/** The count cell of a topic file's row in INDEX.md's file table: its entries, and how many of them are merged. */
+function fileTableCount(text: string): string {
+  const merged = indexTable(text).filter(([, title]) => MERGED_SUFFIX.test(title)).length;
+  return `${countEntries(text)} (${merged} merged into other entries)`;
+}
+
+/** INDEX.md with the count cell of each topic file's row set to the file's current counts. */
+export function fillFileTable(indexMd: string, texts: Texts): string {
+  return indexMd.replace(FILE_ROW, (row, head: string, name: string, _prefix, _count, tail: string) => {
+    const t = texts.get(name);
+    return t === undefined ? row : `${head}${fileTableCount(t)}${tail}`;
+  });
+}
+
+/** README.md's Layout table against the topic files: each is listed, under the prefix its entries use. */
+function checkReadme(readme: string, texts: Texts): string[] {
+  const issues: string[] = [];
+  const rows = new Map(
+    [...readme.matchAll(/^\| \[(kb-[\p{L}\p{N}_-]+\.md)\]\(topics\/\1\) \| `([A-Z]+)` \|/gmu)].map(m => [m[1], m[2]]),
+  );
+  for (const [name, t] of texts) {
+    const prefix = rows.get(name);
+    if (prefix === undefined) issues.push(`topics/${name} is missing from README.md's Layout table`);
+    else if (prefix !== topicPrefix(t)) {
+      issues.push(
+        `README.md's Layout table gives prefix ${prefix} for topics/${name}, its entries use ${topicPrefix(t)}`,
+      );
+    }
   }
   return issues;
 }
@@ -225,17 +283,14 @@ function checkIndex(indexMd: string, others: Texts, texts: Texts, where: Map<str
     for (const ref of mentioned) if (!where.has(ref)) issues.push(`${name} mentions unknown ${ref}`);
   }
   // The file table at the top: every topic file listed, with its current entry count.
-  const table = new Map(
-    [...indexMd.matchAll(/^\| `topics\/(kb-[\p{L}\p{N}_-]+\.md)` \| [A-Z]+ \| .*? \| (\d+)/gmu)].map(m => [
-      m[1],
-      Number(m[2]),
-    ]),
-  );
+  const table = new Map([...indexMd.matchAll(FILE_ROW)].map(m => [m[2], m[4]]));
   for (const [name, t] of texts) {
-    const count = countEntries(t);
+    const want = fileTableCount(t);
     if (!table.has(name)) issues.push(`topics/${name} is missing from the file table`);
-    else if (table.get(name) !== count) {
-      issues.push(`file table says ${table.get(name)} entries for topics/${name}, the file has ${count}`);
+    else if (table.get(name) !== want) {
+      issues.push(
+        `file table says '${table.get(name)}' for topics/${name}, want '${want}': run node scripts/check-kb.ts --write`,
+      );
     }
   }
   return issues;
@@ -276,6 +331,12 @@ export function main(root: string, write = false): number {
     console.log('ENTRIES.md: up to date');
   }
 
+  const indexFile = join(root, 'INDEX.md');
+  if (write && existsSync(indexFile)) {
+    writeFileSync(indexFile, fillFileTable(readText(indexFile), texts), 'utf8');
+    console.log("INDEX.md: file table's entry counts written");
+  }
+
   const others: Texts = new Map(ID_FILES.filter(n => existsSync(join(root, n))).map(n => [n, readText(join(root, n))]));
   const indexMd = others.get('INDEX.md');
   if (indexMd !== undefined) {
@@ -292,6 +353,14 @@ export function main(root: string, write = false): number {
       );
       for (const w of warnings) console.log(`  - ${w}`);
     }
+  }
+
+  const readmeFile = join(root, 'README.md');
+  if (existsSync(readmeFile)) {
+    const issues = checkReadme(readText(readmeFile), texts);
+    console.log(`README.md: ${issues.length} issue(s)`);
+    for (const issue of issues) console.log(`  - ${issue}`);
+    problems += issues.length;
   }
 
   for (const [eid, names] of [...where].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) {

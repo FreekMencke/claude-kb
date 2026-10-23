@@ -136,7 +136,7 @@ Gotchas:
 
 ## [ORCH-003] Subagent model resolution order
 - Type: fact
-- Applies to: Claude Code, Claude API (Agent SDK)
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents – choose a model](https://code.claude.com/docs/en/sub-agents), [Model config](https://code.claude.com/docs/en/model-config), [Agent teams](https://code.claude.com/docs/en/agent-teams), [Workflows](https://code.claude.com/docs/en/workflows)
@@ -155,7 +155,7 @@ Other surfaces:
 - **Teammates:** the model named in the spawn prompt, then the definition, then the env var, then the lead's model. A teammate's model is fixed at spawn.
 - **Forks:** always use the main model.
 
-A model given at spawn overrides the model a repo agent pins in its file. To keep a pinned reviewer on its own model, don't pass `model` when spawning it. Unset subagents inherit the session model, which is often the most expensive, so set `model` on every spawn ([superpowers](https://github.com/obra/superpowers) gives the same advice).
+A model given at spawn overrides the model a repo agent pins in its file. To keep a pinned reviewer on its own model, don't pass `model` when spawning it. Unset subagents inherit the session model, which is often the most expensive, so set `model` on every spawn ([superpowers](https://github.com/obra/superpowers) gives the same advice). Applies to Claude Code and the Agent SDK.
 
 ## [ORCH-004] Subagent effort resolution order
 - Type: fact
@@ -200,7 +200,7 @@ Explore and Plan have "read-only tools; Write and Edit are denied", so they can'
 
 ## [ORCH-006] Concurrency, nesting and background defaults
 - Type: fact
-- Applies to: Claude Code, Claude API (Agent SDK)
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Env vars](https://code.claude.com/docs/en/env-vars), [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
@@ -217,7 +217,7 @@ The SDK docs warn that Opus 5 "delegates to subagents more readily than earlier 
 
 ## [ORCH-007] What a subagent sees and what it returns
 - Type: fact
-- Applies to: Claude Code, Claude API (Agent SDK)
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Tools reference – Agent tool](https://code.claude.com/docs/en/tools-reference), [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
@@ -244,7 +244,7 @@ It does **not** get the parent's history, the files already read, the skills alr
 
 The docs' own warning: "Running many subagents that each return detailed results can consume significant context."
 
-The brief is the only channel down (TOK-103); how results arrive and when they spill to a file: TOK-105.
+The brief is the only channel down (TOK-103); how results arrive and when they spill to a file: TOK-105. Applies to Claude Code and the Agent SDK.
 
 ## [ORCH-008] Forked subagents vs fresh subagents
 - Type: fact
@@ -398,7 +398,7 @@ All processes share one plan or API rate limit.
 
 ## [ORCH-015] Agent SDK subagents, budgets and cost tracking
 - Type: tool
-- Applies to: Claude API (Agent SDK)
+- Applies to: Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [SDK cost tracking](https://code.claude.com/docs/en/agent-sdk/cost-tracking), [SDK sessions](https://code.claude.com/docs/en/agent-sdk/sessions)
@@ -481,7 +481,7 @@ Use it when you are building a product that needs long-running asynchronous agen
 
 ## [ORCH-019] Hooks for orchestration
 - Type: tool
-- Applies to: Claude Code, Claude API (Agent SDK)
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Hooks](https://code.claude.com/docs/en/hooks), [Agent teams](https://code.claude.com/docs/en/agent-teams)
@@ -497,7 +497,7 @@ Use it when you are building a product that needs long-running asynchronous agen
 | `PreCompact` | Yes (exit 2 blocks compaction) | Persist a progress file before compaction |
 | `PostCompact` | No (stderr to user only) | Post-compaction logging |
 
-Matchers on `SubagentStart` and `SubagentStop` take the agent type, so you can target one role, such as only `implementer` agents. A `SubagentStop` gate that runs the unit's check turns "a report is a claim" into an enforced rule. `TaskCreated` and `TaskCompleted` receive `task_id`, `task_subject` and optionally `task_description`, `teammate_name` and `team_name` (deprecated); `TeammateIdle` receives `teammate_name` and `team_name`. In a session without the Task tools (the Claude 5 default, ORCH-010), `TaskCreated` doesn't fire.
+Matchers on `SubagentStart` and `SubagentStop` take the agent type, so you can target one role, such as only `implementer` agents. A `SubagentStop` gate that runs the unit's check turns "a report is a claim" into an enforced rule. `TaskCreated` and `TaskCompleted` receive `task_id`, `task_subject` and optionally `task_description`, `teammate_name` and `team_name` (deprecated); `TeammateIdle` receives `teammate_name` and `team_name`. In a session without the Task tools (the Claude 5 default, ORCH-010), `TaskCreated` doesn't fire. Applies to Claude Code and the Agent SDK.
 
 ## [ORCH-020] Token and quota multipliers of multi-agent work
 - Type: fact
@@ -617,7 +617,7 @@ A unit you could finish in two tool calls is not worth a subagent: the brief and
 
 ## [ORCH-026] Current model tiers: price, latency, context
 - Type: comparison
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Effort](https://platform.claude.com/docs/en/build-with-claude/effort)
@@ -642,7 +642,7 @@ Other pricing details:
 
 ## [ORCH-027] Anthropic's model-choice guidance
 - Type: recommendation
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model), [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence), [Haiku 5.5 launch](https://www.anthropic.com/claude-haiku-5-5), [Sonnet 5.5 launch](https://www.anthropic.com/claude-sonnet-5-5), [Opus 5.5 launch](https://www.anthropic.com/claude-opus-5-5), [Costs](https://code.claude.com/docs/en/costs)
@@ -669,7 +669,7 @@ The Claude Code costs page still says "Sonnet handles most coding tasks well… 
 
 ## [ORCH-028] Reasoning effort: levels, defaults, effects
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Model config](https://code.claude.com/docs/en/model-config), [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Sonnet 5.5 launch](https://www.anthropic.com/claude-sonnet-5-5)

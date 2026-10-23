@@ -415,7 +415,7 @@ Confidence note: the transcript location is documented (official-docs); the `usa
 
 ## [TOK-014] claude.ai plan limits: 5-hour and weekly windows
 - Type: fact
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Usage and length limits](https://support.claude.com/en/articles/11647753), [Using Claude Code with Pro/Max](https://support.claude.com/en/articles/11145838), [Max plan](https://support.claude.com/en/articles/11049741), [Pro plan](https://support.claude.com/en/articles/8325606), [Team plan](https://support.claude.com/en/articles/9266767), [Fable usage](https://support.claude.com/en/articles/15424964), [Usage credits](https://support.claude.com/en/articles/12429409)
@@ -475,7 +475,7 @@ Claude 4.7+, Fable and Mythos use a tokenizer that produces **about 30% more tok
 
 ## [TOK-017] API prices and multipliers
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode)
@@ -554,11 +554,13 @@ History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases sw
 
 ## [TOK-021] MCP overhead without deferral
 - Type: fact
-- Applies to: Claude API, Claude Code (when tool search is off)
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use), [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [PolicyLayer GitHub MCP cost](https://policylayer.com/token-cost/github), [Unblocked MCP budget](https://getunblocked.com/blog/mcp-token-budget-autopsy/)
 - Related: TOK-020, TOK-024
+
+These figures apply when tool search is off.
 
 Anthropic figures:
 - Five servers (GitHub, Slack, Sentry, Grafana, Splunk), 58 tools: "approximately 55K tokens before the conversation even starts". Adding Jira (about 17K) pushes it past 100K.
@@ -1055,7 +1057,7 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 
 ## [TOK-055] Effort and thinking as cost levers
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Thinking cost](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking), [Costs](https://code.claude.com/docs/en/costs)

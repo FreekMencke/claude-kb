@@ -683,7 +683,7 @@ A custom connector is a remote MCP server added at Customize > Connectors. "You 
 
 ## [MCP-030] The OAuth flow Claude runs against a connector
 - Type: fact
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: official-docs
 - Last verified: 2026-10-15
 - Sources: [Authentication for connectors](https://claude.com/docs/connectors/building/authentication), [Lazy authentication](https://claude.com/docs/connectors/building/lazy-authentication), [Troubleshooting](https://claude.com/docs/connectors/building/troubleshooting), [claude-code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), local test
@@ -703,7 +703,7 @@ Tested 2026-10-15 with curl: `https://claude.ai/oauth/claude-code-client-metadat
 
 ## [MCP-031] How Claude treats a connector's tools: annotations, names, structured results
 - Type: fact
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: official-docs
 - Last verified: 2026-10-15
 - Sources: [Connector review criteria](https://claude.com/docs/connectors/building/review-criteria), [Building connectors: MCP](https://claude.com/docs/connectors/building/mcp), [MCP Apps quickstart](https://claude.com/docs/connectors/building/mcp-apps/quickstart), [Get started with connectors](https://claude.com/docs/connectors/getting-started), local test
@@ -719,7 +719,7 @@ Tested 2026-10-15 (`tools/list`, MCP-034): Anthropic's Claude Code docs server m
 
 ## [MCP-032] Connector quirks reported by server authors: instructions, tool lists, saved approvals
 - Type: fact
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: single-source
 - Last verified: 2026-10-15
 - Sources: [anthropics/claude-ai-mcp#93](https://github.com/anthropics/claude-ai-mcp/issues/93), [#1044](https://github.com/anthropics/claude-ai-mcp/issues/1044), [#1087](https://github.com/anthropics/claude-ai-mcp/issues/1087), [#1132](https://github.com/anthropics/claude-ai-mcp/issues/1132), [mcp-server-dev: server capabilities](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/mcp-server-dev/skills/build-mcp-server/references/server-capabilities.md)
@@ -733,7 +733,7 @@ Open issues in Anthropic's connector tracker, none answered by Anthropic as of 2
 
 ## [MCP-033] Testing and debugging a custom connector
 - Type: pattern
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: official-docs
 - Last verified: 2026-10-15
 - Sources: [Test your connector](https://claude.com/docs/connectors/building/testing), [Troubleshooting](https://claude.com/docs/connectors/building/troubleshooting), [MCP in Claude Code](https://code.claude.com/docs/en/mcp)
@@ -808,7 +808,7 @@ From the issue trackers of personal remote servers (jimprosser/obsidian-web-mcp,
 
 ## [MCP-037] Using a private repo's knowledge without a checkout
 - Type: comparison
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: official-docs
 - Last verified: 2026-10-15
 - Sources: [Plugins (claude.com)](https://claude.com/docs/plugins/overview), [Plugin platform support](https://claude.com/docs/plugins/platform-support), [Skills how-to (claude.com)](https://claude.com/docs/skills/how-to), [Skills overview (claude.com)](https://claude.com/docs/skills/overview), [Claude Code skills](https://code.claude.com/docs/en/skills), [Agent Skills overview (platform)](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [GitHub integration](https://claude.com/docs/connectors/github), [Desktop on WSL](https://code.claude.com/docs/en/desktop-wsl)
@@ -830,7 +830,7 @@ Tested 2026-10-15 with our claude-kb server: the connector worked in every chat 
 
 ## [MCP-038] Chat and cloud sessions use a custom connector only when the prompt points at it
 - Type: fact
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: single-source
 - Last verified: 2026-10-15
 - Sources: [Cowork changelog](https://claude.com/docs/cowork/changelog), [Directory vs custom connectors](https://claude.com/docs/connectors/building/directory-vs-custom), local tests ([FreekMencke/claude-kb#113](https://github.com/FreekMencke/claude-kb/issues/113))

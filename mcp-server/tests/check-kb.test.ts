@@ -65,7 +65,7 @@ ${BODY}
 
 ## [ALP-002] Gadget pricing
 - Type: fact
-- Applies to: general
+- Applies to: general, Claude Code
 - Confidence: probably
 - Last verified: 15 October
 - Sources: a blog post
@@ -142,15 +142,16 @@ describe('a broken fixture', () => {
     const { status, output } = check(fixture());
     expect(status).toBe(1);
     expect(output.split('\n')).toEqual([
-      'topics/kb-alpha.md: 3 entries, 13 issue(s)',
+      'topics/kb-alpha.md: 3 entries, 14 issue(s)',
       "  - ALP-003 is missing from the file's index",
       "  - the file's index lists ALP-004, which has no entry here",
       "  - ALP-002: index title 'A different title' differs from the heading 'Gadget pricing'",
       "  - ALP-002: Confidence 'probably' is not one of the allowed values",
+      "  - ALP-002: Applies to 'general, Claude Code' is not Claude Code, Claude API, claude.ai, general (some, joined by ', ' in that order)",
       "  - ALP-002: Last verified '15' is not YYYY-MM-DD",
       '  - ALP-002: Sources has no URL',
       '  - ALP-002: Related points to unknown ZZZ-009',
-      '  - ALP-002: about 324 words (want 50-250)',
+      '  - ALP-002: about 324 words (want at most 300)',
       '  - ALP-003: missing field Applies to',
       '  - ALP-003: missing field Confidence',
       '  - ALP-003: missing field Last verified',
@@ -163,18 +164,18 @@ describe('a broken fixture', () => {
       "ENTRIES.md: out of date with the topic files' index tables; run node scripts/check-kb.ts --write",
       'INDEX.md: 3 issue(s)',
       '  - INDEX.md mentions unknown BET-099',
-      '  - file table says 2 entries for topics/kb-alpha.md, the file has 3',
+      "  - file table says '2' for topics/kb-alpha.md, want '3 (0 merged into other entries)': run node scripts/check-kb.ts --write",
       '  - topics/kb-beta.md is missing from the file table',
       '',
       "Possible duplicates across files (1, warnings only). Merge or cross-link them, or list the pair under 'Similar but distinct' in OVERLAPS.md:",
       "  - ALP-001 'Widgets rotate clockwise' and BET-001 'Widgets rotate clockwise!'",
       'duplicate ID ALP-003 in kb-alpha.md, kb-beta.md',
       '',
-      '21 issue(s) in total',
+      '22 issue(s) in total',
     ]);
   });
 
-  test('--write regenerates ENTRIES.md', () => {
+  test('--write regenerates ENTRIES.md and fills the file table, leaving the rest of INDEX.md', () => {
     const { output } = check(fixture(), true);
     expect(output).toContain('ENTRIES.md: written');
     const entries = readText(join(root, 'ENTRIES.md'));
@@ -183,6 +184,210 @@ describe('a broken fixture', () => {
       '## Alpha (`topics/kb-alpha.md`, ALP)\n\n| ID | Title | Type | Tags |\n|---|---|---|---|\n',
     );
     expect(entries).toContain('| BET-001 | Widgets rotate clockwise! | fact | widgets, rotation |\n');
+    expect(readText(join(root, 'INDEX.md'))).toBe(
+      INDEX.replace('| Alpha | 2 |', '| Alpha | 3 (0 merged into other entries) |'),
+    );
+  });
+});
+
+/** A topic file that passes every check, with these entries' `Applies to` values and index titles. */
+function goodTopic(prefix: string, entries: [applies: string, titleSuffix?: string][]): string {
+  const rows = entries.map(
+    ([, suffix = ''], i) => `| ${prefix}-00${i + 1} | Title ${i + 1}${suffix} | fact | tag${i} |`,
+  );
+  const bodies = entries.map(
+    ([applies], i) => `## [${prefix}-00${i + 1}] Title ${i + 1}
+- Type: fact
+- Applies to: ${applies}
+- Confidence: unverified
+- Last verified: 2026-10-23
+- Sources: [Docs](https://example.com)
+- Related: none
+
+${BODY}
+`,
+  );
+  const quick = QUICK.replaceAll('ALP-001', `${prefix}-001`);
+  return `# Topic (${prefix})
+
+${quick}
+## Index
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+${rows.join('\n')}
+
+${bodies.join('\n')}
+## Recommendations for our setup
+
+1. None.
+
+## Open questions
+
+- None.
+`;
+}
+
+const GOOD_INDEX = (cell: string) => `# Index
+
+| File | Prefix | Topic | Entries |
+|---|---|---|---|
+| \`topics/kb-good.md\` | GOO | Good | ${cell} |
+`;
+const GOOD_README = (row: string) => `# Readme
+
+## Layout
+
+| Topic file | Prefix | Covers |
+|---|---|---|
+${row}
+`;
+const GOOD_ROW = '| [kb-good.md](topics/kb-good.md) | `GOO` | Good |';
+
+describe('a fixture with one valid topic file', () => {
+  /** The checker's result on that file, with INDEX.md's count cell and a README's Layout row (none when undefined). */
+  function run(applies: string[], cell: string, readmeRow?: string, write = false) {
+    const root = tempDir();
+    mkdirSync(join(root, 'topics'));
+    writeFileSync(
+      join(root, 'topics', 'kb-good.md'),
+      goodTopic(
+        'GOO',
+        applies.map(a => [a]),
+      ),
+      'utf8',
+    );
+    writeFileSync(join(root, 'INDEX.md'), GOOD_INDEX(cell), 'utf8');
+    if (readmeRow !== undefined) writeFileSync(join(root, 'README.md'), GOOD_README(readmeRow), 'utf8');
+    check(root, true); // ENTRIES.md, so only the checks under test can fail
+    writeFileSync(join(root, 'INDEX.md'), GOOD_INDEX(cell), 'utf8');
+    return { root, ...check(root, write) };
+  }
+  afterEach(() => vi.restoreAllMocks());
+
+  test('passes', () => {
+    const { status, output } = run(['Claude Code'], '1 (0 merged into other entries)', GOOD_ROW);
+    expect(output.endsWith('All files pass.')).toBe(true);
+    expect(status).toBe(0);
+  });
+
+  test.each([
+    'general',
+    'Claude Code',
+    'Claude API',
+    'claude.ai',
+    'Claude Code, Claude API',
+    'Claude Code, claude.ai',
+    'Claude Code, Claude API, claude.ai',
+    'Claude API, general',
+    'Claude Code, Claude API, claude.ai, general',
+  ])('Applies to %j is valid', applies => {
+    expect(run([applies], '1 (0 merged into other entries)').status).toBe(0);
+  });
+
+  test.each([
+    'Claude API, Claude Code',
+    'claude.ai, Claude Code',
+    'general, Claude Code',
+    'Claude Code, Claude Code',
+    'Claude API (Agent SDK)',
+    'Claude Code, Claude API (when tool search is off)',
+    'claude code',
+    'Claude Code,',
+    'Claude Code,Claude API',
+    'Claude Code ,Claude API',
+    'Claude Code,  Claude API',
+    '',
+    'Claude Code Claude API',
+    'Gemini',
+  ])('Applies to %j fails', applies => {
+    const { status, output } = run([applies], '1 (0 merged into other entries)');
+    expect(status).toBe(1);
+    expect(output).toContain(`GOO-001: Applies to '${applies}' is not Claude Code, Claude API, claude.ai, general`);
+  });
+
+  test('an empty Applies to is reported as empty, not as the next line', () => {
+    const { output } = run([''], '1 (0 merged into other entries)');
+    expect(output).toContain("GOO-001: Applies to '' is not");
+    expect(output).not.toContain('- Confidence');
+  });
+
+  test('every entry is checked, not only the first', () => {
+    const { output } = run(['Claude Code', 'general, claude.ai'], '2 (0 merged into other entries)');
+    expect(output).toContain("GOO-002: Applies to 'general, claude.ai'");
+    expect(output).not.toContain('GOO-001: Applies to');
+  });
+
+  test('the word limit is 300, and the message says so', () => {
+    const root = tempDir();
+    mkdirSync(join(root, 'topics'));
+    const topic = goodTopic('GOO', [['general']]);
+    // The heading's four words count too
+    writeFileSync(join(root, 'topics', 'kb-good.md'), topic.replace(BODY, 'word '.repeat(297)), 'utf8');
+    expect(check(root).output).toContain('GOO-001: about 301 words (want at most 300)');
+    writeFileSync(join(root, 'topics', 'kb-good.md'), topic.replace(BODY, 'word '.repeat(296)), 'utf8');
+    expect(check(root).output).not.toContain('words');
+  });
+
+  test("a topic file missing from README.md's Layout table fails, a wrong prefix too", () => {
+    const missing = run(
+      ['general'],
+      '1 (0 merged into other entries)',
+      '| [kb-other.md](topics/kb-other.md) | `OTH` | Other |',
+    );
+    expect(missing.status).toBe(1);
+    expect(missing.output).toContain("topics/kb-good.md is missing from README.md's Layout table");
+    const wrong = run(['general'], '1 (0 merged into other entries)', GOOD_ROW.replace('`GOO`', '`GOD`'));
+    expect(wrong.output).toContain(
+      "README.md's Layout table gives prefix GOD for topics/kb-good.md, its entries use GOO",
+    );
+  });
+
+  test('a wrong count in INDEX.md fails, and --write fixes it without touching the rest', () => {
+    const wrong = run(['general'], '7 (2 merged into other entries)', GOOD_ROW);
+    expect(wrong.status).toBe(1);
+    expect(wrong.output).toContain(
+      "file table says '7 (2 merged into other entries)' for topics/kb-good.md, want '1 (0 merged into other entries)'",
+    );
+    const fixed = run(['general'], '7 (2 merged into other entries)', GOOD_ROW, true);
+    expect(fixed.status).toBe(0);
+    expect(fixed.output).toContain("INDEX.md: file table's entry counts written");
+    expect(readText(join(fixed.root, 'INDEX.md'))).toBe(GOOD_INDEX('1 (0 merged into other entries)'));
+  });
+
+  test.each(['TBD', '', '-', '0'])('a placeholder count cell %j is a wrong count, and --write fills it', cell => {
+    const want = '1 (0 merged into other entries)';
+    const wrong = run(['general'], cell, GOOD_ROW);
+    expect(wrong.status).toBe(1);
+    expect(wrong.output).toContain(`file table says '${cell}' for topics/kb-good.md, want '${want}'`);
+    expect(wrong.output).not.toContain('is missing from the file table');
+    const fixed = run(['general'], cell, GOOD_ROW, true);
+    expect(fixed.status).toBe(0);
+    expect(readText(join(fixed.root, 'INDEX.md'))).toBe(GOOD_INDEX(want));
+  });
+
+  test('--write fills a bare count, and counts merged entries from the index titles', () => {
+    const root = tempDir();
+    mkdirSync(join(root, 'topics'));
+    const topic = goodTopic('GOO', [['general'], ['general', ' (merged into GOO-001)']]);
+    writeFileSync(join(root, 'topics', 'kb-good.md'), topic, 'utf8');
+    writeFileSync(join(root, 'INDEX.md'), GOOD_INDEX('0'), 'utf8');
+    expect(check(root, true).status).toBe(0);
+    expect(readText(join(root, 'INDEX.md'))).toBe(GOOD_INDEX('2 (1 merged into other entries)'));
+  });
+
+  test('--write leaves a topic file without a row to the check', () => {
+    const root = tempDir();
+    mkdirSync(join(root, 'topics'));
+    writeFileSync(join(root, 'topics', 'kb-good.md'), goodTopic('GOO', [['general']]), 'utf8');
+    writeFileSync(
+      join(root, 'INDEX.md'),
+      GOOD_INDEX('1 (0 merged into other entries)').replace('GOO', 'GXX').replace('kb-good', 'kb-gxx'),
+      'utf8',
+    );
+    const { status, output } = check(root, true);
+    expect(status).toBe(1);
+    expect(output).toContain('topics/kb-good.md is missing from the file table');
   });
 });
 
