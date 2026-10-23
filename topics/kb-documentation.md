@@ -300,7 +300,7 @@ It also asks that design docs "serve as archives of these decisions, not as half
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-10-23
 - Sources: [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2), [lychee](https://github.com/lycheeverse/lychee), [markdown-link-check](https://github.com/tcort/markdown-link-check), [Vale](https://github.com/vale-cli/vale), [Prettier options: proseWrap](https://prettier.io/docs/options#prose-wrap)
 - Related: DOC-013, DOC-015, DOC-020
 
@@ -314,7 +314,7 @@ None of these checks whether a doc is true, only its form and links.
 | markdown-link-check | Broken links | Its common GitHub Action wrapper is archived; prefer lychee |
 | Vale | Prose style and terminology | 6,235 stars; config overhead too high for small repos |
 
-**Ours.** osrs-tracker-web, osrs-tracker-aws, osrs-tracker-api and osrs-tracker-packages (since 2026-10-18) run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same four run `lychee --offline --include-fragments --hidden` on every push. fremen-cluster (home-cluster until 2026-10-21) has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files. `--hidden` ("Do not skip hidden directories and files") is what reaches `.claude/` and `.github/`, and `--exclude-path` keeps out `node_modules`; our CI found a glob input still scanning `.gitignore`d paths, so exclude by hand.
+**Ours.** osrs-tracker-web, osrs-tracker-aws, osrs-tracker-api and osrs-tracker-packages (since 2026-10-18) run `prettier --check` with `proseWrap: "always"` and `printWidth: 120`, so their Markdown is checked in CI (api's `prettier:ci` covers `**/*.md` since 2026-10-13). The same four run `lychee --offline --include-fragments --hidden` on every push. fremen-cluster (home-cluster until 2026-10-21) has no Prettier and no link check; one changelog line runs to 130. lychee `--offline` would catch renamed files that docs still link to, which happens when sessions move files. `--hidden` ("Do not skip hidden directories and files") should therefore reach `.claude/` and `.github/` (inferred from that text), and `--exclude-path` keeps out `node_modules`; our CI found a glob input still scanning `.gitignore`d paths, so exclude by hand.
 
 ## [DOC-015] Agents that detect or fix doc drift
 - Type: pattern

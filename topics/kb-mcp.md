@@ -480,7 +480,7 @@ The spec's local-server guide treats a stdio server as "untrusted code with exac
 1. Prefer the vendor's remote server where one exists.
 2. Check the publisher and exact package name (typosquats); pin the version. Pinning in `npx`/`uvx` "fixes only the top-level package"; an image digest freezes the tree.
 3. Read the tool list and descriptions before relying on it (MCP Inspector or `/mcp`).
-4. Give each server its own narrowly scoped token; never pass your session's credentials (MCP-005).
+4. Give each server its own narrowly scoped token; never pass your session's credentials (MCP-005). Ours for a write-capable database server: a `readWrite` user on one database, `ask` rules on each write tool, and a dump or preview `find` before multi-document writes (MCP-028).
 5. Restrict filesystem roots and network egress, e.g. a container with `--network=none` where possible.
 6. Avoid one session holding private data, untrusted content and an exfiltration path at once (the lethal trifecta).
 
