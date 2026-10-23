@@ -307,13 +307,17 @@ describe('on fixture files', () => {
   test('kb_get adds a line after each entry in an open conflict, and only after those', () => {
     const [alp1, alp2, bet1] = get(fixture, ['ALP-001', 'ALP-002', 'BET-001']).split(SEPARATOR);
     expect(alp1).toMatch(
-      /Still part of ALP-001\.\n\nConflict \(INDEX\.md\): Widget spin \(ALP-001, BET-001\) — ALP-001, as e\.g\. the spindle shows\.\n/,
+      /Still part of ALP-001\.\n\nConflict \(INDEX\.md\): Widget spin \(ALP-001, BET-001\) — ALP-001, as e\.g\. the spindle shows\. Settled in the v2\.1 docs\.\n/,
     );
     expect(
       alp1.endsWith('Conflict (INDEX.md): Widget spin, again (ALP-001) — ALP-001. The newest page wins here.'),
     ).toBe(true);
-    expect(alp2.endsWith('\n\nConflict (INDEX.md): Gadget price (ALP-002) — Unresolved; one source.')).toBe(true);
-    expect(bet1).toContain('Conflict (INDEX.md): Widget spin (ALP-001, BET-001) — ALP-001, as e.g. the spindle shows.');
+    expect(
+      alp2.endsWith('\n\nConflict (INDEX.md): Gadget price (ALP-002) — Unresolved; one source. Wait for more.'),
+    ).toBe(true);
+    expect(bet1).toContain(
+      'Conflict (INDEX.md): Widget spin (ALP-001, BET-001) — ALP-001, as e.g. the spindle shows. Settled in the v2.1 docs.',
+    );
     expect(bet1).not.toContain('Gadget price');
   });
 

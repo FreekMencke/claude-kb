@@ -55,7 +55,7 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   apart, the stack table under "The stack Claude works on") and of each topic file, each file's Recommendations, and
   the open rows of `INDEX.md`'s Conflicts table. A conflict row is a table row with entry IDs in its first two
   columns (`Topic (entries) | Claims | Which the sources support`); it is attached to every entry it names, with the
-  first sentence of its last column, and `kb_get` prints it after the entry (`kb_search` flags the hit). The server
+  last column (cut at 300 characters, as a summary is), and `kb_get` prints it after the entry (`kb_search` flags the hit). The server
   builds a new one and swaps it in with one assignment, so a request reads the old index or the new one, whole.
   Building all 1,118 entries took 0.13 to 0.16 s on 2026-10-23 in WSL (0.07 s for 580 on 2026-10-16); the build blocks the event loop that long, once per KB
   push.

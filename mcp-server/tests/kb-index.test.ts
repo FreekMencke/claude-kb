@@ -61,14 +61,16 @@ describe('fixture files', () => {
   });
 
   test('open conflicts by entry, from the rows naming it in their first two columns', () => {
-    const sentence = (id: string) => (index.conflicts.get(id) ?? []).map(c => [c.topic, c.supported]);
-    expect(sentence('ALP-001')).toEqual([
-      ['Widget spin (ALP-001, BET-001)', 'ALP-001, as e.g. the spindle shows.'],
-      // An ID and a full stop is not a sentence end
+    const supported = (id: string) => (index.conflicts.get(id) ?? []).map(c => [c.topic, c.supported]);
+    expect(supported('ALP-001')).toEqual([
+      ['Widget spin (ALP-001, BET-001)', 'ALP-001, as e.g. the spindle shows. Settled in the v2.1 docs.'],
+      // The whole cell, so the advice after the first sentence stays
       ['Widget spin, again (ALP-001)', 'ALP-001. The newest page wins here.'],
     ]);
-    expect(sentence('BET-001')).toEqual([['Widget spin (ALP-001, BET-001)', 'ALP-001, as e.g. the spindle shows.']]);
-    expect(sentence('ALP-002')).toEqual([['Gadget price (ALP-002)', 'Unresolved; one source.']]);
+    expect(supported('BET-001')).toEqual([
+      ['Widget spin (ALP-001, BET-001)', 'ALP-001, as e.g. the spindle shows. Settled in the v2.1 docs.'],
+    ]);
+    expect(supported('ALP-002')).toEqual([['Gadget price (ALP-002)', 'Unresolved; one source. Wait for more.']]);
     // Named only outside the table or in the last column, and the header row, name nothing
     expect([...index.conflicts.keys()].sort()).toEqual(['ALP-001', 'ALP-002', 'BET-001']);
   });
@@ -161,6 +163,7 @@ describe('this repo', () => {
     for (const [id, list] of repo.conflicts) {
       expect(repo.entries.has(id), id).toBe(true);
       for (const c of list) expect(c.supported.length, id).toBeGreaterThan(0);
+      for (const c of list) expect(c.supported.length, id).toBeLessThanOrEqual(SUMMARY_CHARS);
     }
     for (const e of repo.entries.values()) {
       expect(CONFIDENCE, e.id).toContain(e.confidence);

@@ -65,7 +65,7 @@ export interface Entry {
 export interface Conflict {
   /** The row's first column: the topic, with the entry IDs in brackets */
   readonly topic: string;
-  /** The first sentence of the row's last column: which side the sources support */
+  /** The row's last column, which side the sources support, cut as `summary` cuts when over SUMMARY_CHARS */
   readonly supported: string;
 }
 
@@ -237,16 +237,6 @@ export function summary(text: string): string {
 }
 
 /**
- * The first sentence of a table cell: up to a full stop before a capital letter, a backtick or a quote (so "e.g." and
- * "v2.1" don't end it) that doesn't follow an entry ID ("ORCH-006. The sub-agents page…" is one sentence), cut as
- * `summary` cuts when it's still long.
- */
-function firstSentence(text: string): string {
-  const end = /(?<![A-Z]-\d+)\.(?= [A-Z`"]|$)/.exec(text);
-  return summary(end ? text.slice(0, end.index + 1) : text);
-}
-
-/**
  * INDEX.md's open conflicts by entry: each row of its Conflicts table with entry IDs in its first two columns
  * (`Topic (entries) | Claims | Which the sources support`) is added to every entry it names. A row naming an ID twice
  * counts once for it; the header and separator rows name none.
@@ -256,7 +246,7 @@ function parseConflicts(indexText: string): Map<string, Conflict[]> {
   for (const cells of tableRows(section(indexText, 'Conflicts') ?? '')) {
     if (cells.length < 3) continue;
     const named = new Set(cells.slice(0, 2).flatMap(c => c.match(/[A-Z]+-\d+/g) ?? []));
-    const conflict = { topic: cells[0], supported: firstSentence(cells.at(-1)!) };
+    const conflict = { topic: cells[0], supported: summary(cells.at(-1)!) };
     for (const id of named) found.set(id, [...(found.get(id) ?? []), conflict]);
   }
   return found;
