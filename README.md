@@ -16,7 +16,7 @@
 </p>
 
 A Markdown knowledge base on using Claude efficiently, and on the stack it works on (Angular, TypeScript, Node, npm,
-NestJS, MongoDB, lint and test tools, CSS, fonts, accessibility, web performance and security, GitHub and its Actions,
+NestJS, MongoDB, lint and test tools, CSS, fonts, accessibility, charts and data visualisation, web performance and security, GitHub and its Actions,
 Docker, Kubernetes, AWS Lambda, licences), written for agents to query. Every entry carries its sources, a confidence
 level and a last-verified date.
 
@@ -149,6 +149,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-animation-libraries.md](topics/kb-animation-libraries.md) | `ANIMLIB` | Animation libraries and their agent tooling: Motion, GSAP, Lenis |
 | [kb-knowledge-retrieval.md](topics/kb-knowledge-retrieval.md) | `RETR` | Giving agents knowledge: agentic search, RAG, long context and curated knowledge bases, measured on this one |
 | [kb-ui-patterns.md](topics/kb-ui-patterns.md) | `UIPAT` | UI states, feedback timing, forms, URL state and interface copy |
+| [kb-dataviz.md](topics/kb-dataviz.md) | `VIZ` | Data visualisation: chart choice, colour, chart and table libraries, accessible charts, dashboards, formatting, CSV, animated data |
 
 | Other files | What it holds |
 |---|---|
@@ -194,7 +195,7 @@ it is rebased locally. Check the table after a rebase: union never fails, so a r
 Edit [SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR. A new topic file goes into its description in the
 same PR: the topic words there decide when it loads (SKILL-015).
 
-After changing the description, run the trigger evals by hand (about $17 a run at 67 cases, so not in CI).
+After changing the description, run the trigger evals by hand (about $18 a run at 68 cases, so not in CI).
 `loads-*` cases should load the skill, `skips-*` near misses shouldn't:
 
 ```bash
@@ -210,11 +211,14 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 47 + 20 | 141/141 | 60/60 | Opus 5.5 | 2.1.296 | 2026-10-23 |
+| 48 + 20 | 141/144 | 60/60 | Opus 5.5 | 2.1.296 | 2026-10-23 |
 
 `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
 once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
 (FreekMencke/claude-kb#194, 2026-10-18).
+
+`loads-29`, a Claude API 400 question, failed 3 of 3 on 2026-10-23 (FreekMencke/claude-kb#291): the bundled `claude-api` skill
+loaded instead. It failed the same way with `main`'s description, so the cause isn't the description.
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
