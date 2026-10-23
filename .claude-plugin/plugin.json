@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "kb-lookup",
   "displayName": "Claude KB",
   "description": "Answers questions on using Claude, Claude Code and the Claude API, and on the stack it works in (Angular, TypeScript, Node.js, npm, NestJS, MongoDB, lint and test tools, CSS, web animation, UI states and forms, web fonts, accessibility, web performance and security, GitHub and Actions, Docker, Kubernetes, AWS Lambda, licences), from the claude-kb knowledge base, citing entry IDs: the claude-kb-lookup skill plus the claude-kb MCP server it reads",
