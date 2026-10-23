@@ -157,7 +157,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [OVERLAPS.md](OVERLAPS.md) | Overlaps kept on purpose, merges, similar-but-distinct pairs |
 | [CHANGELOG.md](CHANGELOG.md) | What changed, newest first |
 | [CLAUDE.md](CLAUDE.md) | This knowledge base's research rules on top of the `research` skill, and the entry format |
-| [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |
+| [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md and fills INDEX.md's entry counts. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
 | [evals/retrieval/](evals/retrieval/README.md) | The retrieval eval behind RETR-010 to RETR-012 |
@@ -174,8 +174,9 @@ repo's sources, entry format and finishing steps. A research issue says "Run the
 questions, instead of pasting a prompt. Cloud sessions don't load the plugin, so CLAUDE.md keeps the core reading rules.
 
 Entries follow [CLAUDE.md](CLAUDE.md). When you add an entry or change its title or tags, update the topic file's
-index row and run `node scripts/check-kb.ts --write`. After any change to entries, run the check; CI runs it on
-every PR and push to `main`:
+index row and run `node scripts/check-kb.ts --write`: it regenerates ENTRIES.md and sets the entry counts in INDEX.md's
+file table, so don't edit the counts by hand. After any change to entries, run the check; CI runs it on every PR and
+push to `main`. It also fails when a topic file is missing from INDEX.md's file table or from the Layout table above:
 
 ```bash
 node scripts/check-kb.ts

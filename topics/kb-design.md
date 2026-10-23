@@ -204,7 +204,7 @@ Anthropic's vision page says "Claude's coordinate and localization outputs are a
 
 ## [DESIGN-008] What Claude's vision gets wrong in design work
 - Type: fact
-- Applies to: Claude API, Claude Code, claude.ai
+- Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
 - Last verified: 2026-10-16
 - Sources: [Vision](https://platform.claude.com/docs/en/build-with-claude/vision), [Prompting Claude Opus 5.5: tools for complex visual inputs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7)

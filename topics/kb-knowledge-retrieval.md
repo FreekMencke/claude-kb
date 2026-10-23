@@ -217,7 +217,7 @@ For us, the whole corpus in context scored 98–100% top-5 on 300 questions (RET
 
 ## [RETR-009] This knowledge base no longer fits in the prompt
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-20
 - Sources: [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), local measurement

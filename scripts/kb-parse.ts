@@ -6,6 +6,9 @@
 import { readFileSync } from 'node:fs';
 
 export const FIELDS = ['Type', 'Applies to', 'Confidence', 'Last verified', 'Sources', 'Related'];
+// The values of an entry's `Applies to` field, in the order they are written: `Claude Code, claude.ai` is valid,
+// `claude.ai, Claude Code` is not. The Agent SDK and Managed Agents count as `Claude API`.
+export const APPLIES_TO = ['Claude Code', 'Claude API', 'claude.ai', 'general'];
 export const ENTRY = /^## \[([A-Z]+-\d+)\]/gm;
 export const HEADING = /^## \[([A-Z]+-\d+)\] (.+)$/gm;
 export const INDEX_ROW = /^\| ([A-Z]+-\d+) \| (.*?) \| ([\p{L}\p{N}_-]+) \| (.*?) \|$/gmu;

@@ -68,7 +68,7 @@ How Fable 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 read instructions, and how to 
 
 ## [PROMPT-001] Where Anthropic's prompting guidance lives
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview), [Docs index](https://platform.claude.com/llms.txt), [Release notes](https://platform.claude.com/docs/en/release-notes/overview)
@@ -84,7 +84,7 @@ Two layers: one general page, and one page per model listing only what differs f
 
 ## [PROMPT-002] What changed from the 4.x models
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5)
@@ -220,7 +220,7 @@ Anthropic's own scope snippets are mostly prohibitions ("Don't add features, tes
 
 ## [PROMPT-010] Thinking is set by effort; prompts move it less
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5)
@@ -404,7 +404,7 @@ Pattern: the smaller the model and the lower the effort, the more it needs expli
 
 ## [PROMPT-020] Haiku 5.5: what to add to its prompts
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5)
@@ -422,7 +422,7 @@ For Claude Code Explore overrides on Haiku (ORCH-005): keep the agent body short
 
 ## [PROMPT-021] Sonnet 5.5: initiative depends on effort
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5)
@@ -440,7 +440,7 @@ Claude Code runs Sonnet 5.5 at `medium` by default (ORCH-028), the level where c
 
 ## [PROMPT-022] Opus 5.5: long unattended runs and early reports
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5)
@@ -456,7 +456,7 @@ Opus 5.5 needs little method guidance; its prompting page is mostly about harnes
 
 ## [PROMPT-023] Fable 5.1: finish the task, keep it in scope
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
@@ -642,7 +642,7 @@ Literal models obey "only report high-severity issues": they find the bugs and t
 This refines REPO-047's do-not-flag list: a list of concrete exclusions (style, naming) is fine; a vague bar ("be conservative", "don't nitpick") silently drops real bugs. Splitting find and verify (REPO-048) is the official fix.
 ## [PROMPT-033] Text right after tool results can read as an injection
 - Type: fact
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Claude Opus 5.5 system card](https://www.anthropic.com/claude-opus-5-5-system-card)

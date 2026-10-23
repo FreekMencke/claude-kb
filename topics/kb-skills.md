@@ -1448,7 +1448,7 @@ Argument substitution (SKILL-008) also hits literal text whenever arguments are 
 
 ## [SKILL-062] Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions
 - Type: fact
-- Applies to: claude.ai, Claude Code
+- Applies to: Claude Code, claude.ai
 - Confidence: single-source
 - Last verified: 2026-10-15
 - Sources: [Plugin structure and testing](https://claude.com/docs/plugins/build), [Plugin support by app](https://claude.com/docs/plugins/platform-support), [Plugins reference](https://code.claude.com/docs/en/plugins-reference), [Plugin loading: versions and updates](https://code.claude.com/docs/en/plugins/loading), local tests ([FreekMencke/claude-kb#116](https://github.com/FreekMencke/claude-kb/issues/116))

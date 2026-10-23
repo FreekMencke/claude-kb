@@ -302,7 +302,7 @@ Tested 2026-10-17, `@anthropic-ai/sdk@0.135.0`: `client.d.ts` documents `timeout
 
 ## [CAPI-011] Agent SDK or `claude -p`, and what the SDK installs
 - Type: comparison
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Headless](https://code.claude.com/docs/en/headless), [Agent SDK overview](https://code.claude.com/docs/en/agent-sdk/overview), [Agent SDK quickstart](https://code.claude.com/docs/en/agent-sdk/quickstart), [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript), [Hosting](https://code.claude.com/docs/en/agent-sdk/hosting), [Agent SDK CHANGELOG](https://github.com/anthropics/claude-agent-sdk-typescript/blob/main/CHANGELOG.md)
@@ -328,7 +328,7 @@ The docs: "The SDK version tracks the bundled Claude Code version." So an SDK bu
 
 ## [CAPI-012] Agent SDK permission order and hook callbacks
 - Type: fact
-- Applies to: Claude API (Agent SDK)
+- Applies to: Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [SDK permissions](https://code.claude.com/docs/en/agent-sdk/permissions), [SDK hooks](https://code.claude.com/docs/en/agent-sdk/hooks), [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript)
@@ -350,7 +350,7 @@ Shell hooks from settings files also run, because default `query()` options load
 
 ## [CAPI-013] Managed Agents scheduled deployments, budgets, vaults and webhooks
 - Type: fact
-- Applies to: Claude API (Managed Agents)
+- Applies to: Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments), [Budgets](https://platform.claude.com/docs/en/managed-agents/budgets), [Vaults](https://platform.claude.com/docs/en/managed-agents/vaults), [Webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Release notes](https://platform.claude.com/docs/en/release-notes/overview)
@@ -380,7 +380,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 
 ## [CAPI-014] Scheduled agent work: Managed Agents deployment or Claude Code routine
 - Type: comparison
-- Applies to: Claude API, Claude Code
+- Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments), [Budgets](https://platform.claude.com/docs/en/managed-agents/budgets), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Managed Agents GitHub](https://platform.claude.com/docs/en/managed-agents/github)

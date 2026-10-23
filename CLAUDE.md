@@ -53,11 +53,11 @@ Start the file with:
 1. A "Quick answers" table: the 10–15 questions an agent is most likely to ask about this topic, each with a one-line answer and the entry ID(s) holding the detail.
 2. An index: one line per entry — ID, title, type, tags.
 
-Then the entries. One idea per entry, 50–250 words:
+Then the entries. One idea per entry, 50–250 words, at most 300 (`node scripts/check-kb.ts` fails above that):
 
 ## [PREFIX-NNN] Short descriptive title
 - Type: fact | pattern | recommendation | anti-pattern | tool | comparison
-- Applies to: Claude Code | Claude API | claude.ai | general
+- Applies to: one or more of `Claude Code`, `Claude API`, `claude.ai`, `general`, comma-separated in that order (`Claude Code, Claude API`, never `Claude API, Claude Code`). The Agent SDK and Managed Agents count as `Claude API`. Put a qualifier such as "when tool search is off" in the entry's text, not in this field
 - Confidence: official-docs | official-example | community-consensus | single-source | unverified
 - Last verified: YYYY-MM-DD
 - Sources: [Title](URL), …
@@ -73,7 +73,7 @@ End the file with two sections kept apart from the facts:
 ## Finishing a research session
 
 1. Run `node scripts/check-kb.ts` and fix what it reports.
-2. Run `node scripts/check-kb.ts --write` to add the new entries to ENTRIES.md. Update INDEX.md: a file-table row for a new file, the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
+2. Run `node scripts/check-kb.ts --write` to add the new entries to ENTRIES.md and fill the entry counts in INDEX.md's file table. Update INDEX.md: a file-table row for a new file (with any count: `--write` sets it), the 2–4 questions agents will most likely ask in the combined Quick answers, and any Conflicts. Add any Overlaps to OVERLAPS.md and a row at the top of CHANGELOG.md.
 3. For a new file, add a row to README.md's Layout table.
 4. For a new topic file, add its topic to the description in `.claude/skills/claude-kb-lookup/SKILL.md` in the same PR, and rerun the skill's trigger evals (README.md, "Changing the lookup skill").
 5. Other sessions edit INDEX.md and CHANGELOG.md too: `git fetch origin`, `git rebase origin/main`, rerun the check, then open a PR. Don't push to `main`.
