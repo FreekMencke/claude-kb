@@ -1,0 +1,11 @@
+# URLs the weekly source link check (.github/workflows/links.yml) skips. One regular expression per line.
+
+# These hosts answer 403 to every request from GitHub's runner IPs (bot blocking), so the check can't tell a live page
+# from a dead one. Registry facts in the entries are checked with `npm view` anyway.
+^https://www\.npmjs\.com/
+^https://www\.pexels\.com/
+^https://blog\.angular\.dev/
+^https://www\.kunalganglani\.com/
+
+# A private repository of the owner: GITHUB_TOKEN can't see it, so every path in it is a 404 to the check
+^https://github\.com/FreekMencke/fremen-cluster/

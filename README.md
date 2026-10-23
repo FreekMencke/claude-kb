@@ -158,6 +158,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [CHANGELOG.md](CHANGELOG.md) | What changed, newest first |
 | [CLAUDE.md](CLAUDE.md) | This knowledge base's research rules on top of the `research` skill, and the entry format |
 | [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md and fills INDEX.md's entry counts. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |
+| [.github/workflows/links.yml](.github/workflows/links.yml), [.lycheeignore](.lycheeignore) | Weekly check that the `Sources:` URLs still resolve (see Re-verification routine), and the URLs it skips |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
 | [evals/retrieval/](evals/retrieval/README.md) | The retrieval eval behind RETR-010 to RETR-012 |
@@ -224,6 +225,13 @@ this repo.
 
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`; pause or delete it on the routines page.
+
+- **Between runs, source links:** [links.yml](.github/workflows/links.yml) runs every Monday at 05:17 UTC (and on
+  `workflow_dispatch`, never on pull requests) with [lychee](https://github.com/lycheeverse/lychee) over the `Sources:`
+  lines. It fails on a broken URL and lists each one in the job summary with the entry IDs that cite it; GitHub emails
+  a failed scheduled run, and nothing opens an issue. Timeouts and 5xx answers are listed but don't fail it. Fix a hit
+  by finding the source's new location or marking the claim unverified, then rerun the workflow. A host that blocks the
+  runner (403) goes in [.lycheeignore](.lycheeignore) with the reason.
 
 <details>
 <summary>Why it works this way</summary>
