@@ -147,7 +147,7 @@ describe('a broken fixture', () => {
       "  - the file's index lists ALP-004, which has no entry here",
       "  - ALP-002: index title 'A different title' differs from the heading 'Gadget pricing'",
       "  - ALP-002: Confidence 'probably' is not one of the allowed values",
-      "  - ALP-002: Applies to 'general, Claude Code' is not Claude Code, Claude API, claude.ai, general (some, comma-separated, in that order)",
+      "  - ALP-002: Applies to 'general, Claude Code' is not Claude Code, Claude API, claude.ai, general (some, joined by ', ' in that order)",
       "  - ALP-002: Last verified '15' is not YYYY-MM-DD",
       '  - ALP-002: Sources has no URL',
       '  - ALP-002: Related points to unknown ZZZ-009',
@@ -294,12 +294,22 @@ describe('a fixture with one valid topic file', () => {
     'Claude Code, Claude API (when tool search is off)',
     'claude code',
     'Claude Code,',
+    'Claude Code,Claude API',
+    'Claude Code ,Claude API',
+    'Claude Code,  Claude API',
+    '',
     'Claude Code Claude API',
     'Gemini',
   ])('Applies to %j fails', applies => {
     const { status, output } = run([applies], '1 (0 merged into other entries)');
     expect(status).toBe(1);
     expect(output).toContain(`GOO-001: Applies to '${applies}' is not Claude Code, Claude API, claude.ai, general`);
+  });
+
+  test('an empty Applies to is reported as empty, not as the next line', () => {
+    const { output } = run([''], '1 (0 merged into other entries)');
+    expect(output).toContain("GOO-001: Applies to '' is not");
+    expect(output).not.toContain('- Confidence');
   });
 
   test('every entry is checked, not only the first', () => {
@@ -343,6 +353,17 @@ describe('a fixture with one valid topic file', () => {
     expect(fixed.status).toBe(0);
     expect(fixed.output).toContain("INDEX.md: file table's entry counts written");
     expect(readText(join(fixed.root, 'INDEX.md'))).toBe(GOOD_INDEX('1 (0 merged into other entries)'));
+  });
+
+  test.each(['TBD', '', '-', '0'])('a placeholder count cell %j is a wrong count, and --write fills it', cell => {
+    const want = '1 (0 merged into other entries)';
+    const wrong = run(['general'], cell, GOOD_ROW);
+    expect(wrong.status).toBe(1);
+    expect(wrong.output).toContain(`file table says '${cell}' for topics/kb-good.md, want '${want}'`);
+    expect(wrong.output).not.toContain('is missing from the file table');
+    const fixed = run(['general'], cell, GOOD_ROW, true);
+    expect(fixed.status).toBe(0);
+    expect(readText(join(fixed.root, 'INDEX.md'))).toBe(GOOD_INDEX(want));
   });
 
   test('--write fills a bare count, and counts merged entries from the index titles', () => {

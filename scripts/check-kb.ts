@@ -174,9 +174,9 @@ function field(body: string, pattern: string): string | undefined {
   return new RegExp(`^- ${pattern}`, 'm').exec(body)?.[1];
 }
 
-/** Some of APPLIES_TO, comma-separated, each at most once and in the order of APPLIES_TO. */
+/** Some of APPLIES_TO joined by ', ', each at most once and in the order of APPLIES_TO. */
 function validAppliesTo(value: string): boolean {
-  const indexes = value.split(',').map(v => APPLIES_TO.indexOf(v.trim()));
+  const indexes = value.split(', ').map(v => APPLIES_TO.indexOf(v));
   return indexes.every((at, i) => at >= 0 && (i === 0 || at > indexes[i - 1]));
 }
 
@@ -206,25 +206,25 @@ function checkTopic(t: string, where: Map<string, string[]>): string[] {
     for (const name of FIELDS) {
       if (!new RegExp(`^- ${name}:`, 'm').test(body)) issues.push(`${eid}: missing field ${name}`);
     }
-    const confidence = field(body, 'Confidence:\\s*(.+)$');
+    const confidence = field(body, 'Confidence:[ \\t]*(.+)$');
     if (confidence !== undefined && !CONFIDENCE.has(confidence.trim())) {
       issues.push(`${eid}: Confidence '${confidence.trim()}' is not one of the allowed values`);
     }
-    const applies = field(body, 'Applies to:\\s*(.+)$');
+    const applies = field(body, 'Applies to:[ \\t]*(.*)$');
     if (applies !== undefined && !validAppliesTo(applies)) {
       issues.push(
-        `${eid}: Applies to '${applies.trim()}' is not ${APPLIES_TO.join(', ')} (some, comma-separated, in that order)`,
+        `${eid}: Applies to '${applies}' is not ${APPLIES_TO.join(', ')} (some, joined by ', ' in that order)`,
       );
     }
-    const verified = field(body, 'Last verified:\\s*(\\S+)');
+    const verified = field(body, 'Last verified:[ \\t]*(\\S+)');
     if (verified !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(verified)) {
       issues.push(`${eid}: Last verified '${verified}' is not YYYY-MM-DD`);
     }
-    const sources = field(body, 'Sources:\\s*(.+)$');
+    const sources = field(body, 'Sources:[ \\t]*(.+)$');
     if (sources !== undefined && !sources.includes('http') && !SYNTHESIS_SOURCE.test(sources)) {
       issues.push(`${eid}: Sources has no URL`);
     }
-    const related = field(body, 'Related:\\s*(.+)$');
+    const related = field(body, 'Related:[ \\t]*(.+)$');
     for (const [ref] of related?.matchAll(/[A-Z]+-\d+/g) ?? []) {
       if (!where.has(ref)) issues.push(`${eid}: Related points to unknown ${ref}`);
     }
@@ -238,8 +238,7 @@ function checkTopic(t: string, where: Map<string, string[]>): string[] {
 }
 
 // A row of INDEX.md's file table: [row up to the count, file name, prefix, count cell, rest of the row]
-const FILE_ROW =
-  /^(\| `topics\/(kb-[\p{L}\p{N}_-]+\.md)` \| ([A-Z]+) \| .*? \| )(\d+(?: \(\d+ merged into other entries\))?)( \|)$/gmu;
+const FILE_ROW = /^(\| `topics\/(kb-[\p{L}\p{N}_-]+\.md)` \| ([A-Z]+) \| .*? \| )([^|]*)( \|)$/gmu;
 
 /** The count cell of a topic file's row in INDEX.md's file table: its entries, and how many of them are merged. */
 function fileTableCount(text: string): string {

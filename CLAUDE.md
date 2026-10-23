@@ -57,7 +57,7 @@ Then the entries. One idea per entry, 50–250 words, at most 300 (`node scripts
 
 ## [PREFIX-NNN] Short descriptive title
 - Type: fact | pattern | recommendation | anti-pattern | tool | comparison
-- Applies to: one or more of `Claude Code`, `Claude API`, `claude.ai`, `general`, comma-separated in that order (`Claude Code, Claude API`, never `Claude API, Claude Code`). The Agent SDK and Managed Agents count as `Claude API`. Put a qualifier such as "when tool search is off" in the entry's text, not in this field
+- Applies to: one or more of `Claude Code`, `Claude API`, `claude.ai`, `general`, joined by `, ` in that order (`Claude Code, Claude API`, never `Claude API, Claude Code` or `Claude Code,Claude API`). The Agent SDK and Managed Agents count as `Claude API`. Put a qualifier such as "when tool search is off" in the entry's text, not in this field
 - Confidence: official-docs | official-example | community-consensus | single-source | unverified
 - Last verified: YYYY-MM-DD
 - Sources: [Title](URL), …
