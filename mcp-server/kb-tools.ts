@@ -6,7 +6,8 @@
  * the caller's context, so they're capped and say what was cut. A bad argument throws a ToolError, which mcp.ts
  * returns as `isError: true` with the message; the message says what to pass instead.
  */
-import { type Entry, type Index, INDEX_TOPIC, normalId } from './kb-index.ts';
+import { APPLIES_TO, CONFIDENCE } from '../scripts/kb-parse.ts';
+import { type Entry, type Index, INDEX_TOPIC, normalId, STACK_TOPIC } from './kb-index.ts';
 import { searchEmpty, type ToolName } from './metrics.ts';
 import type { KbState } from './server.ts';
 
@@ -30,8 +31,9 @@ export const INSTRUCTIONS =
   'claude-kb is a knowledge base on using Claude and Claude Code efficiently, and on the stack it works in (Angular,' +
   ' TypeScript, Node.js, npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, web animation (Motion,' +
   ' GSAP, Lenis), UI states and forms, web fonts, accessibility, web performance and security, GitHub and its Actions,' +
-  ' Docker, Kubernetes and Flux, AWS Lambda, licences). Search' +
-  ' with kb_search, then kb_get the 1 to 4 best IDs for the full entries. Cite entry IDs (such as MCP-017) in answers.' +
+  ' Docker, Kubernetes and Flux, AWS Lambda, licences), and on knowledge retrieval and RAG. Search' +
+  ' with kb_search (it can filter by topic, type, confidence and applies_to), then kb_get the 1 to 4 best IDs for the' +
+  ' full entries; kb_get adds a line when an entry is in an open conflict. Cite entry IDs (such as MCP-017) in answers.' +
   ` Check an entry last verified more than ${STALE_DAYS} days ago against its sources before relying on it.`;
 
 /** A bad argument or a knowledge base that hasn't loaded: mcp.ts returns the message as an `isError` result. */
@@ -71,21 +73,27 @@ export const TOOLS: Tool[] = [
       description:
         'Search claude-kb, a knowledge base on using Claude and Claude Code efficiently: models and effort, subagents,' +
         ' skills and vetting community skills, hooks, prompting, CLAUDE.md and memory, MCP servers and connectors, the' +
-        ' Claude API and Agent SDK, sessions, workflows, tokens and caching, docs, SEO, visual and UI design, community' +
+        ' Claude API and Agent SDK, sessions, workflows, tokens and caching, knowledge retrieval and RAG, docs, SEO, visual' +
+        ' and UI design, community' +
         ' design skills, UI review, typography; and versions, defaults and upgrade traps in Angular, TypeScript, Node.js,' +
         ' npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, web animation (Angular, Motion, GSAP,' +
         ' Lenis), UI states and forms, web fonts, accessibility, web performance and security (CSP, cookies, OWASP), OG' +
         ' images, GitHub' +
         ' and gh, GitHub Actions, Docker, Kubernetes and Flux, AWS Lambda and open-source licences. Returns entry IDs' +
         ' with title, type, confidence, last-verified date' +
-        ' and a summary. Search first, then kb_get the 1 to 4 best IDs. Cite entry IDs. Check an entry last verified' +
-        ' more than 60 days ago against its sources.',
+        ' and a summary. Filter by topic, type, confidence or applies_to. Search first, then kb_get the 1 to 4 best IDs.' +
+        ' Cite entry IDs. Check an entry last verified more than 60 days ago against its sources.',
       inputSchema: {
         type: 'object',
         properties: {
           query: { type: 'string', description: 'Words, a phrase, or entry IDs such as MCP-017' },
           topic: TOPIC,
           type: { type: ['string', 'null'], description: `Only this entry type: ${TYPES.join(', ')}` },
+          confidence: { type: ['string', 'null'], description: `Only this confidence: ${CONFIDENCE.join(', ')}` },
+          applies_to: {
+            type: ['string', 'null'],
+            description: `Only entries that apply to this (an entry may list several): ${APPLIES_TO.join(', ')}`,
+          },
           limit: {
             type: 'integer',
             minimum: LIMIT.min,
@@ -102,9 +110,13 @@ export const TOOLS: Tool[] = [
       search(
         state.index,
         string(args, 'query'),
-        optionalString(args, 'topic'),
-        optionalString(args, 'type'),
-        integer(args, 'limit', LIMIT.default),
+        {
+          topic: optionalString(args, 'topic'),
+          type: optionalString(args, 'type'),
+          confidence: optionalString(args, 'confidence'),
+          appliesTo: optionalString(args, 'applies_to'),
+          limit: integer(args, 'limit', LIMIT.default),
+        },
         note,
       ),
   },
@@ -114,7 +126,7 @@ export const TOOLS: Tool[] = [
       title: 'Read entries',
       description:
         'The full Markdown of claude-kb entries by ID, with their sources, confidence, last-verified date and related' +
-        ' IDs. A merged entry comes with the entry it points to.',
+        ' IDs. A merged entry comes with the entry it points to; an entry in an open conflict gets a line saying so.',
       inputSchema: {
         type: 'object',
         properties: {
@@ -137,11 +149,17 @@ export const TOOLS: Tool[] = [
       name: 'kb_quick_answers',
       title: 'Quick answers',
       description:
-        "claude-kb's most-asked questions, each with a one-line answer and its entry IDs: across the knowledge base, or" +
-        " for one topic together with that topic's recommendations for our setup.",
+        "claude-kb's most-asked questions, each with a one-line answer and its entry IDs: on using Claude and Claude" +
+        " Code, or for one topic together with that topic's recommendations for our setup; topic stack has the" +
+        ' questions on the stack Claude works on.',
       inputSchema: {
         type: 'object',
-        properties: { topic: { ...TOPIC, description: `${TOPIC.description}; leave out for all` } },
+        properties: {
+          topic: {
+            ...TOPIC,
+            description: `${TOPIC.description}, or ${STACK_TOPIC} for the stack's rows; leave out for the Claude rows`,
+          },
+        },
       },
       annotations: READ_ONLY,
     },
@@ -221,20 +239,44 @@ function utcDay(date: Date): number {
   return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
 
-export function hitLine(entry: Entry, today: Date): string {
+export function hitLine(entry: Entry, today: Date, conflicted = false): string {
   const merged = entry.mergedInto.length ? `, merged into ${entry.mergedInto.join(', ')}` : '';
+  const conflict = conflicted ? ', open conflict: kb_get says which' : '';
   return (
     `${entry.id}: ${entry.title} (${entry.type}, ${entry.confidence}, last verified ${entry.lastVerified}` +
-    `${age(entry, today)}${merged})`
+    `${age(entry, today)}${merged}${conflict})`
   );
+}
+
+/** An entry's text, then a line for each open INDEX.md conflict that names it. */
+function withConflicts(index: Index, entry: Entry): string {
+  const lines = (index.conflicts.get(entry.id) ?? []).map(c => `Conflict (INDEX.md): ${c.topic} — ${c.supported}`);
+  return lines.length ? `${entry.body}\n\n${lines.join('\n')}` : entry.body;
+}
+
+/** The filters kb_search accepts, besides the topic */
+export interface SearchFilters {
+  topic?: string;
+  type?: string;
+  confidence?: string;
+  appliesTo?: string;
+  limit?: number;
+}
+
+function resolveChoice(name: string, value: string | undefined, allowed: string[]): string | undefined {
+  const wanted = value?.trim() || undefined;
+  if (wanted && !allowed.includes(wanted)) {
+    throw new ToolError(
+      `Unknown ${name} ${JSON.stringify(value)}. Pass one of: ${allowed.join(', ')}; or leave it out.`,
+    );
+  }
+  return wanted;
 }
 
 export function search(
   index: Index | undefined,
   query: string,
-  topic?: string,
-  type?: string,
-  limit = LIMIT.default,
+  { topic, type, confidence, appliesTo, limit = LIMIT.default }: SearchFilters = {},
   note: Note = () => {},
 ): string {
   const kb = loaded(index);
@@ -242,23 +284,40 @@ export function search(
   if (limit < LIMIT.min || limit > LIMIT.max) {
     throw new ToolError(`Pass a limit from ${LIMIT.min} to ${LIMIT.max} (default ${LIMIT.default}).`);
   }
-  const wantedType = type?.trim() || undefined;
-  if (wantedType && !TYPES.includes(wantedType)) {
-    throw new ToolError(`Unknown type ${JSON.stringify(type)}. Pass one of: ${TYPES.join(', ')}; or leave it out.`);
-  }
+  const wantedType = resolveChoice('type', type, TYPES);
+  const wantedConfidence = resolveChoice('confidence', confidence, CONFIDENCE);
+  const wantedApplies = resolveChoice('applies_to', appliesTo, APPLIES_TO);
   const name = resolveTopic(kb, topic);
-  const hits = kb.search(query, { topic: name, type: wantedType, limit });
+  const hits = kb.search(query, {
+    topic: name,
+    type: wantedType,
+    confidence: wantedConfidence,
+    appliesTo: wantedApplies,
+    limit,
+  });
   note({ ids: hits.map(h => h.entry.id) });
   if (!hits.length) {
     searchEmpty.inc();
-    const where = name ? ` in topic ${name}` : '';
+    const filters = Object.entries({
+      topic: name,
+      type: wantedType,
+      confidence: wantedConfidence,
+      applies_to: wantedApplies,
+    })
+      .filter(([, v]) => v)
+      .map(([k, v]) => `${k} ${v}`);
+    const where = filters.length ? ` with ${filters.join(', ')}` : '';
     return (
-      `No entries match ${JSON.stringify(query)}${where}. Try other words, or kb_quick_answers for a topic's most-asked` +
+      `No entries match ${JSON.stringify(query)}${where}. Try other words${filters.length ? ' or fewer filters' : ''}, or` +
+      ` kb_quick_answers for a topic's most-asked` +
       ` questions. Topics:\n${topicList(kb)}\n\n${corpus(kb)}`
     );
   }
   const today = new Date();
-  const blocks: [string, string][] = hits.map(h => [h.entry.id, `${hitLine(h.entry, today)}\n${h.entry.summary}`]);
+  const blocks: [string, string][] = hits.map(h => [
+    h.entry.id,
+    `${hitLine(h.entry, today, kb.conflicts.has(h.entry.id))}\n${h.entry.summary}`,
+  ]);
   const kept = fit(blocks, MAX_CHARS.search, '\n\n', 'hits', 'lower the limit or narrow the query');
   return [...kept, corpus(kb)].join('\n\n');
 }
@@ -278,7 +337,7 @@ export function get(index: Index | undefined, ids: string[], note: Note = () => 
   note({ ids: entries.map(e => e.id), unknown: notes.length });
   if (!entries.length) throw new ToolError(notes.join('\n'));
   const blocks = fit(
-    entries.map(e => [e.id, e.body]),
+    entries.map(e => [e.id, withConflicts(kb, e)]),
     MAX_CHARS.get,
     SEPARATOR,
     'entries',
@@ -313,11 +372,19 @@ function unknown(index: Index, asked: string): string {
 
 export function quickAnswers(index: Index | undefined, topic?: string): string {
   const kb = loaded(index);
+  // The stack's rows are INDEX.md's second table, left out of the no-topic answer: with the Claude rows they came to
+  // 35,660 characters on 2026-10-23, about 9,000 tokens
+  const stack = kb.quickAnswers.get(STACK_TOPIC);
+  if (stack !== undefined && topic?.trim().toLowerCase() === STACK_TOPIC && !kb.topics.has(STACK_TOPIC)) {
+    return `# The stack Claude works on: Quick answers\n\n${stack}\n\n${corpus(kb)}`;
+  }
   const name = resolveTopic(kb, topic);
   if (name === undefined) {
     const table = kb.quickAnswers.get(INDEX_TOPIC) ?? '';
+    const stackLine =
+      stack === undefined ? '' : `The stack Claude works on (one row per stack topic): pass topic ${STACK_TOPIC}.\n`;
     return (
-      `# Quick answers across the knowledge base\n\n${table}\n\n` +
+      `# Quick answers on using Claude\n\n${table}\n\n${stackLine}` +
       `Each topic has its own (pass topic):\n${topicList(kb)}\n\n${corpus(kb)}`
     );
   }

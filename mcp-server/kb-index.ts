@@ -19,12 +19,16 @@ import {
   META_LINE,
   readText,
   section,
+  tableRows,
   topicTitle,
   WORD_CHAR,
   words,
 } from '../scripts/kb-parse.ts';
 
 export const INDEX_TOPIC = 'index';
+// INDEX.md's second Quick answers table, under "### The stack Claude works on": kept apart from the Claude rows so
+// `kb_quick_answers` without a topic stays small, and asked for with this name
+export const STACK_TOPIC = 'stack';
 // Column weights for bm25(), in the FTS table's column order: id, title, tags, body. Tuned on tests/kb-index.test.ts's
 // Quick-answer questions; on 2026-10-15, 208 of all 253 Quick-answer questions found a cited entry in the top 5.
 const WEIGHTS = [10, 3, 2, 1];
@@ -57,6 +61,14 @@ export interface Entry {
   readonly body: string;
 }
 
+/** One open row of INDEX.md's Conflicts table, for each entry it names. */
+export interface Conflict {
+  /** The row's first column: the topic, with the entry IDs in brackets */
+  readonly topic: string;
+  /** The row's last column, which side the sources support, cut as `summary` cuts when over SUMMARY_CHARS */
+  readonly supported: string;
+}
+
 export interface Hit {
   readonly entry: Entry;
   /** True when the query named this entry's ID */
@@ -66,6 +78,10 @@ export interface Hit {
 export interface SearchOptions {
   topic?: string;
   type?: string;
+  /** One of CONFIDENCE */
+  confidence?: string;
+  /** One of APPLIES_TO: matches an entry whose `Applies to` list contains it */
+  appliesTo?: string;
   limit?: number;
 }
 
@@ -81,6 +97,8 @@ export class Index {
   /** The "Quick answers" section by topic, INDEX_TOPIC for INDEX.md's */
   readonly quickAnswers: ReadonlyMap<string, string>;
   readonly recommendations: ReadonlyMap<string, string>;
+  /** The open conflicts by the ID of each entry a row names, in INDEX.md's order */
+  readonly conflicts: ReadonlyMap<string, readonly Conflict[]>;
   readonly #match: StatementSync;
   readonly #matchAll: StatementSync;
   /** The searchable entries by FTS rowid: the table is contentless, so it holds no IDs */
@@ -95,9 +113,10 @@ export class Index {
     this.prefixes = fields.prefixes;
     this.quickAnswers = fields.quickAnswers;
     this.recommendations = fields.recommendations;
+    this.conflicts = fields.conflicts;
     const sql = `SELECT rowid FROM fts WHERE fts MATCH ? ORDER BY bm25(fts, ${WEIGHTS.join(', ')})`;
     this.#match = db.prepare(`${sql} LIMIT ?`);
-    // With a topic or type, filtered here: bm25 scores every match to sort them anyway, so the LIMIT saves little
+    // With a filter, filtered here: bm25 scores every match to sort them anyway, so the LIMIT saves little
     this.#matchAll = db.prepare(sql);
     this.#rows = rows;
   }
@@ -131,13 +150,17 @@ export class Index {
 
   /**
    * Entries for a query, best first: entries whose IDs the query names, then entries matching any of its words, ranked
-   * by bm25() (an entry matching more of them ranks higher). Merged entries are found by ID only. `topic` and `type`
-   * filter every result; an unknown topic matches nothing.
+   * by bm25() (an entry matching more of them ranks higher). Merged entries are found by ID only. `topic`, `type`,
+   * `confidence` and `appliesTo` filter every result, all of them together; an unknown topic matches nothing.
    */
-  search(query: string, { topic, type, limit = 8 }: SearchOptions = {}): Hit[] {
+  search(query: string, { topic, type, confidence, appliesTo, limit = 8 }: SearchOptions = {}): Hit[] {
     const wantedTopic = topic ? this.topic(topic) : undefined;
     if (topic && wantedTopic === undefined) return [];
-    const keep = (e: Entry) => (wantedTopic === undefined || e.topic === wantedTopic) && (!type || e.type === type);
+    const keep = (e: Entry) =>
+      (wantedTopic === undefined || e.topic === wantedTopic) &&
+      (!type || e.type === type) &&
+      (!confidence || e.confidence === confidence) &&
+      (!appliesTo || e.appliesTo.split(', ').includes(appliesTo));
 
     const ids = [...query.matchAll(ID_IN_QUERY)].map(m => m[1]);
     const hits = new Map(
@@ -150,7 +173,7 @@ export class Index {
     const queryPhrases = phrases(query);
     if (hits.size < limit && queryPhrases.length) {
       const match = queryPhrases.join(' OR ');
-      const filtered = wantedTopic !== undefined || type;
+      const filtered = wantedTopic !== undefined || type || confidence || appliesTo;
       const rows = filtered ? this.#matchAll.all(match) : this.#match.all(match, limit + hits.size);
       for (const row of rows) {
         const entry = this.#rows[(row.rowid as number) - 1];
@@ -211,6 +234,22 @@ export function summary(text: string): string {
   if (end > SUMMARY_CHARS / 3) return cut.slice(0, end + 1);
   const space = cut.lastIndexOf(' ');
   return `${space === -1 ? cut : cut.slice(0, space)} …`;
+}
+
+/**
+ * INDEX.md's open conflicts by entry: each row of its Conflicts table with entry IDs in its first two columns
+ * (`Topic (entries) | Claims | Which the sources support`) is added to every entry it names. A row naming an ID twice
+ * counts once for it; the header and separator rows name none.
+ */
+function parseConflicts(indexText: string): Map<string, Conflict[]> {
+  const found = new Map<string, Conflict[]>();
+  for (const cells of tableRows(section(indexText, 'Conflicts') ?? '')) {
+    if (cells.length < 3) continue;
+    const named = new Set(cells.slice(0, 2).flatMap(c => c.match(/[A-Z]+-\d+/g) ?? []));
+    const conflict = { topic: cells[0], supported: summary(cells.at(-1)!) };
+    for (const id of named) found.set(id, [...(found.get(id) ?? []), conflict]);
+  }
+  return found;
 }
 
 function mergedInto(indexTitle: string): string[] {
@@ -283,8 +322,13 @@ export function load(root: string, commit?: string): Index {
     }
   }
   const indexMd = join(root, 'INDEX.md');
-  const quick = existsSync(indexMd) ? section(readText(indexMd), 'Quick answers') : undefined;
-  if (quick) quickAnswers.set(INDEX_TOPIC, quick.trim());
+  const indexText = existsSync(indexMd) ? readText(indexMd) : '';
+  const quick = section(indexText, 'Quick answers');
+  if (quick) {
+    const [claude, ...stack] = quick.split(/^### The stack Claude works on\s*$/m);
+    quickAnswers.set(INDEX_TOPIC, claude.trim());
+    if (stack.length) quickAnswers.set(STACK_TOPIC, stack.join('').trim());
+  }
   return new Index(
     {
       commit: commit || basename(root),
@@ -295,6 +339,7 @@ export function load(root: string, commit?: string): Index {
       prefixes,
       quickAnswers,
       recommendations,
+      conflicts: parseConflicts(indexText),
     },
     db,
     rows,

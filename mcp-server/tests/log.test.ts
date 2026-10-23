@@ -52,6 +52,7 @@ test('a tool call logs the entry IDs it returned, never its arguments', async ()
     await call(1, 'kb_search', { query: 'secret-word Second' });
     await call(2, 'kb_get', { ids: ['tst-2', 'TST-404'] });
     await call(3, 'kb_status', {});
+    await call(4, 'kb_search', { query: 'Second', confidence: 'single-source', applies_to: 'Claude API' });
   } finally {
     await close();
   }
@@ -60,6 +61,7 @@ test('a tool call logs the entry IDs it returned, never its arguments', async ()
     [{ tool: 'kb_search', ids: ['TST-002'] }],
     [{ tool: 'kb_get', ids: ['TST-002'], unknown: 1 }],
     [{ tool: 'kb_status' }],
+    [{ tool: 'kb_search', ids: [] }],
   ]);
-  expect(JSON.stringify(lines)).not.toMatch(/secret-word|TST-404/);
+  expect(JSON.stringify(lines)).not.toMatch(/secret-word|TST-404|single-source|Claude API/);
 });

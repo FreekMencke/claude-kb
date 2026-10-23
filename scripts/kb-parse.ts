@@ -9,6 +9,8 @@ export const FIELDS = ['Type', 'Applies to', 'Confidence', 'Last verified', 'Sou
 // The values of an entry's `Applies to` field, in the order they are written: `Claude Code, claude.ai` is valid,
 // `claude.ai, Claude Code` is not. The Agent SDK and Managed Agents count as `Claude API`.
 export const APPLIES_TO = ['Claude Code', 'Claude API', 'claude.ai', 'general'];
+// The values of an entry's `Confidence` field
+export const CONFIDENCE = ['official-docs', 'official-example', 'community-consensus', 'single-source', 'unverified'];
 export const ENTRY = /^## \[([A-Z]+-\d+)\]/gm;
 export const HEADING = /^## \[([A-Z]+-\d+)\] (.+)$/gm;
 export const INDEX_ROW = /^\| ([A-Z]+-\d+) \| (.*?) \| ([\p{L}\p{N}_-]+) \| (.*?) \|$/gmu;
@@ -63,4 +65,21 @@ export function topicTitle(text: string): string {
     .replace(/^[# ]+/, '')
     .trim()
     .replace(/ \([A-Z]+\)$/, '');
+}
+
+/**
+ * The cells of a Markdown table's rows, trimmed, with `\|` read as a literal pipe, not a cell break. Lines that aren't
+ * rows are skipped; the header and separator rows are returned like any other.
+ */
+export function tableRows(text: string): string[][] {
+  return text.split('\n').flatMap(line => {
+    const row = line.trim();
+    if (!row.startsWith('|') || !row.endsWith('|')) return [];
+    return [
+      row
+        .slice(1, -1)
+        .split(/(?<!\\)\|/)
+        .map(cell => cell.replace(/\\\|/g, '|').trim()),
+    ];
+  });
 }
