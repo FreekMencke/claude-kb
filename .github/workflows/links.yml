@@ -54,8 +54,9 @@ jobs:
       # can also cite a repo file (DSKILL-013's `../assets/` pictures, relative to topics/), which sources.md in the
       # root can't resolve. Hosts that block the runner with a 403, and a private repo, are skipped in .lycheeignore,
       # which lychee reads from the working directory; the summary counts them.
-      # The token is the action's default, github.token, in GITHUB_TOKEN: it lifts the anonymous rate limit on the
-      # github.com links lychee checks through the API. format json, because the report step needs the line of each
+      # The token is the action's default, github.token, in GITHUB_TOKEN. lychee 0.24.2 still requests github.com links
+      # anonymously and uses the token only for its API fallback when such a request fails; a throttled request
+      # answers 429, which is accepted, so a rate-limited github.com link passes unchecked. format json, because the report step needs the line of each
       # broken URL; the action only writes its own job summary for markdown. fail false: the report step fails the job.
       - name: Check the links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
