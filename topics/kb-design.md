@@ -872,16 +872,16 @@ Not legal advice; US sources only (EU and Benelux law not read). MIT covers a co
 - Confidence: single-source
 - Last verified: 2026-10-23
 - Sources: [Claude Code security: prompt injection](https://code.claude.com/docs/en/security), [Memory: imports](https://code.claude.com/docs/en/memory), [typeui.sh 0.7.1 on npm](https://www.npmjs.com/package/typeui.sh), [bergside/awesome-design-skills](https://github.com/bergside/awesome-design-skills/tree/f631a09b4fcc0166f2e2c1a8c81906ef680c57e8)
-- Related: DESIGN-037, DESIGN-038, SKILL-041
+- Related: DESIGN-037, DESIGN-038, SKILL-041, SKILL-068, SKILL-069, SKILL-070, SKILL-073
 
 A DESIGN.md imported from CLAUDE.md or read on request is text Claude acts on, like a skill (our inference; no Anthropic page names DESIGN.md). Anthropic defines prompt injection as "inserting malicious text" to "override or manipulate an AI assistant's instructions"; its advice for untrusted content starts "Review suggested commands before approval".
 
 **What we found** (2026-10-23, read, not run):
 - **Commands.** 34 of VoltAgent's 84 files tell the agent to run `npx @google/design.md lint`, unpinned. `ollama.md` and `opencode.ai.md` quote `curl -fsSL … | sh` and `| bash` install lines as page copy.
 - **Remote, unpinned text.** `typeui.sh` 0.7.1 (`gitHead` `de5559f`, no install scripts, no telemetry) `pull` fetches `skills/index.json`, then the path it names, from `raw.githubusercontent.com/bergside/awesome-design-skills/main`: a branch, checked only for a text content type. It writes `.agents/skills/design-system/SKILL.md` always, plus one per chosen tool (Claude: `.claude/skills/design-system/SKILL.md`), merging between `TYPEUI_SH_MANAGED` markers; `--format design` replaces `./DESIGN.md`. It writes no settings or hooks.
-- VoltAgent's files have no HTML comments or data URIs. Nothing found was malicious; permission prompts still gate the commands.
+- No HTML comments or data URIs in VoltAgent's files, and no hidden Unicode (format, private-use or tag characters, SKILL-073) in the 97 files read. Nothing found was malicious; permission prompts still gate the commands.
 
-**Do:** copy at a pinned commit (`raw.githubusercontent.com/<repo>/<sha>/…`), read it in full, check skill frontmatter (`allowed-tools`), pin any command it names (`npx @google/design.md@0.4.0`), rewrite agent-directed lines as plain design rules, and review later diffs like code (SKILL-041).
+**Do:** copy at a pinned commit (`raw.githubusercontent.com/<repo>/<sha>/…`), read it in full, check skill frontmatter (`allowed-tools`), pin any command it names (`npx @google/design.md@0.4.0`), rewrite agent-directed lines as plain design rules, and review later diffs like code (SKILL-068, SKILL-069).
 
 ## Recommendations for our setup
 
