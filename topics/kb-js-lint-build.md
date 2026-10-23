@@ -20,7 +20,7 @@ Research basis:
 | Which angular-eslint for Angular 22? | 22.x: flat config only, ESLint 9 or 10 (10 since 21.3.0), typed linting off unless you opt in (`ng add angular-eslint --tseslint-preset=strictTypeChecked`). | JSTOOL-005 |
 | Can Oxlint replace ESLint? | For TS and JS rules, yes: 871 rules and 59 of typescript-eslint's 61 type-aware rules, in hundredths of a second here against seconds for ESLint (different rules). Not for Angular templates, eslintrc configs or custom parsers; JS plugins are alpha. Nest 12's template ships it. | JSTOOL-006, JSTOOL-007, JSTOOL-010 |
 | Why does oxlint print one line per problem and no summary under Claude Code? | Oxlint 1.88 picks its `agent` format when it sees `CLAUDECODE` or `AI_AGENT` (tested; undocumented). Pass `-f default` for the summary. | JSTOOL-008 |
-| Biome or Prettier plus ESLint? | Biome 2.5 is one fast tool (568 rules, formatter 97% Prettier-compatible) but runs no ESLint plugins and doesn't handle Angular templates. Keep ESLint and Prettier in an Angular repo. | JSTOOL-009, JSTOOL-010 |
+| Biome or Prettier plus ESLint? | Biome 2.6 is one fast tool (607 rules, formatter 97% Prettier-compatible) but runs no ESLint plugins and doesn't handle Angular templates. Keep ESLint and Prettier in an Angular repo. | JSTOOL-009, JSTOOL-010 |
 | Why doesn't Prettier format my Angular template's `@if` blocks? | Prettier infers the `angular` parser only for `*.component.html`; the style guide's `user-profile.html` gets `html`, and its control flow stays unformatted. Add an `overrides` entry with `"parser": "angular"`. | JSTOOL-011 |
 | How do I find unused files, exports and dependencies? | knip 6: `knip --reporter json --no-progress` (or `compact`); `--production` for shipped code only; review before `--fix`. Exit 1 means findings, 2 a config or plugin load error. | JSTOOL-013 |
 | What changed in Vite 8? | Rolldown replaces esbuild and Rollup, Oxc transforms and minifies, Lightning CSS minifies CSS; `build.rollupOptions` became `build.rolldownOptions` (old names still converted). Node 20.19+ or 22.12+. | JSTOOL-014 |
@@ -199,11 +199,11 @@ Tested 2026-10-17, oxlint@1.88.0, Claude Code 2.1.299 Bash tool (terminal, WSL):
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Biome vs ESLint and Prettier](https://biomejs.dev/) ([raw comparison](https://raw.githubusercontent.com/biomejs/website/main/src/content/docs/internals/comparison.mdx)), [Language support](https://biomejs.dev/internals/language-support/), [Linter domains](https://biomejs.dev/linter/domains/), [Migrate from ESLint and Prettier](https://biomejs.dev/guides/migrate-eslint-prettier/), [CLI reference](https://biomejs.dev/reference/cli/)
+- Last verified: 2026-10-23
+- Sources: [Comparison with other tools](https://biomejs.dev/introduction/comparison-with-other-tools/) ([raw at `570c827`](https://raw.githubusercontent.com/biomejs/website/570c82786cb7488b87a0d054234c7f2673dbbc39/src/content/docs/en/introduction/comparison-with-other-tools.mdx)), [Language support](https://biomejs.dev/introduction/language-support/), [Linter domains](https://biomejs.dev/linter/domains/), [Migrate from other tools](https://biomejs.dev/installation/migrate-from-other-tools/), [CLI reference](https://biomejs.dev/reference/cli/)
 - Related: JSTOOL-010, JSTOOL-011, JSTOOL-006
 
-Biome (2.0.0 on 2025-06-17; 2.5.15 on 2026-09-30) lints and formats JS, TS, JSX, JSON, CSS and GraphQL in one binary. Its docs: 568 lint rules, "most of them ported from ESLint and its popular plugins"; "Biome's formatter matches Prettier's output in 97% of cases"; "formats about 25 times faster than Prettier" and "lints about 15 times faster than ESLint" (their benchmark). Defaults differ: "Biome indents with tabs while Prettier uses spaces."
+Biome (2.0.0 on 2025-06-17; 2.6.2 on 2026-10-21, `npm view @biomejs/biome dist-tags`) lints and formats JS, TS, JSX, JSON, CSS and GraphQL in one binary. Its docs: 607 lint rules (568 in the 2.5 docs of 2026-10-17), "most of them ported from ESLint and its popular plugins"; "Biome's formatter matches Prettier's output in 97% of cases"; "formats about 25 times faster than Prettier" and "lints about 15 times faster than ESLint" (their benchmark). Defaults differ: "Biome indents with tabs while Prettier uses spaces."
 
 Typed rules without `tsc`: the `types` domain runs Biome's own inference ("does not need TypeScript installed"), with `noFloatingPromises` and `noMisusedPromises` still nursery; "The rule count is considerably smaller than `typescript-eslint`'s". The docs list "TypeScript version 5.9".
 
@@ -217,8 +217,8 @@ Tested 2026-10-17, @biomejs/biome@2.5.15: on one file, the default reporter prin
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Oxlint linter guide](https://oxc.rs/docs/guide/usage/linter.html), [Biome comparison](https://raw.githubusercontent.com/biomejs/website/main/src/content/docs/internals/comparison.mdx), [angular-eslint README](https://github.com/angular-eslint/angular-eslint), [nestjs/nest-cli 12.0.0 release](https://github.com/nestjs/nest-cli/releases/tag/12.0.0)
+- Last verified: 2026-10-23
+- Sources: [Oxlint linter guide](https://oxc.rs/docs/guide/usage/linter.html), [Biome comparison](https://biomejs.dev/introduction/comparison-with-other-tools/) ([raw at `570c827`](https://raw.githubusercontent.com/biomejs/website/570c82786cb7488b87a0d054234c7f2673dbbc39/src/content/docs/en/introduction/comparison-with-other-tools.mdx)), [angular-eslint README](https://github.com/angular-eslint/angular-eslint), [nestjs/nest-cli 12.0.0 release](https://github.com/nestjs/nest-cli/releases/tag/12.0.0)
 - Related: JSTOOL-003, JSTOOL-005, JSTOOL-006, JSTOOL-007, JSTOOL-009
 
 | Need | ESLint 10 + typescript-eslint | Oxlint 1.88 | Biome 2.5 |
@@ -375,8 +375,8 @@ Conflict: the 12.0.0 notes say rspack "is the builder that `nest new` scaffolds 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Announcing Rspack 2.0](https://rspack.rs/blog/announcing-2-0) ([raw](https://raw.githubusercontent.com/web-infra-dev/rspack/main/website/docs/en/blog/announcing-2-0.mdx)), [Announcing Rsbuild 2.0](https://rsbuild.rs/community/releases/v2-0) ([raw](https://raw.githubusercontent.com/web-infra-dev/rsbuild/main/website/docs/en/blog/v2-0.mdx)), [Rspack CLI](https://rspack.rs/api/cli)
+- Last verified: 2026-10-23
+- Sources: [Announcing Rspack 2.0](https://rspack.rs/blog/announcing-2-0) ([raw](https://raw.githubusercontent.com/web-infra-dev/rspack/main/website/docs/en/blog/announcing-2-0.mdx)), [Announcing Rsbuild 2.0](https://rsbuild.rs/blog/v2-0) ([raw](https://raw.githubusercontent.com/web-infra-dev/rsbuild/main/website/docs/en/blog/v2-0.mdx)), [Rspack CLI](https://rspack.rs/api/cli)
 - Related: JSTOOL-018, JSTOOL-021, JSTOOL-020
 
 Rspack is a Rust bundler with webpack's API and loaders; Rsbuild is the build tool on top of it. Both 2.0.0 shipped 2026-04-22; `latest` on 2026-10-17: `@rspack/core` 2.2.9, `@rsbuild/core` 2.2.13; both need Node `^20.19.0 || >=22.12.0`.
@@ -418,8 +418,8 @@ Tested 2026-10-17, Claude Code 2.1.299 Bash tool, `@angular/build` 22.2.2 on osr
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Rolldown: getting started](https://rolldown.rs/guide/getting-started), [angular.dev: build system migration](https://angular.dev/tools/cli/build-system-migration), [Nest docs: SWC recipe](https://docs.nestjs.com/recipes/swc), [Announcing Rsbuild 2.0](https://rsbuild.rs/community/releases/v2-0), [esbuild: TypeScript caveats](https://esbuild.github.io/content-types/#typescript-caveats)
+- Last verified: 2026-10-23
+- Sources: [Rolldown: getting started](https://rolldown.rs/guide/getting-started), [angular.dev: build system migration](https://angular.dev/tools/cli/build-system-migration), [Nest docs: SWC recipe](https://docs.nestjs.com/recipes/swc), [Announcing Rsbuild 2.0](https://rsbuild.rs/blog/v2-0), [esbuild: TypeScript caveats](https://esbuild.github.io/content-types/#typescript-caveats)
 - Related: JSTOOL-014, JSTOOL-015, JSTOOL-016, JSTOOL-017, JSTOOL-018, JSTOOL-019, NODE-003, DOCKER-005
 
 | Job | Pick | Why |

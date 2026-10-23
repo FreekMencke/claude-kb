@@ -91,8 +91,8 @@ Native modules need a musl prebuild or a compiler in the build stage (`apk add p
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Docker press release, 2025-12-17](https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/), [Docker Hardened Images](https://docs.docker.com/dhi/), [Use a DHI](https://docs.docker.com/dhi/get-started/how-to/use/), [DHI catalog: node](https://github.com/docker-hardened-images/catalog/tree/main/image/node), [DHI migration checklist](https://docs.docker.com/dhi/migration/checklist/), [distroless README](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/README.md), [distroless common/variables.bzl](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/common/variables.bzl), [Chainguard container categories](https://edu.chainguard.dev/chainguard/containers/concepts/container-categories/)
+- Last verified: 2026-10-23
+- Sources: [Docker press release, 2025-12-17](https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/), [Docker Hardened Images](https://docs.docker.com/dhi/), [Use a DHI](https://docs.docker.com/dhi/how-to/use/), [DHI catalog: node](https://github.com/docker-hardened-images/catalog/tree/main/image/node), [DHI migration checklist](https://docs.docker.com/dhi/migration/checklist/), [distroless README](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/README.md), [distroless common/variables.bzl](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/common/variables.bzl), [Chainguard container categories](https://edu.chainguard.dev/chainguard/containers/concepts/container-categories/)
 - Related: DOCKER-004, DOCKER-012
 
 Three runtime images without a shell or package manager:
@@ -100,7 +100,7 @@ Three runtime images without a shell or package manager:
 | | Distroless | Docker Hardened Images (Community) | Chainguard (free) |
 |---|---|---|---|
 | Node image | `gcr.io/distroless/nodejs24-debian13` (22, 26 too) | `dhi.io/node:24-alpine`, Debian 12/13 too; `-dev` tags for building | `cgr.dev/chainguard/node` |
-| Pull | anonymous | "You must authenticate to `dhi.io`" (`docker login dhi.io`, free account) | anonymous |
+| Pull | anonymous | "You must authenticate to the Docker Hardened Images registry (`dhi.io`)" (`docker login dhi.io`, free account) | anonymous |
 | Pinned versions | yes | yes | "limited to the latest build", tags `latest` and `latest-dev` only |
 | Default user | `latest`: root; `nonroot` tag: UID 65532 | runtime: `node`, UID 1000; `-dev`: root | not checked |
 | Signed | cosign keyless | signatures, SBOM, SLSA L3 provenance, VEX | not checked |
