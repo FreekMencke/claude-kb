@@ -75,6 +75,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ANIMLIB-014 | When not to use each library | recommendation | native-css, motion, gsap, lenis, decision |
 | ANIMLIB-015 | Lenis drops keys mid-animation, hijacks nested scroll boxes and flashes on anchors | anti-pattern | lenis, keyboard, nested-scroll, anchors, scroll-jacking |
 | ANIMLIB-016 | Vendor `llms.txt` files: size, pinning and what they tell agents | tool | llms-txt, pinning, motion, gsap, lenis |
+| ANIMLIB-017 | Emil Kowalski's articles and libraries against his skills | comparison | kowalski, durations, reduced-motion, sonner, vaul |
 
 ## AWS Lambda on the Node.js runtime (`topics/kb-aws-lambda-node.md`, LAMBDA)
 

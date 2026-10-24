@@ -23,7 +23,7 @@ Research basis:
 | What should `prefers-reduced-motion` do? | Replace large or vestibular motion with a fade or nothing; the spec says "removes or replaces". With `animate.leave`, `animation: none` removes the element in the next frame. | ANIM-010 |
 | What does WCAG require beyond reduced motion? | A pause control for automatic motion over 5 s (2.2.2), no more than three flashes a second (2.3.1), and a way to turn off interaction motion such as parallax (2.3.3, AAA). | ANIM-011 |
 | What happens to focus while an element animates out? | Angular leaves it focusable and exposed. Move focus out first (else `inert` drops it to `<body>`), then set `inert` in the `(animate.leave)` callback; a bound `[inert]` never applies. | ANIM-012 |
-| How long should a UI transition take? | NN/g: 100–400 ms for most, scaled by distance and frequency (toggles about 100 ms, modals 200–300, 400 is "very slow"); exits shorter than entrances. Material 3 tokens run 50–1000 ms with `cubic-bezier(0.2, 0, 0, 1)` as standard. | ANIM-013, ANIM-015 |
+| How long should a UI transition take? | NN/g: 100–400 ms for most, scaled by distance and frequency (toggles about 100 ms, modals 200–300, 400 is "very slow"); exits shorter than entrances. Material 3 tokens run 50–1000 ms with `cubic-bezier(0.2, 0, 0, 1)` as standard. Emil Kowalski: no animation at all for keyboard-initiated or 100+-a-day actions, UI under 300 ms. | ANIM-013, ANIM-015, ANIMLIB-013 |
 | How do I test animated components? | jsdom has no WAAPI, so `animate.enter`/`leave` are no-ops under Vitest even with `animationsEnabled: true`; test motion in Playwright with `reducedMotion`. | ANIM-014 |
 
 ## Index
@@ -238,10 +238,10 @@ Diagnose with web-vitals attribution and LoAF (WEBPERF-003): `totalStyleAndLayou
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-23
-- Sources: [Media Queries 5: `prefers-reduced-motion`](https://drafts.csswg.org/mediaqueries-5/#prefers-reduced-motion), [MDN: `prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), [Chrome: same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document), [WCAG technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39.html), [web.dev: prefers-reduced-motion (2019-03-11)](https://web.dev/articles/prefers-reduced-motion), [NN/g: animation duration (2020-02-09)](https://www.nngroup.com/articles/animation-duration/), [Tailwind: hover, focus and other states](https://raw.githubusercontent.com/tailwindlabs/tailwindcss.com/main/src/docs/hover-focus-and-other-states.mdx), [Complex animations with CSS (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/animations/css.md)
-- Related: ACCESS-014, CSS-011, ANIM-006, ANIM-011, ANIMLIB-007
+- Sources: [Media Queries 5: `prefers-reduced-motion`](https://drafts.csswg.org/mediaqueries-5/#prefers-reduced-motion), [MDN: `prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), [Chrome: same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document), [WCAG technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39.html), [web.dev: prefers-reduced-motion (2019-03-11)](https://web.dev/articles/prefers-reduced-motion), [NN/g: animation duration (2020-02-09)](https://www.nngroup.com/articles/animation-duration/), [Tailwind: hover, focus and other states](https://raw.githubusercontent.com/tailwindlabs/tailwindcss.com/main/src/docs/hover-focus-and-other-states.mdx), [Complex animations with CSS (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/animations/css.md), [emilkowalski/skills `review-animations/STANDARDS.md` at 2d22863](https://raw.githubusercontent.com/emilkowalski/skills/2d228630ba1446365f614a108cb8252f1feda202/skills/review-animations/STANDARDS.md)
+- Related: ACCESS-014, CSS-011, ANIM-006, ANIM-011, ANIMLIB-007, ANIMLIB-013, ANIMLIB-017
 
-The spec defines `reduce` as a preference for an interface that "removes or replaces the types of motion-based animation that either trigger discomfort for those with vestibular motion sensitivity, or distraction"; MDN: "removes, reduces, or replaces", and its example swaps a scaling pulse for an opacity "dissolve". Chrome: "a preference for 'reduced motion' doesn't mean the user wants no motion". Against: web.dev (2019) "preferably to the point where all non-essential movement is removed", NN/g "by removing animations", C39 "…to prevent motion", Angular's guide "ensure no animations play" (INDEX.md, Conflicts). Both meet WCAG 2.3.3 for a fade, not for a replacement scale or zoom. Replace slides, zooms, parallax and spins with a short fade (100–200 ms, our choice) or nothing; keep colour and opacity feedback.
+The spec defines `reduce` as a preference for an interface that "removes or replaces the types of motion-based animation that either trigger discomfort for those with vestibular motion sensitivity, or distraction"; MDN: "removes, reduces, or replaces", and its example swaps a scaling pulse for an opacity "dissolve". Chrome: "a preference for 'reduced motion' doesn't mean the user wants no motion"; Emil Kowalski's skills: "fewer and gentler animations, not zero" (ANIMLIB-017). Against: web.dev (2019) "preferably to the point where all non-essential movement is removed", NN/g "by removing animations", C39 "…to prevent motion", Angular's guide "ensure no animations play" (INDEX.md, Conflicts). Both meet WCAG 2.3.3 for a fade, not a replacement scale or zoom. Replace slides, zooms, parallax and spins with a short fade (100–200 ms, our choice) or nothing; keep colour and opacity feedback.
 
 ```css
 /* component CSS */
@@ -256,13 +256,13 @@ The spec defines `reduce` as a preference for an interface that "removes or repl
 }
 ```
 
-- **With `animate.leave`**, `animation: none` is safe: Angular removes the element in the next frame. Angular's "1 millisecond" advice is for code awaiting end events itself.
+- **With `animate.leave`**, `animation: none` is safe: Angular removes the element in the next frame. Angular's "1 millisecond" advice is for code that awaits end events.
 - **Infinite loops** (spinners, pulses, skeletons) get `animation: none` or a static state, not just a slower loop.
-- **JavaScript** reads `matchMedia('(prefers-reduced-motion: reduce)')` in the browser only (ANIM-005); for view transitions Chrome shows `animation: none !important` on all three `::view-transition-*` pseudo-elements, or use `skipTransition()`.
+- **JavaScript** reads `matchMedia('(prefers-reduced-motion: reduce)')` in the browser only (ANIM-005); for view transitions use Chrome's `animation: none !important` on all three `::view-transition-*` pseudo-elements, or `skipTransition()`.
 - **Tailwind**'s `motion-reduce:`/`motion-safe:` variants do the same; set `scroll-behavior: auto` under `reduce` yourself.
-- Reduced motion isn't a 2.2.2 control (ACCESS-014). Check: the `animation: none` branch is measurable in Playwright; whether a fade is still too much is judgement.
+- Reduced motion isn't a 2.2.2 control (ACCESS-014). Playwright can check the `animation: none` branch; whether a fade is too much is judgement.
 
-Tested 2026-10-23, `@angular/core@22.2.3`, Playwright `reducedMotion: 'reduce'`: a leave class set to `animation: none` removed the element 16 ms (Chromium 156) and 9 ms (WebKit 27.2) after the class was added. Emulated `reduce` didn't make `scroll-behavior: smooth` jump in either engine (`scrollY` 2 and 1,159 two frames after `scrollTo(0, 4000)`, as without it); the OS setting wasn't tested.
+Tested 2026-10-23, `@angular/core@22.2.3`, Playwright `reducedMotion: 'reduce'`: a leave class set to `animation: none` removed the element 16 ms (Chromium 156) and 9 ms (WebKit 27.2) after it was added. Emulated `reduce` didn't stop smooth scrolling in either engine (`scrollY` 2 and 1,159 two frames after `scrollTo(0, 4000)`); the OS setting wasn't tested.
 
 ## [ANIM-011] WCAG motion rules beyond reduced motion: 2.2.2, 2.3.1 and parallax
 - Type: fact
@@ -349,12 +349,14 @@ Tested 2026-10-23, `@angular/core@22.2.3`, Vitest 5.0.5, jsdom 30.1.3, Node 24.2
 - Applies to: general
 - Confidence: single-source
 - Last verified: 2026-10-23
-- Sources: [NN/g: Executing UX Animations: Duration and Motion Characteristics (2020-02-09)](https://www.nngroup.com/articles/animation-duration/), [NN/g: The Role of Animation and Motion in UX (2020-01-12)](https://www.nngroup.com/articles/animation-purpose-ux/), [Apple HIG: Motion](https://developer.apple.com/design/human-interface-guidelines/motion)
-- Related: ANIM-013, ANIM-010, DESIGN-013
+- Sources: [NN/g: Executing UX Animations: Duration and Motion Characteristics (2020-02-09)](https://www.nngroup.com/articles/animation-duration/), [NN/g: The Role of Animation and Motion in UX (2020-01-12)](https://www.nngroup.com/articles/animation-purpose-ux/), [Apple HIG: Motion](https://developer.apple.com/design/human-interface-guidelines/motion), [emilkowalski/skills `review-animations/STANDARDS.md` at 2d22863](https://raw.githubusercontent.com/emilkowalski/skills/2d228630ba1446365f614a108cb8252f1feda202/skills/review-animations/STANDARDS.md)
+- Related: ANIM-013, ANIM-010, DESIGN-013, ANIMLIB-013, ANIMLIB-017
 
-Pick the shortest duration that isn't jarring, scaled by what the motion does, how far it travels and how often it repeats; ANIM-013 has the token scales to snap to. NN/g is one expert source, hence single-source.
+Pick the shortest duration that isn't jarring, scaled by what the motion does, how far it travels and how often it repeats; ANIM-013 has the token scales to snap to. NN/g is the one source for the ranges, hence single-source; Emil Kowalski's skills agree on frequency and go further.
 
 NN/g by purpose: a checkbox or toggle "roughly 100 ms"; a modal "200–300 ms"; "a popup window may take 300ms to appear, but only 200 or 250ms to disappear"; "the more frequent the animation, the more subtle and shorter you'll want it to be"; "look for the shortest time that an animation can take without being jarring". Apple: "generally avoid adding motion to UI interactions that occur frequently". Don't animate what the user waits on or repeats (our reading of both).
+
+Kowalski makes frequency a gate (ANIMLIB-013): "No animation. Ever." at "100+ times/day (keyboard shortcuts, command palette toggle)", "Remove or drastically reduce" at tens a day, and "Never animate keyboard-initiated actions". His ranges fall within NN/g's 100–500 ms with a 300 ms cap for UI; for modals his skills (to 500 ms) and articles (to 300) differ (ANIMLIB-017).
 
 | Job | Range (NN/g) |
 |---|---|
@@ -380,7 +382,7 @@ Ranked by impact against effort. Checked 2026-10-23 against `main` of osrs-track
 - **Does any browser reduce motion by itself?** Firefox's Bugzilla 1832598 (milestone 115) makes smooth scrolls instant under the OS setting; MDN's `scroll-behavior` page and Chrome's view-transition page say nothing for Chromium or WebKit. Playwright's emulated `reduce` didn't change smooth scrolling in either (ANIM-010), which says nothing about the OS setting.
 - **Height-to-`auto` fallback** (ANIM-007): that it jumps outside Chromium is our inference from `interpolate-size`'s `numeric-only` default; no MDN sentence says so.
 - **M3 Expressive: springs against duration tokens, and device scaling** (ANIM-013): m3.material.io renders with JavaScript and wasn't readable as text; whether M3 still scales durations by device size (as Material 2 was remembered to) wasn't checked.
-- **A cap for stagger and choreography**: no source read gives a per-item delay or a total-sequence limit; ANIM-002 maps `stagger()` without one.
+- **A cap for stagger and choreography**: Emil Kowalski's skills give 30–80 ms between items and say stagger must never block interaction (ANIMLIB-013, one practitioner); no source read gives a total-sequence limit, and ANIM-002 maps `stagger()` without one.
 - **The view-transition reduced-motion CSS** in ANIM-010 (keep the default cross-fade) wasn't tested.
 - **Chrome's "Blocked aria-hidden… retained focus" warning** (ANIM-012): seen only in search summaries, not in Chrome docs or source.
 - **Screen readers**: no announcement behaviour during enter or exit was tested; all tests were headless Chromium and WebKit.
