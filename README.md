@@ -312,6 +312,11 @@ this repo.
   Split it into a Claude lookup and a stack lookup, both reading the same server, once a new topic no longer fits or a
   `loads-*` case fails on a word that was cut. The knowledge base itself stays one: its cross-links and one search are
   what answer a question spanning both halves.
+- **A large topic file is split only when its Quick answers stop covering what's asked.** On 2026-10-23
+  `kb-token-usage.md` had 92 entries and `kb-skills.md` 73, three to six times most topics. Search doesn't mind the
+  size, but a file's 10–15 Quick answers cover less of it. Split one when real queries show questions its Quick answers
+  miss (the usage data from FreekMencke/claude-kb#279). Entries keep their IDs when they move; only new entries in the
+  split-off file take a new prefix (FreekMencke/claude-kb#280).
 
 How the knowledge base was built (each research, merge and skill step's prompts and test results) is in the git
 history up to `60cd4a7`, in the former `HANDOFF.md`.
