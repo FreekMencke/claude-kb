@@ -427,7 +427,7 @@ Statuses from `jq '.features["<id>"].status' data.json` on web-features 3.44.0 (
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [Tailwind: theme variables](https://tailwindcss.com/docs/theme), [Tailwind docs source: padding at 7f92c22](https://github.com/tailwindlabs/tailwindcss.com/blob/7f92c2213315c195dae583d68752da4042da3ade/src/docs/padding.mdx), [Tailwind `theme.css` v4.3.3](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css)
-- Related: SPACE-002, SPACE-001, DESIGN-023, CSS-015
+- Related: SPACE-002, SPACE-001, DESIGN-023, CSS-015, JSTOOL-022, JSTOOL-023
 
 Tailwind 4's default is one variable, `--spacing: 0.25rem`, and `p-<number>` compiles to `calc(var(--spacing) * <number>)`. Any multiple works, so `p-0.75` (3 px), `pt-1.75` (7 px) and `px-4.5` (18 px) are all valid: the framework imposes no scale.
 
@@ -447,7 +447,7 @@ To impose one, reset the multiplier and name the steps, including zero:
 }
 ```
 
-Then `p-4` compiles to `padding: var(--spacing-4)`, negatives such as `-mt-4` still work, and an unnamed step such as `p-5` or `p-0.75` produces no CSS at all: it shows up as missing styling in review. Without `--spacing-0`, `p-0`, `m-0`, `gap-0` and `inset-0` vanish too. Arbitrary values (`m-[13px]`) and `px` (`mt-px`, 1 px) still compile; catch those in review or lint.
+Then `p-4` compiles to `padding: var(--spacing-4)`, negatives such as `-mt-4` still work, and an unnamed step such as `p-5` or `p-0.75` produces no CSS at all: it shows up as missing styling in review. Without `--spacing-0`, `p-0`, `m-0`, `gap-0` and `inset-0` vanish too. Arbitrary values (`m-[13px]`) and `px` (`mt-px`, 1 px) still compile; catch those in review or lint. Lint can also enforce a token: ESLint selectors or `better-tailwindcss`'s `no-unknown-classes`, which flags unnamed steps (JSTOOL-022, JSTOOL-023).
 
 The docs' own example for a full custom theme is `--*: initial` with `--spacing: 4px` (DESIGN-023), which keeps the free multiplier.
 

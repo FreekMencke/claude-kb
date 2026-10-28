@@ -13,7 +13,7 @@ Research basis:
 | Question | Answer | Entries |
 |---|---|---|
 | What breaks in ESLint 9 to 10? | `.eslintrc*` is gone (no flat config means exit 2), `/* eslint-env */` comments are lint errors, config lookup starts at each file's directory, Node `^20.19.0 \|\| ^22.13.0 \|\| >=24`, three rules join `eslint:recommended`. Run `npx codemod @eslint/v9-to-v10` on a clean tree. | JSTOOL-001, JSUP-003 |
-| Which ESLint output should an agent ask for? | `-f json` (or `json-with-metadata`), `--quiet` for errors only, `--max-warnings 0` to fail on warnings. Only `stylish`, `json`, `json-with-metadata` and `html` are built in: `-f unix` exits 2. Exit 1 means problems, 2 a config or internal error. | JSTOOL-002, JSTOOL-020 |
+| Which ESLint and `ng build` output should an agent ask for? | ESLint: `-f json` (or `json-with-metadata`), `--quiet` for errors only, `--max-warnings 0` to fail on warnings; only `stylish`, `json`, `json-with-metadata` and `html` are built in (`-f unix` exits 2); exit 1 means problems, 2 a config or internal error. `ng build`: `NG_BUILD_LOGS_JSON=1` printed 914 characters against 6,104 for the chunk table. | JSTOOL-002, JSTOOL-020 |
 | Is `eslint --cache` safe with typed rules? | No: the cache doesn't track dependencies between files, so type-aware results go stale; typescript-eslint says "We don't recommend using `--cache`". | JSTOOL-002, JSTOOL-003 |
 | What does typed linting cost, and is it worth it? | About as long as a type check: 2.1–2.9 s became 4.6–5.5 s on a 221-file Angular app, and it found 5 floating promises the untyped config missed. Use `projectService: true`. | JSTOOL-003 |
 | Does typescript-eslint support ESLint 10 and TypeScript 7? | ESLint 10 since 8.56.0 (2026-02-16). TypeScript 7 no: peer `<6.1.0`; support waits for TS 7.1's API (draft `projectService.EXPERIMENTAL_backend`). `tseslint.config()` is deprecated for ESLint's `defineConfig()`. | JSTOOL-004, TS-009 |
@@ -26,7 +26,7 @@ Research basis:
 | What changed in Vite 8? | Rolldown replaces esbuild and Rollup, Oxc transforms and minifies, Lightning CSS minifies CSS; `build.rollupOptions` became `build.rolldownOptions` (old names still converted). Node 20.19+ or 22.12+. | JSTOOL-014 |
 | What does `ng build` use under the hood? | esbuild bundles; Vite serves `ng serve` only; Rolldown runs the chunk optimizer (default since 22.1.0, `NG_BUILD_OPTIMIZE_CHUNKS`); the webpack `browser` builder is deprecated. | JSTOOL-017 |
 | What does `nest build` use, and is rspack type-checked? | `tsc` by default; `-b swc`, `-b rspack` (new in CLI 12.0.0) or the deprecated `-b webpack`. The rspack builder type-checks only if `fork-ts-checker-webpack-plugin` is installed, and skips silently otherwise. | JSTOOL-018 |
-| How do I keep `ng build` output short? | `NG_BUILD_LOGS_JSON=1` printed 914 characters against 6,104 for the default chunk table; `--no-progress` barely helps (6,064). | JSTOOL-020 |
+| How do I make lint reject a raw Tailwind class where a token exists? | Core `no-restricted-syntax` with regex selectors on `Literal`, `TemplateElement`, `TextAttribute`, `LiteralPrimitive` and `BoundAttribute`, or `better-tailwindcss`'s `no-restricted-classes`/`no-unknown-classes`; only the plugin sees `[ngClass]` object keys. | JSTOOL-022, JSTOOL-023 |
 
 ## Index
 
@@ -53,6 +53,8 @@ Research basis:
 | JSTOOL-019 | Rspack 2 and Rsbuild 2 | fact | rspack, rsbuild, webpack, build |
 | JSTOOL-020 | Short, machine-readable output from lint and build tools | comparison | agent-output, eslint, oxlint, biome, knip, angular, vite |
 | JSTOOL-021 | Picking a build tool: Angular, Nest, apps, libraries and scripts | comparison | vite, rolldown, tsdown, esbuild, rspack, angular, nestjs |
+| JSTOOL-022 | Enforce a class token in Angular with `no-restricted-syntax`, no plugin | pattern | eslint, no-restricted-syntax, angular-eslint, tailwind, tokens |
+| JSTOOL-023 | eslint-plugin-better-tailwindcss: restricted and unknown classes, Angular included | tool | eslint, tailwind, angular, spacing, plugins |
 
 ## [JSTOOL-001] ESLint 10: what changed from 9
 - Type: fact
@@ -131,7 +133,7 @@ Tested 2026-10-17, typescript-eslint@8.71.2 and eslint@10.12.0 (the repo's lockf
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [angular-eslint README](https://github.com/angular-eslint/angular-eslint) ([raw](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/README.md)), [angular-eslint CHANGELOG](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/CHANGELOG.md), [Rules requiring type information](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/docs/RULES_REQUIRING_TYPE_INFORMATION.md), [Configuring ESLint](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/docs/CONFIGURING_ESLINT.md)
-- Related: ACCESS-011, NG-002, JSTOOL-004, JSTOOL-010
+- Related: ACCESS-011, NG-002, JSTOOL-004, JSTOOL-010, JSTOOL-022
 
 `angular-eslint` 22.6.0 (2026-10-11) peers `eslint ^9.0.0 || ^10.0.0`, `typescript-eslint ^8.0.0` and `typescript *`. Its major follows Angular's: "If your workspace is on an older Angular major, pin the matching major instead, e.g. `ng add angular-eslint@21`".
 - **Flat config only**: it "supports only flat config (the legacy "eslintrc" format is no longer supported)". 22.0.0 (2026-06-07) also dropped ESLint 8 and Node 20 and moved to TypeScript 6.
@@ -435,6 +437,55 @@ Tested 2026-10-17, Claude Code 2.1.299 Bash tool, `@angular/build` 22.2.2 on osr
 
 Every one of them except `tsc` and the Angular compiler strips types without checking them: keep `tsc --noEmit` (or a type-checking build) in the verify command.
 
+## [JSTOOL-022] Enforce a class token in Angular with `no-restricted-syntax`, no plugin
+- Type: pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-28
+- Sources: [ESLint: selectors at v10.13.0](https://raw.githubusercontent.com/eslint/eslint/v10.13.0/docs/src/extend/selectors.md), [ESLint: no-restricted-syntax](https://eslint.org/docs/latest/rules/no-restricted-syntax), [angular-eslint template-parser `src/index.ts` at v22.6.0](https://raw.githubusercontent.com/angular-eslint/angular-eslint/v22.6.0/packages/template-parser/src/index.ts), osrs-tracker/osrs-tracker-web#481
+- Related: SPACE-019, JSTOOL-005, JSTOOL-023
+
+ESLint's core `no-restricted-syntax` can forbid a raw class where a token exists (`px-5` where the token is `px-card`) in TS and Angular templates. The selectors use regex attributes (`[attr=/foo.*/]`; escape `/` as `\/`). angular-eslint's template parser names each node after its Angular compiler class (`child.type = child.constructor.name`).
+
+```js
+const RE = String.raw`(^|[\s"'\x60])(-?mx|p[xlrse]?)-5([\s"'\x60]|$)`;
+// **/*.ts, with processor: angular.processInlineTemplates
+{ selector: `Literal[value=/${RE}/]`, message },
+{ selector: `TemplateElement[value.raw=/${RE}/]:not(Property[key.name='template'] > TemplateLiteral > TemplateElement)`, message },
+// **/*.html, which also gets the inline templates
+{ selector: `TextAttribute[name='class'][value=/${RE}/]`, message },
+{ selector: `LiteralPrimitive[value=/${RE}/]`, message },
+{ selector: `BoundAttribute[name=/^(-?mx|p[xlrse]?)-5$/]`, message },
+```
+
+The boundaries (whitespace, quote, backtick) keep `px-50` and `-px-5x` out.
+
+Tested 2026-10-28, `eslint@10.13.0`, `angular-eslint@22.6.0`, `typescript-eslint@8.72.1`, Node 24.21.0, `defineConfig` with the processor:
+- **Caught:** static `class`, `[class]="on ? 'px-5' : 'px-4'"`, `class="{{ … }}"`, `[ngClass]="['px-5']"`, `[attr.class]`, host `{ class: 'p-5' }` and TS constants. Template literals need the `TemplateElement` selector. `[class.px-5]` needs the `BoundAttribute` one: its `name` is `px-5`.
+- **Double:** without the `:not(…)`, an inline template is reported twice.
+- **Missed:** `[ngClass]="{ 'px-5': on }"`, whose keys are plain objects, not nodes (`LiteralMap[keys.0.key=/…/]` checks one index only), and classes built at runtime (`'px-' + n`, `` `${side}-5` ``), which no selector sees.
+
+## [JSTOOL-023] eslint-plugin-better-tailwindcss: restricted and unknown classes, Angular included
+- Type: tool
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-28
+- Sources: [better-tailwindcss README at v4.10.0](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/README.md), [no-restricted-classes](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/docs/rules/no-restricted-classes.md), [no-unknown-classes](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/docs/rules/no-unknown-classes.md), [Angular setup](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/docs/parsers/angular.md), [eslint-plugin-tailwindcss README at v4.4.0](https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/v4.4.0/README.md), npm registry (`npm view <pkg>@<version> peerDependencies`, `'time[<version>]'`)
+- Related: JSTOOL-022, SPACE-019, JSTOOL-005
+
+`eslint-plugin-better-tailwindcss` 4.10.0 (2026-10-19) peers ESLint `^7.0.0 || … || ^10.0.0` and `tailwindcss ^3.3.0 || ^4.1.17`, and lints Angular `.html` and `.ts` through angular-eslint's parser. Two rules replace hand-written selectors (JSTOOL-022):
+
+- `no-restricted-classes`: "The patterns in this list are treated as regular expressions", each with a `message` and an autofix.
+- `no-unknown-classes` (in `recommended`): "Report classes not registered with Tailwind CSS." With SPACE-019's named scale, an off-scale step is unknown, so no list is needed.
+
+Tested 2026-10-28, 4.10.0 with `tailwindcss@4.3.3` and `angular-eslint@22.6.0`, on JSTOOL-022's test files:
+- **Restricted** `(-?mx|p[xlrse]?)-5`: caught static `class`, `[class]` ternaries, `[class.px-5]`, both `[ngClass]` forms and inline templates. Missed host `{ class: 'p-5' }`, a plain TS constant and `[attr.class]`. Its `selectors` option (attribute, callee, variable, tag) extends where it looks; not tested.
+- **Unknown**, with `--spacing: initial` and five named steps: flagged `px-5` and `mt-0.75`, kept `p-4`, `gap-6` and `mx-auto`.
+
+`eslint-plugin-tailwindcss` 4.4.0 (2026-08-21, peers `tailwindcss ^4.0.0`) has `no-custom-classname` and `no-arbitrary-value` but no restricted-class rule, and its README names no Angular setup. Not tested.
+
+**Pick:** `no-restricted-syntax` for one or two tokens without a dependency; better-tailwindcss for a whole scale, or where `[ngClass]` objects are common.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-tracker-web, osrs-tracker-api and freek-mencke-web.
@@ -449,7 +500,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 
 - **Which environment variables switch Oxlint to its agent format, and from which version** (JSTOOL-008)? Tested only `CLAUDECODE` and `AI_AGENT` on 1.88.0; the docs don't mention it, and oxc#25300 (open) would document it.
 - **tsgolint's "TypeScript 7.0+ is required"** (JSTOOL-007): it ran on a TypeScript 6.0.3 project here; whether a 6.0-only tsconfig option breaks it wasn't tested.
-- **angular-eslint configs under `defineConfig`** (JSTOOL-005): not tested with `processor` and the `extends` arrays; angular-eslint's docs still show `tseslint.config`.
+- **angular-eslint configs under `defineConfig`** (JSTOOL-005): `processor: angular.processInlineTemplates` works under it (tested 2026-10-28, JSTOOL-022); the `extends` arrays weren't tested, though osrs-tracker-web's `eslint.config.js` uses them. angular-eslint's docs still show `tseslint.config`.
 - **Biome's 2.1 to 2.5 changes**: no root CHANGELOG found in biomejs/biome (`CHANGELOG.md` at the root returned 404); release notes not read.
 - **Where the Nest CLI makes rspack the monorepo default**, and the template conflict (JSTOOL-018): not found in nest-cli's source.
 - **Prettier 4.0**: no release plan found beyond the alpha on `next` (checked the CHANGELOG and npm dist-tags).

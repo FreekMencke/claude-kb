@@ -486,6 +486,8 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | JSTOOL-019 | Rspack 2 and Rsbuild 2 | fact | rspack, rsbuild, webpack, build |
 | JSTOOL-020 | Short, machine-readable output from lint and build tools | comparison | agent-output, eslint, oxlint, biome, knip, angular, vite |
 | JSTOOL-021 | Picking a build tool: Angular, Nest, apps, libraries and scripts | comparison | vite, rolldown, tsdown, esbuild, rspack, angular, nestjs |
+| JSTOOL-022 | Enforce a class token in Angular with `no-restricted-syntax`, no plugin | pattern | eslint, no-restricted-syntax, angular-eslint, tailwind, tokens |
+| JSTOOL-023 | eslint-plugin-better-tailwindcss: restricted and unknown classes, Angular included | tool | eslint, tailwind, angular, spacing, plugins |
 
 ## Testing Node/TS code, and tests written by agents (`topics/kb-js-testing.md`, JSTEST)
 
