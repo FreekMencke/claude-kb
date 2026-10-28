@@ -213,7 +213,7 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 49 + 20 | 143/147 | 60/60 | Opus 5.5 | 2.1.296 | 2026-10-28 |
+| 50 + 21 | 147/150 | 63/63 | Opus 5.5 | 2.1.296 | 2026-10-28 |
 
 `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
 once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
