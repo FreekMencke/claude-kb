@@ -729,7 +729,7 @@ Large tables on a dashboard: the Analysis Function says "paginate large tables r
 Ranked by impact against effort. osrs-tracker-web draws its time series with Chart.js on canvas (`src/app/common/charts/`, `main` at `3dab349`, read 2026-10-23); its chart hosts carry `role="img"` and an `aria-label`, and it creates charts only in the browser. freek-mencke-web has no chart library.
 
 1. **osrs-tracker-web: reduced motion, takeaways and a table for its charts** (osrs-tracker/osrs-tracker-web#395). Chart.js animates every load and update, also under `reduce` (VIZ-027); some labels describe the chart rather than state its finding (VIZ-014, VIZ-005); there is no table view (VIZ-014). Low effort, high impact on the charts' accessibility.
-2. **New charts follow VIZ-012's order**: template SVG or a table before a library, `@defer` for any heavy one, and the review question "what's the takeaway, and where is the table?". VIZ-012, VIZ-014. Into `angular-conventions` and `ui-review`: FreekMencke/claude-skills#120, FreekMencke/claude-skills#121.
+2. Done 2026-10-28: VIZ-012's order, a takeaway and a table, reduced motion and `@defer` are in `angular-conventions`, and `ui-review` asks "what's the takeaway, and where is the table?" (FreekMencke/claude-skills#120, FreekMencke/claude-skills#121). VIZ-012, VIZ-014, VIZ-027.
 3. **Agents analyse data with queries, not reads**: aggregate with DuckDB, Miller, `jq` or a script, and have the chart and its table read the script's output. VIZ-023, VIZ-020.
 4. **Use the built-in `dataviz` skill, not a chart MCP server**, and quote its numbers only after re-reading it. VIZ-024, VIZ-025.
 5. **No commercial chart library** without a recorded licence decision. VIZ-029, OSS-008.

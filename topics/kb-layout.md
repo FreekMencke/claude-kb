@@ -437,8 +437,8 @@ Automated checks catch little of this (ACCESS-008): test at 320 px, 200% text an
 ## Recommendations for our setup
 
 1. **No change for osrs-tracker-web or freek-mencke-web** (LAYOUT-015, LAYOUT-004, LAYOUT-002). Read 2026-10-28 at their `main` (`1366d45` and `ce05f2b`): both lay out with Tailwind and CSS. osrs-tracker-web reads `BreakpointObserver` only for `prefers-reduced-motion` in its charts and `matchMedia` in nav-menu event handlers, never to pick a layout. Their page tokens (`--container-page` 75rem and 90rem, an added `xs` breakpoint) sit within the systems' ranges.
-2. **A rule for the angular-conventions skill: layout in CSS, never an `@if` on `BreakpointObserver` or the platform** (LAYOUT-015). Proposed in FreekMencke/claude-kb#299's PR; filed 2026-10-28 as FreekMencke/claude-skills#120.
-3. **When starting a new site:** take LAYOUT-003's defaults, decide the five choices once, and write them as tokens next to the type and colour tokens (DESIGN-006). Containers via LAYOUT-009, cards via LAYOUT-011 and LAYOUT-013. For `design-workshop`'s brief: FreekMencke/claude-skills#122.
+2. Done 2026-10-28: `angular-conventions` does layout in CSS, never with an `@if` on `BreakpointObserver` or the platform, and `ui-review` checks for it (FreekMencke/claude-skills#120, FreekMencke/claude-skills#121). LAYOUT-015, LAYOUT-003, LAYOUT-009.
+3. Done 2026-10-28: `design-workshop`'s prototypes and brief record the grid, margins and max-widths as tokens, with LAYOUT-003's defaults unless the person picked otherwise (FreekMencke/claude-skills#122). LAYOUT-003, LAYOUT-004, LAYOUT-009, LAYOUT-011, LAYOUT-013.
 
 ## Open questions
 
