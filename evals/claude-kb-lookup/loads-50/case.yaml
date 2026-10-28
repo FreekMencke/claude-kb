@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-50
+tags: [claude-kb-lookup, should-load]
+description: "Spacing and alignment (kb-spacing.md)."
+execution:
+  prompt: "What spacing scale should our design tokens use, 4 px or 8 px steps, and how much space goes inside a group against between groups?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'

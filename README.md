@@ -16,7 +16,7 @@
 </p>
 
 A Markdown knowledge base on using Claude efficiently, and on the stack it works on (Angular, TypeScript, Node, npm,
-NestJS, MongoDB, lint and test tools, CSS, fonts, accessibility, charts and data visualisation, page layout, web performance and security, GitHub and its Actions,
+NestJS, MongoDB, lint and test tools, CSS, spacing and alignment, fonts, accessibility, charts and data visualisation, page layout, web performance and security, GitHub and its Actions,
 Docker, Kubernetes, AWS Lambda, licences), written for agents to query. Every entry carries its sources, a confidence
 level and a last-verified date.
 
@@ -151,6 +151,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-ui-patterns.md](topics/kb-ui-patterns.md) | `UIPAT` | UI states, feedback timing, forms, URL state and interface copy |
 | [kb-dataviz.md](topics/kb-dataviz.md) | `VIZ` | Data visualisation: chart choice, colour, chart and table libraries, accessible charts, dashboards, formatting, CSV, animated data |
 | [kb-layout.md](topics/kb-layout.md) | `LAYOUT` | Page layout: grids, breakpoints, page widths, density, page types, container queries, subgrid, `BreakpointObserver` under SSR |
+| [kb-spacing.md](topics/kb-spacing.md) | `SPACE` | Spacing and alignment: scales, proximity, padding, text and icon alignment, `text-box`, `gap` |
 
 | Other files | What it holds |
 |---|---|
@@ -212,7 +213,7 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 49 + 20 | 143/147 | 60/60 | Opus 5.5 | 2.1.296 | 2026-10-28 |
+| 50 + 21 | 147/150 | 63/63 | Opus 5.5 | 2.1.296 | 2026-10-28 |
 
 `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
 once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
