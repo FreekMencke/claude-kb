@@ -586,6 +586,28 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | KUBE-027 | Flannel or Calico on a single node | comparison | flannel, calico, cni, network-policy |
 | KUBE-028 | A fresh Ubuntu 26.04 server: chrony, fwupd's hourly refresh and `adm` | fact | ubuntu-26-04, chrony, fwupd, journald |
 
+## Page layout: grids, breakpoints, widths, density and page types (`topics/kb-layout.md`, LAYOUT)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| LAYOUT-001 | Column grids: columns, gutters and margins across design systems | comparison | grid, columns, gutters, margins, design-systems |
+| LAYOUT-002 | Breakpoints across design systems, and where they cluster | comparison | breakpoints, media-queries, window-size-classes, design-systems |
+| LAYOUT-003 | Layout defaults the design systems share, and the choices they leave | recommendation | defaults, grid, breakpoints, margins, mobile-first |
+| LAYOUT-004 | Page and text widths: max-widths, reading columns and full bleed | comparison | max-width, container, line-length, full-bleed |
+| LAYOUT-005 | Density: when a compact layout is right | recommendation | density, compact, data-tables, target-size |
+| LAYOUT-006 | Angular Material density: the scale, per-component clamps and touch targets | fact | angular-material, density, touch-target, theming |
+| LAYOUT-007 | Page types: dashboard, settings and list-detail | pattern | page-types, dashboard, settings, list-detail, canonical-layouts |
+| LAYOUT-008 | Page types: article, landing page and form | pattern | page-types, article, landing-page, forms, primary-button |
+| LAYOUT-009 | Container queries or media queries: which responds to what | recommendation | container-queries, media-queries, components, page-layout |
+| LAYOUT-010 | `container-type: inline-size`: zero width when shrink-to-fit, and what it doesn't do | fact | container-queries, containment, collapse, stacking-context |
+| LAYOUT-011 | Intrinsic grids: `auto-fit` against `auto-fill`, and `min(100%, X)` | pattern | css-grid, auto-fit, auto-fill, minmax, overflow |
+| LAYOUT-012 | Switcher and Sidebar: flex layouts that switch without breakpoints | pattern | flexbox, every-layout, switcher, sidebar, intrinsic |
+| LAYOUT-013 | Subgrid for card internals and form rows | pattern | subgrid, cards, forms, alignment |
+| LAYOUT-014 | Visual order against DOM order, and `reading-flow` | fact | reading-order, focus-order, grid-template-areas, reading-flow, wcag |
+| LAYOUT-015 | Angular CDK `BreakpointObserver` under SSR: one layout from the server, a shift on phones | anti-pattern | angular, cdk, breakpointobserver, ssr, hydration, cls |
+| LAYOUT-016 | Reading patterns that change a layout: F, layer-cake, left half, top of page | fact | eye-tracking, f-pattern, layer-cake, nngroup, above-the-fold |
+| LAYOUT-017 | WCAG requirements that constrain a layout | recommendation | wcag, reflow, text-spacing, target-size, sticky, focus-not-obscured |
+
 ## MCP servers: configuration, access control, surfaces and vetting (`topics/kb-mcp.md`, MCP)
 
 | ID | Title | Type | Tags |
