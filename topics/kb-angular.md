@@ -461,3 +461,4 @@ Ranked by impact against effort. Our Angular apps are osrs-tracker-web and freek
 4. **Is the Karma-to-Vitest migration experimental or stable?** The docs at v22.2.3 and the CLI 22.0.0 CHANGELOG disagree (NG-009).
 5. **Which official page gets corrected?** The versions page's TypeScript range for 21.x and the CLI CHANGELOG's Node minimum disagree with the published packages (NG-002).
 6. **`@defer`'s status and the version it went stable** weren't checked; the defer guide at v22.2.3 has no status marker.
+7. **Does an `isLoading()` label reach the SSR HTML?** FreekMencke/claude-kb#314 reported "Checking…" in the server-rendered page. The loader holds a `PendingTasks` task (`resource.ts` at v22.2.3), so the server normally waits for it to settle before serializing; not tested under SSR (NG-019).
