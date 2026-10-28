@@ -212,14 +212,16 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 48 + 20 | 141/144 | 60/60 | Opus 5.5 | 2.1.296 | 2026-10-23 |
+| 49 + 20 | 143/147 | 60/60 | Opus 5.5 | 2.1.296 | 2026-10-28 |
 
 `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
 once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
 (FreekMencke/claude-kb#194, 2026-10-18).
 
 `loads-29`, a Claude API 400 question, failed 3 of 3 on 2026-10-23 (FreekMencke/claude-kb#291): the bundled `claude-api` skill
-loaded instead. It failed the same way with `main`'s description, so the cause isn't the description.
+loaded instead. It failed the same way with `main`'s description, so the cause isn't the description. It failed 3 of 3 again on
+2026-10-28 (FreekMencke/claude-kb#299), where `loads-21`, a Node question, also missed 1 of 3; the trimmed words were
+unrelated to Node.
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
