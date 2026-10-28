@@ -290,8 +290,8 @@ Our synthesis of UIREV-008 and UIREV-009: an agent's review "finds likely issues
 
 Ranked by impact against effort. Checked 2026-10-23 against `main` of osrs-tracker-web (`f206553`) and freek-mencke-web (`a2e5e0b`), whose browser-checker agents already report focus rings and covered points after each Tab (2.4.7, 2.4.11).
 
-1. **Sites with a sticky header: `scroll-padding-top` matching it on `html`, and a scrolled keyboard walk in the checker** (UIREV-007). A Tab walk from the top doesn't scroll targets under the header, so it can't find this. osrs-tracker/osrs-tracker-web#389 (both parts); FreekMencke/freek-mencke-web#41 (the walk; its padding is already set).
-2. **Both checkers: a reduced-motion check** with `browser_emulate_media` (both agents have it): animations still running under `reduce` that also run under `no-preference` (UIREV-007, ACCESS-014). In osrs-tracker/osrs-tracker-web#389 and FreekMencke/freek-mencke-web#41.
+1. Done 2026-10-23: osrs-tracker-web sets `scroll-padding-top` for its sticky nav, and both apps' browser-checkers run a scrolled keyboard walk (osrs-tracker/osrs-tracker-web#389, fixed in osrs-tracker/osrs-tracker-web#392; FreekMencke/freek-mencke-web#41). UIREV-007.
+2. Done 2026-10-23: both apps' browser-checkers have a reduced-motion check (same issues as 1). UIREV-007, ACCESS-014.
 3. **Don't install `web-design-guidelines`** (UIREV-004, UIREV-005). Decided 2026-10-23 (FreekMencke/claude-kb#260): a read-only `ui-review` skill with a pinned, edited subset of the rules and a reviewer agent without write tools, FreekMencke/claude-skills#106.
 4. **Frame agent reviews as likely issues** (UIREV-012): the checkers' "Not checked" list already does this for accessibility. No change now.
 
