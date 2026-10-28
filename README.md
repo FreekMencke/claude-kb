@@ -16,7 +16,7 @@
 </p>
 
 A Markdown knowledge base on using Claude efficiently, and on the stack it works on (Angular, TypeScript, Node, npm,
-NestJS, MongoDB, lint and test tools, CSS, fonts, accessibility, charts and data visualisation, web performance and security, GitHub and its Actions,
+NestJS, MongoDB, lint and test tools, CSS, fonts, accessibility, charts and data visualisation, page layout, web performance and security, GitHub and its Actions,
 Docker, Kubernetes, AWS Lambda, licences), written for agents to query. Every entry carries its sources, a confidence
 level and a last-verified date.
 
@@ -150,6 +150,7 @@ grep -n '^## \[TOK-036\]' topics/kb-*.md
 | [kb-knowledge-retrieval.md](topics/kb-knowledge-retrieval.md) | `RETR` | Giving agents knowledge: agentic search, RAG, long context and curated knowledge bases, measured on this one |
 | [kb-ui-patterns.md](topics/kb-ui-patterns.md) | `UIPAT` | UI states, feedback timing, forms, URL state and interface copy |
 | [kb-dataviz.md](topics/kb-dataviz.md) | `VIZ` | Data visualisation: chart choice, colour, chart and table libraries, accessible charts, dashboards, formatting, CSV, animated data |
+| [kb-layout.md](topics/kb-layout.md) | `LAYOUT` | Page layout: grids, breakpoints, page widths, density, page types, container queries, subgrid, `BreakpointObserver` under SSR |
 
 | Other files | What it holds |
 |---|---|
