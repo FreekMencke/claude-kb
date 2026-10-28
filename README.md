@@ -103,6 +103,24 @@ Then read only that entry:
 grep -n '^## \[TOK-036\]' topics/kb-*.md
 ```
 
+## Applying it
+
+The knowledge base holds findings with their sources. Claude acts on them through skills in
+[FreekMencke/claude-skills](https://github.com/FreekMencke/claude-skills), which carry the rules and default values and
+cite the entry IDs they come from. A topic's "Recommendations for our setup" says which skill or repo took a finding,
+with the issue or PR that did it. For a page or app, run them in this order:
+
+| Stage | Skill | What it applies | From |
+|---|---|---|---|
+| Choose the look | `design-workshop` | Picks one choice at a time, then five full-page variants built on grid and spacing tokens; writes the tokens into the repo's theme file and makes later sessions load the brief | `kb-design.md`, `kb-spacing.md`, `kb-layout.md`, `kb-fonts.md`, `kb-design-skills.md` |
+| Build it | `angular-conventions` (Angular), `frontend-design` (anything else) | Spacing from the scale by role, layout in CSS (intrinsic, then container queries, then breakpoints), forms, states, charts, animation | `kb-spacing.md`, `kb-layout.md`, `kb-ui-patterns.md`, `kb-dataviz.md`, `kb-web-animation.md`, `kb-angular.md` |
+| Review the running page | `ui-review` | Five widths, focus, reduced motion, forced states, off-scale spacing, judged by a read-only reviewer | `kb-ui-review.md`, `kb-accessibility.md`, `kb-spacing.md`, `kb-layout.md` |
+
+`frontend-design` is Anthropic's and doesn't know this knowledge base: outside Angular, name the brief and the token
+file in the build prompt. The community design skills (Hallmark, Taste Skill, Impeccable and others) aren't installed;
+their ideas went into `design-workshop` and `ui-review` (DSKILL-014). For a question the skills don't answer while
+building, such as which breakpoints or a component's padding, ask the lookup skill.
+
 ## Layout
 
 | Topic file | Prefix | Covers |
