@@ -1,6 +1,6 @@
 # Spacing and alignment: scales, proximity, padding, rhythm, text and icon alignment
 
-Prefix `SPACE`. This file covers the space and alignment inside and between components: spacing scales and how design systems name them, fluid spacing, proximity and grouping, starting values by role, component padding, whitespace studies, text alignment, icons beside text, trimming the space above and below text, optical alignment, and the CSS that keeps spacing consistent. Grids, breakpoints, page widths, density modes and page types belong to the layout topic (FreekMencke/claude-kb#299); the type scale and line length are DESIGN-020.
+Prefix `SPACE`. This file covers the space and alignment inside and between components: spacing scales and how design systems name them, fluid spacing, proximity and grouping, starting values by role, component padding, whitespace studies, text alignment, icons beside text, trimming the space above and below text, optical alignment, and the CSS that keeps spacing consistent. Grids, breakpoints, page widths, density modes and page types are in `kb-layout.md` (LAYOUT); the type scale and line length are DESIGN-020.
 
 Research basis:
 - Researched 2026-10-28 (FreekMencke/claude-kb#300) by an Opus 5.5 lead with two Sonnet 5.5 readers: spacing systems and grouping (168k tokens, 86 tool calls, 10.9 min) and alignment and CSS mechanics (134k tokens, 50 tool calls, 6.8 min). Then a Sonnet refuter and a four-persona Sonnet review panel (UI designer, typographer, front-end engineer, accessibility specialist); their findings and what was done with each are in the PR.
@@ -99,7 +99,7 @@ Only Fluent says why: "A 4x system reduces confusion while being easy to impleme
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [govuk-frontend `_spacing.scss` at 78d66a8](https://github.com/alphagov/govuk-frontend/blob/78d66a80594224f358c09c8ba9309dd78e116a0c/packages/govuk-frontend/src/govuk/settings/_spacing.scss), [GOV.UK spacing](https://design-system.service.gov.uk/styles/spacing/), [Carbon spacing at 5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/spacing/overview.mdx), [M3 spacing](https://m3.material.io/foundations/layout/grids-spacing/spacing), [NN/g: proximity](https://www.nngroup.com/articles/gestalt-proximity/)
-- Related: SPACE-001, SPACE-004, SPACE-005
+- Related: SPACE-001, SPACE-004, SPACE-005, LAYOUT-002
 
 Three approaches, all official:
 
@@ -205,9 +205,9 @@ Values in px, from component source (material-web tokens and `_dialog.scss`; Car
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [M3 density](https://m3.material.io/foundations/layout/grids-spacing/density), [Carbon `_layout.scss` at 131963f](https://github.com/carbon-design-system/carbon/blob/131963f845690100432f8c62a3372caf151f31fa/packages/styles/scss/utilities/_layout.scss), [`@shopify/polaris-tokens` 9.4.2](https://www.npmjs.com/package/@shopify/polaris-tokens/v/9.4.2)
-- Related: SPACE-007, SPACE-001, SPACE-020
+- Related: SPACE-007, SPACE-001, SPACE-020, LAYOUT-005, LAYOUT-006
 
-Density modes belong to the layout topic (FreekMencke/claude-kb#299); this entry records only the tokens they change.
+When to go dense is LAYOUT-005, and Angular Material's density scale LAYOUT-006; this entry records only the tokens density changes.
 
 - **M3** (rendered page text): "Higher density is typically applied by decreasing the top and bottom padding or overall height by 4dp." It warns: "Don't increase density in UIs that involve focused tasks, such as selecting from a menu. It reduces usability by limiting selectable space."
 - **Carbon**: a `density` map with `padding-inline: (condensed: $spacing-03, normal: $spacing-05)`, 8 px against 16 px; component heights come from a separate `size` map (xs 24 to 2xl 80 px); `icon-gap` runs from `$spacing-02` (xs) to `$spacing-04` (2xl).
@@ -381,7 +381,7 @@ Tested 2026-10-28, Playwright 1.64.1 (Chromium 156, WebKit 27.2, Firefox 157), 1
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [MDN: gap](https://developer.mozilla.org/en-US/docs/Web/CSS/gap), [Pickering: Axiomatic CSS and lobotomized owls (2014-10-21)](https://alistapart.com/article/axiomatic-css-and-lobotomized-owls/), [Every Layout: Stack](https://every-layout.dev/layouts/stack/), [web-features 3.44.0](https://www.npmjs.com/package/web-features)
-- Related: SPACE-018, SPACE-005, SPACE-020, DESIGN-022
+- Related: SPACE-018, SPACE-005, SPACE-020, DESIGN-022, LAYOUT-012
 
 **Use `gap` in flex and grid.** Flexbox `gap` is widely available (newly 2021-04-26); grid's since 2017. It spaces items without space at the edges and without collapsing.
 
@@ -461,7 +461,7 @@ Tested 2026-10-28, `tailwindcss` and `@tailwindcss/cli` 4.3.3, Node 24.21.0: wit
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [WCAG 2.2 Understanding 1.4.12](https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html), [WCAG 2.2 Understanding 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html), [WCAG 2.2 Understanding 1.4.10](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [WCAG 2.2 Understanding 1.3.1](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html), [WCAG 2.2 Understanding 2.5.8](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
-- Related: ACCESS-001, ACCESS-002, SPACE-005, SPACE-007, SPACE-010, SPACE-015, DSKILL-014
+- Related: ACCESS-001, ACCESS-002, SPACE-005, SPACE-007, SPACE-010, SPACE-015, DSKILL-014, LAYOUT-017
 
 Everything else in this file is convention. These are requirements:
 

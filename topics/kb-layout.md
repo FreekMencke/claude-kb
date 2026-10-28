@@ -153,7 +153,7 @@ Always a `max-width`, never a fixed `width`, which would fail reflow (LAYOUT-017
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [Material 3: density](https://m3.material.io/foundations/layout/grids-spacing/density), [Polaris: density @3f7954a](https://github.com/Shopify/polaris/blob/3f7954ae/polaris.shopify.com/content/design/layout/density.mdx), [Carbon 2x Grid usage @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/usage.mdx), [WCAG 2.2 Understanding 2.5.8](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
-- Related: LAYOUT-006, LAYOUT-007, LAYOUT-017, VIZ-016, VIZ-030, ACCESS-002
+- Related: LAYOUT-006, LAYOUT-007, LAYOUT-017, VIZ-016, VIZ-030, ACCESS-002, SPACE-008
 
 **Use high density for scanning and comparing.** Material 3: "High density layouts are useful when people need to scan, view, or compare a lot of information, such as in a data table"; examples "News, financial portals, dashboards". Polaris: "Information-rich interfaces, like index pages or data tables, require high-density layouts for efficiency." Carbon pairs condensed gutters with dashboards.
 
@@ -171,7 +171,7 @@ Always a `max-width`, never a fixed `width`, which would fail reflow (LAYOUT-017
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [Angular Material theming guide v22.2.4](https://github.com/angular/components/blob/v22.2.4/guides/theming.md), [`_m3-button.scss` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/material/button/_m3-button.scss), [`_m3-table.scss` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/material/table/_m3-table.scss), [`_m3-icon-button.scss` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/material/button/_m3-icon-button.scss)
-- Related: LAYOUT-005, VIZ-017, UIREV-007
+- Related: LAYOUT-005, VIZ-017, UIREV-007, SPACE-008
 
 Set with `mat.theme((… density: -2))`. The guide: "The density value accepts integers from 0 to \-5, where 0 is the default spacing and \-5 is the most dense and compact layout. Each whole number step down (-1, \-2, etc.) reduces the affected sizes by 4px, down to the minimum size necessary for a component to render itself coherently." It warns that "Setting the density below 0 can reduce accessibility", and that density doesn't affect "components that appear in task-based or pop-up contexts, such as the date picker".
 
@@ -298,7 +298,7 @@ Tested 2026-10-28, Playwright 1.64.1, Chromium 156 and WebKit 27.2, three items,
 - Confidence: community-consensus
 - Last verified: 2026-10-28
 - Sources: [Every Layout: Switcher](https://every-layout.dev/layouts/switcher/), [Every Layout: Sidebar](https://every-layout.dev/layouts/sidebar/), [CSS Values 4: range checking](https://drafts.csswg.org/css-values-4/#calc-range)
-- Related: DESIGN-022, LAYOUT-009, LAYOUT-011, LAYOUT-014
+- Related: DESIGN-022, LAYOUT-009, LAYOUT-011, LAYOUT-014, SPACE-017
 
 Every Layout's primitives (DESIGN-022) switch on the container's width with plain flexbox, so they work wherever they are placed.
 
@@ -417,7 +417,7 @@ NN/g's eye-tracking studies, on desktop screens in left-to-right languages; NN/g
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [Understanding 1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [Understanding 1.4.4 Resize Text](https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html), [Understanding 1.4.12 Text Spacing](https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html), [Understanding 2.5.8 Target Size (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html), [Understanding 2.4.11 Focus Not Obscured (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html)
-- Related: ACCESS-001, ACCESS-002, ACCESS-008, DSKILL-014, UIREV-003, UIREV-007, LAYOUT-005, LAYOUT-007, LAYOUT-014, VIZ-016
+- Related: ACCESS-001, ACCESS-002, ACCESS-008, DSKILL-014, UIREV-003, UIREV-007, LAYOUT-005, LAYOUT-007, LAYOUT-014, VIZ-016, SPACE-020
 
 These are WCAG 2.2 AA requirements (ACCESS-001); everything else in this file is convention.
 
