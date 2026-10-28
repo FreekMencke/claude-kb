@@ -1067,6 +1067,32 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
 | SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
 
+## Spacing and alignment: scales, proximity, padding, rhythm, text and icon alignment (`topics/kb-spacing.md`, SPACE)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| SPACE-001 | Spacing scales in eight design systems | comparison | spacing-scale, tokens, carbon, govuk, atlassian, polaris, fluent, tailwind |
+| SPACE-002 | A safe default scale, and the choices the systems differ on | recommendation | spacing-scale, tokens, naming |
+| SPACE-003 | Fixed or responsive spacing tokens | comparison | spacing-scale, responsive, govuk, carbon |
+| SPACE-004 | Utopia's fluid space scale and space pairs | tool | utopia, fluid-spacing, clamp |
+| SPACE-005 | Proximity: less space inside a group than between groups | pattern | proximity, gestalt, grouping, forms |
+| SPACE-006 | Group with space before borders and cards | pattern | proximity, common-region, cards, hierarchy |
+| SPACE-007 | Component padding in the design systems | comparison | padding, buttons, inputs, cards, dialogs |
+| SPACE-008 | Density changes padding tokens, not the scale | fact | density, padding, tokens |
+| SPACE-009 | Whitespace and comprehension: one small study and a phantom 20% | fact | whitespace, research, comprehension |
+| SPACE-010 | Text alignment: start-align body, centre short phrases, don't justify | recommendation | text-align, justify, rtl, wcag-1.4.8 |
+| SPACE-011 | Icons beside text: size and gap in the design systems | comparison | icons, alignment, gap, font-awesome |
+| SPACE-012 | Test: icon and label alignment across five fonts | fact | icons, alignment, flexbox, vertical-align |
+| SPACE-013 | `text-box`: trimming the space above and below text, and its support | fact | text-box, leading-trim, baseline, firefox |
+| SPACE-014 | `text-box` traps: flex containers, single edges, padding, clipping | anti-pattern | text-box, flexbox, buttons, overflow |
+| SPACE-015 | Vertical rhythm: `lh` and `rlh`, and no baseline grid | fact | vertical-rhythm, lh, rlh, line-height-step |
+| SPACE-016 | Optical alignment: overshoot, cap-height centring, hanging punctuation | fact | optical-alignment, overshoot, hanging-punctuation |
+| SPACE-017 | `gap` against margins and the lobotomised owl | pattern | gap, margins, owl, flexbox, tested |
+| SPACE-018 | Margin collapse, logical properties, block `align-content`, `margin-trim` | fact | margin-collapse, logical-properties, align-content, margin-trim |
+| SPACE-019 | Tailwind 4: limiting spacing utilities to a named scale | tool | tailwind, spacing-scale, theme |
+| SPACE-020 | Spacing that WCAG requires, apart from conventions | fact | wcag, text-spacing, target-size, reflow, structure |
+| SPACE-021 | Starting values by role: icon gap, group, section | recommendation | spacing-scale, proximity, defaults |
+
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 
 | ID | Title | Type | Tags |

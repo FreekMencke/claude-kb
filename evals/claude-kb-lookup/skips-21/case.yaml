@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: claude-kb-lookup-skips-21
+tags: [claude-kb-lookup, near-miss]
+description: "Near miss: a routine spacing edit, not a question about a scale or alignment."
+execution:
+  prompt: "Increase the padding on the order cards in src/app/orders/order-card.component.css from 12px to 16px."
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-not-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'
+    min: 0
+    max: 0
+    arm: both
