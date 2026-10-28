@@ -4,6 +4,7 @@ What changed in the knowledge base, and why. Add new rows at the top of the tabl
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-28 | NG-019; recommendations in `kb-angular.md` (7), `kb-spacing.md` (2) | New: `isLoading()` is true on a resource's first load, and `error()` stays set during `reload()` with the same params, so a retry label or an error-first view misleads (#314, from osrs-tracker/osrs-tracker-web#479). Docs for the first, source and a TestBed test at `@angular/core@22.2.3` for the second. The `angular-conventions` change is FreekMencke/claude-skills#130. Also trims `kb-spacing.md` recommendation 2 under the 300-character `Done` limit. |
 | 2026-10-28 | Recommendations in `kb-layout.md` (2, 3), `kb-spacing.md` (2), `kb-dataviz.md` (2) | The `Done` lines now cite the PRs that did the work (FreekMencke/claude-skills#124, FreekMencke/claude-skills#126, FreekMencke/claude-skills#127) instead of their issues, and name the defaults `design-workshop` picked, `ui-review`'s phone-margin script check, and SPACE-012, VIZ-005 and VIZ-010, which the skills also carry (#307, #308, #309). No entry changed. |
 | 2026-10-28 | Recommendation in `kb-github.md` (7) | Done: gh telemetry is off on the dev machine, through `GH_TELEMETRY=false` in the login profile and `gh config set telemetry disabled`. No entry changed. |
 | 2026-10-28 | Recommendation in `kb-npm.md` (2) | Done: the two `~/.npmrc` lines are set on the dev machine (npm 11.19.0), so the user action is cut to a `Done` line. No entry changed. |

@@ -26,6 +26,7 @@ Research basis:
 | Should a repo run `ng mcp`, and what does it cost? | Yes, as `npx ng mcp --read-only` in `.mcp.json`, so it runs the repo's own CLI. With tool search on (the default) it adds about 765 input tokens a request; with tool search off, about 6,500. | NG-012, NG-013, NG-014 |
 | Are Angular's AGENTS.md, rules files and llms.txt worth loading? | Not in Claude Code: `get_best_practices` returns the guide for the installed version, while the rules files on angular.dev follow the newest release and llms-full.txt is 856 KB. | NG-015, NG-016 |
 | angular/skills or our own skills? | Both: our `angular-developer` is a weekly mirror of angular/skills, which follows Angular's `main` and states v22 APIs without version notes, so `angular-conventions` makes the installed version win. Skip `angular-new-app`: its `--ai-config` values fail on 22.2.3. | NG-017 |
+| Why does Try again look dead, or show "Checking…" before a click, with `httpResource`? | `error()` stays set during `reload()`, and `isLoading()` is true on the first load too: branch on `status()`, and label a retry from `'reloading'` or a click signal. | NG-019 |
 
 ## Index
 
@@ -49,6 +50,7 @@ Research basis:
 | NG-016 | Angular's rules files and llms.txt | fact | agents-md, rules-files, llms-txt |
 | NG-017 | angular/skills follows Angular's `main` branch | fact | skills, angular-developer, third-party |
 | NG-018 | In-page WebMCP and AI debugging tools (v22) | fact | webmcp, devtools, experimental |
+| NG-019 | Resources: `isLoading()` covers the first load, and `error()` stays set during `reload()` | anti-pattern | resource, httpResource, reload, error-state |
 
 ## [NG-001] Release cadence and support windows: 12-month majors from v22
 - Type: fact
@@ -422,6 +424,23 @@ Two v22 features let agents in a browser call into a running Angular app. Neithe
 
 chrome-devtools-mcp dispatches that event and lists the tools with `list_3p_developer_tools()`, behind `--categoryExperimentalThirdParty=true`. Its WebMCP category "Requires Chrome 150+ with the following flag: `--enable-features=WebMCP`". Our sessions use the Playwright MCP server (MCP-028); neither path was tested.
 
+## [NG-019] Resources: `isLoading()` covers the first load, and `error()` stays set during `reload()`
+- Type: anti-pattern
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-28
+- Sources: [Resources guide at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/signals/resource.md), [httpResource guide at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/http/http-resource.md), [`resource/api.ts`](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/api.ts) and [`resource/resource.ts` at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/resource.ts), osrs-tracker/osrs-tracker-web#479
+- Related: NG-011, UIPAT-005, UIPAT-015
+
+Two signals of `resource`, `rxResource` and `httpResource` (one `ResourceImpl`) mislead a Try again button:
+
+- **`isLoading()` is not "the user retried".** The guide: "Whether the resource loader is currently running", so it is true on the first load too. A "Checking…" label bound to it shows before anyone clicks. Drive it from `status() === 'reloading'` (only a `reload()` gives that status) or a signal set on click and cleared when the reload settles.
+- **`error()` stays set while a reload runs.** The docs don't say so; the source does. On `reload()` with the same params the state keeps the previous stream (`if (previous.value.extRequest.request === request) stream = previous.value.stream;`), and `error` reads that stream. A view that checks `error()` first stays on its error panel, so Try again looks dead. The httpResource guide's own example has this order: `hasValue()`, then `error()`, then `isLoading()`.
+
+Branch on `status()` instead. In `'reloading'` after an error, `hasValue()` is false and `value()` is `undefined`: show the loading state there, not "the previous value", which the guide's status table promises. A params change starts a fresh `'loading'` and clears `error()`.
+
+Tested 2026-10-28, `@angular/core@22.2.3`, Node 24.21.0, Vitest 4.1.12 with TestBed (jsdom): first load `loading`, `isLoading` true; after a rejection `error`; after `reload()` `reloading` with `isLoading` true, `error()` still `503`, `hasValue()` false; then `resolved`.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Our Angular apps are osrs-tracker-web and freek-mencke-web, both on Angular 22.2 with TypeScript 6.0.3 (2026-10-17).
@@ -432,6 +451,7 @@ Ranked by impact against effort. Our Angular apps are osrs-tracker-web and freek
 4. **Mirror only `angular-developer` from angular/skills** (decision). `angular-new-app`'s `--ai-config` values fail on 22.2.3, and we rarely create apps. NG-017.
 5. **Don't copy Angular's rules files or llms-full.txt into repos** (decision): they follow the newest release, not the repo's, and the full file is 856 KB. NG-016, TOK-090.
 6. **Kept on purpose: v22 leftovers.** freek-mencke-web's update to 22 (FreekMencke/freek-mencke-web#3, 2026-10-14) kept the migrations' extended-diagnostics opt-outs on purpose. Its 9 explicit `OnPush` and both apps' `provideZonelessChangeDetection()` are redundant but harmless: remove them when those files change (angular-eslint's `allowExplicitOnPush: false` strips the `OnPush` lines). NG-003, NG-004, NG-010.
+7. **`angular-conventions`: a reload after an error gets the loading state, and a retry label comes from `'reloading'` or a click, not `isLoading()`** (FreekMencke/claude-skills#130). NG-019.
 
 ## Open questions
 

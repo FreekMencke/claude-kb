@@ -54,6 +54,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | NG-016 | Angular's rules files and llms.txt | fact | agents-md, rules-files, llms-txt |
 | NG-017 | angular/skills follows Angular's `main` branch | fact | skills, angular-developer, third-party |
 | NG-018 | In-page WebMCP and AI debugging tools (v22) | fact | webmcp, devtools, experimental |
+| NG-019 | Resources: `isLoading()` covers the first load, and `error()` stays set during `reload()` | anti-pattern | resource, httpResource, reload, error-state |
 
 ## Animation libraries and their agent tooling: Motion, GSAP, Lenis (`topics/kb-animation-libraries.md`, ANIMLIB)
 
