@@ -372,7 +372,7 @@ Purpose first: NN/g calls motion "helpful and communicative, if used with restra
 Ranked by impact against effort. Checked 2026-10-23 against `main` of osrs-tracker-web and freek-mencke-web: neither imports `@angular/animations`, `animate.enter` or `withViewTransitions`; both use CSS keyframes and transitions.
 
 1. **Decided 2026-10-23 (FreekMencke/claude-kb#260): animation rules go into `angular-conventions`**, not a skill of their own (its triggers would overlap `angular-developer`): FreekMencke/claude-skills#107. ANIM-004, ANIM-005, ANIM-010, ANIM-012, ANIM-013, ANIM-014.
-2. **osrs-tracker-web: stop the "live" dot's endless pulse** (ANIM-008, ANIM-010, ANIM-011): `--animate-live` loops a `box-shadow` forever with no `motion-reduce:` variant, unlike the skeleton and loading bar. A reduced-motion state answers 2.3.3 but not 2.2.2, so the issue also asks for a finite pulse (under five seconds): osrs-tracker/osrs-tracker-web#390.
+2. Done 2026-10-23: the "live" dot stops pulsing after two rings (osrs-tracker/osrs-tracker-web#390, fixed in osrs-tracker/osrs-tracker-web#391). ANIM-008, ANIM-010, ANIM-011.
 3. **Won't do: change freek-mencke-web's skill line on `@angular/animations`** (ANIM-001). It says "removed in v23"; Angular's JSDoc says "Intent to remove in v23", close enough for a rule that only tells agents not to use the package.
 
 ## Open questions
