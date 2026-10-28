@@ -357,7 +357,7 @@ Ranked by impact against effort. Checked 2026-10-17 against this repo, claude-sk
 4. **Decision: no GitHub MCP server** (GH-012, TOK-022). `gh` is authenticated everywhere we work, including cloud sessions, and returns filtered JSON. Revisit if we need code-scanning or secret-scanning alerts in a session, then with `--read-only`, lockdown and only those toolsets.
 5. **Decision: neither Copilot cloud agent nor gh-aw** (GH-013, GH-014). Both need a paid Copilot plan or an extra engine key in Actions, and gh-aw is a pre-1.0 preview. When a repo first gets a `claude-code-action` job that writes, borrow gh-aw's safe outputs: the Claude job read-only, a separate job doing the write (REPO-038).
 6. **No change: releases.** None of the five repos publishes GitHub releases on 2026-10-17. When one does: `--verify-tag`, `.github/release.yml` with a `*` category, and immutable releases with the draft-upload-publish flow (GH-006 to GH-008, GHA-011).
-7. **Optional: `GH_TELEMETRY=false`** in the shell profile, if gh's telemetry is unwanted (GH-011). It carries the agent name since v2.91.0.
+7. Done 2026-10-28: gh telemetry is off on the dev machine, with `export GH_TELEMETRY=false` in the login profile and `gh config set telemetry disabled` (gh 2.102.0) for shells that don't read it. GH-011.
 
 ## Open questions
 

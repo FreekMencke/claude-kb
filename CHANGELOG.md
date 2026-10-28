@@ -4,6 +4,7 @@ What changed in the knowledge base, and why. Add new rows at the top of the tabl
 
 | Date | IDs | Change |
 |---|---|---|
+| 2026-10-28 | Recommendation in `kb-github.md` (7) | Done: gh telemetry is off on the dev machine, through `GH_TELEMETRY=false` in the login profile and `gh config set telemetry disabled`. No entry changed. |
 | 2026-10-28 | Recommendation in `kb-npm.md` (2) | Done: the two `~/.npmrc` lines are set on the dev machine (npm 11.19.0), so the user action is cut to a `Done` line. No entry changed. |
 | 2026-10-28 | Recommendations in `kb-spacing.md` (1), `kb-dataviz.md` (1), `kb-web-animation.md` (2), `kb-ui-review.md` (1, 2), `kb-github-actions.md` (2) | Five recommendations whose issues in osrs-tracker-web and freek-mencke-web had closed are cut to `Done` lines: osrs-tracker/osrs-tracker-web#477, osrs-tracker/osrs-tracker-web#395, osrs-tracker/osrs-tracker-web#390, osrs-tracker/osrs-tracker-web#389 and FreekMencke/freek-mencke-web#41. `kb-github-actions.md` 2 was dated "Before 2026-10-19". It now records the migration window running to 2026-11-19, with both images seen on 2026-10-28. No entry changed. |
 | 2026-10-28 | Recommendations in `kb-layout.md` (2, 3), `kb-spacing.md` (2), `kb-dataviz.md` (2) | Done: the skill follow-ups FreekMencke/claude-skills#120 to FreekMencke/claude-skills#123 merged (FreekMencke/claude-skills#124 to FreekMencke/claude-skills#127), so the four recommendations are cut to `Done` lines. No entry changed. |
