@@ -29,8 +29,9 @@ const DAY_MS = 86_400_000;
 
 export const INSTRUCTIONS =
   'claude-kb is a knowledge base on using Claude and Claude Code efficiently, and on the stack it works in (Angular,' +
-  ' TypeScript, Node.js, npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, web animation (Motion,' +
-  ' GSAP, Lenis), data visualisation (charts, tables, colour, formatting), UI states and forms, web fonts,' +
+  ' TypeScript, Node.js, npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, page layout and spacing' +
+  ' (grids, breakpoints, spacing scales, alignment), web animation (Motion, GSAP, Lenis), data visualisation (charts,' +
+  ' tables, colour, formatting), UI states and forms, web fonts,' +
   ' accessibility, web performance and security, GitHub and its Actions, Docker, Kubernetes and Flux, AWS Lambda,' +
   ' licences), and on knowledge retrieval and RAG. Search' +
   ' with kb_search (it can filter by topic, type, confidence and applies_to), then kb_get the 1 to 4 best IDs for the' +
@@ -77,7 +78,8 @@ export const TOOLS: Tool[] = [
         ' Claude API and Agent SDK, sessions, workflows, tokens and caching, knowledge retrieval and RAG, docs, SEO, visual' +
         ' and UI design, community' +
         ' design skills, UI review, typography; and versions, defaults and upgrade traps in Angular, TypeScript, Node.js,' +
-        ' npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, web animation (Angular, Motion, GSAP,' +
+        ' npm, NestJS, Express, MongoDB, lint and build tools, JS testing, CSS, page layout, spacing and alignment, web' +
+        ' animation (Angular, Motion, GSAP,' +
         ' Lenis), data visualisation and charts, UI states and forms, web fonts, accessibility, web performance and' +
         ' security (CSP, cookies, OWASP), OG images, GitHub' +
         ' and gh, GitHub Actions, Docker, Kubernetes and Flux, AWS Lambda and open-source licences. Returns entry IDs' +
