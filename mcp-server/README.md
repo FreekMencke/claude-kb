@@ -37,7 +37,7 @@ allow" is reported to be keyed on their hash (anthropics/claude-ai-mcp#1087), so
 | `tests/`                                | Vitest: the HTTP contract without a token, the tools through the SDK's client over HTTP (so its version negotiation is tested too), the index and search on fixtures and on this repo, logs, metrics, and the checker (`scripts/check-kb.ts`) |
 | `build.ts`                              | The rspack bundle the image runs: the server and all of `node_modules` in `dist/server.mjs` (`npm run build`), like osrs-tracker-api                                                                                                          |
 | `Dockerfile`, `Dockerfile.dockerignore` | The image: a build stage runs `build.ts`, and the image holds `server.mjs` and `assets/logo.{png,svg}` only, no `node_modules`, never KB content or secrets                                                                                   |
-| `package.json`, `package-lock.json`     | Dependencies, pinned by the lockfile; `engines` and the repo's `.node-version` name Node 24                                                                                                                                                   |
+| `package.json`, `package-lock.json`     | Dependencies, pinned by the lockfile; `engines` and the repo's `.node-version` name Node 26                                                                                                                                                   |
 | `tsconfig.json`                         | The type check (`npx tsc`), which covers `../scripts` too; nothing is emitted                                                                                                                                                                 |
 | `claude-kb-mcp.yaml`                    | The Kubernetes manifest, the only file Flux reads from this repo                                                                                                                                                                              |
 
@@ -120,7 +120,7 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
   doesn't support. A missing one gets `-32002`, the 2025 revisions' code (2026-07-28 moved it to `-32602` and asks
   clients to accept both). Tested 2026-10-16 with Claude Code 2.1.296: `ReadMcpResourceTool` and
   `ListMcpResourcesTool` both work.
-- **Code.** Node 24 runs the `.ts` files as they are (type stripping) in tests and local runs, so only erasable syntax
+- **Code.** Node 26 runs the `.ts` files as they are (type stripping) in tests and local runs, so only erasable syntax
   (no `enum`, no parameter properties), relative imports with their `.ts` extension. The image runs an rspack bundle
   (`build.ts`) with `node --lite-mode`, which turns off V8's optimizing compilers: on 2026-10-16 it idled at 72 MiB and
   peaked at 80 MiB under bursts of 1,500 calls 50 at a time, where the `.ts` files with the SDK idled at 136 MiB and
@@ -130,7 +130,7 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
 
 ## Run and test locally
 
-Node 24 (`.node-version`). From `mcp-server/`:
+Node 26 (`.node-version`). From `mcp-server/`:
 
 ```bash
 npm ci
@@ -191,7 +191,7 @@ Read from the environment, set in the manifest. No secrets.
 
 `package-lock.json` pins every version, and the image's build stage installs from it with `npm ci`: an unpinned
 dependency once jumped a major version and broke another server's startup. Change one with `npm install <name>@<range>`
-from `mcp-server/` and commit both files. The image's base (`node:24-alpine`, by digest) is the Node apps' own; Node's
+from `mcp-server/` and commit both files. The image's base (`node:26-alpine`, by digest) is the Node apps' own; Node's
 major version is in `.node-version`, `engines`, both workflows (`setup-node` reads `.node-version`) and that tag.
 
 TypeScript is 7, the native compiler, used only for `npx tsc` (Node strips the types, and rspack's SWC loader compiles
