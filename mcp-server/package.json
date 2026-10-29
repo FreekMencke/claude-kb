@@ -5,7 +5,7 @@
   "description": "claude-kb's remote MCP server",
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "scripts": {
     "build": "node build.ts",
@@ -25,7 +25,7 @@
     "@modelcontextprotocol/client": "^2.3.1",
     "@rspack/core": "^2.2.9",
     "@types/express": "^5.0.6",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "prettier": "^3.9.10",
     "typescript": "~7.0.2",
     "vitest": "^5.0.5"

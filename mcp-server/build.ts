@@ -11,7 +11,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 
 const config: Configuration = {
   mode: 'production',
-  target: 'node24',
+  target: 'node26',
   context: HERE,
   entry: './server.ts',
   // Node reads source maps only with --enable-source-maps, which costs memory; stack traces name the bundle's lines
