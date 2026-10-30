@@ -97,7 +97,7 @@ On 2026-10-23 `gsap.com/standard-license`, the URL in the npm field and every fi
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: local test (below), [Motion: animate](https://motion.dev/docs/animate.md)
-- Related: ANIMLIB-005, ANIMLIB-014, WEBPERF-002, NG-004
+- Related: ANIMLIB-005, ANIMLIB-014, WEBPERF-002, NG-004, ANIMLIB-019
 
 Size added to the initial JavaScript of an empty Angular 22 app by one import path, each used once inside `afterNextRender` so nothing was tree-shaken away.
 
@@ -124,7 +124,7 @@ Tested 2026-10-23, `@angular/build@22.2.4` with `@angular/core@22.2.3`, `motion@
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: local test (below), [GSAP `gsap-core.js` at 3.15.0](https://raw.githubusercontent.com/greensock/GSAP/3.15.0/src/gsap-core.js), [GSAP `ScrollTrigger.js` at 3.15.0](https://raw.githubusercontent.com/greensock/GSAP/3.15.0/src/ScrollTrigger.js), [Lenis `lenis.ts` at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/packages/core/src/lenis.ts), [Motion: scopeMotion](https://motion.dev/docs/scope-motion.md)
-- Related: ANIMLIB-005, ANIMLIB-006, ANIMLIB-010, NG-008
+- Related: ANIMLIB-005, ANIMLIB-006, ANIMLIB-010, NG-008, ANIMLIB-019
 
 All three can be imported at the top of a component in an SSR app; only some can be called on the server. Start every animation in `afterNextRender`, which runs only in the browser.
 
@@ -432,7 +432,7 @@ Tested 2026-10-23, `lenis@1.3.27`, Angular 22.2.3 SSR, Playwright 1.64.1: Chromi
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [motion.dev/llms.txt](https://motion.dev/llms.txt), [gsap.com/llms.txt](https://gsap.com/llms.txt), [lenis.dev/llms.txt](https://lenis.dev/llms.txt), [Motion: AI Kit install](https://motion.dev/docs/ai-kit-install.md)
-- Related: ANIMLIB-012, ANIMLIB-010, SKILL-066, SKILL-067, SKILL-068
+- Related: ANIMLIB-012, ANIMLIB-010, SKILL-066, SKILL-067, SKILL-068, ANIMLIB-018
 
 All three vendors publish an `llms.txt`; none is versioned or kept in the library's repo at a tag, so a live fetch puts unpinned vendor text in an agent's context. Fetched 2026-10-23 with `curl -L`:
 
@@ -479,7 +479,7 @@ Unlike the vendors in ANIMLIB-016, three.js keeps its agent docs in the repo, so
 - "**Use WebGLRenderer** (default, mature): Maximum browser compatibility"; "**Use WebGPURenderer** when you need: Custom shaders/materials using TSL (Three.js Shading Language), Compute shaders, Advanced node-based materials". `WebGPURenderer` needs `await renderer.init()`.
 - With `WebGPURenderer`, write materials in TSL (`three/tsl`) and node materials (`MeshStandardNodeMaterial`), not raw GLSL; TSL "Works with both WebGL and WebGPU backends".
 
-`three/webgpu` also exports a WebGL backend for `WebGPURenderer` (`src/Three.WebGPU.js`). For a site's hero scene, `WebGLRenderer` is the guide's default; pick `WebGPURenderer` only for TSL or compute. Point an agent at `docs/llms.txt` at the installed tag: its CDN example names the current version, which training data won't know.
+`three/webgpu` also exports a WebGL backend for `WebGPURenderer` (`src/Three.WebGPU.js`). For a site's hero scene, `WebGLRenderer` is the guide's default; pick `WebGPURenderer` only for TSL or compute. The npm package doesn't ship `docs/` (the `three@0.187.0` tarball holds LICENSE, README.md, build, examples, package.json and src), so point an agent at `docs/llms.txt` on GitHub at the tag matching the installed version (`r187`), or threejs.org/llms.txt unpinned. Its CDN example names the current version, which training data won't know.
 
 ## [ANIMLIB-019] three.js in Angular 22: SSR, bundle cost and angular-three's peer range
 - Type: fact
@@ -491,17 +491,17 @@ Unlike the vendors in ANIMLIB-016, three.js keeps its agent docs in the repo, so
 
 **SSR.** Tested 2026-10-30, `three@0.187.0`, Node v22.22.0: `import('three')` succeeds on the server, but `new WebGLRenderer()` throws "document is not defined". As with the libraries in ANIMLIB-004, import at the top and create the renderer in `afterNextRender`; give the canvas a static fallback (a poster image) for the server render and for `prefers-reduced-motion: reduce` (ANIM-010).
 
-**Bundle cost**, same test, `esbuild@0.27.7 --bundle --minify --format=esm`, gzip `-9`:
+**Bundle cost**, same test, `esbuild@0.27.7 --bundle --minify --format=esm`, gzip `-9` (and `-6` for the cube, to match ANIMLIB-003):
 
 | Entry | Raw | Gzip |
 |---|--:|--:|
-| Scene, camera, `WebGLRenderer`, box mesh, `MeshNormalMaterial` | 532,884 B | 132,155 B |
+| Scene, camera, `WebGLRenderer`, box mesh, `MeshNormalMaterial` | 532,884 B | 132,155 B (`-6`: 132,662 B) |
 | `WebGPURenderer` from `three/webgpu` | 818,202 B | 221,453 B |
 | `import * as THREE` unused | 0 B | 34 B |
 
-About 130 kB gzip for the smallest WebGL scene is roughly three times GSAP with ScrollTrigger (45 kB gzip in ANIMLIB-003's Angular build, measured differently). Lazy-load it with `@defer` or a dynamic `import()` (VIZ-010).
+About 133 kB gzip `-6` for the smallest WebGL scene is about 2.9 times GSAP with ScrollTrigger (45,420 B in ANIMLIB-003, an Angular build rather than esbuild). Lazy-load it with `@defer` or a dynamic `import()` (VIZ-010).
 
-**angular-three** (MIT, `angular-threejs/angular-three`): `latest` 4.2.4 (2026-07-15) peers `@angular/core` ">=20.0.0 <22.0.0" and `three` ">=0.157.0 <0.183.0" (`npm view angular-three@latest peerDependencies`); `next` 4.2.4-next.0 is the same line. So on 2026-10-30 it supports neither Angular 22.2.4 nor three 0.187.0. Use three directly in a component until it catches up.
+**angular-three** (MIT, `angular-threejs/angular-three`): `latest` 4.2.4 (2026-07-15) peers `@angular/core` ">=20.0.0 <22.0.0" and `three` ">=0.157.0 <0.183.0" (`npm view angular-three@latest peerDependencies`); `next` 4.2.4-next.0 is the same line. So on 2026-10-30 it supports neither Angular 22.2.4 nor three 0.187.0. It also peers `ngxtension` ">=3.0.0". Use three directly in a component until it catches up. three ships no types: `@types/three` was at 0.186.0 on 2026-10-30, one minor behind, so pin types to match.
 
 ## Recommendations for our setup
 

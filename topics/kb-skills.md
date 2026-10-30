@@ -996,7 +996,7 @@ Portability rules:
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Plugin security](https://code.claude.com/docs/en/plugins/security), [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
-- Related: SKILL-010, SKILL-037, SKILL-069, SKILL-068, SKILL-064
+- Related: SKILL-010, SKILL-037, SKILL-069, SKILL-068, SKILL-064, SKILL-074
 
 "Only use skills from trusted sources." Installing a skill or plugin is installing software. "A Claude Code plugin you install can execute arbitrary code on your machine with your user privileges."
 - Hooks, monitors, MCP and LSP servers (and any process a mod starts) run *outside* the sandbox. A `bin/` executable runs as a Claude Bash command, so permission rules apply to it; `bin/` is on the shell's `PATH`, so read every file in it before installing.
@@ -1732,12 +1732,13 @@ Grep every text file in a skill before installing it. Text the model reads but y
 NVIDIA's SkillSpector (Apache-2.0, 23,421 stars on 2026-10-30, `pyproject.toml` version 2.12.0 at `54921c8`, 2026-10-29) is a "Security scanner for AI agent skills". It wasn't run here; this is from its README.
 
 - **Coverage:** "71 vulnerability patterns across 17 categories", among them prompt injection, data exfiltration, privilege escalation, supply chain, excessive agency, memory poisoning and tool misuse, plus YARA rules for malware, webshells and cryptominers.
-- **Two stages:** "Fast static analysis + optional LLM semantic evaluation". `--no-llm` keeps it local; the LLM pass sends the skill to a provider you configure (OpenAI-compatible, Anthropic, Bedrock and others).
-- **Network:** "SC4 queries OSV.dev for real-time CVE data with automatic offline fallback".
+- **Two stages:** static analysis, plus an LLM pass that is on by default: "When LLM analysis is enabled (the default), file contents are sent to the active `SKILLSPECTOR_PROVIDER` endpoint". `--no-llm` keeps file contents local.
+- **Network even with `--no-llm`:** its SC4 check sends declared dependency names and versions to OSV.dev, with an offline fallback.
+- **Limits it states:** "defense-in-depth, not a sandbox"; "It never executes the scanned skill"; it claims "High recall" with no measurement shown.
 - **Output:** terminal, JSON, Markdown and SARIF, a 0–100 risk score, and a baseline to suppress accepted findings.
-- **Install:** from source (`make install` in a venv) or a locally built Docker image; it wasn't on PyPI on 2026-10-30. The README warns it "will download and install additional third-party open source software projects".
+- **Install:** `uv tool install git+https://github.com/NVIDIA/skillspector.git`, from source, or a locally built Docker image; it wasn't on PyPI on 2026-10-30. The README warns it "will download and install additional third-party open source software projects".
 
-Use it as an extra pass after SKILL-069's reading, not instead of it: a pattern scanner flags known shapes, while the checklist's questions (what runs, what it writes to settings, what it fetches at run time) need a reader. `skillspector scan <dir> --no-llm --format sarif` in Docker keeps both the scan and the skill off the host.
+Use it as an extra pass after SKILL-069's reading, not instead of it: a pattern scanner flags known shapes, while the checklist's questions (what runs, what it writes to settings, what it fetches at run time) need a reader. `skillspector scan <dir> --no-llm --format sarif` in Docker keeps the scan off the host, though not off the network.
 
 ## Recommendations for our setup
 
