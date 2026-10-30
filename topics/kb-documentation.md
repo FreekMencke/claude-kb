@@ -215,15 +215,15 @@ The Claude Code style, symptom plus trigger plus what's now possible, is the mod
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Best practices](https://code.claude.com/docs/en/best-practices.md), [Memory](https://code.claude.com/docs/en/memory.md), [Prompt library](https://code.claude.com/docs/en/prompt-library.md), [Common workflows](https://code.claude.com/docs/en/common-workflows.md)
+- Sources: [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices.md), [Memory](https://code.claude.com/docs/en/memory.md), [Prompt library](https://code.claude.com/docs/en/prompt-library.md), [Common workflows](https://code.claude.com/docs/en/common-workflows.md)
 - Related: MEM-021, MEM-033, REPO-044, SKILL-024, DOC-012
 
-There is little direct guidance. Grepping best-practices, memory and common-workflows for README, docs/ and changelog finds nothing on keeping a README or a `docs/` folder current. What there is:
+There is little direct guidance. Grepping best-practices, memory and common-workflows for README, docs/ and changelog (2026-10-30) finds nothing on keeping a README or a `docs/` folder current. What there is:
 
-- **Link, don't paste.** The best-practices CLAUDE.md table excludes "Detailed API documentation (link to docs instead)" and "Information that changes frequently". It includes "Architectural decisions specific to your project".
+- **Only what the repo doesn't say.** Best practices' CLAUDE.md table ("Detailed API documentation (link to docs instead)" out, "Architectural decisions specific to your project" in) was there until at least 2026-10-14 and gone by 2026-10-30. Its "What you can stop doing" table now says: "Describe your architecture and file layout in `CLAUDE.md` | Claude reads the repo itself. Only write down what isn't in there." It keeps "Decisions that aren't in the repo". The memory page still lists "project layout" for CLAUDE.md; follow best practices and `/doctor`, which both cut it.
 - **Import when Claude needs it every session.** memory.md: "See @README for project overview and @package.json for available npm commands for this project." An import loads every session, so it costs context like CLAUDE.md does (SKILL-024).
 - **`/doctor` sends overviews out of CLAUDE.md.** It "cuts content Claude can derive from the codebase, such as directory layouts, dependency lists, and architecture overviews, and keeps pitfalls, rationale, and conventions" (MEM-021). The arXiv study in MEM-033 found repository overviews in context files "are not helpful". Overviews belong in the README for people, not in CLAUDE.md.
-- **Release notes.** The prompt library's "Draft release notes from git history" prompts "compare {from} to {to} and draft release notes grouped by feature, fix, and breaking change". The next step it suggests: "Save this as a `/changelog` skill".
+- **Release notes.** The prompt library's "Draft release notes from git history" prompts "compare {from} to {to} and draft release notes grouped by feature, fix, and breaking change". The next step it suggests: "Save this as a `/changelog` skill". Best practices' example `release` skill "writes the changelog entry": "Summarize the PRs merged since the last tag into CHANGELOG.md, one line each, user-facing changes only."
 - **"Handle documentation"** in common-workflows covers only code comments (JSDoc, docstrings).
 
 ## [DOC-010] Official skills and plugins for documentation

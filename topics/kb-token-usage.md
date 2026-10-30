@@ -167,20 +167,21 @@ Confidence note: the figures are our local measurement; community captures (Syst
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Memory](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs), [Best practices](https://code.claude.com/docs/en/best-practices)
+- Last verified: 2026-10-30
+- Sources: [Memory](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs), [Best practices: Tell Claude what it can't see](https://code.claude.com/docs/en/best-practices)
 - Related: TOK-065, TOK-031, SKILL-024, REPO-045
 
-Target: "under 200 lines per CLAUDE.md file. Longer files consume more context and reduce adherence." Test each line with "Would removing this cause Claude to make mistakes?"
+Target: "under 200 lines per CLAUDE.md file. Longer files consume more context and reduce adherence." (Memory). Best practices tests each line with "1. Could it find this by reading the code? 2. Would it actually go and look? If both are yes, leave it out." It said "Would removing this cause Claude to make mistakes?" until at least 2026-10-14 and dropped it by 2026-10-30.
 
 Loading rules:
 - CLAUDE.md in the cwd and every ancestor directory loads at launch. `CLAUDE.local.md` is appended after it.
-- Subdirectory CLAUDE.md files load lazily, when Claude touches a file there.
-- `@imports` (max 4 hops) "don't reduce its context cost, because imported files also load at launch."
+- Subdirectory CLAUDE.md files load on demand, when Claude touches a file there.
+- `@imports` (max four hops) "don't reduce its context cost, because imported files load together with the CLAUDE.md that imports them."
 - Block-level HTML comments are stripped before injection, so maintainer notes in them are free.
 - `claudeMdExcludes` skips ancestor files, e.g. in monorepos.
-- Files over 4 MiB are skipped. A startup warning shows when one file, or the files combined, exceed the recommended size.
-- `/doctor` (v2.1.206+) proposes trims: it cuts derivable content and keeps pitfalls and non-default conventions.
+- Files over 4 MiB are skipped. A startup warning shows when one file, or the files combined, exceed the recommended length.
+- `/doctor` (v2.1.206+) proposes trims: it "cuts content Claude can derive from the codebase" and "keeps pitfalls, rationale, and conventions that differ from tool defaults".
+- `/doctor prompt-audit` (v2.1.283+) flags "instructions written for older models, references to files or commands that don't exist, and files that contradict each other", and changes nothing until you ask.
 - Edits mid-session don't apply until `/clear`, `/compact` or restart (TOK-053).
 
 ## [TOK-004] Auto memory (MEMORY.md) load limits
@@ -269,13 +270,15 @@ A large window removes the automatic brake on session length, so cost per turn k
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Costs: why usage climbs in a long session](https://code.claude.com/docs/en/costs), local transcripts
+- Last verified: 2026-10-30
+- Sources: [Costs: why usage climbs in a long session](https://code.claude.com/docs/en/costs), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows), local transcripts
 - Related: TOK-009, TOK-030, TOK-032
 
-Claude Code re-sends the full conversation with every request; the cached part is billed at cache-read rates. A 300-turn session at 300k context reads about 90M tokens. Performance also degrades as context fills ([Best practices](https://code.claude.com/docs/en/best-practices); the API's [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows) page calls it "context rot").
+Claude Code re-sends the full conversation with every request; the cached part is billed at cache-read rates. A 300-turn session at 300k context reads about 90M tokens.
 
-Our 2026-10-07 to 2026-10-12, 6 days (list-price equivalent at Opus 5.5 rates). Correction 2026-10-12: this was first labelled "30 days", but the transcripts only start on 2026-10-06; shares are unaffected, totals are for 6 days. Re-measure with the `token-audit` skill (FreekMencke/claude-skills `local-skills/skills/token-audit/`), whose baseline for 2026-10-07 to 10-11 is 186 USD a day, 0.059 USD per API message, subagents 13% of cost.
+Quality: the API's Context windows page: "As token count grows, accuracy and recall degrade, a phenomenon known as *context rot*." Best practices said performance degrades as context fills until at least 2026-10-14; by 2026-10-30 it says only that "a focused context gets you better answers and costs less."
+
+Our 2026-10-07 to 2026-10-12, 6 days (list-price equivalent at Opus 5.5 rates). (First labelled "30 days"; corrected 2026-10-12.) Re-measure with the `token-audit` skill (FreekMencke/claude-skills `local-skills/skills/token-audit/`), whose baseline for 2026-10-07 to 10-11 is 186 USD a day, 0.059 USD per API message, subagents 13% of cost.
 
 | Bucket of context size per turn | Share of turns | Share of input tokens |
 |---|---|---|
@@ -638,18 +641,19 @@ In Claude Code the equivalents are a skill script that processes data and prints
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Keep cost and context down](https://code.claude.com/docs/en/best-practices), [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Costs: manage context proactively](https://code.claude.com/docs/en/costs)
 - Related: TOK-008, TOK-031, TOK-070
 
 Official guidance:
-- "Use /clear to start fresh when switching to unrelated work. Stale context wastes tokens on every subsequent message."
-- `/clear` itself "costs nothing". Run `/rename` first so `/resume` can find the session later.
-- "If you've corrected Claude more than twice on the same issue in one session… run /clear and start fresh with a more specific prompt. A clean session with a better prompt almost always outperforms a long session with accumulated corrections."
-- Named anti-patterns: the kitchen-sink session, correcting over and over, infinite exploration.
-- The counterpoint: keep context when "deep in one complex problem and the history is valuable."
+- Best practices: "`/clear` between unrelated tasks. It costs nothing, and it means the next task doesn't keep paying for the previous one's history."
+- Costs: "Use `/clear` to start fresh when switching to unrelated work. Stale context wastes tokens on every subsequent message."
+- Keeping the session findable: Best practices says "`/clear oauth-migration` names the session you're leaving, so you can come back to it later"; Costs still says "Use `/rename` before clearing so you can find the session later, then `/resume` to return to it." Either works.
+- After repeated corrections: "after two failed corrections run `/clear` and write a better prompt instead of a third", because "a third correction mostly adds to a conversation that already contains two failed attempts for Claude to keep re-reading. `/clear` plus one new prompt that folds in what you learned works better almost every time."
 
-Instructions given only in conversation are lost on `/clear` and compaction. Put lasting ones in CLAUDE.md, or write a handoff note before clearing (see Recommendations, R3).
+Until at least 2026-10-14 best practices also named the kitchen-sink session and infinite exploration as anti-patterns, and kept context when "deep in one complex problem and the history is valuable"; it dropped those by 2026-10-30. Its stop-doing table keeps `/clear` between tasks "because a focused context gets you better answers and costs less."
+
+Instructions given only in conversation are lost on `/clear` and compaction (best practices: a stated boundary "can get lost when the conversation compacts"). Put lasting ones in CLAUDE.md, or write a handoff note before clearing (see Recommendations, R3).
 
 ## [TOK-031] `/compact` with focus, and what survives compaction
 - Type: fact
@@ -752,22 +756,20 @@ Confidence note: the share of rebuilds is our local measurement (single-source).
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Sub-agents: isolate high-volume operations](https://code.claude.com/docs/en/sub-agents#isolate-high-volume-operations), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Know what subagents cost](https://code.claude.com/docs/en/best-practices), [Sub-agents: isolate high-volume operations](https://code.claude.com/docs/en/sub-agents#isolate-high-volume-operations), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: TOK-006, TOK-009, TOK-036, ORCH-020, ORCH-034, TOK-103
 
-What the docs say:
-- "Since context is your fundamental constraint, use subagents to keep research out of it."
-- "The verbose output stays in the subagent's context while only the relevant summary returns."
-- The docs' example: "Use a subagent to run the test suite and report only the failing tests with their error messages."
-- Anthropic's context-engineering post says subagents typically return a "condensed, distilled summary (often 1,000-2,000 tokens)."
+The reason changed. Until at least 2026-10-14 best practices said "Since context is your fundamental constraint, use subagents to keep research out of it." By 2026-10-30 its "What you can stop doing" table lists "Use subagents to protect your context window": "Running out of context is rarely the problem anymore. Subagents are still great for parallel work, keeping noisy output out of your way, and independent review, but each of those costs extra tokens." Delegate to keep cost and noise down, not to save the window.
 
-The trade-off: each subagent pays about 28k tokens of startup (TOK-006) and counts toward the same limits. A subagent pays off when it would otherwise pull more than that into a long-lived main context; with the re-read multiplier in TOK-009, the break-even is low.
+What the docs say now:
+- Best practices: subagents pay off "Keeping long output, like a full test run or a wide search, out of your main conversation"; "Broad codebase searches go to the built-in Explore agent" without being asked.
+- Sub-agents: "the verbose output stays in the subagent's context while only the relevant summary returns to your main conversation." Example: "Use a subagent to run the test suite and report only the failing tests with their error messages".
+- Anthropic's context-engineering post: subagents return "a condensed, distilled summary of its work (often 1,000-2,000 tokens)."
 
-Don't delegate when:
-- the task needs back-and-forth or shares context across phases,
-- it's a quick targeted change, or
-- latency matters.
+The trade-off: each subagent pays about 28k tokens of startup (TOK-006) and "they count against the same usage as your main conversation"; a fresh one "can end up *slower* than doing the task where you are." It pays off when it would otherwise pull more than that into a long-lived main context (re-read multiplier: TOK-009).
+
+Don't delegate (Sub-agents) when the task needs "frequent back-and-forth", it's "a quick, targeted change", or "Latency matters".
 
 Ask for a specific return format with a word cap, to keep the summary small.
 
@@ -1231,25 +1233,27 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Keep cost and context down](https://code.claude.com/docs/en/best-practices), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-030, TOK-032, TOK-035, TOK-053
 
 | Anti-pattern | Instead | Entry |
 |---|---|---|
-| One session for many unrelated tasks (the "kitchen sink") | `/clear` per task, `/rename` + `/resume` | TOK-030 |
-| Correcting the same mistake 3+ times | `/clear` and write a better prompt | TOK-030 |
+| One session for many unrelated tasks (the "kitchen sink") | `/clear` per task (`/clear <name>` names the session you leave) | TOK-030 |
+| A third correction after two failed ones | `/clear` and write a better prompt | TOK-030 |
 | Running a 1M window to 400k+ for routine work | Lower `autoCompactWindow`, hand off | TOK-032 |
-| Unscoped "investigate X" in the main context | Delegate to a subagent with a return-format cap | TOK-035 |
+| Long output (full test runs, wide searches) in the main context | A subagent with a return-format cap | TOK-035 |
 | Switching `/model` or effort mid-task | Choose at session start | TOK-053 |
-| Resuming a big session after hours away | "Resume from summary" or start fresh; in the terminal, idle compaction (v2.1.290+, default on) already compacts a 200K+ token conversation after about 54 idle minutes | TOK-034 |
+| Resuming a big session after hours away | "Resume from summary" or start fresh; terminal idle compaction (v2.1.290+) already compacts 200K+ conversations after about 54 idle minutes | TOK-034 |
 | Pasting large logs | Save to a file and Read or grep it | TOK-043 |
 | Full `git diff` or `gh pr view` dumps | `--stat`, `--json <fields>`, path filters | TOK-042 |
 | Raw test output | Filter hook or subagent | TOK-042 |
 | Many full-resolution screenshots in the main context | Accessibility snapshot, crop or downscale, or a subagent | TOK-043 |
-| Vague prompts ("improve this codebase") | Name the file and the function | TOK-041 |
-| Plan mode for a diff you could describe in one sentence | Skip the plan (best practices) | FLOW-005 |
+| Vague prompts ("improve this codebase") for a specific fix | Name the file and the symptom (fine when exploring) | TOK-041 |
+| Plan mode for a trivial change | Ask directly; Costs keeps plan mode "for complex tasks" | FLOW-005 |
 | Large agent teams on Opus | Small teams, Sonnet teammates | TOK-037 |
+
+By 2026-10-30 best practices dropped "skip the plan" and the context-window reason for subagents (TOK-035).
 
 Confidence note: each row's detail and confidence is in the linked entry.
 

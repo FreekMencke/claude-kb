@@ -427,14 +427,14 @@ Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the 
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Best practices: use CLI tools](https://code.claude.com/docs/en/best-practices), [Features overview](https://code.claude.com/docs/en/features-overview), [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [What if you don't need MCP (Zechner)](https://mariozechner.at/posts/2025-11-02-what-if-you-dont-need-mcp/), [Skills vs dynamic MCP loadouts (Ronacher)](https://lucumr.pocoo.org/2025/12/13/skills-vs-mcp/)
+- Sources: [Best practices: Connect the tools Claude needs](https://code.claude.com/docs/en/best-practices), [Costs: reduce MCP server overhead](https://code.claude.com/docs/en/costs), [Features overview](https://code.claude.com/docs/en/features-overview), [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [What if you don't need MCP (Zechner)](https://mariozechner.at/posts/2025-11-02-what-if-you-dont-need-mcp/), [Skills vs dynamic MCP loadouts (Ronacher)](https://lucumr.pocoo.org/2025/12/13/skills-vs-mcp/)
 - Related: TOK-022, SKILL-021, MCP-018, INFRA-007, BROWSER-002
 
-Official: "CLI tools are the most context-efficient way to interact with external services" (`gh`, `aws`, `gcloud`, `sentry-cli`). MCP "gives Claude purpose-built tools for an external system, with the connection and authentication handled by the server"; a skill teaches how to use them. Trigger for MCP: "You keep copying data from a browser tab Claude can't see."
+Official: CLIs like `gh`, `aws`, `gcloud`, and `sentry-cli` "are still more context-efficient than MCP servers because they don't add any per-tool listing" (costs page). Best practices: "If that system has a CLI, that's usually the easiest way in", and "For a CLI it hasn't seen before, pointing it at `--help` is enough"; MCP is "For systems without a CLI". MCP "gives Claude purpose-built tools for an external system, with the connection and authentication handled by the server"; a skill teaches how to use them. Trigger for MCP: "You keep copying data from a browser tab Claude can't see."
 
 | Need | Use |
 |---|---|
-| A CLI exists that Claude knows | The CLI, plus a skill or CLAUDE.md line for your conventions |
+| A CLI exists (point Claude at `--help` if it's unfamiliar) | The CLI, plus a skill or CLAUDE.md line for your conventions |
 | No CLI; OAuth or a hosted API | An MCP server (remote if offered) |
 | Credential the agent must never see | MCP server holding it, or a scoped identity (INFRA-006) |
 | Output too large for context | CLI with filters, or a server with pagination (INFRA-007) |

@@ -884,7 +884,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | PROMPT-001 | Where Anthropic's prompting guidance lives | fact | docs, per-model-pages |
 | PROMPT-002 | What changed from the 4.x models | fact | migration, 5.x |
 | PROMPT-003 | Literal instruction following: state the scope | fact | literal, scope |
-| PROMPT-004 | Emphasis and capitals: one marked line, not many | recommendation | emphasis, over-triggering |
+| PROMPT-004 | Emphasis and capitals: plain lines, hooks for hard rules | recommendation | emphasis, over-triggering |
 | PROMPT-005 | Give the reason behind a rule | pattern | motivation, generalisation |
 | PROMPT-006 | Examples: 3–5, varied, tagged, and positive | pattern | few-shot, examples |
 | PROMPT-007 | XML tags and long-context layout | pattern | xml, long-context, pasted-content |

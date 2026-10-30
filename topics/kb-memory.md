@@ -534,8 +534,8 @@ Anthropic's plugin in `claude-plugins-official` (v1.0.0) has two parts:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Memory: when to add to CLAUDE.md](https://code.claude.com/docs/en/memory), [Best practices](https://code.claude.com/docs/en/best-practices), [Large codebases](https://code.claude.com/docs/en/large-codebases), [Skills: run and verify your app](https://code.claude.com/docs/en/skills)
+- Last verified: 2026-10-30
+- Sources: [Memory: when to add to CLAUDE.md](https://code.claude.com/docs/en/memory), [Best practices: Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [Large codebases](https://code.claude.com/docs/en/large-codebases), [Skills: run and verify your app](https://code.claude.com/docs/en/skills)
 - Related: REPO-044, REPO-045, MEM-021, MEM-024, PROMPT-015
 
 **Add a line when** (memory page):
@@ -544,7 +544,7 @@ Anthropic's plugin in `claude-plugins-official` (v1.0.0) has two parts:
 - "You type the same correction or clarification into chat that you typed last session"
 - "A new teammate would need the same context to be productive"
 
-**Prune** (best practices): "Treat CLAUDE.md like code: review it when things go wrong, prune it regularly, and test changes by observing whether Claude's behavior actually shifts." Test each line: "Would removing this cause Claude to make mistakes? If not, cut it." Leave out "Information that changes frequently". Check it into git "so your team can contribute".
+**Prune** (best practices): after `/init`, "the work is mostly removing lines", and `/doctor` "suggests cuts for anything Claude can already work out from the code". Test each line: "Could it find this by reading the code?" and "Would it actually go and look?" "If both are yes, leave it out." Memory page: "target under 200 lines per CLAUDE.md file", shared "with your team through version control". Best practices' "Treat CLAUDE.md like code…" and "Would removing this cause Claude to make mistakes?" lines were there until at least 2026-10-14 and gone by 2026-10-30.
 
 **Review for conflicts** across CLAUDE.md, nested files and `.claude/rules/` "periodically" (memory page), now automated by `/doctor prompt-audit` (MEM-021).
 

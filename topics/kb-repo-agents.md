@@ -205,13 +205,13 @@ The v2 `conventions-reviewer` (template T1, live 2026-10-12: do-not-flag list, a
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
-- Sources: REPO-001 to REPO-003; [Best practices](https://code.claude.com/docs/en/best-practices)
+- Last verified: 2026-10-30
+- Sources: REPO-001 to REPO-003; [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices)
 - Related: REPO-015, REPO-031
 
 Gaps at `3c76cc2`. By 2026-10-13 gaps 1–6 were closed in osrs-tracker-web: `/code-review high` in a subagent (1, REPO-015), the read-only hook (2), a do-not-flag list and at most 3 checks (3), a `VERDICT:` line (4), the skill preloaded and CLAUDE.md treated as already loaded (5), and `browser-checker` (6, REPO-021). Gap 7 now has a weekly docs-drift routine.
 
-1. **No fresh-context bug review.** Release step 2 has the session that wrote the code review its own diff for bugs. Anthropic: "A fresh context improves code review since Claude won't be biased toward code it just wrote." The conventions reviewer explicitly skips "general bugs" (REPO-015).
+1. **No fresh-context bug review.** Release step 2 has the session that wrote the code review its own diff for bugs. Anthropic recommends review "By someone who didn't write the code", since `/code-review` in "a fresh subagent that never saw your conversation… isn't swayed by the reasoning that produced the code" (best practices, 2026-10-30). The conventions reviewer explicitly skips "general bugs" (REPO-015).
 2. **Read-only by instruction, not by configuration.** The agent has unscoped `Bash`. It inherits the project's local allow rules (`gh pr *`, `gh pr merge:*`, `git push:*`) and the parent's auto mode, which overrides any `permissionMode` it might set (REPO-031, REPO-032).
 3. **No do-not-flag list or finding cap.** **check** items outnumber **violates** findings about 3 to 1 (REPO-047); with both in v2, 20 to 11 (REPO-054).
 4. **No machine-readable verdict line** for an orchestrator to route on (REPO-050).
@@ -479,11 +479,11 @@ Template: template T1.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [pr-review-toolkit code-reviewer](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/pr-review-toolkit/agents/code-reviewer.md)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Review locally with /code-review](https://code.claude.com/docs/en/code-review-local), [Skills: Run skills in a subagent](https://code.claude.com/docs/en/skills), [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [pr-review-toolkit code-reviewer](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/pr-review-toolkit/agents/code-reviewer.md)
 - Related: ORCH-039, ORCH-042, REPO-047, template T2
 
-**Purpose:** find defects the author's context is blind to. Anthropic: "A fresh context improves code review since Claude won't be biased toward code it just wrote". Use verification subagents so "the agent doing the work isn't the one grading it".
+**Purpose:** find defects the author's context is blind to. Best practices: `/code-review` uses "a fresh subagent that never saw your conversation. It isn't swayed by the reasoning that produced the code." (Its "A fresh context improves code review…" was gone by 2026-10-30.)
 
 **Configuration:**
 
@@ -493,7 +493,7 @@ Template: template T1.
 | Tools | Read, Grep, Glob, plus read-only `git`/`gh`. No web, no edits. |
 | Model | Opus 5.5 at `high`. The official code-review command uses Opus for its bug finders. |
 
-**Model choice.** Official sources disagree: pr-review-toolkit's `code-reviewer` is Opus, feature-dev's (same prompt) is Sonnet, and the docs' example is `inherit` (REPO-046). Sonnet 5.5 is the floor (ORCH-030).
+**Model choice.** Official sources disagree: Opus, Sonnet and `inherit` all appear (REPO-046). Sonnet 5.5 is the floor (ORCH-030).
 
 **What to flag**, from the official command's "HIGH SIGNAL" gate:
 - code that "will fail to compile or parse";
@@ -503,7 +503,7 @@ Not style, not "potential issues that depend on specific inputs or state". "If y
 
 **Validate before fixing.** The caller, or one Sonnet validator per finding, checks each finding against the code (REPO-048).
 
-**Alternative without a repo file:** the built-in `/code-review` at a chosen level, maintained by Anthropic but not pinnable and without the repo's do-not-flag list. It won in osrs-tracker-web (osrs-tracker/osrs-tracker-web#222, 8 PRs, 2026-10-12 to 10-13): 15 fixed findings for `/code-review high`, run inline and so not a fresh context, against 1 for a repo `bug-reviewer` (template T2). The agent was deleted (923c18f); `/code-review high <n>` now runs in a `general-purpose` subagent, 37k–41k tokens and 58–86 s per run (709574d).
+**Alternative without a repo file:** the built-in `/code-review`, maintained by Anthropic but not pinnable and without our do-not-flag list. It won in osrs-tracker-web (osrs-tracker/osrs-tracker-web#222, 8 PRs, 2026-10-12 to 10-13): 15 fixed findings for `/code-review high` (recorded then as run inline) against 1 for a repo `bug-reviewer` (template T2). The agent was deleted (923c18f); `/code-review high <n>` now runs in a `general-purpose` subagent, 37k–41k tokens and 58–86 s per run (709574d). Per the 2026-10-30 docs the built-in is fresh-context anyway: in a terminal it "runs the review as a forked subagent" (Review locally), which "doesn't see your conversation history" (Skills).
 
 ## [REPO-016] Test writer and test-gap analyser
 - Type: recommendation
@@ -1234,24 +1234,24 @@ Update 2026-10-18: the `@osrs-tracker/*` packages moved to osrs-tracker-packages
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Memory](https://code.claude.com/docs/en/memory), [Code review](https://code.claude.com/docs/en/code-review), [Large codebases](https://code.claude.com/docs/en/large-codebases)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Tell Claude what it can't see, Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [Memory](https://code.claude.com/docs/en/memory), [Customize Code Review](https://code.claude.com/docs/en/code-review-customize), [Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Related: TOK-065, SKILL-021, SKILL-024, REPO-045
 
 The general rules are in TOK-065 and SKILL-021. What is specific to repos with agents:
 
 | Content | Home | Why |
 |---|---|---|
-| Verify command, hard rules, where code lives, a pointer to the skill and agents | CLAUDE.md | Every session *and every custom subagent* loads it (REPO-010) |
+| Verify commands, decisions that aren't in the repo, gotchas, a pointer to the skill and agents | CLAUDE.md | Every session *and every custom subagent* loads it (REPO-010) |
 | Conventions, procedures (release, deploy), design system | Repo skill | On-demand; reviewers preload or read it |
-| Review-only rules: severity definitions, nit cap, skip paths, do-not-flag list | Agent body, or `REVIEW.md` | The managed reviewer says rules there "land more reliably than the same rules in a long CLAUDE.md" |
+| Review-only rules: severity definitions, nit cap, skip paths, do-not-flag list | Agent body, or `REVIEW.md` | "Keep `REVIEW.md` to instructions that change review behavior"; the local `/code-review` reads `CLAUDE.md` "and not `REVIEW.md`" |
 | Deliberate trade-offs | `docs/decisions.md` | Reviewers must "never flag" them; people read it too |
 | Must-happen checks (lint before push, format after edit) | Hooks | CLAUDE.md is "context, not enforced configuration" |
 
-**Anthropic's include and exclude lists:**
-- **Include:** commands Claude can't guess, non-default style rules, test instructions, repo etiquette, architecture decisions, environment quirks, gotchas.
-- **Exclude:** anything inferable from code, standard conventions, API docs, frequently changing information, file-by-file descriptions, "write clean code".
-- **The test:** "Would removing this cause Claude to make mistakes? If not, cut it."
+**What best practices keeps in CLAUDE.md (2026-10-30):**
+- **Keep:** "the exact test, typecheck, and lint commands, and how to run a single test file"; "Places where the code is misleading"; "Decisions that aren't in the repo"; "Anything you've had to correct twice already".
+- **Leave out:** architecture and file layout ("Claude reads the repo itself", in "What you can stop doing"), and anything that passes the test below.
+- **The test:** "1. Could it find this by reading the code? 2. Would it actually go and look? If both are yes, leave it out." It replaced "Would removing this cause Claude to make mistakes?" (until at least 2026-10-14).
 
 **Two checks for agents:**
 - Don't repeat CLAUDE.md content in an agent body, since the agent already has it.
@@ -1262,13 +1262,13 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Applies to: general
 - Confidence: community-consensus
 - Last verified: 2026-10-12
-- Sources: [Memory](https://code.claude.com/docs/en/memory), [Best practices](https://code.claude.com/docs/en/best-practices), [IFScale, arXiv 2507.11538](https://arxiv.org/abs/2507.11538), [HumanLayer: writing a good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md), [Copilot response customization](https://docs.github.com/en/copilot/concepts/prompting/response-customization)
+- Sources: [Memory](https://code.claude.com/docs/en/memory), [Best practices: Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [IFScale, arXiv 2507.11538](https://arxiv.org/abs/2507.11538), [HumanLayer: writing a good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md), [Copilot response customization](https://docs.github.com/en/copilot/concepts/prompting/response-customization)
 - Related: TOK-003, SKILL-024, REPO-044
 
 **Size, from the docs:**
-- "under 200 lines per CLAUDE.md file. Longer files consume more context and reduce adherence."
-- "Bloated CLAUDE.md files cause Claude to ignore your actual instructions!"
-- Contradictory instructions: "Claude may pick one arbitrarily".
+- "target under 200 lines per CLAUDE.md file. Longer files consume more context and reduce adherence." (Memory)
+- Best practices: "every line in it takes a little of Claude's attention on *every* task, whether it's relevant or not". It said "Bloated CLAUDE.md files cause Claude to ignore your actual instructions!" until at least 2026-10-14 and dropped it by 2026-10-30.
+- Contradictory instructions: "Claude may pick one arbitrarily" (Memory).
 - The monorepo guide says to revisit CLAUDE.md after major model releases, because old workarounds become overhead.
 - Size multiplies with agents. Each custom subagent spawn re-loads the full hierarchy, so a 300-line global plus project CLAUDE.md is paid again on every reviewer run (REPO-010).
 
@@ -1317,7 +1317,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Applies to: general
 - Confidence: official-example
 - Last verified: 2026-10-14
-- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices](https://code.claude.com/docs/en/best-practices)
+- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices: Review against your spec](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-039, REPO-048, REPO-049, REPO-054
 
 The single most effective noise control in official reviewers is an explicit exclusion list.
@@ -1339,7 +1339,7 @@ The single most effective noise control in official reviewers is an explicit exc
 
 **security-review** adds 17 numbered hard exclusions (two items share number 16), among them DoS, rate limiting, theoretical races, outdated libraries, test-only files, log spoofing and "lack of hardening"; its precedents add XSS in React or Angular without unsafe HTML APIs. It keeps only issues "newly added by this PR".
 
-**Best practices:** tell reviewers to "flag only gaps that affect correctness or the stated requirements", because "A reviewer prompted to find gaps will usually report some, even when the work is sound".
+**Best practices:** tell reviewers to "report gaps that affect correctness and skip style", and "Don't drop the `skip style` part of that prompt. A reviewer that's asked to find problems will always find *something*."
 
 **Repo additions:** "anything `docs/decisions.md` explains", and anything the pre-push lint or format hook already enforces.
 

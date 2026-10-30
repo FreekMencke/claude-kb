@@ -194,11 +194,11 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
-- Sources: [Best practices: give Claude a way to verify its work](https://code.claude.com/docs/en/best-practices), [Desktop: auto-verify changes](https://code.claude.com/docs/en/desktop), [Vision: limitations](https://platform.claude.com/docs/en/build-with-claude/vision), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2: contrast (minimum), non-text contrast](https://www.w3.org/TR/WCAG22/)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Desktop: auto-verify changes](https://code.claude.com/docs/en/desktop), [Vision: limitations](https://platform.claude.com/docs/en/build-with-claude/vision), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2: contrast (minimum), non-text contrast](https://www.w3.org/TR/WCAG22/)
 - Related: FLOW-004, FLOW-014, SURF-006, REPO-021, TOK-043, DESIGN-008, DESIGN-013
 
-The loop is FLOW-004's: "implement this design. take a screenshot of the result and compare it to the original. list differences and fix them". Have Claude "show evidence rather than asserting success… or a screenshot of the result". The desktop Browser pane does this "after every edit" unless `"autoVerify": false` is set (SURF-006).
+The loop is FLOW-004's: implement, screenshot the result, compare it with the design, fix the differences. Best practices lists "A browser screenshot next to the mockup" as a check Claude can run, and says "ask Claude for *evidence*: the command it ran and its output, or the screenshot". After Claude says it's done, `/verify` "has Claude build and run the app and look at the result". The desktop Browser pane does this "after every edit" unless `"autoVerify": false` is set (SURF-006).
 
 **Split the check by question:**
 - **Screenshots** for overall look, hierarchy, balance and anything a token can't express.
@@ -294,13 +294,13 @@ Merged into DSKILL-001 (kb-design-skills.md) on 2026-10-23. Read that file for t
 - Type: anti-pattern
 - Applies to: Claude Code, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-16
-- Sources: [Best practices: verify your work](https://code.claude.com/docs/en/best-practices), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
 - Related: DESIGN-007, DESIGN-009, DESIGN-003, DSKILL-001
 
 | Pitfall | Guard |
 |---|---|
-| "Fixed it" with nothing rendered | Ask for evidence: "a screenshot of the result", or measured values (DESIGN-007) |
+| "Fixed it" with nothing rendered | Ask for "*evidence*: the command it ran and its output, or the screenshot", or measured values (DESIGN-007) |
 | Judging pixels from a screenshot | Measure computed styles; localisation is "approximate" (DESIGN-008) |
 | Drift to Claude's house style on an open brief | Sonnet 5 "may settle into a consistent default visual style": give a spec or ask for directions (DESIGN-004) |
 | Swapping one default for another | "avoid a generic AI look" "mostly swaps one default for another": name the patterns |
