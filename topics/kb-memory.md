@@ -636,7 +636,7 @@ Consequence: an edit to CLAUDE.md on a branch affects only sessions on that bran
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Agent SDK: Claude Code features](https://code.claude.com/docs/en/agent-sdk/claude-code-features), [Agent SDK: modifying system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts), [Headless](https://code.claude.com/docs/en/headless)
+- Sources: [Agent SDK: Claude Code features](https://code.claude.com/docs/en/agent-sdk/claude-code-features), [Agent SDK: modifying system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts), [Headless](https://code.claude.com/docs/en/headless), [Agent SDK: migration guide](https://code.claude.com/docs/en/agent-sdk/migration-guide)
 - Related: ORCH-014, ORCH-015, MEM-009, MEM-016
 
 **`claude -p`** loads what an interactive session loads. `--bare` skips CLAUDE.md, auto memory, hooks, skills, plugins and MCP, and is "the recommended mode for scripted and SDK calls"; it needs `ANTHROPIC_API_KEY` because it doesn't use the subscription login. Pass context with `--append-system-prompt` or `--add-dir` instead.

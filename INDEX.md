@@ -5,8 +5,8 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | File | Prefix | Topic | Entries |
 |---|---|---|---|
 | `topics/kb-orchestration.md` | ORCH | Orchestration, parallelization and model selection | 50 (0 merged into other entries) |
-| `topics/kb-token-usage.md` | TOK | Token usage and context efficiency, and the cost of research tools | 95 (4 merged into other entries) |
-| `topics/kb-skills.md` | SKILL | Writing, testing, distributing, finding and vetting skills | 74 (1 merged into other entries) |
+| `topics/kb-token-usage.md` | TOK | Token usage and context efficiency, and the cost of research tools | 98 (4 merged into other entries) |
+| `topics/kb-skills.md` | SKILL | Writing, testing, distributing, finding and vetting skills | 82 (1 merged into other entries) |
 | `topics/kb-repo-agents.md` | REPO | Agents in repositories (osrs-tracker-web) | 54 (0 merged into other entries) |
 | `topics/kb-sessions.md` | SESS | Several sessions in one repo | 36 (0 merged into other entries) |
 | `topics/kb-hooks.md` | HOOK | Hooks: events, handler types, cost, debugging, security, patterns | 36 (0 merged into other entries) |
@@ -14,7 +14,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | `topics/kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 39 (0 merged into other entries) |
 | `topics/kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 | `topics/kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
-| `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 35 (0 merged into other entries) |
+| `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 45 (0 merged into other entries) |
 | `topics/kb-mcp.md` | MCP | MCP servers: scopes, approval, auth, permissions, subagent scoping, surfaces, vetting and writing servers; claude.ai custom connectors, hosting a remote server, a repo's knowledge without a checkout | 41 (0 merged into other entries) |
 | `topics/kb-documentation.md` | DOC | Repo docs: changelogs, READMEs, decision records, runbooks, plan docs and drift, plus a survey of our repos | 24 (0 merged into other entries) |
 | `topics/kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO: Google data access (GA4, Search Console), crawler view, retired advice, SEO skills, Google's 2025–2026 changes (2MB limit, spam policies), AI crawler tokens, hreflang | 42 (0 merged into other entries) |
@@ -156,7 +156,10 @@ One row per stack topic file at most (README.md, Design decisions); each file's 
 | Container query, media query or `BreakpointObserver` for a responsive layout? | Intrinsic CSS first (`repeat(auto-fit, minmax(min(100%, X), 1fr))`, Switcher, subgrid), container queries for components placed in more than one region, media queries for page structure. Not `BreakpointObserver` in an SSR app: the server matches no query, so phones re-render after hydration (CLS 0.206 in our test page, 0 with CSS). An `inline-size` container that sizes to its content is 0 px wide. | LAYOUT-009, LAYOUT-011, LAYOUT-015, LAYOUT-010 |
 | Which spacing scale and gaps should a UI use? | A 4 px base with 4, 8, 12, 16, 24, 32, 48, 64 (Carbon, Atlassian, Polaris, Tailwind). Start at 4–8 px icon to label, 8–16 px inside a group, 24–32 px between groups, 48–80 px between sections; inside a group always smaller than between. | SPACE-002, SPACE-021, SPACE-005 |
 | How do I centre a label and line an icon up with it? | `text-box: trim-both cap alphabetic` on the label element (not the flex button, not under `overflow: hidden`), and flex `align-items: center` with a `gap`. Never per-breakpoint margin nudges. | SPACE-013, SPACE-014, SPACE-012 |
-
+| How do I start a deeper review from a session, and does it work in CI? | `/code-review ultra [base or PR number]` runs a cloud multi-agent review, 5 to 15 minutes, three free runs per Pro, Max or Ultra account, then usage credits. In scripts use `claude ultrareview`, not `claude -p '/code-review ultra'`, which exits without the findings. | SURF-036, TOK-120 |
+| Why didn't managed Code Review start on my PR, and how do I gate CI on it? | Look at the **Claude Code Review** check run, not the reaction. Comment commands need a new top-level comment from someone with write access; drafts and forks need a comment. The check run is always neutral: read the `bughunter-severity` JSON on the last line of its Details text. | SURF-037, SURF-038 |
+| What is a plugin mod, and is one safe to install? | A plugin whose JavaScript handlers run inside Claude Code and can draw an interface. Mods aren't sandboxed; without managed settings or a Team or Enterprise login nothing stops one approving a call an `ask` rule or `PreToolUse` hook blocked. Vet with `claude plugin validate`. | SKILL-075, SKILL-076 |
+| Which sandbox approach for unattended runs? | A container, VM or the sandbox runtime (`srt claude`), not the Bash sandbox alone: it covers Bash commands, not file tools, MCP servers or hooks. | SURF-039, SURF-040 |
 
 ## Conflicts
 

@@ -100,6 +100,14 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
 | SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
 | SKILL-074 | SkillSpector: a static scanner as an extra vetting pass | tool | security, vetting, scanner, sarif |
+| SKILL-075 | Mods: plugins that run code inside Claude Code, and where they run | fact | mods, plugins, hooks, surfaces |
+| SKILL-076 | Mod trust: what a mod can reach and how it meets permission rules | fact | mods, security, permissions, vetting |
+| SKILL-077 | A mod does nothing: validate, `plugin test` and the refusal messages | pattern | mods, troubleshooting, plugin-test, debug |
+| SKILL-078 | A plugin installed but its skills are missing: the checks in order | pattern | plugins, troubleshooting, reload-plugins, settings |
+| SKILL-079 | Developing a plugin without a marketplace: the ways to load it | fact | plugins, plugin-dir, development, skills-dir |
+| SKILL-080 | Plugin relevance: marketplace entries that suggest a plugin from session signals | tool | plugins, marketplace, relevance, suggestions |
+| SKILL-081 | Skills in the Agent SDK: the `skills` option and setting sources | fact | agent-sdk, skills, setting-sources, allowlist |
+| SKILL-082 | Plugins in the Agent SDK: local paths only | fact | agent-sdk, plugins, local-path, init-message |
 
 ---
 
@@ -1740,6 +1748,149 @@ NVIDIA's SkillSpector (Apache-2.0, 23,421 stars on 2026-10-30, `pyproject.toml` 
 - **Install:** `uv tool install git+https://github.com/NVIDIA/skillspector.git`, from source, or a locally built Docker image; it wasn't on PyPI on 2026-10-30. The README warns it "will download and install additional third-party open source software projects".
 
 Use it as an extra pass after SKILL-069's reading, not instead of it: a pattern scanner flags known shapes, while the checklist's questions (what runs, what it writes to settings, what it fetches at run time) need a reader. `skillspector scan <dir> --no-llm --format sarif` in Docker keeps the scan off the host, though not off the network.
+
+## [SKILL-075] Mods: plugins that run code inside Claude Code, and where they run
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Mods overview](https://code.claude.com/docs/en/plugins/mods/overview), [Plugins overview](https://code.claude.com/docs/en/plugins/overview)
+- Related: HOOK-035, SKILL-033, SKILL-076
+
+A mod is a plugin with a hooks module: JavaScript or TypeScript handlers that Claude Code calls in its own process on events (a tool call, a submitted prompt, a part of the interface being drawn). "A mod's handlers are functions that run inside Claude Code", where a settings hook runs a shell command, HTTP request or prompt. A mod can draw panes and bands, replace parts of Claude Code's interface, add `/commands` that run with no Claude turn, hold or answer a tool call, and share state between its hooks. A skill, settings hook or MCP server can't draw. If one of those already does the job, use it.
+
+- **On by default** from v2.1.287 (terminal) and desktop 2.1.286. Install like any plugin; `/reload-plugins` loads it into an open session. `/plugin` shows `1 mod active · <name>`.
+- **Hooks run** in the terminal, the Desktop Code tab, the VS Code extension, `claude -p`, the Agent SDK, Remote Control and cloud sessions (for a plugin that reaches the cloud); drawing appears only in the terminal, Desktop and VS Code. A desktop WSL session loads no plugins, so no mods.
+- **Built in:** `cc-plugin-agents-md` (loads `AGENTS.md`), `-diff` (`/diff`), `-plugin-authoring`, `-sec-default` (the guard, SKILL-076), `-telemetry` and `-you-should-know`. `disableAllHooks`, `--bare` and `--safe-mode` don't stop them.
+- **Off:** disable one plugin in `/plugin`; `--safe-mode` for one session; `"disableAllHooks": true` for all installed mods, which also stops your settings hooks and status line. The plugin's skills and MCP servers keep loading.
+
+Anthropic's sample mods are in `anthropics/claude-code-playground`, "without support".
+
+## [SKILL-076] Mod trust: what a mod can reach and how it meets permission rules
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Mods overview](https://code.claude.com/docs/en/plugins/mods/overview), [Manage mods for your organization](https://code.claude.com/docs/en/plugins/mods/admin)
+- Related: SKILL-075, SKILL-041, HOOK-006, HOOK-035
+
+"Mods aren't sandboxed." A loaded mod runs with your permissions: it reads and writes files, starts processes, reads environment variables and settings files (so an API key kept there), sees every prompt and tool call, can rewrite them, submit prompts, message other sessions, approve a tool call before you're asked, and spend your model usage. A process a mod starts runs outside the Bash sandbox.
+
+**Permission order.** "Without either, a mod can approve a call that an `ask` rule would prompt for, or that your `PreToolUse` hook blocked", where "either" is managed settings or a Team or Enterprise `/login`. With either, a built-in guard (`sec-default`) loads first: a mod can't approve past an `ask` or `deny` rule or a blocked `PreToolUse` hook, and can't change managed hooks, the system prompt or managed instructions. An API-key or provider user gets the guard only on a machine with managed settings.
+
+The rules and hooks gate Claude's tool calls, not a mod's own calls: "With `Read(.env)` denied, a mod can still read that file with `$.fs.read` or start a program that does." A mod can't change the permission prompt.
+
+**Vet before installing:** clone it and run `claude plugin validate ./some-mod`; the `hooks:` and `calls:` lines list the events it handles and what it asks Claude Code to do. In an untrusted directory no mod loads until the trust prompt is answered.
+
+## [SKILL-077] A mod does nothing: validate, `plugin test` and the refusal messages
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Troubleshoot a mod](https://code.claude.com/docs/en/plugins/mods/troubleshoot)
+- Related: SKILL-075, SKILL-078
+
+A broken mod looks like one that does nothing, because "Claude Code skips it and the session continues".
+
+1. `claude plugin validate ./first-mod` catches a misspelled event, a bad manifest and an unreadable module without starting a session.
+2. `claude plugin test`, run from a directory with no mod, says whether mods can load at all: `no hooks module to load` means yes; `hooks modules are turned off here` means `disableAllHooks` or organization policy; a "rollout switch" message means Anthropic turned installed mods off remotely.
+3. `/plugin` should name the mod on its `mods active` line.
+4. Read the one line Claude Code writes when it skips something, shaped `hooks module <name> not loaded: <reason>`. It is a dim transcript line only in a session that hot-reloads a plugin directory (`--plugin-dir`); otherwise it is in the debug log (`claude --debug`), and in `claude -p --plugin-dir` runs on stderr.
+
+Reasons include `disableAllHooks in managed settings`, `only managed plugins and built-in plugins run` (`allowManagedHooksOnly`), `installed plugins that are not managed load no hooks module in this mode (--bare)` and `another plugin of that name loads first`.
+
+Tested 2026-10-30, v2.1.296, WSL terminal: `claude plugin test` in an empty folder printed `no hooks module to load; there is no hooks/hooks.json naming one in "modules"`.
+
+## [SKILL-078] A plugin installed but its skills are missing: the checks in order
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Troubleshoot plugins](https://code.claude.com/docs/en/plugins/troubleshooting), [Create a Claude Code plugin](https://code.claude.com/docs/en/plugins/create)
+- Related: SKILL-033, SKILL-034, SKILL-079, SKILL-060
+
+1. `/plugin`, **Installed**: is it listed and enabled? `claude plugin list` prints the same with version, scope and status.
+2. The **Errors** tab names the cause; most messages in the troubleshooting page come from it.
+3. Installed this session? Run `/reload-plugins`; it prints `Reloaded:` with counts. When activating would invalidate the prompt cache (a plugin MCP server or the LSP tool changes), it says so and needs `/reload-plugins --force`, or a new session.
+
+Traps:
+- **Enabled but not installed:** "A repository's settings can enable a plugin for everyone who opens it, but they don't install it." Run `claude plugin install <name>@<marketplace> --scope project`, then reload.
+- **Disabled but still loads:** a `true` in a higher-precedence source, such as project settings, overrides your user `false`. Set it to `false` in `.claude/settings.local.json`. `required by your org` means a synced plugin an admin requires.
+- **Version `unknown`** on a git-sourced plugin: update to v2.1.302 or later, then `claude plugin marketplace update <marketplace>` and `claude plugin update <plugin>@<marketplace>`.
+- **Skills missing in your own plugin:** `skills/` is inside `.claude-plugin/`, or a manifest `skills` entry points at a file.
+- **`userConfig` dialog never shows** with `--plugin-dir` or `claude plugin install`; run `/plugin configure <plugin-name>`.
+
+## [SKILL-079] Developing a plugin without a marketplace: the ways to load it
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Create a Claude Code plugin](https://code.claude.com/docs/en/plugins/create)
+- Related: SKILL-033, SKILL-078, SKILL-037
+
+Run `claude plugin validate <path>` first (`--strict` fails on warnings), then load it for the session; edits apply after `/reload-plugins`.
+
+| Way | Notes |
+|---|---|
+| `--plugin-dir <dir or .zip>` | Repeatable. A folder with no `.claude-plugin/` and no components of its own is a folder of plugins: each subfolder with a `.claude-plugin/plugin.json` loads (v2.1.265+). Nothing is written to settings. |
+| `--plugin-url <url.zip>` | Fetched at startup; only for archives you control. A failed fetch starts Claude without it and logs an error in `/plugin`. |
+| `CLAUDE_CODE_PLUGIN_DIRS` | Absolute paths, for sessions where you can't add a flag (v2.1.280+). Project and local settings can't set it. |
+| `claude plugin init <name>` | Scaffolds `~/.claude/skills/<name>/` with a manifest and root `SKILL.md`; loads every session as `<name>@skills-dir`. Its root skill is `/<name>`, skills under `skills/` are `/<name>:<skill>`. |
+
+`--plugin-dir` takes one plugin's root. Pointed at a marketplace root, "Claude Code doesn't read `marketplace.json`, so a plugin under `plugins/` doesn't load, and you see no error." Managed settings can turn off `--plugin-dir` and `CLAUDE_CODE_PLUGIN_DIRS`. `claude plugin eval` checks that the plugin changes Claude's behaviour (SKILL-026).
+
+Tested 2026-10-30, v2.1.296, WSL terminal: `claude --plugin-dir ./fp plugin list`, with two plugin folders under `fp/`, listed both as session-only plugins `a@inline` and `b@inline`.
+
+## [SKILL-080] Plugin relevance: marketplace entries that suggest a plugin from session signals
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Recommend plugins for your org](https://code.claude.com/docs/en/plugins/relevance)
+- Related: SKILL-034, TOK-067
+
+A `relevance` object on a plugin's entry in `marketplace.json` makes Claude Code suggest the plugin when the session matches its signals: a spinner tip with the `/plugin install` command, a session-start notification (only a `cwd` match can fire at start), and the plugin pinned to the top of the `/plugin` Discover tab. "Claude Code never installs the plugin automatically." Matching is local: "adds no network traffic".
+
+```json
+"relevance": { "topic": "Terraform", "signals": { "cli": ["terraform"], "filesRead": ["**/*.tf"] } }
+```
+
+Signals (at least one is needed): `cwd` globs, `cli` command names, `hosts` seen in Bash URLs, `filesRead` globs, and `manifestDeps` (`{file, pattern}` regexes, manifests over 512 KB skipped), each with a small count and length limit. `cli` records only the first token after env assignments and `sudo`, so `cd infra && terraform plan` records `cd`.
+
+A terminal user sees nothing until an administrator allowlists the marketplace in managed settings. `spinnerTipsEnabled: false` stops the tip and notification but not the Discover pin. A recognized field over its limit invalidates the whole plugin entry, so users can't install it; unknown fields are ignored. `claude plugin validate` checks the limits.
+
+## [SKILL-081] Skills in the Agent SDK: the `skills` option and setting sources
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Extend agents with skills](https://code.claude.com/docs/en/agent-sdk/skills), [Migrate to Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/migration-guide)
+- Related: MEM-028, CAPI-011, SKILL-082
+
+Skills are files, and "The SDK doesn't provide a programmatic API for registering them" (subagents have the `agents` option). The SDK finds them through the `user` and `project` setting sources: `~/.claude/skills/`, `.claude/skills/` in the cwd and its parents up to the repository root, and `.claude/skills/` in each `additionalDirectories` / `add_dirs` entry. Passing `settingSources: []` loads none.
+
+The `skills` option scopes what Claude may invoke: omitted means every discovered skill (as in the CLI), `"all"`, a list of names, or `[]` for none. A list adds the Skill tool to `allowedTools`; with an explicit `tools` list, include `"Skill"`.
+- **Names:** a plain skill's directory name, `plugin:skill` for a plugin's, a prefixed name for a clash in an added directory (v2.1.309+). Exact names only: `skills: ["docs:*"]` raises "wildcard-suffix names are not allowed" before the session starts (TypeScript SDK 0.3.221+, Python 0.2.129+).
+- An unlisted skill is hidden from the model and the Skill tool answers `Skill <name> is not in this session's skills allowlist`, but its files stay readable, and sending `/<name>` in a prompt still dispatches it.
+- Check the init `SystemMessage`'s `skills` array. It lists only user-invocable skills, so `user-invocable: false` ones are absent.
+- If the organization sets `allowManagedPermissionRulesOnly`, a skill's `allowed-tools` and the `allowedTools` option are ignored.
+
+## [SKILL-082] Plugins in the Agent SDK: local paths only
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Plugins in the SDK](https://code.claude.com/docs/en/agent-sdk/plugins)
+- Related: SKILL-081, SKILL-079
+
+`plugins: [{ type: "local", path: "./my-plugin" }]` in the `query()` options. "The `type` field must be `"local"`, the only value the SDK accepts", so download a marketplace or remote plugin first and pass its directory. The path is the plugin's root, the parent of `skills/`, `agents/`, `hooks/`, `commands/` or `.claude-plugin/`; a relative path resolves against `cwd`.
+
+Failures are quiet:
+- "The SDK doesn't expand tilde paths like `~/plugins`."
+- A path that doesn't exist is skipped and the session continues.
+- Confirm in the init message: the `plugins` list shows what loaded and `plugin_errors` says why one didn't. Plugin skills are `/plugin-name:skill-name` and must sit in `skills/<name>/SKILL.md`.
+
+TypeScript v0.3.301 and later can add a folder to a running session with `reloadPlugins({ addPlugins: [{ type: "local", path }] })`, where `path` is absolute.
 
 ## Recommendations for our setup
 

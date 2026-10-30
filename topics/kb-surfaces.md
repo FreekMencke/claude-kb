@@ -20,6 +20,7 @@ Prefix: SURF. Researched 2026-10-12 against the Claude Code docs live that day, 
 | Setup script or SessionStart hook in the cloud? | Setup script for the VM (toolchains; runs as root, cached if under about 5 minutes, rebuilt after about 7 days). SessionStart hook in the repo for project setup that should also run locally (`npm install`). | SURF-026 |
 | What does the VS Code extension add, and what does it lack? | Inline diffs, selection and open-file context, checkpoints with rewind, `@terminal:` output, diagnostics via the `ide` MCP server. It has only a subset of commands, no `!` shortcut, and its bundled CLI isn't on `PATH`. | SURF-030 |
 | Can I use Claude in Chrome from WSL? | No: "Chrome integration isn't supported in Windows Subsystem for Linux (WSL)". Use Playwright MCP, or the desktop Browser pane in a local (Windows) session. | SURF-032, SURF-006 |
+| Which sandbox for unattended runs? | A container, VM or `srt claude`; the Bash sandbox alone doesn't cover file tools, MCP servers or hooks. | SURF-039, SURF-040 |
 
 ## Index
 
@@ -60,6 +61,16 @@ Prefix: SURF. Researched 2026-10-12 against the Claude Code docs live that day, 
 | SURF-033 | Which surface for which job | comparison | decision-table, surfaces |
 | SURF-034 | Surfaces in our setup: desktop WSL and WSL terminal | comparison | our-setup, wsl, desktop |
 | SURF-035 | Sending files to your device: `SendUserFile` | tool | remote-control, cloud, files, mobile |
+| SURF-036 | Ultrareview: a cloud multi-agent review started with `/code-review ultra` | tool | ultrareview, code-review, cloud, ci |
+| SURF-037 | Managed Code Review: comment commands and why a review didn't start | fact | code-review, github, comment-commands |
+| SURF-038 | Managed Code Review in CI: neutral check run, severity JSON, kept results | pattern | code-review, ci, check-run, severity |
+| SURF-039 | Sandbox environments: what each approach isolates | comparison | sandbox, isolation, containers, permissions |
+| SURF-040 | The sandbox runtime (`srt`): settings that fail quietly | tool | sandbox-runtime, srt, bubblewrap, seatbelt |
+| SURF-041 | Proxy, CA and mTLS settings for Claude Code, and how to check them | fact | proxy, ca, mtls, network |
+| SURF-042 | Background agents don't inherit your shell's network variables | anti-pattern | background-agents, proxy, settings, supervisor |
+| SURF-043 | Streaming idle watchdogs: four timers that abort a quiet response | fact | timeouts, streaming, watchdog, network |
+| SURF-044 | Hosts Claude Code reaches, for a proxy or firewall allowlist | fact | allowlist, firewall, hosts, network |
+| SURF-045 | Server-managed settings: fetch, cache and fail-closed startup | fact | managed-settings, admin, caching, fail-closed |
 
 ## [SURF-001] What the desktop Code tab adds over the terminal
 - Type: fact
@@ -796,6 +807,203 @@ Consequences: browser checks stay on Playwright MCP; scripted runs and agent tea
 It is the reverse of Remote Control attachments (SURF-018), which bring a photo or file from the phone into the session.
 
 When to use which: `SendUserFile` for a file you want on the phone now (a screenshot, a CSV, a built binary); an artifact for a page others open, comment on or that updates in place (SURF-008); a commit for anything that belongs in the repo.
+
+## [SURF-036] Ultrareview: a cloud multi-agent review started with `/code-review ultra`
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Find bugs with ultrareview](https://code.claude.com/docs/en/ultrareview)
+- Related: REPO-029, SURF-037, TOK-120
+
+"Ultrareview is a research preview feature." `/code-review ultra` launches a fleet of reviewer agents in a cloud sandbox, where "every reported finding is independently reproduced and verified". `/ultrareview` is an alias when it's available to the account. Claude never starts it on its own.
+
+- **Scope:** no argument reviews the current branch against the default branch, uncommitted and staged changes included. `ultra develop` picks another base, `ultra 1234` a `github.com` PR (cloned in the cloud, nothing uploaded). A diff over "up to 500 changed files and 8,000 changed lines by default" is refused.
+- **Needs** a claude.ai login. Not available on Amazon Bedrock, Google Cloud's Agent Platform or Microsoft Foundry, with Zero Data Retention or HIPAA, or with CMEK; the first cases fall back to a local review.
+- **Runtime:** a review "typically takes 5 to 15 minutes" in the background; `/tasks` shows it. Stopping it returns no partial findings.
+- **In scripts:** `claude ultrareview [target]` blocks until the findings arrive, prints them to stdout and exits 0, 1 or 130. Flags: `--json`, `--timeout <minutes>` (default 45), `--post`, `--trust-workspace` (v2.1.309+). "`claude -p '/code-review ultra'` doesn't get you the findings": it launches the review and exits.
+- **Posting** to a PR is opt-in per run, `--no-post` is the default, and it needs v2.1.227+.
+
+Tested 2026-10-30, v2.1.296, WSL terminal: `claude ultrareview --help` lists `--json`, `--no-post`, `--post` and `--timeout` (default 45) and no `--trust-workspace`, which the page dates to v2.1.309.
+
+## [SURF-037] Managed Code Review: comment commands and why a review didn't start
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Read and request reviews on a pull request](https://code.claude.com/docs/en/code-review-pull-requests), [Troubleshoot Code Review](https://code.claude.com/docs/en/code-review-troubleshooting), [Set up Code Review](https://code.claude.com/docs/en/code-review-setup)
+- Related: REPO-029, SURF-038, TOK-120
+
+On GitHub, `@claude review` starts one review, `@claude review always` also subscribes the PR to push-triggered reviews, and `stop`, `off` or `pause` ends the subscription without cancelling a running review. In a repo set to **After every push** a comment can't stop reviews; convert the PR to a draft.
+
+A command only works when all of these hold:
+- It is a new top-level PR comment: "Editing an earlier comment doesn't count."
+- The command is on one line at the start. A misspelled `always` or `stop` becomes a plain `@claude review`.
+- The commenter has write, maintain or admin permission on the base repository; bot comments are ignored.
+- The PR is open.
+
+Automatic reviews skip drafts and forks, whatever **Review runs** says. On a fork, `always` doesn't subscribe later pushes and **Re-run** starts nothing.
+
+Check the **Claude Code Review** check run, not the reaction: "that reaction can appear when no review starts". A reply to a finding starts no review, and "Replying alone doesn't dismiss a finding": resolve the thread.
+
+The Action's default `@claude` trigger also fires on `@claude review`; give it a different `trigger_phrase`. An interrupted review is retried once on its own.
+
+## [SURF-038] Managed Code Review in CI: neutral check run, severity JSON, kept results
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Read and request reviews on a pull request](https://code.claude.com/docs/en/code-review-pull-requests), [Troubleshoot Code Review](https://code.claude.com/docs/en/code-review-troubleshooting)
+- Related: REPO-029, SURF-037
+
+The check run "never concludes as a failure, so a finished review doesn't fail a required check". To gate a merge, read the last line of the check run's `output.text`, an HTML comment such as `<!-- bughunter-severity: {"nit":1,"normal":2,"pre_existing":0} -->`. `normal` counts Important findings. Parse that line only: the lines above can hold file names from the PR.
+
+```bash
+gh api repos/OWNER/REPO/check-runs/CHECK_RUN_ID --jq '.output.text'
+```
+
+Handle the cases in this order:
+1. Title starts `Code review not repeated`: an earlier result is kept, Important findings are still open, and there is no severity line.
+2. Title ends `no new changes`: pass without reading counts.
+3. `normal` above zero: fail the job if you gate.
+4. No severity line: treat it as no verdict, not zero. Failed, timed-out, cancelled and superseded runs have none.
+
+A push can keep the earlier result when the PR still adds and removes the same lines (empty commit, clean rebase or merge) and no Important thread was resolved since. Comment `@claude review` or click **Re-run** to force a review.
+
+A later automatic review concentrates on what changed and posts fewer nits and pre-existing findings; the review body counts what it left out ("found and not posted"). Findings with no inline slot appear in the check run's Details, as **Files changed** annotations, or under **Additional findings**.
+
+## [SURF-039] Sandbox environments: what each approach isolates
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Choose a sandbox environment](https://code.claude.com/docs/en/sandbox-environments)
+- Related: INFRA-002, REPO-035, SURF-040
+
+The built-in sandboxed Bash tool isolates "Bash, PowerShell, and Monitor tool commands and their child processes". Built-in file tools, MCP servers, command hooks and plugin monitors keep running on the host. The other approaches put the whole Claude Code process in the boundary: the sandbox runtime (no Docker), a dev container, a custom container, a VM, or a cloud session.
+
+Which to pick:
+- **Fewer prompts on your own machine:** the Bash sandbox, set with `/sandbox`.
+- **Unattended with `--dangerously-skip-permissions`:** a container, VM or the sandbox runtime. On Linux and macOS the flag refuses to start as root.
+- **Untrusted repository:** a dedicated VM, or a cloud session.
+- **Native Windows:** the Bash sandbox is unsupported; use WSL2, a container or a VM.
+
+Auto mode's classifier "is a per-action control, not an isolation boundary". The Bash sandbox alone "is not sufficient for fully unattended runs in either mode".
+
+Isolation limits blast radius only. Any approach that allows network egress can still leak what the agent reads, a writable project mount can still be changed, and prompts and files read still go to the model provider.
+
+Only the Bash sandbox is enforced by Claude Code itself, through `sandbox` keys in managed settings. A dev container is a convention, not an enforcement.
+
+## [SURF-040] The sandbox runtime (`srt`): settings that fail quietly
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Choose a sandbox environment](https://code.claude.com/docs/en/sandbox-environments)
+- Related: SURF-039, INFRA-002
+
+`npm install -g @anthropic-ai/sandbox-runtime`, then `srt claude` runs the whole session, file tools, MCP servers and hooks included, under the Seatbelt (macOS) or bubblewrap (Linux, WSL2) isolation the Bash sandbox uses. The runtime is "a beta research preview" and its configuration format may change. Linux and WSL2 need `bubblewrap`, `socat` and `ripgrep`.
+
+Configuration is `~/.srt-settings.json` or a file passed with `--settings`. By default the runtime denies network access and confines writes. Allow at least:
+- writes to the project, `~/.claude`, `~/.claude.json` and the temp directory (`/tmp`, or `/private/tmp` on macOS);
+- the network domains the session needs, such as `api.anthropic.com`, plus `claude.ai` and `platform.claude.com` for OAuth sign-in (an API key run can drop those two).
+
+Traps:
+- No settings file and no `--settings`: it starts anyway with the defaults. "Don't take a clean start as proof your settings loaded."
+- A settings file that is empty, unreadable or invalid, or a `--settings` path that doesn't exist: it refuses to start.
+- Linux and WSL2 apply write grants only to paths that already exist, so create `~/.claude` and `~/.claude.json` first.
+- Linux and WSL2 build the deny list once at launch: later `git init`, `git clone` or scaffolding aren't covered.
+- Other config paths Claude Code loads stay writable unless you add `denyWrite`; a session that can write them can persist hooks or MCP servers that run unsandboxed next launch.
+
+## [SURF-041] Proxy, CA and mTLS settings for Claude Code, and how to check them
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
+- Related: SURF-042, SURF-044
+
+Set these before launch; "a running session doesn't pick up later changes to your shell environment". All can also go in `settings.json`.
+
+- **Proxy:** `HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY` (space or comma separated). Lowercase variants work, first set wins in the order `https_proxy`, `HTTPS_PROXY`, `http_proxy`, `HTTP_PROXY`. "Claude Code does not support SOCKS proxies." NTLM or Kerberos proxies need an LLM gateway.
+- **CA trust:** the bundled Mozilla set plus the OS store (`CLAUDE_CODE_CERT_STORE`, default `bundled,system`). Reading the OS store needs the native installer or Node 22.15+ for npm installs. Add a corporate root with `NODE_EXTRA_CA_CERTS=/path/ca.pem`.
+- **mTLS:** `CLAUDE_CODE_CLIENT_CERT`, `CLAUDE_CODE_CLIENT_KEY`, optional `CLAUDE_CODE_CLIENT_KEY_PASSPHRASE`. Replacing the files at the same paths rotates the pair: from v2.1.232 Claude Code re-reads them after a connection reset or TLS handshake error. OTLP exporters keep the old certificate until restart.
+- **Cloud sessions** ignore the client cert, key, passphrase, `NODE_EXTRA_CA_CERTS` and `NODE_TLS_REJECT_UNAUTHORIZED` when they come from a settings `env` block.
+
+Only the proxy URL is validated at startup; a bad certificate path shows up later as a connection error. Confirm with `claude --debug` (the log is `~/.claude/debug/<session-id>.txt`, look for `CA certs: Appended extra certificates` and `mTLS: Loaded client certificate`) or the `/status` rows. `/status` shows the CA path without checking that it loaded.
+
+## [SURF-042] Background agents don't inherit your shell's network variables
+- Type: anti-pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
+- Related: SURF-041, SESS-009
+
+`claude agents`, `--bg` and `/background` sessions run under a per-user supervisor that "outlives your shell" and is shared by every terminal. It inherits the environment of whichever shell started it first, so a proxy, CA or mTLS variable exported only in a shell reaches background agents when that shell happened to cold-start the supervisor and "silently doesn't" otherwise.
+
+Put the variables in the `env` block of `~/.claude/settings.json` or managed settings: "settings are the only configuration that reaches every background session on every machine".
+
+A corporate launcher has the same gap: the supervisor starts Claude Code from a fixed path, so a wrapper earlier on `PATH` is bypassed. Use the `processWrapper` setting; `CLAUDE_CODE_PROCESS_WRAPPER` wins when both are set and also belongs in settings, not a shell export. A running supervisor keeps its old launch configuration, so run `claude daemon stop --any` after deploying it.
+
+## [SURF-043] Streaming idle watchdogs: four timers that abort a quiet response
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
+- Related: SURF-041
+
+Claude Code runs "four independent timers that abort a streaming model response when it goes quiet", so a dead connection fails and retries instead of hanging.
+
+| Timer | Aborts when | Default |
+|---|---|---|
+| First-byte deadline | no response headers after sending the request | the byte-level timeout when `CLAUDE_STREAM_FIRST_BYTE_TIMEOUT_MS` is unset |
+| Event-level watchdog | no response events parse; runs on every provider | 300 seconds |
+| Byte-level watchdog | no bytes arrive, pings included | 180 seconds direct API; 300 on Claude Platform on AWS, Bedrock, a Claude apps gateway or a custom `ANTHROPIC_BASE_URL` |
+| Body idle timeout | no bytes for 5 minutes | 5 minutes, on providers other than the direct API and Claude Platform on AWS |
+
+The first-byte deadline doesn't run through an `ANTHROPIC_BASE_URL` gateway, and the byte-level watchdog doesn't run on Agent Platform or Foundry; the page's table has the full matrix.
+
+Controls: `CLAUDE_STREAM_IDLE_TIMEOUT_MS` (raised to at least 5 minutes, capped at 30 for the byte-level one), `CLAUDE_BYTE_STREAM_IDLE_TIMEOUT_MS` (10 seconds to 30 minutes), `CLAUDE_ENABLE_STREAM_WATCHDOG` and `CLAUDE_ENABLE_BYTE_WATCHDOG` (`0` or `1`), `API_TIMEOUT_MS` (wait for headers only) and `API_FORCE_IDLE_TIMEOUT`.
+
+A mid-stream abort ends in a retry, an error, or kept partial output with an incomplete-response notice. In `claude -p` and for subagents, Claude may first be prompted to continue the cut-off response.
+
+## [SURF-044] Hosts Claude Code reaches, for a proxy or firewall allowlist
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
+- Related: SURF-041, SURF-024
+
+The page lists the CLI's required and optional hosts:
+- **Required for the API and sign-in:** `api.anthropic.com` (also the WebFetch domain safety check, feature flags and telemetry), `claude.ai`, `claude.com`, `platform.claude.com` (OAuth token exchange and refresh for claude.ai accounts too), `sso.claude.com` for SSO.
+- **Third-party providers:** model traffic goes to the provider, but WebFetch still calls `api.anthropic.com`.
+- **Features:** `mcp-proxy.anthropic.com` (claude.ai connectors; turn off with `ENABLE_CLAUDEAI_MCP_SERVERS=false`), `downloads.claude.ai` (installer, auto-updater, plugin downloads), `registry.npmjs.org` (npm plugins, `npx` MCP servers, npm installs), `github.com` (plugin marketplaces), `raw.githubusercontent.com` (`/release-notes` feed), `bridge.claudeusercontent.com` (Claude in Chrome), `*.frame.claudeusercontent.com` (artifact reads).
+- **Optional telemetry:** two Datadog intake hosts; `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` disables both.
+- **Desktop and claude.ai:** blocking `assets-proxy.anthropic.com` and the other `*.claudeusercontent.com` origins "produces a blank page rather than an error"; keep `*.claudemcpcontent.com` for MCP App widgets.
+
+Artifacts load fonts from `fonts.googleapis.com` and `fonts.gstatic.com` (optional; fallback typefaces) and libraries from five CDNs with no fallback. Reject blocked hosts fast rather than dropping packets.
+
+## [SURF-045] Server-managed settings: fetch, cache and fail-closed startup
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Configure server-managed settings](https://code.claude.com/docs/en/server-managed-settings)
+- Related: REPO-006, MCP-016
+
+Owners of a Claude for Teams or Enterprise organization set these in the claude.ai admin console; Claude Code fetches them at startup and "polls for updates hourly during active sessions". They occupy the highest settings tier, above a user's own files and `--settings`. Within the managed tier the first source that delivers any policy key wins, server before endpoint (MDM, registry, file).
+
+- **First sign-in at startup:** waits up to five seconds for the fetch. If it fails, Claude Code continues without the policy and warns, unless `forceRemoteSettingsRefresh: true` is set: then it exits.
+- **Later launches:** the cached copy applies at once. A cached `env` block withholds proxy and TLS variables, `ANTHROPIC_BASE_URL`, provider selectors and credentials until the server confirms the payload, so a stale value can't redirect the fetch itself.
+- **Check delivery:** `claude doctor`, line `Managed settings (remote)` (v2.1.248+), or `/status`.
+- **Not supported:** per-group settings; delivering `managed-mcp.json` (use `allowedMcpServers`, `deniedMcpServers`, or `managedMcpServers` from v2.1.259); OS-policy-only keys such as `policyHelper`.
+- **Invalid entries:** valid keys still apply and the invalid ones are dropped (v2.1.169+).
+- Settings changes apply to a running session without restart except some, such as `model` and OTel exporter settings.
+
+Endpoint-managed settings don't reach cloud sessions, so organizations whose developers use them need server-managed settings too.
 
 ## Recommendations for our setup
 
