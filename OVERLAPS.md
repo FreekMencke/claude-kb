@@ -46,6 +46,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Animation and motion: ANIM-007 (which technique, linking the Baseline dates in CSS-006 and CSS-010), ANIM-004 and CSS-008 (`@starting-style`: hydration against popovers), ANIM-010 and ANIM-011 (reduced motion and WCAG beyond ACCESS-014's 2.2.2 and 2.3.3), ANIM-012 (exit animations, on top of ACCESS-012 and ACCESS-013's focus rules), ANIM-008 and ANIM-009 (animation cost, feeding WEBPERF-002 and WEBPERF-003), ANIM-013 (motion numbers behind DESIGN-013's "animation everywhere" pitfall).
 - Where to put something, and what it costs: SKILL-021 (decision), SKILL-022 and TOK-065 (context cost), REPO-044 (repos with agents).
 - Subagent results: ORCH-034 (the principle), ORCH-035 (status codes), TOK-035 (delegating), TOK-101 (research sources), TOK-103 to TOK-107 (file handoff in Claude Code).
+- Specs and planning: FLOW-001, FLOW-003 and FLOW-006 to FLOW-010 (plan mode and `SPEC.md`), DOC-022 (plan docs), ORCH-044 (Spec Kit's row), SDD-001 to SDD-009 (the frameworks as installs and their evidence).
 - Bash output: TOK-042 (limits and filter hooks), TOK-108 (what reaches Claude), TOK-109 (how a script should print), SKILL-018 (scripts in skills), FLOW-011 and FLOW-013 (checks Claude runs).
 - Temporary files: SESS-016 (parallel sessions, `CLAUDE_JOB_DIR`), TOK-104 (handoff files and the scratchpad).
 - Terse output: PROMPT-024 (how to write short answers), TOK-113 (what terse styles measurably save).
@@ -210,6 +211,7 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 `scripts/check-kb.ts` warns about entries in different files with very similar titles or mostly shared tags. These pairs were checked and cover different things; listing a pair here (or together on one Overlaps or Merges line) silences the warning.
 
 - HOOK-020 and TOK-064: hooks declared in skill and agent frontmatter, against frontmatter fields that make a skill cheaper to load.
+- ORCH-039 and SDD-003: generator-verifier review in general, against Spec Kit's append-only `converge` audit of a diff against a spec.
 - HOOK-004 and TOK-108: how a hook's exit code and stdout resolve, against how the Bash tool hands a command's output and exit code to Claude.
 - MCP-008 and TOK-035: scoping an MCP server to one subagent, against delegating verbose work to a subagent in general.
 - MCP-021 and REPO-027: MCP servers in the action, against the action's modes and inputs.

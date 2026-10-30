@@ -1096,6 +1096,20 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SPACE-020 | Spacing that WCAG requires, apart from conventions | fact | wcag, text-spacing, target-size, reflow, structure |
 | SPACE-021 | Starting values by role: icon gap, group, section | recommendation | spacing-scale, proximity, defaults |
 
+## Spec-driven development frameworks against plan mode (`topics/kb-spec-driven.md`, SDD)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| SDD-001 | Five SDD frameworks compared | comparison | spec-kit, openspec, bmad, gsd, agent-os |
+| SDD-002 | What Spec Kit installs into a Claude Code repo | fact | spec-kit, skills, hooks, context |
+| SDD-003 | Spec Kit's `converge` and `analyze`: audits that don't edit code | pattern | spec-kit, review, verification |
+| SDD-004 | OpenSpec: delta specs, archive, and telemetry on by default | fact | openspec, telemetry, specs |
+| SDD-005 | GSD moved to GSD Core, and the pre-authorized npm name | fact | gsd, supply-chain, permissions |
+| SDD-006 | BMad Method: a stable v6 and a changing v7 | fact | bmad, versions, churn |
+| SDD-007 | Agent OS v3 hands spec writing to plan mode | fact | agent-os, plan-mode |
+| SDD-008 | Evidence for SDD against plan mode | fact | measurement, evidence, overhead |
+| SDD-009 | Plan mode and `SPEC.md`, plus a converge-style review | recommendation | plan-mode, spec, review, adoption |
+
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 
 | ID | Title | Type | Tags |
