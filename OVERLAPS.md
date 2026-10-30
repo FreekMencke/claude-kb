@@ -73,6 +73,11 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Skill frontmatter: SKILL-014 (invocation controls), TOK-064 (token effects).
 - Scheduling: ORCH-017 (mechanisms), REPO-030 (for repo agents).
 - Scheduled agents on the API: CAPI-014 (Managed Agents deployment against a routine), ORCH-017 and REPO-030 (Claude Code mechanisms), CAPI-013 and ORCH-018 (Managed Agents features and pricing).
+- Thinking blocks on the API: CAPI-002 (what a response looks like, the short rules) and CAPI-016 to CAPI-020 (the prefix check, which edits break it, which models read which, turning thinking off, progress updates), PROMPT-002 (what a 4.x prompt must change), TOK-055 (effort as a cost lever).
+- Changing a conversation without breaking the cache: CAPI-017, CAPI-021 and CAPI-022 (thinking validity, system messages, tool changes) and CAPI-027 (tool definitions), against TOK-050 (caching mechanics) and TOK-052 (Claude Code's cache).
+- API compaction: TOK-038 (the three server-side mechanisms in brief) and CAPI-023 to CAPI-025 (on-demand request flow and errors, mode choice, keep-tail and background with thinking); CAPI-006 (the tool runner's compaction).
+- Tools on the API: CAPI-004 and CAPI-006 (strict, forced choice, the runner), CAPI-026 to CAPI-035 (tool search, caching, advisor, server tools, errors, type strings, code execution, token overhead, browser use, context levers), TOK-020 (Claude Code's MCP tool search), TOK-024 and CAPI-007 (programmatic tool calling), TOK-094 (web tool prices), ORCH-029 (advisor economics), MEM-030 (memory tool), BROWSER-001 to BROWSER-008 (browser tools for coding agents).
+- Managed Agents: CAPI-013 and CAPI-014 (deployments, budgets, vaults, webhooks, the routine comparison) and CAPI-036 to CAPI-040 (sessions, tools, permission policies, hardening), ORCH-018 (multi-agent), MEM-031 (memory stores), CAPI-012 (the Agent SDK's permission order, a different mechanism).
 - Subagent definitions: ORCH-002 (fields), REPO-005 and REPO-009 (locations, reload), TOK-067 (description budget).
 - Inline agent MCP servers: MCP-008 (scoping a server to one subagent), REPO-053 (`tools` doesn't limit its tools).
 - Our reviewer's measurements: REPO-003 (v1 baseline and triggers), REPO-054 (v2 against v1).

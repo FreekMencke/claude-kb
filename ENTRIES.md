@@ -128,6 +128,31 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CAPI-013 | Managed Agents scheduled deployments, budgets, vaults and webhooks | fact | managed-agents, scheduled-deployments, budgets, vaults, webhooks |
 | CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code routine | comparison | managed-agents, routines, schedule, cost, secrets |
 | CAPI-015 | Evaluating an LLM feature: success criteria, test sets and graders | recommendation | evals, graders, testing, llm-judge |
+| CAPI-016 | Preserved thinking: the prefix check and what happens to a failing block | fact | api, thinking, preserved-thinking, block-binding |
+| CAPI-017 | Edits that keep or break thinking blocks, and the replacement for each | recommendation | api, thinking, preserved-thinking, append-only |
+| CAPI-018 | Which models read which models' thinking blocks | fact | api, thinking, model-switch, fallback |
+| CAPI-019 | Turning thinking off: effort limits and per-message effort | fact | api, thinking, effort, between-tools |
+| CAPI-020 | Progress updates between tool calls: `display: "updates"` | fact | api, thinking, progress-updates, streaming |
+| CAPI-021 | Mid-conversation system messages: where they go and what they can't do | fact | api, system-messages, caching, turn-scoped |
+| CAPI-022 | Mid-conversation tool changes: `tool_addition`, `tool_removal` and inline definitions | fact | api, tool-changes, inline-tools, caching |
+| CAPI-023 | On-demand compaction: request, swap and error handling | fact | api, compaction, beta |
+| CAPI-024 | Compaction: which mode, and what a summary can't carry | comparison | api, compaction, context |
+| CAPI-025 | Keep-tail and background compaction: keeping thinking valid | pattern | api, compaction, preserved-thinking |
+| CAPI-026 | Tool search tool in the API: variants, `defer_loading` and limits | tool | api, tool-search, defer-loading |
+| CAPI-027 | Caching tool definitions: where the breakpoint goes and what invalidates it | fact | api, caching, tools, cache-control |
+| CAPI-028 | The advisor tool: parameters, results, caching and caps | tool | api, advisor, server-tools, beta |
+| CAPI-029 | Server tools next to client tools: mixed turns, `pause_turn` and `allowed_callers` | fact | api, server-tools, pause-turn, zdr |
+| CAPI-030 | Tool-use request errors: symptom, cause and fix | pattern | api, tool-use, errors, troubleshooting |
+| CAPI-031 | Anthropic tool type strings, versions and shared tool properties | fact | api, tool-types, versions, client-toolsets |
+| CAPI-032 | Code execution tool: versions, container limits and billing | fact | api, code-execution, container, pricing |
+| CAPI-033 | Token overhead each tool adds to a request | fact | api, tokens, tool-use, overhead |
+| CAPI-034 | Browser and computer use toolsets: loop contract and security | fact | api, browser-use, computer-use, security |
+| CAPI-035 | Four levers for tool context, and Anthropic's tool pairings | pattern | api, context, tools, combinations |
+| CAPI-036 | Managed Agents sessions: seeding, per-session overrides and budgets | fact | managed-agents, sessions, overrides, budgets |
+| CAPI-037 | Managed Agents built-in tools, custom tools and web tool restrictions | fact | managed-agents, tools, web-fetch, domains |
+| CAPI-038 | Managed Agents permission policies: `always_allow`, `always_ask` and `auto` | fact | managed-agents, permissions, auto |
+| CAPI-039 | Securing a Managed Agents deployment: the settings, in order | recommendation | managed-agents, security, networking, vaults |
+| CAPI-040 | Managed Agents: untrusted input, sandbox boundaries and stopping a session | pattern | managed-agents, security, prompt-injection, monitoring |
 
 ## Codebase maps and knowledge graphs for agents (`topics/kb-code-maps.md`, CODEMAP)
 

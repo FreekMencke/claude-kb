@@ -541,7 +541,7 @@ Access and console:
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [MCP: scale with tool search](https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search), [Env vars](https://code.claude.com/docs/en/env-vars), [Changelog](https://code.claude.com/docs/en/changelog), [Agent SDK: tool search](https://code.claude.com/docs/en/agent-sdk/tool-search)
-- Related: TOK-021, TOK-022, TOK-053
+- Related: TOK-021, TOK-022, TOK-053, CAPI-026
 
 "Only tool names and server instructions load at session start, so adding more MCP servers has minimal impact on your context window." Claude loads a schema via the ToolSearch tool when needed.
 
@@ -817,7 +817,7 @@ Merged into ORCH-020 (kb-orchestration.md) on 2026-10-12. Token multipliers are 
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction), [Compaction threshold](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold), [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing), [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)
-- Related: TOK-050, TOK-055, TOK-114, TOK-115
+- Related: TOK-050, TOK-055, TOK-114, TOK-115, CAPI-023, CAPI-024, CAPI-025
 
 **Server-side compaction (beta):**
 - On demand: header `compact-2026-09-04`, top-level `compaction` param. This is the recommended mode.
@@ -949,7 +949,7 @@ Limits of deny rules:
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
-- Related: TOK-017, TOK-051, TOK-054
+- Related: TOK-017, TOK-051, TOK-054, CAPI-027
 
 Basics:
 - The prefix order is `tools` → `system` → `messages`. A hit needs "100% identical prompt segments".
