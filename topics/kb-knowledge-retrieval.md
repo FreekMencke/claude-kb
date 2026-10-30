@@ -563,7 +563,7 @@ Karpathy's gist has the model health-check a wiki periodically: "contradictions 
 | Stale claims | The routine; `scripts/check-sources.ts` between runs (RETR-026) |
 | Orphans, cross-references | `Related` IDs must exist. One-way links are left alone on purpose |
 | Concepts without a page | Not checked |
-| Data gaps | Not checked. A search with no read may point at them (FreekMencke/claude-kb#347) |
+| Data gaps | Not checked. A search with no read may point at them, but the public server can't join the two per session (FreekMencke/claude-kb#347) |
 
 "Near zero" doesn't hold for us: a model pass still needs review, and 8 of 25 changes in the first re-verification were wrong (README). Scripts cover the mechanical rows at no model cost; use a model where judgment is needed.
 
@@ -762,6 +762,7 @@ Ranked by impact against effort.
 6. **Order re-verification by change and use** (high impact, low effort). Done 2026-10-30 for changed sources, failed quotes and hub entries (FreekMencke/claude-kb#343). Most-read entries aren't in it: the routine can't see local transcripts and has no log access. RETR-021, RETR-025, RETR-026.
 7. Done 2026-10-30: reran `eval-answers/` with forced routes and scored the answers blind. The Sonnet fork did no better, so the fork stays on Haiku (FreekMencke/claude-kb#344). RETR-031, RETR-033.
 8. Done 2026-10-30: the global CLAUDE.md tells agents to open an issue here, with the proof, when an entry proves wrong in practice. RETR-021, RETR-022.
+9. **Won't add a per-client key to join searches and reads on the public server** (decision 2026-10-30, FreekMencke/claude-kb#347). The server is stateless, and joining them needs a key held per client, a privacy cost for a signal that a summary or an overlap check also trips. Rank entries by the unjoined per-ID counts instead (FreekMencke/claude-kb#279). RETR-025.
 
 ## Open questions
 

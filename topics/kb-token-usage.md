@@ -2114,7 +2114,7 @@ Costs are cache-aware, and the arms were a baseline for the authors' tool. No Cl
 - **Estimate** with a pilot: Manual or Once, a monthly limit set first, then each repo's **Average cost** column times its PRs a month.
 - **Limit** at claude.ai/admin-settings/usage for the Claude Code Review service. Reviews are skipped, with a "⚠️ Code review skipped" PR comment, when that limit, the organization limit or the credit balance runs out, or when what's left is under one review's expected cost.
 
-REPO-029's "$15-25" average and 20-minute figures aren't on the Code Review pages fetched 2026-10-30; use the pilot's own average.
+The Code Review pages fetched 2026-10-30 give no average; REPO-029 has the launch post's figures. Use the pilot's own average.
 
 **Ultrareview** (`/code-review ultra`) is separate: three free runs on Pro, Max and Ultra, "a one-time allotment per account" that "don't refresh", then usage credits, typically $5 to $25 per review per the page. A run counts once the cloud session starts, so a review stopped early still uses a free run.
 
