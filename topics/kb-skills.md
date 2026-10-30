@@ -1047,7 +1047,7 @@ What to copy:
 - Confidence: single-source
 - Last verified: 2026-10-23
 - Sources: [obra/superpowers](https://github.com/obra/superpowers), [writing-skills SKILL.md](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md), [testing-skills-with-subagents.md at `2ce8aa1`](https://github.com/obra/superpowers/blob/2ce8aa15d05bd57213e6f746f953aafb7ded7a8b/skills/writing-skills/references/testing-skills-with-subagents.md)
-- Related: SKILL-013, SKILL-025, SKILL-045
+- Related: SKILL-013, SKILL-025, SKILL-045, SKPACK-002, SKPACK-003
 
 Superpowers (≈304k stars, MIT) is a library of process skills: brainstorming, writing and executing plans, TDD, systematic debugging, verification before completion, and code review. It ships adapters for Codex, Cursor and others, and a `tests/` folder.
 
