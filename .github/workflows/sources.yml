@@ -1,0 +1,57 @@
+name: Source change check
+
+# Weekly: which cited pages changed, and which entries' quotes they still hold (scripts/check-sources.ts). A schedule and
+# workflow_dispatch only, like links.yml: external pages would make a pull request check flaky. It never fails on what it
+# finds; the re-verification routine reads the artifact. Third-party text stays in the cache and the artifact, never in
+# the repo, and the script's log has only URLs, entry IDs and counts.
+on:
+  schedule:
+    # Mondays 05:47 UTC, after links.yml, off the hour: scheduled runs at :00 are delayed and dropped when GitHub is busy
+    - cron: '47 5 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      # restore + save, as in links.yml: a later step failing shouldn't lose the state. Weekly runs keep the cache alive,
+      # since GitHub evicts one after 7 days unused; a lost cache only makes the next run a new baseline.
+      - name: Restore the last run's state
+        id: cache
+        uses: actions/cache/restore@v6
+        with:
+          path: source-state
+          key: source-state-${{ github.run_id }}
+          restore-keys: source-state-
+
+      - name: Check the sources
+        run: node scripts/check-sources.ts --state source-state | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Save the state
+        if: always() && steps.cache.outputs.cache-primary-key != ''
+        uses: actions/cache/save@v6
+        with:
+          path: source-state
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
+      # Diffs and near matches hold third-party text, so they go here and not in the summary
+      - name: Upload the report
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-report
+          path: source-state/report.json
+          retention-days: 30

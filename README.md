@@ -190,6 +190,7 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [CLAUDE.md](CLAUDE.md) | This knowledge base's research rules on top of the `research` skill, and the entry format |
 | [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md and fills INDEX.md's entry counts. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |
 | [scripts/kb-usage.ts](scripts/kb-usage.ts) | How the knowledge base is really used, from local transcripts: sessions, routes, searches, reads and ranks per period and topic. Prints counts only; query text goes to the ignored `evals/results/usage/` |
+| [scripts/check-sources.ts](scripts/check-sources.ts), [.github/workflows/sources.yml](.github/workflows/sources.yml) | Weekly: which cited pages changed, by hash, and which entries' quotes their sources still hold. Third-party text stays in an Actions cache and artifact |
 | [.github/workflows/links.yml](.github/workflows/links.yml), [.lycheeignore](.lycheeignore) | Weekly check that the `Sources:` URLs still resolve (see Re-verification routine), and the URLs it skips |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
@@ -303,6 +304,11 @@ this repo.
 
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`; pause or delete it on the routines page.
+- **Between runs, source changes:** [sources.yml](.github/workflows/sources.yml) runs every Monday at 05:47 UTC with
+  [check-sources.ts](scripts/check-sources.ts): it reports pages whose normalised text changed, with the entries citing
+  them, only the added bullets of the claude-code CHANGELOG, and each quote of 6+ words it can't find in the entry's
+  sources, as a near match or not found. It never fails a run: misses mix wording edits with examples, prompts and
+  paraphrase. The routine's prompt doesn't use this yet (FreekMencke/claude-kb#343).
 - **Between runs, source links:** [links.yml](.github/workflows/links.yml) runs every Monday at 05:17 UTC (and on
   `workflow_dispatch`, never on pull requests) with [lychee](https://github.com/lycheeverse/lychee) over the `Sources:`
   lines. It fails on a broken URL and lists each one in the job summary with the entry IDs that cite it; GitHub emails
