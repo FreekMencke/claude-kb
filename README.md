@@ -170,6 +170,7 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [kb-dataviz.md](topics/kb-dataviz.md) | `VIZ` | Data visualisation: chart choice, colour, chart and table libraries, accessible charts, dashboards, formatting, CSV, animated data |
 | [kb-layout.md](topics/kb-layout.md) | `LAYOUT` | Page layout: grids, breakpoints, page widths, density, page types, container queries, subgrid, `BreakpointObserver` under SSR |
 | [kb-spacing.md](topics/kb-spacing.md) | `SPACE` | Spacing and alignment: scales, proximity, padding, text and icon alignment, `text-box`, `gap` |
+| [kb-skill-packs.md](topics/kb-skill-packs.md) | `SKPACK` | Engineering-discipline skill packs: what they inject and send, their evidence, ideas to borrow |
 
 | Other files | What it holds |
 |---|---|
