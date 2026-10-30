@@ -41,7 +41,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: claude-kb-mcp
-          image: freekmencke/claude-kb-mcp@sha256:df8a6487193b03aae302b03ca9174ac8472c4d12dd46037ed177050bd85954b6
+          image: freekmencke/claude-kb-mcp@sha256:ac1537f61e2a3a71cda8f5f3eb7f850a58b34df813feb9d75604182ad938e500
           imagePullPolicy: IfNotPresent
           env:
             - name: KB_LINK
