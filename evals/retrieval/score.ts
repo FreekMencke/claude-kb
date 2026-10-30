@@ -8,13 +8,16 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const OUT = join(import.meta.dirname, '../results/retrieval');
-const questions: { n: number; cited: string[] }[] = JSON.parse(readFileSync(join(import.meta.dirname, 'questions.json'), 'utf8'));
+const read = (file: string): { n: number; cited: string[] }[] => JSON.parse(readFileSync(join(import.meta.dirname, file), 'utf8'));
+const synthetic = read('questions.json');
+const real = read('real.json');
 const norm = (id: string) => id.replace(/[[\]\s]/g, '').toUpperCase();
 
 console.log('| Arm | Set | n | @1 | @3 | @5 | MRR@5 | All cited @5 |');
 console.log('|---|---|---|---|---|---|---|---|');
 for (const arm of ['bm25', 'kw', 'rerank', 'index', 'long', 'agent']) {
-  for (const set of ['original', 'natural', 'hard']) {
+  for (const set of ['original', 'natural', 'hard', 'real']) {
+    const questions = set === 'real' ? real : synthetic;
     const file = join(OUT, `${arm}-${set}.json`);
     if (!existsSync(file)) continue;
     const results = JSON.parse(readFileSync(file, 'utf8'));
