@@ -19,12 +19,13 @@ function check(root: string, write = false): { status: number; output: string } 
 }
 
 describe('this repo', () => {
+  // The similar-titles pass compares every pair of titles: 5.9 s at 1,258 entries on 2026-10-30, over vitest's 5 s
   test('passes', () => {
     const { status, output } = check(REPO);
     expect(output).toContain('ENTRIES.md: up to date');
     expect(output.endsWith('All files pass.')).toBe(true);
     expect(status).toBe(0);
-  });
+  }, 30_000);
 
   test('ENTRIES.md regenerates unchanged', () => {
     const topics = readdirSync(join(REPO, 'topics'))

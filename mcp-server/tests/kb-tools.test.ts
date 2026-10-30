@@ -50,6 +50,18 @@ test('tools/list', async () => {
   expect(INSTRUCTIONS).toContain('data visualisation');
   expect(INSTRUCTIONS).toContain('page layout and spacing');
   expect(INSTRUCTIONS).toContain('confidence and applies_to');
+  for (const topic of [
+    'skill packs',
+    'spec-driven development',
+    'codebase maps',
+    'browsers for agents',
+    'writing style',
+  ]) {
+    expect(description).toContain(topic);
+    expect(INSTRUCTIONS).toContain(topic);
+  }
+  expect(description).toContain('AI images and icons');
+  expect(INSTRUCTIONS).toContain('AI images and icons');
   expect(Object.keys((tools[0].inputSchema as { properties: object }).properties)).toEqual([
     'query',
     'topic',
