@@ -219,8 +219,9 @@ it is rebased locally. Check the table after a rebase: union never fails, so a r
 
 ### Changing the lookup skill
 
-Edit [SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR. A new topic file goes into its description in the
-same PR: the topic words there decide when it loads (SKILL-015).
+Edit [SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR. Its description names kinds of questions and products,
+not topic files, so a new topic file usually needs no change there: add a `loads-*` case for it, run that case, and add
+an anchor word only if it fails (SKILL-015).
 
 After changing the description, run the trigger evals by hand (about $18 a run at 68 cases, so not in CI).
 `loads-*` cases should load the skill, `skips-*` near misses shouldn't:
@@ -254,6 +255,10 @@ with `main`'s description too, so the cause isn't the description. The first tri
 (0 of 6 runs, 3 of 3 on `main`); naming hooks first in "Use before" fixed it. Cutting "versions" and "Node.js" cost `loads-21`;
 restoring both brought it back to `main`'s 2 of 3. "debugging API errors" went to make room: `loads-29` fails without it as
 with it.
+
+The row is the question-type description's run (2026-10-30, 728 s, $22.58), which matched the topic-list description's
+161/168 and 69/69 case for case. Its first draft, with no docs or workflows anchors, missed `loads-18` (READMEs and
+decision records) and `loads-56` (AI-sounding prose) in a one-run pass.
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
@@ -341,11 +346,14 @@ this repo.
   22.7 s through `kb_search` and `kb_get` against 32.4 s fetching and grepping a checkout, with 138k against 207k Haiku
   input tokens and the same accuracy (MCP-041). It gave up unmerged entries and the index's Conflicts section; the server has added the open conflicts to `kb_get` since
   FreekMencke/claude-kb#275 (2026-10-23).
-- **One lookup skill, split only when the description can't hold the topics.** claude.ai caps a description at 1,024
-  characters (SKILL-003), and its topic words decide when the skill loads (SKILL-015). On 2026-10-23 five new topics fit
-  by naming domains rather than files (1,023 characters) and every trigger case still passed (FreekMencke/claude-kb#259).
-  Split it into a Claude lookup and a stack lookup, both reading the same server, once a new topic no longer fits or a
-  `loads-*` case fails on a word that was cut. The knowledge base itself stays one: its cross-links and one search are
+- **One lookup skill, described by question type, not by topic** (2026-10-30). claude.ai caps a description at 1,024
+  characters (SKILL-003). Listing every topic filled it: the 2026-10-30 batch fit only by trimming words, and three trims
+  each cost a `loads-*` case until restored (FreekMencke/claude-kb#335). The old description, naming none of that batch's
+  six topics, already loaded all six cases, so the topic list was mostly spent space. The description now names the
+  questions the KB answers (defaults, limits, versions, upgrades, choices, recommended practice), the products, and a few
+  anchor words cases showed it needs (hooks, workflows, docs and READMEs, Node.js, versions). It scored the same as the
+  topic list, 161/168 and 69/69, with the same three misses. Split it into a Claude lookup and a stack lookup, both
+  reading the same server, only if needed anchors stop fitting. The knowledge base itself stays one: its cross-links and one search are
   what answer a question spanning both halves.
 - **A large topic file is split only when its Quick answers stop covering what's asked.** On 2026-10-23
   `kb-token-usage.md` had 92 entries and `kb-skills.md` 73, three to six times most topics. Search doesn't mind the
