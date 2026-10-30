@@ -261,7 +261,7 @@ What transfers to a `SPEC.md` in Claude Code (FLOW-003): one acceptance criterio
 Ranked by impact against effort.
 
 1. Decision: **no SDD framework** (SDD-009). Plan mode, `SPEC.md` and a fresh build session cover it. Revisit if an independent test shows a framework beating that workflow.
-2. **Add a converge-style review step to `parallel-code-orchestrator`'s verification** (FreekMencke/claude-skills): the reviewer compares the merged diff against the plan or spec without editing, and lists missing work as tasks (SDD-003). A claude-skills issue.
+2. Done 2026-10-30: `parallel-code-orchestrator`'s review has a spec check: it compares the diff with the issue, the user's spec or the stated task without editing, lists missing work as tasks and skips style (FreekMencke/claude-skills#137; SDD-003, SDD-009).
 3. **If anyone tries OpenSpec, set `OPENSPEC_TELEMETRY=0`**; Spec Kit with `--events false --no-model-invocation` (SDD-002, SDD-004).
 
 ## Open questions
