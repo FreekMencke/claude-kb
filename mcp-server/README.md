@@ -86,7 +86,8 @@ The deploy workflows are in the repo's `.github/`: `workflows/mcp-server.yml` (C
     Node apps, so their dashboard queries work here. `path` is the matched route's template; every unmatched path is
     `other`. `/healthz` is answered before the middleware, so the probes aren't counted (nor logged).
   - `kb_tool_calls_total{tool,outcome}` (`ok` or `error`) and `kb_tool_duration_seconds{tool}`, around each tool's
-    handler; `kb_search_empty_total` counts searches that matched nothing. A call with bad arguments counts as an
+    handler; `kb_search_empty_total` counts searches that matched nothing, which shows a broken index, not a coverage
+    gap: `kb_search` ORs the query's words, so almost any search matches. A call with bad arguments counts as an
     `error`; a call to an unknown tool isn't counted.
   - `kb_resource_reads_total{kind}`: `resources/read` calls by `entry`, `topic`, `index` (INDEX.md) or `not_found`.
   - `kb_index_entries`, `kb_index_build_seconds` and `kb_index_built_timestamp_seconds`, set on each re-index.
@@ -242,5 +243,5 @@ or the logs panel of the MCP Server Dashboard.
 - `Indexed commit <hash>: <n> entries in <s> s` (`type: index`) follows each new commit from git-sync; git-sync's own
   log is container `git-sync`.
 - Metrics, in Grafana Cloud's Explore: `sum by (tool, outcome) (increase(kb_tool_calls_total[1d]))` for use,
-  `increase(kb_search_empty_total[7d])` for misses, `increase(git_sync_count_total{namespace="claude-kb"}[1h])` for
+  `increase(kb_search_empty_total[7d])` for a broken index, `increase(git_sync_count_total{namespace="claude-kb"}[1h])` for
   the sync. `.github/scripts/ci-image-test.sh` checks the endpoint on a local container.

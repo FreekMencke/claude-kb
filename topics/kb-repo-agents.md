@@ -842,8 +842,8 @@ steps:
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Code review](https://code.claude.com/docs/en/code-review)
-- Related: REPO-045, REPO-049
+- Sources: [Code review](https://code.claude.com/docs/en/code-review), [Launch post](https://claude.com/blog/code-review)
+- Related: REPO-045, REPO-049, TOK-120
 
 **Availability.** Anthropic-hosted PR review, a research preview for **Team and Enterprise**. It is not available with ZDR or HIPAA. An Owner enables it, and it needs the Claude GitHub App.
 
@@ -855,7 +855,7 @@ Fork PRs are reviewed only by comment.
 
 **How it reviews:**
 - Multiple agents analyse in parallel, then "a verification step checks candidates against actual code behavior to filter out false positives".
-- Results are deduplicated and ranked. About 20 minutes on average.
+- Results are deduplicated and ranked. The launch post (2026-03-09): "the average review takes around 20 minutes". The docs give no duration (checked 2026-10-30).
 - Markers: 🔴 Important, 🟡 Nit, 🟣 Pre-existing.
 - "The check run always completes with a neutral conclusion so it never blocks merging". Its details end with a `bughunter-severity` JSON your own CI can gate on.
 
@@ -864,7 +864,7 @@ Fork PRs are reviewed only by comment.
 - `REVIEW.md` at the repo root holds review-only rules: severity definitions, a nit cap, skip paths, repo checks, the verification bar, re-review convergence. Rules there "land more reliably than the same rules in a long CLAUDE.md", but "a long REVIEW.md dilutes the rules that matter most".
 - Local `/code-review` "doesn't read REVIEW.md."
 
-**Cost.** "Each review averages $15-25", billed as usage credits outside plan limits. A monthly cap can be set.
+**Cost.** Billed as usage credits outside plan limits. A monthly cap can be set. The launch post: reviews "generally average $15–25, scaling with PR size and complexity". The docs give no figure (checked 2026-10-30), and the review level also moves the cost, so use a pilot's own average (TOK-120).
 
 **For solo Pro/Max users** it isn't available. Use the action (REPO-027) or local review. REVIEW.md's structure is still a good model for a reviewer's rules file (REPO-049).
 
