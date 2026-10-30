@@ -236,7 +236,7 @@ Angular SSR sends no Early Hints: `@angular/ssr` 22.2.3 adds up to 10 `<link rel
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Image file type and format guide (MDN)](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types), web-features 3.43.0 via npm, [Image optimization (angular/angular v22.2.3)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/image-optimization.md), [sharp output options](https://sharp.pixelplumbing.com/api-output)
-- Related: WEBPERF-011, WEBPERF-012, CSS-002
+- Related: WEBPERF-011, WEBPERF-012, CSS-002, IMG-004, IMG-006
 
 **Support** (web-features 3.43.0): `avif` Baseline widely available since 2026-07-25 (Chrome 85, Edge 121, Firefox 113, Safari 16.4); `webp` since 2023-03-16; `image-set()` since 2026-03-18; `picture` and `srcset` for years.
 

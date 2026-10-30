@@ -497,7 +497,7 @@ Measured savings of terse styles: TOK-113. A tested rule for the prose itself, n
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5), [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Permission modes](https://code.claude.com/docs/en/permission-modes), [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5)
-- Related: PROMPT-014, PROMPT-021, PROMPT-026
+- Related: PROMPT-014, PROMPT-021, PROMPT-026, SKPACK-006, SKPACK-007
 
 **Fewer questions:**
 - Claude Code: "Auto mode also nudges Claude to keep working without stopping for clarifying questions, though Claude still asks when your prompt or a skill explicitly relies on it. For stronger autonomous behavior in a mode that still prompts you, set the Proactive output style instead." `dontAsk` mode denies `AskUserQuestion` outright.
@@ -717,7 +717,7 @@ The leak collection (143,959 stars) holds about 30 tools' prompts, mostly 2025-d
 - Confidence: community-consensus
 - Last verified: 2026-10-14
 - Sources: [obra/superpowers](https://github.com/obra/superpowers), [wshobson/agents](https://github.com/wshobson/agents), [VoltAgent/awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents), [anthropics/prompt-eng-interactive-tutorial](https://github.com/anthropics/prompt-eng-interactive-tutorial)
-- Related: SKILL-043, SKILL-045, REPO-051, ORCH-041, PROMPT-038
+- Related: SKILL-043, SKILL-045, REPO-051, ORCH-041, PROMPT-038, SKPACK-001, SKPACK-012
 
 Star counts on 2026-10-12.
 

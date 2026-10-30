@@ -486,7 +486,7 @@ That's fine at their size. Move the rationale to a decisions file once the skill
 - Confidence: single-source
 - Last verified: 2026-10-14
 - Sources: [fremen-cluster docs/upgrade-plan-kubernetes-1.37.md](https://github.com/FreekMencke/fremen-cluster/blob/main/docs/upgrade-plan-kubernetes-1.37.md) (private), read on `origin/main` 2026-10-13 and 2026-10-22
-- Related: DOC-013, FLOW-003
+- Related: DOC-013, FLOW-003, SDD-004
 
 fremen-cluster's (home-cluster until 2026-10-21) Kubernetes upgrade plan opens with a status line and its own expiry: "**Status (8 Oct 2026): waiting for cert-manager 1.22.** … Delete this file once every step is done." On 2026-10-22 it read "**Status (21 Oct 2026): waiting for cert-manager 1.22 and Flux 2.10.** Tracked in FreekMencke/fremen-cluster#8, which says when to check again." Then come the rules for every step, and the steps.
 

@@ -214,7 +214,7 @@ Anthropic's vision page says "Claude's coordinate and localization outputs are a
 - Confidence: official-docs
 - Last verified: 2026-10-16
 - Sources: [Vision](https://platform.claude.com/docs/en/build-with-claude/vision), [Prompting Claude Opus 5.5: tools for complex visual inputs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7)
-- Related: DESIGN-007, DESIGN-011, TOK-043
+- Related: DESIGN-007, DESIGN-011, TOK-043, IMG-001
 
 - **Positions are approximate:** "Claude's coordinate and localization outputs are approximate."
 - **Small or poor images:** "Claude might hallucinate or make mistakes when interpreting low-quality, rotated, or very small images under 200 pixels."

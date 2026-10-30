@@ -5,6 +5,7 @@ Prefix `ANIMLIB`. This file covers the JavaScript animation libraries community 
 Research basis:
 - Researched 2026-10-23 (FreekMencke/claude-kb#258, part of roadmap #251) by an Opus 5.5 lead with two Sonnet 5.5 readers (licences and agent tooling: 148k tokens, 43 tool calls, 6.2 min; library docs and source: 198k tokens, 71 tool calls, 7.9 min), then a Sonnet refuter (125k tokens, 46 tool calls, 4.8 min; it found the Lenis anchor flash) and a Sonnet review panel: front-end engineer (103k, 23, 2.9 min), accessibility specialist (77k, 11, 1.5 min), supply-chain security (99k, 30, 3.0 min).
 - Read as raw text: motion.dev's `.md` pages and `llms.txt`, gsap.com's `.md` docs and `llms.txt`, the Lenis README, the libraries' source at tags `v14.6.0` (motiondivision/motion), `3.15.0` (greensock/GSAP) and `v1.3.27` (darkroomengineering/lenis), the npm tarballs, WCAG 2.2's Understanding pages, and the tooling repos at the commits each entry names.
+- Added 2026-10-30: three.js (ANIMLIB-018, ANIMLIB-019) from its repo at tag `r187` and the npm registry; `three@0.187.0` and `esbuild@0.27.7` installed with `--ignore-scripts` and tested on Node v22.22.0 outside Angular. angular-three was read from npm only.
 - Tested in a scratch Angular 22.2.3 app (`@angular/build` 22.2.4, zoneless, SSR with prerender) on Node 24.21.0, with `motion@14.6.0`, `gsap@3.15.0` and `lenis@1.3.27` installed with `--ignore-scripts`, and Playwright 1.64.1 driving Chromium 156.0.8078.4 and WebKit 27.2 headless. Firefox wasn't tested. No community code was installed or run.
 - ANIMLIB-017 was added 2026-10-24 (session on Opus 5.5): Kowalski's seven articles as raw text (first through WebFetch from a cloud session that couldn't reach emilkowal.ski, then curled, stripped and grepped on 2026-10-24, which confirmed every quote and absence claim), and Sonner and Vaul read at their tags and in their npm tarballs (`npm pack sonner@2.0.8 vaul@1.1.2`). emilkowalski/skills was still at `2d22863` (`git ls-remote`, 2026-10-24).
 
@@ -26,6 +27,7 @@ Research basis:
 | Should I install gsap-skills or Motion's AI Kit? | Read them rather than install: gsap-skills is markdown only but tells agents to recommend GSAP by default; AI Kit wires a live remote MCP server and a skill that runs an unpinned `npx` package. The `npx skills add` installer sends telemetry by default and pins nothing unless given `#<sha>` (SKILL-066, SKILL-067). | ANIMLIB-012, ANIMLIB-016 |
 | What durations and easings do the animation skills recommend? | Emil Kowalski: UI animations under 300 ms, `ease-out` to enter or leave, never `ease-in`; Motion's AI Kit: 150 to 300 ms for small elements, up to about 500 ms for large surfaces. | ANIMLIB-013 |
 | Do Kowalski's articles and libraries match his skills? | Mostly. His articles give modals 200–300 ms where the skills give 200–500, his Vaul drawer runs 500 ms, and his Sonner turns all motion off under reduced motion, while the skills say "not zero". No article mentions reduced motion. | ANIMLIB-017 |
+| Does three.js work in Angular 22 with SSR, and what does it cost? | Import is safe on the server; create the renderer in `afterNextRender` (it throws "document is not defined" on the server). A minimal WebGL scene is about 132 kB gzip. angular-three 4.2.4 peers Angular <22 and three <0.183, so use three directly. | ANIMLIB-019, ANIMLIB-018 |
 
 ## Index
 
@@ -48,6 +50,8 @@ Research basis:
 | ANIMLIB-015 | Lenis drops keys mid-animation, hijacks nested scroll boxes and flashes on anchors | anti-pattern | lenis, keyboard, nested-scroll, anchors, scroll-jacking |
 | ANIMLIB-016 | Vendor `llms.txt` files: size, pinning and what they tell agents | tool | llms-txt, pinning, motion, gsap, lenis |
 | ANIMLIB-017 | Emil Kowalski's articles and libraries against his skills | comparison | kowalski, durations, reduced-motion, sonner, vaul |
+| ANIMLIB-018 | three.js 0.187: WebGLRenderer by default, and its in-repo `llms.txt` | fact | three-js, webgl, webgpu, tsl, llms-txt |
+| ANIMLIB-019 | three.js in Angular 22: SSR, bundle cost and angular-three's peer range | fact | three-js, angular, ssr, bundle-size, angular-three |
 
 ## [ANIMLIB-001] Motion, GSAP and Lenis on 2026-10-23: versions, licences, peers
 - Type: fact
@@ -93,7 +97,7 @@ On 2026-10-23 `gsap.com/standard-license`, the URL in the npm field and every fi
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: local test (below), [Motion: animate](https://motion.dev/docs/animate.md)
-- Related: ANIMLIB-005, ANIMLIB-014, WEBPERF-002, NG-004
+- Related: ANIMLIB-005, ANIMLIB-014, WEBPERF-002, NG-004, ANIMLIB-019
 
 Size added to the initial JavaScript of an empty Angular 22 app by one import path, each used once inside `afterNextRender` so nothing was tree-shaken away.
 
@@ -120,7 +124,7 @@ Tested 2026-10-23, `@angular/build@22.2.4` with `@angular/core@22.2.3`, `motion@
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: local test (below), [GSAP `gsap-core.js` at 3.15.0](https://raw.githubusercontent.com/greensock/GSAP/3.15.0/src/gsap-core.js), [GSAP `ScrollTrigger.js` at 3.15.0](https://raw.githubusercontent.com/greensock/GSAP/3.15.0/src/ScrollTrigger.js), [Lenis `lenis.ts` at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/packages/core/src/lenis.ts), [Motion: scopeMotion](https://motion.dev/docs/scope-motion.md)
-- Related: ANIMLIB-005, ANIMLIB-006, ANIMLIB-010, NG-008
+- Related: ANIMLIB-005, ANIMLIB-006, ANIMLIB-010, NG-008, ANIMLIB-019
 
 All three can be imported at the top of a component in an SSR app; only some can be called on the server. Start every animation in `afterNextRender`, which runs only in the browser.
 
@@ -428,7 +432,7 @@ Tested 2026-10-23, `lenis@1.3.27`, Angular 22.2.3 SSR, Playwright 1.64.1: Chromi
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [motion.dev/llms.txt](https://motion.dev/llms.txt), [gsap.com/llms.txt](https://gsap.com/llms.txt), [lenis.dev/llms.txt](https://lenis.dev/llms.txt), [Motion: AI Kit install](https://motion.dev/docs/ai-kit-install.md)
-- Related: ANIMLIB-012, ANIMLIB-010, SKILL-066, SKILL-067, SKILL-068
+- Related: ANIMLIB-012, ANIMLIB-010, SKILL-066, SKILL-067, SKILL-068, ANIMLIB-018
 
 All three vendors publish an `llms.txt`; none is versioned or kept in the library's repo at a tag, so a live fetch puts unpinned vendor text in an agent's context. Fetched 2026-10-23 with `curl -L`:
 
@@ -458,6 +462,46 @@ His seven articles at emilkowal.ski/ui carry no dates, in the text, meta tags or
 - **Advice this KB qualifies.** Agents with Taste: `will-change: transform` for jittery animations (ANIM-008: a "last resort") and a 44 px minimum hit area (WCAG 2.2 AA asks 24 CSS px; 44 is AAA, DSKILL-005). The clip-path article calls `clip-path` hardware-accelerated; ANIM-008 finds that in Chromium only, through native paint worklets.
 
 Developing Taste gives no rules; the toast, drawer and clip-path techniques are already in `emil-design-eng`.
+
+## [ANIMLIB-018] three.js 0.187: WebGLRenderer by default, and its in-repo `llms.txt`
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [three.js docs/llms.txt at r187](https://github.com/mrdoob/three.js/blob/r187/docs/llms.txt), [three.js package.json at r187](https://github.com/mrdoob/three.js/blob/r187/package.json)
+- Related: ANIMLIB-016, ANIMLIB-019, VIZ-013
+
+three.js `0.187.0` was published 2026-10-30 (`npm view three 'time[0.187.0]'`), MIT, still pre-1.0. Its exports include `three`, `three/webgpu` and `three/tsl`.
+
+Unlike the vendors in ANIMLIB-016, three.js keeps its agent docs in the repo, so they can be pinned to a tag: `docs/llms.txt` (5,404 bytes at r187) and `docs/llms-full.txt` (378,970 bytes). The short file's "Instructions for Large Language Models":
+
+- Use import maps with a versioned CDN URL, not "outdated" `<script src=…/r128/three.min.js>` tags.
+- "**Use WebGLRenderer** (default, mature): Maximum browser compatibility"; "**Use WebGPURenderer** when you need: Custom shaders/materials using TSL (Three.js Shading Language), Compute shaders, Advanced node-based materials". `WebGPURenderer` needs `await renderer.init()`.
+- With `WebGPURenderer`, write materials in TSL (`three/tsl`) and node materials (`MeshStandardNodeMaterial`), not raw GLSL; TSL "Works with both WebGL and WebGPU backends".
+
+`three/webgpu` also exports a WebGL backend for `WebGPURenderer` (`src/Three.WebGPU.js`). For a site's hero scene, `WebGLRenderer` is the guide's default; pick `WebGPURenderer` only for TSL or compute. The npm package doesn't ship `docs/` (the `three@0.187.0` tarball holds LICENSE, README.md, build, examples, package.json and src), so point an agent at `docs/llms.txt` on GitHub at the tag matching the installed version (`r187`), or threejs.org/llms.txt unpinned. Its CDN example names the current version, which training data won't know.
+
+## [ANIMLIB-019] three.js in Angular 22: SSR, bundle cost and angular-three's peer range
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [three on npm](https://www.npmjs.com/package/three), [angular-three on npm](https://www.npmjs.com/package/angular-three), [angular-threejs/angular-three](https://github.com/angular-threejs/angular-three)
+- Related: ANIMLIB-004, ANIMLIB-003, ANIMLIB-018, VIZ-010, ANIM-010
+
+**SSR.** Tested 2026-10-30, `three@0.187.0`, Node v22.22.0: `import('three')` succeeds on the server, but `new WebGLRenderer()` throws "document is not defined". As with the libraries in ANIMLIB-004, import at the top and create the renderer in `afterNextRender`; give the canvas a static fallback (a poster image) for the server render and for `prefers-reduced-motion: reduce` (ANIM-010).
+
+**Bundle cost**, same test, `esbuild@0.27.7 --bundle --minify --format=esm`, gzip `-9` (and `-6` for the cube, to match ANIMLIB-003):
+
+| Entry | Raw | Gzip |
+|---|--:|--:|
+| Scene, camera, `WebGLRenderer`, box mesh, `MeshNormalMaterial` | 532,884 B | 132,155 B (`-6`: 132,662 B) |
+| `WebGPURenderer` from `three/webgpu` | 818,202 B | 221,453 B |
+| `import * as THREE` unused | 0 B | 34 B |
+
+About 133 kB gzip `-6` for the smallest WebGL scene is about 2.9 times GSAP with ScrollTrigger (45,420 B in ANIMLIB-003, an Angular build rather than esbuild). Lazy-load it with `@defer` or a dynamic `import()` (VIZ-010).
+
+**angular-three** (MIT, `angular-threejs/angular-three`): `latest` 4.2.4 (2026-07-15) peers `@angular/core` ">=20.0.0 <22.0.0" and `three` ">=0.157.0 <0.183.0" (`npm view angular-three@latest peerDependencies`); `next` 4.2.4-next.0 is the same line. So on 2026-10-30 it supports neither Angular 22.2.4 nor three 0.187.0. It also peers `ngxtension` ">=3.0.0". Use three directly in a component until it catches up. three ships no types: `@types/three` was at 0.186.0 on 2026-10-30, one minor behind, so pin types to match.
 
 ## Recommendations for our setup
 
