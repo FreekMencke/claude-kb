@@ -170,6 +170,7 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [kb-dataviz.md](topics/kb-dataviz.md) | `VIZ` | Data visualisation: chart choice, colour, chart and table libraries, accessible charts, dashboards, formatting, CSV, animated data |
 | [kb-layout.md](topics/kb-layout.md) | `LAYOUT` | Page layout: grids, breakpoints, page widths, density, page types, container queries, subgrid, `BreakpointObserver` under SSR |
 | [kb-spacing.md](topics/kb-spacing.md) | `SPACE` | Spacing and alignment: scales, proximity, padding, text and icon alignment, `text-box`, `gap` |
+| [kb-web-images.md](topics/kb-web-images.md) | `IMG` | AI image generation and icons for web assets: models, prices, provenance, copyright, icon libraries |
 | [kb-spec-driven.md](topics/kb-spec-driven.md) | `SDD` | Spec-driven development frameworks against plan mode: Spec Kit, OpenSpec, BMad, GSD Core, Agent OS |
 | [kb-agent-browsers.md](topics/kb-agent-browsers.md) | `BROWSER` | Browsers for coding agents: Playwright MCP and CLI (measured), agent-browser, Chrome DevTools MCP, logins, security, telemetry |
 | [kb-code-maps.md](topics/kb-code-maps.md) | `CODEMAP` | Codebase maps and knowledge graphs for agents: Graphify, Understand-Anything, Repomix, Serena |

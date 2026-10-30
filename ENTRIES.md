@@ -1421,6 +1421,21 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ANIM-014 | Testing animations: jsdom, TestBed and Playwright | tool | testing, vitest, jsdom, playwright, reduced-motion |
 | ANIM-015 | Choosing a duration: purpose, distance and frequency | recommendation | motion-design, duration, nngroup, frequency |
 
+## AI image generation and icons for web assets (`topics/kb-web-images.md`, IMG)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| IMG-001 | Claude can't generate images | fact | vision, image-generation, limits |
+| IMG-002 | OpenAI image models in October 2026: GPT Image 2.5, prices, shutdowns | fact | openai, gpt-image, pricing, deprecations |
+| IMG-003 | Google image models: Nano Banana 2.1, prices, Imagen shut down | fact | gemini, nano-banana, pricing, imagen, deprecations |
+| IMG-004 | Sizes, formats and transparency for web assets | fact | sizes, png, webp, transparency, og-image |
+| IMG-005 | Provenance marks: C2PA and SynthID | fact | c2pa, synthid, provenance |
+| IMG-006 | Test: sharp drops C2PA in every format and option | fact | c2pa, sharp, avif, webp, metadata, tested |
+| IMG-007 | Ownership and copyright of generated images | fact | copyright, ownership, terms, us-copyright-office |
+| IMG-008 | What the popular image-generation skills call | tool | skills, baoyu-skills, banana-claude, api-keys |
+| IMG-009 | Icon libraries for Angular: Lucide, not Phosphor or generation | fact | icons, lucide, phosphor, angular |
+| IMG-010 | When to generate an image for a site, and how to keep it reproducible | recommendation | workflow, provenance, assets |
+
 ## Web performance beyond Core Web Vitals (`topics/kb-web-performance.md`, WEBPERF)
 
 | ID | Title | Type | Tags |
