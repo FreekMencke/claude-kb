@@ -118,6 +118,9 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 | TOK-114 | Masking old tool output: measured elsewhere, not a Claude Code setting | comparison | context, tool-results, other-agents |
 | TOK-115 | Task budgets (API beta) | fact | api, budgets, agents |
 | TOK-116 | What auto-compaction at 400K lost: measured | fact | compaction, measurement, our-setup |
+| TOK-117 | TokenEconomizer: the paper's savings aren't the plugin's | tool | community, measurement, hooks |
+| TOK-118 | Where repeated work in one repo costs tokens: a 60-task profile | fact | measurement, tools, failure-loops |
+| TOK-119 | Lower effort on SWE-Bench: cost saved against pass rate lost | comparison | effort, measurement |
 
 ---
 
@@ -1373,8 +1376,8 @@ Context-threshold hooks exist. ykdojo's `check-context.sh` is a Stop hook that "
 - Applies to: Claude Code
 - Confidence: community-consensus
 - Last verified: 2026-10-16
-- Sources: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), [mksglu/context-mode](https://github.com/mksglu/context-mode), [JetBrains: RTK tested](https://blog.jetbrains.com/ai/2026/07/rtk-claude-code-token-savings/), [Quesma: RTK cost benchmark](https://quesma.com/blog/does-rtk-make-ai-coding-cheaper/)
-- Related: TOK-042, TOK-009, TOK-113, SKPACK-004
+- Sources: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), [mksglu/context-mode](https://github.com/mksglu/context-mode), [JetBrains: RTK tested](https://blog.jetbrains.com/ai/2026/07/rtk-claude-code-token-savings/), [Quesma: RTK cost benchmark](https://quesma.com/blog/does-rtk-make-ai-coding-cheaper/), [arXiv 2610.22732](https://arxiv.org/abs/2610.22732)
+- Related: TOK-042, TOK-009, TOK-113, TOK-117, SKPACK-004
 
 **RTK** (about 83k stars, v0.51.0 on 2026-10-02, created Jan 2026):
 - A Rust proxy that compresses command output. A PreToolUse hook (`rtk init -g`) rewrites Bash calls, e.g. `git status` becomes `rtk git status`.
@@ -1389,22 +1392,24 @@ Context-threshold hooks exist. ykdojo's `check-context.sh` is a Stop hook that "
 **RTK, measured independently:**
 - JetBrains (2026-07-20; Claude Code 2.1.201, claude-sonnet-5, SkillsBench, 80 clean pairs): "+7.6% more expensive at low reasoning effort (p=0.004), ±0% at high effort", task quality unchanged. RTK's own `rtk gain` "reported 96.2 million tokens saved" while "the measured bill for the same trials went up."
 - Quesma (2026-09-11; Terminal-Bench 2.1, 1,740 attempts): "With RTK, costs fell by 5% for Fable and rose by 5% for DeepSeek" on the total bill, but per task "Fable was 1% more expensive, with no clear difference from zero", and pass rates were slightly lower: "We do not recommend RTK as a generic cost-saving tool."
+- TokenEconomizer paper (comparison arm, 277 SWE-Bench tasks): −8.9% to +4.5%; Claude Code −1.1%, −3.6% (TOK-117).
 
 **context-mode** has no independent measurement (searched 2026-10-16). Both tools follow the official hook-filtering pattern (TOK-042); hold any savings claim to paired per-task cost (TOK-113). Try one only where Bash output really dominates. For us, large outputs were `git diff`/`gh` dumps, which habits fix (TOK-042).
 
-Confidence note: the 60–90% and 98% figures are the vendors' own claims; the RTK measurements are independent and agree.
+Confidence note: the 60–90% and 98% figures are vendor claims; JetBrains and Quesma are independent.
 
 ## [TOK-084] Code-index MCP servers (Serena, claude-context, code-review-graph)
 - Type: tool
 - Applies to: Claude Code
 - Confidence: unverified
 - Last verified: 2026-10-14
-- Sources: [oraios/serena](https://github.com/oraios/serena), [zilliztech/claude-context](https://github.com/zilliztech/claude-context), [tirth8205/code-review-graph](https://github.com/tirth8205/code-review-graph)
-- Related: TOK-041, TOK-085, CODEMAP-001, CODEMAP-004, CODEMAP-008
+- Sources: [oraios/serena](https://github.com/oraios/serena), [zilliztech/claude-context](https://github.com/zilliztech/claude-context), [tirth8205/code-review-graph](https://github.com/tirth8205/code-review-graph), [TokenEconomizer paper (arXiv 2610.22732)](https://arxiv.org/abs/2610.22732)
+- Related: TOK-041, TOK-085, TOK-117, CODEMAP-001, CODEMAP-004, CODEMAP-008
 
 **Serena** (about 30k stars):
 - LSP symbol-level find and edit tools over MCP.
 - Says it is "much more token-efficient" but gives no numbers.
+- Measured in the TokenEconomizer paper (submitted 2026-10-15, read 2026-10-30; Claude Code, Opus 4.8 at high effort, 10 SWE-Bench tasks per repo, one run each): +28.6% on scikit-learn, +30.8% on SymPy, +4.7% on xarray, +2.1% on Sphinx, −4.8% on Matplotlib, −15.4% on Django. The paper calls it "the only fixed strategy that raised pooled cost". Small sample, and a comparison arm for the authors' own tool (TOK-117).
 
 **claude-context** (Zilliz, about 12.6k stars):
 - Vector semantic search. Claims "~40% token reduction": its own evaluation (30 SWE-bench Verified instances, 3 runs, a retrieval task against a grep-only baseline: 73,373 to 44,449 tokens, −39.4%, same F1) is vendor-run, not an end-to-end task measurement.
@@ -2037,6 +2042,61 @@ Scope: 31 auto compactions in 23 sessions, from R1 (2026-10-12 12:13 UTC) to 202
 - **Summaries:** Claude Code's 9 sections, whatever `# Compact instructions` asks (TOK-031). A done-when appears in 4 of 31, and bare `#N` outnumber `owner/repo#N`, but neither caused a wrong lookup.
 - **A running session kept its old window.** One session started before R1 grew to 631k after the change, though the docs say Claude Code "applies most edits to the running session without a restart". The setting was written with `jq … > tmp && mv`. One session; the cause is unknown.
 
+## [TOK-117] TokenEconomizer: the paper's savings aren't the plugin's
+- Type: tool
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [TokenEconomizer paper (arXiv 2610.22732)](https://arxiv.org/abs/2610.22732), [README at 1deb887](https://github.com/microsoft/TokenEconomizer/blob/1deb887bb6816188e24580f8812e65288af5757c/README.md), [PLUGIN.md at 1deb887](https://github.com/microsoft/TokenEconomizer/blob/1deb887bb6816188e24580f8812e65288af5757c/docs/PLUGIN.md)
+- Related: TOK-083, TOK-084, TOK-113, TOK-118, TOK-119, TOK-020
+
+TokenEconomizer (Microsoft Research and UC Berkeley; Apache-2.0; created 2026-10-13, 1,712 stars on 2026-10-30) is a hook plugin for Claude Code, Codex, Copilot CLI and Pi that learns from a repo's past sessions. Supported on Claude Code 2.1.300 to 2.1.310. The paper's 18.4–30.9% saving (277 SWE-Bench tasks, 3 seeds) measures a research stack, and PLUGIN.md lists how the plugin differs.
+
+| Mechanism | Paper, alone, Claude Code (Sonnet 5, Opus 4.8) | Shipped plugin |
+|---|---|---|
+| Tool pruning | −13.2%, −17.7%; orchestration, Q&A, plan mode and web tools were "inapplicable by construction" | Those tools are protected; only evidence of non-use prunes a tool |
+| Micro-skills (learned repo facts) | −11.8%, −14.3% | "**off by default**"; the no-model mode "formed almost nothing" in the experiments |
+| Loop guard | −7.1%, −5.4%; kills and resumes the agent | A mid-turn reminder: "Different intervention, so its effect is not inherited from the experiments" |
+
+Combined on Claude Code: −23.6% (Pass@1 +1.3 points) and −30.9% (−1.0). The paper's limits: tasks are "related but independent fixes rather than actual user sessions", and the models were Sonnet 5 and Opus 4.8.
+
+RTK v0.45.0 was a comparison arm (five agent–model settings): dearer in 12 of 30 repository–setting cells (TOK-083). No independent test of TokenEconomizer found (WebSearch and the repo's open issues, 2026-10-30).
+
+Deny rules are its pruning channel. Tested 2026-10-30, v2.1.296, `claude -p`: bare `WebSearch` and `NotebookEdit` in `.claude/settings.local.json`'s `permissions.deny` took the init event's tool list from 29 to 27, without both.
+
+## [TOK-118] Where repeated work in one repo costs tokens: a 60-task profile
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [TokenEconomizer paper (arXiv 2610.22732), sections 2.2 and Appendix B](https://arxiv.org/abs/2610.22732), [PLUGIN.md at 1deb887](https://github.com/microsoft/TokenEconomizer/blob/1deb887bb6816188e24580f8812e65288af5757c/docs/PLUGIN.md)
+- Related: TOK-117, TOK-119, TOK-020, TOK-042
+
+The paper's profile of unmodified runs shows three recurring costs. Sample: Claude Code, Opus 4.8 at high effort, 60 SWE-Bench tasks across 6 repos, one run each. The authors use it to motivate their tool.
+- **Repeated actions:** "Actions that recur in at least half of a repository’s tasks account for 12–28% of the bytes its tool calls send and receive." Calls matching an earlier task rise from 14% (second and third tasks) to 30% once 5 tasks precede; against another repo's history, 7%.
+- **Unused tools:** "The agent is shown 23 tool schemas on every turn, yet no repository invokes more than 7." 16 were never called and 3 made 98% of calls. These were sealed headless tasks, so interactive tools had no use there (TOK-117).
+- **Failed runs:** "The 10 failed executions constitute 17% of the tasks but 32% of total spend." 51% of spend falls after a run's first repeated error, but "36 of the 50 successful runs also repeat a signature", so a repeat alone doesn't mark failure. Turn counts don't separate them either: Matplotlib failures ran 45 turns against 20, Sphinx 36 against 31.
+
+## [TOK-119] Lower effort on SWE-Bench: cost saved against pass rate lost
+- Type: comparison
+- Applies to: Claude Code, general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [TokenEconomizer paper (arXiv 2610.22732), Table 1](https://arxiv.org/abs/2610.22732)
+- Related: TOK-055, TOK-117, TOK-118, ORCH-028, ORCH-029
+
+Paired against high effort on 277 SWE-Bench tasks (3 seeds), medium saved 16.8–28.9% and lost 1.8–4.7 points of Pass@1; low saved 31.0–45.5% and lost 3.6–10.3 points.
+
+| Agent, model | Pass@1 at high | Medium: cost, Pass@1 | Low: cost, Pass@1 |
+|---|---|---|---|
+| Claude Code, Sonnet 5 | 74.7 | −26.6%, 70.0 | −45.5%, 65.1 |
+| Claude Code, Opus 4.8 | 74.0 | −16.8%, 72.2 | −31.0%, 70.4 |
+| Codex, GPT-5.6 Terra | 73.8 | −25.7%, 69.6 | −33.0%, 65.3 |
+| Codex, GPT-5.6 Sol | 80.1 | −28.9%, 76.7 | −43.9%, 69.8 |
+| Copilot CLI, Sonnet 5 | 75.0 | −25.4%, 72.6 | −41.9%, 65.9 |
+
+Costs are cache-aware, and the arms were a baseline for the authors' tool. No Claude 5.5 model was tested, and those default to `medium` in Claude Code, so this doesn't size a change from today's default.
+
 ## Recommendations for our setup
 
 Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first labelled "30 days", corrected 2026-10-12). Dollar and token totals below are for those 6 days, about a fifth of a month; percentages are unaffected:
@@ -2082,6 +2142,7 @@ Won't do (measured 2026-10-12, below):
 Not recommended now:
 - RTK or context-mode (TOK-083): our big outputs aren't test runs, two independent tests found no reliable saving from RTK, and context-mode is unmeasured and ELv2.
 - Serena or claude-context (TOK-084): `typescript-lsp` already covers symbol lookup.
+- TokenEconomizer (TOK-117): its headline doesn't measure the shipped plugin. Our guess, unmeasured: the tools it may still prune are a small share of our 14.4k of built-ins, and CLAUDE.md already gives verify commands. Revisit when someone measures the plugin itself on real sessions.
 - Raising cache TTLs: rebuilds are only 8% of writes (TOK-034).
 
 **Research tools (TOK-087 to TOK-102).** R10 to R12, done 2026-10-12: CLAUDE.md's research rules (FreekMencke/claude-kb#50), and the re-verification routine's shared search budget, curl-not-search rule and autonomy opener (FreekMencke/claude-kb#51).
@@ -2103,7 +2164,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
 6. **Skill descriptions and triggering.** No Anthropic benchmark relates description length to trigger rate. The evidence is skill-creator's "pushy" advice, superpowers' anecdotes and Vercel's eval.
 7. **Unverified plan changes.** The May 2026 limit doubling and peak-hour changes, and whether per-model weekly meters other than Fable still exist on some plans, are reported only by secondary sources.
-8. **Token savers.** RTK now has independent paired measurements (TOK-083, 2026-10-16); context-mode, Serena and claude-context still have none, and Caveman's results disagree between JetBrains and Dasein (TOK-113).
+8. **Token savers.** RTK now has independent paired measurements (TOK-083, 2026-10-16) and Serena a small one (TOK-084, 2026-10-30, from a competing tool's authors); context-mode and claude-context still have none, the TokenEconomizer plugin as shipped has none (TOK-117), and Caveman's results disagree between JetBrains and Dasein (TOK-113).
 9. **Compact instructions.** Answered 2026-10-12: tested, just context it sees; the same text worked or failed alike under `# Compact instructions` and `# Notes` (TOK-031). One Haiku run per cell; a larger model may read the heading as scoping.
 10. **Resume cache bug.** Answered 2026-10-12: tested, not reliably present in v2.1.296; two of three `-p --resume` runs hit the full cache, including after a `git status` change, and one rewrote 11k tokens (TOK-034).
 11. **WebSearch `extended`.** What it does differently, what "several times the cost" means on a subscription, and whether one extended call counts as one against the 200-call budget. Only the tool schema mentions the modes (TOK-093). One test is not a latency or freshness measurement.

@@ -55,6 +55,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Bash output: TOK-042 (limits and filter hooks), TOK-108 (what reaches Claude), TOK-109 (how a script should print), SKILL-018 (scripts in skills), FLOW-011 and FLOW-013 (checks Claude runs).
 - Temporary files: SESS-016 (parallel sessions, `CLAUDE_JOB_DIR`), TOK-104 (handoff files and the scratchpad).
 - Terse output: PROMPT-024 (how to write short answers), TOK-113 (what terse styles measurably save).
+- Effort and cost: ORCH-028 and ORCH-029 (how to choose effort), TOK-055 (effort's token cost), TOK-119 (paired cost and pass-rate figures on a benchmark).
 - Trimming old context: TOK-038 (API context editing), TOK-085 (other agents' settings), TOK-114 (masking, measured).
 - CLAUDE.md size: SKILL-024 (authoring), TOK-003 (loading rules), REPO-045 (research and agents).
 - claude.ai plugins: SKILL-059 (personal Git marketplaces, sync), SKILL-062 (what an upload accepts, repo as its own plugin), MCP-040 (a bundled connector and skill in chat), MCP-037 (plugin against connector without a checkout).
