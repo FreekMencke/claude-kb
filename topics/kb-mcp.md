@@ -428,7 +428,7 @@ Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the 
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Best practices: use CLI tools](https://code.claude.com/docs/en/best-practices), [Features overview](https://code.claude.com/docs/en/features-overview), [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [What if you don't need MCP (Zechner)](https://mariozechner.at/posts/2025-11-02-what-if-you-dont-need-mcp/), [Skills vs dynamic MCP loadouts (Ronacher)](https://lucumr.pocoo.org/2025/12/13/skills-vs-mcp/)
-- Related: TOK-022, SKILL-021, MCP-018, INFRA-007
+- Related: TOK-022, SKILL-021, MCP-018, INFRA-007, BROWSER-002
 
 Official: "CLI tools are the most context-efficient way to interact with external services" (`gh`, `aws`, `gcloud`, `sentry-cli`). MCP "gives Claude purpose-built tools for an external system, with the connection and authentication handled by the server"; a skill teaches how to use them. Trigger for MCP: "You keep copying data from a browser tab Claude can't see."
 

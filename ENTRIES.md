@@ -32,6 +32,19 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ACCESS-014 | Motion and contrast preferences: what WCAG requires | fact | prefers-reduced-motion, forced-colors, prefers-contrast, wcag |
 | ACCESS-015 | An agent's accessibility check, and what a human must still do | recommendation | verification, agents, manual-testing, workflow |
 
+## Browsers for coding agents (`topics/kb-agent-browsers.md`, BROWSER)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| BROWSER-001 | Six browser tools for agents compared | comparison | playwright-mcp, playwright-cli, agent-browser, chrome-devtools-mcp, browser-use, chrome |
+| BROWSER-002 | Test: Playwright MCP against the Playwright CLI in tokens | fact | measurement, tokens, playwright-mcp, playwright-cli, haiku |
+| BROWSER-003 | The CLI route depends on Claude finding its skill | fact | playwright-cli, skills, permissions, measurement |
+| BROWSER-004 | Login state: where each tool keeps cookies | fact | profiles, cookies, storage-state, privacy |
+| BROWSER-005 | No browser tool is a security boundary | fact | security, prompt-injection, allowlist |
+| BROWSER-006 | Telemetry defaults and opt-outs | fact | telemetry, privacy, chrome-devtools-mcp, browser-use |
+| BROWSER-007 | Chrome DevTools MCP: what it adds and how to start it | tool | chrome-devtools-mcp, performance, console |
+| BROWSER-008 | Which browser tool for which job | recommendation | adoption, playwright-mcp, playwright-cli |
+
 ## Angular 21–22 changes and Angular's AI tooling (`topics/kb-angular.md`, NG)
 
 | ID | Title | Type | Tags |
@@ -115,6 +128,20 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CAPI-013 | Managed Agents scheduled deployments, budgets, vaults and webhooks | fact | managed-agents, scheduled-deployments, budgets, vaults, webhooks |
 | CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code routine | comparison | managed-agents, routines, schedule, cost, secrets |
 | CAPI-015 | Evaluating an LLM feature: success criteria, test sets and graders | recommendation | evals, graders, testing, llm-judge |
+
+## Codebase maps and knowledge graphs for agents (`topics/kb-code-maps.md`, CODEMAP)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| CODEMAP-001 | Four codebase-map tools compared | comparison | graphify, understand-anything, repomix, serena, community |
+| CODEMAP-002 | Graphify: how it builds the graph, privacy and embeddings | fact | graphify, tree-sitter, privacy, cost |
+| CODEMAP-003 | Graphify's hooks steer Claude from grep to the graph | fact | graphify, hooks, pretooluse, search |
+| CODEMAP-004 | Graphify's benchmark: 6 questions, vendor-run | fact | graphify, measurement, grep |
+| CODEMAP-005 | Understand-Anything: an LLM-built graph and its token cost | fact | understand-anything, cost, agents |
+| CODEMAP-006 | Understand-Anything's hooks and install: a vetting case | anti-pattern | understand-anything, hooks, security, vetting |
+| CODEMAP-007 | Repomix: a packed file, not a map | tool | repomix, packing, tree-sitter, secretlint |
+| CODEMAP-008 | Serena 2.1.0: licence and what it adds over the LSP plugin | fact | serena, lsp, mcp, licence |
+| CODEMAP-009 | When a codebase map is worth trying | recommendation | adoption, search, grep, lsp |
 
 ## Modern CSS and Baseline browser support (`topics/kb-css-baseline.md`, CSS)
 
@@ -994,6 +1021,24 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SESS-035 | Our setup against these findings | comparison | our-setup, global-claude-md |
 | SESS-036 | Fast-forward a new worktree with a `SessionStart` hook | pattern | worktrees, hooks, sessionstart, staleness |
 
+## Engineering-discipline skill packs (`topics/kb-skill-packs.md`, SKPACK)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| SKPACK-001 | Six engineering-discipline packs compared | comparison | superpowers, mattpocock, ecc, ponytail, karpathy, agent-skills |
+| SKPACK-002 | What each pack runs and injects every session | fact | hooks, sessionstart, context, statusline |
+| SKPACK-003 | Telemetry, network and paid tiers | fact | telemetry, privacy, network |
+| SKPACK-004 | Ponytail's benchmark: what it shows and what it doesn't | fact | measurement, ponytail, yagni, tests |
+| SKPACK-005 | Evidence for the other packs | fact | measurement, evals, claims |
+| SKPACK-006 | Grilling: questions in rounds with a recommended answer each | pattern | interview, planning, questions, subagents |
+| SKPACK-007 | interview-me: a hypothesis and a confidence number first | pattern | interview, planning, headless |
+| SKPACK-008 | Ponytail's ladder, and ending with what was skipped | pattern | yagni, scope, output |
+| SKPACK-009 | Tests at pre-agreed seams, and three test anti-patterns | pattern | tdd, tests, seams |
+| SKPACK-010 | PR descriptions: door and blast radius | pattern | pull-requests, risk, documentation |
+| SKPACK-011 | Context load against cognitive load | pattern | claude-md, skills, pointers |
+| SKPACK-012 | The Karpathy CLAUDE.md: four rules we mostly have | fact | claude-md, karpathy, licence |
+| SKPACK-013 | Borrow ideas, don't install a pack | recommendation | adoption, vetting, skills |
+
 ## Writing, testing and distributing skills (`topics/kb-skills.md`, SKILL)
 
 | ID | Title | Type | Tags |
@@ -1098,6 +1143,22 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SPACE-019 | Tailwind 4: limiting spacing utilities to a named scale | tool | tailwind, spacing-scale, theme |
 | SPACE-020 | Spacing that WCAG requires, apart from conventions | fact | wcag, text-spacing, target-size, reflow, structure |
 | SPACE-021 | Starting values by role: icon gap, group, section | recommendation | spacing-scale, proximity, defaults |
+
+## Spec-driven development frameworks against plan mode (`topics/kb-spec-driven.md`, SDD)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| SDD-001 | Five SDD frameworks compared | comparison | spec-kit, openspec, bmad, gsd, agent-os |
+| SDD-002 | What Spec Kit installs into a Claude Code repo | fact | spec-kit, skills, hooks, context |
+| SDD-003 | Spec Kit's `converge` and `analyze`: audits that don't edit code | pattern | spec-kit, review, verification |
+| SDD-004 | OpenSpec: delta specs, archive, and telemetry on by default | fact | openspec, telemetry, specs |
+| SDD-005 | GSD moved to GSD Core, and the pre-authorized npm name | fact | gsd, supply-chain, permissions |
+| SDD-006 | BMad Method: a stable v6 and a changing v7 | fact | bmad, versions, churn |
+| SDD-007 | Agent OS v3 hands spec writing to plan mode | fact | agent-os, plan-mode |
+| SDD-008 | Evidence for SDD against plan mode | fact | measurement, evidence, overhead |
+| SDD-009 | An interviewed `SPEC.md`, a fresh session and a converge-style review | recommendation | plan-mode, spec, review, adoption |
+| SDD-010 | Independent assessments: Böckeler (2025) and the Thoughtworks Radar | fact | evidence, thoughtworks, kiro, spec-kit, review |
+| SDD-011 | Kiro's spec format: three files and EARS requirements | fact | kiro, ears, requirements, specs |
 
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 

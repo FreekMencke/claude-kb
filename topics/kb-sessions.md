@@ -358,7 +358,7 @@ Open issues (#88947, single-source) still report weekly forced re-logins with 10
 - Confidence: single-source
 - Last verified: 2026-10-14
 - Sources: [MCP](https://code.claude.com/docs/en/mcp), [CHANGELOG 2.1.154](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [#45880](https://github.com/anthropics/claude-code/issues/45880), [#28860](https://github.com/anthropics/claude-code/issues/28860), [playwright-mcp README](https://github.com/microsoft/playwright-mcp)
-- Related: TOK-020, SESS-009, MCP-012, MCP-028
+- Related: TOK-020, SESS-009, MCP-012, MCP-028, BROWSER-004
 
 **Stdio servers.** The docs say only that "Stdio servers run as local processes on your machine" and that Claude Code doesn't reconnect them automatically. They don't say whether sessions share them. The evidence points to one process per server per session:
 - v2.1.154 passes `CLAUDE_CODE_SESSION_ID` into each stdio server's environment.
@@ -371,7 +371,7 @@ Tested 2026-10-13, desktop WSL sessions (CLI 2.1.295), `ps -eo pid,ppid,rss,args
 
 **HTTP and SSE servers** run once, outside Claude Code. Their OAuth tokens sit in the shared credential store, which had concurrent-refresh fixes in v2.1.59, v2.1.118 and v2.1.271.
 
-**Playwright MCP** (vendor README): "A persistent profile can only be used by one browser instance at a time, so concurrent MCP clients sharing the same workspace will conflict." Start extra clients with `--isolated` or a distinct `--user-data-dir`. The profile path hashes the client's workspace root, so sessions in different worktrees probably get separate profiles (inference). The README's options table contradicts its prose about the default profile.
+**Playwright MCP** (vendor README): "A persistent profile can only be used by one browser instance at a time, so concurrent MCP clients sharing the same workspace will conflict." Start extra clients with `--isolated` or a distinct `--user-data-dir`. The profile path hashes the client's workspace root, so sessions in different worktrees probably get separate profiles (inference). The default is a persistent profile per client cwd (0.0.83 source, BROWSER-004).
 
 ## [SESS-014] `CLAUDE_CONFIG_DIR`: what it isolates
 - Type: fact
@@ -960,7 +960,7 @@ Ranked by impact against effort. Status is marked on each item.
 5. **Desktop and cloud worktree details.** Partly answered 2026-10-14: the desktop takes a Branch prefix setting. The desktop app's default worktree branch name, whether the `cleanupPeriodDays` sweep covers desktop worktrees, and cloud sessions' branch naming are all undocumented (SESS-005). Related: the desktop's **Auto-archive after PR merge or close** removes a finished local session's worktree (SURF-002).
 6. **Is there a hidden concurrency throttle on subscriptions?** #96872 shows 429s rising at 6 or more sessions with no reply from Anthropic. No per-account concurrency cap is documented (SESS-032).
 7. **Does an approval given from the phone over Remote Control count the same as one at the terminal?** It's implied, not stated (SESS-020). SURF-018 confirms a connected device answers permission prompts, and that the app never offers Bypass mode.
-8. **Is Playwright MCP's default profile a persistent per-workspace profile or a temp directory?** The README contradicts itself. Do our parallel browser-checker runs need `--isolated` (SESS-013)? This is the one home for the question; `kb-workflows.md` (FLOW-014) points here.
+8. Answered 2026-10-30: **Playwright MCP's default profile is persistent, per client cwd** (BROWSER-004). Parallel checkers need `--isolated`; the browser checker already has it (REPO-021). This is the one home for the question; `kb-workflows.md` (FLOW-014) points here.
 9. **Is the stash really shared?** Answered 2026-10-14: yes. A stash made in one worktree is listed in another, and `git stash pop` there applies it and empties the stack (git 2.43.0, scratch repo; SESS-002).
 10. **Gap in the index check.** Answered 2026-10-12 (FreekMencke/claude-kb#28): `scripts/check_kb.py` now takes the prefixes for its "mentions unknown" check from the entries, so SESS and every later prefix are checked.
 11. **Does the SESS-036 hook run in desktop Code tab worktree sessions?** Hooks from user settings apply in the desktop app, and desktop hooks get the worktree as `cwd`, so it should. Tested only in the terminal.
