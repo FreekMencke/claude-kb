@@ -397,7 +397,7 @@ Tested 2026-10-28, `@angular/core@22.2.3`, `@angular/cdk@22.2.4`, `@angular/buil
 - Confidence: official-docs
 - Last verified: 2026-10-28
 - Sources: [NN/g: F-shaped pattern, misunderstood (2017-11-12)](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/), [NN/g: text scanning patterns (2019-08-25)](https://www.nngroup.com/articles/text-scanning-patterns-eyetracking/), [NN/g: horizontal attention leans left (2017-10-22)](https://www.nngroup.com/articles/horizontal-attention-leans-left/), [NN/g: scrolling and attention (2018-04-15)](https://www.nngroup.com/articles/scrolling-and-attention/), [NN/g: zigzag image–text layouts (2017-11-26)](https://www.nngroup.com/articles/zigzag-page-layout/)
-- Related: DESIGN-022, LAYOUT-008, LAYOUT-014
+- Related: DESIGN-022, LAYOUT-008, LAYOUT-014, WRITE-007
 
 NN/g's eye-tracking studies, on desktop screens in left-to-right languages; NN/g reports the F-pattern mirrored in right-to-left ones and on mobile too:
 
