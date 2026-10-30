@@ -1109,6 +1109,8 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SDD-007 | Agent OS v3 hands spec writing to plan mode | fact | agent-os, plan-mode |
 | SDD-008 | Evidence for SDD against plan mode | fact | measurement, evidence, overhead |
 | SDD-009 | Plan mode and `SPEC.md`, plus a converge-style review | recommendation | plan-mode, spec, review, adoption |
+| SDD-010 | Independent assessments: Böckeler (2025) and the Thoughtworks Radar | fact | evidence, thoughtworks, kiro, spec-kit, review |
+| SDD-011 | Kiro's spec format: three files and EARS requirements | fact | kiro, ears, requirements, specs |
 
 ## Desktop app, artifacts and remote use (`topics/kb-surfaces.md`, SURF)
 

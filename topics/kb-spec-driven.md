@@ -6,7 +6,7 @@ Research basis:
 - Researched 2026-10-30 in a cloud session, Claude Code v2.1.314, Opus 5.5 lead with a Sonnet reader on the frameworks' docs.
 - Read as raw text from shallow clones, not installed or run: github/spec-kit `2a23a84` (2026-10-29), Fission-AI/OpenSpec `6d04a1b` (2026-10-24), bmad-code-org/BMAD-METHOD `61e01f8` (2026-10-18), open-gsd/gsd-core `7d68e2b` (2026-10-30), gsd-build/get-shit-done `bdcaab2` (2026-05-31, archived) and buildermethods/agent-os `e892e61` (2026-10-07). Claude Code's best-practices page as `.md`.
 - Versions from the registries: PyPI `specify-cli` 1.2.5 (2026-10-28), `npm view @fission-ai/openspec 'time[1.15.0]'` (2026-10-24), `npm view bmad-method dist-tags` (`latest` 6.12.4), `npm view @opengsd/gsd-core version` (1.19.0).
-- Not reachable from this session: martinfowler.com (Birgitta Böckeler's article on SDD tools), thoughtworks.com (the Technology Radar) and kiro.dev. Nothing here rests on them; see Open questions.
+- Added the same day once the session's network allowed them: Birgitta Böckeler's article on martinfowler.com, the Thoughtworks Radar blip and Kiro's docs as `.md` (SDD-010, SDD-011), read as raw text.
 - Stars from GitHub repository search on 2026-10-30; popularity signals only.
 
 ## Quick answers
@@ -23,6 +23,7 @@ Research basis:
 | Is there evidence SDD beats plan mode? | No controlled comparison found. The frameworks' docs themselves offer shorter paths for small changes. | SDD-008 |
 | Should we adopt one? | No. Keep plan mode plus `SPEC.md` (FLOW-003), and borrow `converge` as a reviewer step. | SDD-009 |
 | What's Anthropic's own spec workflow? | "Interview me until you could write the spec, then write it to SPEC.md"; build in a fresh session; have a reviewer subagent check the diff against `SPEC.md`. | SDD-009, FLOW-003 |
+| What do independent reviewers say about SDD tools? | Böckeler (2025-10-15): a small bug became "4 'user stories' with a total of 16 acceptance criteria"; "I'd rather review code than all these markdown files". Thoughtworks Radar (2025-11-05): Assess, "lengthy spec files that are hard to review". | SDD-010 |
 
 ## Index
 
@@ -37,6 +38,8 @@ Research basis:
 | SDD-007 | Agent OS v3 hands spec writing to plan mode | fact | agent-os, plan-mode |
 | SDD-008 | Evidence for SDD against plan mode | fact | measurement, evidence, overhead |
 | SDD-009 | Plan mode and `SPEC.md`, plus a converge-style review | recommendation | plan-mode, spec, review, adoption |
+| SDD-010 | Independent assessments: Böckeler (2025) and the Thoughtworks Radar | fact | evidence, thoughtworks, kiro, spec-kit, review |
+| SDD-011 | Kiro's spec format: three files and EARS requirements | fact | kiro, ears, requirements, specs |
 
 ## [SDD-001] Five SDD frameworks compared
 - Type: comparison
@@ -176,14 +179,14 @@ Its kept part is what CLAUDE.md, rules files and skills already do (REPO-044). I
 - Confidence: unverified
 - Last verified: 2026-10-30
 - Sources: [Spec Kit quickstart](https://github.com/github/spec-kit/blob/2a23a84/docs/quickstart.md), [BMAD docs index](https://github.com/bmad-code-org/BMAD-METHOD/blob/61e01f8/docs/index.md), [Agent OS CHANGELOG](https://github.com/buildermethods/agent-os/blob/e892e61/CHANGELOG.md)
-- Related: SDD-009, SDD-003
+- Related: SDD-009, SDD-003, SDD-010
 
 No controlled comparison of an SDD framework against plan mode, or against no spec, was found in the five repos or their docs.
 
 Found only as search-result text, not read, so not evidence here:
 - A vendor-run benchmark by Uvik: OpenSpec merged 42 of 50 tickets against 36 for a no-spec control, on Claude Sonnet 5.
 - A single-run Medium test: OpenSpec used about 57.7k tokens against Spec Kit's about 121k, on another vendor's model.
-- Martin Fowler's site has Birgitta Böckeler's article on SDD tools; the Thoughtworks Radar has an entry on SDD. Neither page was reachable from this session.
+- Independent qualitative write-ups exist (SDD-010); neither measures outcomes.
 
 What the frameworks concede themselves:
 - Spec Kit has a "Shorter path — for smaller features".
@@ -215,6 +218,44 @@ The frameworks add files, hooks, skill listings and, for two of them, telemetry 
 - A durable "constitution" is what CLAUDE.md already is; keep feature specs out of it.
 - OpenSpec's delta-and-archive idea only for a long-lived product whose behaviour must stay documented (SDD-004). For our repos, DOC-022's dated plan docs suffice.
 
+## [SDD-010] Independent assessments: Böckeler (2025) and the Thoughtworks Radar
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [Böckeler: Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl (martinfowler.com, 2025-10-15)](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html), [Thoughtworks Technology Radar: Spec-driven development (2025-11-05)](https://www.thoughtworks.com/radar/techniques/spec-driven-development)
+- Related: SDD-008, SDD-009, SDD-011, ORCH-044
+
+The two independent write-ups found; both predate Spec Kit 1.0 and say the tools change fast.
+
+**Birgitta Böckeler** (Thoughtworks, on martinfowler.com, 2025-10-15) tried Kiro, Spec Kit and Tessl:
+- Three levels: spec-first, spec-anchored, spec-as-source. "All SDD approaches and definitions I've found are spec-first", and the maintenance strategy over time is often "vague or totally open".
+- Kiro on a small bug "was like using a sledgehammer to crack a nut": "4 'user stories' with a total of 16 acceptance criteria".
+- Spec Kit "created a LOT of markdown files for me to review … I'd rather review code than all these markdown files."
+- "False sense of control?": "I frequently saw the agent ultimately not follow all the instructions". Spec Kit's research notes on existing classes were taken "as a new specification", which duplicated them.
+- "I'm very skeptical that lots of up-front spec design is a good idea, especially when it's overly verbose."
+
+**Thoughtworks Radar** (published 2025-11-05, ring **Assess**; "not on the current edition"): "the workflows remain elaborate and opinionated … some generate lengthy spec files that are hard to review". It adds: "We may be relearning a bitter lesson — that handcrafting detailed rules for AI ultimately doesn't scale."
+
+Both support SDD-009: small iterative steps with a short spec, not a framework's artifact set.
+
+## [SDD-011] Kiro's spec format: three files and EARS requirements
+- Type: fact
+- Applies to: general
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Kiro: Specs](https://kiro.dev/docs/specs.md), [Kiro: Requirements-First workflow](https://kiro.dev/docs/specs/feature-specs/requirements-first.md)
+- Related: SDD-001, SDD-010, FLOW-003
+
+AWS's Kiro is an agent product with spec-driven development built in. Its docs now list "the Kiro IDE, the Kiro CLI, on the web, on mobile (iOS)".
+
+- "Every spec generates three key files": "**requirements.md** (or **bugfix.md**) - Captures user stories, acceptance criteria, or bug analysis in structured notation"; "**design.md** - Documents technical architecture, sequence diagrams, and implementation considerations"; "**tasks.md** - Provides a detailed implementation plan with discrete, trackable tasks".
+- Bugfix specs record "current/expected/unchanged behavior" in `bugfix.md`, a lighter path than a feature spec for the small-bug case Böckeler hit (SDD-010).
+- Requirements use EARS: "System behaviors in EARS format (WHEN...THE SYSTEM SHALL...)", for example "WHEN a user submits valid registration data".
+- The specs page also lists Quick Spec, parallel task execution, "Analyze Requirements" and a "Correctness (property-based testing)" check (IDE only).
+
+What transfers to a `SPEC.md` in Claude Code (FLOW-003): one acceptance criterion per line in "WHEN … THE SYSTEM SHALL …" form gives a reviewer subagent something to check each change against (SDD-003). Bug specs that say what must stay unchanged also tell the reviewer what not to break.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -225,8 +266,7 @@ Ranked by impact against effort.
 
 ## Open questions
 
-- **Böckeler's article and the Thoughtworks Radar on SDD:** not reachable from this session (martinfowler.com, thoughtworks.com); they may hold the only independent assessment (SDD-008).
-- **Kiro's spec format** (requirements, design, tasks): kiro.dev wasn't reachable, so it isn't compared here.
+- **Tessl:** Böckeler covers it (SDD-010) but it wasn't read here.
 - **The Uvik benchmark:** only a search snippet was seen; method and data unread (SDD-008).
 - **Why GSD moved to GSD Core:** neither repo says (SDD-005).
 - **Spec Kit's event handlers in `.claude/settings.json`:** which events and commands they register wasn't traced (SDD-002).
