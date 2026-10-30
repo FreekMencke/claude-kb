@@ -70,7 +70,7 @@ Its accessibility rules restate WCAG and the APG; they weren't tested here as a 
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [README at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/README.md), [command.md at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/command.md)
-- Related: UIREV-001, UIREV-003, UIREV-005, NG-003, WEBPERF-008
+- Related: UIREV-001, UIREV-003, UIREV-005, NG-003, WEBPERF-008, WRITE-006
 
 Our sorting; the README itself marks only the copy section.
 

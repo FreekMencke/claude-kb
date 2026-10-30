@@ -1510,3 +1510,17 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | FLOW-031 | Queued messages and send-now | fact | steering, queue |
 | FLOW-032 | `/btw`, `/model` and `/effort` while Claude works | fact | steering, btw, model, effort |
 | FLOW-033 | Our setup against these findings | comparison | our-setup, global-claude-md, skills |
+
+## Writing that doesn't read as AI-generated (`topics/kb-writing.md`, WRITE)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| WRITE-001 | Wikipedia's "Signs of AI writing": what it is and how it's organised | fact | wikipedia, ai-tells, field-guide |
+| WRITE-002 | Current, historical and ineffective signs, as of October 2026 | fact | ai-tells, em-dash, markdown, vocabulary |
+| WRITE-003 | The signs aren't proof, and fixing them isn't the goal | fact | detection, false-positives, humanizing |
+| WRITE-004 | The humanizer skill: 26 patterns, its token cost and its licence question | fact | humanizer, skills, licence, cc-by-sa |
+| WRITE-005 | Anthropic's guidance on steering Claude's prose and formatting | fact | prompting, formatting, markdown, fable |
+| WRITE-006 | GOV.UK's plain-English rules and words to avoid | fact | plain-english, gov-uk, style-guide |
+| WRITE-007 | How people read on the web, and where it meets the tells list | fact | nngroup, scanning, formatting |
+| WRITE-008 | Test: no rules, seven lines or humanizer for a PR description | fact | measurement, sonnet, humanizer, rules |
+| WRITE-009 | A seven-line writing rule for CLAUDE.md | recommendation | claude-md, writing, pull-requests |

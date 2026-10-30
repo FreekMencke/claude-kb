@@ -207,7 +207,7 @@ For a subagent brief: put pasted logs, diffs or issue text in tags after the tas
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [obra/superpowers writing-skills](https://github.com/obra/superpowers/blob/main/skills/writing-skills/SKILL.md)
-- Related: SKILL-020, PROMPT-006, PROMPT-024
+- Related: SKILL-020, PROMPT-006, PROMPT-024, WRITE-005, WRITE-009
 
 Positive phrasing is the default; a "don't" list works when it names concrete, checkable patterns.
 
@@ -460,7 +460,7 @@ Opus 5.5 needs little method guidance; its prompting page is mostly about harnes
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- Related: PROMPT-019, PROMPT-014, PROMPT-024, PROMPT-031
+- Related: PROMPT-019, PROMPT-014, PROMPT-024, PROMPT-031, WRITE-005
 
 Fable 5.1 "can execute very long tasks without much guidance on methodology", but drifts in three directions.
 
@@ -477,7 +477,7 @@ On Max plans Fable is capped at 50% of weekly limits (ORCH-031), so these prompt
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- Related: PROMPT-026, PROMPT-009, PROMPT-006, TOK-055, TOK-113
+- Related: PROMPT-026, PROMPT-009, PROMPT-006, TOK-055, TOK-113, WRITE-008, WRITE-009
 
 Prompt for length; effort doesn't set it. "Effort controls thinking volume, not visible response length: on Claude Opus 5, changing effort does not reliably shorten responses, so prompt for length."
 
@@ -489,7 +489,7 @@ Snippets Anthropic tested:
 
 Cautions: old "be brief" or anti-markdown lines can over-correct Fable 5.1, which already writes less; show a short example rather than listing what to drop (PROMPT-006).
 
-Measured savings of terse styles: TOK-113.
+Measured savings of terse styles: TOK-113. A tested rule for the prose itself, not only its length: WRITE-009 (WRITE-008).
 
 ## [PROMPT-025] Fewer clarifying questions, or more: the knobs
 - Type: pattern
@@ -589,7 +589,7 @@ Practical rule: ask for a disagreement channel ("if the request seems mistaken, 
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- Related: PROMPT-017, PROMPT-002, SKILL-032, PROMPT-027
+- Related: PROMPT-017, PROMPT-002, SKILL-032, PROMPT-027, WRITE-009
 
 Lines that fixed an older model's weakness now cause the opposite one.
 
@@ -756,7 +756,7 @@ Note the scan-verifier asks for a reason tied to `file:line`, not for its thinki
 - Confidence: single-source
 - Last verified: 2026-10-18
 - Sources: [Trial results, FreekMencke/claude-kb#49](https://github.com/FreekMencke/claude-kb/issues/49#issuecomment-6252205664), [Output styles](https://code.claude.com/docs/en/output-styles)
-- Related: PROMPT-026, PROMPT-024, TOK-113, TOK-008
+- Related: PROMPT-026, PROMPT-024, TOK-113, TOK-008, WRITE-008
 
 On our sessions the Concise style cut visible text by about a third, while output tokens per message didn't fall, because thinking makes up most of them. It shortens replies; it doesn't cut cost.
 

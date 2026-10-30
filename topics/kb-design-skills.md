@@ -154,7 +154,7 @@ HTML prototypes, slides, animation and review; SKILL.md is in Chinese (translati
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md), [Hallmark craft.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/craft.md), [Taste SKILL.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Impeccable craft-floor.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [Impeccable detector registry](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/foundation/src/registry.rs)
-- Related: DESIGN-003, DSKILL-002, DSKILL-003, DSKILL-004, DSKILL-009, DSKILL-013
+- Related: DESIGN-003, DSKILL-002, DSKILL-003, DSKILL-004, DSKILL-009, DSKILL-013, WRITE-002
 
 | Point | Positions |
 |---|---|
@@ -191,7 +191,7 @@ What worked in our tests and in huashu-design's design is variety from outside t
 - Confidence: official-example
 - Last verified: 2026-10-23
 - Sources: [Impeccable registry.rs @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/foundation/src/registry.rs), [Impeccable CLI-CONTRACT.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/docs/CLI-CONTRACT.md), [Hallmark sloplint.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/sloplint.mjs), [Hallmark sloplint-render.mjs](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/sloplint-render.mjs), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md)
-- Related: DESIGN-007, DESIGN-017, DSKILL-004, DSKILL-003, DSKILL-014
+- Related: DESIGN-007, DESIGN-017, DSKILL-004, DSKILL-003, DSKILL-014, WRITE-002, WRITE-004
 
 Read, not run. Both report findings; neither generates a fix.
 

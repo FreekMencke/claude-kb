@@ -302,7 +302,7 @@ It also asks that design docs "serve as archives of these decisions, not as half
 - Confidence: community-consensus
 - Last verified: 2026-10-23
 - Sources: [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2), [lychee](https://github.com/lycheeverse/lychee), [markdown-link-check](https://github.com/tcort/markdown-link-check), [Vale](https://github.com/vale-cli/vale), [Prettier options: proseWrap](https://prettier.io/docs/options#prose-wrap)
-- Related: DOC-013, DOC-015, DOC-020
+- Related: DOC-013, DOC-015, DOC-020, WRITE-006
 
 None of these checks whether a doc is true, only its form and links.
 
@@ -338,7 +338,7 @@ None of these checks whether a doc is true, only its form and links.
 - Confidence: unverified
 - Last verified: 2026-10-14
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-- Related: TOK-062, PROMPT-015, DOC-012
+- Related: TOK-062, PROMPT-015, DOC-012, WRITE-007, WRITE-009
 
 No Anthropic page covers writing repo docs for agents. Anthropic's skill guidance carries over plausibly, which is why this entry is marked unverified:
 
