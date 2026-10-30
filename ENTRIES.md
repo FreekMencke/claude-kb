@@ -114,6 +114,20 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code routine | comparison | managed-agents, routines, schedule, cost, secrets |
 | CAPI-015 | Evaluating an LLM feature: success criteria, test sets and graders | recommendation | evals, graders, testing, llm-judge |
 
+## Codebase maps and knowledge graphs for agents (`topics/kb-code-maps.md`, CODEMAP)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| CODEMAP-001 | Four codebase-map tools compared | comparison | graphify, understand-anything, repomix, serena, community |
+| CODEMAP-002 | Graphify: how it builds the graph, privacy and embeddings | fact | graphify, tree-sitter, privacy, cost |
+| CODEMAP-003 | Graphify's hooks steer Claude from grep to the graph | fact | graphify, hooks, pretooluse, search |
+| CODEMAP-004 | Graphify's benchmark: 6 questions, vendor-run | fact | graphify, measurement, grep |
+| CODEMAP-005 | Understand-Anything: an LLM-built graph and its token cost | fact | understand-anything, cost, agents |
+| CODEMAP-006 | Understand-Anything's hooks and install: a vetting case | anti-pattern | understand-anything, hooks, security, vetting |
+| CODEMAP-007 | Repomix: a packed file, not a map | tool | repomix, packing, tree-sitter, secretlint |
+| CODEMAP-008 | Serena 2.1.0: licence and what it adds over the LSP plugin | fact | serena, lsp, mcp, licence |
+| CODEMAP-009 | When a codebase map is worth trying | recommendation | adoption, search, grep, lsp |
+
 ## Modern CSS and Baseline browser support (`topics/kb-css-baseline.md`, CSS)
 
 | ID | Title | Type | Tags |

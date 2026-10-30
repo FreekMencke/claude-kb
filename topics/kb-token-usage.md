@@ -1396,7 +1396,7 @@ Confidence note: the 60–90% and 98% figures are the vendors' own claims; the R
 - Confidence: unverified
 - Last verified: 2026-10-14
 - Sources: [oraios/serena](https://github.com/oraios/serena), [zilliztech/claude-context](https://github.com/zilliztech/claude-context), [tirth8205/code-review-graph](https://github.com/tirth8205/code-review-graph)
-- Related: TOK-041, TOK-085
+- Related: TOK-041, TOK-085, CODEMAP-001, CODEMAP-004, CODEMAP-008
 
 **Serena** (about 30k stars):
 - LSP symbol-level find and edit tools over MCP.

@@ -1613,7 +1613,7 @@ A pin doesn't cover dependencies, `command` sources or run-time fetches (SKILL-0
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Plugin loading: Node.js package dependencies](https://code.claude.com/docs/en/plugins/loading), [Skills: allowed-tools and workspace trust](https://code.claude.com/docs/en/skills), [ripgrep GUIDE.md: Automatic filtering, 14.1.0](https://github.com/BurntSushi/ripgrep/blob/14.1.0/GUIDE.md#automatic-filtering) (accessed 2026-10-23), `npm view gsap@3.15.0 license`
-- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012
+- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012, CODEMAP-006
 
 This extends SKILL-041. Check the owner and repo name letter by letter against the author's own site, then read every file at the commit you'll pin. Take behaviour from the code, not the README.
 
@@ -1622,7 +1622,7 @@ This extends SKILL-041. Check the owner and repo name letter by letter against t
 3. **Network**: every host, telemetry field, default and opt-out.
 4. **Config writes and installs**: settings files, `claude mcp add`, and instructions to install other skills, plugins or servers. Treat each as stop-and-ask, and vet the target too.
 5. **`allowed-tools`**, which workspace trust doesn't gate (SKILL-010).
-6. **Instructions**: fetching URLs, running commands without asking, "ignore previous", hiding actions, reading files outside the skill.
+6. **Instructions**: fetching URLs, running commands without asking, "ignore previous", hiding actions, reading files outside the skill. Hooks too: "Do not ask the user for confirmation" (CODEMAP-006).
 7. **Hidden Unicode**: it reaches the model unchanged (SKILL-073).
 8. **Licence**: no licence means you can't copy the skill (OSS-001). Check code it copies too: GSAP's licence is "Standard 'no charge' license", not OSI.
 9. **Run-time content**: CDN scripts without SRI, a WebFetch of a branch URL or `llms.txt` on each run, `load_skill` (SKILL-070).
