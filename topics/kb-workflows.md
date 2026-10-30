@@ -130,7 +130,7 @@ Until at least 2026-10-14 the page framed this for "larger features", named the 
 Variants:
 - A GitHub issue instead of `SPEC.md` (our `roadmap-issues` format already has `## Problem`, `## Do`, `## Verify`, `## Out of scope`).
 - With `showClearContextOnPlanAccept` on, plan approval gains an option that "approves the plan and clears the planning context" (FLOW-007): the same hand-off inside one session.
-- The official `feature-dev` plugin packages it as phases: discovery, exploration, clarifying questions, architecture, implementation, review.
+- The official `feature-dev` plugin packages it as seven phases: discovery, codebase exploration, clarifying questions, architecture design, implementation, quality review, summary.
 
 ## [FLOW-004] UI work from a screenshot or design mock
 - Type: pattern
@@ -173,6 +173,7 @@ A synthesis of the docs' rules into one decision:
 What changed: until at least 2026-10-14 best practices had a planning section ("If you could describe the diff in one sentence, skip the plan.", "Sometimes you should skip planning… because the task is exploratory.") and ended with "Pay attention to what works". By 2026-10-30 it doesn't mention plan mode at all, and new interactive sessions start in auto mode; the plan-mode row now rests on Costs.
 
 Every row still needs a check Claude can run (FLOW-011). These are defaults, not rules.
+
 ## [FLOW-006] Plan mode: what it blocks and what still runs
 - Type: fact
 - Applies to: Claude Code
@@ -264,21 +265,21 @@ Don't raise to `xhigh` or `max` for planning by default: `max` "may show diminis
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices: Give Claude a way to verify its work](https://code.claude.com/docs/en/best-practices), [Effective harnesses for long-running agents (2025-11-26)](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Effective harnesses for long-running agents (2025-11-26)](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - Related: FLOW-012, FLOW-015, HOOK-031, ORCH-039, ORCH-037, PROMPT-027, TOK-108, TOK-109
 
-It is the first section of the best-practices page: "Give Claude a check it can run: tests, a build, a screenshot to compare. It's the difference between a session you watch and one you walk away from."
+Best practices (2026-10-30), section "Give Claude a check to run": "Give Claude something it can run that comes back pass or fail. Once it has that, it can keep going on its own and you don't have to watch." It was the page's first section until at least 2026-10-14.
 
-Why: "Claude stops when the work looks done. Without a check it can run, 'looks done' is the only signal available, and you become the verification loop." A check is anything that returns a signal Claude can read: a test suite, a build exit code, a linter, a fixture diff, or a screenshot compared against a design. (No official page calls it "the single highest-leverage" thing; that phrase is community shorthand.)
+Why: "Claude stops when the work looks done. If it has nothing to run that tells it whether the work actually *is* done, "looks done" is all it has to go on. In practice that makes you the test suite". A check is "A test file", "A build's exit code", "A linter", "A script that diffs output against a fixture" or "A browser screenshot next to the mockup". The page says "the single most useful line in your `CLAUDE.md` is the command that runs it"; "highest-leverage" is community shorthand.
 
-How hard the check gates the stop, cheapest first:
-1. **In one prompt:** "run the tests after implementing", "fix it and verify the build succeeds. address the root cause, don't suppress the error".
-2. **Across a session:** `/goal` (FLOW-012).
-3. **Deterministic gate:** a Stop hook that blocks until the check passes (HOOK-031).
-4. **Second opinion:** a verification subagent or workflow (ORCH-039).
+How strict, from Claude deciding to Claude Code enforcing:
+1. **In the prompt:** "`run the auth tests after, and keep going until they pass`".
+2. **As a goal:** `/goal` (FLOW-012), which "matters for long background runs".
+3. **As a Stop hook:** sends Claude back on exit code 2 (HOOK-031).
+4. **By someone who didn't write the code:** `/code-review` "reviews the diff in a fresh subagent that never saw your conversation" (ORCH-039).
 
-"Each step trades setup for attention… The `/goal` and Stop hook versions are what let an unattended run finish correctly without you."
+Then ask for "the command it ran and its output, or the screenshot" (FLOW-015). For unattended runs, "`/goal` or a `Stop` hook enforces it."
 
 Anthropic's harness post saw the failure this prevents: Claude tended "to mark a feature as complete without proper testing", and did much better "once explicitly prompted to use browser automation tools and do all testing as a human user would."
 
@@ -391,18 +392,18 @@ After `/clear`, the menu's top entry `/resume <session-id> (previous session)` r
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Checkpointing: limitations](https://code.claude.com/docs/en/checkpointing), [Best practices: rewind with checkpoints](https://code.claude.com/docs/en/best-practices), [Agent SDK file checkpointing](https://code.claude.com/docs/en/agent-sdk/file-checkpointing)
+- Last verified: 2026-10-30
+- Sources: [Checkpointing: limitations](https://code.claude.com/docs/en/checkpointing), [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Agent SDK file checkpointing](https://code.claude.com/docs/en/agent-sdk/file-checkpointing)
 - Related: FLOW-016, FLOW-018, SESS-010
 
-- **Bash commands.** "Checkpointing does not track files modified by Bash commands" (`rm`, `mv`, `cp`). By the same rule nothing done through Bash is undone: `sed -i`, codegen, `npm install`, migrations, `git` operations, deploys. Remote systems "can't be checkpointed"; permission modes and rules are what guard them.
-- **Subagents.** Rewinding doesn't restore subagent edits, including background forked skills and background `/code-review --fix`. Only a foreground `context: fork` skill is restored. "Use git to revert them."
+- **Bash commands.** "A file that only Bash commands changed isn't tracked and stays as it is." (Once Claude has edited a file with its file tools, `/rewind` also undoes later Bash changes to that file.) So `rm`, `mv`, `sed -i`, codegen, `npm install` and `git` operations on other files aren't undone, and nothing remote (migrations, deploys) ever is; permission modes and rules guard those.
+- **Subagents.** Rewinding doesn't restore subagent edits, including background forked skills and background `/code-review --fix`. Only a foreground `context: fork` skill is restored. "use version control, such as Git, to revert them."
 - **You and other sessions.** Manual edits and "edits from other concurrent sessions are normally not captured".
 - **Mid-turn messages.** A queued message read mid-turn gets no checkpoint of its own ("No code restore"); restore from the prompt that started the turn.
 - **Symlinks and hard links** are skipped with `Restored the code, but skipped N files` (dotfile managers, pnpm).
 - **Directories:** creating, moving or deleting them is not undone (SDK page).
 
-"Checkpoints are designed for quick, session-level recovery. For permanent version history and collaboration, continue using version control." Best practices: "This isn't a replacement for git."
+"Checkpoints are designed for quick, session-level recovery. For permanent version history and collaboration, continue using version control, such as Git". Best practices: "Checkpoints cover the files Claude edited with its own file tools in your main conversation" and "work alongside git rather than replacing it."
 
 Rule of thumb: before Claude runs anything destructive through Bash, the safety net is a commit, not a checkpoint.
 
@@ -444,36 +445,36 @@ Forking copies checkpoint backups too, so a branch can still rewind.
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices: avoid common failure patterns](https://code.claude.com/docs/en/best-practices), [Effective context engineering (2025-09-29)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Troubleshooting](https://code.claude.com/docs/en/troubleshooting)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Effective context engineering (2025-09-29)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Troubleshooting](https://code.claude.com/docs/en/troubleshooting)
 - Related: FLOW-021, FLOW-023, TOK-030, ORCH-037
 
 Signs, each with its source:
-- **The same correction twice.** "If you've corrected Claude more than twice on the same issue in one session, the context is cluttered with failed approaches."
-- **A long, mixed session.** "Kitchen sink" sessions and "infinite exploration": "performance degrades as [the context] fills… Claude may start 'forgetting' earlier instructions or making more mistakes." Anthropic's context-engineering post calls this context rot: "as the number of tokens in the context window increases, the model's ability to accurately recall information from that context decreases", in every model.
+- **The same correction twice.** "If you've corrected the same thing twice and it's still wrong, a third correction mostly adds to a conversation that already contains two failed attempts for Claude to keep re-reading."
+- **A long, mixed session.** Best practices said "performance degrades as [the context] fills" until at least 2026-10-14; by 2026-10-30 it says running out "is rare" on a 1M window, but keeps `/clear` "because a focused context gets you better answers and costs less." Anthropic's context-engineering post: "as the number of tokens in the context window increases, the model's ability to accurately recall information from that context decreases", and "this characteristic emerges across all models."
 - **Plausible but unverified progress**: edits without a check run, or "done" without evidence (FLOW-011, FLOW-015).
-- **Symptom fixes**: suppressing the error instead of finding the cause ("address the root cause, don't suppress the error").
+- **Symptom fixes**: suppressing the error instead of finding the cause (our judgement; best practices dropped its "address the root cause, don't suppress the error" prompt by 2026-10-30).
 - **Compaction loops**: `Autocompact is thrashing` means context refills to the limit right after compacting (FLOW-023).
-- **Repeated permission blocks** in auto mode, which pause it (FLOW-023).
+- **Repeated permission blocks** in auto mode: "After three blocks in a row (or twenty in total), auto mode pauses and goes back to asking you" (not in `-p` runs; FLOW-023).
 
-The common cause is context full of failed attempts, so more instructions in the same context rarely help. Recovery: FLOW-021.
+The common cause is a conversation full of failed attempts, so more instructions in the same context rarely help. Recovery: FLOW-021.
 
 ## [FLOW-021] Recovery ladder for a stuck session
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices: course-correct early and often](https://code.claude.com/docs/en/best-practices), [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Sessions](https://code.claude.com/docs/en/sessions), [Troubleshooting](https://code.claude.com/docs/en/troubleshooting)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Sessions](https://code.claude.com/docs/en/sessions), [Troubleshooting](https://code.claude.com/docs/en/troubleshooting)
 - Related: FLOW-016, FLOW-019, FLOW-022, TOK-030, TOK-031, SESS-031
 
 Cheapest and least lossy first:
 
-1. **`Esc` and redirect** as soon as it drifts: "Context is preserved, so you can redirect" (FLOW-030).
-2. **Rewind to before the wrong turn** with **Restore code and conversation**, then edit the restored prompt with what you learned. Rewinding truncates to an already-cached prefix (TOK-033).
-3. **Summarize from here** to squash a failed debugging detour while keeping the setup.
-4. **`/clear` and a better prompt.** "After two failed corrections, `/clear` and write a better initial prompt incorporating what you learned. A clean session with a better prompt almost always outperforms a long session with accumulated corrections." Write a handoff first if state matters (SESS-031); instructions given only in conversation are lost (TOK-030).
+1. **`Esc` and redirect** as soon as it drifts: "`Esc` stops Claude mid-action and keeps everything up to that point, so you can redirect without losing work" (FLOW-030).
+2. **Rewind to before the wrong turn**: the rewind menu rolls "the code, the conversation, or both back to an earlier prompt"; pick **Restore code and conversation**, then edit the restored prompt with what you learned. Rewinding truncates to an already-cached prefix (TOK-033).
+3. **Summarize from here** to squash a failed debugging detour while keeping the setup ("The same menu can also summarize part of the conversation when it has gone stale").
+4. **`/clear` and a better prompt.** "after two failed corrections run `/clear` and write a better prompt instead of a third"; "`/clear` plus one new prompt that folds in what you learned works better almost every time." Write a handoff first if state matters (SESS-031); instructions given only in conversation are lost (TOK-030).
 5. **Branch instead of fighting** (FLOW-019) when two approaches compete.
-6. **Change effort or model** (FLOW-022).
+6. **Change effort or model** (FLOW-022): raise effort "when getting it right depends on cases that are quick to overlook".
 7. **Ask for a step back.** No official wording; common practice is "stop editing, list three hypotheses for the root cause and the cheapest check for each". Unverified as an official recommendation.
 
 For autocompact thrashing (troubleshooting page): read the big file in chunks, `/compact` with a focus that drops the large output, move the large-file work to a subagent, or `/clear`. A hung session: `Ctrl+C`, then `claude --resume`.
@@ -650,11 +651,11 @@ Ways to be told, or to let Claude act, when external work changes. The desktop a
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Interactive mode: keyboard shortcuts](https://code.claude.com/docs/en/interactive-mode), [Best practices: course-correct early and often](https://code.claude.com/docs/en/best-practices), [Claude Code CHANGELOG 2.1.73](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Last verified: 2026-10-30
+- Sources: [Interactive mode: keyboard shortcuts](https://code.claude.com/docs/en/interactive-mode), [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Claude Code CHANGELOG 2.1.73](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-021, FLOW-031, FLOW-016
 
-`Esc` "stop[s] the current response or tool call mid-turn so you can redirect. Claude keeps the work done so far. If you have messages queued, Claude Code sends them next." Best practices: "Context is preserved, so you can redirect", and "Correct Claude as soon as you notice it going off track."
+`Esc` "stop[s] the current response or tool call mid-turn so you can redirect. Claude keeps the work done so far. If you have messages queued, Claude Code sends them next." Best practices: "`Esc` stops Claude mid-action and keeps everything up to that point, so you can redirect without losing work", and "Watch the first minute, press `Esc` the moment Claude drifts". It said "Correct Claude as soon as you notice it going off track" until at least 2026-10-14; the 2026-10-30 rewrite keeps the idea in those words.
 
 Context:
 - On a permission prompt, `Esc` declines (like **No** without a comment).

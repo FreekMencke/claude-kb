@@ -343,10 +343,10 @@ A workflow is a JavaScript script, written by Claude and run by a runtime in the
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Run agents in parallel](https://code.claude.com/docs/en/agents), [Best practices](https://code.claude.com/docs/en/best-practices)
+- Sources: [Run agents in parallel](https://code.claude.com/docs/en/agents), [Best practices: Run sessions in parallel](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-009, ORCH-014
 
-`/batch` is a bundled skill that "has Claude split one large change into 5 to 30 worktree-isolated subagents". It is a packaged use of subagents and worktrees, not a separate coordination style. Outside a git repo it needs a `WorktreeCreate` hook (v2.1.281+).
+`/batch` is a bundled skill that "has Claude split one large change into 5 to 30 worktree-isolated subagents". It is a packaged use of subagents and worktrees, not a separate coordination style. Best practices adds that it "splits the work into 5 to 30 units and shows you the plan. Then it runs each unit in its own worktree and opens a PR for it." Outside a git repo it needs a `WorktreeCreate` hook (v2.1.281+).
 
 It fits a repetitive change across many independent files: a lint-rule migration, an API rename, adding types module by module. It does not fit changes that need a shared design decided first. Settle the contract yourself, then batch.
 
@@ -378,11 +378,11 @@ It fits a repetitive change across many independent files: a lint-rule migration
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Headless](https://code.claude.com/docs/en/headless), [CLI reference](https://code.claude.com/docs/en/cli-reference), [Best practices – fan out](https://code.claude.com/docs/en/best-practices)
+- Last verified: 2026-10-30
+- Sources: [Headless](https://code.claude.com/docs/en/headless), [CLI reference](https://code.claude.com/docs/en/cli-reference), [Best practices: Run Claude from a script](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-012, ORCH-038
 
-The docs' fan-out pattern: loop `claude -p` over a file list with `--allowedTools` and `--permission-mode dontAsk`. "Refine your prompt based on what goes wrong with the first 2-3 files, then run on the full set."
+The docs' fan-out pattern: loop `claude --bare -p` over a file list with `--allowedTools`, `--permission-mode dontAsk` and `--max-turns`. "Try it on three files first, see what goes wrong, fix the prompt, then run the rest." With `--permission-mode auto`, "a classifier block denies that one action and Claude carries on".
 
 Flags for unattended parallel runs:
 - **Caps:**
@@ -390,7 +390,7 @@ Flags for unattended parallel runs:
   - `--max-turns` exits with an error at the limit. There is no limit by default.
 - **Model:** `--model sonnet` or `haiku`; `--fallback-model sonnet,haiku`; `--effort low|…|max`.
 - **Permissions:** `--permission-prompts none` denies anything that would prompt (v2.1.259+).
-- **Reproducibility:** `--bare` skips hooks, skills, plugins, MCP, memory, CLAUDE.md and subagents. It is recommended for scripts and needs an API key.
+- **Reproducibility:** `--bare` skips hooks, skills, plugins, MCP, memory, CLAUDE.md and subagents. It is "the recommended mode for scripted and SDK calls" and never uses your claude.ai login: auth comes from `ANTHROPIC_API_KEY`, an `apiKeyHelper` in `--settings`, or a cloud provider's credentials.
 - **Output:** `--output-format json` gives `result`, `session_id` and `total_cost_usd` (a client-side estimate). `--json-schema` puts validated output in `structured_output`.
 - **Isolation:** `--worktree` per process when the runs edit files.
 
@@ -790,17 +790,17 @@ Use Haiku for read-only, summarizable work (search, gates, digests), where a mis
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Effective context engineering (2025-09-29)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Best practices](https://code.claude.com/docs/en/best-practices), [Workflows](https://code.claude.com/docs/en/workflows)
+- Last verified: 2026-10-30
+- Sources: [Effective context engineering (2025-09-29)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Costs: delegate verbose operations](https://code.claude.com/docs/en/costs), [Workflows](https://code.claude.com/docs/en/workflows)
 - Related: ORCH-007, ORCH-035, ORCH-036, TOK-035, TOK-103
 
-Context is "the most important resource to manage", and "performance degrades as it fills". Ways to keep the orchestrator's context lean:
-- **Summaries.** A subagent may use "tens of thousands of tokens or more, but returns only a condensed, distilled summary of its work (often 1,000-2,000 tokens)."
+The reason changed. Best practices called context "the most important resource to manage", since "performance degrades as it fills", until at least 2026-10-14. By 2026-10-30 it lists "The context window is your main constraint, manage it aggressively" under "What you can stop doing": "running out is rare". What remains is cost ("You can still *pay* for context you don't need") and context rot: recall drops "as the number of tokens in the context window increases" (context engineering post). Ways to keep the orchestrator's context lean:
+- **Summaries.** A subagent may use "tens of thousands of tokens or more, but returns only a condensed, distilled summary of its work (often 1,000-2,000 tokens)." Best practices: "Ask for short summaries back".
 - **References, not content.** Write bulky output (reports, logs, data, the diff itself) to the filesystem and "pass lightweight references back to the coordinator". This avoids the "game of telephone" and saves tokens.
 - **Delegation of verbose operations.** Hand test runs, log reading and doc fetching to subagents so only the summary returns (costs page).
 - **Script variables.** For dozens of agents, use a workflow: intermediate results stay in script variables and only the final answer reaches context.
 - **Bounded reports.** Cap the report's length in the brief and say what to leave out; "the diff is the detail".
-- **Compaction instructions.** For example: "always preserve the full list of modified files and any test commands".
+- **Compaction instructions.** For example: `/compact keep the API changes and the test commands`.
 
 The post's criterion: "The pattern works particularly well for structured outputs like code, reports, or data visualizations where the subagent's specialized prompt produces better results than filtering through a general coordinator." Doing it in Claude Code: TOK-103 to TOK-107.
 

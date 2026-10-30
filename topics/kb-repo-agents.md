@@ -483,7 +483,7 @@ Template: template T1.
 - Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Review locally with /code-review](https://code.claude.com/docs/en/code-review-local), [Skills: Run skills in a subagent](https://code.claude.com/docs/en/skills), [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [pr-review-toolkit code-reviewer](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/pr-review-toolkit/agents/code-reviewer.md)
 - Related: ORCH-039, ORCH-042, REPO-047, template T2
 
-**Purpose:** find defects the author's context is blind to. Best practices: review "By someone who didn't write the code", in "a fresh subagent that never saw your conversation. It isn't swayed by the reasoning that produced the code." (Its older lines "A fresh context improves code review…" and "the agent doing the work isn't the one grading it" were on the page until at least 2026-10-14 and gone by 2026-10-30.)
+**Purpose:** find defects the author's context is blind to. Best practices: `/code-review` uses "a fresh subagent that never saw your conversation. It isn't swayed by the reasoning that produced the code." (Its "A fresh context improves code review…" was gone by 2026-10-30.)
 
 **Configuration:**
 
@@ -493,7 +493,7 @@ Template: template T1.
 | Tools | Read, Grep, Glob, plus read-only `git`/`gh`. No web, no edits. |
 | Model | Opus 5.5 at `high`. The official code-review command uses Opus for its bug finders. |
 
-**Model choice.** Official sources disagree: pr-review-toolkit's `code-reviewer` is Opus, feature-dev's (same prompt) is Sonnet, and the docs' example is `inherit` (REPO-046). Sonnet 5.5 is the floor (ORCH-030).
+**Model choice.** Official sources disagree: Opus, Sonnet and `inherit` all appear (REPO-046). Sonnet 5.5 is the floor (ORCH-030).
 
 **What to flag**, from the official command's "HIGH SIGNAL" gate:
 - code that "will fail to compile or parse";
@@ -503,7 +503,7 @@ Not style, not "potential issues that depend on specific inputs or state". "If y
 
 **Validate before fixing.** The caller, or one Sonnet validator per finding, checks each finding against the code (REPO-048).
 
-**Alternative without a repo file:** the built-in `/code-review` at a chosen level, maintained by Anthropic but not pinnable and without the repo's do-not-flag list. It won in osrs-tracker-web (osrs-tracker/osrs-tracker-web#222, 8 PRs, 2026-10-12 to 10-13): 15 fixed findings for `/code-review high`, then recorded as run inline, against 1 for a repo `bug-reviewer` (template T2). The agent was deleted (923c18f); `/code-review high <n>` now runs in a `general-purpose` subagent, 37k–41k tokens and 58–86 s per run (709574d). The 2026-10-30 docs say the built-in is already fresh-context: in a terminal session it "runs the review as a forked subagent", a `context: fork` skill whose subagent "doesn't see your conversation history".
+**Alternative without a repo file:** the built-in `/code-review`, maintained by Anthropic but not pinnable and without our do-not-flag list. It won in osrs-tracker-web (osrs-tracker/osrs-tracker-web#222, 8 PRs, 2026-10-12 to 10-13): 15 fixed findings for `/code-review high` (recorded then as run inline) against 1 for a repo `bug-reviewer` (template T2). The agent was deleted (923c18f); `/code-review high <n>` now runs in a `general-purpose` subagent, 37k–41k tokens and 58–86 s per run (709574d). Per the 2026-10-30 docs the built-in is fresh-context anyway: in a terminal it "runs the review as a forked subagent" (Review locally), which "doesn't see your conversation history" (Skills).
 
 ## [REPO-016] Test writer and test-gap analyser
 - Type: recommendation
@@ -1235,7 +1235,7 @@ Update 2026-10-18: the `@osrs-tracker/*` packages moved to osrs-tracker-packages
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-30
-- Sources: [Best practices: Tell Claude what it can't see, Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [Memory](https://code.claude.com/docs/en/memory), [Code review](https://code.claude.com/docs/en/code-review), [Large codebases](https://code.claude.com/docs/en/large-codebases)
+- Sources: [Best practices: Tell Claude what it can't see, Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [Memory](https://code.claude.com/docs/en/memory), [Customize Code Review](https://code.claude.com/docs/en/code-review-customize), [Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Related: TOK-065, SKILL-021, SKILL-024, REPO-045
 
 The general rules are in TOK-065 and SKILL-021. What is specific to repos with agents:
@@ -1244,14 +1244,14 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 |---|---|---|
 | Verify commands, decisions that aren't in the repo, gotchas, a pointer to the skill and agents | CLAUDE.md | Every session *and every custom subagent* loads it (REPO-010) |
 | Conventions, procedures (release, deploy), design system | Repo skill | On-demand; reviewers preload or read it |
-| Review-only rules: severity definitions, nit cap, skip paths, do-not-flag list | Agent body, or `REVIEW.md` | The managed reviewer says rules there "land more reliably than the same rules in a long CLAUDE.md" |
+| Review-only rules: severity definitions, nit cap, skip paths, do-not-flag list | Agent body, or `REVIEW.md` | "Keep `REVIEW.md` to instructions that change review behavior"; the local `/code-review` reads `CLAUDE.md` "and not `REVIEW.md`" |
 | Deliberate trade-offs | `docs/decisions.md` | Reviewers must "never flag" them; people read it too |
 | Must-happen checks (lint before push, format after edit) | Hooks | CLAUDE.md is "context, not enforced configuration" |
 
 **What best practices keeps in CLAUDE.md (2026-10-30):**
 - **Keep:** "the exact test, typecheck, and lint commands, and how to run a single test file"; "Places where the code is misleading"; "Decisions that aren't in the repo"; "Anything you've had to correct twice already".
 - **Leave out:** architecture and file layout ("Claude reads the repo itself", in "What you can stop doing"), and anything that passes the test below.
-- **The test:** "1. Could it find this by reading the code? 2. Would it actually go and look? If both are yes, leave it out." Until at least 2026-10-14 the test was "Would removing this cause Claude to make mistakes? If not, cut it."
+- **The test:** "1. Could it find this by reading the code? 2. Would it actually go and look? If both are yes, leave it out." It replaced "Would removing this cause Claude to make mistakes?" (until at least 2026-10-14).
 
 **Two checks for agents:**
 - Don't repeat CLAUDE.md content in an agent body, since the agent already has it.
@@ -1261,7 +1261,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: fact
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-30
+- Last verified: 2026-10-12
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Best practices: Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [IFScale, arXiv 2507.11538](https://arxiv.org/abs/2507.11538), [HumanLayer: writing a good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md), [Copilot response customization](https://docs.github.com/en/copilot/concepts/prompting/response-customization)
 - Related: TOK-003, SKILL-024, REPO-044
 
@@ -1316,7 +1316,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-10-14
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices: Review against your spec](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-039, REPO-048, REPO-049, REPO-054
 

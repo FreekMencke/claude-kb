@@ -836,11 +836,11 @@ No official page describes issues as hand-offs between repos. That is our conven
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
-- Sources: [Boris Cherny on X, 2026-01-02](https://x.com/bcherny/status/2007179833990885678), [Simon Willison: parallel coding agents](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/), [Addy Osmani: coding agents manager](https://addyosmani.com/blog/coding-agents-manager/), [Best practices](https://code.claude.com/docs/en/best-practices), [METR early-2025 study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)
+- Last verified: 2026-10-30
+- Sources: [Boris Cherny on X, 2026-01-02](https://x.com/bcherny/status/2007179833990885678), [Simon Willison: parallel coding agents](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/), [Addy Osmani: coding agents manager](https://addyosmani.com/blog/coding-agents-manager/), [Best practices: Run sessions in parallel](https://code.claude.com/docs/en/best-practices), [METR early-2025 study](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)
 - Related: ORCH-020, ORCH-021, ORCH-043, SESS-032
 
-Anthropic's docs give no recommended number of parallel sessions. Best practices lists the mechanisms, plus the writer/reviewer split ("A fresh context improves code review"). For agent teams, they suggest 3–5 teammates (ORCH-010).
+Anthropic's docs give no recommended number of parallel sessions (best practices, 2026-10-30, still names none). It lists the mechanisms (`claude -w`, the desktop app, cloud sessions, `/batch`, `claude agents`) plus the writer/reviewer split: "A second session is also the easiest independent reviewer you can get." For agent teams, they suggest 3–5 teammates (ORCH-010).
 
 What practitioners report:
 - **Boris Cherny (Claude Code's creator), January 2026:** "I run 5 Claudes in parallel in my terminal. I number my tabs 1-5, and use system notifications to know when a Claude needs input". He also runs "5-10 Claudes on claude.ai/code", and moves between them with `--teleport`.

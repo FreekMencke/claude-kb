@@ -16,7 +16,7 @@ Research basis:
 | Which official migration tools exist on our stack? | `ng update` (Angular), `nest upgrade` (Nest CLI 12), `@eslint/migrate-config` and `npx codemod @eslint/v9-to-v10` (ESLint), Node's `npx codemod @nodejs/<recipe>`. Vitest, Jest and typescript-eslint have guides, no codemod. | JSUP-003, NG-010 |
 | Codemod, rename tool or agent edit? | A vendor codemod first; ts-morph for a rename or move across files; ast-grep for one syntax pattern many times; the agent, with a discovery list and a build-and-test gate, for changes that vary by context. | JSUP-004, JSUP-005 |
 | Can Claude Code's LSP tool rename a symbol? | No: nine operations (definition, references, hover, symbols, implementations, call hierarchy), no rename. Use ts-morph's `rename()`. | JSUP-004 |
-| How does an agent write and run a codemod safely? | Discovery list first, transform in the scratchpad, preview (ast-grep without `-U`, jscodeshift `--dry --print`), 2–3 files, then all on a clean tree; codemod output and hand fixes in separate commits; build and tests decide. | JSUP-006 |
+| How does an agent write and run a codemod safely? | Discovery list first, transform in the scratchpad, preview (ast-grep without `-U`, jscodeshift `--dry --print`), three files, then all on a clean tree; codemod output and hand fixes in separate commits; build and tests decide. | JSUP-006 |
 | What did Google and Airbnb learn from LLM migrations? | Deterministic discovery and validation around LLM edits: Google reports 74.45% of 595 changes LLM-generated and an estimated 50% time saving; Airbnb moved 3.5K test files in 6 weeks. In Google's JUnit migration, review was the bottleneck. | JSUP-007 |
 | How should a major upgrade be split into PRs? | Prep PR on the old version for deprecations; then one major of one package family per PR, with the tool's output and the hand fixes in separate commits; optional adoptions later. | JSUP-008 |
 | How do I verify an upgrade? | In a clean checkout: `npm ci`, `npm ls --all`, type-check, build, tests, lint; then read the lockfile diff for unexpected changes. | JSUP-009, JSUP-002 |
@@ -337,7 +337,7 @@ Dependabot rebases its own conflicting PRs, but stops after 30 days unmerged, or
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-10-17
 - Sources: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview), [Best practices: Write a specific prompt](https://code.claude.com/docs/en/best-practices), [Vitest migration guide source](https://github.com/vitest-dev/vitest/blob/main/docs/guide/migration/index.md), [docs.nestjs.com/llms.txt](https://docs.nestjs.com/llms.txt)
 - Related: ORCH-026, TS-015, TOK-090, TOK-095, TOK-096, PROMPT-020, JSUP-001
 

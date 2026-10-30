@@ -337,7 +337,7 @@ Tested 2026-10-17, @stryker-mutator/core 10.0.0, jq on WSL2: the command listed 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-10-17
 - Sources: [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/learn/writing-tests-with-ai.md)), [Claude Code best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Vitest config: allowOnly](https://vitest.dev/config/allowonly), [nizos/tdd-guard: strengthening enforcement](https://github.com/nizos/tdd-guard/blob/main/docs/enforcement.md)
 - Related: PROMPT-028, FLOW-002, HOOK-028, HOOK-032, JSTEST-012, JSTEST-013, JSTEST-015
 
@@ -360,7 +360,7 @@ Checks, cheapest first:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-10-17
 - Sources: [Claude Code best practices: Write a specific prompt](https://code.claude.com/docs/en/best-practices), [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai)
 - Related: FLOW-002, FLOW-011, FLOW-012, JSTEST-016, SKPACK-009
 

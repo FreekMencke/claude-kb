@@ -271,14 +271,14 @@ A large window removes the automatic brake on session length, so cost per turn k
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-30
-- Sources: [Costs: why usage climbs in a long session](https://code.claude.com/docs/en/costs), [Best practices: Keep cost and context down](https://code.claude.com/docs/en/best-practices), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows), local transcripts
+- Sources: [Costs: why usage climbs in a long session](https://code.claude.com/docs/en/costs), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows), local transcripts
 - Related: TOK-009, TOK-030, TOK-032
 
-Claude Code re-sends the full conversation with every request; the cached part is billed at cache-read rates. A 300-turn session at 300k context reads about 90M tokens. Best practices (2026-10-30): "Every request sends the whole conversation, so a session that's collected three unrelated tasks re-reads all three on every turn of the fourth."
+Claude Code re-sends the full conversation with every request; the cached part is billed at cache-read rates. A 300-turn session at 300k context reads about 90M tokens.
 
-Quality: the API's Context windows page says "As token count grows, accuracy and recall degrade, a phenomenon known as *context rot*." Best practices no longer says performance degrades as context fills (it did until at least 2026-10-14). It now says "you'll rarely run out of context" on a 1M window, and keeps `/clear` "because a focused context gets you better answers and costs less."
+Quality: the API's Context windows page: "As token count grows, accuracy and recall degrade, a phenomenon known as *context rot*." Best practices said performance degrades as context fills until at least 2026-10-14; by 2026-10-30 it says only that "a focused context gets you better answers and costs less."
 
-Our 2026-10-07 to 2026-10-12, 6 days (list-price equivalent at Opus 5.5 rates). Correction 2026-10-12: this was first labelled "30 days", but the transcripts only start on 2026-10-06; shares are unaffected, totals are for 6 days. Re-measure with the `token-audit` skill (FreekMencke/claude-skills `local-skills/skills/token-audit/`), whose baseline for 2026-10-07 to 10-11 is 186 USD a day, 0.059 USD per API message, subagents 13% of cost.
+Our 2026-10-07 to 2026-10-12, 6 days (list-price equivalent at Opus 5.5 rates). (First labelled "30 days"; corrected 2026-10-12.) Re-measure with the `token-audit` skill (FreekMencke/claude-skills `local-skills/skills/token-audit/`), whose baseline for 2026-10-07 to 10-11 is 186 USD a day, 0.059 USD per API message, subagents 13% of cost.
 
 | Bucket of context size per turn | Share of turns | Share of input tokens |
 |---|---|---|
@@ -1242,18 +1242,18 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 | One session for many unrelated tasks (the "kitchen sink") | `/clear` per task (`/clear <name>` names the session you leave) | TOK-030 |
 | A third correction after two failed ones | `/clear` and write a better prompt | TOK-030 |
 | Running a 1M window to 400k+ for routine work | Lower `autoCompactWindow`, hand off | TOK-032 |
-| Long output (a full test run, a wide search) in the main context | A subagent with a return-format cap; Explore takes broad searches by default | TOK-035 |
+| Long output (full test runs, wide searches) in the main context | A subagent with a return-format cap | TOK-035 |
 | Switching `/model` or effort mid-task | Choose at session start | TOK-053 |
-| Resuming a big session after hours away | "Resume from summary" or start fresh; in the terminal, idle compaction (v2.1.290+, default on) already compacts a 200K+ token conversation after about 54 idle minutes | TOK-034 |
+| Resuming a big session after hours away | "Resume from summary" or start fresh; terminal idle compaction (v2.1.290+) already compacts 200K+ conversations after about 54 idle minutes | TOK-034 |
 | Pasting large logs | Save to a file and Read or grep it | TOK-043 |
 | Full `git diff` or `gh pr view` dumps | `--stat`, `--json <fields>`, path filters | TOK-042 |
 | Raw test output | Filter hook or subagent | TOK-042 |
 | Many full-resolution screenshots in the main context | Accessibility snapshot, crop or downscale, or a subagent | TOK-043 |
-| Vague prompts ("improve this codebase") when fixing something specific | Name the file, the symptom and what "fixed" looks like (vague is fine when exploring) | TOK-041 |
+| Vague prompts ("improve this codebase") for a specific fix | Name the file and the symptom (fine when exploring) | TOK-041 |
 | Plan mode for a trivial change | Ask directly; Costs keeps plan mode "for complex tasks" | FLOW-005 |
 | Large agent teams on Opus | Small teams, Sonnet teammates | TOK-037 |
 
-What changed by 2026-10-30: best practices dropped "skip the plan" for one-sentence diffs and the context-window reason for subagents ("Use subagents to protect your context window" is now in its stop-doing table). The subagent row stands on cost and noise.
+By 2026-10-30 best practices dropped "skip the plan" and the context-window reason for subagents (TOK-035).
 
 Confidence note: each row's detail and confidence is in the linked entry.
 

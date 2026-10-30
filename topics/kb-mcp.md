@@ -426,7 +426,7 @@ Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-10-14
 - Sources: [Best practices: Connect the tools Claude needs](https://code.claude.com/docs/en/best-practices), [Costs: reduce MCP server overhead](https://code.claude.com/docs/en/costs), [Features overview](https://code.claude.com/docs/en/features-overview), [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [What if you don't need MCP (Zechner)](https://mariozechner.at/posts/2025-11-02-what-if-you-dont-need-mcp/), [Skills vs dynamic MCP loadouts (Ronacher)](https://lucumr.pocoo.org/2025/12/13/skills-vs-mcp/)
 - Related: TOK-022, SKILL-021, MCP-018, INFRA-007, BROWSER-002
 
