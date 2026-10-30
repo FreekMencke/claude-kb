@@ -18,7 +18,7 @@ Research basis:
 | Which Google image model now? | `gemini-nano-banana-2.1` (Nano Banana 2.1, 2026-10-06), "the primary high-efficiency workhorse". Imagen is shut down. | IMG-003 |
 | What does an image cost? | Gemini Nano Banana 2.1: $0.0336 per 1K image, $0.113 per 4K. OpenAI bills tokens ($30 per 1M image output tokens); `gpt-image-2` examples run $0.006 to $0.211 at 1024×1024. | IMG-002, IMG-003 |
 | Can I get a transparent background? | From OpenAI: `background: "transparent"` with PNG or WebP output. Not found in Gemini's guide. | IMG-004 |
-| Can I generate a 1200×630 OG image directly? | Not from OpenAI: custom sizes must be multiples of 16 and at least 655,360 pixels. Generate 1536×1024 and crop. | IMG-004, OG-007 |
+| Can I generate a 1200×630 OG image directly? | Not at exactly 1200×630: OpenAI's custom sizes must be multiples of 16. Generate 1920×1008 (the same 1.905 ratio) and scale it down; keep the OG file as PNG or JPEG. | IMG-004, OG-007 |
 | Do generated images carry provenance marks? | Gemini: "All generated images include a SynthID watermark." OpenAI: C2PA plus SynthID per its help article (unverified). | IMG-005 |
 | Does converting to AVIF or WebP keep C2PA? | Not with sharp 0.35.5: all 24 conversions dropped it, even with `keepMetadata()` or `withMetadata()` (tested). SynthID sits in the pixels and isn't checked here. | IMG-006 |
 | Who owns the output, and is it copyrightable? | Google won't claim ownership but may make the same image for others. The US Copyright Office: "prompts do not alone provide sufficient control" for authorship. | IMG-007 |
@@ -101,7 +101,7 @@ Nano Banana 2.1 is "the primary high-efficiency workhorse model for image genera
 - Confidence: official-docs
 - Last verified: 2026-10-30
 - Sources: [OpenAI image generation guide](https://developers.openai.com/api/docs/guides/image-generation), [Gemini image generation](https://ai.google.dev/gemini-api/docs/image-generation)
-- Related: OG-007, WEBPERF-010, WEBPERF-011, IMG-006
+- Related: OG-007, WEBPERF-010, WEBPERF-011, IMG-006, OG-005
 
 **OpenAI (GPT Image 2.5):**
 - Sizes: 1024×1024, 1536×1024 and 1024×1536, or a custom `WIDTHxHEIGHT`. "Width and height must be multiples of 16, the aspect ratio must be between 1:3 and 3:1, and neither edge may exceed 3840 pixels." The total must be between 655,360 and 8,294,400 pixels, and "Resolutions above `2560x1440` are experimental."
@@ -111,8 +111,9 @@ Nano Banana 2.1 is "the primary high-efficiency workhorse model for image genera
 **Gemini (Nano Banana 2.1):** 1K, 2K and 4K output (1K by default), up to 14 reference images. No transparent-background option was found in the guide.
 
 **For the web:**
-- An OG card is 1200×630 (OG-007). That isn't a multiple of 16 and is under OpenAI's pixel minimum, so generate 1536×1024 (or 1200×640 custom: multiples of 16, 768,000 pixels) and crop.
-- Serve the result as AVIF or WebP with a `<picture>` fallback and `NgOptimizedImage` (WEBPERF-010, WEBPERF-011). That conversion drops C2PA (IMG-006).
+- An OG card is 1200×630 (OG-007). 630 isn't a multiple of 16, so ask OpenAI for `1920x1008`: the same 1.905 ratio, both edges multiples of 16, 1,935,360 pixels. Scale it to 1200×630; nothing to crop.
+- On pages, serve AVIF or WebP through `NgOptimizedImage` with a loader or as build-time files; `<picture>` can't be used with `ngSrc`, and AVIF is Baseline widely available anyway (WEBPERF-010, WEBPERF-011). That conversion drops C2PA (IMG-006).
+- Keep `og:image` as PNG or JPEG: Meta names only "image/jpeg, image/gif or image/png" (OG-007), and a satori card embeds only PNG or JPEG (OG-005).
 - Give it real alt text. The model's prompt describes what you wanted, not what's in the picture.
 
 ## [IMG-005] Provenance marks: C2PA and SynthID
@@ -138,7 +139,7 @@ For a site this means: expect an invisible watermark in every Gemini image and p
 - Applies to: general
 - Confidence: single-source
 - Last verified: 2026-10-30
-- Sources: [sharp output options](https://sharp.pixelplumbing.com/api-output), [contentauth/c2pa-rs test fixtures](https://github.com/contentauth/c2pa-rs/tree/main/sdk/tests/fixtures), [c2pa-node](https://github.com/contentauth/c2pa-node)
+- Sources: [sharp output options](https://sharp.pixelplumbing.com/api-output), [contentauth/c2pa-rs test fixtures](https://github.com/contentauth/c2pa-rs/tree/main/sdk/tests/fixtures), [c2pa-node](https://github.com/contentauth/c2pa-node), [sharp api-output at v0.35.5](https://github.com/lovell/sharp/blob/v0.35.5/docs/src/content/docs/api-output.md)
 - Related: IMG-005, WEBPERF-010, OG-005
 
 Tested 2026-10-30: `sharp@0.35.5` (libvips 8.18.7), Node v22.22.0, installed with `npm install --ignore-scripts` (its prebuilt binaries come as optional dependencies, so no install scripts were needed).
@@ -149,6 +150,8 @@ Method: each fixture converted to AVIF, WebP, PNG and JPEG, each with default op
 
 Result: none of the 24 outputs contained `c2pa`, `jumb`, `jumd` or `contentauth`. c2pa-node reported no manifest in the outputs it read.
 
+sharp's docs at v0.35.5 predict this: the default strips "all metadata", `keepMetadata()` keeps "all metadata (EXIF, ICC, XMP, IPTC)" and `withMetadata()` "most metadata (EXIF, XMP, IPTC)". C2PA's JUMBF box is in neither list. Both fixtures were JPEG; OpenAI returns PNG by default, which wasn't tested.
+
 So an Angular build that converts images with sharp (directly, or through an image CDN built on libvips) ships them without C2PA, even when told to keep metadata. Re-encoding would also break the manifest's hash binding even if the box survived; that wasn't tested. Other converters (`cwebp`, `avifenc`, Squoosh) weren't tested.
 
 ## [IMG-007] Ownership and copyright of generated images
@@ -156,7 +159,7 @@ So an Angular build that converts images with sharp (directly, or through an ima
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-30
-- Sources: [US Copyright Office: Copyright and AI, Part 2: Copyrightability (January 2025)](https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf), [Gemini API Additional Terms of Service (effective 2026-03-23)](https://ai.google.dev/gemini-api/terms), [OpenAI Services Agreement (unverified)](https://openai.com/policies/services-agreement/)
+- Sources: [US Copyright Office: Copyright and AI, Part 2: Copyrightability (January 2025)](https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf), [Gemini API Additional Terms of Service (effective 2026-03-23)](https://ai.google.dev/gemini-api/terms), [OpenAI Services Agreement (unverified)](https://openai.com/policies/services-agreement/), [SCOTUSblog: Thaler v. Perlmutter](https://www.scotusblog.com/cases/thaler-v-perlmutter/), [JD Supra: Supreme Court Denies Review in AI Authorship Case](https://www.jdsupra.com/legalnews/supreme-court-denies-review-in-ai-2865518/)
 - Related: OSS-001, IMG-005, IMG-010
 
 **Copyright** (US Copyright Office, Part 2, conclusions):
@@ -168,6 +171,8 @@ So an Angular build that converts images with sharp (directly, or through an ima
 **Vendor terms:**
 - **Google**, Gemini API Additional Terms: "Google won't claim ownership over that content. You acknowledge that Google may generate the same or similar content for others and that we reserve all rights to do so."
 - **OpenAI**: search-result text only (openai.com returned a bot check). It says the Services Agreement assigns OpenAI's rights in output to the customer.
+
+**Courts:** the Supreme Court denied certiorari in *Thaler v. Perlmutter* (No. 25-449) on 2026-03-02, leaving the D.C. Circuit's human-authorship holding in place without deciding AI-assisted works (law-firm summaries; the docket wasn't read).
 
 In practice, a generated hero image is yours to use but probably nobody's to own. Someone else may get a near-identical one, and you may not be able to stop them copying it. A US view only; other jurisdictions weren't read. Not legal advice.
 
@@ -214,18 +219,18 @@ Size and align icons against the text beside them per SPACE-011 and SPACE-012. W
 - Confidence: single-source
 - Last verified: 2026-10-30
 - Sources: [OpenAI image generation guide](https://developers.openai.com/api/docs/guides/image-generation), [Gemini image generation](https://ai.google.dev/gemini-api/docs/image-generation), [US Copyright Office Part 2](https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf)
-- Related: IMG-002, IMG-003, IMG-006, IMG-007, IMG-009, OG-009
+- Related: IMG-002, IMG-003, IMG-006, IMG-007, IMG-009, OG-009, OG-005, OG-007
 
 Our judgement from the entries above.
 
 **Draw in code first:** OG cards (satori, OG-009), icons (IMG-009), charts and diagrams. Code is diffable, themeable and free per render.
 
 **Generate** only where a photo-like or illustrated image adds something: a hero, an empty-state illustration, a blog cover. Then:
-1. Pick a current model: Nano Banana 2.1 at 1K for cheap drafts, `gpt-image-2.5-flare` when you need transparency (IMG-002 to IMG-004).
-2. Generate a few candidates at low quality, pick, then render the final at the needed size.
-3. Commit the source PNG plus a sidecar file with the model ID, date, prompt and seed or response ID. Models shut down within months (IMG-002), so the prompt alone won't reproduce it.
-4. Convert to AVIF and WebP in the build (WEBPERF-010), accepting that C2PA is lost (IMG-006). If disclosure matters, write it in the page.
-5. Treat the image as unowned (IMG-007). Don't use it as a logo or trademark.
+1. Pick a current model: Nano Banana 2.1 at 1K is among the cheapest ($0.0336, the same as Nano Banana 2 Lite); either GPT Image 2.5 model when you need transparency (IMG-002 to IMG-004).
+2. Draft at the final size and medium quality, pick one, and refine it with the edit endpoint. Neither guide documents a seed, so a re-render at higher quality is a different picture.
+3. Commit the source PNG plus a sidecar file with the model ID, date, prompt, edit steps and response ID. Models shut down within months (IMG-002), so the prompt alone won't reproduce it.
+4. Convert to AVIF and WebP in the build (WEBPERF-010), accepting that C2PA is lost (IMG-006). If disclosure matters, write it in the page. For an OG card, embed the PNG or JPEG source, not the build output: WebP drew nothing in satori and AVIF made it throw (OG-005).
+5. Treat the image as unowned (IMG-007). Don't use it as a logo or trademark. The sidecar also records your own edits, the human contribution the Copyright Office asks about.
 
 ## Recommendations for our setup
 
