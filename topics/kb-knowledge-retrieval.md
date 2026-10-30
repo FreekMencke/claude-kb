@@ -7,6 +7,7 @@ Research basis:
 - Read as raw text: code.claude.com and platform.claude.com `.md` pages, anthropic.com posts and support.claude.com articles as stripped HTML, GitHub files from `raw.githubusercontent.com`.
 - This session's network allowed GitHub, npm and Anthropic's sites only. arxiv.org, cursor.com, cline.bot, x.com, huggingface.co and most vendor pages were blocked for both curl and WebFetch. Claims from those sources come from search-result text only and are marked unverified.
 - Measured on this knowledge base at commit `c1ffe45` (990 entries): RETR-009 to RETR-012.
+- Added 2026-10-30 from a session on keeping the knowledge base true and used (FreekMencke/claude-kb#340), with arxiv.org and the other sources read directly: RETR-021 to RETR-032.
 
 ## Quick answers
 
@@ -17,7 +18,6 @@ Research basis:
 | Does Anthropic recommend RAG or agentic search for agents? | Agentic search first: "only adding semantic search if you need faster results or more variations". Claude Code uses glob and grep just-in-time, "bypassing the issues of stale indexing". | RETR-002, RETR-003 |
 | Can the whole knowledge base go in the prompt instead? | Not for long. Without Quick answers it measured about 934k tokens on Haiku 5.5, 93% of a 1M window; about 70 more entries fill it. Each lookup would cost about $0.05 warm and $0.94 cold, against $0.002 for a search. | RETR-009, RETR-008 |
 | When is keyword search weak, and what fixes it? | Questions worded away from the entry's terms: BM25 on the raw question fell from 90% to 73% top-5. Letting Haiku write two to five keywords brought it back to 93%, and the full search-and-read loop to 99%. | RETR-011, RETR-010 |
-| What did Anthropic's Contextual Retrieval measure? | Top-20 retrieval failures fell from 5.7% to 3.7% with contextual embeddings, 2.9% with contextual BM25 added, and 1.9% with reranking, on chunks of long documents. Our entries are self-contained already. | RETR-004, RETR-005 |
 | Is there a size below which no search is needed? | Anthropic (2024): under 200,000 tokens, put it all in the prompt. Karpathy (2026): an index file works at "~100 sources, ~hundreds of pages". We're past both. | RETR-004, RETR-014 |
 | Does the lookup admit when the knowledge base has no answer? | For absent technologies, yes: 20 of 20 came back "not answered" with no IDs. Near-but-wrong entries weren't tested. The server's empty-search counter can't detect misses, because OR matching nearly always returns hits. | RETR-012 |
 | When do claude.ai Projects use RAG? | Automatically, on paid plans, when project knowledge nears the context limit, "by up to 10x" capacity; they switch back when it shrinks. The threshold and the method aren't published. | RETR-006 |
@@ -25,7 +25,9 @@ Research basis:
 | Would GraphRAG help? | Not for lookups. It targets "global sensemaking questions" over a whole corpus, indexing is "an expensive operation", and GraphRAG-Bench notes it "frequently underperforms vanilla RAG". | RETR-015 |
 | What do Cursor, Cline, Codex and Copilot do? | Split: Cursor, Copilot, Windsurf and Augment use embedding indexes; Cline and Codex search with tools (Codex: "prefer using `rg`"); Sourcegraph dropped embeddings for Enterprise Cody. Mostly unverified (pages blocked). | RETR-013 |
 | How should we evaluate retrieval for a knowledge base? | Not on questions written from the entries (vocabulary-matched). Add reworded and uncovered questions, score recall@5 and MRR per arm, and judge retrieval and the end answer separately. | RETR-019 |
-| If we ever need hybrid search, what's the cheapest way? | FTS5 plus `sqlite-vec` brute force with Reciprocal Rank Fusion, embeddings from Voyage. A test on our own questions comes first. | RETR-016, RETR-020 |
+| Does the knowledge base improve answers, and is it used? | On post-training and local questions, yes: 100% against 47.5% with no web and 75% with web, 20 cases, one run each, at lower cost than web search ($2.65 against $3.80). The criteria come from the entries, so 100% isn't accuracy: by hand, 2 of 40 answers said the opposite of the entry. Used in 48 of 320 sessions over 14 days, and 12 of 52 relevant ones. | RETR-030, RETR-031, RETR-025 |
+| What should be re-verified first? | What real sessions read, then the rest on a floor: reading isn't reviewing for an agent, so demand sets the order, not the scope. A hash check of 2,847 sources takes 2 minutes and no model calls. | RETR-021, RETR-026, RETR-025 |
+| Do tags or generated queries help search? | Tags barely: weight 0 moves top 5 by at most 2 points and top 1 by 3. Filtered document expansion waits until real queries show vocabulary misses; of 4 real misses, 2 were newer entries outranking older ones. | RETR-029, RETR-028 |
 
 ## Index
 
@@ -51,6 +53,18 @@ Research basis:
 | RETR-018 | Where knowledge-base lookups fail, in order | recommendation | failure-modes, triggering, staleness |
 | RETR-019 | Evaluating retrieval for a knowledge base | recommendation | evaluation, recall, mrr, negatives |
 | RETR-020 | Adding vector RAG before an eval shows misses | anti-pattern | rag, embeddings, premature |
+| RETR-021 | Demand-driven review: a priority, not the only trigger | recommendation | review, kcs, reuse, priority, re-verification |
+| RETR-022 | Freshness dates, owners and doc bugs | pattern | freshness, owners, doc-bugs, last-verified |
+| RETR-023 | OpenAI's doc-gardening agent: one sentence of evidence | pattern | doc-gardening, openai, agents, stale-docs |
+| RETR-024 | Karpathy's LLM wiki lint list against our checks | comparison | lint, wiki, karpathy, contradictions, orphans |
+| RETR-025 | Real use of this knowledge base, 2026-10-15 to 2026-10-28 | fact | real-use, transcripts, kb-usage, real-queries |
+| RETR-026 | Hash-checking every source: what two runs show | fact | source-hash, check-sources, churn, re-verification |
+| RETR-027 | Looking up every quote in its source | fact | quote-check, check-sources, near-match, last-verified |
+| RETR-028 | Filtered document expansion: hold until real queries miss | recommendation | doc2query, document-expansion, bm25, premature |
+| RETR-029 | Tag weight barely moves search | fact | tags, bm25, weights, retrieval-eval |
+| RETR-030 | Does the knowledge base improve answers? 20 cases, with and without | fact | answer-eval, plugin-eval, ablation, llm-grader |
+| RETR-031 | What the graders missed: misreads and an entry error | fact | misread, forked-haiku, answer-eval, lookup-skill |
+| RETR-032 | Guru's verification from use: signals agents don't send | comparison | verification, guru, usage-signals, feedback |
 
 ## [RETR-001] A knowledge base for agents is a compiled layer, not a search problem
 - Type: pattern
@@ -413,19 +427,19 @@ Re-check the figures against the papers before quoting them.
 - Type: recommendation
 - Applies to: Claude Code, claude.ai
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-10-30
 - Sources: local measurement (RETR-010, RETR-012), [README: re-verification routine](https://github.com/FreekMencke/claude-kb/blob/main/README.md#re-verification-routine), [README: Changing the lookup skill](https://github.com/FreekMencke/claude-kb/blob/main/README.md#changing-the-lookup-skill)
-- Related: RETR-001, RETR-019, MCP-038, MCP-040, SKILL-015
+- Related: RETR-001, RETR-019, RETR-025, RETR-030, RETR-031, MCP-038, MCP-040, SKILL-015
 
 A lookup can fail at five points. With retrieval measured at 97–100% (RETR-010), this is where the risk sits, most likely first:
 
 1. **Not asked.** The agent answers from memory without looking. Chat called the connector only when it was named, until the plugin bundled the skill with it (MCP-038, MCP-040). The trigger evals score 120/120 loads and 51/51 skips, but they run each plugin alone (README).
 2. **Not covered.** The question falls outside the entries. The lookup then says so (RETR-012), and the caller falls back to memory or the web.
 3. **Covered but stale or wrong.** The first re-verification run changed 25 entries, and 8 of those changes were wrong (README). Errors here reach every agent and look authoritative.
-4. **Found but misread.** The forked Haiku summarises entries for an Opus caller. Answer correctness wasn't measured, only which entries were cited (MCP-041, RETR-010).
+4. **Found but misread.** The forked Haiku summarises entries for an Opus caller. Measured 2026-10-30: 2 of 40 answers said the opposite of the entry, and all flagged answers came through the fork (RETR-030, RETR-031; a lead, not blinded).
 5. **Not found.** Raw-question BM25 misses reworded questions, but the agent loop recovers them (RETR-011). Measured only on synthetic questions: all cited entries made the top 5 in 72–79% of them, so multi-part answers are often built from part of what exists.
 
-So effort pays off most in triggering, coverage and verification. A better ranker comes after real queries show misses. The server's 54 searches in 30 days (RETR-012) fit point 1.
+So effort pays off most in triggering, coverage and verification. A better ranker comes after real queries show misses. The server's 54 searches in 30 days (RETR-012) and 12 of 52 relevant sessions (RETR-025) fit point 1.
 
 *Ordering by our judgment from these measurements and the README's history, not a measured rate.*
 
@@ -477,6 +491,237 @@ The README's rule already says this: "Revisit if lookups start failing."
 
 ---
 
+## [RETR-021] Demand-driven review: a priority, not the only trigger
+- Type: recommendation
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [KCS v6 Practices Guide, Technique 4.1: Reuse is Review](https://library.serviceinnovation.org/KCS/KCS_v6/KCS_v6_Practices_Guide/030/030/040/020) (accessed 2026-10-30), local measurement (RETR-025)
+- Related: RETR-018, RETR-022, RETR-024, RETR-025, RETR-032
+
+Knowledge-Centered Service reviews an article when someone uses it: "For those articles that are never referenced, we have not wasted time reviewing them." Its reasoning: "Reviewing every KCS article that is created is a huge waste of time and money."
+
+The method relies on a person noticing a fault while using the article: "the requestors participate in the "reuse is review" process", and they "are very quick to point out articles that they don't understand or that don't work." An agent that reads an entry and follows it reports nothing unless told to, so reading isn't reviewing here.
+
+So use demand to order the work, and keep a floor for the rest:
+- Re-verify entries that real sessions read first (RETR-025 gives the list; 199 of 1,261 were read in 14 days).
+- Don't skip the unread ones: their sources can change too, and a hash check finds that at no model cost (RETR-026).
+- Ask agents to report an entry that proved wrong in practice, since nothing else closes that loop (RETR-022).
+
+The recommendation is our inference; KCS says nothing about agents.
+
+## [RETR-022] Freshness dates, owners and doc bugs
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [Software Engineering at Google, ch. 10: Documentation](https://abseil.io/resources/swe-book/html/ch10.html) (accessed 2026-10-30)
+- Related: RETR-021, RETR-023, RETR-024
+
+Google's practice, as the book describes it: "Documents without owners become stale and difficult to maintain." Documents "note the last time a document was reviewed, and metadata in the documentation set will send email reminders when the document hasn't been touched in, for example, three months." The date lives in the document with its owner, and the book calls this "a low-cost means to ensure that a document is looked over from time to time". Documentation should also "Have issues tracked, as bugs are tracked in code".
+
+How that maps to this knowledge base:
+- **Freshness date:** `Last verified` on every entry, and the server's 60-day advice.
+- **Reminder:** the re-verification routine, which picks entries by age.
+- **Owner:** none per entry. One person owns the repo, and routines do the checking. With 1,261 entries, a per-entry owner adds nothing.
+- **Bug tracking:** the gap. An agent that finds an entry wrong has no rule to file it. A line in the global CLAUDE.md would give it one.
+
+A date only says someone looked. Whether the source still says the claim needs a check against the source (RETR-026, RETR-027).
+
+## [RETR-023] OpenAI's doc-gardening agent: one sentence of evidence
+- Type: pattern
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [Harness engineering: leveraging Codex in an agent-first world, OpenAI, 2026-02-11](https://openai.com/index/harness-engineering/) (curl got 403 on 2026-10-30; read as the [Wayback copy of 2026-10-17](http://web.archive.org/web/20261017224725/https://openai.com/index/harness-engineering/))
+- Related: RETR-022, RETR-024, RETR-026
+
+OpenAI describes a repo whose docs are kept true by machines: "Dedicated linters and CI jobs validate that the knowledge base is up to date, cross-linked, and structured correctly." A recurring doc-gardening "agent scans for stale or obsolete documentation that does not reflect the real code behavior and opens fix-up pull requests."
+
+That's all the post says: no cost, cadence, error rate or share of pull requests accepted. Treat it as a pattern that a team uses, not evidence that it works.
+
+Two differences from us:
+- Their ground truth is code in the same repo. Ours is third-party pages, which change and can be misread.
+- Fix-up pull requests need a guard here. The first re-verification run changed 25 entries, and 8 of those changes were wrong (README), which is why only a contradicting quote may change a claim.
+
+Our equivalent is the routine plus `scripts/check-kb.ts` in CI.
+
+## [RETR-024] Karpathy's LLM wiki lint list against our checks
+- Type: comparison
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [LLM Wiki, Andrej Karpathy (gist)](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (accessed 2026-10-30)
+- Related: RETR-004, RETR-021, RETR-023, RETR-026
+
+Karpathy's gist has the model health-check a wiki periodically: "contradictions between pages, stale claims that newer sources have superseded, orphan pages with no inbound links, important concepts mentioned but lacking their own page, missing cross-references, data gaps that could be filled with a web search." Its claim is that this is cheap: "the cost of maintenance is near zero". The gist measures nothing.
+
+| Lint | Here |
+|---|---|
+| Contradictions | INDEX.md's Conflicts, by hand; no scan |
+| Stale claims | The routine; `scripts/check-sources.ts` between runs (RETR-026) |
+| Orphans, cross-references | `Related` IDs must exist. One-way links are left alone on purpose |
+| Concepts without a page | Not checked |
+| Data gaps | Not checked. A search with no read may point at them (FreekMencke/claude-kb#347) |
+
+"Near zero" doesn't hold for us: a model pass still needs review, and 8 of 25 changes in the first re-verification were wrong (README). Scripts cover the mechanical rows at no model cost; use a model where judgment is needed.
+
+## [RETR-025] Real use of this knowledge base, 2026-10-15 to 2026-10-28
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [scripts/kb-usage.ts](https://github.com/FreekMencke/claude-kb/blob/main/scripts/kb-usage.ts), local measurement: `node scripts/kb-usage.ts --from 2026-10-15 --to 2026-10-28 --period all`, one user's transcripts on one machine, outside `-tmp` projects, tool calls deduplicated
+- Related: RETR-018, RETR-021, RETR-012, RETR-029
+
+Most sessions didn't use the knowledge base, and most of those that should have didn't either. Of 320 sessions, 48 used it. Of 52 outside this repo and claude-skills that edited an instruction file or did an upgrade, 12 used it.
+
+- **Route:** direct tool 43, lookup skill 3, subagent only 2.
+- **First use:** the user named it 17, after another skill 14, unprompted 17.
+- **Searches:** 96 (95 distinct), 0 empty, 53 directly after another search, topic filter on 5.
+- **Reads:** 62 `kb_get` calls for 245 IDs. Only 70 appeared in an earlier search that session (rank 1: 19, top 5: 48, deeper: 22), so most IDs came from elsewhere, probably citations in skills and issues (not traced).
+- **Spread:** 376 entries returned, 199 read, 1,261 in the corpus.
+
+Scoring BM25 on 28 of those real queries (`evals/retrieval/real.json`, hand-labelled from what the session read), at commit 2632565: 14 at rank 1, 24 in the top 5, MRR 0.64, all cited 17. Of the 4 misses, 2 are DESIGN-023 outranked by the newer DESIGN-041 to 045 on the same subject, and 2 rank 7 and deeper.
+
+Query text stays in a git-ignored folder: the labels were reviewed by hand before committing.
+
+## [RETR-026] Hash-checking every source: what two runs show
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [scripts/check-sources.ts](https://github.com/FreekMencke/claude-kb/blob/main/scripts/check-sources.ts), local measurement: `node scripts/check-sources.ts`, run twice about 30 minutes apart on 2026-10-30
+- Related: RETR-021, RETR-022, RETR-023, RETR-027
+
+Checking every source for change takes minutes and no model calls. The script fetched 2,847 URLs in about 1 minute 50 seconds. Comparing normalised text hashes across the last two runs: 2,777 same, 1 changed, 14 volatile (12 on support.google.com), 55 failed.
+
+Getting there needed filters, each found from false alarms:
+- `Accept-Language: en`, since Google hosts answered in random languages without it (volatile 70 to 14).
+- GitHub's counters, which changed 26 pages between runs with no real change.
+- Empty 200 responses count as failures.
+
+What it doesn't show:
+- **A changed hash isn't a wrong claim.** The script reports added changelog bullets and quotes it can't find; a person or the routine judges them. Only a contradicting quote changes a claim.
+- **Slow churn is unmeasured.** 30 minutes says nothing about a week. The weekly workflow (`.github/workflows/sources.yml`) gives that from its second run.
+
+Third-party text stays out of this public repo: hashes and reports only, with text in an Actions cache and artifact.
+
+## [RETR-027] Looking up every quote in its source
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [scripts/check-sources.ts](https://github.com/FreekMencke/claude-kb/blob/main/scripts/check-sources.ts), local measurement: `node scripts/check-sources.ts`, two runs on 2026-10-30, the sweep in FreekMencke/claude-kb#352
+- Related: RETR-022, RETR-026, RETR-018
+
+A script can check most of what `Last verified` only asserts. Of 3,178 double-quoted strings in 974 entries, 2,621 were found in the entry's cited sources, 64 were near matches and 493 weren't found; 610 entries had every quote found.
+
+"Not found" isn't "wrong". Causes seen: our own examples and prompts in double quotes, pages that render through JavaScript, PDFs, quotes spanning markup, and 55 failed fetches. Near matches are the useful class: mostly a source reworded since the entry was written.
+
+Acting on them by hand (FreekMencke/claude-kb#352): 32 near-match quotes updated, with a few claims corrected. Before and after that sweep: found 2,614 to 2,651, near 69 to 33, not found 495 unchanged, fully verified entries 606 to 625. The sweep changed no recommendation.
+
+The convention that makes it work: double quotes mean source text. Own examples go in code spans, and paraphrases go without quotes.
+
+## [RETR-028] Filtered document expansion: hold until real queries miss
+- Type: recommendation
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [Doc2Query--: When Less is More, Gospodinov, MacAvaney and Macdonald, ECIR 2023](https://arxiv.org/abs/2301.03266) (abstract read 2026-10-30; paper's method not read)
+- Related: RETR-010, RETR-011, RETR-020, RETR-025, RETR-029
+
+Doc2Query adds generated queries to each document before indexing, to close vocabulary gaps for keyword search. The paper finds it "prone to "hallucinating" content", and that filtering the queries with a relevance model "can improve the retrieval effectiveness of Doc2Query by up to 16%, while simultaneously reducing mean query execution time by 23% and cutting the index size by 33%."
+
+Those figures compare filtered with unfiltered expansion on the paper's collections, not expansion against our short, titled entries with a model writing the queries. For us:
+- It would fit FTS5 with no new infrastructure: generated queries go in an extra indexed column.
+- It would target misses from worded-away questions. Of 4 misses in the real set, 2 are older entries outranked by newer ones on the same subject (RETR-025), which more terms wouldn't fix.
+- The agent loop already recovers most vocabulary misses (RETR-010, RETR-011).
+
+Next step only if the real set grows and vocabulary misses appear. The LLM rerank in `kb-knowledge-retrieval.md`'s recommendations stays first.
+
+## [RETR-029] Tag weight barely moves search
+- Type: fact
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [evals/retrieval](https://github.com/FreekMencke/claude-kb/blob/main/evals/retrieval/README.md), local measurement: `node evals/retrieval/run.ts bm25 && node evals/retrieval/score.ts` with `WEIGHTS` in `mcp-server/kb-index.ts` at `[10, 3, 2, 1]` and `[10, 3, 0, 1]`, clearing `evals/results/retrieval/` between runs, at commit 2632565 plus `evals/retrieval/real.json`
+- Related: RETR-010, RETR-019, RETR-025
+
+Turning tags off changes raw-query BM25 by at most 3 points, so tag cleanup isn't worth doing for search.
+
+| Set | Top 5, tags 2 | Top 5, tags 0 | Top 1, tags 2 | Top 1, tags 0 |
+|---|--:|--:|--:|--:|
+| Original (100) | 88 | 86 | 74 | 71 |
+| Natural (100) | 91 | 92 | 65 | 62 |
+| Hard (100) | 71 | 71 | 44 | 42 |
+| Real (28) | 24 | 24 | 14 | 13 |
+
+The tags are untidy: 2,006 distinct, 1,276 used once (index tables at the same commit). It doesn't matter here, since they repeat words already in titles and bodies. They do help top 1 slightly, so keep the weight at 2.
+
+Differences this small are noise at these sample sizes (RETR-010: a rerun moved one arm by 3 points). The scorer caches per arm: without clearing the results folder, the second run silently repeats the first.
+
+## [RETR-030] Does the knowledge base improve answers? 20 cases, with and without
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: local measurement: `claude plugin eval . --eval-dir eval-answers --ablation with-without --model claude-opus-5-5 --judge-model sonnet --allow-real-servers --runs 1`, v2.1.296, 2026-10-30; [Plugin evals](https://code.claude.com/docs/en/plugin-evals)
+- Related: RETR-018, RETR-019, RETR-031, TOK-117
+
+Yes, on questions whose answers post-date training or are local to us. Each of the 20 cases has two `llm` graders with criteria taken from the entries, and each arm ran once.
+
+| Tools | With plugin | Without | Cost with / without | Summed seconds |
+|---|--:|--:|--:|--:|
+| No web | 100% | 47.5% | $2.61 / $2.28 | 370 / 302 |
+| WebSearch, WebFetch | 100% | 75% | $2.65 / $3.80 | 367 / 582 |
+
+Judging added $0.71 and $0.73. With web, the plugin arm cost 30% less than the no-plugin arm, where 16 of 20 runs searched or fetched.
+
+Without the plugin but with web, 6 cases lost points: `gh-cloud`, `grafana-policy`, `mongod-ubuntu`, `playwright-cost`, `rtk-bill`, `tokeneconomizer`. Two had a misleading conclusion: `GH_TOKEN` "might get past" the proxy, and the CLI "Probably yes" saves tokens. The others had the right direction and lacked the detail the criteria ask for.
+
+Don't read 100% as accuracy:
+- The criteria come from the entries, so the arm reading them sits at the ceiling, and any entry error passes (RETR-031).
+- One run per cell, and 19 of 20 plugin runs used the KB (`capi-55` used the bundled `claude-api` skill; both arms passed).
+- The no-plugin web answer that failed `grafana-policy` was right that the policy can't be changed, for a different reason.
+
+## [RETR-031] What the graders missed: misreads and an entry error
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [eval-answers](https://github.com/FreekMencke/claude-kb/blob/main/eval-answers), local measurement: hand reading of the 40 plugin answers in RETR-030 against their entries, 2026-10-30, not blinded
+- Related: RETR-018, RETR-030, MCP-041, TOK-117, OG-001, TS-011, KUBE-003
+
+All 40 plugin answers passed their graders, which check that facts are present, not that nothing is wrong. Reading them found:
+
+**Misread, the opposite of the entry (2):**
+- `satori-overflow`: `^0.62.0` "still allows minor bumps on 0.x". OG-001 says it pins the minor.
+- `ts-latest`: npm "stops with an ERESOLVE error", for a repo already on 6.0.3. TS-011 says that case only warns and writes `^7.0.2`.
+
+**Overstated or merged (4):** "no 2.9.x patch will add it" (KUBE-003 records none so far), Node "24.15+" for the app (the CLI's floor), "some Lambda setups" (all of them, on Node 20 to 24), and "doesn't confirm" a `beforeAll` effect JSTEST-001 states.
+
+**Route:** all 6 came from the 13 answers through the lookup skill, whose fork runs on Haiku; none from the 25 where Opus read entries directly. On `satori-overflow`, the Haiku fork inverted the claim and direct Opus got it right. It's a lead: the review wasn't blinded, the model picks the route, and skill answers read more entries (mean 4.4 against 1.8).
+
+**Entry error (1):** both plugin answers repeated TOK-117's "no independent test". The no-plugin web run found one, posted 2026-10-25, so the entry was wrong and the criterion passed it. That run also misread the README's "Older versions: not supported" column as the supported range.
+
+## [RETR-032] Guru's verification from use: signals agents don't send
+- Type: comparison
+- Applies to: general
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [How Content is Verified in Guru](https://help.getguru.com/docs/verifying-and-unverifying-cards) (accessed 2026-10-30)
+- Related: RETR-021, RETR-022, RETR-025
+
+Guru, a vendor's product, moved from reminder dates towards agents checking cards. "Does not expire" is the default for Collections created after January 2026, with no periodic reminders to the verifier, but "Knowledge Agents will still review this content during their daily runs". Its advice: "For most content, we recommend using "Does not expire" and letting Knowledge Agents handle ongoing quality checks automatically."
+
+Those agents work by "learning from usage patterns (how people interact with content through thumbs up/down, views, and feedback)". The page gives no error rate or evidence that this beats dates.
+
+For us:
+- **Views:** we have them, from transcripts (RETR-025).
+- **Thumbs and feedback:** agents send none. An agent following a wrong entry looks the same as one following a right one, so usage can rank entries but can't verify them (RETR-021).
+- **Dates:** keep `Last verified`. It costs little, and our routine needs it (RETR-022).
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -490,13 +735,16 @@ Ranked by impact against effort.
 2. **Spend effort where lookups fail: invocation, coverage, verification** (high impact, ongoing). The trigger evals and the re-verification routine already cover two of these. RETR-018.
 3. **Commit the reworded and uncovered question sets as a retrieval eval** (medium impact, low effort). Done 2026-10-20 as `evals/retrieval/`; a harder set with multi-entry questions, near-miss negatives and all-cited scoring is still to write. Done 2026-10-20: the server's search test also asserts the natural (85%) and hard (65%) rewordings, not only the vocabulary-matched 75%. RETR-019, RETR-010.
 4. Done 2026-10-20: the server logs the entry IDs `kb_search` returned and `kb_get` read, never query text, and no longer logs client IPs. Query text stays out: it is strangers' free text on a public server (RETR-012, RETR-019; `mcp-server/README.md`, "Logs").
-5. **If misses appear: first an LLM pick from BM25's top 30, then hybrid search** (low effort, then medium). The rerank arm reached 94–99% with no new infrastructure, capped by BM25's top 30 (RETR-010). sqlite-vec with RRF and Voyage embeddings would be the step after (RETR-016).
+5. **If misses appear: first an LLM pick from BM25's top 30, then hybrid search** (low effort, then medium). The rerank arm reached 94–99% with no new infrastructure, capped by BM25's top 30 (RETR-010). sqlite-vec with RRF and Voyage embeddings would be the step after (RETR-016). Checked 2026-10-30: raw BM25 misses 4 of 28 real queries, 2 of them newer entries outranking older ones, which isn't yet a reason (RETR-025). Filtered document expansion and tag cleanup stay parked (RETR-028, RETR-029).
+6. **Order re-verification by what real sessions read, and let the hash check find changed sources in between** (high impact, low effort). The workflow is FreekMencke/claude-kb#349; changing the routine's prompt needs a go-ahead (FreekMencke/claude-kb#343). RETR-021, RETR-025, RETR-026.
+7. **Find out whether the forked Haiku causes the misreads** (high impact, low effort). Rerun `eval-answers/` with the fork on Sonnet and score misreads blind (FreekMencke/claude-kb#344). RETR-031.
+8. **Give agents a rule to report an entry that proved wrong in practice** (medium impact, low effort): a line in the global CLAUDE.md, not yet proposed to an issue because it needs the owner's edit. RETR-021, RETR-022.
 
 ## Open questions
 
-- **Real queries, multi-entry answers and near misses.** All 300 test questions derive from Quick answers and were reworded with the answer in view. All-cited recall (72–79%), near-but-wrong entries and false abstention are unmeasured beyond RETR-010 and RETR-012.
-- **Real query distribution.** All 300 test questions derive from Quick answers. How agents phrase real lookups is unknown, since the server logs no queries (recommendation 4).
-- **Answer correctness.** Only retrieval was measured. Whether the forked Haiku's summary matches the entries, and whether that depends on how many entries an answer combines, wasn't tested (RETR-018).
+- **Near misses.** Real queries now exist for one user's Claude Code sessions (RETR-025), and the public server still logs none (recommendation 4). Near-but-wrong entries and false abstention are unmeasured beyond RETR-010 and RETR-012.
+- **The fork's effect on answers.** All flagged answers came through the forked Haiku, in an unblinded review of one run per cell (RETR-031). Whether the model or the number of entries causes it isn't known.
+- **Slow source churn.** Two runs 30 minutes apart say nothing about a week; the weekly workflow's second run will (RETR-026).
 - **Embeddings on our data.** Not tested: no embedding API or model host was reachable from the session (RETR-010).
 - **Unread primary sources.** The Cherny quotes (RETR-003), the Cursor, Cline, Cody and Copilot pages (RETR-013), Voyage's price list (RETR-016), and all paper figures except LaRA's and NoLiMa's (RETR-017, RETR-008) were seen only as search-result text. A session that reaches x.com, arxiv.org and those vendors should re-read them.
 - **Projects' RAG mode.** Its threshold, and whether its search is keyword or embedding based, aren't published (RETR-006).

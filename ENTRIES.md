@@ -584,6 +584,18 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | RETR-018 | Where knowledge-base lookups fail, in order | recommendation | failure-modes, triggering, staleness |
 | RETR-019 | Evaluating retrieval for a knowledge base | recommendation | evaluation, recall, mrr, negatives |
 | RETR-020 | Adding vector RAG before an eval shows misses | anti-pattern | rag, embeddings, premature |
+| RETR-021 | Demand-driven review: a priority, not the only trigger | recommendation | review, kcs, reuse, priority, re-verification |
+| RETR-022 | Freshness dates, owners and doc bugs | pattern | freshness, owners, doc-bugs, last-verified |
+| RETR-023 | OpenAI's doc-gardening agent: one sentence of evidence | pattern | doc-gardening, openai, agents, stale-docs |
+| RETR-024 | Karpathy's LLM wiki lint list against our checks | comparison | lint, wiki, karpathy, contradictions, orphans |
+| RETR-025 | Real use of this knowledge base, 2026-10-15 to 2026-10-28 | fact | real-use, transcripts, kb-usage, real-queries |
+| RETR-026 | Hash-checking every source: what two runs show | fact | source-hash, check-sources, churn, re-verification |
+| RETR-027 | Looking up every quote in its source | fact | quote-check, check-sources, near-match, last-verified |
+| RETR-028 | Filtered document expansion: hold until real queries miss | recommendation | doc2query, document-expansion, bm25, premature |
+| RETR-029 | Tag weight barely moves search | fact | tags, bm25, weights, retrieval-eval |
+| RETR-030 | Does the knowledge base improve answers? 20 cases, with and without | fact | answer-eval, plugin-eval, ablation, llm-grader |
+| RETR-031 | What the graders missed: misreads and an entry error | fact | misread, forked-haiku, answer-eval, lookup-skill |
+| RETR-032 | Guru's verification from use: signals agents don't send | comparison | verification, guru, usage-signals, feedback |
 
 ## Small-cluster Kubernetes with Flux GitOps and Grafana/Prometheus observability (`topics/kb-kubernetes-flux.md`, KUBE)
 
