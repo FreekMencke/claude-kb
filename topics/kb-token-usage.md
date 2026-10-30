@@ -2047,7 +2047,7 @@ Scope: 31 auto compactions in 23 sessions, from R1 (2026-10-12 12:13 UTC) to 202
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-30
-- Sources: [TokenEconomizer paper (arXiv 2610.22732)](https://arxiv.org/abs/2610.22732), [README at 1deb887](https://github.com/microsoft/TokenEconomizer/blob/1deb887bb6816188e24580f8812e65288af5757c/README.md), [PLUGIN.md at 1deb887](https://github.com/microsoft/TokenEconomizer/blob/1deb887bb6816188e24580f8812e65288af5757c/docs/PLUGIN.md)
+- Sources: [TokenEconomizer paper (arXiv 2610.22732)](https://arxiv.org/abs/2610.22732), [README at 1deb887](https://github.com/microsoft/TokenEconomizer/blob/1deb887bb6816188e24580f8812e65288af5757c/README.md), [PLUGIN.md at 1deb887](https://github.com/microsoft/TokenEconomizer/blob/1deb887bb6816188e24580f8812e65288af5757c/docs/PLUGIN.md), [yoDEV test (in Spanish)](https://dev.to/yodev_grego/tokeneconomizer-el-plugin-de-microsoft-para-claude-code-codex-y-copilot-cli-que-recorto-un-31-por-163p)
 - Related: TOK-083, TOK-084, TOK-113, TOK-118, TOK-119, TOK-020
 
 TokenEconomizer (Microsoft Research and UC Berkeley; Apache-2.0; created 2026-10-13, 1,712 stars on 2026-10-30) is a hook plugin for Claude Code, Codex, Copilot CLI and Pi that learns from a repo's past sessions. Supported on Claude Code 2.1.300 to 2.1.310. The paper's 18.4–30.9% saving (277 SWE-Bench tasks, 3 seeds) measures a research stack, and PLUGIN.md lists how the plugin differs.
@@ -2060,7 +2060,7 @@ TokenEconomizer (Microsoft Research and UC Berkeley; Apache-2.0; created 2026-10
 
 Combined on Claude Code: −23.6% (Pass@1 +1.3 points) and −30.9% (−1.0). The paper's limits: tasks are "related but independent fixes rather than actual user sessions", and the models were Sonnet 5 and Opus 4.8.
 
-RTK v0.45.0 was a comparison arm (five agent–model settings): dearer in 12 of 30 repository–setting cells (TOK-083). No independent test of TokenEconomizer found (WebSearch and the repo's open issues, 2026-10-30).
+RTK v0.45.0 was a comparison arm (five agent–model settings): dearer in 12 of 30 repository–setting cells (TOK-083). One independent test (yoDEV, posted 2026-10-25): 32 sessions on v2.1.305 with Sonnet, 16 of 16 tasks solved in both arms. With pruning active, context per request fell 31% (mostly unused connector tools) and cost 15% ($0.72 to $0.61), over only 4 sessions with `toolprune_quiet_minutes=0`, not the default. Micro-skills and the loop guard never fired.
 
 Deny rules are its pruning channel. Tested 2026-10-30, v2.1.296, `claude -p`: bare `WebSearch` and `NotebookEdit` in `.claude/settings.local.json`'s `permissions.deny` took the init event's tool list from 29 to 27, without both.
 
@@ -2162,7 +2162,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
 6. **Skill descriptions and triggering.** No Anthropic benchmark relates description length to trigger rate. The evidence is skill-creator's "pushy" advice, superpowers' anecdotes and Vercel's eval.
 7. **Unverified plan changes.** The May 2026 limit doubling and peak-hour changes, and whether per-model weekly meters other than Fable still exist on some plans, are reported only by secondary sources.
-8. **Token savers.** RTK now has independent paired measurements (TOK-083, 2026-10-16) and Serena a small one (TOK-084, 2026-10-30, from a competing tool's authors); context-mode and claude-context still have none, the TokenEconomizer plugin as shipped has none (TOK-117), and Caveman's results disagree between JetBrains and Dasein (TOK-113).
+8. **Token savers.** RTK now has independent paired measurements (TOK-083, 2026-10-16) and Serena a small one (TOK-084, 2026-10-30, from a competing tool's authors); context-mode and claude-context still have none, the TokenEconomizer plugin as shipped has one small one and no paired per-task test (TOK-117), and Caveman's results disagree between JetBrains and Dasein (TOK-113).
 11. **WebSearch `extended`.** What it does differently, what "several times the cost" means on a subscription, and whether one extended call counts as one against the 200-call budget. Only the tool schema mentions the modes (TOK-093). One test is not a latency or freshness measurement.
 12. **Metering of web tools on a subscription.** How WebSearch calls and WebFetch's extraction-model calls count against plan usage, and which model does the extraction today (TOK-087, TOK-094).
 13. **When WebFetch skips summarization.** The preapproved domain list isn't published; our tests fit "preapproved and under 100,000 characters", but the rule isn't documented (TOK-088). The size at which a WebFetch result goes to a file instead of inline (seen at 56.6 KB) isn't documented either.
