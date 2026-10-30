@@ -123,6 +123,9 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 | TOK-119 | Lower effort on SWE-Bench: cost saved against pass rate lost | comparison | effort, measurement |
 
 ---
+| TOK-120 | Review cost: managed Code Review levels and spend limits, ultrareview free runs | fact | code-review, ultrareview, usage-credits, spend-limit |
+| TOK-121 | Agent SDK loop limits: turns, budget headroom and result subtypes | fact | agent-sdk, max-turns, budget, result |
+| TOK-122 | Agent SDK telemetry: OpenTelemetry through the CLI, and what leaves the process | fact | agent-sdk, otel, telemetry, privacy |
 
 ## [TOK-001] What fills the context, by feature
 - Type: fact
@@ -537,7 +540,7 @@ Access and console:
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [MCP: scale with tool search](https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search), [Env vars](https://code.claude.com/docs/en/env-vars), [Changelog](https://code.claude.com/docs/en/changelog)
+- Sources: [MCP: scale with tool search](https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search), [Env vars](https://code.claude.com/docs/en/env-vars), [Changelog](https://code.claude.com/docs/en/changelog), [Agent SDK: tool search](https://code.claude.com/docs/en/agent-sdk/tool-search)
 - Related: TOK-021, TOK-022, TOK-053
 
 "Only tool names and server instructions load at session start, so adding more MCP servers has minimal impact on your context window." Claude loads a schema via the ToolSearch tool when needed.
@@ -546,7 +549,7 @@ Access and console:
 
 | Value | Behavior |
 |---|---|
-| unset | Defer all MCP tools. Falls back to upfront loading on a non-first-party `ANTHROPIC_BASE_URL`, Azure Foundry, and pre-4.5 Vertex models. |
+| unset | Defer all MCP tools. Falls back to upfront loading on Azure-hosted Foundry deployments and pre-4.5 Agent Platform (Vertex) models. Behind an `ANTHROPIC_BASE_URL` gateway it is on by default since v2.1.304 (corrected 2026-10-30); v2.1.305 retries without it after a 400 or 422. |
 | `true` | Defer, and always send the beta header |
 | `auto` / `auto:N` | Load upfront while definitions are under 10% (or N%) of the window |
 | `false` | Load everything upfront |
@@ -2096,6 +2099,68 @@ Paired against high effort on 277 SWE-Bench tasks (3 seeds), medium saved 16.8�
 | Copilot CLI, Sonnet 5 | 75.0 | −25.4%, 72.6 | −41.9%, 65.9 |
 
 Costs are cache-aware, and the arms were a baseline for the authors' tool. No Claude 5.5 model was tested, and those default to `medium` in Claude Code, so this doesn't size a change from today's default.
+
+## [TOK-120] Review cost: managed Code Review levels and spend limits, ultrareview free runs
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Code Review costs and usage](https://code.claude.com/docs/en/code-review-costs), [Set up Code Review](https://code.claude.com/docs/en/code-review-setup), [Find bugs with ultrareview](https://code.claude.com/docs/en/ultrareview)
+- Related: REPO-029, SURF-036, SURF-037
+
+**Managed Code Review** has "no flat per-review price". It bills tokens as usage credits, separately from plan usage, to the organization rather than the PR author. Two things drive the bill: the cost of each review and how many run.
+- **Review level** (organization default, per-repo override): Quick, Standard (default) or Deep, trading depth for cost.
+- **Review runs** per repo: Once after PR creation, After every push (the starting value for a newly added repo, "multiplying cost by the number of pushes") or Manual. `@claude review always` opts one PR into push reviews. Drafts and forks add none.
+- **Estimate** with a pilot: Manual or Once, a monthly limit set first, then each repo's **Average cost** column times its PRs a month.
+- **Limit** at claude.ai/admin-settings/usage for the Claude Code Review service. Reviews are skipped, with a "⚠️ Code review skipped" PR comment, when that limit, the organization limit or the credit balance runs out, or when what's left is under one review's expected cost.
+
+REPO-029's "$15-25" average and 20-minute figures aren't on the Code Review pages fetched 2026-10-30; use the pilot's own average.
+
+**Ultrareview** (`/code-review ultra`) is separate: three free runs on Pro, Max and Ultra, "a one-time allotment per account" that "don't refresh", then usage credits, typically $5 to $25 per review per the page. A run counts once the cloud session starts, so a review stopped early still uses a free run.
+
+## [TOK-121] Agent SDK loop limits: turns, budget headroom and result subtypes
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop)
+- Related: ORCH-015, CAPI-011, FLOW-023
+
+`max_turns` / `maxTurns` and `max_budget_usd` / `maxBudgetUsd` both default to no limit. Count one turn per round of tool calls "plus one for the final text-only response": with too small a cap the run ends with `error_max_turns` and no final answer.
+
+**Budget:**
+- Spend is compared with the cap after each model response, so one response can overshoot it, plus whatever running subagents spend before they stop. "Leave headroom for this when you set the cap."
+- Subagent spend counts toward the cap. After the cap, a new subagent fails with `Budget limit reached` and background subagents are stopped (Claude Code v2.1.217+).
+- With streaming input the turn count restarts for each queued message, the budget total keeps growing, and `/clear` resets it.
+
+**Result subtypes** on `ResultMessage`: `success`, `error_max_turns`, `error_max_budget_usd`, `error_during_execution`, `error_max_structured_output_retries`. Only `success` carries `result`. All carry `total_cost_usd`, `usage`, `num_turns` and `session_id`.
+- `usage` covers the main loop only; use `modelUsage` / `model_usage` for the whole tree.
+- A single-shot `query()` yields the error result, then raises; wrap the loop in try. A crash yields `error_during_execution` with zeroed cost fields and `stop_reason` null.
+- Check `stop_reason` for `refusal` and `max_tokens`.
+
+Read-only tools run in parallel, `Edit`, `Write` and `Bash` run sequentially, and a custom tool needs `readOnlyHint` to run in parallel.
+
+## [TOK-122] Agent SDK telemetry: OpenTelemetry through the CLI, and what leaves the process
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-10-30
+- Sources: [Observability with OpenTelemetry](https://code.claude.com/docs/en/agent-sdk/observability)
+- Related: TOK-012, INFRA-017
+
+"The SDK does not produce telemetry of its own": it runs the Claude Code CLI as a child process, which records the spans, metrics and log events and exports straight to your collector. Telemetry is off until `CLAUDE_CODE_ENABLE_TELEMETRY=1` and an exporter per signal are set.
+
+| Signal | Enable with |
+|---|---|
+| Metrics (tokens, cost, sessions, tool decisions) | `OTEL_METRICS_EXPORTER` |
+| Log events (prompts, API requests and errors, tool results) | `OTEL_LOGS_EXPORTER` |
+| Traces (beta) | `OTEL_TRACES_EXPORTER` plus `CLAUDE_CODE_ENHANCED_TELEMETRY_BETA=1` |
+
+Set the variables in the process environment for production (every `query()` picks them up) or per call in `options.env`. In TypeScript `env` replaces the inherited environment, so spread `...process.env`; in Python it is merged on top.
+
+**Short-lived calls lose data:** the flush on exit is bounded by a short timeout and a killed process loses the batch. Defaults are 60 seconds for metrics and 5 seconds for traces and logs; shorten them.
+
+**Content stays out by default.** Opt-in variables add it: `OTEL_LOG_USER_PROMPTS=1`, `OTEL_LOG_TOOL_DETAILS=1` (tool arguments such as shell commands), `OTEL_LOG_TOOL_CONTENT=1` (tool output, cut at 60 KB, needs tracing) and `OTEL_LOG_RAW_API_BODIES`, which "implies consent to everything the three variables above would reveal". Leave them unset unless the pipeline is approved for that data.
 
 ## Recommendations for our setup
 

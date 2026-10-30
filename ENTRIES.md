@@ -1129,6 +1129,14 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
 | SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
 | SKILL-074 | SkillSpector: a static scanner as an extra vetting pass | tool | security, vetting, scanner, sarif |
+| SKILL-075 | Mods: plugins that run code inside Claude Code, and where they run | fact | mods, plugins, hooks, surfaces |
+| SKILL-076 | Mod trust: what a mod can reach and how it meets permission rules | fact | mods, security, permissions, vetting |
+| SKILL-077 | A mod does nothing: validate, `plugin test` and the refusal messages | pattern | mods, troubleshooting, plugin-test, debug |
+| SKILL-078 | A plugin installed but its skills are missing: the checks in order | pattern | plugins, troubleshooting, reload-plugins, settings |
+| SKILL-079 | Developing a plugin without a marketplace: the ways to load it | fact | plugins, plugin-dir, development, skills-dir |
+| SKILL-080 | Plugin relevance: marketplace entries that suggest a plugin from session signals | tool | plugins, marketplace, relevance, suggestions |
+| SKILL-081 | Skills in the Agent SDK: the `skills` option and setting sources | fact | agent-sdk, skills, setting-sources, allowlist |
+| SKILL-082 | Plugins in the Agent SDK: local paths only | fact | agent-sdk, plugins, local-path, init-message |
 
 ## Spacing and alignment: scales, proximity, padding, rhythm, text and icon alignment (`topics/kb-spacing.md`, SPACE)
 
@@ -1211,6 +1219,16 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SURF-033 | Which surface for which job | comparison | decision-table, surfaces |
 | SURF-034 | Surfaces in our setup: desktop WSL and WSL terminal | comparison | our-setup, wsl, desktop |
 | SURF-035 | Sending files to your device: `SendUserFile` | tool | remote-control, cloud, files, mobile |
+| SURF-036 | Ultrareview: a cloud multi-agent review started with `/code-review ultra` | tool | ultrareview, code-review, cloud, ci |
+| SURF-037 | Managed Code Review: comment commands and why a review didn't start | fact | code-review, github, comment-commands |
+| SURF-038 | Managed Code Review in CI: neutral check run, severity JSON, kept results | pattern | code-review, ci, check-run, severity |
+| SURF-039 | Sandbox environments: what each approach isolates | comparison | sandbox, isolation, containers, permissions |
+| SURF-040 | The sandbox runtime (`srt`): settings that fail quietly | tool | sandbox-runtime, srt, bubblewrap, seatbelt |
+| SURF-041 | Proxy, CA and mTLS settings for Claude Code, and how to check them | fact | proxy, ca, mtls, network |
+| SURF-042 | Background agents don't inherit your shell's network variables | anti-pattern | background-agents, proxy, settings, supervisor |
+| SURF-043 | Streaming idle watchdogs: four timers that abort a quiet response | fact | timeouts, streaming, watchdog, network |
+| SURF-044 | Hosts Claude Code reaches, for a proxy or firewall allowlist | fact | allowlist, firewall, hosts, network |
+| SURF-045 | Server-managed settings: fetch, cache and fail-closed startup | fact | managed-settings, admin, caching, fail-closed |
 
 ## Token usage and context efficiency (`topics/kb-token-usage.md`, TOK)
 
@@ -1311,6 +1329,9 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TOK-117 | TokenEconomizer: the paper's savings aren't the plugin's | tool | community, measurement, hooks |
 | TOK-118 | Where repeated work in one repo costs tokens: a 60-task profile | fact | measurement, tools, failure-loops |
 | TOK-119 | Lower effort on SWE-Bench: cost saved against pass rate lost | comparison | effort, measurement |
+| TOK-120 | Review cost: managed Code Review levels and spend limits, ultrareview free runs | fact | code-review, ultrareview, usage-credits, spend-limit |
+| TOK-121 | Agent SDK loop limits: turns, budget headroom and result subtypes | fact | agent-sdk, max-turns, budget, result |
+| TOK-122 | Agent SDK telemetry: OpenTelemetry through the CLI, and what leaves the process | fact | agent-sdk, otel, telemetry, privacy |
 
 ## TypeScript 6.0 to 7.0 (`topics/kb-typescript.md`, TS)
 
