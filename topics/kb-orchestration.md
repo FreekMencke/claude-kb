@@ -936,7 +936,7 @@ Rules:
 - Confidence: community-consensus
 - Last verified: 2026-10-14
 - Sources: [obra/superpowers (297,942 stars on 2026-10-12)](https://github.com/obra/superpowers), [SDD skill](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md), [Parallel agents skill](https://github.com/obra/superpowers/blob/main/skills/dispatching-parallel-agents/SKILL.md)
-- Related: ORCH-035, ORCH-039, ORCH-033, TOK-103, TOK-104
+- Related: ORCH-035, ORCH-039, ORCH-033, TOK-103, TOK-104, SKPACK-001
 
 Superpowers is the most widely used Claude Code methodology. Its flow is brainstorm, design, plan, then execute.
 

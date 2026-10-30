@@ -362,7 +362,7 @@ Checks, cheapest first:
 - Confidence: official-example
 - Last verified: 2026-10-17
 - Sources: [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Claude Code common workflows: work with tests](https://code.claude.com/docs/en/common-workflows), [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai)
-- Related: FLOW-002, FLOW-011, FLOW-012, JSTEST-016
+- Related: FLOW-002, FLOW-011, FLOW-012, JSTEST-016, SKPACK-009
 
 FLOW-002 has Anthropic's test-driven steps. When writing the test first pays off:
 - **Bug fixes:** always. The docs' prompt: "write a failing test that reproduces the issue, then fix it." A test that failed before the fix and passes after is the evidence FLOW-011 asks for, and a test written after the fix can't show it ever caught the bug.
