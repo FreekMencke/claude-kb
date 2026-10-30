@@ -264,7 +264,7 @@ Server-rendered output, separately from the hydrated page: a project with `use: 
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Playwright Test Agents](https://playwright.dev/docs/test-agents), [healer agent prompt at v1.64.1](https://github.com/microsoft/playwright/blob/v1.64.1/packages/playwright/src/agents/playwright-test-healer.agent.md), [Playwright CLI](https://playwright.dev/docs/getting-started-cli), [playwright-mcp README](https://github.com/microsoft/playwright-mcp), [Reporters](https://playwright.dev/docs/test-reporters), npm registry
-- Related: FLOW-014, REPO-021, SESS-013, JSTEST-010, JSTEST-016, BROWSER-002
+- Related: FLOW-014, REPO-021, SESS-013, JSTEST-010, JSTEST-016, BROWSER-002, BROWSER-004
 
 | Route | Use it for | Notes |
 |---|---|---|

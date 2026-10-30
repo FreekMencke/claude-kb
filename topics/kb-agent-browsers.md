@@ -14,7 +14,7 @@ Research basis:
 | Question | Answer | Entries |
 |---|---|---|
 | Which browser tools can a coding agent drive? | Playwright MCP, Playwright CLI (`@playwright/cli`), agent-browser (a Rust CLI), Chrome DevTools MCP, browser-use (Python), and Claude in Chrome. All but Claude in Chrome read the page as an accessibility snapshot with element refs. | BROWSER-001 |
-| Is the Playwright CLI cheaper than Playwright MCP in Claude Code? | Not in our test: on one task, Haiku 5.5, the MCP arm used a median 406k input tokens and $0.0075 per run (10 runs); the CLI arm 632k and $0.0119 (7 runs that used the browser). | BROWSER-002 |
+| Is the Playwright CLI cheaper than Playwright MCP in Claude Code? | No. Checkly (3 runs) and a DEV re-test found a tie; our test (Haiku 5.5, one task) found the CLI costlier: median 632k against 406k input tokens, partly because Claude had to find its skill. | BROWSER-002, BROWSER-003 |
 | Why doesn't the "large tool schemas" argument hold? | Claude Code defers MCP tool schemas: Playwright MCP added 389 input tokens per turn (41,279 against 40,890). And MCP 0.0.83 writes snapshots to files too. | BROWSER-002 |
 | What can go wrong with the CLI route? | It only works if Claude finds its skill. With Bash allowed only for `playwright-cli`, 2 of 5 runs tried `curl`, were refused and gave up; with Bash open, 1 of 5 fetched the HTML with `curl` instead. | BROWSER-003 |
 | Does the agent see my logins? | Playwright MCP's default profile is persistent per workspace; the Playwright CLI keeps it in memory unless `--persistent`; agent-browser can reuse a Chrome profile; Claude in Chrome uses your real browser's logins. | BROWSER-004 |
@@ -22,7 +22,7 @@ Research basis:
 | Which send telemetry? | Chrome DevTools MCP (usage statistics, "enabled by default", off under `CI`) and browser-use (PostHog, on unless `ANONYMIZED_TELEMETRY=false`). | BROWSER-006 |
 | When is Chrome DevTools MCP worth it? | For performance traces, network and console with source-mapped stacks; start it with `--no-usage-statistics` and `--no-performance-crux`. | BROWSER-007 |
 | Which should we use? | Keep Playwright MCP for the browser checker; isolate it per run; don't switch to the CLI for tokens. | BROWSER-008 |
-| Where do Playwright MCP's snapshots go? | With `--output-dir`, to files (`page-<time>.yml`); `--snapshot-mode none` drops them from responses. | BROWSER-002 |
+| Where do Playwright MCP's snapshots go? | Action responses link a `page-<time>.yml` file (in `--output-dir`, default `.playwright-mcp/`); an explicit `browser_snapshot` without `filename` returns it inline; `--snapshot-mode none` drops it. | BROWSER-002, WEB-015 |
 
 ## Index
 
@@ -61,10 +61,10 @@ The first four are tools Claude drives; browser-use is a framework that runs its
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-30
-- Sources: [playwright-mcp README: MCP vs CLI](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md#playwright-mcp-vs-playwright-cli), [playwright-cli README](https://github.com/microsoft/playwright-cli/blob/b1a5903/README.md)
-- Related: JSTEST-012, TOK-020, BROWSER-003, REPO-021
+- Sources: [playwright-mcp README: MCP vs CLI](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md#playwright-mcp-vs-playwright-cli), [playwright-cli README](https://github.com/microsoft/playwright-cli/blob/b1a5903/README.md), [Checkly: MCP vs CLI token efficiency (2026-07-30)](https://www.checklyhq.com/blog/mcp-vs-cli-token-efficiency/)
+- Related: JSTEST-012, TOK-020, BROWSER-003, REPO-021, WEB-015, MCP-017
 
-Microsoft says CLI invocations "are more token-efficient: they avoid loading large tool schemas and verbose accessibility trees into the model context", with no figures.
+Microsoft says CLI invocations "are more token-efficient: they avoid loading large tool schemas and verbose accessibility trees into the model context", with no figures. Checkly (2026-07-30, same task three times) found "MCP and skill-based CLI flows have more or less the same token consumption": 48k to 50k against 45k to 48k of context.
 
 Tested 2026-10-30, v2.1.314, cloud session: `@playwright/mcp` 0.0.83 (`--headless --isolated --output-dir`) against `@playwright/cli` 0.1.22 with its bundled skill in `.claude/skills/`. Same prompt: read Item 150's price from a 200-row table page, navigate to Contact, submit a form, report the JavaScript-rendered confirmation. `claude -p --model haiku --max-turns 30`, a fresh folder per run, arms alternated. Ten MCP runs and seven CLI runs that used the browser all answered correctly.
 
@@ -73,14 +73,13 @@ Tested 2026-10-30, v2.1.314, cloud session: `@playwright/mcp` 0.0.83 (`--headles
 | Input tokens (incl. cache) | 406,493 | 631,857 |
 | Cost | $0.0075 | $0.0119 |
 | Turns | 11.5 | 13 |
-| Input per turn | 34,924 | 47,102 |
 | Seconds | 19 | 35 |
 
-Ranges: MCP 266,922–538,210 input tokens, CLI 545,540–1,009,095.
+Ranges: MCP 266,922–538,210 input tokens, CLI 545,540–1,009,095. Counting all 10 CLI runs, including the 3 that never opened the browser (BROWSER-003): median 603,042 tokens and $0.0112, still about 1.5 times MCP.
 
-Why: a one-turn baseline used 40,890 input tokens with no browser tool, 41,279 with Playwright MCP (schemas deferred, TOK-020) and 40,924 with the CLI skill. So schema cost is negligible in Claude Code. MCP 0.0.83 also wrote each snapshot to `--output-dir` as `page-<time>.yml`. The CLI arm paid for loading its 15k-character SKILL.md, `cat`ing snapshot files and exploring the shell.
+Why: a one-turn baseline used 40,890 input tokens with no browser tool, 41,279 with Playwright MCP (schemas deferred, TOK-020) and 40,924 with the CLI skill. So schema cost is negligible in Claude Code. MCP 0.0.83 also links action snapshots as `page-<time>.yml` files instead of inlining them (source: `snapshotToFile`; WEB-015). The CLI arm paid for loading its 15k-character SKILL.md, `cat`ing snapshot files and exploring the shell.
 
-One task, one model, one surface: a lead, not a law.
+Confounds: Haiku only, the CLI unnamed in the prompt, the session's own skills loaded, and two Bash permission setups. A lead, not a law.
 
 ## [BROWSER-003] The CLI route depends on Claude finding its skill
 - Type: fact
@@ -106,7 +105,7 @@ So with the CLI, name it in the prompt or the CLAUDE.md line ("check pages with 
 - Sources: [playwright-mcp README: profiles](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md), [playwright-cli README](https://github.com/microsoft/playwright-cli/blob/b1a5903/README.md), [agent-browser README](https://github.com/vercel-labs/agent-browser/blob/099e84e/README.md), [Claude in Chrome](https://code.claude.com/docs/en/chrome)
 - Related: SESS-013, BROWSER-005, FLOW-014
 
-- **Playwright MCP:** "You can run Playwright MCP with persistent profile like a regular browser (default)". It lives at `~/.cache/ms-playwright/mcp-{channel}-{workspace-hash}` on Linux, and "can only be used by one browser instance at a time". `--isolated` keeps it in memory; `--storage-state <path>` loads cookies into an isolated context.
+- **Playwright MCP:** "You can run Playwright MCP with persistent profile like a regular browser (default)". In 0.0.83's source (`createUserDataDir`) it lives at `~/.cache/ms-playwright-mcp/mcp-<browser>-<hash of the client's cwd>` on Linux; the README's `ms-playwright/` path and its options-table line are stale. It "can only be used by one browser instance at a time"; a second client gets "Browser is already in use". `--isolated` keeps it in memory; `--storage-state <path>` loads cookies into an isolated context.
 - **Playwright CLI:** "keeps the browser profile in memory by default"; `--persistent` or `--profile` saves it. A headless session "shuts down on its own after an hour without commands".
 - **agent-browser:** profiles, `--state <path>` files and a local vault: "Store credentials locally (always encrypted), reference by name. The LLM never sees passwords." Its README warns "State files contain session tokens in plaintext" unless `AGENT_BROWSER_ENCRYPTION_KEY` is set.
 - **Claude in Chrome:** "shares your browser's login state, so it can access any site you're already signed into"; it pauses at login pages and CAPTCHAs.
@@ -178,11 +177,11 @@ Pin the version instead of `@latest`. Use it when a question is about why a page
 - Confidence: single-source
 - Last verified: 2026-10-30
 - Sources: [playwright-mcp README](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md), [chrome-devtools-mcp README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/3c609da/README.md)
-- Related: BROWSER-002, BROWSER-003, BROWSER-004, BROWSER-006, REPO-021, FLOW-014, UIREV-011
+- Related: BROWSER-002, BROWSER-003, BROWSER-004, BROWSER-006, REPO-021, FLOW-014, UIREV-011, MCP-028
 
 Our judgement from the entries above.
 
-- **Interactive page checks (`ui-review`, the browser checker):** keep Playwright MCP. In Claude Code it was cheaper than the CLI in our test (BROWSER-002) and needs no prompt wording to be found (BROWSER-003). Run it `--isolated` unless a login is needed, and `--headless` when nobody watches.
+- **Interactive page checks (`ui-review`, the browser checker):** keep Playwright MCP. In Claude Code the CLI is not cheaper: a tie in two outside tests, costlier in ours (BROWSER-002), and it needs naming to be found (BROWSER-003). Run it `--isolated` unless a login is needed, and `--headless` when nobody watches.
 - **The Playwright CLI:** for scripted steps a session runs repeatedly (open, screenshot, close) where the commands are known, or for an agent harness without deferred MCP schemas, where Microsoft's argument applies. Name it explicitly.
 - **Performance and console debugging:** Chrome DevTools MCP with `--no-usage-statistics --no-performance-crux` (BROWSER-007).
 - **agent-browser:** worth a look when pages are hostile or logins sensitive (its vault and action policy, BROWSER-005). Not run here.
@@ -194,7 +193,7 @@ Our judgement from the entries above.
 Ranked by impact against effort.
 
 1. **Keep Playwright MCP for `ui-review` and the browser checker; don't switch to the CLI to save tokens** (BROWSER-002, BROWSER-008). Recorded as a decision.
-2. **Start Playwright MCP with `--isolated` in the checker's config** unless the check needs a login (BROWSER-004, SESS-013). Check the `ui-review` skill's MCP setup in FreekMencke/claude-skills; an issue if it uses the default persistent profile.
+2. Done 2026-10-14 for the browser checker: it runs `@playwright/mcp@0.0.83 --headless --isolated` (REPO-021, MCP-028). `ui-review` uses the plugin's Playwright server with its persistent per-cwd profile (BROWSER-004); its own `--isolated` server is optional.
 3. **If Chrome DevTools MCP is added, pin it and pass `--no-usage-statistics --no-performance-crux`** (BROWSER-006, BROWSER-007).
 
 ## Open questions
@@ -202,4 +201,5 @@ Ranked by impact against effort.
 - **The token gap on other models and pages:** one task, Haiku 5.5 only (BROWSER-002). A Sonnet or Opus run, and a page with heavier snapshots, would show whether the order holds.
 - **agent-browser's token use:** not run here; its snapshot filters (`-i`, `--max-output`) might change BROWSER-002's order (BROWSER-008).
 - **Whether `--snapshot-mode none` makes Playwright MCP cheaper still** for checks that read files instead (BROWSER-002).
-- **Microsoft's own numbers for the CLI claim:** none found in either README.
+- **Microsoft's own numbers for the CLI claim:** none found in either README; Checkly found a tie (BROWSER-002).
+- **A cleaner rerun:** a CLI arm that names `playwright-cli` in the prompt, with the session's own skills and plugins off (BROWSER-002, BROWSER-003).
