@@ -32,6 +32,19 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ACCESS-014 | Motion and contrast preferences: what WCAG requires | fact | prefers-reduced-motion, forced-colors, prefers-contrast, wcag |
 | ACCESS-015 | An agent's accessibility check, and what a human must still do | recommendation | verification, agents, manual-testing, workflow |
 
+## Browsers for coding agents (`topics/kb-agent-browsers.md`, BROWSER)
+
+| ID | Title | Type | Tags |
+|---|---|---|---|
+| BROWSER-001 | Six browser tools for agents compared | comparison | playwright-mcp, playwright-cli, agent-browser, chrome-devtools-mcp, browser-use, chrome |
+| BROWSER-002 | Test: Playwright MCP against the Playwright CLI in tokens | fact | measurement, tokens, playwright-mcp, playwright-cli, haiku |
+| BROWSER-003 | The CLI route depends on Claude finding its skill | fact | playwright-cli, skills, permissions, measurement |
+| BROWSER-004 | Login state: where each tool keeps cookies | fact | profiles, cookies, storage-state, privacy |
+| BROWSER-005 | No browser tool is a security boundary | fact | security, prompt-injection, allowlist |
+| BROWSER-006 | Telemetry defaults and opt-outs | fact | telemetry, privacy, chrome-devtools-mcp, browser-use |
+| BROWSER-007 | Chrome DevTools MCP: what it adds and how to start it | tool | chrome-devtools-mcp, performance, console |
+| BROWSER-008 | Which browser tool for which job | recommendation | adoption, playwright-mcp, playwright-cli |
+
 ## Angular 21–22 changes and Angular's AI tooling (`topics/kb-angular.md`, NG)
 
 | ID | Title | Type | Tags |

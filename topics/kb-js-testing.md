@@ -264,14 +264,14 @@ Server-rendered output, separately from the hydrated page: a project with `use: 
 - Confidence: official-docs
 - Last verified: 2026-10-17
 - Sources: [Playwright Test Agents](https://playwright.dev/docs/test-agents), [healer agent prompt at v1.64.1](https://github.com/microsoft/playwright/blob/v1.64.1/packages/playwright/src/agents/playwright-test-healer.agent.md), [Playwright CLI](https://playwright.dev/docs/getting-started-cli), [playwright-mcp README](https://github.com/microsoft/playwright-mcp), [Reporters](https://playwright.dev/docs/test-reporters), npm registry
-- Related: FLOW-014, REPO-021, SESS-013, JSTEST-010, JSTEST-016
+- Related: FLOW-014, REPO-021, SESS-013, JSTEST-010, JSTEST-016, BROWSER-002, BROWSER-004
 
 | Route | Use it for | Notes |
 |---|---|---|
 | A Playwright Test suite | Regressions, as the check an agent runs | Deterministic; the agent reads a pass or fail |
 | Test Agents (1.56+) | Writing or repairing tests | `npx playwright init-agents --loop=claude` writes planner, generator and healer agents to `.claude/agents/` (on `model: sonnet`) plus `.mcp.json`; "should be regenerated whenever Playwright is updated" |
 | Playwright MCP (`@playwright/mcp` 0.0.83) | Looking at a page interactively | Our browser checker (REPO-021); "persistent state and iterative reasoning over page structure" |
-| `@playwright/cli` (0.1.22; bundled as `npx playwright cli` since 1.62) | The same, cheaper | "CLI commands avoid loading large tool schemas and verbose accessibility trees into the model context"; vendor claim, no figures. The unscoped `playwright-cli` package is a different one |
+| `@playwright/cli` (0.1.22; bundled as `npx playwright cli` since 1.62) | The same, through Bash and a skill | Vendor: "CLI commands avoid loading large tool schemas and verbose accessibility trees into the model context". In Claude Code it cost more than MCP in our test (BROWSER-002). The unscoped `playwright-cli` package is a different one |
 
 The healer can give up by skipping: its prompt says "If the error persists and you have high level of confidence that the test is correct, mark this test as test.fixme()", and "Do not ask user questions". Review its diffs for new `fixme` lines (JSTEST-016).
 
@@ -389,6 +389,5 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 - **Hydration and Playwright** (JSTEST-011): no Playwright or Angular page read here says what a test should wait on before clicking a hydrated SSR page. Looked in Playwright's best-practices, assertions and emulation docs at v1.64.1.
 - **Jest on Node older than 24.9 with Nest 12** (JSTEST-009): Jest's docs say `ERR_REQUIRE_ESM`, Nest's guide `ERR_REQUIRE_ASYNC_MODULE`, and Jest 30.5.0 added a transform fallback. Not tested: no Node older than 24.9 in the scratch setup.
 - **When stryker-js#6214 ships**, and whether the `--dump-virtual-files` workaround for Angular works on Angular 22 with Vitest 5 (JSTEST-014).
-- **`@playwright/cli` against Playwright MCP in tokens** (JSTEST-012): the vendor claims the CLI is cheaper and gives no figures; not measured here.
 - **Does `vi.mock(import('./x'))` get past the Angular builder's relative-path check** (JSTEST-005)? The patch checks for a string, so the `import()` form isn't matched; whether mocking then works on a bundled spec wasn't tested.
 - **Stryker's vitest-runner and browser mode** (JSTEST-014): the runner's docs say "not supported"; the 9.0.0 CHANGELOG says "support vitest 3 browser mode". Not tested.
