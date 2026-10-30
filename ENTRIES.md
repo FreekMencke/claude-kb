@@ -1296,6 +1296,9 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TOK-114 | Masking old tool output: measured elsewhere, not a Claude Code setting | comparison | context, tool-results, other-agents |
 | TOK-115 | Task budgets (API beta) | fact | api, budgets, agents |
 | TOK-116 | What auto-compaction at 400K lost: measured | fact | compaction, measurement, our-setup |
+| TOK-117 | TokenEconomizer: the paper's savings aren't the plugin's | tool | community, measurement, hooks |
+| TOK-118 | Where repeated work in one repo costs tokens: a 60-task profile | fact | measurement, tools, failure-loops |
+| TOK-119 | Lower effort on SWE-Bench: cost saved against pass rate lost | comparison | effort, measurement |
 
 ## TypeScript 6.0 to 7.0 (`topics/kb-typescript.md`, TS)
 
