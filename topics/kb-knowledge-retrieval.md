@@ -524,7 +524,7 @@ How that maps to this knowledge base:
 - **Freshness date:** `Last verified` on every entry, and the server's 60-day advice.
 - **Reminder:** the re-verification routine, which picks entries by age.
 - **Owner:** none per entry. One person owns the repo, and routines do the checking. With 1,261 entries, a per-entry owner adds nothing.
-- **Bug tracking:** the gap. An agent that finds an entry wrong has no rule to file it. A line in the global CLAUDE.md would give it one.
+- **Bug tracking:** issues in this repo. Since 2026-10-30 the global CLAUDE.md tells agents to file one, with the proof, when an entry proves wrong in practice. It covers only sessions that load that file.
 
 A date only says someone looked. Whether the source still says the claim needs a check against the source (RETR-026, RETR-027).
 
@@ -738,7 +738,7 @@ Ranked by impact against effort.
 5. **If misses appear: first an LLM pick from BM25's top 30, then hybrid search** (low effort, then medium). The rerank arm reached 94–99% with no new infrastructure, capped by BM25's top 30 (RETR-010). sqlite-vec with RRF and Voyage embeddings would be the step after (RETR-016). Checked 2026-10-30: raw BM25 misses 4 of 28 real queries, 2 of them newer entries outranking older ones, which isn't yet a reason (RETR-025). Filtered document expansion and tag cleanup stay parked (RETR-028, RETR-029).
 6. **Order re-verification by what real sessions read, and let the hash check find changed sources in between** (high impact, low effort). The workflow is FreekMencke/claude-kb#349; changing the routine's prompt needs a go-ahead (FreekMencke/claude-kb#343). RETR-021, RETR-025, RETR-026.
 7. **Find out whether the forked Haiku causes the misreads** (high impact, low effort). Rerun `eval-answers/` with the fork on Sonnet and score misreads blind (FreekMencke/claude-kb#344). RETR-031.
-8. **Give agents a rule to report an entry that proved wrong in practice** (medium impact, low effort): a line in the global CLAUDE.md, not yet proposed to an issue because it needs the owner's edit. RETR-021, RETR-022.
+8. Done 2026-10-30: the global CLAUDE.md tells agents to open an issue here, with the proof, when an entry proves wrong in practice. RETR-021, RETR-022.
 
 ## Open questions
 
