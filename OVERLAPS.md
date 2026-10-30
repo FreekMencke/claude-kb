@@ -47,6 +47,8 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Where to put something, and what it costs: SKILL-021 (decision), SKILL-022 and TOK-065 (context cost), REPO-044 (repos with agents).
 - Subagent results: ORCH-034 (the principle), ORCH-035 (status codes), TOK-035 (delegating), TOK-101 (research sources), TOK-103 to TOK-107 (file handoff in Claude Code).
 - Browser checks: FLOW-014 (which route for a check), JSTEST-012 (tests, Test Agents, MCP or CLI), REPO-021 (checker subagent), SESS-013 (profiles across sessions), BROWSER-001 to BROWSER-008 (the tools themselves: measured tokens, logins, security, telemetry).
+- Code search and indexes: RETR-002 and RETR-013 (search without an index, other tools), TOK-041 (search first, LSP), TOK-084 (code-index MCP servers), CODEMAP-001 to CODEMAP-009 (map tools as installs: hooks, cost, licence, evidence). CODEMAP-008 adds Serena's version and licence to TOK-084.
+- Community engineering methods: ORCH-041 and SKILL-043 (Superpowers' subagent flow and skill testing), PROMPT-037 (prompt collections), SKPACK-001 to SKPACK-013 (the packs as installs: hooks, telemetry, evidence). Interviewing before building: FLOW-003, SKPACK-006, SKPACK-007. Test-first: FLOW-002, JSTEST-017, SKPACK-009.
 - Bash output: TOK-042 (limits and filter hooks), TOK-108 (what reaches Claude), TOK-109 (how a script should print), SKILL-018 (scripts in skills), FLOW-011 and FLOW-013 (checks Claude runs).
 - Temporary files: SESS-016 (parallel sessions, `CLAUDE_JOB_DIR`), TOK-104 (handoff files and the scratchpad).
 - Terse output: PROMPT-024 (how to write short answers), TOK-113 (what terse styles measurably save).

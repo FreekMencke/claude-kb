@@ -171,6 +171,8 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [kb-layout.md](topics/kb-layout.md) | `LAYOUT` | Page layout: grids, breakpoints, page widths, density, page types, container queries, subgrid, `BreakpointObserver` under SSR |
 | [kb-spacing.md](topics/kb-spacing.md) | `SPACE` | Spacing and alignment: scales, proximity, padding, text and icon alignment, `text-box`, `gap` |
 | [kb-agent-browsers.md](topics/kb-agent-browsers.md) | `BROWSER` | Browsers for coding agents: Playwright MCP and CLI (measured), agent-browser, Chrome DevTools MCP, logins, security, telemetry |
+| [kb-code-maps.md](topics/kb-code-maps.md) | `CODEMAP` | Codebase maps and knowledge graphs for agents: Graphify, Understand-Anything, Repomix, Serena |
+| [kb-skill-packs.md](topics/kb-skill-packs.md) | `SKPACK` | Engineering-discipline skill packs: what they inject and send, their evidence, ideas to borrow |
 
 | Other files | What it holds |
 |---|---|
