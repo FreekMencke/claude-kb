@@ -99,6 +99,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-071 | What vetting catches in small animation and scroll kits | fact | security, vetting, examples, animation |
 | SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
 | SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
+| SKILL-074 | SkillSpector: a static scanner as an extra vetting pass | tool | security, vetting, scanner, sarif |
 
 ---
 
@@ -995,7 +996,7 @@ Portability rules:
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Plugin security](https://code.claude.com/docs/en/plugins/security), [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
-- Related: SKILL-010, SKILL-037, SKILL-069, SKILL-068, SKILL-064
+- Related: SKILL-010, SKILL-037, SKILL-069, SKILL-068, SKILL-064, SKILL-074
 
 "Only use skills from trusted sources." Installing a skill or plugin is installing software. "A Claude Code plugin you install can execute arbitrary code on your machine with your user privileges."
 - Hooks, monitors, MCP and LSP servers (and any process a mod starts) run *outside* the sandbox. A `bin/` executable runs as a Claude Bash command, so permission rules apply to it; `bin/` is on the shell's `PATH`, so read every file in it before installing.
@@ -1613,7 +1614,7 @@ A pin doesn't cover dependencies, `command` sources or run-time fetches (SKILL-0
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Plugin loading: Node.js package dependencies](https://code.claude.com/docs/en/plugins/loading), [Skills: allowed-tools and workspace trust](https://code.claude.com/docs/en/skills), [ripgrep GUIDE.md: Automatic filtering, 14.1.0](https://github.com/BurntSushi/ripgrep/blob/14.1.0/GUIDE.md#automatic-filtering) (accessed 2026-10-23), `npm view gsap@3.15.0 license`
-- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012, CODEMAP-006
+- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012, SKILL-074, CODEMAP-006
 
 This extends SKILL-041. Check the owner and repo name letter by letter against the author's own site, then read every file at the commit you'll pin. Take behaviour from the code, not the README.
 
@@ -1719,6 +1720,25 @@ The docs and the CHANGELOG through 2.1.309 say nothing about skill bodies or plu
 Tested 2026-10-23, v2.1.296, terminal `-p`, Haiku, with only the Write tool. A project skill's body held a zero-width space, an RLO override and two tag characters. The model wrote the lines to a file, and `od -c` showed all three byte sequences intact. So they reached the model. The same ripgrep pattern (SKILL-069) flagged all five test characters in a sample file and left the clean line alone; to reach hidden files such as `.mcp.json` it needs SKILL-069's `--hidden --no-ignore` flags.
 
 Grep every text file in a skill before installing it. Text the model reads but you can't see is an injection channel.
+
+## [SKILL-074] SkillSpector: a static scanner as an extra vetting pass
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-10-30
+- Sources: [NVIDIA/SkillSpector README](https://github.com/NVIDIA/SkillSpector/blob/54921c8/README.md)
+- Related: SKILL-069, SKILL-041, SKILL-073, MCP-019
+
+NVIDIA's SkillSpector (Apache-2.0, 23,421 stars on 2026-10-30, `pyproject.toml` version 2.12.0 at `54921c8`, 2026-10-29) is a "Security scanner for AI agent skills". It wasn't run here; this is from its README.
+
+- **Coverage:** "71 vulnerability patterns across 17 categories", among them prompt injection, data exfiltration, privilege escalation, supply chain, excessive agency, memory poisoning and tool misuse, plus YARA rules for malware, webshells and cryptominers.
+- **Two stages:** static analysis, plus an LLM pass that is on by default: "When LLM analysis is enabled (the default), file contents are sent to the active `SKILLSPECTOR_PROVIDER` endpoint". `--no-llm` keeps file contents local.
+- **Network even with `--no-llm`:** its SC4 check sends declared dependency names and versions to OSV.dev, with an offline fallback.
+- **Limits it states:** "defense-in-depth, not a sandbox"; "It never executes the scanned skill"; it claims "High recall" with no measurement shown.
+- **Output:** terminal, JSON, Markdown and SARIF, a 0–100 risk score, and a baseline to suppress accepted findings.
+- **Install:** `uv tool install git+https://github.com/NVIDIA/skillspector.git`, from source, or a locally built Docker image; it wasn't on PyPI on 2026-10-30. The README warns it "will download and install additional third-party open source software projects".
+
+Use it as an extra pass after SKILL-069's reading, not instead of it: a pattern scanner flags known shapes, while the checklist's questions (what runs, what it writes to settings, what it fetches at run time) need a reader. `skillspector scan <dir> --no-llm --format sarif` in Docker keeps the scan off the host, though not off the network.
 
 ## Recommendations for our setup
 
