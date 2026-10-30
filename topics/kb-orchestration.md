@@ -897,15 +897,15 @@ Interactive Claude Code has no per-spawn dollar cap. Bound cost there through mo
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Coordination patterns](https://claude.com/blog/multi-agent-coordination-patterns), [Cognition 2026](https://cognition.ai/blog/multi-agents-working), [Code-review plugin](https://github.com/anthropics/claude-code/blob/main/plugins/code-review/commands/code-review.md)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Give Claude a check to run, What you can stop doing](https://code.claude.com/docs/en/best-practices), [Coordination patterns](https://claude.com/blog/multi-agent-coordination-patterns), [Cognition 2026](https://cognition.ai/blog/multi-agents-working), [Code-review plugin](https://github.com/anthropics/claude-code/blob/main/plugins/code-review/commands/code-review.md)
 - Related: ORCH-022, ORCH-042, ORCH-046
 
-The most broadly endorsed multi-agent pattern for coding is a separate reviewer. "A fresh context improves code review since Claude won't be biased toward code it just wrote" (best practices). Cognition (2026) found the clean-context reviewer one of the few multi-agent flows that works.
+The most broadly endorsed multi-agent pattern for coding is a separate reviewer. Best practices: "A fresh reviewer does help, because it hasn't seen your reasoning, which is a different thing from delegating", and `/code-review` "isn't swayed by the reasoning that produced the code". (The page said "A fresh context improves code review since Claude won't be biased toward code it just wrote" until at least 2026-10-14 and dropped it by 2026-10-30.) Cognition (2026) found the clean-context reviewer one of the few multi-agent flows that works.
 
 Rules:
 - **Give the reviewer criteria, not "is it good?".** "A verifier told only to check whether output is good… will rubber-stamp the generator's output."
-- **Bound its findings.** A reviewer asked for gaps will report some. Tell it to flag only correctness or stated-requirement gaps, to avoid over-engineering (best practices).
+- **Bound its findings.** "A reviewer that's asked to find problems will always find *something*. If you fix every finding, you end up with extra abstraction layers and tests for cases that can't happen." The page's brief: "check every requirement is implemented and the listed edge cases have tests, report gaps that affect correctness and skip style" (best practices).
 - **Validate findings before acting.** The official code-review plugin launches a validator subagent for each bug finding and drops unvalidated ones.
 - **Cap the fix loop:** superpowers allows 5 rounds and escalates to a stronger model in the last two. Coordination patterns: set a max-iteration limit with a fallback.
 - **Make verifiers run things:** the verifier runs the full test suite before marking a unit passed. (The quote this line once carried wasn't found on 2026-10-14 in any cited source, the superpowers repo or the docs.) Superpowers SDD now takes the opposite line for reviewers: "Do not ask a reviewer to re-run tests the implementer already ran on the same code"; the implementer's report carries the test evidence.

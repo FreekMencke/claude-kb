@@ -337,8 +337,8 @@ Tested 2026-10-17, @stryker-mutator/core 10.0.0, jq on WSL2: the command listed 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/learn/writing-tests-with-ai.md)), [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Vitest config: allowOnly](https://vitest.dev/config/allowonly), [nizos/tdd-guard: strengthening enforcement](https://github.com/nizos/tdd-guard/blob/main/docs/enforcement.md)
+- Last verified: 2026-10-30
+- Sources: [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/learn/writing-tests-with-ai.md)), [Claude Code best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Vitest config: allowOnly](https://vitest.dev/config/allowonly), [nizos/tdd-guard: strengthening enforcement](https://github.com/nizos/tdd-guard/blob/main/docs/enforcement.md)
 - Related: PROMPT-028, FLOW-002, HOOK-028, HOOK-032, JSTEST-012, JSTEST-013, JSTEST-015
 
 Vitest's own page on AI-written tests lists the failure modes:
@@ -351,27 +351,27 @@ Vitest's own page on AI-written tests lists the failure modes:
 Under pressure to get green, an agent may also skip, delete or loosen a test, or hard-code the answer (PROMPT-028); Playwright's healer does `test.fixme()` by design (JSTEST-012).
 
 Checks, cheapest first:
-1. **In the prompt:** name the scenarios and edge cases, and say what not to do; the best-practices example ends "avoid mocks". Add PROMPT-028's line: report a wrong test instead of working around it.
+1. **In the prompt:** name the scenarios and edge cases, and say what not to do. Best practices' example asks Claude to "write a failing test that reproduces it, then fix it" (its earlier test example ending "avoid mocks" was gone by 2026-10-30). Add PROMPT-028's line: report a wrong test instead of working around it.
 2. **In the diff:** review spec changes in any change that wasn't about tests: deleted files, new `.skip`, `.todo`, `fixme`, `.only`, weaker matchers. Vitest fails `.only` in CI (`allowOnly` default `!process.env.CI`), and Playwright with `forbidOnly`; `.skip` passes both.
 3. **Commit tests first**, then forbid edits to them while implementing (FLOW-002), checked with `git diff`. A `PreToolUse` hook on spec paths (HOOK-028) misses edits made through Bash: tdd-guard's docs deny `sed`, `awk`, `echo` and `perl` for that reason.
-4. **A reviewer that didn't write them**, and mutation testing for the ones that matter (JSTEST-013).
+4. **A reviewer that didn't write them**, and mutation testing for the ones that matter (JSTEST-013). Best practices' review prompt checks that "the listed edge cases have tests"; `/code-review` runs "in a fresh subagent that never saw your conversation".
 
 ## [JSTEST-017] Test-first with an agent: when it pays off
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-17
-- Sources: [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Claude Code common workflows: work with tests](https://code.claude.com/docs/en/common-workflows), [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai)
+- Last verified: 2026-10-30
+- Sources: [Claude Code best practices: Write a specific prompt](https://code.claude.com/docs/en/best-practices), [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai)
 - Related: FLOW-002, FLOW-011, FLOW-012, JSTEST-016, SKPACK-009
 
 FLOW-002 has Anthropic's test-driven steps. When writing the test first pays off:
-- **Bug fixes:** always. The docs' prompt: "write a failing test that reproduces the issue, then fix it." A test that failed before the fix and passes after is the evidence FLOW-011 asks for, and a test written after the fix can't show it ever caught the bug.
-- **Behaviour you can state as inputs and outputs** (parsers, validators, pricing rules, a pipe): the docs' example gives cases up front ("user@example.com is true, invalid is false… run the tests after implementing").
-- **Unattended or long runs:** committed tests give `/goal` or a Stop hook a condition to stop on (FLOW-012).
+- **Bug fixes:** always. Best practices' prompt: "write a failing test that reproduces it, then fix it". A test that failed before the fix and passes after is the evidence FLOW-011 asks for, and a test written after the fix can't show it ever caught the bug.
+- **Behaviour you can state as inputs and outputs** (parsers, validators, pricing rules, a pipe): give the cases up front. Best practices: "say what "fixed" looks like up front" (its "user@example.com is true, invalid is false" example was there until at least 2026-10-17 and gone by 2026-10-30).
+- **Unattended or long runs:** committed tests give `/goal` or a Stop hook a condition to stop on (FLOW-012). Best practices: "for runs nobody's watching, `/goal` or a `Stop` hook enforces it".
 
 When it doesn't: exploratory UI, prototypes and layout work, where a screenshot or browser check is the signal (FLOW-014), and refactors already covered by a suite.
 
-Two guards make it work. The test must fail first for the right reason: run it before implementing and read the failure (an import error isn't a red test). And the agent writing the code shouldn't also rewrite the test: commit it, then "have one Claude write tests, then another write code to pass them". A test written from the implementation tends to mirror it, the over-mocked, implementation-detail test of JSTEST-016.
+Two guards make it work. The test must fail first for the right reason: run it before implementing and read the failure (an import error isn't a red test). And the agent writing the code shouldn't also rewrite the test: commit it, then have a second session write the code. Best practices said "have one Claude write tests, then another write code to pass them" until at least 2026-10-17 and dropped it by 2026-10-30; it now uses a second session for review: "A second session is also the easiest independent reviewer you can get." A test written from the implementation tends to mirror it, the over-mocked, implementation-detail test of JSTEST-016.
 
 ## Recommendations for our setup
 

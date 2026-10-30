@@ -125,8 +125,8 @@ Run the vendor's tool first; each says it isn't the whole job.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Tools reference: LSP tool behavior](https://code.claude.com/docs/en/tools-reference), [Best practices](https://code.claude.com/docs/en/best-practices), [ast-grep FAQ](https://ast-grep.github.io/advanced/faq.html), [ts-morph: renaming](https://ts-morph.com/manipulation/renaming), [How is Google using AI for internal code migrations?](https://arxiv.org/abs/2501.06972)
+- Last verified: 2026-10-30
+- Sources: [Tools reference: LSP tool behavior](https://code.claude.com/docs/en/tools-reference), [Best practices: Run sessions in parallel](https://code.claude.com/docs/en/best-practices), [ast-grep FAQ](https://ast-grep.github.io/advanced/faq.html), [ts-morph: renaming](https://ts-morph.com/manipulation/renaming), [How is Google using AI for internal code migrations?](https://arxiv.org/abs/2501.06972)
 - Related: JSUP-005, JSUP-006, JSUP-007, ORCH-012, TOK-041
 
 Pick the tool by what the change needs to know.
@@ -137,7 +137,7 @@ Pick the tool by what the change needs to know.
 | Rename or move one symbol or file across the project | ts-morph `rename()` or `move()`: it follows references through the type checker |
 | One syntax pattern, many places, no types needed | ast-grep `run -p … -r …`, or a YAML rule with `fix` |
 | Edits that vary by context (an API whose semantics changed) | The agent, per file, from a discovery list, behind a build-and-test gate |
-| Many files of any kind | `/batch` (ORCH-012) or a `claude -p` loop |
+| Many files of any kind | `/batch` (ORCH-012), which runs each unit "in its own worktree and opens a PR for it", or a `claude -p` loop (ORCH-014) |
 
 Claude Code's LSP tool can find references but not rename: its docs list definition, references, type information, symbols, workspace search, implementations and call hierarchy. Google's experience report: "The use of LLMs alone through simple prompting is not sufficient for anything but the simplest of migrations"; locating and validating changes "are handled mostly using deterministic AST techniques".
 
@@ -170,13 +170,13 @@ Tested 2026-10-17, ast-grep 0.51.0 and ts-morph 28.0.0, Node 24.21.0: the `sg` w
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Best practices: fan out](https://code.claude.com/docs/en/best-practices), [eslint/codemods README](https://github.com/eslint/codemods), [nodejs/userland-migrations README](https://github.com/nodejs/userland-migrations), [How Anthropic runs large-scale code migrations with Claude Code](https://claude.com/blog/ai-code-migration)
+- Last verified: 2026-10-30
+- Sources: [Best practices: Run Claude from a script](https://code.claude.com/docs/en/best-practices), [eslint/codemods README](https://github.com/eslint/codemods), [nodejs/userland-migrations README](https://github.com/nodejs/userland-migrations), [How Anthropic runs large-scale code migrations with Claude Code](https://claude.com/blog/ai-code-migration)
 - Related: JSUP-004, JSUP-005, JSUP-008, FLOW-011, ORCH-012
 
 1. **Discover first.** Save the list of sites (`ast-grep run … --json`, `rg`, or LSP `findReferences`) to a file with a count; it is the work queue and the later check.
 2. **Write the transform in the scratchpad**, not the repo, and preview it: ast-grep without `-U`, jscodeshift `--dry --print`, ts-morph without `save()`.
-3. **Try 2–3 files and fix the transform**, as the best-practices page says for `claude -p` loops: "Refine your prompt based on what goes wrong with the first 2-3 files, then run on the full set." For an ast-grep rule, add cases to `ast-grep test`.
+3. **Try three files and fix the transform**, as the best-practices page says for `claude -p` loops: "Try it on three files first, see what goes wrong, fix the prompt, then run the rest." For an ast-grep rule, add cases to `ast-grep test`.
 4. **Run it on a clean tree**: eslint/codemods "Run them only on Git-tracked files, and commit or stash changes first" (in our worktrees, commit, never stash).
 5. **Commit the codemod's output alone**, with the command in the message, then the hand fixes. A reviewer can rerun the first commit and read only the second (our convention, not a vendor rule).
 6. **Let the build decide.** Type-check, build and test; mark what the transform can't handle, as Anthropic's migrations did with `// TODO(port): <reason>`. Anthropic: "Let scripts — a compiler, a diff, a test suite — be the referee."
@@ -220,8 +220,8 @@ Each PR passes CI on its own (JSUP-009), so a failure points at one step. Rebase
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [npm-ci](https://docs.npmjs.com/cli/v11/commands/npm-ci), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [Best practices: verification](https://code.claude.com/docs/en/best-practices)
+- Last verified: 2026-10-30
+- Sources: [npm-ci](https://docs.npmjs.com/cli/v11/commands/npm-ci), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices)
 - Related: JSUP-002, FLOW-011, FLOW-013, SESS-008
 
 Check from a clean install, because the upgrade is a change to what gets installed:
@@ -229,11 +229,11 @@ Check from a clean install, because the upgrade is a change to what gets install
 1. **A clean checkout.** A worktree under `.claude/worktrees/` resolves the main checkout's `node_modules` (SESS-008), so its build can pass on the old packages. osrs-tracker-api's skill: commit, `git worktree add <scratchpad>/build-check HEAD`, run `npm ci && npm run build` there, then remove it.
 2. **`npm ci`**: it fails when `package.json` and the lockfile disagree, and on a required-peer conflict.
 3. **`npm ls --all`**: catches the optional-peer conflicts that `npm ci` lets through (JSUP-002).
-4. **Type-check, build, tests, lint**, and start the app where a build can't show the change (FLOW-013's `/run`).
+4. **Type-check, build, tests, lint**, and start the app where a build can't show the change (FLOW-013's `/run`; best practices names `/verify`, which "has Claude build and run the app and look at the result").
 5. **Read the lockfile diff**: `git diff --stat`, then the changed `"version"` lines. A one-package bump that moves dozens of unrelated packages was probably a regenerated lockfile (JSUP-010).
 6. **Grep the build and test output for deprecation warnings**: they list the next major's work.
 
-Report the commands and their results (FLOW-011). Our `verify.sh` scripts already run lint, tests and the production build; web's also runs `npm ls --all` against the main checkout when in a worktree.
+Report the commands and their results (FLOW-011); best practices: "ask Claude for *evidence*: the command it ran and its output". Our `verify.sh` scripts already run lint, tests and the production build; web's also runs `npm ls --all` against the main checkout when in a worktree.
 
 ## [JSUP-010] Deleting `package-lock.json` to fix an install
 - Type: anti-pattern
@@ -337,8 +337,8 @@ Dependabot rebases its own conflicting PRs, but stops after 30 days unmerged, or
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview), [Best practices](https://code.claude.com/docs/en/best-practices), [Vitest migration guide source](https://github.com/vitest-dev/vitest/blob/main/docs/guide/migration/index.md), [docs.nestjs.com/llms.txt](https://docs.nestjs.com/llms.txt)
+- Last verified: 2026-10-30
+- Sources: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview), [Best practices: Write a specific prompt](https://code.claude.com/docs/en/best-practices), [Vitest migration guide source](https://github.com/vitest-dev/vitest/blob/main/docs/guide/migration/index.md), [docs.nestjs.com/llms.txt](https://docs.nestjs.com/llms.txt)
 - Related: ORCH-026, TS-015, TOK-090, TOK-095, TOK-096, PROMPT-020, JSUP-001
 
 Opus 5.5, Sonnet 5.5 and Haiku 5.5 list "Reliable knowledge cutoff" and "Training data cutoff" as Jun 2026. Since then: TypeScript 7.0.2 (2026-07-08), Dependabot's default cooldown (2026-07-14), ESLint 9's end of life (2026-08-06), Nest CLI 12 with `nest upgrade` (2026-08-27), Vitest 5 (2026-09-03). Treat a remembered API, flag or default as a lead.
@@ -350,7 +350,7 @@ Read, in this order:
 
 Vitest ships its own agent prompt: "Migrate to Vitest 5. Fetch the migration guide from https://vitest.dev/guide/migration.md and apply appropriate changes. Do not touch more files than necessary for the migration."
 
-Claude Code's docs say only "Give URLs for documentation and API references". context7 can be weeks behind (TOK-095). An error like "is not a function" after a bump means the API changed: read the types before guessing.
+Best practices said "Give URLs for documentation and API references" until at least 2026-10-17 and dropped it by 2026-10-30. It now says "If you already have the thing Claude needs, hand it over instead of describing it" (an `@` file, a screenshot, piped output), and "For a CLI it hasn't seen before, pointing it at `--help` is enough." context7 can be weeks behind (TOK-095). An error like "is not a function" after a bump means the API changed: read the types before guessing.
 
 ## Recommendations for our setup
 
