@@ -996,7 +996,7 @@ Native agent view (`claude agents`) plus automatic worktrees per background sess
 - Confidence: single-source
 - Last verified: 2026-10-14
 - Sources: [Aider architect/editor (2024)](https://aider.chat/2024/09/26/architect.html), [Amp models and subagents](https://ampcode.com/docs/models-and-subagents), [Cursor worktrees](https://cursor.com/docs/configuration/worktrees), [OpenAI Agents SDK multi-agent](https://openai.github.io/openai-agents-python/multi_agent/), [Magentic-One](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/magentic-one.html), [langgraph-supervisor](https://github.com/langchain-ai/langgraph-supervisor-py), [Gemini CLI subagents](https://geminicli.com/docs/core/subagents/), [spec-kit](https://github.com/github/spec-kit)
-- Related: ORCH-029, ORCH-036
+- Related: ORCH-029, ORCH-036, SDD-001, SDD-003
 
 | Source | Idea | Transfer to Claude Code |
 |---|---|---|

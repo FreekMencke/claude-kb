@@ -17,12 +17,12 @@ Research basis:
 | What does Spec Kit add to a Claude Code repo? | Skills in `.claude/skills/speckit-<command>/`, model-invocable by default; event handlers in `.claude/settings.json`; `.specify/`; and a `specs/NNN-feature/` folder of several files per feature. | SDD-002 |
 | What's worth borrowing from Spec Kit? | `converge`: audit the code against the spec and only append tasks; and `analyze`, a read-only cross-check before implementing. | SDD-003 |
 | How is OpenSpec different? | Lighter: propose, apply, archive, with delta specs that merge into `openspec/specs/` on archive. Telemetry is on by default. | SDD-004 |
-| What happened to GSD (get-shit-done)? | Archived; it "continues as **GSD Core**" (`@opengsd/gsd-core`). Its installer once pre-authorized `npx gsd-core`, an npm name owned by someone else; fixed in 1.16.0. | SDD-005 |
-| Is BMad stable? | v6.12 is stable and frozen; v7 is a preview alpha whose "skills, install path, and docs change often". | SDD-006 |
+| What happened to GSD (get-shit-done)? | Archived; it "continues as **GSD Core**" (`@opengsd/gsd-core`). Its installer once pre-authorized `npx gsd-core`, an npm name owned by someone else; fixed in 1.17.0. | SDD-005 |
+| Is BMad stable? | v6.12 is stable and frozen; v7 is a preview alpha whose "skills, install path, and docs change often"; its stated ETA of 2026-10-16 had passed by the README's 2026-10-18 commit. | SDD-006 |
 | Does anyone say plan mode replaces SDD? | Agent OS v3: "Spec writing — Now best handled using Plan mode"; it retired its implementation and orchestration phases. | SDD-007 |
-| Is there evidence SDD beats plan mode? | No controlled comparison found. The frameworks' docs themselves offer shorter paths for small changes. | SDD-008 |
-| Should we adopt one? | No. Keep plan mode plus `SPEC.md` (FLOW-003), and borrow `converge` as a reviewer step. | SDD-009 |
-| What's Anthropic's own spec workflow? | "Interview me until you could write the spec, then write it to SPEC.md"; build in a fresh session; have a reviewer subagent check the diff against `SPEC.md`. | SDD-009, FLOW-003 |
+| Is there evidence SDD beats plan mode or no spec? | Thin and mixed. Uvik (vendor, 50 tickets): 40 to 42 merged with a spec against 36 without, inside its ±10-point noise band, with fewer review defects but more time; no gain on bug fixes or refactors. An ESEM 2026 study of 88,052 PRs supported none of five vendor claims. | SDD-008 |
+| Should we adopt one? | No. Keep an interviewed `SPEC.md`, a fresh build session and a review against the spec; borrow `converge` as that review step. | SDD-009 |
+| What's Anthropic's own spec workflow? | The best-practices page (rewritten by 2026-10-30): "Interview me until you could write the spec, then write it to SPEC.md"; build in a fresh session; "Review against your spec" with a subagent. | SDD-009 |
 | What do independent reviewers say about SDD tools? | Böckeler (2025-10-15): a small bug became "4 'user stories' with a total of 16 acceptance criteria"; "I'd rather review code than all these markdown files". Thoughtworks Radar (2025-11-05): Assess, "lengthy spec files that are hard to review". | SDD-010 |
 
 ## Index
@@ -37,7 +37,7 @@ Research basis:
 | SDD-006 | BMad Method: a stable v6 and a changing v7 | fact | bmad, versions, churn |
 | SDD-007 | Agent OS v3 hands spec writing to plan mode | fact | agent-os, plan-mode |
 | SDD-008 | Evidence for SDD against plan mode | fact | measurement, evidence, overhead |
-| SDD-009 | Plan mode and `SPEC.md`, plus a converge-style review | recommendation | plan-mode, spec, review, adoption |
+| SDD-009 | An interviewed `SPEC.md`, a fresh session and a converge-style review | recommendation | plan-mode, spec, review, adoption |
 | SDD-010 | Independent assessments: Böckeler (2025) and the Thoughtworks Radar | fact | evidence, thoughtworks, kiro, spec-kit, review |
 | SDD-011 | Kiro's spec format: three files and EARS requirements | fact | kiro, ears, requirements, specs |
 
@@ -58,7 +58,7 @@ Research basis:
 | Agent OS | 3.0 (2026-01-20) | A bash script | Standards discovery and injection; specs via plan mode | `agent-os/standards/` |
 
 Weight in Claude Code, from the repos at the pinned commits:
-- **GSD Core:** 64 agent files, 72 command files and 29 hook scripts.
+- **GSD Core:** 64 agent files (35 distinct, plus compact variants), 72 command files and 29 hook scripts, some for Cursor and Windsurf.
 - **Spec Kit:** 10 core command skills plus event handlers (SDD-002).
 - **OpenSpec:** a handful of skills and commands.
 - **Agent OS:** commands only.
@@ -111,7 +111,7 @@ A plain-prompt version for a session with a `SPEC.md`: "Compare the diff against
 
 **Flow:** `/opsx:propose <name>` creates `openspec/changes/<name>/` with `proposal.md`, `design.md`, `tasks.md` and delta `specs/`. `/opsx:apply` implements the tasks. `/opsx:archive` moves the change to `openspec/changes/archive/<date>-<name>/` and merges its deltas into `openspec/specs/`, the standing description of how the system works. Concepts: "Brownfield-first", with "Delta specs — specifications for what's being added, modified, or removed".
 
-**Telemetry:** "OpenSpec collects anonymous usage stats. We collect only command names and version … Automatically disabled in CI." Opt out with `openspec config set telemetry.enabled false` ("unset means on"), `OPENSPEC_TELEMETRY=0` or `DO_NOT_TRACK=1`.
+**Telemetry:** "OpenSpec collects anonymous usage stats. We collect only command names and version … Automatically disabled in CI." Opt out with `openspec config set telemetry.enabled false` ("unset means on"), `OPENSPEC_TELEMETRY=0` (which also turns off `openspec update`'s version check) or `DO_NOT_TRACK=1`.
 
 **Its own comparisons:** Spec Kit is "Thorough but heavyweight. Rigid phase gates, lots of Markdown, Python setup"; Kiro is "locked into their IDE and limited to Claude models". Both are a competitor's description.
 
@@ -124,18 +124,18 @@ The archive-and-merge step is the idea with no plan-mode equivalent: specs that 
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-30
-- Sources: [gsd-build/get-shit-done README](https://github.com/gsd-build/get-shit-done/blob/bdcaab2/README.md), [GSD Core CHANGELOG 1.16.0](https://github.com/open-gsd/gsd-core/blob/7d68e2b/CHANGELOG.md), [GSD Core README](https://github.com/open-gsd/gsd-core/blob/7d68e2b/README.md)
+- Sources: [gsd-build/get-shit-done README](https://github.com/gsd-build/get-shit-done/blob/bdcaab2/README.md), [GSD Core CHANGELOG 1.17.0](https://github.com/open-gsd/gsd-core/blob/7d68e2b/CHANGELOG.md), [GSD Core README](https://github.com/open-gsd/gsd-core/blob/7d68e2b/README.md)
 - Related: SKILL-069, SDD-001, SKILL-041
 
 The original repo (64,182 stars) is archived. Its README now says "GSD Has Moved", and the project "now continues as **GSD Core** in the Open GSD repository". The old npm package was `get-shit-done-cc`; the new one is `@opengsd/gsd-core` 1.19.0. No reason for the move was found in either repo.
 
-GSD Core's CHANGELOG, 1.16.0 (2026-10-05): "Claude Code installs no longer pre-authorize `npx gsd-core` — the installer wrote a `Bash(npx gsd-core *)` allow rule, but GSD ships as `@opengsd/gsd-core` and the unscoped npm name belongs to a different owner, so Claude Code would run whatever was published under it without asking." Upgrades remove the rule.
+GSD Core's CHANGELOG, 1.17.0 (2026-10-14): "Claude Code installs no longer pre-authorize `npx gsd-core` — the installer wrote a `Bash(npx gsd-core *)` allow rule, but GSD ships as `@opengsd/gsd-core` and the unscoped npm name belongs to a different owner, so Claude Code would run whatever was published under it without asking." Upgrades remove the rule.
 
 Lessons for any installer:
 - An allow rule for `npx <name>` trusts whoever owns that npm name. Pin the scope and version, or don't pre-authorize.
 - A renamed package makes a supply-chain gap. Check the exact npm scope before installing (SKILL-069 item 4).
 
-GSD Core itself is a large surface: 64 agents, 72 commands and 29 hook scripts, including write, read, prompt-injection and secret-read guards. It is a framework to vet as a whole, not to try casually.
+GSD Core itself is a large surface: 64 agent files, 72 commands and 29 hook scripts, including write, read, prompt-injection and secret-read guards. It is a framework to vet as a whole, not to try casually.
 
 ## [SDD-006] BMad Method: a stable v6 and a changing v7
 - Type: fact
@@ -176,16 +176,16 @@ Its kept part is what CLAUDE.md, rules files and skills already do (REPO-044). I
 ## [SDD-008] Evidence for SDD against plan mode
 - Type: fact
 - Applies to: Claude Code
-- Confidence: unverified
+- Confidence: single-source
 - Last verified: 2026-10-30
-- Sources: [Spec Kit quickstart](https://github.com/github/spec-kit/blob/2a23a84/docs/quickstart.md), [BMAD docs index](https://github.com/bmad-code-org/BMAD-METHOD/blob/61e01f8/docs/index.md), [Agent OS CHANGELOG](https://github.com/buildermethods/agent-os/blob/e892e61/CHANGELOG.md)
+- Sources: [Spec Kit quickstart](https://github.com/github/spec-kit/blob/2a23a84/docs/quickstart.md), [BMAD docs index](https://github.com/bmad-code-org/BMAD-METHOD/blob/61e01f8/docs/index.md), [Agent OS CHANGELOG](https://github.com/buildermethods/agent-os/blob/e892e61/CHANGELOG.md), [Uvik: SDD benchmark 2026](https://uvik.net/blog/spec-driven-development-benchmark/), [ESEM 2026: Specification artifacts in open-source PR workflows](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ESEM.2026.84)
 - Related: SDD-009, SDD-003, SDD-010
 
-No controlled comparison of an SDD framework against plan mode, or against no spec, was found in the five repos or their docs.
+No controlled comparison of an SDD framework against plan mode was found. Two measurements exist against no spec:
 
-Found only as search-result text, not read, so not evidence here:
-- A vendor-run benchmark by Uvik: OpenSpec merged 42 of 50 tickets against 36 for a no-spec control, on Claude Sonnet 5.
-- A single-run Medium test: OpenSpec used about 57.7k tokens against Spec Kit's about 121k, on another vendor's model.
+- **Uvik** (a vendor, "Last updated: October 8, 2026", 50 Python tickets, human review): merge rate Spec Kit 80% (40/50), Kiro 82%, BMAD 82%, OpenSpec 84% (42/50), "No spec (control) 72% (36/50)", with "The noise band on merge rate is plus or minus 10 percentage points". Review defects per merged ticket: 0.39 to 0.57 with a spec against 0.86 without; median minutes to merge 36 to 55 against 29. A spec "did not pay for itself on bug-fix, refactor, or test-writing tickets".
+- **ESEM 2026** (88,052 PRs, 119 repos): "None of the five hypotheses are supported". It measures specification artifacts in PRs (mostly ticket references), not SDD tools.
+- A single-run Medium test (search text only): OpenSpec about 57.7k tokens against Spec Kit's 121k.
 - Independent qualitative write-ups exist (SDD-010); neither measures outcomes.
 
 What the frameworks concede themselves:
@@ -194,24 +194,24 @@ What the frameworks concede themselves:
 - OpenSpec positions itself against "Rigid phase gates".
 - Agent OS retired its spec and orchestration layers (SDD-007).
 
-So the overhead on small changes is agreed. Whether the full process pays off on large ones is claimed, not measured.
+So the overhead on small changes is agreed. On larger features, one vendor measured a modest gain inside its own noise band.
 
-## [SDD-009] Plan mode and `SPEC.md`, plus a converge-style review
+## [SDD-009] An interviewed `SPEC.md`, a fresh session and a converge-style review
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-30
 - Sources: [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Spec Kit converge](https://github.com/github/spec-kit/blob/2a23a84/templates/commands/converge.md), [Agent OS CHANGELOG](https://github.com/buildermethods/agent-os/blob/e892e61/CHANGELOG.md)
-- Related: FLOW-003, FLOW-001, SDD-003, SDD-004, SDD-007, SDD-008
+- Related: FLOW-003, FLOW-001, SDD-003, SDD-004, SDD-007, SDD-008, FLOW-006
 
 Our judgement from the entries above.
 
-**Don't adopt a framework.** Anthropic's documented workflow is already spec-driven, in one file:
+**Don't adopt a framework.** Anthropic's best-practices page, rewritten by 2026-10-30, already describes a spec-driven workflow in one file:
 1. "Interview me until you could write the spec, then write it to SPEC.md."
 2. "Once `SPEC.md` exists, start a fresh session to build from it".
-3. "use a subagent to review the rate limiter diff against SPEC.md, check every requirement is implemented and the listed edge cases have tests, report gaps" (FLOW-003).
+3. "use a subagent to review the rate limiter diff against SPEC.md, check every requirement is implemented and the listed edge cases have tests, report gaps" ("Review against your spec"). FLOW-003 quotes the page's older wording.
 
-The frameworks add files, hooks, skill listings and, for two of them, telemetry (SDD-002, SDD-004, SDD-005), for gains nobody has measured (SDD-008). One of them now defers to plan mode (SDD-007).
+The frameworks add files, hooks, skill listings and, for two of them, telemetry (SDD-002, SDD-004, SDD-005), for gains measured once, by a vendor, inside its noise band, and absent on small changes (SDD-008). One of them now defers to plan mode (SDD-007).
 
 **Borrow:**
 - `converge`'s rule for the review step: the checker doesn't edit code, it appends missing work as tasks or says "Converged" (SDD-003).
@@ -267,6 +267,6 @@ Ranked by impact against effort.
 ## Open questions
 
 - **Tessl:** Böckeler covers it (SDD-010) but it wasn't read here.
-- **The Uvik benchmark:** only a search snippet was seen; method and data unread (SDD-008).
+- **Uvik's model and method details:** the results table was read; its model and task list weren't checked (SDD-008).
 - **Why GSD moved to GSD Core:** neither repo says (SDD-005).
 - **Spec Kit's event handlers in `.claude/settings.json`:** which events and commands they register wasn't traced (SDD-002).
