@@ -238,7 +238,7 @@ Results go to `evals/results/` (ignored). Put the before/after in the PR and rep
 
 | Cases (load + near miss) | Should load | Near miss skipped | Model | Claude Code | Date |
 |---|---|---|---|---|---|
-| 50 + 21 | 147/150 | 63/63 | Opus 5.5 | 2.1.296 | 2026-10-28 |
+| 56 + 23 | 161/168 | 69/69 | Opus 5.5 | 2.1.314 | 2026-10-30 |
 
 `skips-9`, adding an Angular component, loaded the skill in 1 of 3 runs from FreekMencke/claude-kb#175 on and in 3 of 3
 once batch 3 widened the description; naming "adding a component or endpoint" as a routine change fixed it
@@ -248,6 +248,12 @@ once batch 3 widened the description; naming "adding a component or endpoint" as
 loaded instead. It failed the same way with `main`'s description, so the cause isn't the description. It failed 3 of 3 again on
 2026-10-28 (FreekMencke/claude-kb#299), where `loads-21`, a Node question, also missed 1 of 3; the trimmed words were
 unrelated to Node.
+
+On 2026-10-30 (FreekMencke/claude-kb#324, Claude Code 2.1.314) `loads-2`, how much context a subagent starts with, failed 3 of 3
+with `main`'s description too, so the cause isn't the description. The first trimmed draft lost `loads-4`, writing a hook
+(0 of 6 runs, 3 of 3 on `main`); naming hooks first in "Use before" fixed it. Cutting "versions" and "Node.js" cost `loads-21`;
+restoring both brought it back to `main`'s 2 of 3. "debugging API errors" went to make room: `loads-29` fails without it as
+with it.
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
 
