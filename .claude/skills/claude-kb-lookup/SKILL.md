@@ -23,7 +23,7 @@ through the server's `kb_*` tools, never from a checkout or files on disk, and n
 
 ## 1. Load the tools
 
-The tools' full names depend on how the session got the server: `mcp__claude-kb__kb_search` (user scope), `mcp__claude_ai_Claude_KB__kb_search` (the claude.ai connector in the terminal), `mcp__Claude_KB__kb_search` (cloud sessions), `mcp__plugin_kb-lookup_claude-kb__kb_search` (the `kb-lookup` plugin) or `mcp__<uuid>__kb_search` (desktop sessions on WSL). Any server with `kb_search` and `kb_get` will do. If they're deferred, load `kb_search`, `kb_get` and `kb_quick_answers` with one ToolSearch `select:` call. If there are none, say the knowledge base isn't available here and stop; the caller decides where to look instead.
+The tools' names depend on how the session got the server, so don't guess a prefix. If `kb_search` isn't already listed under some name ending in `__kb_search`, load the tools with one ToolSearch keyword query, not `select:`: `kb_search kb_get kb_quick_answers` with `max_results` 5. Any server with `kb_search` and `kb_get` will do. If that finds none, say the knowledge base isn't available here and stop; the caller decides where to look instead.
 
 ## 2. Find and read the entries you need
 

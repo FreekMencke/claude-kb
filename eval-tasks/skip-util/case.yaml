@@ -1,0 +1,16 @@
+schema_version: "1.1"
+name: skip-util
+tags: [task,should-skip]
+context:
+  scaffold_script: fixture.sh
+execution:
+  prompt: "Add a subtract function to src/add.ts next to add."
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: left-kb-alone
+    type: regex
+    target: trace
+    match: not_contains
+    pattern: '\\?"name\\?"\s*:\s*\\?"mcp__[^"\\]*__kb_(?:search|get|quick_answers)\\?"|\\?"skill\\?"\s*:\s*\\?"(?:[\w-]+:)?claude-kb-lookup\\?"'

@@ -856,14 +856,15 @@ Other rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-10-30
 - Sources: [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Host a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace)
-- Related: SKILL-035
+- Related: SKILL-035, SKILL-047
 
 **Auto-update**
 - It runs in interactive sessions after the first message, with a random delay of up to 10 minutes. The new version loads at the next launch or on `/reload-plugins`.
 - It is **on** by default for `claude-plugins-official` and marketplaces added from claude.ai.
 - It is **off** for the community marketplace and every third-party or local marketplace. Turn it on with `autoUpdate: true` on the `extraKnownMarketplaces` entry, or in `/plugin` › Marketplaces. A marketplace owner can't force it from `marketplace.json`.
+- "If you set `DISABLE_UPDATES=1`, `DISABLE_AUTOUPDATER=1`, or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`, the whole pass is off and the **Enable auto-update** toggle is hidden, unless you also set `FORCE_AUTOUPDATE_PLUGINS=1`." The desktop app sets `DISABLE_AUTOUPDATER=1` (SKILL-047), so a plugin installed there stays frozen whatever the marketplace says. Our `kb-lookup` stayed on its 2026-10-17 copy until 2026-10-30.
 
 **Manual updates**
 - `claude plugin update <plugin>` updates one plugin. There is no "update all" command.
