@@ -673,7 +673,7 @@ claude.ai chat memory is a third system: "Claude saves memory as a set of indivi
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference), [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing), [Memory cookbook](https://github.com/anthropics/claude-cookbooks/blob/main/tool_use/memory_cookbook.ipynb), [Managing context on the Claude Developer Platform](https://www.anthropic.com/news/context-management)
-- Related: TOK-038, MEM-031, MEM-019, ORCH-036
+- Related: TOK-038, MEM-031, MEM-019, ORCH-036, CAPI-035
 
 Detail beyond TOK-038:
 - **Declaration:** `{"type": "memory_20250818", "name": "memory"}`; "available on all Claude 4 and later models". The tool-reference table lists no beta header for it; the SDK helpers still sit in the beta namespace. Context editing still needs `context-management-2025-06-27`.

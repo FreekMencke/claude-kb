@@ -470,7 +470,7 @@ Docs: "Use cloud tasks for work that should run reliably without your machine. U
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview), [Multi-agent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
-- Related: ORCH-011, ORCH-015
+- Related: ORCH-011, ORCH-015, CAPI-036, CAPI-038
 
 Managed Agents is a hosted agent harness for API builders (beta header `managed-agents-2026-04-01`). It is built from four concepts: agents, environments (a cloud or self-hosted sandbox), sessions and an event stream. Its multi-agent block (`multiagent_20261001`) offers three mechanisms:
 - **Subagents:** one level of delegation, up to 25 child threads at a time (idle threads count until archived) and up to 20 predefined agents. Predefined agents can use different models; the docs example mixes Opus 5.5 and Haiku 5.5.
@@ -622,7 +622,7 @@ A unit you could finish in two tool calls is not worth a subagent: the brief and
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Effort](https://platform.claude.com/docs/en/build-with-claude/effort)
+- Sources: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5), [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1)
 - Related: ORCH-027, ORCH-028, ORCH-030
 
 | | Fable 5.1 | Opus 5.5 | Sonnet 5.5 | Haiku 5.5 |
@@ -700,7 +700,7 @@ Other details:
 - Confidence: official-docs
 - Last verified: 2026-10-12
 - Sources: [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence), [Research system](https://www.anthropic.com/engineering/multi-agent-research-system)
-- Related: ORCH-021, ORCH-027, ORCH-030
+- Related: ORCH-021, ORCH-027, ORCH-030, CAPI-028
 
 Anthropic's internal, directional measurements:
 - **Orchestrator over workers, task larger than one context.** A Fable 5.1 lead over 25 Sonnet 5 workers, on a 21.6M-token corpus, cost 47–55% less than Fable alone and scored 10–12 points lower. It still beat Sonnet 5 alone. On the harder BrowseComp set and DeepWideSearch, "the orchestrator's model alone at lower effort came out ahead in every case measured": delegation saved money only on routine work with a long cost tail and on work larger than one context window.

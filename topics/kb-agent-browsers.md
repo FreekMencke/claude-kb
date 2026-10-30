@@ -43,7 +43,7 @@ Research basis:
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [playwright-mcp README](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md), [playwright-cli README](https://github.com/microsoft/playwright-cli/blob/b1a5903/README.md), [agent-browser README](https://github.com/vercel-labs/agent-browser/blob/099e84e/README.md), [chrome-devtools-mcp README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/3c609da/README.md), [browser-use](https://github.com/browser-use/browser-use/tree/b49a68e), [Claude in Chrome](https://code.claude.com/docs/en/chrome)
-- Related: FLOW-014, JSTEST-012, BROWSER-008
+- Related: FLOW-014, JSTEST-012, BROWSER-008, CAPI-034
 
 | Tool | Version (date) | Licence | Stars | Page to the model | Headless by default |
 |---|---|---|--:|---|---|
