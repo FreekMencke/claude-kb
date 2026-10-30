@@ -139,7 +139,7 @@ Anthropic gives "at least 60 days' notice" by email. These dates cover the Claud
 - Related: CAPI-001, CAPI-005, CAPI-007
 
 Opus 5.5, Sonnet 5.5 and Fable 5.1 return 400 ("tool_choice: type "tool" and "any" are not supported for this model.") for forced tool choice. The docs' replacement:
-- Use `{type: "auto"}` "plus an explicit instruction and `strict: true` tools, or JSON outputs".
+- Use `{type: "auto"}` "with an explicit instruction and `strict: true` tools, or use JSON outputs".
 - Put the instruction in the user turn, or in a mid-conversation `role: "system"` message "when your application requires the call" (Fable 5.1 guide).
 - On Amazon Bedrock use `auto` alone, since structured outputs aren't available there for these models.
 
@@ -171,7 +171,7 @@ JSON outputs (`output_config.format`) are GA with no beta header on the Claude A
 The deprecated `output_format` now needs the `structured-outputs-2025-11-13` header, or it returns 400.
 
 Not guaranteed:
-- **Refusals:** "The output may not match your schema because the refusal message takes precedence over schema constraints." A property that asks for step-by-step reasoning "may lead to a `reasoning_extraction` refusal".
+- **Refusals:** "The output might not match your schema because the refusal message takes precedence over schema constraints." A property that asks for step-by-step reasoning "might lead to a `reasoning_extraction` refusal".
 - **`max_tokens`:** truncated output; "Retry with a higher `max_tokens` value".
 - **Enum case:** a value can differ from the enum in capitalisation "with no error and no special `stop_reason`": compare case-insensitively.
 - **Property order:** "required properties appear first, followed by optional properties".
@@ -362,8 +362,8 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 
 **Scheduled deployments** (2026-06-09):
 - A cron `expression` plus an IANA `timezone`, at minute granularity.
-- Execution has jitter "of up to 15% of the interval between runs, with a minimum of 5 seconds and a maximum of 9 minutes".
-- "A maximum of 1,000 scheduled deployments is supported per organization."
+- Execution has jitter "of up to 15 percent of the interval between runs, with a minimum of 5 seconds and a maximum of 9 minutes".
+- "A maximum of 1,000 scheduled deployments is supported for each organization."
 - Each run creates a session.
 - A rate-limited start is recorded as `session_rate_limited_error` "without retry".
 
@@ -391,7 +391,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 | | Managed Agents deployment | Claude Code routine |
 |---|---|---|
 | Status | Beta | "research preview" |
-| Billing | API tokens plus $0.08 per `running` session-hour; idle time is free | "Routines draw down subscription usage the same way interactive sessions do" |
+| Billing | API tokens plus $0.08 per `running` session-hour; idle time is free | "Scheduled tasks draw down subscription usage the same way interactive sessions do" |
 | Interval | Cron to the minute, with jitter | "The minimum interval is one hour" |
 | Count limits | 1,000 deployments per organisation | 100 scheduled runs an hour per account; 30 manual or API runs an hour per routine; "None of these hourly limits has overage" |
 | Spend cap per run | Hard USD `budget` | None documented; bounded by plan usage |

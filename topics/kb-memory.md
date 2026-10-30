@@ -419,7 +419,7 @@ Tested 2026-10-12, v2.1.296, `claude -p`: `--settings` with `autoMemoryDirectory
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-044, TOK-065, MEM-013, MEM-026, MEM-035
 
-The docs' split: CLAUDE.md is "Instructions and rules" you write; auto memory is "Learnings and patterns" Claude writes, for "Your preferences, corrections you give Claude, and project context Claude can't derive from the code".
+The docs' split: CLAUDE.md is "Instructions and rules" you write; auto memory is "Learnings and patterns" Claude writes, for "Your preferences, corrections you give Claude, project context Claude can't derive from the code".
 
 Auto memory is the narrowest channel. It is machine-local ("not shared across machines or cloud environments"), keyed to one repo, and invisible to cloud sessions, routines, the GitHub action and, per the docs, non-fork subagents. So:
 
@@ -677,7 +677,7 @@ claude.ai chat memory is a third system: "Claude saves memory as a set of indivi
 
 Detail beyond TOK-038:
 - **Declaration:** `{"type": "memory_20250818", "name": "memory"}`; "available on all Claude 4 and later models". The tool-reference table lists no beta header for it; the SDK helpers still sit in the beta namespace. Context editing still needs `context-management-2025-06-27`.
-- **Client-side:** "Claude requests file operations, and your application executes them." Commands: `view`, `create`, `str_replace`, `insert`, `delete`, `rename`, all under a `/memories` prefix your handler maps to storage.
+- **Client-side:** "Claude requests file operations, and your application runs them." Commands: `view`, `create`, `str_replace`, `insert`, `delete`, `rename`, all under a `/memories` prefix your handler maps to storage.
 - **Auto-injected prompt:** the API adds "IMPORTANT: ALWAYS VIEW YOUR MEMORY DIRECTORY BEFORE DOING ANYTHING ELSE." plus a protocol to record progress because "Your context window might be reset at any moment". Nothing from the files is preloaded; the model must `view` first.
 - **Your job:** validate every path ("`/memories/../../secrets.env`"; use `resolve()` and `relative_to()`), cap file size and `view` output, expire old files, and strip sensitive data.
 - **Helpers:** Python `BetaAbstractMemoryTool` and `BetaLocalFilesystemMemoryTool`, TypeScript `betaMemoryTool`, C#, Java; none for Go or Ruby.
@@ -821,7 +821,6 @@ Ranked by impact against effort.
 3. **Auto-dream and the recall selector** are in the v2.1.296 binary but undocumented. Is consolidation on for our account, does `autoDreamEnabled` work, and does the "up to 5" selector run for every recall? MEM-014, MEM-018.
 4. **Auto memory in cloud sessions, routines and `claude-code-action`.** No page says whether it is on; a cloud session would start with an empty folder anyway. Test with a routine that saves and recalls a word. MEM-026.
 5. **Concurrent writes to one MEMORY.md** from parallel worktree sessions: no locking is documented, and nothing merges conflicting index edits. MEM-027, SESS-009.
-6. **Desktop with WSL:** which `~/.claude` is read is implied (the distro's), not stated. MEM-026. Local tests point the same way: the app runs its CLI from the distro's `~/.claude/remote/ccd-cli/` (SURF-004) and loads personal skills from the distro's home (SKILL-048).
 7. **Is the 25KB limit bytes or UTF-16 code units?** anthropics/claude-code#97453 says code units (single-source). TOK-004.
 8. **The claude-mem measurement** (MEM-033) came from an earlier session whose command wasn't kept; a re-run needs a new script.
 9. **Background memory extraction**: strings suggest a pass over recent turns besides Claude's own saves, and the CHANGELOG mentions "memory extraction" (v2.1.77, v2.1.273); when it runs, and whether in `-p`, is unknown. MEM-013.

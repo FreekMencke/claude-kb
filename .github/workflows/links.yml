@@ -56,6 +56,8 @@ jobs:
       # which lychee reads from the working directory; the summary counts them.
       # The token is the action's default, github.token, in GITHUB_TOKEN. lychee 0.24.2 still requests github.com links
       # anonymously and uses the token only for its API fallback when such a request fails; a throttled request
+      # --suggest looks a broken link up in the Wayback Machine; the report step lists what it finds as a starting point for
+      # the source's new location.
       # answers 429, which is accepted, so a rate-limited github.com link passes unchecked. format json, because the report step needs the line of each
       # broken URL; the action only writes its own job summary for markdown. fail false: the report step fails the job.
       - name: Check the links
@@ -66,6 +68,7 @@ jobs:
             --cache
             --cache-exclude-status '429, 500..'
             --accept '100..=103,200..=299,405,406,429'
+            --suggest
             --scheme http
             --scheme https
             sources.md
@@ -144,6 +147,10 @@ jobs:
             `${report.total} links on ${lines.filter(Boolean).length} Sources lines (${report.unique} unique URLs). Counted per link, not per URL: ${report.successful} ok, ${report.errors} failed, ${report.timeouts} timed out, ${report.cached} answered from the cache, ${report.excludes} excluded. Lychee ran ${report.duration.secs} s.`,
           ];
           if (broken.length) parts.push('### Broken', table(broken));
+          const suggestions = Object.values(report.suggestion_map).flat();
+          if (suggestions.length) {
+            parts.push('### Archived copies of broken links (lychee --suggest)', suggestions.map(({ original, suggestion }) => `- ${original}: ${suggestion}`).join('\n'));
+          }
           if (unreachable.length) parts.push('### Timed out or server error (not counted as broken)', table(unreachable));
           const excluded = {};
           for (const { url } of Object.values(report.excluded_map).flat()) {

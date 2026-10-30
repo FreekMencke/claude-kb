@@ -41,7 +41,7 @@ const TITLE_SIMILAR = 0.72;
 const TAGS_SHARED = 0.6;
 // A done recommendation is cut to one line (CLAUDE.md); decisions keep their reason, so longer ones only warn.
 const DONE_CHARS = 300;
-const DONE_ITEM = /^\d+\. (?:\*\*)?Done\b.*$/gm;
+const DONE_ITEM = /^(?:\d+\.|-) (?:\*\*)?Done\b.*$/gm;
 // Sections where IDs on one line count as already reviewed together.
 const REVIEWED_SECTIONS: Record<string, string[]> = {
   'INDEX.md': ['Conflicts'],
@@ -179,7 +179,8 @@ function longDoneItems(texts: Texts): string[] {
   for (const [name, t] of texts) {
     for (const [line] of (section(t, 'Recommendations for our setup') ?? '').matchAll(DONE_ITEM)) {
       if (line.length <= DONE_CHARS) continue;
-      found.push(`${name} recommendation ${line.split('.')[0]}: ${line.length} characters`);
+      const label = line.startsWith('- ') ? line.slice(2, 40) : line.split('.')[0];
+      found.push(`${name} recommendation ${label}: ${line.length} characters`);
     }
   }
   return found;

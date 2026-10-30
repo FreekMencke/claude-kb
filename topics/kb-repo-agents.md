@@ -1476,11 +1476,11 @@ The common principles: only issues introduced by the diff, an exclusion list, a 
 Scope: `osrs-tracker-web` as inspected on 2026-10-12 (REPO-001 to REPO-004). Where a change also applies to `osrs-tracker-api` and `osrs-tracker-aws`, the entry says so. Changes to those repos go in as issues opened there.
 
 Done, through roadmap [osrs-tracker/osrs-tracker-web#220](https://github.com/osrs-tracker/osrs-tracker-web/issues/220), and now in the repos themselves:
-- Changes 1 and 4, done 2026-10-12: `conventions-reviewer` follows T1 in all three repos (osrs-tracker/osrs-tracker-web#221, osrs-tracker/osrs-tracker-api#134, osrs-tracker/osrs-tracker-aws#75).
-- Change 2, done 2026-10-13: fresh-context bug review is the built-in `/code-review high`, run beside `conventions-reviewer` in release step 2, not T2 (osrs-tracker/osrs-tracker-web#222). REPO-015, REPO-048, ORCH-039.
-- Change 3, done 2026-10-12: `browser-checker` (T3; osrs-tracker/osrs-tracker-web#223). Final count 2026-10-18 (FreekMencke/claude-kb#101): after osrs-tracker/osrs-tracker-web@8143bea, 28 agent runs and no own-app screenshots or re-reads in main sessions. REPO-021, TOK-043.
-- Change 5, done 2026-10-12: the review step of `parallel-code-orchestrator` spawns repo agents without `model` (ORCH-003, REPO-026).
-- Change 6, done 2026-10-12: the cloud routine "osrs-tracker weekly docs drift" runs `refresh-md-files` over each week's merged PRs in all three repos, cloning FreekMencke/claude-skills for the skill (SKILL-060) and using `gh api` (ORCH-017). REPO-018.
+- Done 2026-10-12: changes 1 and 4, `conventions-reviewer` follows T1 in all three repos (osrs-tracker/osrs-tracker-web#221, osrs-tracker/osrs-tracker-api#134, osrs-tracker/osrs-tracker-aws#75).
+- Done 2026-10-13: change 2, fresh-context bug review is the built-in `/code-review high`, run beside `conventions-reviewer` in release step 2, not T2 (osrs-tracker/osrs-tracker-web#222). REPO-015, REPO-048, ORCH-039.
+- Done 2026-10-12: change 3, `browser-checker` (T3; osrs-tracker/osrs-tracker-web#223); 28 agent runs and no own-app screenshots in main sessions by 2026-10-18 (FreekMencke/claude-kb#101). REPO-021, TOK-043.
+- Done 2026-10-12: change 5, the review step of `parallel-code-orchestrator` spawns repo agents without `model` (ORCH-003, REPO-026).
+- Done 2026-10-12: change 6, the cloud routine "osrs-tracker weekly docs drift" runs `refresh-md-files` over each week's merged PRs in all three repos, cloning FreekMencke/claude-skills for the skill (SKILL-060) and using `gh api` (ORCH-017). REPO-018.
 
 **Not recommended now:**
 - A Claude review job in CI or managed Code Review. Managed review needs Team or Enterprise, and local review already covers every PR. If ever added, follow REPO-038 (REPO-027).
@@ -1501,10 +1501,8 @@ The live files are the reference; entries cite them as T1 to T3.
 
 ## Open questions
 
-- **Scoped Bash in agent `tools`.** Answered 2026-10-12: treated as plain `Bash`; the specifier is silently dropped (REPO-031).
 - **Named subagents in `claude-code-action`.** Does `.claude/agents/` load in the action, and does `claude_args: --agent <name>` work there? Only skills and plugins are documented.
 - **#80988.** Is the Opus 5 "Do not call the AgentTool unless the user requested it" prompt section still shipped in v2.1.296, and does it affect repo agents named in a skill procedure? Our 160 runs in five days suggest named delegation still works, as did `bug-reviewer` and `conventions-reviewer` when named in release step 2 on 2026-10-12 to 10-13 (osrs-tracker/osrs-tracker-web#222).
-- **Plugin MCP tools by name.** Answered 2026-10-12: they work in a subagent's `tools` list (osrs-tracker/osrs-tracker-web#223).
 - **Copilot instruction files.** Copilot's 4,000-character limit was found on no GitHub page read on 2026-10-14; `REVIEW.md` is now on two (REPO-045).
 - **Reviewer model.** There is no published comparison of Opus and Sonnet as bug reviewers on the 5.5 generation. Official plugins use both.
 - **Cost of `agent` and `prompt` hooks.** Not documented. Measured for `prompt` hooks in HOOK-010 (one Haiku call per match; on Stop it re-reads the conversation uncached). Where `agent` hook tokens are billed stays open in `kb-hooks.md`.

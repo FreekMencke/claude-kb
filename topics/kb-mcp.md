@@ -537,7 +537,7 @@ Allow exact tool names (`mcp__github_inline_comment__create_inline_comment`), no
 
 They don't get local or user scope servers from `~/.claude.json` ("Add the server with `claude mcp add --scope project` … and commit that file") or plugins enabled in the repo, so plugin-bundled servers are missing.
 
-Network: "MCP connectors you enable on a session or routine work without adding their hosts to **Allowed domains**", because their traffic goes through Anthropic. A `.mcp.json` server that calls your own host goes through the session's network and needs that host allowed (inferred from the same page).
+Network: "MCP connectors you enable on a session or scheduled task work without adding their hosts to **Allowed domains**", because their traffic goes through Anthropic. A `.mcp.json` server that calls your own host goes through the session's network and needs that host allowed (inferred from the same page).
 
 **Routines:** "all of your connected MCP connectors are included by default. Remove any the routine doesn't need: Claude can use every tool from an included connector, including writes, without asking for permission during a run." Actions run as your linked accounts. Local `claude mcp add` servers don't appear; a single-repo routine can use a committed `.mcp.json`.
 
@@ -824,7 +824,7 @@ From the issue trackers of personal remote servers (jimprosser/obsidian-web-mcp,
 
 A plugin holds "up to 5,000 files and 200 MB". In chat, "the skill's whole folder, scripts included, is copied into the code execution sandbox", so bundled content must sit inside the skill's folder. Desktop WSL sessions lack "connectors and plugins" per the docs (MCP-010 and SKILL-052 record what we saw).
 
-Conflict: platform.claude.com's Agent Skills overview says "Custom Skills do not sync across surfaces" and "Claude Code Skills are filesystem-based and separate from both claude.ai and API"; Claude Code's skills page says it "downloads your account's skills into `~/.claude/skills/synced/`" (v2.1.273+). The Claude Code page matches what we see: our WSL home has that folder.
+Conflict: platform.claude.com's Agent Skills overview says "Custom Skills do not sync across surfaces" and "Claude Code Skills are filesystem-based and separate from both claude.ai and the API"; Claude Code's skills page says it "downloads your account's skills into `~/.claude/skills/synced/`" (v2.1.273+). The Claude Code page matches what we see: our WSL home has that folder.
 
 Tested 2026-10-15 with our claude-kb server: the connector worked in every chat surface, the terminal and a cloud session, the user-scope server in the terminal and desktop WSL (MCP-039); Claude used it only when named (MCP-038). Routines weren't tested.
 

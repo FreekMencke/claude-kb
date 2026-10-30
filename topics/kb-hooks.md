@@ -351,7 +351,7 @@ Set an explicit, tight `timeout` on anything on a hot path; the 10-minute defaul
 - Sources: [Hooks reference: block the action when a hook fails](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails), [Claude Code CHANGELOG 2.1.295](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-004, HOOK-012, HOOK-024
 
-"On most events, when a hook fails or times out, Claude Code still carries out the action, so a policy hook with a wrong path or a crashing script lets everything through." A missing script exits 127, which is just a `hook error` notice: "a mistyped path in `settings.json` means the hook never runs."
+"On most events, when a hook fails or times out, Claude Code still carries out the action. A policy hook with a wrong path or a crashing script then lets everything through." A missing script exits 127, which is just a `hook error` notice: "a mistyped path in `settings.json` means the hook never runs."
 
 `"onFailure": "block"` (v2.1.295+, `command` and `http` only) turns these into a block:
 - can't start (missing script or executable),
@@ -376,7 +376,7 @@ When to use it: a hook that is the **only** guard for something that matters (se
 - Sources: [Hooks reference: hook handler fields](https://code.claude.com/docs/en/hooks#hook-handler-fields), [Hooks guide: combine results from multiple hooks](https://code.claude.com/docs/en/hooks-guide#combine-results-from-multiple-hooks)
 - Related: HOOK-006, HOOK-016, REPO-006
 
-- **Parallel.** "All matching hooks run in parallel." Every hook "runs to completion before Claude Code merges the results"; one hook's deny doesn't stop a sibling's side effects (a logger still logs).
+- **Parallel.** "its matching hooks run in parallel". Every hook "runs to completion before Claude Code merges the results"; one hook's deny doesn't stop a sibling's side effects (a logger still logs).
 - **Dedup.** The same handler in several settings files runs once. "A plugin's or skill's copy of the same handler stays separate."
 - **Merging.** PreToolUse: most restrictive wins, `deny` > `defer` > `ask` > `allow`. `additionalContext` from every hook is delivered.
 - **`updatedInput` races.** With several rewriting hooks "the last one to finish takes effect… non-deterministic. Avoid having more than one hook modify the same tool's input."

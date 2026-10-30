@@ -1082,4 +1082,3 @@ Ranked by impact against effort.
 - When did OpenAI change `ChatGPT-User`'s robots.txt wording to "may not apply", and does ChatGPT's agent or Atlas use its own token (WEB-039)? The 2025 Wayback copies of the bots page are script shells, and OpenAI's publisher FAQ returned 403 to curl, a browser and WebFetch.
 - Does Microsoft publish an AI training opt-out token, or say Copilot uses only bingbot (WEB-039)? Bing's crawler page lists none; third-party lists name a "Copilot-Bot" no Microsoft page confirms.
 - Does any crawler honour the aipref `Content-Usage` rule yet (WEB-041)? None of the vendor pages read on 2026-10-18 mention it.
-- Can Lighthouse 13.5.0 select the `agentic-browsing` category from the CLI (WEB-011)? Answered 2026-10-14: its CLI help lists it among the available categories (`cli/cli-flags.js` at v13.5.0); not run.

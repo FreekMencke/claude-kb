@@ -242,7 +242,7 @@ Implications:
 No official page names a model or effort for planning. What exists:
 - **`opusplan`**: "uses `opus` during plan mode, then switches to `sonnet` for execution." A Haiku session is upgraded to Sonnet in plan mode.
 - **Plan subagent**: read-only research agent used in plan mode; "inherits from the main conversation" (it does not move with plain `CLAUDE_CODE_SUBAGENT_MODEL`, ORCH-005). It skips CLAUDE.md and git status.
-- **Effort table** (model-config): `high` for "work where verification matters or edge cases are likely"; "at a higher level [Claude] tested more edge cases and verified more of its work."
+- **Effort table** (model-config): `high` for "work where verification matters or edge cases are likely"; "Claude at a higher level tested more edge cases and verified more of its work"
 
 Recommendation (ours, inferred): plan on the strongest model you'd trust with the design, at `high`: Opus 5.5 for us. A wrong plan wastes the whole implementation, while planning is a small share of tokens. Implement on the same model if the design is subtle; `opusplan` is the cheap option for well-scoped work, at the cost of a cache miss when the model switches (TOK-053).
 
@@ -491,7 +491,7 @@ Anthropic's rule for which knob to turn after a miss:
 - "If Claude got it wrong by skipping a file, not running the tests, or bailing on a refactor partway through, pick a higher effort level."
 - "If Claude has all the pertinent context, clearly tried, and still got it wrong, that's a signal to pick a more capable model."
 
-Effort covers how much Claude verifies, not only thinking: on Opus 5.5 and Fable 5.1, "at a higher level [Claude] tested more edge cases and verified more of its work." The 5.5 models default to `medium` in Claude Code (ORCH-028).
+Effort covers how much Claude verifies, not only thinking: on Opus 5.5 and Fable 5.1, "Claude at a higher level tested more edge cases and verified more of its work". The 5.5 models default to `medium` in Claude Code (ORCH-028).
 
 Mechanics:
 - `/model` and `/effort` run immediately, even mid-turn, and apply to the next request in the current turn after you confirm any cache warning.
@@ -615,7 +615,7 @@ A scheduled fire runs only skills Claude may invoke itself; `/verify` and built-
 - Sources: [Costs: background token usage](https://code.claude.com/docs/en/costs), [Prompt caching: cache lifetime](https://code.claude.com/docs/en/prompt-caching), [Scheduled tasks: jitter](https://code.claude.com/docs/en/scheduled-tasks), [claude-code-system-prompts (ScheduleWakeup, ccVersion 2.1.284)](https://github.com/Piebald-AI/claude-code-system-prompts)
 - Related: TOK-034, TOK-052, FLOW-024, FLOW-027
 
-Every wake-up is a model turn over the whole conversation. Costs page: "a scheduled task fires on its interval even while the session is idle, sending your full context each time"; the same holds for cross-session messages and `/goal` check-ins. A waiting command costs nothing until it exits.
+Every wake-up is a model turn over the whole conversation. Costs page: "a session-scoped scheduled task fires on its interval even while the session is idle, sending your full context each time"; the same holds for cross-session messages and `/goal` check-ins. A waiting command costs nothing until it exits.
 
 Cache: the main conversation's TTL is 1 hour on a subscription and 5 minutes on an API key or usage credits (TOK-052). A wake-up inside the TTL pays cache reads for the context; one after it pays a full cache write. `/loop 5m` fires every 4:45 for that reason: "A run exactly five minutes after the last one would start after a five-minute prompt cache had expired."
 
@@ -755,4 +755,3 @@ Ranked by impact against effort.
 - **Is a "step back and list hypotheses" prompt measurably better** than `/clear` with a better prompt? No source compares them (FLOW-021).
 - **Does `/plan open` (CHANGELOG 2.1.119) still exist?** The commands page documents only `/plan [description]`.
 - **Does the Plan subagent run on Opus under `opusplan`?** It "inherits from the main conversation"; not tested.
-- **Playwright MCP's default profile** still decides whether parallel browser checks (FLOW-014) need `--isolated`. Tracked once, as `kb-sessions.md` open question 8 (SESS-013).

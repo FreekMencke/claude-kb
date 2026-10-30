@@ -106,7 +106,7 @@ Tested 2026-10-17, flux CLI 2.9.6, Linux amd64: `flux migrate -f manifests --dry
 - Sources: [Flux releases and support](https://fluxcd.io/flux/releases/), [Flux roadmap](https://fluxcd.io/roadmap/), [flux2 v2.9.0 release](https://github.com/fluxcd/flux2/releases/tag/v2.9.0), [Flux installation](https://fluxcd.io/flux/installation/)
 - Related: KUBE-001, KUBE-015, KUBE-016
 
-Flux keeps "release branches for the most recent three minor releases", and "the CNCF Flux project offers support only for the latest three minor versions of Kubernetes". The 2.9.0 release notes list Kubernetes `v1.34` (`>= 1.34.1`), `v1.35` and `v1.36`; 2.8.0 listed 1.33 to 1.35.
+Flux keeps "release branches for the most recent three minor releases", and "the Flux project offers support only for the latest three minor versions of Kubernetes". The 2.9.0 release notes list Kubernetes `v1.34` (`>= 1.34.1`), `v1.35` and `v1.36`; 2.8.0 listed 1.33 to 1.35.
 
 The releases page promises a Flux minor "approximately two weeks after Kubernetes", supporting "Kubernetes N-2 minor versions". Observed lags (release dates from `gh api`): Kubernetes 1.34.0 (2025-08-27) to Flux 2.7.0 34 days; 1.35.0 (2025-12-17) to 2.8.0 69 days; 1.36.0 (2026-04-22) to 2.9.0 69 days.
 

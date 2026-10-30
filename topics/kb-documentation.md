@@ -325,7 +325,7 @@ None of these checks whether a doc is true, only its form and links.
 - Related: DOC-010, DOC-013, DOC-024, REPO-018, REPO-030, ORCH-017
 
 **Official patterns, with no published results.**
-- Routines, "Docs drift": "A schedule trigger runs weekly. The routine scans merged PRs since the last run, flags documentation that references changed APIs, and opens update PRs against the docs repository for an editor to review."
+- Routines, "Docs drift": "a schedule trigger runs weekly. The scheduled task scans merged PRs since the last run, flags documentation that references changed APIs, and opens update PRs against the docs repository for an editor to review."
 - claude-code-action's "Automated Documentation Updates": on `pull_request` with a `paths` filter, the prompt is "Update the API documentation in README.md to reflect the changes made to the API endpoints in this PR", and Claude pushes to the PR.
 
 **Community (single-source).** anthropics/claude-code#7103 (closed; not filed by a maintainer) proposes Cursor's approach: commit doc updates to a separate branch and post a compare link for review. Blog guides describe a merged-PR trigger. Nobody publishes measured results.
@@ -560,6 +560,5 @@ Ranked by impact against effort.
 
 1. **Does "every change" make our changelogs too long for their readers?** web's is 857 lines over 67 days, and api's 502 lines over 10 (2026-10-14). No measurement says whether sessions or users read past the first screen. A cheap check: how often sessions grep CHANGELOG.md as opposed to `git log`.
 2. **Should claude-skills have a changelog?** It installs by commit, and its commit subjects already read like entries (`<skill>: <change> (#PR)`). Keep a Changelog says a commit list isn't a changelog. With one user and the claude.ai sync, the reader may not exist.
-3. **Official doc-sync tooling.** Answered 2026-10-14: a GitHub code search across anthropics/skills and anthropics/claude-code for "update documentation" found no doc-sync skill or plugin (DOC-010). Re-run only if a new official plugin appears.
 4. **Does `/init` read the README?** memory.md doesn't say. Untested.
 5. **Docs-drift routine results.** No published measurement of a docs-sync agent was found (DOC-015). Our own routine has only test runs so far (DOC-024). After a month of scheduled runs, check how many findings were real, and how many a cross-file rule could have prevented.

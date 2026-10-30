@@ -20,7 +20,7 @@ How to split work across several Claude agents, which mechanism to use for it, a
 | How do I cap cost? | Headless: `--max-budget-usd` and `--max-turns`. SDK: `maxBudgetUsd`. Subagents: frontmatter `maxTurns`. Workflows: run a small slice first and use the size guideline. All: cheaper models and lower effort for workers. | ORCH-038, ORCH-049 |
 | Can subagents spawn subagents? | Yes, up to 3 layers below the main conversation by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`), with at most 20 running concurrently. Agent-team teammates can't spawn teammates. | ORCH-006, ORCH-010 |
 | Can a `claude -p` run or `claude-code-action` start a workflow? | Only with a `Workflow` allow rule, auto or bypass mode, a hook or a permission-prompt tool; there's no approval prompt. The `ultracode` keyword doesn't trigger from `-p`, scheduled prompts or relayed PR comments (v2.1.210+). | ORCH-050 |
-| How do I run agents on a schedule or with the laptop closed? | Cloud routines (minimum 1 hour), desktop scheduled tasks (local, app open), `/loop` (in-session, expires after 7 days), `claude --cloud`, or GitHub Actions. | ORCH-016, ORCH-017 |
+| How do I run agents on a schedule or with the laptop closed? | Cloud scheduled tasks, formerly routines (minimum 1 hour), desktop scheduled tasks (local, app open), `/loop` (in-session, expires after 7 days), `claude --cloud`, or GitHub Actions. | ORCH-016, ORCH-017 |
 
 ## Index
 
@@ -42,7 +42,7 @@ How to split work across several Claude agents, which mechanism to use for it, a
 | ORCH-014 | Headless fan-out with `claude -p` | tool | headless, ci, budget |
 | ORCH-015 | Agent SDK subagents, budgets and cost tracking | tool | agent-sdk, budget, cost |
 | ORCH-016 | Cloud sessions and GitHub Actions | tool | cloud, remote, github-actions |
-| ORCH-017 | Scheduled runs: routines, desktop tasks, `/loop` | comparison | schedule, routines, loop |
+| ORCH-017 | Scheduled runs: cloud scheduled tasks (formerly routines), desktop tasks, `/loop` | comparison | schedule, routines, scheduled tasks, loop |
 | ORCH-018 | Claude Managed Agents multi-agent (API) | tool | managed-agents, api |
 | ORCH-019 | Hooks for orchestration | tool | hooks, guardrails |
 | ORCH-020 | Token and quota multipliers of multi-agent work | fact | cost, tokens, quota |
@@ -439,13 +439,15 @@ All processes share one plan or API rate limit.
 - Docs: set `--max-turns`, workflow timeouts and concurrency controls.
 - Cron runs only from the default branch.
 
-## [ORCH-017] Scheduled runs: routines, desktop tasks, `/loop`
+## [ORCH-017] Scheduled runs: cloud scheduled tasks (formerly routines), desktop tasks, `/loop`
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Routines](https://code.claude.com/docs/en/routines), [Desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks), local test (routine runs 2026-10-12)
 - Related: ORCH-016, REPO-030, SKILL-060
+
+**Renamed:** "A cloud scheduled task, formerly a routine" (read 2026-10-30). Older entries here say "routine"; desktop scheduled tasks are a separate feature.
 
 | | Cloud routines | Desktop scheduled tasks | `/loop` and cron tools |
 |---|---|---|---|
@@ -1134,13 +1136,10 @@ Ranked by impact against effort.
 
 ## Open questions
 
-- **Per-call `isolation` for non-fork subagents.** Answered 2026-10-12: supported; a named non-fork subagent called with `isolation: "worktree"` ran in its own worktree (ORCH-009).
-- **Sonnet 5.5's default effort** is `high` on the API and `medium` in Claude Code. Answered 2026-10-14: deliberate, per the Sonnet 5.5 launch page (ORCH-028).
 - **A general cost multiplier for agent teams.** The 7× figure applies only "when teammates run in plan mode".
 - **Benchmarks for the 5.5 generation.** Partly answered 2026-10-14: the launch pages publish no SWE-bench figures, but the cost guide reports an internal SWE-bench Pro subset (ORCH-027). The tier comparisons rest on Terminal-Bench, FrontierCode and CursorBench, which Anthropic itself calls "a less reliable guide".
 - **Haiku 5.5 as a code-writing worker.** It is days old (launched 2026-10-07), and Anthropic pitches it as a coding subagent. There is no independent evidence yet on its retry rate versus Sonnet 5.5 for mechanical edits, so ORCH-033's "Sonnet floor for writers" may be too conservative.
 - **Fable and the weekly cap.** Not tested: whether Claude Code's `fable` alias draws from the Max 50% Fable cap exactly as the support article describes.
-- **Managed Agents billing.** Answered 2026-10-14: Pricing lists session runtime at $0.08 per session-hour while `running`, plus tokens; no per-thread runtime charge is documented (ORCH-018).
 - **Session limits.** Agent view and cloud sessions document no cap on simultaneous sessions beyond the shared usage limit. SESS-032 records user reports of 429s at 6 or more sessions (`kb-sessions.md` open question 6).
 - **Unverified community claims:** the performance claims of claude-flow/ruflo. Cursor's worktrees and the best-of-N paper numbers were checked on 2026-10-14 (ORCH-044, ORCH-046).
 - **`--max-budget-usd` and workflow agents.** Not documented whether a `claude -p` budget stops a workflow's background agents. The 2026-10-17 probe (ORCH-050) stayed under its $0.15 cap, so it never hit it.

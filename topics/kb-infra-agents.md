@@ -689,13 +689,9 @@ Not recommended now: running cloud work in a dev container (INFRA-002). The cred
 
 ## Open questions
 
-- **Leaked keys in our transcripts.** Resolved 2026-10-12: the user's check found two distinct `ASIA` strings (temporary keys, which expire within 36 hours) in three research-subagent transcripts that had read AWS docs, and no `AKIA` key. Nothing needed rotating.
 - **`run_script` under `--read-only`.** Does the AWS proxy's read-only flag keep or hide `aws___run_script`? Not documented; list the tools with the flag to check.
 - **Lambda execution roles.** `lambda:UpdateFunctionCode` lets an agent run code as a function's role, so those roles bound what it can reach. Checking them needs IAM reads, which the agent's policy denies.
 - **Agent key age.** The IAM user's key age and last rotation couldn't be read with the agent's own identity.
-- **Cluster RBAC as code.** Answered: the agent's RBAC is in the cluster repo (`cluster/claude-agent/rbac.yaml`), applied by its install script (checked 2026-10-14).
 - **Sandbox with kubectl and the AWS CLI.** Whether both honor the sandbox proxy, and whether `mask` works with SSO token caches and kubeconfig exec plugins, is undocumented and untested.
-- **CloudTrail attribution.** Answered 2026-10-14 by observation (INFRA-016): MCP-forwarded calls are told apart by `userAgent` and `userIdentity.invokedBy`; direct CLI calls carry no Claude Code marker; no field records `aws:CalledViaAWSMCP`.
 - **Source identity length.** The STS API reference says 64 characters; the IAM user guide says 256.
 - **Classifier error rates.** The 17% false-negative figure is from the March 2026 post (n=52, Sonnet 4.6 classifier). No newer figure for the Sonnet 5 classifier has been published; it has been the default for external sessions since v2.1.210 (CHANGELOG).
-- **Hooks in bypass mode.** Answered in HOOK-006: the hooks guide says a `PreToolUse` `"deny"` blocks "even in `bypassPermissions` mode or with `--dangerously-skip-permissions`", because the hook fires before any permission-mode check.

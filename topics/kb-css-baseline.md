@@ -447,7 +447,6 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 - **Does Tailwind's Lightning CSS pass run in `ng build`?** (CSS-016): neither `@angular/build` nor `@angular/cli` 22.2.3 sets `NODE_ENV`; whether our Docker or CI builds set it, and an end-to-end `ng build`, weren't checked.
 - **`@supports` detection in Firefox and Safari** of `selector(::picker(select))`, `(text-wrap: pretty)` and `if()` wasn't tested (no browsers in the session); no primary source addresses them.
 - **Accessibility of a bare `popover`** (CSS-008): no MDN or Chrome statement on what roles it lacks; HTML-AAM wasn't read.
-- **Which layouts collapse an `inline-size` container** (CSS-007): MDN only says "collapse".
 - **webstatus.dev's stability** (CSS-002): its OpenAPI is `version: 0.1.0`, with no rate limit or deprecation policy found.
 - **Lighthouse's Baseline audit** (announced 2026-07-27): whether it can gate CI headlessly isn't documented.
 - **`tailwind-csstree` and `@utility`** (CSS-012): whether skipping declarations in `@utility` is intended in 0.4.1 or a gap to report upstream.

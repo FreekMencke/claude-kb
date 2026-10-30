@@ -317,7 +317,6 @@ Ranked by impact against effort.
 
 - **The skills' mechanisms weren't tested:** their deals run only in their binary or scripts, which the issue ruled out. A test with our own random deal plus a log would show whether the mechanism, not the text, removes convergence (DSKILL-008).
 - **What Impeccable's Stop hook prints into context** ("Design deep pass"), and what address its `live` mode's local server binds: the code wasn't read.
-- **Whether a trusted clone of Impeccable runs its repo `.claude/settings.json` hooks** was read from files, not tested.
 - **Pexels and Pixabay terms:** only their licence pages were read (via Wayback; the live pages returned bot walls). A search result says Pexels' Terms bar scraping for machine learning; unread, so Hallmark's "AI-driven selection" wording stays unverified for both.
 - **Licences not traced:** Impeccable's bundled `modern-screenshot.umd.js`, huashu-design's BGM and ElevenLabs SFX, ui-ux-pro-max's Phosphor icon data.
 - **Taste's token figure** has no sample or model; our numbers are for text-only runs without picture search or screenshots.

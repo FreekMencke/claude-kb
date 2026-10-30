@@ -279,8 +279,8 @@ Ranked by impact against effort.
 
 1. **Add a reply rule to the global CLAUDE.md:** end a task's final report with what was skipped or not checked, and any risk the user must know (SKPACK-008, SKPACK-013). One line; it also covers PROMPT-027's honest-report concern. It replaces nothing and must not grow into a verification step (PROMPT-030).
 2. **Add door and blast-radius lines to PR descriptions** in the global CLAUDE.md's PR guidance (SKPACK-010).
-3. Done 2026-10-30: `parallel-code-orchestrator` asks the user's decisions in one numbered round with a recommended answer each, sends facts to Explore and, with nobody to answer, takes its recommendations and reports them; `design-workshop` numbers its questions with a guess each (FreekMencke/claude-skills#138, FreekMencke/claude-skills#139; SKPACK-006, SKPACK-007).
-4. Done 2026-10-30: `angular-conventions`' Tests rules require literal expected values, never recomputed the way the code computes them (FreekMencke/claude-skills#137; SKPACK-009). Seam agreement was left out: the rules already limit tests to "complex or important logic", and no source measures what agreeing seams adds.
+3. Done 2026-10-30: `parallel-code-orchestrator` and `design-workshop` ask the user's decisions in one numbered round with a recommended answer each (FreekMencke/claude-skills#138, FreekMencke/claude-skills#139; SKPACK-006, SKPACK-007).
+4. Done 2026-10-30: `angular-conventions`' Tests rules require literal expected values (FreekMencke/claude-skills#137; SKPACK-009). Seam agreement left out: no source measures what it adds.
 5. Decision: **no engineering pack installed** (SKPACK-013). Revisit if an independent benchmark shows one improving correctness, not only size or cost.
 
 ## Open questions

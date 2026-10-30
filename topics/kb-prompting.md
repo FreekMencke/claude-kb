@@ -111,7 +111,7 @@ What a prompt written for the 4.x models needs to change:
 
 The current models do what the words say, most strictly at low effort. Write the scope, the action and the bar you mean.
 
-- **Scope.** Sonnet 5 and Opus 4.8 "interpret prompts literally and explicitly, particularly at lower effort levels". "If you need Claude to apply an instruction broadly, state the scope explicitly (for example, 'Apply this formatting to every section, not just the first one')."
+- **Scope.** Sonnet 5 and Opus 4.8 "interprets prompts literally and explicitly, particularly at lower effort levels". "If you need Claude to apply an instruction broadly, state the scope explicitly (for example, 'Apply this formatting to every section, not just the first one')."
 - **Action.** "If you say 'can you suggest some changes,' Claude will sometimes provide suggestions rather than implementing them." Write "Change this function to improve its performance."
 - **Above-and-beyond.** "If you want 'above and beyond' behavior, explicitly request it rather than relying on the model to infer this from vague prompts."
 - **Bars.** "Only report high-severity issues" is followed faithfully and lowers recall (PROMPT-032).
@@ -162,7 +162,7 @@ Cost: one clause per rule. Our CLAUDE.md files already do this ("GitHub runs no 
 
 "Examples are one of the most reliable ways to steer Claude's output format, tone, and structure."
 
-- **How many and what kind:** "Include 3–5 examples for best results." Make them relevant (mirror the real case), diverse ("so Claude doesn't pick up unintended patterns") and structured: `<example>` tags, several inside `<examples>`, so they aren't read as instructions.
+- **How many and what kind:** "Include 3–5 examples for best results." Make them relevant (mirror the real case), diverse ("Claude doesn't pick up unintended patterns") and structured: `<example>` tags, several inside `<examples>`, so they aren't read as instructions.
 - **Show what you want, not what you don't.** Sonnet 5 and Opus 5: "Positive examples showing how Claude can communicate with the appropriate level of concision tend to be more effective than negative examples or instructions that tell the model what not to do."
 - **One worked example with a rationale** is Anthropic's fix for Fable 5.1 copying source wording: `<example><user>…</user><response>…</response><rationale>CORRECT: …</rationale></example>`. Replace placeholder tool lines with your real tool's name, "so the model reads them as templated tool output rather than literal text to emit."
 - **With thinking:** present each example as "a problem, the method to apply, and the expected answer".
@@ -229,7 +229,7 @@ Anthropic's own scope snippets are mostly prohibitions ("Don't add features, tes
 To get less thinking, lower effort; to get more, raise it or add one plain line.
 
 - **Less:** Sonnet 5.5: "Asking it in the system prompt to think less doesn't reliably reduce its thinking." Haiku 5.5: "telling the model in the prompt to answer directly didn't stop it from thinking." Opus 5.5 is the exception: "Answer directly without deliberating." "can reduce thinking further", but measure quality.
-- **More:** "A prompt like 'think thoroughly' often produces better reasoning than a hand-written step-by-step plan." For Sonnet 5.5 JSON answers that need working out, end the system prompt with "Think the problem through before you answer." At `high` this brings accuracy "close to what the model reaches at `xhigh`".
+- **More:** "A prompt such as 'think thoroughly' often produces better reasoning than a hand-written step-by-step plan." For Sonnet 5.5 JSON answers that need working out, end the system prompt with "Think the problem through before you answer." At `high` this brings accuracy "close to what the model reaches at `xhigh`".
 - **Remove old thinking prompts in chat:** on Opus 5.5, removing "think carefully" lines "made replies start sooner, with no clear decline in the quality".
 - **Don't tell it not to think.** With thinking off or `between_tools`, a "don't think" rule increases leaked internal XML tags (Opus 5, Sonnet 5.5).
 - **Opus 4.5 only:** with thinking disabled it was "particularly sensitive to the word 'think'". Not carried forward to 5.x.
@@ -463,10 +463,10 @@ Opus 5.5 needs little method guidance; its prompting page is mostly about harnes
 - Sources: [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1), [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5), [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Related: PROMPT-019, PROMPT-014, PROMPT-024, PROMPT-031, WRITE-005
 
-Fable 5.1 "can execute very long tasks without much guidance on methodology", but drifts in three directions.
+Fable 5.1 "can run very long tasks without much guidance on methodology", but drifts in three directions.
 
 - **Stopping short on async work:** it "sometimes describes what it would do next instead of doing it ('Next, I'll …') or stops to ask permission for a step the original request already covered". Fix: the "You are operating autonomously…" block, whose opening sentence "carries much of the effect. Keep it as written", plus the "# Delivering work" block that makes the request the scope (PROMPT-014).
-- **Doing more:** "it may fix nearby code, extend behavior the task didn't mention, or commit more test files than the change warrants". The scope paragraph ends "This is about extras only: implement every behavior the task asks for, completely." It also rewrites whole files; "try to surgically edit a file rather than rewrite the entire thing" fixes that.
+- **Doing more:** "it might fix nearby code, extend behavior the task didn't mention, or commit more test files than the change warrants". The scope paragraph ends "This is about extras only: implement every behavior the task asks for, completely." It also rewrites whole files; "try to surgically edit a file rather than rewrite the entire thing" fixes that.
 - **Writing:** fewer progress updates (ask for them and delete old "hold all findings" lines), denser prose ("Please remove all mannered prose." works), and less formatting, so old anti-markdown blocks "can suppress structure the content needs".
 - **From Fable 5:** "Skills developed for prior models are often too prescriptive"; ground progress claims in tool results (PROMPT-027).
 - At `low` it searches less; raise effort for those turns.
@@ -636,9 +636,9 @@ Our CLAUDE.md "Cross-repo work becomes an issue" rule is this pattern applied ac
 
 Literal models obey "only report high-severity issues": they find the bugs and then don't report them.
 
-- Sonnet 5: such prompts make the model "investigate the code just as thoroughly, identify the bugs, and then not report findings it judges to be below your stated bar… Precision typically rises, but measured recall can fall".
+- Sonnet 5: such prompts make the model "investigate the code just as thoroughly, identify the bugs, and then not report findings it determines to be below your stated bar… Precision typically rises, but measured recall can fall".
 - **Recommended finding-stage wording:** "Report every issue you find, including ones you are uncertain about or consider low-severity. Do not filter for importance or confidence at this stage - a separate verification step will do that… For each finding, include your confidence level and an estimated severity so a downstream filter can rank them."
-- **Single pass:** "be concrete about where the bar is rather than using qualitative terms like 'important': for example, 'report any bugs that could cause incorrect behavior, a test failure, or a misleading result; only omit nits like pure style or naming preferences.'"
+- **Single pass:** "be concrete about what the reporting threshold is rather than using qualitative terms such as 'important': for example, 'report any bugs that could cause incorrect behavior, a test failure, or a misleading result; only omit nits like pure style or naming preferences.'"
 - **The other direction:** "A reviewer that's asked to find problems will always find *something*" (best practices). Its brief, "report gaps that affect correctness and skip style", is a concrete single-pass bar of this kind.
 
 This refines REPO-047's do-not-flag list: a list of concrete exclusions (style, naming) is fine; a vague bar ("be conservative", "don't nitpick") silently drops real bugs. Splitting find and verify (REPO-048) is the official fix.
