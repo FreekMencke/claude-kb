@@ -46,6 +46,7 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Animation and motion: ANIM-007 (which technique, linking the Baseline dates in CSS-006 and CSS-010), ANIM-004 and CSS-008 (`@starting-style`: hydration against popovers), ANIM-010 and ANIM-011 (reduced motion and WCAG beyond ACCESS-014's 2.2.2 and 2.3.3), ANIM-012 (exit animations, on top of ACCESS-012 and ACCESS-013's focus rules), ANIM-008 and ANIM-009 (animation cost, feeding WEBPERF-002 and WEBPERF-003), ANIM-013 (motion numbers behind DESIGN-013's "animation everywhere" pitfall).
 - Where to put something, and what it costs: SKILL-021 (decision), SKILL-022 and TOK-065 (context cost), REPO-044 (repos with agents).
 - Subagent results: ORCH-034 (the principle), ORCH-035 (status codes), TOK-035 (delegating), TOK-101 (research sources), TOK-103 to TOK-107 (file handoff in Claude Code).
+- Images on our sites: WEBPERF-010 and WEBPERF-011 (formats and loading), OG-005 to OG-009 (cards drawn in code), DESIGN-008 (vision limits), IMG-001 to IMG-010 (generated images: models, provenance, rights, icon libraries).
 - Bash output: TOK-042 (limits and filter hooks), TOK-108 (what reaches Claude), TOK-109 (how a script should print), SKILL-018 (scripts in skills), FLOW-011 and FLOW-013 (checks Claude runs).
 - Temporary files: SESS-016 (parallel sessions, `CLAUDE_JOB_DIR`), TOK-104 (handoff files and the scratchpad).
 - Terse output: PROMPT-024 (how to write short answers), TOK-113 (what terse styles measurably save).
