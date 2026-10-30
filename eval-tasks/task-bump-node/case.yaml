@@ -1,0 +1,15 @@
+schema_version: "1.1"
+name: task-bump-node
+tags: [task,should-use]
+context:
+  scaffold_script: fixture.sh
+execution:
+  prompt: "We're moving from Node 22 to Node 26. Update the Dockerfile and the engines field in package.json."
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: reached-kb
+    type: regex
+    target: trace
+    pattern: '\\?"name\\?"\s*:\s*\\?"mcp__[^"\\]*__kb_(?:search|get|quick_answers)\\?"|\\?"skill\\?"\s*:\s*\\?"(?:[\w-]+:)?claude-kb-lookup\\?"'

@@ -65,6 +65,9 @@ claude plugin install kb-lookup@freek-kb
   the name the claude.ai sync uses, fails.
 - Auto-update is off for this marketplace (SKILL-036). Turn it on in `/plugin` > Marketplaces, or with
   `"autoUpdate": true` on the `freek-kb` entry of `extraKnownMarketplaces` in `~/.claude/settings.json`.
+- `DISABLE_AUTOUPDATER=1`, which the desktop app sets, turns plugin auto-update off whatever that setting says, unless
+  `FORCE_AUTOUPDATE_PLUGINS=1` is set too (SKILL-036). Without it, update by hand:
+  `claude plugin marketplace update freek-kb && claude plugin update kb-lookup@freek-kb`.
 - This copy wins over `kb-lookup@synced`, so the skill is listed once.
 - Its tools are named `mcp__plugin_kb-lookup_claude-kb__*` (MCP-009): allow that pattern in `permissions.allow`.
 
@@ -190,6 +193,7 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [.github/workflows/links.yml](.github/workflows/links.yml), [.lycheeignore](.lycheeignore) | Weekly check that the `Sources:` URLs still resolve (see Re-verification routine), and the URLs it skips |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
+| [eval-tasks/](eval-tasks) | Its task-shaped evals, passing on either route to the KB |
 | [evals/retrieval/](evals/retrieval/README.md) | The retrieval eval behind RETR-010 to RETR-012 |
 | [.claude-plugin/](.claude-plugin/plugin.json) | The `kb-lookup` plugin (the skill plus the server) and its marketplace, `freek-kb`. No `version`, so installs follow each commit (SKILL-062) |
 | [mcp-server/](mcp-server/README.md) | The remote MCP server that serves this knowledge base |
@@ -262,6 +266,28 @@ The row is the question-type description's run (2026-10-30, 728 s, $22.58), whic
 decision records) and `loads-56` (AI-sounding prose) in a one-run pass.
 
 Runs are isolated per plugin, so they can't show overlap with skills in other repos.
+
+### Task-shaped cases
+
+`evals/claude-kb-lookup/` asks questions: all 79 cases allow only `[Read, Glob, Grep, Skill]`, start no server and can see
+only the skill route, and none of the 56 `loads-*` cases is a task in a repo. [eval-tasks/](eval-tasks) is the other half:
+8 tasks in a fixture repo that should reach the knowledge base (write a CLAUDE.md rule, a hook, an agent or a skill; four
+major bumps), passing on either route, and 2 that shouldn't. They run against the real server, so they need these flags:
+
+```bash
+claude plugin eval . --eval-dir eval-tasks --ablation none --model claude-opus-5-5 --no-publish --threshold 0 -j 8 --scaffold --allow-real-servers --allow-tools Write Edit 'mcp__plugin_kb-lookup_claude-kb__*' --max-cost-usd 8
+```
+
+| Should reach the KB | Should leave it alone | Model | Claude Code | Date |
+|---|---|---|---|---|
+| 18/24 | 6/6 | Opus 5.5 | 2.1.296 | 2026-10-30 |
+
+Six tasks reached it in 3 of 3 runs. `task-hook` failed 3 of 3, because the bundled `update-config` skill takes hook work
+(it costs $0.89 a run, six times the others). `task-claude-md` failed 3 of 3, writing the rule straight away. Three runs
+took 139 s of wall time and $6.01. On the same machine and version, real sessions outside these repos doing that kind of
+work reached it in about 1 of 4 (`scripts/kb-usage.ts`), so the plugin alone explains little of the gap: other context in
+a real repo is the next suspect. A scaffold's project configuration isn't loaded in a run, so these cases can't test
+that.
 
 ## Re-verification routine
 
