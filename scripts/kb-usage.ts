@@ -159,7 +159,8 @@ export function readSessions(root: string): Session[] {
               inSubagent,
               query: input.query,
               topic: input.topic,
-              ids: kb[1] === 'get' ? (input.ids ?? []) : [],
+              // The server rejects ids sent as a string, which models sometimes do: that call read nothing
+              ids: kb[1] === 'get' && Array.isArray(input.ids) ? input.ids : [],
               empty: false,
             };
             session.kbCalls.push(call);

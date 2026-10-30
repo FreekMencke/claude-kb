@@ -71,6 +71,17 @@ describe('readSessions and summarise', () => {
     expect(summarise(readSessions(root)).searches).toBe(1);
   });
 
+  test('a kb_get with ids as a string read nothing, since the server rejects it', () => {
+    const root = tempDir();
+    write(root, '-repo/s1.jsonl', [
+      ...search('s1', 0, 'hooks', ['HOOK-001']),
+      get('s1', 1, '["HOOK-001"]' as unknown as string[]),
+    ]);
+    const u = summarise(readSessions(root));
+    expect(u).toMatchObject({ idsRequested: 0, distinctRead: 0, returnedNeverRead: 1 });
+    expect([...u.perTopic.keys()]).toEqual(['HOOK']);
+  });
+
   test('an empty search is counted', () => {
     const root = tempDir();
     write(root, '-repo/s1.jsonl', search('s1', 1, 'zzz', []));
