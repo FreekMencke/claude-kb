@@ -13,6 +13,7 @@ import {
   run,
   sourcesByUrl,
   summary,
+  withoutCounters,
 } from '../../scripts/check-sources.ts';
 import { tempDir } from './helpers.ts';
 
@@ -62,12 +63,20 @@ describe('rawUrl', () => {
 describe('normalise', () => {
   test('drops markup and what changes between requests from HTML', () => {
     const html =
-      '<html><script>var n="x1"</script><style>a{}</style><!-- c --><p>One &amp; two</p><div>it&#39;s  &#x27;ok&#x27;</div></html>';
-    expect(normalise(html, 'text/html')).toBe("One & two\nit's 'ok'");
+      '<html><script>var n="x1"</script><style>a{}</style><!-- c --><p>One &amp; two</p><div>it&#39;s  &#x27;ok&#x27; &rsquo;</div></html>';
+    expect(normalise(html, 'text/html')).toBe("One & two\nit's 'ok' '");
   });
 
   test('leaves Markdown tags alone, apart from whitespace', () => {
     expect(normalise('a  b\n\n<kbd>c</kbd>\n', 'text/markdown')).toBe('a b\n<kbd>c</kbd>');
+  });
+});
+
+describe('withoutCounters', () => {
+  test("drops GitHub's counters and keeps the rest", () => {
+    const page =
+      'Star 89.1k ( 89.1k ) You must be signed in\n89.1k stars\nIssues 126 ( 126 )\nPull requests 67\nIssues are tracked here\nA real line';
+    expect(withoutCounters(page)).toBe('Issues are tracked here\nA real line');
   });
 });
 
@@ -95,6 +104,13 @@ describe('findQuote', () => {
   test('finds a quote through case, Markdown and typographic marks', () => {
     expect(findQuote('use **/clear** to start fresh', source).found).toBe(true);
     expect(findQuote('so don’t wait', source).found).toBe(true);
+  });
+
+  test('ignores soft hyphens', () => {
+    expect(
+      findQuote('a line of zeroes above a line of ones', comparable('a line of ze\u00adroes above a line of ones'))
+        .found,
+    ).toBe(true);
   });
 
   test('only matches whole words', () => {

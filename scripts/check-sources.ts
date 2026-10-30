@@ -85,6 +85,8 @@ export function normalise(body: string, contentType: string): string {
         .replace(/&gt;/g, '>')
         .replace(/&quot;/g, '"')
         .replace(/&apos;/g, "'")
+        .replace(/&[lr]squo;/g, "'")
+        .replace(/&[lr]dquo;/g, '"')
         .replace(/&#(\d+);/g, (_, n: string) => String.fromCodePoint(Number(n)))
         .replace(/&#x([0-9a-f]+);/gi, (_, n: string) => String.fromCodePoint(parseInt(n, 16)))
     : body;
@@ -92,6 +94,17 @@ export function normalise(body: string, contentType: string): string {
     .split('\n')
     .map(line => line.replace(/\s+/g, ' ').trim())
     .filter(Boolean)
+    .join('\n');
+}
+
+/** GitHub's page furniture, whose counters change by the hour, so a repo or issue page would look changed every run. */
+const GITHUB_COUNTER =
+  /^(?:(?:Star|Fork|Issues|Pull requests|Discussions|Watch) [\d.,]+k?\b|[\d.,]+k? (?:stars?|forks?|watching)\b)/;
+
+export function withoutCounters(text: string): string {
+  return text
+    .split('\n')
+    .filter(line => !GITHUB_COUNTER.test(line))
     .join('\n');
 }
 
@@ -126,14 +139,18 @@ export function quotesIn(entry: string): string[] {
 
 /** Text as compared for a quote: lower case, without Markdown markers, typographic marks or punctuation. */
 export function comparable(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/[*_`#>|\\]/g, ' ')
-    .replace(/[‘’]/g, "'")
-    .replace(/[^\p{L}\p{N}%$'+]+/gu, ' ')
-    .replace(/'/g, '')
-    .trim();
+  return (
+    text
+      .toLowerCase()
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+      // Practical Typography puts a soft hyphen in nearly every word
+      .replace(/\u00ad/g, '')
+      .replace(/[*_`#>|\\]/g, ' ')
+      .replace(/[‘’]/g, "'")
+      .replace(/[^\p{L}\p{N}%$'+]+/gu, ' ')
+      .replace(/'/g, '')
+      .trim()
+  );
 }
 
 function levenshteinRatio(a: string[], b: string[]): number {
@@ -306,7 +323,8 @@ export async function run(options: Options): Promise<Report> {
       page = await attempt();
     }
     if (page.status >= 400) throw new Error(page.status === 599 ? page.text.slice(0, 120) : `HTTP ${page.status}`);
-    const text = normalise(page.text, page.contentType);
+    const plain = normalise(page.text, page.contentType);
+    const text = new URL(raw).hostname === 'github.com' ? withoutCounters(plain) : plain;
     // A bot wall can answer 200 with nothing in it, which mustn't replace a page we could read
     if (!text) throw new Error('empty page');
     return text;
