@@ -99,6 +99,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-071 | What vetting catches in small animation and scroll kits | fact | security, vetting, examples, animation |
 | SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
 | SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
+| SKILL-074 | SkillSpector: a static scanner as an extra vetting pass | tool | security, vetting, scanner, sarif |
 
 ---
 
@@ -1613,7 +1614,7 @@ A pin doesn't cover dependencies, `command` sources or run-time fetches (SKILL-0
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [Plugin security and trust](https://code.claude.com/docs/en/plugins/security), [Plugin loading: Node.js package dependencies](https://code.claude.com/docs/en/plugins/loading), [Skills: allowed-tools and workspace trust](https://code.claude.com/docs/en/skills), [ripgrep GUIDE.md: Automatic filtering, 14.1.0](https://github.com/BurntSushi/ripgrep/blob/14.1.0/GUIDE.md#automatic-filtering) (accessed 2026-10-23), `npm view gsap@3.15.0 license`
-- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012
+- Related: SKILL-041, SKILL-010, SKILL-068, SKILL-070, SKILL-071, SKILL-072, SKILL-073, MCP-019, OSS-001, DSKILL-010, ANIMLIB-012, SKILL-074
 
 This extends SKILL-041. Check the owner and repo name letter by letter against the author's own site, then read every file at the commit you'll pin. Take behaviour from the code, not the README.
 
@@ -1719,6 +1720,24 @@ The docs and the CHANGELOG through 2.1.309 say nothing about skill bodies or plu
 Tested 2026-10-23, v2.1.296, terminal `-p`, Haiku, with only the Write tool. A project skill's body held a zero-width space, an RLO override and two tag characters. The model wrote the lines to a file, and `od -c` showed all three byte sequences intact. So they reached the model. The same ripgrep pattern (SKILL-069) flagged all five test characters in a sample file and left the clean line alone; to reach hidden files such as `.mcp.json` it needs SKILL-069's `--hidden --no-ignore` flags.
 
 Grep every text file in a skill before installing it. Text the model reads but you can't see is an injection channel.
+
+## [SKILL-074] SkillSpector: a static scanner as an extra vetting pass
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-10-30
+- Sources: [NVIDIA/SkillSpector README](https://github.com/NVIDIA/SkillSpector/blob/54921c8/README.md)
+- Related: SKILL-069, SKILL-041, SKILL-073, MCP-019
+
+NVIDIA's SkillSpector (Apache-2.0, 23,421 stars on 2026-10-30, `pyproject.toml` version 2.12.0 at `54921c8`, 2026-10-29) is a "Security scanner for AI agent skills". It wasn't run here; this is from its README.
+
+- **Coverage:** "71 vulnerability patterns across 17 categories", among them prompt injection, data exfiltration, privilege escalation, supply chain, excessive agency, memory poisoning and tool misuse, plus YARA rules for malware, webshells and cryptominers.
+- **Two stages:** "Fast static analysis + optional LLM semantic evaluation". `--no-llm` keeps it local; the LLM pass sends the skill to a provider you configure (OpenAI-compatible, Anthropic, Bedrock and others).
+- **Network:** "SC4 queries OSV.dev for real-time CVE data with automatic offline fallback".
+- **Output:** terminal, JSON, Markdown and SARIF, a 0–100 risk score, and a baseline to suppress accepted findings.
+- **Install:** from source (`make install` in a venv) or a locally built Docker image; it wasn't on PyPI on 2026-10-30. The README warns it "will download and install additional third-party open source software projects".
+
+Use it as an extra pass after SKILL-069's reading, not instead of it: a pattern scanner flags known shapes, while the checklist's questions (what runs, what it writes to settings, what it fetches at run time) need a reader. `skillspector scan <dir> --no-llm --format sarif` in Docker keeps both the scan and the skill off the host.
 
 ## Recommendations for our setup
 

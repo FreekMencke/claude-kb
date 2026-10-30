@@ -77,6 +77,8 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ANIMLIB-015 | Lenis drops keys mid-animation, hijacks nested scroll boxes and flashes on anchors | anti-pattern | lenis, keyboard, nested-scroll, anchors, scroll-jacking |
 | ANIMLIB-016 | Vendor `llms.txt` files: size, pinning and what they tell agents | tool | llms-txt, pinning, motion, gsap, lenis |
 | ANIMLIB-017 | Emil Kowalski's articles and libraries against his skills | comparison | kowalski, durations, reduced-motion, sonner, vaul |
+| ANIMLIB-018 | three.js 0.187: WebGLRenderer by default, and its in-repo `llms.txt` | fact | three-js, webgl, webgpu, tsl, llms-txt |
+| ANIMLIB-019 | three.js in Angular 22: SSR, bundle cost and angular-three's peer range | fact | three-js, angular, ssr, bundle-size, angular-three |
 
 ## AWS Lambda on the Node.js runtime (`topics/kb-aws-lambda-node.md`, LAMBDA)
 
@@ -1069,6 +1071,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-071 | What vetting catches in small animation and scroll kits | fact | security, vetting, examples, animation |
 | SKILL-072 | What a plugin pin doesn't cover: dependencies and `command` sources | fact | pinning, dependencies, command-source, supply-chain |
 | SKILL-073 | Hidden Unicode in a skill body reaches the model | fact | security, hidden-unicode, prompt-injection |
+| SKILL-074 | SkillSpector: a static scanner as an extra vetting pass | tool | security, vetting, scanner, sarif |
 
 ## Spacing and alignment: scales, proximity, padding, rhythm, text and icon alignment (`topics/kb-spacing.md`, SPACE)
 
