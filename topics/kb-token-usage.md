@@ -549,7 +549,7 @@ Access and console:
 
 | Value | Behavior |
 |---|---|
-| unset | Defer all MCP tools. Falls back to upfront loading on Azure-hosted Foundry deployments and pre-4.5 Agent Platform (Vertex) models. Behind an `ANTHROPIC_BASE_URL` gateway it is on by default since v2.1.304 (corrected 2026-10-30); v2.1.305 retries without it after a 400 or 422. |
+| unset | Defer all MCP tools. Falls back to upfront loading on models earlier than Opus 4 and Sonnet 4, Azure-hosted Foundry deployments and pre-4.5 Agent Platform (Vertex) models. Behind an `ANTHROPIC_BASE_URL` gateway it is on by default since v2.1.304, which retries without it after a 400 or 422 (corrected 2026-10-30); v2.1.305 fixed failures when one rejects it. |
 | `true` | Defer, and always send the beta header |
 | `auto` / `auto:N` | Load upfront while definitions are under 10% (or N%) of the window |
 | `false` | Load everything upfront |
@@ -557,7 +557,7 @@ Access and console:
 Other controls:
 - Per server: `alwaysLoad: true` in `.mcp.json` exempts a server from deferral.
 - As of v2.1.296 (2026-10-09) the default limit on MCP tool descriptions sent up front and on server instructions is 4,096 characters, up from 2,048 (`CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH`). Descriptions loaded *through tool search* are cut at 16,384 (v2.1.295). The MCP and env-vars pages say both figures as of 2026-10-14. Since v2.1.299, descriptions and instructions from Anthropic's first-party MCP servers at `api.anthropic.com` reach Claude in full.
-- Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), a local stdio MCP server with one 10,000-character description: through ToolSearch the whole description arrived (all 100 position markers in the `deferred_tools_record`). With `ENABLE_TOOL_SEARCH=false` (loaded up front) it was cut after about 4,000 characters, ending `[04… [truncated]`. So 4,096 applies up front and the larger tool-search cap applies to deferred loads, as the docs now say.
+- Tested 2026-10-12, v2.1.296, -p (Haiku 5.5), a local stdio MCP server with one 10,000-character description: through ToolSearch the whole description arrived (all 100 position markers in the `deferred_tools_record`). With `ENABLE_TOOL_SEARCH=false` (loaded up front) it was cut after about 4,000 characters, ending `[04… [truncated]`.
 
 History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases switched to defer-all. Blog posts that describe 10% auto as the default are outdated.
 
