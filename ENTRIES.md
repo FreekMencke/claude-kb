@@ -621,6 +621,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | RETR-030 | Does the knowledge base improve answers? 20 cases, with and without | fact | answer-eval, plugin-eval, ablation, llm-grader |
 | RETR-031 | What the graders missed: misreads and an entry error | fact | misread, forked-haiku, answer-eval, lookup-skill |
 | RETR-032 | Guru's verification from use: signals agents don't send | comparison | verification, guru, usage-signals, feedback |
+| RETR-033 | Haiku fork, Sonnet fork or direct reads: 100 answers reviewed blind | comparison | forked-haiku, misread, answer-eval, blind-review |
 
 ## Small-cluster Kubernetes with Flux GitOps and Grafana/Prometheus observability (`topics/kb-kubernetes-flux.md`, KUBE)
 

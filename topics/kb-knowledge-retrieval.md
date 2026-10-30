@@ -25,7 +25,7 @@ Research basis:
 | Would GraphRAG help? | Not for lookups. It targets "global sensemaking questions" over a whole corpus, indexing is "an expensive operation", and GraphRAG-Bench notes it "frequently underperforms vanilla RAG". | RETR-015 |
 | What do Cursor, Cline, Codex and Copilot do? | Split: Cursor, Copilot, Windsurf and Augment use embedding indexes; Cline and Codex search with tools (Codex: "prefer using `rg`"); Sourcegraph dropped embeddings for Enterprise Cody. Mostly unverified (pages blocked). | RETR-013 |
 | How should we evaluate retrieval for a knowledge base? | Not on questions written from the entries (vocabulary-matched). Add reworded and uncovered questions, score recall@5 and MRR per arm, and judge retrieval and the end answer separately. | RETR-019 |
-| Does the knowledge base improve answers, and is it used? | On post-training and local questions, yes: 100% against 47.5% with no web and 75% with web, 20 cases, one run each, at lower cost than web search ($2.65 against $3.80). The criteria come from the entries, so 100% isn't accuracy: by hand, 2 of 40 answers said the opposite of the entry. Used in 48 of 320 sessions over 14 days, and 12 of 52 relevant ones. | RETR-030, RETR-031, RETR-025 |
+| Does the knowledge base improve answers, and is it used? | On post-training and local questions, yes: 100% against 47.5% with no web and 75% with web, 20 cases, one run each, at lower cost than web search ($2.65 against $3.80). The criteria come from the entries, so 100% isn't accuracy: by hand, 2 of 40 answers said the opposite of the entry; read blind with routes forced, 4 of 100 had a problem, and a Sonnet fork did no better than Haiku. Used in 48 of 320 sessions over 14 days, and 12 of 52 relevant ones. | RETR-030, RETR-031, RETR-033, RETR-025 |
 | What should be re-verified first? | What real sessions read, then the rest on a floor: reading isn't reviewing for an agent, so demand sets the order, not the scope. A hash check of 2,847 sources takes 2 minutes and no model calls. | RETR-021, RETR-026, RETR-025 |
 | Do tags or generated queries help search? | Tags barely: weight 0 moves top 5 by at most 2 points and top 1 by 3. Filtered document expansion waits until real queries show vocabulary misses; of 4 real misses, 2 were newer entries outranking older ones. | RETR-029, RETR-028 |
 
@@ -65,6 +65,7 @@ Research basis:
 | RETR-030 | Does the knowledge base improve answers? 20 cases, with and without | fact | answer-eval, plugin-eval, ablation, llm-grader |
 | RETR-031 | What the graders missed: misreads and an entry error | fact | misread, forked-haiku, answer-eval, lookup-skill |
 | RETR-032 | Guru's verification from use: signals agents don't send | comparison | verification, guru, usage-signals, feedback |
+| RETR-033 | Haiku fork, Sonnet fork or direct reads: 100 answers reviewed blind | comparison | forked-haiku, misread, answer-eval, blind-review |
 
 ## [RETR-001] A knowledge base for agents is a compiled layer, not a search problem
 - Type: pattern
@@ -436,7 +437,7 @@ A lookup can fail at five points. With retrieval measured at 97–100% (RETR-010
 1. **Not asked.** The agent answers from memory without looking. Chat called the connector only when it was named, until the plugin bundled the skill with it (MCP-038, MCP-040). The trigger evals score 120/120 loads and 51/51 skips, but they run each plugin alone (README).
 2. **Not covered.** The question falls outside the entries. The lookup then says so (RETR-012), and the caller falls back to memory or the web.
 3. **Covered but stale or wrong.** The first re-verification run changed 25 entries, and 8 of those changes were wrong (README). Errors here reach every agent and look authoritative.
-4. **Found but misread.** The forked Haiku summarises entries for an Opus caller. Measured 2026-10-30: 2 of 40 answers said the opposite of the entry, and all flagged answers came through the fork (RETR-030, RETR-031; a lead, not blinded).
+4. **Found but misread.** The forked Haiku summarises entries for an Opus caller. Measured 2026-10-30: 2 of 40 answers said the opposite of the entry, and all flagged answers came through the fork (RETR-030, RETR-031; a lead, not blinded). A blind rerun with forced routes found 4 problems in 100, none tied to Haiku (RETR-033).
 5. **Not found.** Raw-question BM25 misses reworded questions, but the agent loop recovers them (RETR-011). Measured only on synthetic questions: all cited entries made the top 5 in 72–79% of them, so multi-part answers are often built from part of what exists.
 
 So effort pays off most in triggering, coverage and verification. A better ranker comes after real queries show misses. The server's 54 searches in 30 days (RETR-012) and 12 of 52 relevant sessions (RETR-025) fit point 1.
@@ -691,7 +692,7 @@ Don't read 100% as accuracy:
 - Confidence: single-source
 - Last verified: 2026-10-30
 - Sources: [eval-answers](https://github.com/FreekMencke/claude-kb/blob/main/eval-answers), local measurement: hand reading of the 40 plugin answers in RETR-030 against their entries, 2026-10-30, not blinded
-- Related: RETR-018, RETR-030, MCP-041, TOK-117, OG-001, TS-011, KUBE-003
+- Related: RETR-018, RETR-030, RETR-033, MCP-041, TOK-117, OG-001, TS-011, KUBE-003
 
 All 40 plugin answers passed their graders, which check that facts are present, not that nothing is wrong. Reading them found:
 
@@ -701,7 +702,7 @@ All 40 plugin answers passed their graders, which check that facts are present, 
 
 **Overstated or merged (4):** "no 2.9.x patch will add it" (KUBE-003 records none so far), Node "24.15+" for the app (the CLI's floor), "some Lambda setups" (all of them, on Node 20 to 24), and "doesn't confirm" a `beforeAll` effect JSTEST-001 states.
 
-**Route:** all 6 came from the 13 answers through the lookup skill, whose fork runs on Haiku; none from the 25 where Opus read entries directly. On `satori-overflow`, the Haiku fork inverted the claim and direct Opus got it right. It's a lead: the review wasn't blinded, the model picks the route, and skill answers read more entries (mean 4.4 against 1.8).
+**Route:** all 6 came from the 13 answers through the lookup skill, whose fork runs on Haiku; none from the 25 where Opus read entries directly. On `satori-overflow`, the Haiku fork inverted the claim and direct Opus got it right. It's a lead: the review wasn't blinded, the model picks the route, and skill answers read more entries (mean 4.4 against 1.8). A blind rerun with forced routes didn't reproduce it (RETR-033).
 
 **Entry error (1):** both plugin answers repeated TOK-117's "no independent test". The no-plugin web run found one, posted 2026-10-25, so the entry was wrong and the criterion passed it. That run also misread the README's "Older versions: not supported" column as the supported range.
 
@@ -722,6 +723,28 @@ For us:
 - **Thumbs and feedback:** agents send none. An agent following a wrong entry looks the same as one following a right one, so usage can rank entries but can't verify them (RETR-021).
 - **Dates:** keep `Last verified`. It costs little, and our routine needs it (RETR-022).
 
+## [RETR-033] Haiku fork, Sonnet fork or direct reads: 100 answers reviewed blind
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-10-30
+- Sources: [eval-answers](https://github.com/FreekMencke/claude-kb/blob/main/eval-answers), local measurement: the 20 answer cases with the route forced, and one blind reader, 2026-10-30
+- Related: RETR-018, RETR-030, RETR-031
+
+With the route forced, a fork on Sonnet did no better than one on Haiku, so Haiku isn't shown to cause RETR-031's misreads. The fork stays on Haiku, the cheapest.
+
+| Route | Answers | Grader score | Problems | Cost per answer | Entries read (mean) | Seconds per answer |
+|---|---|---|---|---|---|---|
+| Fork on Haiku | 40 | 0.988 | 1 | $0.089 | 2.8 | 24 |
+| Fork on Sonnet | 40 | 0.988 | 3 | $0.134 | 2.0 | 21 |
+| Opus reads directly | 20 | 1.000 | 0 | $0.140 | 1.9 | 16 |
+
+Tested 2026-10-30, v2.1.296, terminal: `claude plugin eval --ablation none --model claude-opus-5-5 --judge-model sonnet`, 2 runs per fork case and 1 per direct case, the route named in each prompt and confirmed in traces. A fresh subagent read all 100 shuffled against the 83 entries read, not knowing the arm. Cost leaves out the judge. Direct reads cost more because the caller holds the entries: 10,890 input and cache-write tokens per answer against 7,286.
+
+**Problems:** Haiku gave Node `24.15+` for the app, the CLI's floor. Sonnet said no entry covers idle compaction, without reading TOK-034; said plain `npm ls` fails, where JSUP-002 says `--all`; and called Read and Grep a large share of spend, in no entry. A fifth flag was dropped: the reader lacked Confidence lines, and ORCH-030 is community-consensus, as that answer said.
+
+**Limits:** 4 in 100 can't rank the routes: at random, all 4 would miss the 20 direct answers 40% of the time. There was one reader. RETR-031's 6 of 13 fell to 4 of 80 fork answers, unexplained; that review wasn't blinded and the model picked the route.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort.
@@ -737,13 +760,13 @@ Ranked by impact against effort.
 4. Done 2026-10-20: the server logs the entry IDs `kb_search` returned and `kb_get` read, never query text, and no longer logs client IPs. Query text stays out: it is strangers' free text on a public server (RETR-012, RETR-019; `mcp-server/README.md`, "Logs").
 5. **If misses appear: first an LLM pick from BM25's top 30, then hybrid search** (low effort, then medium). The rerank arm reached 94–99% with no new infrastructure, capped by BM25's top 30 (RETR-010). sqlite-vec with RRF and Voyage embeddings would be the step after (RETR-016). Checked 2026-10-30: raw BM25 misses 4 of 28 real queries, 2 of them newer entries outranking older ones, which isn't yet a reason (RETR-025). Filtered document expansion and tag cleanup stay parked (RETR-028, RETR-029).
 6. **Order re-verification by change and use** (high impact, low effort). Done 2026-10-30 for changed sources, failed quotes and hub entries (FreekMencke/claude-kb#343). Most-read entries aren't in it: the routine can't see local transcripts and has no log access. RETR-021, RETR-025, RETR-026.
-7. **Find out whether the forked Haiku causes the misreads** (high impact, low effort). Rerun `eval-answers/` with the fork on Sonnet and score misreads blind (FreekMencke/claude-kb#344). RETR-031.
+7. Done 2026-10-30: reran `eval-answers/` with forced routes and scored the answers blind. The Sonnet fork did no better, so the fork stays on Haiku (FreekMencke/claude-kb#344). RETR-031, RETR-033.
 8. Done 2026-10-30: the global CLAUDE.md tells agents to open an issue here, with the proof, when an entry proves wrong in practice. RETR-021, RETR-022.
 
 ## Open questions
 
 - **Near misses.** Real queries now exist for one user's Claude Code sessions (RETR-025), and the public server still logs none (recommendation 4). Near-but-wrong entries and false abstention are unmeasured beyond RETR-010 and RETR-012.
-- **The fork's effect on answers.** All flagged answers came through the forked Haiku, in an unblinded review of one run per cell (RETR-031). Whether the model or the number of entries causes it isn't known.
+- **The fork's effect on answers.** RETR-031 flagged 6 of 13 fork answers, unblinded; the blind rerun flagged 4 of 80 (RETR-033). Whether the reviewer, the forced route or the number of entries read explains the drop isn't known.
 - **Slow source churn.** Two runs 30 minutes apart say nothing about a week; the weekly workflow's second run will (RETR-026).
 - **Embeddings on our data.** Not tested: no embedding API or model host was reachable from the session (RETR-010).
 - **Unread primary sources.** The Cherny quotes (RETR-003), the Cursor, Cline, Cody and Copilot pages (RETR-013), Voyage's price list (RETR-016), and all paper figures except LaRA's and NoLiMa's (RETR-017, RETR-008) were seen only as search-result text. A session that reaches x.com, arxiv.org and those vendors should re-read them.
