@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-55
+tags: [claude-kb-lookup, should-load]
+description: "Web images (kb-web-images.md)."
+execution:
+  prompt: "Which AI image model gives usable hero images for a website, and what format and sizes should I export them in?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'
