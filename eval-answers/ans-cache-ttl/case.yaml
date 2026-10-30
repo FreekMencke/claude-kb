@@ -1,0 +1,20 @@
+# Criteria from TOK-052
+schema_version: "1.1"
+name: ans-cache-ttl
+tags: [answer,post-training]
+execution:
+  prompt: 'In Claude Code on a subscription, how long does the prompt cache last for the main conversation and for subagents? What changes once I draw on usage credits? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: main
+    type: llm
+    criteria: |
+      PASS if it says 1 hour for the main conversation within the plan, and 5 minutes on usage credits. Extra correct detail is fine.
+      FAIL if it gives other numbers, or does not address credits.
+  - name: subagents
+    type: llm
+    criteria: |
+      PASS if it says 5 minutes for subagents. Extra correct detail is fine.
+      FAIL if it gives another number or omits it.

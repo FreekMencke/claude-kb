@@ -1,0 +1,20 @@
+# Criteria from BROWSER-002
+schema_version: "1.1"
+name: ans-playwright-cost
+tags: [answer,local]
+execution:
+  prompt: 'Microsoft says the Playwright CLI is more token-efficient than Playwright MCP. For a Claude Code agent checking web pages, should I move to the CLI to save tokens? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: no
+    type: llm
+    criteria: |
+      PASS if it says no saving should be expected, and that the CLI used more tokens or cost more than MCP in a measured Claude Code test (about 632k against 406k input tokens). Extra correct detail is fine.
+      FAIL if it recommends moving to save tokens, or cites no Claude Code measurement.
+  - name: deferred
+    type: llm
+    criteria: |
+      PASS if it explains that Claude Code defers MCP tool schemas, so their cost is negligible, or that the CLI paid for loading its skill. Extra correct detail is fine.
+      FAIL if it gives neither reason.

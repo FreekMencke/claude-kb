@@ -1,0 +1,20 @@
+# Criteria from GH-009
+schema_version: "1.1"
+name: ans-gh-cloud
+tags: [answer,post-training]
+execution:
+  prompt: 'In a Claude Code cloud session, `gh pr create` fails with 403. Would setting my own `GH_TOKEN` fix it? What should I use? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: token-no
+    type: llm
+    criteria: |
+      PASS if it says no: the proxy blocks GraphQL regardless of the credentials, so `GH_TOKEN` gets the same 403. Extra correct detail is fine.
+      FAIL if it says setting a token fixes it.
+  - name: rest
+    type: llm
+    criteria: |
+      PASS if it says to use the REST API through `gh api`, for example `gh api -X POST repos/{owner}/{repo}/pulls`. Extra correct detail is fine.
+      FAIL if it names no REST fallback.

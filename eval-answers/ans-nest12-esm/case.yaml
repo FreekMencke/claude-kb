@@ -1,0 +1,20 @@
+# Criteria from NEST-003, NEST-014
+schema_version: "1.1"
+name: ans-nest12-esm
+tags: [answer,post-training]
+execution:
+  prompt: 'Nest 12 packages are ESM-only. Must our CommonJS Nest app switch to ESM to upgrade, and is there anywhere that would break? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: no-switch
+    type: llm
+    criteria: |
+      PASS if it says no switch is needed, because a CommonJS app loads the packages through `require(esm)`. Extra correct detail is fine.
+      FAIL if it says the app must migrate to ESM.
+  - name: lambda
+    type: llm
+    criteria: |
+      PASS if it names AWS Lambda (where `require(esm)` is off) as a place this breaks. Extra correct detail is fine.
+      FAIL if it does not name Lambda.

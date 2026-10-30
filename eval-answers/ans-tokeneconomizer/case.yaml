@@ -1,0 +1,20 @@
+# Criteria from TOK-117. The first run's criterion said no independent test exists: RETR-031
+schema_version: "1.1"
+name: ans-tokeneconomizer
+tags: [answer,post-training]
+execution:
+  prompt: 'The TokenEconomizer paper reports 18 to 31% token savings. If I install its Claude Code plugin, should I expect that? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: differs
+    type: llm
+    criteria: |
+      PASS if it says no: the shipped plugin differs from what the paper measured (for instance micro-skills are off by default, or the loop guard is a different intervention). Extra correct detail is fine.
+      FAIL if it says to expect the paper's figures, or says it cannot find the plugin.
+  - name: no-independent
+    type: llm
+    criteria: |
+      PASS if it says independent evidence is thin (for instance one small test), or that the paper's tasks were not real user sessions. Extra correct detail is fine.
+      FAIL if it mentions neither, or claims the plugin's savings are independently confirmed.

@@ -1,0 +1,20 @@
+# Criteria from FONT-003
+schema_version: "1.1"
+name: ans-fontc-static
+tags: [answer,post-training]
+execution:
+  prompt: 'We build a font family as static OTF and static TTF plus a variable font with fontmake. fontc 1.0.0 is out. Can we replace fontmake with it? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: no-otf
+    type: llm
+    criteria: |
+      PASS if it says no, at least not for this family, because fontc 1.0 outputs TrueType only (no CFF/OTF). Extra correct detail is fine.
+      FAIL if it says yes, or does not mention the OTF limit.
+  - name: no-instances
+    type: llm
+    criteria: |
+      PASS if it says fontc 1.0 cannot generate static instances from a variable source. Extra correct detail is fine.
+      FAIL if it does not mention static instances being unavailable.

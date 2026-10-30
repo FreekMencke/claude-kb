@@ -1,0 +1,20 @@
+# Criteria from TOK-034, TOK-052
+schema_version: "1.1"
+name: ans-idle-compact
+tags: [answer,post-training]
+execution:
+  prompt: 'My terminal Claude Code session had about 250K tokens, I left it idle for an hour, and it compacted itself with no prompt from me. What was that, and can I turn it off? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: what
+    type: llm
+    criteria: |
+      PASS if it says this is idle compaction, firing just before the one-hour cache expires (about 54 minutes idle, 200K+ tokens). Extra correct detail is fine.
+      FAIL if it describes only normal auto-compact at the context limit.
+  - name: off
+    type: llm
+    criteria: |
+      PASS if it says `"idleCompaction": false` in settings, or turning auto-compact off, disables it. Extra correct detail is fine.
+      FAIL if it does not give that setting.

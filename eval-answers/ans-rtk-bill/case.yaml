@@ -1,0 +1,20 @@
+# Criteria from TOK-083
+schema_version: "1.1"
+name: ans-rtk-bill
+tags: [answer,post-training]
+execution:
+  prompt: 'RTK claims 60 to 90% token savings on dev commands. Will it cut my Claude Code bill? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: no-saving
+    type: llm
+    criteria: |
+      PASS if it says independent paired tests found no reliable saving (for example JetBrains: +7.6% at low effort and no change at high; Quesma: not recommended as a generic cost saver). Extra correct detail is fine.
+      FAIL if it accepts the vendor claim, or cites no independent test.
+  - name: why
+    type: llm
+    criteria: |
+      PASS if it says RTK's own counter overstates savings, or that it only measures Bash output, or estimates tokens from bytes. Extra correct detail is fine.
+      FAIL if it gives no such limit.

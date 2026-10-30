@@ -1,0 +1,20 @@
+# Criteria from INFRA-028
+schema_version: "1.1"
+name: ans-grafana-policy
+tags: [answer,local]
+execution:
+  prompt: 'Through the claude.ai Grafana Cloud connector, signed in as an Editor, can a Claude session change our Grafana notification policy, and what can it write? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: policy-403
+    type: llm
+    criteria: |
+      PASS if it says writing the notification policy fails (a 403 on the provisioning policies endpoint), so it is edited in the Grafana UI. Extra correct detail is fine.
+      FAIL if it says the session can write the policy, or that it cannot tell.
+  - name: can-write
+    type: llm
+    criteria: |
+      PASS if it says rules (through the Prometheus import API) or contact points can be written. Extra correct detail is fine.
+      FAIL if it names neither.
