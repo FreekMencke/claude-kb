@@ -182,7 +182,7 @@ In practice, a generated hero image is yours to use but probably nobody's to own
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [JimLiu/baoyu-skills](https://github.com/JimLiu/baoyu-skills), [AgriciDaniel/banana-claude](https://github.com/AgriciDaniel/banana-claude)
-- Related: SKILL-069, IMG-001, IMG-003, SKILL-041
+- Related: SKILL-069, IMG-001, IMG-003, SKILL-041, SKILL-074
 
 Read from their READMEs on 2026-10-30; not installed or run.
 

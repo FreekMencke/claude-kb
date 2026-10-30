@@ -141,7 +141,7 @@ What actually limits damage is what the agent can reach: an isolated profile wit
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [chrome-devtools-mcp README: usage statistics](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/3c609da/README.md), [browser-use config.py](https://github.com/browser-use/browser-use/blob/b49a68e/browser_use/config.py), [browser-use telemetry service](https://github.com/browser-use/browser-use/blob/b49a68e/browser_use/telemetry/service.py)
-- Related: BROWSER-007, DSKILL-015, MCP-019
+- Related: BROWSER-007, DSKILL-015, MCP-019, SKPACK-003
 
 - **Chrome DevTools MCP:** "Google collects usage statistics (such as tool invocation success rates, latency, and environment information)". "Data collection is **enabled by default**"; opt out with `--no-usage-statistics`. "Collection is disabled if `CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS` or `CI` env variables are set." Separately, "Performance tools may send trace URLs to the Google CrUX API" (`--no-performance-crux`), and it checks npm for updates (`CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS`).
 - **browser-use:** `ANONYMIZED_TELEMETRY` defaults to true and events go to PostHog's EU host; the device ID comes from an env var, a persisted ID or a machine fingerprint. Set `ANONYMIZED_TELEMETRY=false`.

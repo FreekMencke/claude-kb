@@ -69,7 +69,7 @@ The split that matters is how each gets into context: through a hook every sessi
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [superpowers hooks.json and session-start](https://github.com/obra/superpowers/tree/2ce8aa1/hooks), [ponytail plugin.json](https://github.com/DietrichGebert/ponytail/blob/96608e0/.claude-plugin/plugin.json), [ponytail-activate.js](https://github.com/DietrichGebert/ponytail/blob/96608e0/hooks/ponytail-activate.js), [ECC hooks.json](https://github.com/affaan-m/ECC/blob/b38be6a/hooks/hooks.json), [agent-skills CONTRIBUTING.md](https://github.com/addyosmani/agent-skills/blob/eb07f19/CONTRIBUTING.md)
-- Related: SKPACK-001, SKPACK-013, SKILL-069, HOOK-001, PROMPT-004
+- Related: SKPACK-001, SKPACK-013, SKILL-069, HOOK-001, PROMPT-004, BROWSER-006
 
 Read from the hook files at the pinned commits; not run.
 
@@ -85,7 +85,7 @@ Read from the hook files at the pinned commits; not run.
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [superpowers README: Visual companion telemetry](https://github.com/obra/superpowers/blob/2ce8aa1/README.md#visual-companion-telemetry), [superpowers server.cjs](https://github.com/obra/superpowers/blob/2ce8aa1/skills/brainstorming/scripts/server.cjs), [ponytail plugin.json](https://github.com/DietrichGebert/ponytail/blob/96608e0/.claude-plugin/plugin.json), [ECC README](https://github.com/affaan-m/ECC/blob/b38be6a/README.md)
-- Related: SKPACK-002, SKILL-069, DSKILL-015
+- Related: SKPACK-002, SKILL-069, DSKILL-015, BROWSER-006
 
 - **Superpowers:** "By default, the Prime Radiant logo on brainstorming's optional visual companion feature is loaded from our website. It includes the version of Superpowers in use." The code requests `https://primeradiant.com/brand/superpowers-visual-brainstorming-logo.png?v=<version>`. Opt out with `SUPERPOWERS_DISABLE_TELEMETRY`; the README says it also honours Claude Code's telemetry opt-outs. Only the optional visual companion loads it.
 - **Ponytail:** the `ledger` option defaults to `true` and writes each task's "cost, turns, agent time, tokens, reuse, tests" to `~/.config/ponytail/band/<project>.csv`. `webhookUrl` defaults to empty ("Empty: nothing leaves this machine"); if you set one, `sendNames` (default `true`) also sends each task's name or first prompt.
