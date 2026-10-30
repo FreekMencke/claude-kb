@@ -145,7 +145,7 @@ Separately, Claude Code v2.1.271 fixed "a stale `.git/config.lock` breaking `git
 Beyond git itself, the worktrees page lists what a worktree session shares with the main checkout:
 - **`.git`**: the sandbox allows writes there, so `git commit` works from a worktree.
 - **Plugins** installed at project scope in the main checkout (v2.1.200+).
-- **Permission approvals**: "Yes, and don't ask again" in a worktree "saves the rule to the main checkout's `.claude/settings.local.json`, so it applies in the main checkout and in every other worktree" (v2.1.211+). An approval granted in one session therefore applies to every parallel session.
+- **Permission approvals**: "Yes, and don't ask again" in a worktree "saves the rule to the main checkout's `.claude/settings.local.json`. The rule applies in the main checkout and in every other worktree" (v2.1.211+). An approval granted in one session therefore applies to every parallel session.
 - **Untracked skills, agents and commands**: if the worktree has no `.claude/skills` at its root, the main checkout's are loaded (skills need v2.1.277+).
 
 Also from the Claude Code docs:
@@ -410,7 +410,7 @@ It is a heavy tool for collisions: every directory needs its own login and plugi
 Worktrees isolate files, and they also isolate the cache. From the docs:
 - "In Claude Code, the cache is effectively scoped to one machine and directory."
 - The prefix embeds the auto-memory paths and the working directory. "Two sessions in different directories therefore build different prefixes and miss each other's cache."
-- "Sessions you run in parallel in the same directory build matching prefixes and read each other's cache. Sequential sessions share the prefix only when the git status snapshot taken at startup matches."
+- "Sessions you run in parallel in the same directory build matching prefixes and can read each other's cache. Sequential sessions share the prefix only when the git status snapshot taken at startup matches."
 
 Consequence: five sessions in five worktrees each pay their own cache writes for the system prompt, tools and CLAUDE.md. Five sessions in one directory would share them, but they would then edit the same files.
 
@@ -953,14 +953,10 @@ Ranked by impact against effort. Status is marked on each item.
 
 ## Open questions
 
-1. **Do stdio MCP servers start once per session?** Answered 2026-10-13: yes, one full set per session, about 0.8 GB RSS each in our setup (SESS-013's Tested line).
 2. **Do Linux and macOS sessions still lose `~/.claude.json` state after v2.1.259?** Only Windows and desktop reports (#92908) are open; v2.1.299 fixed one Linux cause (SESS-010). The second half is answered 2026-10-14: `CLAUDE_CONFIG_DIR` moves `.claude.json` too (SESS-014).
 3. **Does GitHub honour `.gitattributes` merge drivers today?** The only staff statement is a second-hand reply from about 2017. Test on a throwaway repo before relying on SESS-026.
 4. **Does a `push` workflow run on a conflicting PR branch?** Inferred yes from the docs; not confirmed (SESS-021).
 5. **Desktop and cloud worktree details.** Partly answered 2026-10-14: the desktop takes a Branch prefix setting. The desktop app's default worktree branch name, whether the `cleanupPeriodDays` sweep covers desktop worktrees, and cloud sessions' branch naming are all undocumented (SESS-005). Related: the desktop's **Auto-archive after PR merge or close** removes a finished local session's worktree (SURF-002).
 6. **Is there a hidden concurrency throttle on subscriptions?** #96872 shows 429s rising at 6 or more sessions with no reply from Anthropic. No per-account concurrency cap is documented (SESS-032).
 7. **Does an approval given from the phone over Remote Control count the same as one at the terminal?** It's implied, not stated (SESS-020). SURF-018 confirms a connected device answers permission prompts, and that the app never offers Bypass mode.
-8. Answered 2026-10-30: **Playwright MCP's default profile is persistent, per client cwd** (BROWSER-004). Parallel checkers need `--isolated`; the browser checker already has it (REPO-021). This is the one home for the question; `kb-workflows.md` (FLOW-014) points here.
-9. **Is the stash really shared?** Answered 2026-10-14: yes. A stash made in one worktree is listed in another, and `git stash pop` there applies it and empties the stack (git 2.43.0, scratch repo; SESS-002).
-10. **Gap in the index check.** Answered 2026-10-12 (FreekMencke/claude-kb#28): `scripts/check_kb.py` now takes the prefixes for its "mentions unknown" check from the entries, so SESS and every later prefix are checked.
 11. **Does the SESS-036 hook run in desktop Code tab worktree sessions?** Hooks from user settings apply in the desktop app, and desktop hooks get the worktree as `cwd`, so it should. Tested only in the terminal.

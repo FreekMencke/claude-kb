@@ -195,7 +195,7 @@ Auto-verify after every edit adds screenshots and tool calls to each turn. For a
 Dispatch "is a persistent conversation with Claude that lives in the Cowork tab. You message Dispatch a task, and it decides how to handle it." Development tasks (bugs, dependency updates, tests, PRs) become a Code session with a **Dispatch** badge in the desktop sidebar; research and documents stay in Cowork. "You get a push notification on your phone when it finishes or needs your approval."
 
 Constraints:
-- "Dispatch requires a Pro or Max plan and is not available on Team or Enterprise plans."
+- "Dispatch requires a Pro, Max, or Ultra plan and is not available on Team or Enterprise plans"
 - The desktop app must be running on a machine that stays awake; pair the mobile app with the desktop first.
 - Computer-use app approvals in Dispatch-spawned sessions "expire after 30 minutes and re-prompt".
 

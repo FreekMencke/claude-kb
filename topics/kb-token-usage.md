@@ -685,14 +685,14 @@ Cost: compaction is itself a request over the whole history. While the cache is 
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-10-30
 - Sources: [Model config: set the auto-compact window](https://code.claude.com/docs/en/model-config), [Env vars](https://code.claude.com/docs/en/env-vars)
 - Related: TOK-007, TOK-008, TOK-031, TOK-116
 
 Knobs:
 - `/autocompact 400k` is saved per model (v2.1.288+). `/autocompact auto` restores the default.
 - `autoCompactWindow` setting or `--autocompact` flag.
-- `CLAUDE_CODE_AUTO_COMPACT_WINDOW=400000`: plain integer, range 100k–1M, overrides the others.
+- `CLAUDE_CODE_AUTO_COMPACT_WINDOW=400000`: range 100k–1M, overrides the others. "Suffixed values such as `200k` require v2.1.304 or later."
 - `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50`: can only compact earlier; also applies to subagents.
 - `DISABLE_AUTO_COMPACT=1` keeps manual `/compact`. `DISABLE_COMPACT=1` disables both.
 - Subagent frontmatter `autoCompactWindow` (v2.1.296).
@@ -709,7 +709,7 @@ Simulation on our 6 days (2026-10-07 to 2026-10-12; first labelled "30 days", co
 A lower window trades lossy summaries for cost. Pair it with compact instructions (TOK-031) and a handoff habit (R3). At 400K, measured over 31 compactions, the loss was small (TOK-116).
 
 
-`CLAUDE_CODE_MAX_OUTPUT_TOKENS` has no single default: "Defaults and caps vary by model", and only "For a model ID Claude Code can't resolve to a model it knows, the default is 32000 and the cap is 128000". `CLAUDE_CODE_AUTO_COMPACT_WINDOW` takes a plain integer: "a value like `500k` reads as `500` and clamps to the 100K minimum"; `/autocompact` accepts `500k`. Since v2.1.198 the summarizer inherits the session's thinking settings (context-window docs).
+`CLAUDE_CODE_MAX_OUTPUT_TOKENS` has no single default: "Defaults and caps vary by model", and only "For a model ID Claude Code can't resolve to a model it knows, the default is 32000 and the cap is 128000". A number with no suffix means tokens: "`CLAUDE_CODE_AUTO_COMPACT_WINDOW=200` means 200 tokens even though `/autocompact 200` means 200,000." Since v2.1.198 the summarizer inherits the session's thinking settings (context-window docs).
 
 Confidence note: the knobs are documented (official-docs); the savings come from our local simulation.
 
@@ -1051,7 +1051,7 @@ Rule of thumb: pick model and effort at the start of a session, not in the middl
 Pricing and limits:
 - "All usage is charged at 50% of the standard API prices." For example, Opus 5.5 is $2/$10 and Sonnet 5.5 is $1/$5.
 - A batch holds up to 100,000 requests or 256 MB.
-- "Most batches complete within 1 hour". Batches expire after 24 hours, and expired requests aren't billed.
+- "most batches completing within 1 hour". Batches expire after 24 hours, and expired requests aren't billed.
 - Results are kept for 29 days from creation.
 
 **With caching:** the discounts stack, but hits are best-effort because requests run concurrently. Typical hit rates are 30–98%. Use identical `cache_control` blocks and consider the 1h TTL.
@@ -1080,7 +1080,7 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 - In Claude Code, thinking can't be turned off on Opus, Sonnet and Haiku 5.5 or Fable. Use `/effort` instead; `MAX_THINKING_TOKENS` applies only to fixed-budget models.
 - On current models, earlier-turn thinking stays in context as input (TOK-038).
 
-In Claude Code, "You can't turn thinking off on Opus 5.5, Sonnet 5.5, Haiku 5.5, or the Fable models", and "You are charged for all thinking tokens generated, even when collapsed or redacted." The API goes lower: `between_tools` on Sonnet 5.5 and `disabled` on Haiku 5.5, both only at `high` effort or below.
+In Claude Code, "You can't turn off thinking on Opus 5.5, Sonnet 5.5, Haiku 5.5, or the Fable models", and "You are charged for all thinking tokens generated, even when collapsed or redacted." The API goes lower: `between_tools` on Sonnet 5.5 and `disabled` on Haiku 5.5, both only at `high` effort or below.
 
 ## [TOK-056] Order of cost levers (official cookbook)
 - Type: recommendation
@@ -1616,8 +1616,8 @@ Neither reached the official page. Extended bought breadth, not authority.
 - Related: TOK-092, TOK-017, TOK-024, TOK-050
 
 **Web search** (`web_search_20250305`, `_20260209` with dynamic filtering, `_20260318` with response inclusion):
-- "$10 per 1,000 searches, plus standard token costs for search-generated content."
-- "Web search results retrieved throughout a conversation are counted as input tokens, in search iterations executed during a single turn and in subsequent conversation turns": results are re-read every later turn, like any tool output (TOK-008).
+- "$10 USD per 1,000 searches, plus standard token costs for search-generated content."
+- "Web search results retrieved throughout a conversation are counted as input tokens, in search iterations run during a single turn and in subsequent conversation turns": results are re-read every later turn, like any tool output (TOK-008).
 - "Each web search counts as one use, regardless of the number of results returned"; failed searches aren't billed. Citation fields "do not count toward input or output token usage".
 - `max_uses` caps searches per request: "Simple factual queries typically use 1–3 searches; comparative or multientity research can use 10 or more."
 
@@ -2107,15 +2107,15 @@ Baseline (local measurement, 2026-10-07 to 2026-10-12, 6 days, TOK-008; first la
 - Subagents 19% of cost.
 - Tool output entering context: Bash about 6.9M tokens, about 995 screenshots, text file reads about 0.9M.
 
-Ranked by expected savings ÷ effort. Done on 2026-10-12, now in `~/.claude` or FreekMencke/claude-skills (re-measure with R6 a month later, Open question 2):
-- R1: `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md (a Keep/Drop list; TOK-031, TOK-032). Measured 2026-10-16 in FreekMencke/claude-kb#13: kept at 400K, since compaction lost little (TOK-116). Turns over 400k fell from 7% to 1%.
-- R2: a context status line (TOK-011, TOK-082).
-- R3: the user-only `handoff` skill: write state to the issue/PR or a scratch file, then `/clear` (FreekMencke/claude-skills#13; TOK-030, TOK-085).
-- R4: `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`, plus the Haiku `Explore` override (ORCH recommendation 13), because the env var doesn't reach built-in Explore and Plan (ORCH-005, TOK-036).
-- R6: the user-only `token-audit` skill, which runs this file's analyses over `~/.claude/projects` (FreekMencke/claude-skills#14; TOK-013, TOK-080).
-- R7: output habits in the global CLAUDE.md ("Shell output") (TOK-042).
-- R8: the unused claude.ai-synced skills set to `name-only` (below; 10 kept, `morning` and `import-memory` disabled on claude.ai instead).
-- R5: the `browser-checker` agent keeps osrs-tracker-web's screenshots out of main sessions (osrs-tracker/osrs-tracker-web#223, kb-repo-agents T3; final count due from 2026-10-27). TOK-043, TOK-009.
+Ranked by expected savings ÷ effort. Now in `~/.claude` or FreekMencke/claude-skills (re-measure with R6 a month later, Open question 2):
+- Done 2026-10-12: R1, `"autoCompactWindow": 400000` and a `# Compact instructions` section in the global CLAUDE.md (TOK-031, TOK-032). Kept at 400K after FreekMencke/claude-kb#13 (TOK-116).
+- Done 2026-10-12: R2, a context status line (TOK-011, TOK-082).
+- Done 2026-10-12: R3, the user-only `handoff` skill: write state to the issue/PR or a scratch file, then `/clear` (FreekMencke/claude-skills#13; TOK-030, TOK-085).
+- Done 2026-10-12: R4, `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`, plus the Haiku `Explore` override (ORCH recommendation 13), because the env var doesn't reach built-in Explore and Plan (ORCH-005, TOK-036).
+- Done 2026-10-12: R6, the user-only `token-audit` skill, which runs this file's analyses over `~/.claude/projects` (FreekMencke/claude-skills#14; TOK-013, TOK-080).
+- Done 2026-10-12: R7, output habits in the global CLAUDE.md ("Shell output") (TOK-042).
+- Done 2026-10-12: R8, the unused claude.ai-synced skills set to `name-only` (below; 10 kept, `morning` and `import-memory` disabled on claude.ai instead).
+- Done 2026-10-12: R5, the `browser-checker` agent keeps osrs-tracker-web's screenshots out of main sessions (osrs-tracker/osrs-tracker-web#223, REPO-021; counted 2026-10-18). TOK-043, TOK-009.
 
 Won't do (measured 2026-10-12, below):
 - R13, disabling `frontend-design` and `playwright` per project: together about 1.3% of the starting context, against settings changes in every repo that uses them.
@@ -2157,16 +2157,12 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 
 ## Open questions
 
-1. **Real system prompt and tool sizes.** Answered 2026-10-12: `claude -p "/context all"` in a fresh terminal session in this repo measured a 29.4k starting prefix, close to the 24–27k inferred from `usage`. See "Measured starting context" above.
 2. **Compaction quality versus window size.** Answered 2026-10-16 for 400K in [FreekMencke/claude-kb#13](https://github.com/FreekMencke/claude-kb/issues/13): no mistakes from lost context in 15 compactions, and mean context over the next 20 messages fell from 344k to 87k (TOK-116). Still open: whether 300K saves more without more loss. R1's saving in dollars couldn't be separated from R4 and R5, which landed the same week.
 3. **How plan usage is weighted.** Are cache reads weighted like API prices (0.05x on Opus 5.5) when counting against 5-hour and weekly limits? Not documented. Our dollar figures are list-price equivalents, not plan percentages.
-4. **MCP description cap.** Answered 2026-10-12: tested, 4,096 characters up front and at least 10,000 (the changelog's 16,384) via tool search. The docs now state 4,096 and 16,384 (2,048 before v2.1.296), and since v2.1.299 Anthropic's first-party servers at `api.anthropic.com` aren't cut (TOK-020).
 5. **Subagent nesting.** The sub-agents page allows depth 3; the context-window page says the Agent tool is withheld from subagents by default. ORCH-006 sides with depth 3 (sub-agents and env-vars pages, `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`); see INDEX.md, Conflicts.
 6. **Skill descriptions and triggering.** No Anthropic benchmark relates description length to trigger rate. The evidence is skill-creator's "pushy" advice, superpowers' anecdotes and Vercel's eval.
 7. **Unverified plan changes.** The May 2026 limit doubling and peak-hour changes, and whether per-model weekly meters other than Fable still exist on some plans, are reported only by secondary sources.
 8. **Token savers.** RTK now has independent paired measurements (TOK-083, 2026-10-16) and Serena a small one (TOK-084, 2026-10-30, from a competing tool's authors); context-mode and claude-context still have none, the TokenEconomizer plugin as shipped has none (TOK-117), and Caveman's results disagree between JetBrains and Dasein (TOK-113).
-9. **Compact instructions.** Answered 2026-10-12: tested, just context it sees; the same text worked or failed alike under `# Compact instructions` and `# Notes` (TOK-031). One Haiku run per cell; a larger model may read the heading as scoping.
-10. **Resume cache bug.** Answered 2026-10-12: tested, not reliably present in v2.1.296; two of three `-p --resume` runs hit the full cache, including after a `git status` change, and one rewrote 11k tokens (TOK-034).
 11. **WebSearch `extended`.** What it does differently, what "several times the cost" means on a subscription, and whether one extended call counts as one against the 200-call budget. Only the tool schema mentions the modes (TOK-093). One test is not a latency or freshness measurement.
 12. **Metering of web tools on a subscription.** How WebSearch calls and WebFetch's extraction-model calls count against plan usage, and which model does the extraction today (TOK-087, TOK-094).
 13. **When WebFetch skips summarization.** The preapproved domain list isn't published; our tests fit "preapproved and under 100,000 characters", but the rule isn't documented (TOK-088). The size at which a WebFetch result goes to a file instead of inline (seen at 56.6 KB) isn't documented either.

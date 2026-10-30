@@ -825,7 +825,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ORCH-014 | Headless fan-out with `claude -p` | tool | headless, ci, budget |
 | ORCH-015 | Agent SDK subagents, budgets and cost tracking | tool | agent-sdk, budget, cost |
 | ORCH-016 | Cloud sessions and GitHub Actions | tool | cloud, remote, github-actions |
-| ORCH-017 | Scheduled runs: routines, desktop tasks, `/loop` | comparison | schedule, routines, loop |
+| ORCH-017 | Scheduled runs: cloud scheduled tasks (formerly routines), desktop tasks, `/loop` | comparison | schedule, routines, scheduled tasks, loop |
 | ORCH-018 | Claude Managed Agents multi-agent (API) | tool | managed-agents, api |
 | ORCH-019 | Hooks for orchestration | tool | hooks, guardrails |
 | ORCH-020 | Token and quota multipliers of multi-agent work | fact | cost, tokens, quota |

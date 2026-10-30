@@ -223,7 +223,7 @@ Edit [SKILL.md](.claude/skills/claude-kb-lookup/SKILL.md) in a PR. Its descripti
 not topic files, so a new topic file usually needs no change there: add a `loads-*` case for it, run that case, and add
 an anchor word only if it fails (SKILL-015).
 
-After changing the description, run the trigger evals by hand (about $18 a run at 68 cases, so not in CI).
+After changing the description, run the trigger evals by hand (about $23 a run at 79 cases, so not in CI).
 `loads-*` cases should load the skill, `skips-*` near misses shouldn't:
 
 ```bash
@@ -264,8 +264,9 @@ Runs are isolated per plugin, so they can't show overlap with skills in other re
 
 ## Re-verification routine
 
-A cloud routine, "claude-kb re-verification" at [claude.ai/code/routines](https://claude.ai/code/routines),
-runs at 06:00 UTC on the 1st and 15th of each month on Sonnet 5.5. Every run re-checks every official-docs and
+A cloud scheduled task (formerly a routine, ORCH-017), "claude-kb re-verification" at
+[claude.ai/code/routines](https://claude.ai/code/routines), runs at 08:00 Europe/Brussels on the 1st and 15th of each month
+on Sonnet 5.5. Every run re-checks every official-docs and
 official-example entry against its sources. It also checks the single-source, community-consensus and unverified entries
 whose Last verified is more than 25 days old, so each of those comes up every other run: does each source still exist and
 still say the claim, and is there now an official source that raises the Confidence. It updates Last verified, logs
@@ -330,9 +331,10 @@ this repo.
   files lives in one. Cross-file pointers name entry IDs, not issues.
 - **INDEX.md holds only what answers a lookup**, because `kb_quick_answers` returns its Quick answers: the Claude rows
   without a topic (18.7 KB on 2026-10-23), the stack rows with `topic: stack` (the server splits the section at the
-  `### The stack Claude works on` heading, so keep it). The Claude rows stay near 30 (each topic file keeps its own
-  10–15): they had drifted to 57 and were trimmed back to 33, keeping
-  each question whose entries no topic table lists (FreekMencke/claude-kb#194, 2026-10-18). Stack topics get at most one
+  `### The stack Claude works on` heading, so keep it). The Claude rows have no target count (47 on 2026-10-30, 19.6 KB; each topic file keeps its own 10–15). A row earns its
+  place by naming entries no topic table lists: they drifted to 57 and were trimmed to 33 that way
+  (FreekMencke/claude-kb#194, 2026-10-18), but with 7 `kb_quick_answers` calls from 2026-10-15 to 10-30
+  (`scripts/kb-usage.ts`), trimming further wouldn't repay the effort. Stack topics get at most one
   row per file, in their own table under "The stack Claude works on", so the 23 planned files add about 23 rows, not 70
   (FreekMencke/claude-kb#175, 2026-10-17). Curation records and history live in OVERLAPS.md and CHANGELOG.md.
 - **The entry list is grepped, not read.** At 504 entries it was 51 of INDEX.md's 74 KB, so it moved to a generated

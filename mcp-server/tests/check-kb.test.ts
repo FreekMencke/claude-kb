@@ -349,6 +349,22 @@ describe('a fixture with one valid topic file', () => {
     expect(status).toBe(0);
   });
 
+  test('a Done bullet over 300 characters warns too', () => {
+    const root = tempDir();
+    mkdirSync(join(root, 'topics'));
+    const recs = `1. None.\n- Done 2026-10-23: ${'x'.repeat(300)}\n- Done 2026-10-23: short`;
+    writeFileSync(
+      join(root, 'topics', 'kb-good.md'),
+      goodTopic('GOO', [['general']]).replace('1. None.', recs),
+      'utf8',
+    );
+    check(root, true);
+    const { status, output } = check(root);
+    expect(output).toContain('Long Done recommendations (1, warnings only)');
+    expect(output).toContain('kb-good.md recommendation Done 2026-10-23:');
+    expect(status).toBe(0);
+  });
+
   test("a topic file missing from README.md's Layout table fails, a wrong prefix too", () => {
     const missing = run(
       ['general'],

@@ -138,7 +138,7 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 - **2026-09 skill (current):** five traits: (1) "a warm cream background (near #F4F1EA) with a high-contrast serif display and a terracotta or warm-clay accent (often near #D97757 — Anthropic's own Claude-interaction accent…)"; (2) "a near-black background with a single bright acid-green or vermilion accent"; (3) "a broadsheet-style layout with hairline rules, zero border-radius, and dense newspaper-like columns"; (4) "the SaaS-card kit", meaning identical rounded cards, one radius, `rgba(0,0,0,.1)` shadows and gradient washes; (5) "template chrome": all-caps eyebrows, `A · B · C` meta strings, "WORD — fragment" labels, `#0B0B0B` for black, monospace data labels and a `→` on every link.
 - Typographic tells in the same skill: one accented word in a headline, all-caps labels, labels above content, and `01 / 02 / 03` markers on content that isn't a sequence.
 
-**Model pages:** Opus 5.5 "falls back on a few default styles"; Sonnet 5 "may settle into a consistent default visual style". On both, a general "avoid a generic AI look" "mostly swaps one default for another".
+**Model pages:** Opus 5.5 "falls back on a few default styles"; Sonnet 5 "might settle into a consistent default visual style". On both, a general "avoid a generic AI look" "mostly swaps one default for another".
 
 ## [DESIGN-004] Prompting for distinctive design
 - Type: recommendation
@@ -166,7 +166,7 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Sources: [claude-code: frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [claude-plugins-official copy](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [anthropics/skills copy](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: DESIGN-003, DESIGN-004, SURF-016, SKILL-048
 
-**Where it lives.** Three Anthropic copies, byte-identical on 2026-10-16 (71 lines): the `frontend-design` plugin in `anthropics/claude-plugins-official` (what `/plugin install frontend-design@claude-plugins-official` installs), the same plugin in `anthropics/claude-code`, and `anthropics/skills`. History: added 2025-11-12 (41 lines, the "AI slop" version banning Inter, Roboto and purple gradients), rewritten 2026-06-09 to 06-18 (55 lines, "design lead at a small studio"), and rewritten again 2026-09-01 to 09-03. Third-party mirrors often show an older version; quote GitHub.
+**Where it lives.** Three Anthropic copies, byte-identical on 2026-10-16 (71 lines): the `frontend-design` plugin in `anthropics/claude-plugins-official` (what `/plugin install frontend-design@claude-plugins-official` installs), the same plugin in `anthropics/claude-code`, and `anthropics/skills`. History: added 2025-11-12 (41 lines, the "AI slop" version banning Inter, Roboto and purple gradients), rewritten 2026-06-09 to 06-18 (55 lines, "design lead at a design studio"), and rewritten again 2026-09-01 to 09-03. Third-party mirrors often show an older version; quote GitHub.
 
 **What it says now.** Act as the design lead of a studio whose client "has already rejected proposals that felt cliché or templated". Ground the design in the subject; pick typefaces deliberately and use The Elements of Typographic Style for the scale; keep lines under 80 characters; avoid the five default looks (DESIGN-003); plan tokens, review the plan, then build; watch CSS specificity; build to "a quality floor": "responsive down to mobile, visible keyboard focus, reduced motion respected, visually accessible, harmonious color palettes"; critique your work "taking screenshots to review if your environment supports it"; write plain, active-voice copy.
 
@@ -220,7 +220,7 @@ Anthropic's vision page says "Claude's coordinate and localization outputs are a
 - **Small or poor images:** "Claude might hallucinate or make mistakes when interpreting low-quality, rotated, or very small images under 200 pixels."
 - **No image generation:** "Claude is an image understanding model only… it cannot generate, produce, edit, manipulate, or create images." Design output is HTML, CSS, SVG or canvas drawing; photos come from you or a connector.
 - **Resolution:** Claude 4.7 and later read up to 2576 px on the long edge (4,784 tokens); other models 1568 px. Bigger images are downscaled, which "might, for example, make text less legible". Crop to the region you're judging rather than sending a full-page screenshot.
-- **Request limits:** 8000×8000 px per image; 20 images per message on claude.ai; on the API, above 20 images per request each image must stay under a stricter limit ("resize each image so that neither dimension exceeds 2000 px").
+- **Request limits:** 8000×8000 px per image; 20 images per message on claude.ai; on the API, above 20 images per request each image must stay under a stricter limit ("resize each image so that neither dimension exceeds 3,000 px", raised from 2000 px; checked 2026-10-30).
 - **Opus 5.5** reads "charts, diagrams, and screenshots considerably more precisely than Claude Opus 5 without tools". For the densest inputs, cropping and zooming tools (PIL, OpenCV, or the cookbook's crop tool) "still add accuracy", used "more effectively at higher effort levels".
 
 Image cost and context effects are in TOK-043.
@@ -274,7 +274,7 @@ Validate the result by building one or two test pages from the tokens alone and 
 - Custom visuals: "Opus performs the best at visualization tasks, so if you're going for something complex, we'd recommend choosing a more intelligent model."
 - Opus 4.7 (2026-04-16 launch) was "more tasteful and creative… producing higher-quality interfaces, slides, and docs", and powered Claude Design at launch.
 - Opus 5.5 reads screenshots and diagrams far better than Opus 5, even at its lowest effort. Its default is `medium`, and it uses image tools "more effectively at higher effort levels" (DESIGN-008).
-- Sonnet 5 defaults to `high`, "may settle into a consistent default visual style", and "follows explicit specs precisely".
+- Sonnet 5 defaults to `high`, "might settle into a consistent default visual style", and "follows explicit specs precisely".
 
 **Benchmarks:** Design Creativity Bench (a preprint, 2026-10-08) puts Claude Opus 5.5 in the bottom group on originality (13th of 15, intervals overlapping) and first on meeting a brief's criteria, 99.2%. It is vendor-run and tested no prompting (DESIGN-026). WebDev Arena ranks pairwise human preference; we didn't read its current rankings. Anthropic's statements above are launch and guidance claims, not measurements.
 
@@ -302,7 +302,7 @@ Merged into DSKILL-001 (kb-design-skills.md) on 2026-10-23. Read that file for t
 |---|---|
 | "Fixed it" with nothing rendered | Ask for "*evidence*: the command it ran and its output, or the screenshot", or measured values (DESIGN-007) |
 | Judging pixels from a screenshot | Measure computed styles; localisation is "approximate" (DESIGN-008) |
-| Drift to Claude's house style on an open brief | Sonnet 5 "may settle into a consistent default visual style": give a spec or ask for directions (DESIGN-004) |
+| Drift to Claude's house style on an open brief | Sonnet 5 "might settle into a consistent default visual style": give a spec or ask for directions (DESIGN-004) |
 | Swapping one default for another | "avoid a generic AI look" "mostly swaps one default for another": name the patterns |
 | Redesigning when asked to polish | Lock tokens and name what must not change (DESIGN-009) |
 | Animation everywhere | "fade-and-slide-up entrances on each section and hover transitions on every card are the generic default and read as AI-generated" |
