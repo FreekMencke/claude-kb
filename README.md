@@ -305,13 +305,17 @@ that.
 
 A cloud scheduled task (formerly a routine, ORCH-017), "claude-kb re-verification" at
 [claude.ai/code/routines](https://claude.ai/code/routines), runs at 08:00 Europe/Brussels on the 1st and 15th of each month
-on Sonnet 5.5. Every run re-checks every official-docs and
-official-example entry against its sources. It also checks the single-source, community-consensus and unverified entries
+on Sonnet 5.5. A targeted run checks, in order: entries citing a source the weekly [source check](scripts/check-sources.ts)
+reported as changed, entries with failed quotes, new claude-code CHANGELOG bullets, the 50 entries with the most inbound
+`Related` links, and a random 5% of the other official-docs and official-example entries. It falls back to a full run of every
+official-docs and official-example entry on the 1st of each quarter, or when it can't read a report or the reports have
+nothing to compare. Every run also checks the single-source, community-consensus and unverified entries
 whose Last verified is more than 25 days old, so each of those comes up every other run: does each source still exist and
-still say the claim, and is there now an official source that raises the Confidence. It updates Last verified, logs
-corrections in CHANGELOG.md, checks new and changed entries for overlap, and opens a PR from
-`claude/reverify-<YYYY-MM-DD>` whose body lists the weaker entries it covered. Its prompt lives in the routine, not in
-this repo.
+still say the claim, and is there now an official source that raises the Confidence. An unchecked official entry's Last
+verified advances, as a "mechanical" CHANGELOG row, only when all its sources are unchanged and every quote of 6+ words was
+found. The run logs corrections in CHANGELOG.md, checks new and changed entries for overlap, and opens a PR from
+`claude/reverify-<YYYY-MM-DD>` whose body gives the run type and lists the weaker entries it covered. Its prompt lives in the
+routine, not in this repo.
 
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`; pause or delete it on the routines page.
@@ -319,7 +323,7 @@ this repo.
   [check-sources.ts](scripts/check-sources.ts): it reports pages whose normalised text changed, with the entries citing
   them, only the added bullets of the claude-code CHANGELOG, and each quote of 6+ words it can't find in the entry's
   sources, as a near match or not found. It never fails a run: misses mix wording edits with examples, prompts and
-  paraphrase. The routine's prompt doesn't use this yet (FreekMencke/claude-kb#343).
+  paraphrase. The routine reads these reports (FreekMencke/claude-kb#343).
 - **Between runs, source links:** [links.yml](.github/workflows/links.yml) runs every Monday at 05:17 UTC (and on
   `workflow_dispatch`, never on pull requests) with [lychee](https://github.com/lycheeverse/lychee) over the `Sources:`
   lines. It fails on a broken URL and lists each one in the job summary with the entry IDs that cite it; GitHub emails
