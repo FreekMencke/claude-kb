@@ -1,0 +1,20 @@
+# Criteria from TS-011
+schema_version: "1.1"
+name: ans-ts-latest
+tags: [answer,post-training]
+execution:
+  prompt: 'An Angular 22 repo with typescript-eslint is on TypeScript 6.0.3. A teammate wants to run `npm install -D typescript@latest` today. Should they? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: says-no
+    type: llm
+    criteria: |
+      PASS if it advises against moving to latest (TypeScript 7.0) now, because Angular and typescript-eslint do not accept it (their peer ranges stop below 7, for instance <6.1, or 7.0 lacks the compiler API they need). Extra correct detail is fine.
+      FAIL if it says the upgrade is fine, or gives no reason tied to those tools.
+  - name: stay-on-6
+    type: llm
+    criteria: |
+      PASS if it says to stay on TypeScript 6.0.x until the tools accept 7, for example waiting for TypeScript 7.1 and its compiler API. Extra correct detail is fine.
+      FAIL if it names no version to stay on or nothing to wait for.

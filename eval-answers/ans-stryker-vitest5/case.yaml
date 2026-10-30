@@ -1,0 +1,20 @@
+# Criteria from JSTEST-014
+schema_version: "1.1"
+name: ans-stryker-vitest5
+tags: [answer,post-training]
+execution:
+  prompt: 'We run StrykerJS 10 mutation testing on Vitest 5. Tests inside a `describe` block score 0% and every covered mutant survives, while top-level tests score normally. Is that our tests, and what is going on? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: not-tests
+    type: llm
+    criteria: |
+      PASS if it says this is a Stryker runner bug or incompatibility with Vitest 5, not weak tests. Extra correct detail is fine.
+      FAIL if it blames the tests or the configuration.
+  - name: name-filter
+    type: llm
+    criteria: |
+      PASS if it explains that Vitest 5 joins test names with " > " while the runner filters by space-joined names, so the per-test filter matches nothing. Extra correct detail is fine.
+      FAIL if it gives no such explanation of the name filter.

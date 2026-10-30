@@ -1,0 +1,20 @@
+# Criteria from KUBE-003
+schema_version: "1.1"
+name: ans-flux-137
+tags: [answer,post-training]
+execution:
+  prompt: 'Our cluster runs Kubernetes 1.36 with Flux 2.9. Kubernetes 1.37 is out. Can we upgrade the cluster now? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: hold
+    type: llm
+    criteria: |
+      PASS if it advises holding on 1.36, because Flux 2.9 supports Kubernetes 1.34 to 1.36 and not 1.37. Extra correct detail is fine.
+      FAIL if it says go ahead, or does not give Flux 2.9's supported range.
+  - name: wait-210
+    type: llm
+    criteria: |
+      PASS if it says to wait for Flux 2.10, the release expected to add 1.37. Extra correct detail is fine.
+      FAIL if it does not name Flux 2.10.

@@ -196,6 +196,7 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
 | [eval-tasks/](eval-tasks) | Its task-shaped evals, passing on either route to the KB |
 | [evals/retrieval/](evals/retrieval/README.md) | The retrieval eval behind RETR-010 to RETR-012 |
+| `eval-answers/` | 20 cases scoring answers with and without the plugin (RETR-030, RETR-031) |
 | [.claude-plugin/](.claude-plugin/plugin.json) | The `kb-lookup` plugin (the skill plus the server) and its marketplace, `freek-kb`. No `version`, so installs follow each commit (SKILL-062) |
 | [mcp-server/](mcp-server/README.md) | The remote MCP server that serves this knowledge base |
 | [assets/](assets) | Logo, and the banner in light and dark with its source (`banner.html`) |
@@ -222,6 +223,16 @@ Every PR adds a row at the top of CHANGELOG.md, so parallel PRs used to conflict
 across seven PRs on 2026-10-23). `.gitattributes` sets `merge=union` on it: git keeps both sides' rows, so a local
 rebase resolves on its own. GitHub's web merge doesn't use merge drivers, so a PR can still show as conflicting until
 it is rebased locally. Check the table after a rebase: union never fails, so a row edited on both sides comes out twice.
+
+### Answer cases
+
+`eval-answers/` asks whether the plugin improves answers, on questions whose answers post-date training or are local to us. Each case has `llm` graders with criteria taken from its entries. It lives outside `evals/` so the trigger run doesn't pick it up, and it reaches the real server, which serves `main`:
+
+```bash
+claude plugin eval . --eval-dir eval-answers --ablation with-without --model claude-opus-5-5 --judge-model sonnet --no-publish --threshold 0 -j 6 --allow-real-servers --allow-tools 'mcp__plugin_kb-lookup_claude-kb__*' --max-cost-usd 12 --runs 1 --trust-plugin
+```
+
+Add `WebSearch WebFetch` to `--allow-tools` for the honest baseline: no web measures memory alone. One run of both arms costs about $6 to $7. Read the plugin arm's answers too: the graders check that facts are present, and they passed every misread found so far (RETR-031).
 
 ### Changing the lookup skill
 

@@ -1,0 +1,20 @@
+# Criteria from DOC-001, DOC-002
+schema_version: "1.1"
+name: ans-changelog-2
+tags: [answer,post-training]
+execution:
+  prompt: 'Which version of Keep a Changelog is current, and how does it differ from 1.1.0? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: version
+    type: llm
+    criteria: |
+      PASS if it says 2.0.0 is current. Extra correct detail is fine.
+      FAIL if it says 1.1.0 is current.
+  - name: changes
+    type: llm
+    criteria: |
+      PASS if it names at least one 2.0.0 change: a **Breaking:** marker, curation (only notable changes), "Note which versioning scheme you use", or that the format itself is unchanged. Extra correct detail is fine.
+      FAIL if it names none of these.

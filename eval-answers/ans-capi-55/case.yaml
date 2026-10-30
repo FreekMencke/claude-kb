@@ -1,0 +1,20 @@
+# Criteria from CAPI-001
+schema_version: "1.1"
+name: ans-capi-55
+tags: [answer,post-training]
+execution:
+  prompt: 'My API code sets `thinking: {type: "enabled", budget_tokens: 8000}`, a prefilled assistant turn and `tool_choice: {type: "any"}`. What happens if I change the model to `claude-opus-5-5`? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: errors
+    type: llm
+    criteria: |
+      PASS if it says these return a 400 invalid request error on Opus 5.5: budget_tokens, prefill and forced tool_choice. Extra correct detail is fine.
+      FAIL if it says they still work or are merely deprecated.
+  - name: replace
+    type: llm
+    criteria: |
+      PASS if it gives replacements such as `tool_choice` auto with strict tools, or structured output through `output_config.format`, and adaptive thinking or effort instead of `budget_tokens`. Extra correct detail is fine.
+      FAIL if it gives no replacement.

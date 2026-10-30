@@ -1,0 +1,20 @@
+# Criteria from JSTEST-001
+schema_version: "1.1"
+name: ans-vitest5-mocks
+tags: [answer,post-training]
+execution:
+  prompt: 'After upgrading to Vitest 5, a test that asserts call counts on a mock called in `beforeAll` now sees zero calls. What changed, and what else in the 5.0 upgrade is likely to turn a green suite red? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: clearmocks
+    type: llm
+    criteria: |
+      PASS if it says `clearMocks` now defaults to true in Vitest 5, which clears the calls before the test. Extra correct detail is fine.
+      FAIL if it gives a different cause.
+  - name: other-breaks
+    type: llm
+    criteria: |
+      PASS if it names at least one of: `vi.mock` inside a function, block or describe now throws; unawaited `.resolves`/`.rejects` now fail the test; json and junit reporters write to a file by default; Node 22.12 or later is required. Extra correct detail is fine.
+      FAIL if it names none of these.

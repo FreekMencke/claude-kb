@@ -1,0 +1,20 @@
+# Criteria from NPM-004, NPM-005
+schema_version: "1.1"
+name: ans-npm12-scripts
+tags: [answer,post-training]
+execution:
+  prompt: 'After moving to npm 12, the `postinstall` scripts of my dependencies no longer run, and `npm install` still exits 0 with a warning. Why, and what is the fix? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: cause
+    type: llm
+    criteria: |
+      PASS if it says npm 12 blocks dependencies' install scripts by default unless they are approved by an allow policy (`allowScripts`). Extra correct detail is fine.
+      FAIL if it blames something else, such as a corrupted cache or `ignore-scripts` config alone.
+  - name: fix
+    type: llm
+    criteria: |
+      PASS if it says to approve the package through the root package.json's `allowScripts` field or the `npm install-scripts approve` command. Extra correct detail is fine.
+      FAIL if it only suggests a downgrade, `--ignore-scripts`, or running the script by hand.

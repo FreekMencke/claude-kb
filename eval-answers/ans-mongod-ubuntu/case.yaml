@@ -1,0 +1,20 @@
+# Criteria from KUBE-017
+schema_version: "1.1"
+name: ans-mongod-ubuntu
+tags: [answer,local]
+execution:
+  prompt: 'Our `mongo:8.0.34` container exits at startup on Ubuntu 26.04 nodes, kernel `7.0.0-38-generic`. MongoDB says kernels 7.0.14 and later are safe, and Ubuntu''s kernel has that fix. Why does it still exit, and how do we run it today? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: cause
+    type: llm
+    criteria: |
+      PASS if it says mongod reads Ubuntu's kernel version as 7.0.0 (the Ubuntu version is not the upstream base 7.0.14), so the safe-kernel exemption does not match. Extra correct detail is fine.
+      FAIL if it gives another cause.
+  - name: workaround
+    type: llm
+    criteria: |
+      PASS if it gives `setarch` with `--uname-2.6` as the workaround until a fixed 8.0 release such as 8.0.35. Extra correct detail is fine.
+      FAIL if it only says to upgrade or to change the kernel, with no `setarch` workaround.

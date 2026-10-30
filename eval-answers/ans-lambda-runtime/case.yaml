@@ -1,0 +1,20 @@
+# Criteria from LAMBDA-001
+schema_version: "1.1"
+name: ans-lambda-runtime
+tags: [answer,post-training]
+execution:
+  prompt: 'Which Node.js runtime should a new production AWS Lambda function use today? Is `nodejs26.x` an option? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: node24
+    type: llm
+    criteria: |
+      PASS if it recommends `nodejs24.x`. Extra correct detail is fine.
+      FAIL if it recommends another runtime.
+  - name: preview
+    type: llm
+    criteria: |
+      PASS if it says `nodejs26.x` is a public preview (not for production workloads, no SLA). Extra correct detail is fine.
+      FAIL if it says 26 is generally available, or says it does not exist.

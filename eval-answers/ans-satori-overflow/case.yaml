@@ -1,0 +1,20 @@
+# Criteria from OG-001
+schema_version: "1.1"
+name: ans-satori-overflow
+tags: [answer,post-training]
+execution:
+  prompt: 'We bumped satori from 0.36 to 0.62 for our OG cards. A column with `height: 100%` and `padding` now overflows the card and block children stack differently, though the release notes mention nothing. What changed? Answer in at most six sentences.'
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Agent]
+graders:
+  - name: box-sizing
+    type: llm
+    criteria: |
+      PASS if it says `boxSizing` now defaults to `content-box` and to set `boxSizing: border-box`. Extra correct detail is fine.
+      FAIL if it does not name the box-sizing default.
+  - name: browser-defaults
+    type: llm
+    criteria: |
+      PASS if it says satori moved to browser layout defaults in the 0.37 to 0.42 range (for instance Yoga replaced by Taffy, `div` no longer implicitly flex, `position` static) without listing them in release notes. Extra correct detail is fine.
+      FAIL if it does not say that satori's layout defaults changed in those releases.
