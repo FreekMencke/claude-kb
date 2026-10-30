@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: claude-kb-lookup-loads-53
+tags: [claude-kb-lookup, should-load]
+description: "Browsers for agents (kb-agent-browsers.md)."
+execution:
+  prompt: "For letting Claude Code check my UI in a browser, should I use the Playwright MCP server or a browser CLI, and which costs fewer tokens?"
+  max_turns: 3
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill]
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?claude-kb-lookup"'

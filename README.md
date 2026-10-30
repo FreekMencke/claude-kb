@@ -15,10 +15,11 @@
   <a href="mcp-server/README.md"><img alt="Live server" src="https://img.shields.io/website?url=https%3A%2F%2Fclaude-kb.freekmencke.com%2Fhealthz&amp;label=live%20server&amp;up_message=online&amp;down_message=offline"></a>
 </p>
 
-A Markdown knowledge base on using Claude efficiently, and on the stack it works on (Angular, TypeScript, Node, npm,
-NestJS, MongoDB, lint and test tools, CSS, spacing and alignment, fonts, accessibility, charts and data visualisation, page layout, web performance and security, GitHub and its Actions,
-Docker, Kubernetes, AWS Lambda, licences), written for agents to query. Every entry carries its sources, a confidence
-level and a last-verified date.
+A Markdown knowledge base on using Claude efficiently (including engineering skill packs, spec-driven development,
+codebase maps, browsers for agents and writing style), and on the stack it works on (Angular, TypeScript, Node, npm,
+NestJS, MongoDB, lint and test tools, CSS, page layout, spacing and alignment, fonts, images and icons, accessibility,
+charts and data visualisation, web performance and security, GitHub and its Actions, Docker, Kubernetes, AWS Lambda,
+licences), written for agents to query. Every entry carries its sources, a confidence level and a last-verified date.
 
 ## Setup
 
