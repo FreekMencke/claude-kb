@@ -1727,7 +1727,7 @@ Grep every text file in a skill before installing it. Text the model reads but y
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [NVIDIA/SkillSpector README](https://github.com/NVIDIA/SkillSpector/blob/54921c8/README.md)
-- Related: SKILL-069, SKILL-041, SKILL-073, MCP-019
+- Related: SKILL-069, SKILL-041, SKILL-073, MCP-019, IMG-008
 
 NVIDIA's SkillSpector (Apache-2.0, 23,421 stars on 2026-10-30, `pyproject.toml` version 2.12.0 at `54921c8`, 2026-10-29) is a "Security scanner for AI agent skills". It wasn't run here; this is from its README.
 
