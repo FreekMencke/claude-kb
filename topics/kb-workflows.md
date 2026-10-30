@@ -107,7 +107,7 @@ Committing the tests first (step 3) makes "don't modify the tests" checkable wit
 - Confidence: official-docs
 - Last verified: 2026-10-14
 - Sources: [Best practices: Let Claude interview you](https://code.claude.com/docs/en/best-practices), [feature-dev plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev)
-- Related: FLOW-005, FLOW-007, TOK-030, SESS-031
+- Related: FLOW-005, FLOW-007, TOK-030, SESS-031, SKPACK-006, SKPACK-007, SDD-009
 
 "For larger features, have Claude interview you first. Start with a minimal prompt and ask Claude to interview you using the `AskUserQuestion` tool." The docs' prompt:
 

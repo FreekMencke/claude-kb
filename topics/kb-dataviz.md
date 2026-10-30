@@ -357,7 +357,7 @@ Whatever the choice: a takeaway and a table (VIZ-014), reduced motion passed in 
 - Confidence: official-docs
 - Last verified: 2026-10-23
 - Sources: [ECharts: canvas vs SVG](https://echarts.apache.org/handbook/en/best-practices/canvas-vs-svg/), [Chart.js: performance at v4.6.1](https://www.chartjs.org/docs/latest/general/performance.html), [Chart.js: decimation](https://www.chartjs.org/docs/latest/configuration/decimation.html), [uPlot README at 1.6.32](https://raw.githubusercontent.com/leeoniya/uPlot/1.6.32/README.md), [Highcharts: boost module](https://www.highcharts.com/docs/advanced-chart-features/boost-module), [Plotly: WebGL vs SVG](https://plotly.com/javascript/webgl-vs-svg/)
-- Related: VIZ-012, VIZ-020, WEBPERF-001, WEBPERF-003
+- Related: VIZ-012, VIZ-020, WEBPERF-001, WEBPERF-003, ANIMLIB-019
 
 | Marks on screen | Renderer | Source |
 |---|---|---|

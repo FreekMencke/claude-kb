@@ -1370,7 +1370,7 @@ Context-threshold hooks exist. ykdojo's `check-context.sh` is a Stop hook that "
 - Confidence: community-consensus
 - Last verified: 2026-10-16
 - Sources: [rtk-ai/rtk](https://github.com/rtk-ai/rtk), [mksglu/context-mode](https://github.com/mksglu/context-mode), [JetBrains: RTK tested](https://blog.jetbrains.com/ai/2026/07/rtk-claude-code-token-savings/), [Quesma: RTK cost benchmark](https://quesma.com/blog/does-rtk-make-ai-coding-cheaper/)
-- Related: TOK-042, TOK-009, TOK-113
+- Related: TOK-042, TOK-009, TOK-113, SKPACK-004
 
 **RTK** (about 83k stars, v0.51.0 on 2026-10-02, created Jan 2026):
 - A Rust proxy that compresses command output. A PreToolUse hook (`rtk init -g`) rewrites Bash calls, e.g. `git status` becomes `rtk git status`.
@@ -1396,7 +1396,7 @@ Confidence note: the 60–90% and 98% figures are the vendors' own claims; the R
 - Confidence: unverified
 - Last verified: 2026-10-14
 - Sources: [oraios/serena](https://github.com/oraios/serena), [zilliztech/claude-context](https://github.com/zilliztech/claude-context), [tirth8205/code-review-graph](https://github.com/tirth8205/code-review-graph)
-- Related: TOK-041, TOK-085
+- Related: TOK-041, TOK-085, CODEMAP-001, CODEMAP-004, CODEMAP-008
 
 **Serena** (about 30k stars):
 - LSP symbol-level find and edit tools over MCP.
@@ -1974,7 +1974,7 @@ Requests Claude Code sends without a typed prompt:
 - Confidence: community-consensus
 - Last verified: 2026-10-16
 - Sources: [JetBrains: Caveman tested](https://blog.jetbrains.com/ai/2026/07/speak-to-ai-agents-like-cavemen-tosave-tokens/), [Caveman README](https://github.com/JuliusBrussee/caveman/blob/d262ab3882952a59312ff3537cd86d894523c5ab/README.md), [claude-token-efficient benchmark](https://github.com/drona23/claude-token-efficient/blob/0d30a6db75af983b8ababf585f28faefdfc87895/benchmark/SUMMARY.md), [CAVEWOMAN (arXiv 2606.24083)](https://arxiv.org/abs/2606.24083), [Dasein code-compression-bench](https://github.com/daseinlabs/code-compression-bench/blob/466077f002e6ef71fe5e8f24fc1c930edd4e3691/FACT-VS-FICTION.md)
-- Related: PROMPT-024, TOK-008, TOK-083
+- Related: PROMPT-024, TOK-008, TOK-083, SKPACK-004
 
 Terse-style skills cut a small share of an agent session's cost, because output is a small share of it (17% of our list-price cost, TOK-008).
 - **JetBrains** (2026-07-06; Claude Code 2.1.200, claude-sonnet-5 at low effort, Caveman forced on, 82 paired tasks): "Advertised saving: 65%. Measured saving: 8.5%." Quality tied (p = 0.82). The raw totals came out 11.6% dearer, and "The entire inversion came from a single trial". Why: "Only the narration between tool calls gets compressed, and there is not much of it."

@@ -47,6 +47,10 @@ These clusters cover neighbouring ground from different angles. They are cross-l
 - Where to put something, and what it costs: SKILL-021 (decision), SKILL-022 and TOK-065 (context cost), REPO-044 (repos with agents).
 - Subagent results: ORCH-034 (the principle), ORCH-035 (status codes), TOK-035 (delegating), TOK-101 (research sources), TOK-103 to TOK-107 (file handoff in Claude Code).
 - Images on our sites: WEBPERF-010 and WEBPERF-011 (formats and loading), OG-005 to OG-009 (cards drawn in code), DESIGN-008 (vision limits; IMG-001 repeats its "no image generation" line on purpose), IMG-001 to IMG-010 (generated images: models, provenance, rights, icon libraries).
+- Specs and planning: FLOW-001, FLOW-003 and FLOW-006 to FLOW-010 (plan mode and `SPEC.md`), DOC-022 (plan docs), ORCH-044 (Spec Kit's row), SDD-001 to SDD-009 (the frameworks as installs and their evidence).
+- Browser checks: FLOW-014 (which route for a check), JSTEST-012 (tests, Test Agents, MCP or CLI), REPO-021 (checker subagent), SESS-013 (profiles across sessions), BROWSER-001 to BROWSER-008 (the tools themselves: measured tokens, logins, security, telemetry).
+- Code search and indexes: RETR-002 and RETR-013 (search without an index, other tools), TOK-041 (search first, LSP), TOK-084 (code-index MCP servers), CODEMAP-001 to CODEMAP-009 (map tools as installs: hooks, cost, licence, evidence). CODEMAP-008 adds Serena's version and licence to TOK-084.
+- Community engineering methods: ORCH-041 and SKILL-043 (Superpowers' subagent flow and skill testing), PROMPT-037 (prompt collections), SKPACK-001 to SKPACK-013 (the packs as installs: hooks, telemetry, evidence). Interviewing before building: FLOW-003, SKPACK-006, SKPACK-007. Test-first: FLOW-002, JSTEST-017, SKPACK-009.
 - Bash output: TOK-042 (limits and filter hooks), TOK-108 (what reaches Claude), TOK-109 (how a script should print), SKILL-018 (scripts in skills), FLOW-011 and FLOW-013 (checks Claude runs).
 - Temporary files: SESS-016 (parallel sessions, `CLAUDE_JOB_DIR`), TOK-104 (handoff files and the scratchpad).
 - Terse output: PROMPT-024 (how to write short answers), TOK-113 (what terse styles measurably save).
@@ -211,6 +215,8 @@ Done 2026-10-12. "Full" means the entry is now a pointer; "partial" means only t
 `scripts/check-kb.ts` warns about entries in different files with very similar titles or mostly shared tags. These pairs were checked and cover different things; listing a pair here (or together on one Overlaps or Merges line) silences the warning.
 
 - HOOK-020 and TOK-064: hooks declared in skill and agent frontmatter, against frontmatter fields that make a skill cheaper to load.
+- ORCH-039 and SDD-003: generator-verifier review in general, against Spec Kit's append-only `converge` audit of a diff against a spec.
+- BROWSER-008 and SURF-033: which browser tool for a page check, against which Claude surface (desktop, cloud, mobile) for a job.
 - HOOK-004 and TOK-108: how a hook's exit code and stdout resolve, against how the Bash tool hands a command's output and exit code to Claude.
 - MCP-008 and TOK-035: scoping an MCP server to one subagent, against delegating verbose work to a subagent in general.
 - MCP-021 and REPO-027: MCP servers in the action, against the action's modes and inputs.
