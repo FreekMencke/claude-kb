@@ -434,7 +434,7 @@ Record per page: status, time, bytes, title, description, canonical, h1 count, `
 - Confidence: official-example
 - Last verified: 2026-10-14
 - Sources: [microsoft/playwright-mcp README](https://github.com/microsoft/playwright-mcp)
-- Related: WEB-014, FLOW-014, REPO-021
+- Related: WEB-014, FLOW-014, REPO-021, BROWSER-002
 
 Playwright MCP's `browser_snapshot` is an accessibility tree: "Capture accessibility snapshot of the current page". So it shows links and headings, but none of the head tags SEO depends on.
 
@@ -448,7 +448,7 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - LCP through `PerformanceObserver` (WEB-002).
 - Reading Search Console's UI after the user signs in (WEB-003).
 
-**Other tools for raw HTML.** `browser_network_request` "Returns full details (headers and body)". The README itself steers coding agents to the Playwright CLI with skills as more token-efficient.
+**Other tools for raw HTML.** `browser_network_request` "Returns full details (headers and body)". The README itself steers coding agents to the Playwright CLI with skills as more token-efficient; measured in Claude Code in BROWSER-002.
 
 ## [WEB-016] WebFetch and the API web fetch tool are wrong for SEO checks
 - Type: anti-pattern
