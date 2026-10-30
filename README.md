@@ -186,6 +186,7 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [CHANGELOG.md](CHANGELOG.md) | What changed, newest first |
 | [CLAUDE.md](CLAUDE.md) | This knowledge base's research rules on top of the `research` skill, and the entry format |
 | [scripts/check-kb.ts](scripts/check-kb.ts) | Format and consistency check; `--write` regenerates ENTRIES.md and fills INDEX.md's entry counts. Node 22.18 or later runs it as is, so cloud sessions' Node 22 does too (SURF-027) |
+| [scripts/kb-usage.ts](scripts/kb-usage.ts) | How the knowledge base is really used, from local transcripts: sessions, routes, searches, reads and ranks per period and topic. Prints counts only; query text goes to the ignored `evals/results/usage/` |
 | [.github/workflows/links.yml](.github/workflows/links.yml), [.lycheeignore](.lycheeignore) | Weekly check that the `Sources:` URLs still resolve (see Re-verification routine), and the URLs it skips |
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |

@@ -6,6 +6,7 @@ How well each way of finding entries works on this knowledge base. The results a
 | File | What it holds |
 |---|---|
 | `questions.json` | 100 Quick-answer rows, a seeded sample (mulberry32, seed 20261020) of the 574 at commit `c1ffe45` that name no entry ID. Each has the original question, a `natural` and a `hard` rewording by Sonnet 5.5, and the cited entry IDs as labels. `hard` avoids the terms in the question, answer and entry titles |
+| `real.json` | 28 queries agents really sent to `kb_search` from 2026-10-15 to 10-30 outside `-tmp` projects, each labelled with the IDs read after it (`scripts/kb-usage.ts`, whose log stays in `evals/results/usage/`). Reviewed by hand: 98 searches, 31 followed by a read, 2 dropped for reading a whole topic and 1 as a duplicate. None named a private repo |
 | `uncovered.json` | 20 questions next to the knowledge base's topics that no entry answered on 2026-10-20 |
 | `run.ts` | Runs one arm: `bm25`, `kw`, `rerank`, `index`, `long`, `agent` or `uncovered` (see its header) |
 | `score.ts` | Prints top-1, top-3 and top-5 hits and MRR per arm and set |
@@ -38,3 +39,8 @@ model than real questions (RETR-010).
 
 New entries change the labels: a later entry may answer a question better than the cited one, which would then show
 as a miss. Check misses by hand before reading them as a ranking problem.
+
+`real.json`'s labels are IDs the original search returned and the agent then read, so the set measures rank among what
+search found, not recall: a query no entry answered has no label and isn't in it. Those queries are the 67 of 98 with no
+read, which mix overlap checks by research sessions, answers taken from the hit's summary, and real gaps. The queries are
+keyword lists written by the model, not questions, so `kw` and `rerank` start from a query that is already rewritten.

@@ -7,7 +7,8 @@
  * Arms: bm25 (the server's search on the raw question), kw (Haiku writes keyword queries, fused by RRF), rerank (Haiku
  * picks from BM25's top 30), index (Haiku with ENTRIES.md in its prompt), long (Haiku with every topic file in its
  * prompt, about 934k tokens), agent (Haiku with the server's kb_search and kb_get, one question per run), uncovered
- * (the agent on questions no entry answers). Sets: original, natural, hard (default: all three).
+ * (the agent on questions no entry answers). Sets: original, natural, hard, real (default: all four). real is
+ * real.json: queries agents really sent, labelled by what they read next (see README.md).
  *
  * Every arm but bm25 runs `claude -p` on Haiku. The agent arms need the server running locally, from a worktree without
  * kb-knowledge-retrieval.md (it quotes these questions); see README.md.
@@ -20,7 +21,7 @@ import { load } from '../../mcp-server/kb-index.ts';
 
 const ROOT = join(import.meta.dirname, '../..');
 const OUT = join(ROOT, 'evals/results/retrieval');
-const SETS = ['original', 'natural', 'hard'] as const;
+const SETS = ['original', 'natural', 'hard', 'real'] as const;
 type Set = (typeof SETS)[number];
 interface Question {
   n: number;
@@ -32,8 +33,10 @@ interface Question {
 }
 
 const repo = load(ROOT);
-const questions: Question[] = JSON.parse(readFileSync(join(import.meta.dirname, 'questions.json'), 'utf8'));
-const text = (q: Question, set: Set) => (set === 'original' ? q.question : q[set]);
+const read = (file: string) => JSON.parse(readFileSync(join(import.meta.dirname, file), 'utf8'));
+const synthetic: Question[] = read('questions.json');
+const real: Question[] = read('real.json');
+const text = (q: Question, set: Set) => (set === 'original' || set === 'real' ? q.question : q[set]);
 // This eval's own topic file quotes its questions and names the uncovered technologies, so every arm leaves it out
 const OWN = 'kb-knowledge-retrieval.md';
 const OWN_PREFIX = 'RETR-';
@@ -112,6 +115,7 @@ async function agent(items: { n: number; question: string }[], uncovered: boolea
 }
 
 async function run(arm: string, set: Set): Promise<{ results: Record<number, any>; cost: number }> {
+  const questions = set === 'real' ? real : synthetic;
   const results: Record<number, any> = {};
   let cost = 0;
   const asked = (b: Question[]) => JSON.stringify(b.map(q => ({ n: q.n, question: text(q, set) })), null, 1);
