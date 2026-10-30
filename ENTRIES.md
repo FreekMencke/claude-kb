@@ -119,7 +119,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | ID | Title | Type | Tags |
 |---|---|---|---|
 | CODEMAP-001 | Four codebase-map tools compared | comparison | graphify, understand-anything, repomix, serena, community |
-| CODEMAP-002 | Graphify: how it builds the graph, privacy and the embedder contradiction | fact | graphify, tree-sitter, privacy, cost |
+| CODEMAP-002 | Graphify: how it builds the graph, privacy and embeddings | fact | graphify, tree-sitter, privacy, cost |
 | CODEMAP-003 | Graphify's hooks steer Claude from grep to the graph | fact | graphify, hooks, pretooluse, search |
 | CODEMAP-004 | Graphify's benchmark: 6 questions, vendor-run | fact | graphify, measurement, grep |
 | CODEMAP-005 | Understand-Anything: an LLM-built graph and its token cost | fact | understand-anything, cost, agents |

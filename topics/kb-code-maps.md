@@ -30,7 +30,7 @@ Research basis:
 | ID | Title | Type | Tags |
 |---|---|---|---|
 | CODEMAP-001 | Four codebase-map tools compared | comparison | graphify, understand-anything, repomix, serena, community |
-| CODEMAP-002 | Graphify: how it builds the graph, privacy and the embedder contradiction | fact | graphify, tree-sitter, privacy, cost |
+| CODEMAP-002 | Graphify: how it builds the graph, privacy and embeddings | fact | graphify, tree-sitter, privacy, cost |
 | CODEMAP-003 | Graphify's hooks steer Claude from grep to the graph | fact | graphify, hooks, pretooluse, search |
 | CODEMAP-004 | Graphify's benchmark: 6 questions, vendor-run | fact | graphify, measurement, grep |
 | CODEMAP-005 | Understand-Anything: an LLM-built graph and its token cost | fact | understand-anything, cost, agents |
@@ -45,7 +45,7 @@ Research basis:
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify/tree/0a8cd4e), [Egonex-AI/Understand-Anything](https://github.com/Egonex-AI/Understand-Anything/tree/4e6d329), [yamadashy/repomix](https://github.com/yamadashy/repomix/tree/7d7b28b), [oraios/serena](https://github.com/oraios/serena/tree/ede329a)
-- Related: CODEMAP-009, RETR-013, TOK-084, RETR-015
+- Related: CODEMAP-009, RETR-013, TOK-084, RETR-015, TOK-085
 
 Stars from GitHub search on 2026-10-30.
 
@@ -58,7 +58,7 @@ Stars from GitHub search on 2026-10-30.
 
 Only the first two build a persistent map. They differ in the expensive step: Graphify parses code deterministically, Understand-Anything has agents read and summarise it.
 
-## [CODEMAP-002] Graphify: how it builds the graph, privacy and the embedder contradiction
+## [CODEMAP-002] Graphify: how it builds the graph, privacy and embeddings
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
@@ -73,7 +73,7 @@ From the README at `0a8cd4e`:
 - **Privacy:** "No telemetry, no usage tracking, no analytics." Every query is logged to `~/.cache/graphify-queries.log` (question, corpus, nodes returned, duration); `GRAPHIFY_QUERY_LOG_DISABLE=1` opts out.
 - **Freshness:** `graphify hook install` adds git hooks that rebuild "on commit + branch checkout".
 
-**Contradiction:** the README says "No embeddings, no vector store: a real graph you traverse", while BENCHMARKS.md says graphify "extracts with tree-sitter … and a local embedder" and names "BGE-m3". Which is true by default wasn't settled from the docs; check the code before relying on "no embeddings".
+**Embeddings:** the README says "No embeddings, no vector store: a real graph you traverse", while BENCHMARKS.md mentions "a local embedder" and "BGE-m3". The shipped package matches the README: `pyproject.toml` at `0a8cd4e` lists no embedding dependency (networkx, numpy, rapidfuzz, pyyaml, tree-sitter grammars), and a grep of `graphify/` for sentence-transformers, fastembed, BGE-m3 and onnxruntime finds nothing. BGE-m3 is the shared embedder of the memory-benchmark harness.
 
 ## [CODEMAP-003] Graphify's hooks steer Claude from grep to the graph
 - Type: fact
@@ -83,11 +83,11 @@ From the README at `0a8cd4e`:
 - Sources: [graphify install.py](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/graphify/install.py), [graphify cli.py `_run_hook_guard`](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/graphify/cli.py), [graphify README: always-on](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/README.md)
 - Related: HOOK-006, HOOK-007, TOK-041, SKILL-069
 
-`graphify claude install` writes a skill registration into `.claude/CLAUDE.md` and two `PreToolUse` hooks (read in `install.py`, not run):
+`graphify claude install` writes a skill registration into `.claude/CLAUDE.md` and two `PreToolUse` hooks (read in `install.py` and `cli.py`, not run):
 
 - `"matcher": "Bash|Grep"` runs `graphify hook-guard search`; `"matcher": "Read|Glob"` runs `graphify hook-guard read`; each with `"timeout": 10`, because unset "Claude Code defaults a command hook to 600s".
 - When a graph exists, the guard returns `additionalContext` nudging Claude "to use graphify instead of grepping/reading raw files". It fails open: "any error, or a non-matching tool call, prints nothing".
-- **Strict mode** (`--strict` or `GRAPHIFY_HOOK_STRICT`): "the FIRST raw read of indexed, in-project, fresh code per session is DENIED with a redirect to `graphify query` (permissionDecision)", then it falls back to the nudge.
+- **Strict mode** (`--strict` or `GRAPHIFY_HOOK_STRICT`; Claude Code's Read only, once per session; Bash and Glob stay nudges): "the FIRST raw read of indexed, in-project, fresh code per session is DENIED with a redirect to `graphify query` (permissionDecision)", then it falls back to the nudge.
 - A `--project` install writes the bare `graphify` command, "since that config gets committed": everyone who clones then runs whatever `graphify` is on their PATH.
 
 Cost: one Python process per Bash, Grep, Read and Glob call ("~170ms warm"), plus the nudge text in context each time a search matches (HOOK-007). This is the mechanism to weigh, more than the graph: it overrides Claude Code's search-first default (TOK-041) on every repo where a graph exists.
@@ -98,7 +98,7 @@ Cost: one Python process per Bash, Grep, Read and Glob call ("~170ms warm"), plu
 - Confidence: single-source
 - Last verified: 2026-10-30
 - Sources: [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/BENCHMARKS.md)
-- Related: CODEMAP-002, CODEMAP-009, TOK-084, RETR-010
+- Related: CODEMAP-002, CODEMAP-009, TOK-084, RETR-010, TOK-020
 
 The only head-to-head against grep among these tools. BENCHMARKS.md, "Last updated: 2026-07-05":
 
@@ -112,7 +112,7 @@ Limits:
 - Opus 4.8 is an earlier model than the 5.x line; current Claude Code search may differ.
 - The vendor wrote the questions, the harness and the grading.
 
-The other benchmark rows (LOCOMO, LongMemEval) are memory retrieval, not code. Understand-Anything, Repomix and Serena publish no measurement against plain search; TOK-084 records claude-context's vendor-run 39% token figure.
+The other benchmark rows (LOCOMO, LongMemEval) are memory retrieval, not code. The README's "Cut agent token spend by 80%" is for the paid Graphify Cloud and comes with no measurement. Understand-Anything, Repomix and Serena publish no measurement against plain search; TOK-084 records claude-context's vendor-run 39% token figure.
 
 ## [CODEMAP-005] Understand-Anything: an LLM-built graph and its token cost
 - Type: fact
@@ -169,13 +169,13 @@ For a claude.ai Project, a compressed pack is one way to fit a repo into project
 - Confidence: official-example
 - Last verified: 2026-10-30
 - Sources: [serena LICENSE](https://github.com/oraios/serena/blob/ede329a/LICENSE), [serena README](https://github.com/oraios/serena/blob/ede329a/README.md), [serena-agent on PyPI](https://pypi.org/project/serena-agent/)
-- Related: TOK-084, TOK-041, OSS-001
+- Related: TOK-084, TOK-041, OSS-001, TS-012
 
 TOK-084 covers Serena's tools; this adds its version and licence. PyPI `serena-agent` 2.1.0 was uploaded 2026-10-19.
 
 **Licence**, from the LICENSE file ("Serena Licensing Overview"): "SolidLSP under the MIT License and the Serena application under GPL-3.0-or-later". "Because MIT is compatible with the GPL, any distribution that combines both - such as the `serena-agent` package - is as a whole subject to the terms of GPL-3.0-or-later." Running it as an MCP server imposes nothing on your code; copying or redistributing Serena's code does.
 
-**Over Claude Code's own LSP:** Claude Code's costs page already recommends code-intelligence (LSP) plugins, where "go to definition" replaces "a grep followed by reading multiple candidate files" (TOK-041). Serena adds symbol-level editing tools and more languages, and says its tools are "much more token-efficient than typical alternatives", with no figure. For a TypeScript-only stack the plugin covers the main need.
+**Over Claude Code's own LSP:** Claude Code's costs page already recommends code-intelligence (LSP) plugins, where "go to definition" replaces "a grep followed by reading multiple candidate files" (TOK-041). Serena adds symbol-level editing tools and more languages, and says its tools are "much more token-efficient than typical alternatives", with no figure. For a TypeScript stack on TypeScript 6.0.x the plugin covers the main need; it needs `tsserver.js`, which TypeScript 7 lacks (TS-012).
 
 ## [CODEMAP-009] When a codebase map is worth trying
 - Type: recommendation
@@ -183,7 +183,7 @@ TOK-084 covers Serena's tools; this adds its version and licence. PyPI `serena-a
 - Confidence: single-source
 - Last verified: 2026-10-30
 - Sources: [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/BENCHMARKS.md), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-- Related: CODEMAP-003, CODEMAP-004, CODEMAP-006, RETR-002, RETR-013, TOK-041
+- Related: CODEMAP-003, CODEMAP-004, CODEMAP-006, RETR-002, RETR-013, TOK-041, TOK-085
 
 Our judgement from the entries above.
 
@@ -199,13 +199,12 @@ Our judgement from the entries above.
 
 Ranked by impact against effort.
 
-1. Decision: **no codebase-map tool in our repos** (CODEMAP-009). Revisit for a repo over about 200k lines, or if an independent test shows a gain on coding tasks.
+1. Decision: **no codebase-map tool in our repos** (CODEMAP-009). Revisit (our rough threshold, not a sourced one) for a repo over about 200k lines, or if an independent test shows a gain on coding tasks. TOK-085's repo-map idea is the cheap alternative.
 2. **Add the "hook tells the model not to ask" case to SKILL-069's item 6** as an example (CODEMAP-006): a one-line edit in `kb-skills.md`.
 3. **Use Repomix `--compress` only to hand a repo to a claude.ai chat or Project** (CODEMAP-007), checking the output for secrets first.
 
 ## Open questions
 
-- **Does Graphify use an embedder by default?** Its README says no embeddings; BENCHMARKS.md names a local BGE-m3 embedder (CODEMAP-002). The code wasn't traced.
 - **Understand-Anything's tokens per build:** no figure published; a run on a known repo would give one (CODEMAP-005).
 - **An independent map-against-grep test on Claude Code:** none found for any tool (CODEMAP-004).
-- **Repomix and Serena telemetry:** a README search found nothing; their code wasn't grepped.
+- **Repomix telemetry:** a README search found nothing; its code wasn't grepped. Serena's `src/` sets `telemetry=False` for its agno agent and no telemetry code was found.
