@@ -23,7 +23,7 @@ Research basis:
 | When do I need a GitHub App token instead of `GITHUB_TOKEN`? | Other repos, org resources, or a push or PR that must start workflows without approval. Use `actions/create-github-app-token` v3 with `permission-*` inputs; tokens are now about 520 characters. | GHA-014 |
 | How should an AWS trust policy for GitHub OIDC look? | `aud` = `sts.amazonaws.com` and a `sub` condition naming the repo and branch or environment; IAM rejects a missing or wildcard-only `sub`. `configure-aws-credentials` v6.3.0; no thumbprint. | GHA-015 |
 | Why does `AssumeRoleWithWebIdentity` fail in a new or renamed repo? | Repos created after 2026-07-15, or renamed or transferred since, send `repo:OWNER@ID/REPO@ID:…`. List both formats in the `sub` condition, then drop the old one. | GHA-016 |
-| Is `pull_request_target` still dangerous, and what changed? | Yes if it runs PR code. Since 2025-12-08 it always runs the default branch's workflow; checkout refuses fork code (2026-07-20); the cache is read-only for it (2026-06-26); public repos block it by default from 2026-11-02. | GHA-017, GHA-018, GHA-021 |
+| Is `pull_request_target` still dangerous, and what changed? | Yes if it runs PR code. Since 2025-12-08 it always runs the default branch's workflow; checkout refuses fork code (2026-07-20); the cache is read-only for it (2026-06-26); public repos block it by default from 2026-12-02. | GHA-017, GHA-018, GHA-021 |
 | Can an untrusted run poison the Actions cache? | Not the default branch's scope from `pull_request_target`, `issue_comment` or `workflow_run` since 2026-06-26, unless the workflow sets `cache-mode: write`. Release jobs still shouldn't restore shared caches. | GHA-019, GHA-024 |
 | How do I avoid script injection? | Never put `${{ github.event.* }}` text in `run:`; pass it through `env:` and quote `"$VAR"`. Redaction of secrets is best effort. | GHA-020 |
 | Which workflow linter should be a required check? | zizmor (pinning, injection, permissions, triggers, cache poisoning), with `advanced-security: false` so findings fail the job; actionlint as a cheap second. Scorecard and harden-runner aren't PR gates. First-rollout findings and inline ignores: GHA-025. | GHA-023, GHA-025 |
@@ -49,7 +49,7 @@ Research basis:
 | GHA-014 | GitHub App installation tokens: when, how to scope, and the 520-character format | fact | github-app, tokens, create-github-app-token |
 | GHA-015 | OIDC to AWS: trust policy conditions and `configure-aws-credentials` v6 | recommendation | oidc, aws, iam, trust-policy |
 | GHA-016 | Immutable OIDC `sub` claims: which repos send them, and moving a trust policy over | fact | oidc, sub-claim, aws, trust-policy |
-| GHA-017 | `pull_request_target` and `workflow_run`: what GitHub changed from 2025-12 to 2026-11 | fact | pull-request-target, workflow-run, forks, checkout |
+| GHA-017 | `pull_request_target` and `workflow_run`: what GitHub changed from 2025-12 to 2026-12 | fact | pull-request-target, workflow-run, forks, checkout |
 | GHA-018 | When `pull_request_target` or `workflow_run` is still safe | recommendation | pull-request-target, workflow-run, pwn-request |
 | GHA-019 | Cache poisoning, read-only cache tokens and `cache-mode` | fact | cache, cache-poisoning, cache-mode |
 | GHA-020 | Script injection and secrets: untrusted input goes through `env:` | recommendation | script-injection, secrets, redaction |
@@ -383,7 +383,7 @@ Treat a rename or transfer as a trust-policy change. The docs show only the bran
 
 Tested 2026-10-17, GitHub REST API, read-only: two of our repos created on 2026-10-12 returned `"use_immutable_subject":true` and an `OWNER@ID/REPO@ID` prefix built from the repo's `owner.id` and `id`; four created 2023–2025 returned `false` and `repo:OWNER/REPO`.
 
-## [GHA-017] `pull_request_target` and `workflow_run`: what GitHub changed from 2025-12 to 2026-11
+## [GHA-017] `pull_request_target` and `workflow_run`: what GitHub changed from 2025-12 to 2026-12
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
@@ -398,7 +398,7 @@ Tested 2026-10-17, GitHub REST API, read-only: two of our repos created on 2026-
 | 2026-07-20 | The same refusal backported to every supported major except v1, through the floating major tags. "Workflows pinned to a specific SHA, minor, or patch version aren't affected by the backport." |
 | 2026-06-26 | Untrusted triggers get a read-only cache token on the default-branch scope (GHA-019). |
 | 2026-07-28 | Public repos: runs GitHub flags as likely malicious are held for approval (GHA-021). |
-| 2026-11-02 | A default event policy blocking `pull_request_target` in public repos without their own event policy, in evaluate mode since 2026-09-17, is enforced. Private and internal repos are exempt. |
+| 2026-12-02 (was 2026-11-02 until an editor's note dated 2026-10-21) | A default event policy blocking `pull_request_target` in public repos without their own event policy, in evaluate mode since 2026-09-17, is enforced. Private and internal repos are exempt. |
 
 The checkout guard doesn't cover `git fetch`, `gh pr checkout`, a fork run's artifacts or `issue_comment` workflows, and a SHA-pinned checkout older than the backport has none. `workflow_run` "is able to access secrets and write tokens, even if the previous workflow was not".
 
@@ -419,7 +419,7 @@ The checkout guard doesn't cover `git fetch`, `gh pr checkout`, a fork run's art
 **Decision order:**
 1. Use `pull_request` if the job needs no secrets: fork runs get a read-only token and no secrets. Dependabot auto-merge doesn't need `pull_request_target` either: `pull_request` runs honour `permissions:` (JSUP-013).
 2. Otherwise split it: build untrusted code in a `pull_request` run, and let a privileged `workflow_run` job consume only its data, never execute it.
-3. If `pull_request_target` stays: least-privilege `permissions:`, only the secrets it needs, ephemeral runners, and for public repos an event policy that allows it explicitly after 2026-11-02 (GHA-021).
+3. If `pull_request_target` stays: least-privilege `permissions:`, only the secrets it needs, ephemeral runners, and for public repos an event policy that allows it explicitly after 2026-12-02 (GHA-021).
 
 Setting `allow-unsafe-pr-checkout: true` is a security decision, fit only for code that is never executed.
 
@@ -499,7 +499,7 @@ zizmor, actionlint and CodeQL all flag template injection (GHA-023).
 - Enforcement `active`, `disabled` or `evaluate` (Evaluate is "GitHub Enterprise Cloud only"). A blocked run fails with "Event 'workflow_dispatch' is not allowed to trigger Actions workflows."
 - `dependabot[bot]` "must be added as an allowed actor" when an actor rule would block workflows it triggers.
 
-**Default policy**: "For public repositories that do not already have an applicable Actions event policy, GitHub adds a default policy that blocks workflows triggered by `pull_request_target`." It runs in evaluate mode until "November 2, 2026", when it's enforced; since Evaluate is Enterprise-only, other plans may see no insights before then. To keep such a workflow, allow the event in your own policy, or move it to `pull_request`.
+**Default policy**: "For public repositories that do not already have an applicable Actions event policy, GitHub adds a default policy that blocks workflows triggered by `pull_request_target`." It runs in evaluate mode until "December 2nd, 2026" (moved from 2026-11-02 by an editor's note dated 2026-10-21), when it's enforced for repos that used the default policy before GA; since Evaluate is Enterprise-only, other plans may see no insights before then. To keep such a workflow, allow the event in your own policy, or move it to `pull_request`.
 
 Not found: whether personal-account repos get the default policy. `gh api repos/OWNER/REPO/actions/policies` on two such public repos returned `{"total_count":0,"policies":[]}` (2026-10-17), which settles nothing.
 
