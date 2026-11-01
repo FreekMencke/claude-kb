@@ -299,7 +299,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 
 | ID | Title | Type | Tags |
 |---|---|---|---|
-| DOCKER-001 | Official `node` image tags on 2026-10-17: what each points to, and sizes | fact | node-image, alpine, slim, lts, image-size |
+| DOCKER-001 | Official `node` image tags on 2026-11-01: what each points to, and sizes | fact | node-image, alpine, slim, lts, image-size |
 | DOCKER-002 | Alpine and musl: Node's support tier and native modules | fact | alpine, musl, native-modules, sharp, arm64 |
 | DOCKER-003 | Distroless, Docker Hardened Images and Chainguard for Node | comparison | distroless, docker-hardened-images, chainguard, nonroot |
 | DOCKER-004 | Choosing a base image for a Node 24/26 server | recommendation | base-image, alpine, slim, distroless |
@@ -412,7 +412,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | GHA-014 | GitHub App installation tokens: when, how to scope, and the 520-character format | fact | github-app, tokens, create-github-app-token |
 | GHA-015 | OIDC to AWS: trust policy conditions and `configure-aws-credentials` v6 | recommendation | oidc, aws, iam, trust-policy |
 | GHA-016 | Immutable OIDC `sub` claims: which repos send them, and moving a trust policy over | fact | oidc, sub-claim, aws, trust-policy |
-| GHA-017 | `pull_request_target` and `workflow_run`: what GitHub changed from 2025-12 to 2026-11 | fact | pull-request-target, workflow-run, forks, checkout |
+| GHA-017 | `pull_request_target` and `workflow_run`: what GitHub changed from 2025-12 to 2026-12 | fact | pull-request-target, workflow-run, forks, checkout |
 | GHA-018 | When `pull_request_target` or `workflow_run` is still safe | recommendation | pull-request-target, workflow-run, pwn-request |
 | GHA-019 | Cache poisoning, read-only cache tokens and `cache-mode` | fact | cache, cache-poisoning, cache-mode |
 | GHA-020 | Script injection and secrets: untrusted input goes through `env:` | recommendation | script-injection, secrets, redaction |

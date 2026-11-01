@@ -289,7 +289,7 @@ web-features 3.43.0 (2026-10-15); every row is `baseline: false`.
 | Interest invokers (`interestfor`) | Chrome 142 | A link "behaves like a normal link"; keep essential content off hover-only popovers |
 | `<dialog closedby>` | Chrome 134, Firefox 141 | Ignored; close it with a button |
 
-Anchor positioning's core works in all three (CSS-017). Scroll-driven animations are next: mdn/browser-compat-data#30856 (merged 2026-10-15) set `animation-timeline` to Firefox `"159"`, which MDN says "ships on October 27, 2026"; its release notes didn't list it yet.
+Anchor positioning's core works in all three (CSS-017). Scroll-driven animations are next: mdn/browser-compat-data#30856 (merged 2026-10-15) set `animation-timeline` to Firefox `"159"`, Firefox 159 was released on October 27, 2026 and its release notes list scroll-driven animations as enabled by default.
 
 ## [CSS-011] Progressive enhancement with `@supports`: patterns and blind spots
 - Type: pattern

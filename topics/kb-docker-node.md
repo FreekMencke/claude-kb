@@ -13,7 +13,7 @@ Research basis:
 | Question | Answer | Entries |
 |---|---|---|
 | Which base image for a Node 24 or 26 server? | `node:24-alpine` (or `26-alpine` once 26 is LTS on 2026-10-28), pinned by digest, for a bundled server with no glibc-only native modules; `node:24-trixie-slim` when a dependency needs glibc. Distroless or a Docker Hardened Image only when "no shell, no npm" in production is worth an extra registry or login. | DOCKER-004, DOCKER-001, DOCKER-002, DOCKER-003 |
-| What does `node:24-alpine`, `node:24-slim` or `node:lts` point to? | `24-alpine` is Alpine 3.24, `24-slim` is Debian 12 (bookworm), not 13; `lts` is 24 until Node 26 becomes LTS on 2026-10-28. Compressed amd64 sizes: 62 MB alpine, 81 MB slim, 412 MB full. Node 26 images ship no Yarn. | DOCKER-001 |
+| What does `node:24-alpine`, `node:24-slim` or `node:lts` point to? | `24-alpine` is Alpine 3.24, `24-slim` is Debian 12 (bookworm), not 13; `lts` is 26 since it became LTS on 2026-10-28 (`24-slim` is still Debian 12, `26-slim` is Debian 13). Compressed amd64 sizes: 62 MB alpine, 81 MB slim, 412 MB full. Node 26 images ship no Yarn. | DOCKER-001 |
 | Is Alpine (musl) safe for production Node? | On amd64 for Node 26: Node lists x64 musl as Tier 2. For Node 24 it's "Experimental", and arm64 images are compiled from source in the image build, untested by Node. Native modules need musl prebuilds (sharp has them). | DOCKER-002 |
 | Are Docker Hardened Images free, and how do I pull them? | Yes, the Community tier, under Apache 2.0 since 2025-12-17, from `dhi.io` after `docker login dhi.io`. The Node runtime image has no shell or npm and runs as `node` (UID 1000); `-dev` tags have npm. The 7-day CVE SLA is paid. | DOCKER-003 |
 | What does a Dockerfile for an Angular SSR or NestJS app look like? | Two stages on the same pinned image: `npm ci` and the build in the first; only `dist` (plus any external native module) in the second, `USER` set, exec-form `CMD ["node", …]`. A bundled server needs no `node_modules` at run time. | DOCKER-005 |
@@ -32,7 +32,7 @@ Research basis:
 
 | ID | Title | Type | Tags |
 |---|---|---|---|
-| DOCKER-001 | Official `node` image tags on 2026-10-17: what each points to, and sizes | fact | node-image, alpine, slim, lts, image-size |
+| DOCKER-001 | Official `node` image tags on 2026-11-01: what each points to, and sizes | fact | node-image, alpine, slim, lts, image-size |
 | DOCKER-002 | Alpine and musl: Node's support tier and native modules | fact | alpine, musl, native-modules, sharp, arm64 |
 | DOCKER-003 | Distroless, Docker Hardened Images and Chainguard for Node | comparison | distroless, docker-hardened-images, chainguard, nonroot |
 | DOCKER-004 | Choosing a base image for a Node 24/26 server | recommendation | base-image, alpine, slim, distroless |
@@ -48,7 +48,7 @@ Research basis:
 | DOCKER-014 | Build cache in GitHub Actions: `type=gha`, its limits and read-only triggers | fact | build-cache, gha-cache, build-push-action, workflow-run |
 | DOCKER-015 | Multi-arch images: QEMU, native arm64 runners or Docker's GitHub Builder | comparison | multi-arch, arm64, qemu, github-builder |
 
-## [DOCKER-001] Official `node` image tags on 2026-10-17: what each points to, and sizes
+## [DOCKER-001] Official `node` image tags on 2026-11-01: what each points to, and sizes
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
@@ -56,17 +56,19 @@ Research basis:
 - Sources: [docker-library/official-images: library/node](https://raw.githubusercontent.com/docker-library/official-images/master/library/node), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [nodejs/docker-node versions.json](https://raw.githubusercontent.com/nodejs/docker-node/main/versions.json)
 - Related: NODE-001, DOCKER-002, DOCKER-009
 
-The floating tags hide which OS and Node line you get. From `library/node` on 2026-10-17:
+The floating tags hide which OS and Node line you get. From `library/node` on 2026-11-01:
 
 | Tag | Resolves to | Architectures |
 |---|---|---|
-| `24-alpine`, `lts-alpine` | 24.22.0 on Alpine 3.24 | amd64, arm64v8, s390x |
-| `24-slim`, `lts-slim` | 24.22.0 on Debian 12 `bookworm-slim` | amd64, arm64v8, ppc64le |
-| `24`, `lts` | 24.22.0 on Debian 12 `bookworm` | amd64, arm64v8, ppc64le |
-| `26-alpine`, `alpine` | 26.12.0 on Alpine 3.24 | amd64, arm64v8 |
+| `24-alpine` | 24.22.2 on Alpine 3.24 | amd64, arm64v8, s390x |
+| `24-slim` | 24.22.2 on Debian 12 `bookworm-slim` | amd64, arm64v8, ppc64le |
+| `24` | 24.22.2 on Debian 12 `bookworm` | amd64, arm64v8, ppc64le |
+| `26-slim`, `lts-slim` | 26.13.0 on Debian 13 `trixie-slim` | amd64, arm64v8, ppc64le, s390x |
+| `26`, `lts` | 26.13.0 on Debian 13 `trixie` | amd64, arm64v8, ppc64le, s390x |
+| `26-alpine`, `alpine`, `lts-alpine` | 26.13.0 on Alpine 3.24 | amd64, arm64v8 |
 
-- `-slim` is still Debian 12; Debian 13 needs `-trixie-slim` explicitly.
-- `lts` follows Node's Active LTS, so `lts*` tags move to 26 when it becomes LTS on 2026-10-28 (`versions.json`). A major moving under a rebuild is a reason to name the major.
+- `24-slim` is still Debian 12 (`debian-default` is `bookworm` for 24); `26-slim` and `26` are Debian 13 `trixie`.
+- `lts` follows Node's Active LTS, so `lts*` tags moved to 26 when it became LTS on 2026-10-28 (`versions.json`). A major moving under a rebuild is a reason to name the major.
 - "Yarn v1 is not bundled into `node` images as of Node.js 26.0.0" (README).
 - The images run as root: the config's `User` is unset. They ship a `node` user with UID 1000 (DOCKER-008).
 
@@ -119,8 +121,8 @@ Three runtime images without a shell or package manager:
 
 Docker's advice is a trusted source (an Official Image, Verified Publisher or hardened image) and "a minimal base image that matches your requirements", with one image for building and a slimmer one for production. For a Node server, in order:
 
-1. **`node:<major>-alpine`**, pinned by digest (DOCKER-009), when the server is bundled or its native dependencies have musl prebuilds. Smallest official image (DOCKER-001). Prefer 26 once it's LTS (2026-10-28), where x64 musl is Tier 2 (DOCKER-002).
-2. **`node:<major>-trixie-slim`** when a dependency is glibc-only, or for arm64 images, where Alpine's Node is compiled in the image build and untested upstream. Name the Debian release: plain `-slim` is still Debian 12.
+1. **`node:<major>-alpine`**, pinned by digest (DOCKER-009), when the server is bundled or its native dependencies have musl prebuilds. Smallest official image (DOCKER-001). Prefer 26, LTS since 2026-10-28, where x64 musl is Tier 2 (DOCKER-002).
+2. **`node:<major>-trixie-slim`** when a dependency is glibc-only, or for arm64 images, where Alpine's Node is compiled in the image build and untested upstream. Name the Debian release: `24-slim` is still Debian 12, while `26-slim` is Debian 13.
 3. **Distroless or a DHI runtime image** for the final stage when the attack surface matters more than debugging with a shell, and you can live with a second registry (DHI needs a login and pull secrets). Build in the matching `-dev` or official image.
 
 docker-node's "Smaller images without npm/yarn" copies `/usr/local/bin/node` onto plain `alpine` or `debian:trixie-slim`, a do-it-yourself version of option 3. Never use `node:latest` or a bare `lts` tag for production: both change major on their own.
