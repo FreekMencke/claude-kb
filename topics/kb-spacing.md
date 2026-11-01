@@ -105,7 +105,7 @@ Three approaches, all official:
 
 - **GOV.UK: responsive tokens.** `$govuk-spacing-responsive-scale` keeps units 0–3 fixed (0, 5, 10, 15 px) and grows 4–9 once, at the `tablet` breakpoint (641 px): 15→20, 15→25, 20→30, 25→40, 30→50, 40→60. `govuk-responsive-margin(n)` and `govuk-responsive-padding(n)` apply them; `govuk-!-static-margin-n` opts out.
 - **Carbon: fixed tokens, jump a step.** "No, the tokens themselves do not change values based on the screen size. However, it is acceptable at page breakpoints to jump a step(s) on the spacing scale."
-- **Fluid: Utopia** interpolates every step with `clamp()` (SPACE-004). M3 says only that its spacing "can adapt to breakpoints and density settings" (rendered page text).
+- **Fluid: Utopia** interpolates every step with `clamp()` (SPACE-004). M3 says only that its spacing system "can adapt to breakpoints" (rendered page text).
 
 What they agree on: small gaps inside components stay put; large gaps between sections shrink on small screens. NN/g gives the reason to check: "Scaling down to smaller devices can minimize the space between elements or can push elements farther apart, destroying grouping relationships." Whichever approach, the gap inside a group must stay smaller than the gap between groups at every width (SPACE-005).
 

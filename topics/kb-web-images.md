@@ -93,7 +93,7 @@ Measure the response's `usage` on a few test images before choosing a quality le
 
 Nano Banana 2.1 is "the primary high-efficiency workhorse model for image generation and conversational editing", and the page says new projects should use it. Its output is billed at "$30 per 1,000,000 tokens"; a 1K image (1024×1024) "consume[s] 1120 tokens". Image output has no free tier ("Not available"). `gemini-2.5-flash-image` shuts down 2027-03-15; the `-preview` IDs are already gone.
 
-**Imagen:** "Imagen models are shut down. Use Nano Banana for image generation." The deprecations page dates the Imagen 4 shutdown 2026-08-17. A skill or tutorial calling `imagen-4.0-*` no longer works.
+**Imagen:** "Imagen models are shut down. Use Nano Banana models for all image generation tasks." The deprecations page dates the Imagen 4 shutdown 2026-08-17. A skill or tutorial calling `imagen-4.0-*` no longer works.
 
 ## [IMG-004] Sizes, formats and transparency for web assets
 - Type: fact
