@@ -802,8 +802,8 @@ steps:
   - uses: anthropics/claude-code-action@v1
     with:
       anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-      plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
-      plugins: "code-review@claude-code-plugins"
+      plugin_marketplaces: "https://github.com/anthropics/claude-plugins-official.git"
+      plugins: "code-review@claude-plugins-official"
       prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
       claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment"'
 ```
@@ -998,7 +998,7 @@ A ready hook script is in template T1.
 - Sources: [Permissions: Bash](https://code.claude.com/docs/en/permissions)
 - Related: REPO-033, REPO-035
 
-**Compound commands.** Separators `&&`, `||`, `;`, `|`, `|&`, `&` and newlines split a command. "A rule must match each subcommand independently", so `Bash(npm test *)` doesn't allow `npm test && rm -rf x`. Deny and ask rules fire if *any* subcommand matches, including inside `$(…)`, subshells and loops.
+**Compound commands.** Separators `&&`, `||`, `;`, `|`, `|&`, `&` and newlines split a command. "Every subcommand must be allowed for a compound command to run without a prompt", so `Bash(npm test *)` doesn't allow `npm test && rm -rf x`. Deny and ask rules fire if *any* subcommand matches, including inside `$(…)`, subshells and loops.
 
 **Matching is textual.** A rule matches the command as written:
 - `Bash(git push *)` misses `git -C . push`, `git -c x=y push` and `git 'push'`.

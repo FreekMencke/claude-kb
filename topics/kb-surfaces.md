@@ -101,15 +101,15 @@ What it adds:
 - Sources: [Desktop: monitor pull request status](https://code.claude.com/docs/en/desktop), [Desktop: work in parallel with sessions](https://code.claude.com/docs/en/desktop)
 - Related: SURF-001, SESS-005, SESS-034, HOOK-017, FLOW-029
 
-After a PR opens, "a CI status bar appears in the session. Claude Code uses the GitHub CLI to poll check results and surface failures." It needs `gh` installed and authenticated on the machine. Click **CI** in the bar for two toggles:
-- **Auto-fix CI & address comments:** Claude reads failing checks and iterates. In a local session it also addresses new review comments from someone other than you, when the author is the repo owner, an org member, a collaborator or a GitHub App.
-- **Auto-merge when ready:** merges once checks pass. "The merge method is squash", and repo auto-merge must be enabled on GitHub.
+After a PR opens, it appears in the **Changes** card of the session details panel with its CI check status (the earlier layout has a **CI** button on the status bar). PR monitoring "requires the GitHub CLI (`gh`) to be installed and authenticated on your machine". The **⋮** menu beside the PR title has two toggles:
+- **Auto-fix:** Claude reads failing checks and iterates. In a local session it also addresses new review comments from someone other than you, when the author is the repo owner, an org member, a collaborator or a GitHub App.
+- **Merge when ready:** turns on GitHub's auto-merge for the PR; "Desktop requests a squash merge unless the base branch uses a merge queue". Repo auto-merge must be enabled on GitHub. Disabled in SSH and WSL sessions: turn on auto-merge on GitHub there.
 
-**Auto-archive after PR merge or close** (Settings > Claude Code) archives the session and removes its worktree; it "only applies to local sessions that have finished running".
+**Auto-archive after PR merge or close** (Settings > Claude Code) archives the session and removes its worktree; it "Cloud sessions and sessions that are still running don't archive themselves".
 
 **Notifications:** "The desktop app sends an OS notification when a Code session finishes a task and you aren't currently viewing that session." Sessions inside a project get the project's notifications instead. Phone pushes are separate and need Remote Control (SURF-020).
 
-Not documented: whether the CI bar polling costs tokens, how often it polls, and whether it works in WSL sessions (the WSL page lists "branch and pull request status" as working).
+Not documented: whether the CI bar polling costs tokens, how often it polls, and whether Auto-fix works in WSL sessions (the WSL page lists "branch and pull request status" as working; **Merge when ready** is disabled there).
 
 ## [SURF-003] What the desktop Code tab lacks
 - Type: fact
@@ -139,12 +139,12 @@ The CLI is "the most complete surface for terminal-native work: scripting and th
 - Sources: [Claude Code Desktop in WSL](https://code.claude.com/docs/en/desktop-wsl), [Desktop application](https://code.claude.com/docs/en/desktop), local test
 - Related: SKILL-047, SKILL-050, SKILL-052, SURF-034
 
-A WSL session runs Claude Code, tools and git inside a WSL 2 distribution (WSL 1 "isn't supported"). "Parallel sessions, side chats, visual diff review, branch and pull request status, and worktrees all work". Missing "yet": "the integrated terminal, connectors and plugins, session forking, the file browser pane, and file suggestions when you type `@`".
+A WSL session runs Claude Code, tools and git inside a WSL 2 distribution (WSL 1 "isn't supported"). "Parallel sessions, side chats, visual diff review, branch and pull request status, and worktrees all work". Limits: the integrated terminal and connectors are rolling out separately and may be missing; plugins are "not available in WSL sessions"; the file pane is view-only ("can't edit them there"); some sessions can attach only images.
 
 The desktop page adds more WSL and SSH gaps:
 - `/resume` of CLI sessions "is available in local sessions, not in SSH, WSL, or cloud sessions".
 - **Open in > Cloud**: "You can't move a session that runs over SSH or in WSL this way."
-- The **+** button for connectors "is not available in cloud or WSL sessions".
+- The **+** button adds connectors "in a local or SSH session with a Claude account", so not in cloud sessions.
 - Trust is per distribution and folder.
 
 SSH sessions keep the terminal and file pane but read `~/.claude/skills/` from the remote host.
@@ -538,7 +538,7 @@ Every cloud session runs in an environment: a saved network level, environment v
 
 **Variables:** `.env` format. "Anyone who uses the environment can read its environment variables and setup script", so no secrets there.
 
-**Network secrets** (Pro and Max only, Anthropic-hosted): a key you add once that "the agent proxy attaches ... to requests for the hosts you list", so the session never sees it. Team and Enterprise don't have them yet; there, keys stay in variables.
+**Network secrets** (Pro, Max, Ultra, Team and Enterprise; Anthropic-hosted environments): a key you add once that "the agent proxy attaches ... to requests for the hosts you list", so the session never sees it. On Team and Enterprise an Owner with an organization admin role adds them for shared environments. A key the proxy can't attach stays in an environment variable.
 
 **Personal preferences** without committing: a setup script that writes `~/.claude/CLAUDE.md`, on your own environment rather than a shared one. Check with `/context` under Memory files.
 
@@ -632,7 +632,7 @@ For heavier work, use Remote Control on your own hardware or a self-hosted envir
 - Sources: [Use Claude Code in the cloud: work with sessions, limitations](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SESS-030, SURF-027, SURF-029, TOK-007
 
-**Commands:** text-output commands work; "`/plugin` or `/resume`, aren't available". `/model`, `/effort`, `/rename` take arguments (v2.1.205+ in the environment), `/fast` toggles (v2.1.271+). `/compact` and `/context` work; `/clear` doesn't (start a new session). `/config` opens settings; change behaviour with environment variables or the repo's `.claude/settings.json`.
+**Commands:** text-output commands work; "`/plugin` or `/resume`, aren't available". `/model`, `/effort`, `/rename` take arguments (v2.1.205+ in the environment), `/fast` toggles (v2.1.271+). `/compact`, `/context` and `/clear` work (`/clear` starts a fresh conversation with empty context in the same cloud session). `/config` opens settings; change behaviour with environment variables or the repo's `.claude/settings.json`.
 
 **Compaction:** cloud sessions set `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` themselves, overriding yours, so compaction fires partway through the window. Change the window with `CLAUDE_CODE_AUTO_COMPACT_WINDOW` or `/autocompact`.
 
