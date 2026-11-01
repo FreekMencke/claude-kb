@@ -352,7 +352,7 @@ Help-center articles still mention `/status` for remaining allocation. In curren
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Status line](https://code.claude.com/docs/en/statusline)
+- Sources: [Status line](https://code.claude.com/docs/en/statusline), [Model config](https://code.claude.com/docs/en/model-config)
 - Related: TOK-082, TOK-032
 
 The `statusLine` command gets JSON on stdin. Configure it with `{"statusLine": {"type": "command", "command": "~/.claude/statusline.sh"}}`, plus an optional `refreshInterval` in seconds. Useful fields:
@@ -369,7 +369,7 @@ The `statusLine` command gets JSON on stdin. Configure it with `{"statusLine": {
 
 A minimal one-liner: `jq -r '"[\(.model.display_name)] \(.context_window.used_percentage // 0)% ctx · 5h \(.rate_limits.five_hour.used_percentage // "-")%"'`. This covers most of what community status lines offer (TOK-082).
 
-With `CLAUDE_CODE_AUTO_COMPACT_WINDOW` set, `used_percentage` "always measures against the model's full context window, so once this variable is set, that percentage no longer indicates when compaction will run" (env-vars).
+With `CLAUDE_CODE_AUTO_COMPACT_WINDOW` set, "The status line's `used_percentage` measures against the model's full context window, so while the variable is set, that percentage doesn't indicate when compaction will run." (Model config).
 
 ## [TOK-012] OpenTelemetry metrics for teams
 - Type: tool
@@ -432,8 +432,8 @@ Confidence note: the transcript location is documented (official-docs); the `usa
 
 How the limits work:
 - Two layers: "a session limit that resets every five hours" and a weekly limit "across all models".
-- "Usage in claude.ai, Claude Code, and Claude Desktop counts toward the same limit."
-- Session allowance relative to Pro: Max 5x and Max 20x get 5x and 20x; Team Standard seats 1.25x, Premium seats 6.25x. Limits are per member, not pooled.
+- "your usage of all different Claude product surfaces (claude.ai, Claude Code, Claude Desktop) counts towards the same usage limit."
+- Session allowance relative to Pro: Max gets 5x ("five times the Pro plan's usage every five hours and every week"); Ultra is a separate, higher plan (verified Ultra accounts have no five-hour limit); Team Standard seats 1.25x, Premium seats 6.25x. Limits are per member, not pooled.
 - Exact token or message allowances aren't published.
 - Fable is included on Max, Team premium and Enterprise premium seats, for up to 50% of weekly limits, and drains faster than other models. Pro and standard seats use usage credits.
 - **Usage credits** (formerly "extra usage") are billed at standard API rates when you hit a limit. Manage them with `/usage-credits`.
@@ -680,7 +680,7 @@ What survives (the docs' "After compaction" table):
 - Nested CLAUDE.md files and `paths:` rules are not re-injected: they reload on demand when a matching file is touched (MEM-003).
 - Up to 5 recently modified files are re-read. A file over 5,000 tokens comes back as a path only.
 - Invoked skills are re-attached: the first 5,000 tokens each, 25,000 total.
-- The skill listing doesn't reload. Hook-added context is only summarized, and conversation-only instructions are lost unless the summary keeps them.
+- Skill descriptions are rebuilt from your current skills and re-injected (v2.1.304+). Hook-added context is only summarized, and conversation-only instructions are lost unless the summary keeps them.
 
 Cost: compaction is itself a request over the whole history. While the cache is warm it reads the prefix at cache rates; after a break past the TTL it reprocesses everything uncached. So compact at a natural break, not mid-task. Hooks: `PreCompact` (exit 2 blocks), `PostCompact`, and `SessionStart` with matcher `compact` to re-inject context.
 
@@ -952,7 +952,7 @@ Limits of deny rules:
 - Related: TOK-017, TOK-051, TOK-054, CAPI-027
 
 Basics:
-- The prefix order is `tools` → `system` → `messages`. A hit needs "100% identical prompt segments".
+- The prefix order is `tools` → `system` → `messages`. A hit needs "100 percent identical prompt segments".
 - Up to 4 breakpoints. Each looks back at most 20 block positions; a conversation that grows 20+ blocks past the last write misses.
 - TTL is 5 minutes by default, refreshed free on each hit. Set `"ttl": "1h"` for gaps between 5 minutes and 1 hour.
 - Pay-off: after 1 read for 5m writes (1.25x), after 2 reads for 1h writes (2x).
@@ -1052,7 +1052,7 @@ Rule of thumb: pick model and effort at the start of a session, not in the middl
 - Related: TOK-017, TOK-050
 
 Pricing and limits:
-- "All usage is charged at 50% of the standard API prices." For example, Opus 5.5 is $2/$10 and Sonnet 5.5 is $1/$5.
+- "All usage is charged at 50 percent of the standard API prices." For example, Opus 5.5 is $2/$10 and Sonnet 5.5 is $1/$5.
 - A batch holds up to 100,000 requests or 256 MB.
 - "most batches completing within 1 hour". Batches expire after 24 hours, and expired requests aren't billed.
 - Results are kept for 29 days from creation.
