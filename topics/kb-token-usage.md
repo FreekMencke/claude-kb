@@ -1624,11 +1624,11 @@ Neither reached the official page. Extended bought breadth, not authority.
 - "Each web search counts as one use, regardless of the number of results returned"; failed searches aren't billed. Citation fields "do not count toward input or output token usage".
 - `max_uses` caps searches per request: "Simple factual queries typically use 1–3 searches; comparative or multientity research can use 10 or more."
 
-**Web fetch** (`web_fetch_20250910` up to `_20260318`): "no additional cost. You only pay standard token costs for the fetched content". The docs' estimates: "Average web page (10 kB): ~2,500 tokens", "Large documentation page (100 kB): ~25,000 tokens", "Research paper PDF (500 kB): ~125,000 tokens". `max_content_tokens` truncates text (approximately; PDFs excluded); there's no default `max_uses`.
+**Web fetch** (`web_fetch_20250910` up to `_20260318`): "no additional cost. You only pay standard token costs for the fetched content". The docs' estimates: "Average webpage (10 kB): ~2,500 tokens", "Large documentation page (100 kB): ~25,000 tokens", "Research paper PDF (500 kB): ~125,000 tokens". `max_content_tokens` truncates text (approximately; PDFs excluded); there's no default `max_uses`.
 
 **Dynamic filtering** (`_20260209` and later, Claude 4.6+): Claude writes code that filters results "before they reach the context window"; code execution with these tools adds no charge beyond tokens. This is the API's answer to WebFetch's extraction model: filter before the context pays for it.
 
-Neither tool is on Amazon Bedrock; web fetch isn't on Google Cloud.
+Both tools are available on Claude Models on Google Cloud (Anthropic managed); on Google-managed deployments only basic web search is available, and web fetch isn't listed. Claude Code's tools reference: "Amazon Bedrock doesn't expose the server-side web search tool".
 
 How Claude Code's WebSearch is metered on a subscription isn't documented (Open questions).
 

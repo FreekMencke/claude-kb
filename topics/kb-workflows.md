@@ -229,7 +229,7 @@ Names are prompt-derived slugs (v2.1.111+), e.g. `fix-auth-race-snug-otter.md`. 
 Implications:
 - `~/.claude/plans/` is shared by every session and worktree on the machine (SESS-009) and isn't cleaned with the session. Our probe left a file there that had to be deleted by hand (FLOW-006).
 - A repo-local `plansDirectory` puts plans under git's eye: gitignore it, or commit plans deliberately as specs.
-- To hand a plan to another session or a cloud run, commit it or put it in an issue; the docs' cloud pattern is "save the plan to the repo, commit and push", then `claude --cloud "Execute the migration plan in docs/migration-plan.md"` (FLOW-010).
+- To hand a plan to another session or a cloud run, commit it or put it in an issue; the docs' cloud pattern is "save the plan to the repo, commit, and push", then `claude --cloud "Execute the migration plan in docs/migration-plan.md"` (FLOW-010).
 
 ## [FLOW-009] Model and effort for planning
 - Type: recommendation

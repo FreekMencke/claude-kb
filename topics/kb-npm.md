@@ -491,7 +491,7 @@ Fixes, from npm's warning and docs:
 - After the fact: run `node <global node_modules>/@anthropic-ai/claude-code/install.cjs`, as Claude Code's troubleshooting page says for `--ignore-scripts`.
 - Or use the native installer, which the setup page marks "Recommended" and which doesn't go through npm.
 
-The Claude Code docs mention `--ignore-scripts` and pnpm but not npm 12's default (read 2026-10-17). CI that installs Claude Code with npm, such as claude-skills' validate workflow on Node 22 (npm 10.9.9), is unaffected until its npm reaches 12.
+Claude Code's docs now cover npm 12's default: the setup page points npm 12 users to "Fix an npm 12 install" in the troubleshooting page, which offers the native installer or adding Claude Code to `allow-scripts` in the user npm config (read 2026-11-01). CI that installs Claude Code with npm, such as claude-skills' validate workflow on Node 22 (npm 10.9.9), is unaffected until its npm reaches 12.
 
 Tested 2026-10-17, npm 12.2.0, Node 24.21.0, WSL2, `@anthropic-ai/claude-code@2.1.302` into a scratch prefix: npm warned "1 package had install scripts blocked"; `claude --version` printed "Error: claude native binary not installed." and exited 1. Reinstalled with `--allow-scripts=@anthropic-ai/claude-code`, it printed "2.1.302 (Claude Code)". Tested the same day on npm 11.19.0 with `strict-allow-scripts=true` in the user npmrc: the global install failed with `ESTRICTALLOWSCRIPTS` (exit 1) instead of installing a broken `claude`, and adding `allow-scripts=@anthropic-ai/claude-code` to that npmrc let it install and run.
 
