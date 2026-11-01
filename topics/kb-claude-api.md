@@ -1343,7 +1343,7 @@ The session stream is the primary thread, a condensed view with thread starts, e
 - Applies to: Claude API
 - Confidence: official-docs
 - Last verified: 2026-11-01
-- Sources: [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes)
+- Sources: [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes), [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
 - Related: CAPI-015, CAPI-036, CAPI-055, CAPI-067
 
 An outcome tells the agent what done means. A grader checks the work against a rubric: "The grader uses a separate context window to avoid being influenced by the main agent's implementation choices." Send `user.define_outcome` with `description`, `rubric` (Markdown, inline or a Files API `file_id`) and `max_iterations`, "optional; default 3, max 20". The agent starts on receipt, with no `user.message` needed.
