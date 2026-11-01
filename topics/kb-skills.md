@@ -1993,7 +1993,7 @@ Register both in a `session.start` hook, which Claude Code waits for before the 
 | `$.ui.toast` | 4 seconds unless `{ timeoutMs }`. |
 | `$.ui.invalidate('ui.render')` | Throttled to 10 redraws a second (30 in the terminal for the visible pane, band and hint line); sooner calls are coalesced. |
 
-Names for commands, tools, subagent types and panes: letters, digits, `_` and `-`, up to 64 characters. A `Link` `href` over 2,048 characters, or a tree past 32 levels, 20,000 elements or 100,000 text characters, isn't drawn; nesting past 28,000 levels in a call rejects (v2.1.299+).
+Names for commands, tools, subagent types and panes: letters, digits, `_` and `-`, up to 64 characters. A `Link` `href` over 2,048 characters makes the `ui.render` hook fail. One tree allows 32 levels and 20,000 elements, and draws its first 100,000 text characters. Nesting past 28,000 levels in a call rejects (v2.1.299+).
 
 A relative path resolves against the session's directory, or the subagent's. Every API call is itself an event, so an earlier mod can observe or refuse it. A refusing mod can withhold `$.process.spawn` output after the command already ran; nothing it did is undone.
 
