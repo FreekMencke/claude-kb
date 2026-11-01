@@ -85,7 +85,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-057 | Skill features that behave differently in the desktop app | fact | desktop, permissions |
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
-| SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
+| SKILL-060 | Cloud sessions and scheduled tasks (formerly routines) don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 | SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
 | SKILL-063 | Desktop WSL: synced plugins didn't load, a CLI install from the marketplace did | fact | desktop, wsl, plugins, sync |
@@ -212,7 +212,7 @@ Merged into TOK-005 (kb-token-usage.md) on 2026-10-12. Read that entry for the l
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-11-01
-- Sources: [Claude Code skills](https://code.claude.com/docs/en/skills)
+- Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Changelog](https://code.claude.com/docs/en/changelog)
 - Related: SKILL-016, SKILL-023, SKILL-009
 
 An invoked SKILL.md enters the conversation as one message and stays there on every later turn. It is not re-read, so "every line is a recurring token cost". Invoking an unchanged skill again only adds a short "already loaded" note. A 400-line skill invoked at turn 5 of a 200-turn session is read about 195 times.
@@ -1423,7 +1423,7 @@ An individual can add a Git repo as a plugin marketplace on claude.ai, and the p
 
 **Not in cloud sessions**: synced plugins don't load in cloud sessions or routines (SKILL-060).
 
-## [SKILL-060] Cloud sessions and routines don't load claude.ai marketplace plugins
+## [SKILL-060] Cloud sessions and scheduled tasks (formerly routines) don't load claude.ai marketplace plugins
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs

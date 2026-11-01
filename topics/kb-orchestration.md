@@ -959,7 +959,7 @@ Superpowers is the most widely used Claude Code methodology. Its flow is brainst
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-11-01
-- Sources: [anthropics/claude-code – code-review command](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-review/commands/code-review.md), [feature-dev README](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/feature-dev/README.md)
+- Sources: [anthropics/claude-plugins-official – code-review command](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-review/commands/code-review.md), [feature-dev README](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/feature-dev/README.md)
 - Related: ORCH-030, ORCH-039
 
 Anthropic's own `code-review` plugin is the clearest official example of matching model tier to role. Its pipeline:

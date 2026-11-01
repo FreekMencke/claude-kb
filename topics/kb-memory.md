@@ -606,7 +606,7 @@ Claude Code already has the Codex split (MEM-017) and a `modified` timestamp. It
 | Desktop with WSL | Yes | The distro's (process "execute[s] inside the distribution"; not stated outright) | The distro's `~/.claude/projects/` |
 | `claude -p` | Yes, "the same context an interactive session would" | Yes | Yes, and it writes (MEM-013); not with `--bare` |
 | Cloud session | Yes, "Part of the clone" | "No… Lives on your machine" | Not documented; local files are "not shared across machines or cloud environments" |
-| Routine | Clone of the repo, as cloud sessions | No | Not documented |
+| Cloud scheduled task (formerly routine) | Clone of the repo, as cloud sessions | No | Not documented |
 | `claude-code-action` | Root CLAUDE.md: "Claude reads it on every run" | Runner's home only | Not documented |
 | Self-hosted environment | Yes | Per runner | Off by default |
 
