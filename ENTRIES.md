@@ -153,6 +153,17 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CAPI-038 | Managed Agents permission policies: `always_allow`, `always_ask` and `auto` | fact | managed-agents, permissions, auto |
 | CAPI-039 | Securing a Managed Agents deployment: the settings, in order | recommendation | managed-agents, security, networking, vaults |
 | CAPI-040 | Managed Agents: untrusted input, sandbox boundaries and stopping a session | pattern | managed-agents, security, prompt-injection, monitoring |
+| CAPI-041 | SessionStore: the two required methods and how resume uses them | fact | agent-sdk, session-store, resume, persistence |
+| CAPI-042 | SessionStore traps: option conflicts, auth in the temp config dir, lost batches | anti-pattern | agent-sdk, session-store, auth, retention |
+| CAPI-043 | canUseTool: when it fires, what to return and how to wait for a slow human | fact | agent-sdk, can-use-tool, approvals, defer |
+| CAPI-044 | AskUserQuestion in the SDK: your callback answers, with limits | fact | agent-sdk, ask-user-question, tools, subagents |
+| CAPI-045 | Structured outputs in the Agent SDK: draft-07, retries and the silent-success case | fact | agent-sdk, structured-outputs, json-schema, errors |
+| CAPI-046 | Streaming input versus single-message input, and the V2 session API that is gone | comparison | agent-sdk, streaming-input, v2-removed, errors |
+| CAPI-047 | Python SDK differs from TypeScript: query() versus ClaudeSDKClient and other traps | comparison | agent-sdk, python, claude-sdk-client, sandbox |
+| CAPI-048 | Todo and Task tools in the SDK are off on newer models | fact | agent-sdk, todo, task-tools, opt-in |
+| CAPI-049 | SDK start-up and exit errors: message, cause, fix | pattern | agent-sdk, troubleshooting, cli-not-found, errors |
+| CAPI-050 | Agent SDK options: caps, environment, fallback and mid-session switches | fact | agent-sdk, options, max-turns, fallback-model, env |
+| CAPI-051 | ResultMessage: a "success" result can still be an error | fact | agent-sdk, result-message, stop-reason, usage |
 
 ## Codebase maps and knowledge graphs for agents (`topics/kb-code-maps.md`, CODEMAP)
 
@@ -1163,6 +1174,16 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-080 | Plugin relevance: marketplace entries that suggest a plugin from session signals | tool | plugins, marketplace, relevance, suggestions |
 | SKILL-081 | Skills in the Agent SDK: the `skills` option and setting sources | fact | agent-sdk, skills, setting-sources, allowlist |
 | SKILL-082 | Plugins in the Agent SDK: local paths only | fact | agent-sdk, plugins, local-path, init-message |
+| SKILL-083 | A mod's files and the hook model: observe, rewrite or answer | fact | mods, hooks-module, middleware, matcher |
+| SKILL-084 | A failing mod hook fails open; `.catch` makes a guard fail closed | anti-pattern | mods, fail-open, catch, time-limits |
+| SKILL-085 | The order mods and settings hooks run in | fact | mods, order, pretooluse, tool-check |
+| SKILL-086 | Adding a command, a tool or a model call from a mod | fact | mods, commands, tools, model-complete, caching |
+| SKILL-087 | Mods API reach and limits: files, processes, network, store | fact | mods, limits, process-run, http-fetch, store |
+| SKILL-088 | Mods that start work of their own: timers, interrupts and endless `claude -p` runs | pattern | mods, timers, prompt-submit, max-turns |
+| SKILL-089 | Where a mod keeps state: module variable, `$.state` or `$.store` | fact | mods, state, store, redraw |
+| SKILL-090 | Writing and testing a mod: the dev loop, the test kit and its rules | pattern | mods, plugin-test, plugin-validate, dev-loop |
+| SKILL-091 | Organisation policy for mods: which managed setting stops what | comparison | mods, managed-settings, allow-managed-mods-only, disable-sideload-flags |
+| SKILL-092 | Gaps in mod controls, running your own mods and writing a policy mod | pattern | mods, policy-mod, prepend-plugins, http-fetch |
 
 ## Spacing and alignment: scales, proximity, padding, rhythm, text and icon alignment (`topics/kb-spacing.md`, SPACE)
 

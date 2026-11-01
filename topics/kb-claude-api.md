@@ -8,7 +8,8 @@ Prefix `CAPI`. This file covers building on Claude as a developer on 2026-10-17:
 - Files, citations and Batch for a small app;
 - the Agent SDK against `claude -p`, Managed Agents scheduled deployments against Claude Code routines;
 - how Anthropic says to evaluate an LLM feature;
-- added 2026-10-30: preserved thinking and mid-conversation system messages, on-demand compaction, Anthropic's tools in the Messages API (tool search, advisor, code execution, browser use, type strings, token overhead), and Managed Agents sessions, permission policies and hardening.
+- added 2026-10-30: preserved thinking and mid-conversation system messages, on-demand compaction, Anthropic's tools in the Messages API (tool search, advisor, code execution, browser use, type strings, token overhead), and Managed Agents sessions, permission policies and hardening;
+- added 2026-11-01: the Agent SDK's session store, approval and question callbacks, structured outputs, input modes, Python differences, todo tools, start-up errors, options and result fields.
 
 It records decisions and pitfalls. For a full API reference, use the bundled `claude-api` skill or the docs. Model choice and effort live in `kb-orchestration.md` (ORCH-026 to ORCH-028), caching and pricing in `kb-token-usage.md` (TOK-050 to TOK-055), prompting in `kb-prompting.md`.
 
@@ -19,6 +20,7 @@ Research basis:
 - Tested on Node 24.21.0 (WSL2) with `npm install --ignore-scripts @anthropic-ai/sdk@0.135.0 @anthropic-ai/claude-agent-sdk@0.3.302` in a scratch folder, reading the installed files only.
 - No API call was made: no API key was used, so API behaviour is quoted from the docs, not tested.
 - CAPI-016 to CAPI-040 were researched 2026-10-30 (FreekMencke/claude-kb#351, part A). Each page was downloaded as raw `.md` from `platform.claude.com/docs/en/…` (found through `llms.txt`) and read in full; quotes were checked against that text. No API call was made, so API and Managed Agents behaviour is quoted, not tested.
+- CAPI-041 to CAPI-051 were researched 2026-11-01 (FreekMencke/claude-kb#351, part C) from `code.claude.com/docs/en/agent-sdk/` pages `session-storage`, `user-input`, `structured-outputs`, `streaming-vs-single-mode`, `todo-tracking`, `troubleshooting`, `typescript-v2-preview`, `python` and `configuration`, downloaded as raw `.md` and grepped. `examples` is a routing page and gave no entry. Nothing about SDK behaviour was run: the SDK wasn't installed; `npm view @anthropic-ai/claude-agent-sdk dist-tags` gave `latest: 0.3.316`. Local Claude Code was 2.1.296.
 - None of our public repos (osrs-tracker-web, osrs-tracker-api, freek-mencke-web, claude-skills) depends on `@anthropic-ai/sdk` or the Agent SDK. Checked 2026-10-17 with a grep of their `package.json` files and workflows.
 
 ## Quick answers
@@ -33,9 +35,9 @@ Research basis:
 | Which stop reasons must my code handle? | `end_turn`, `max_tokens`, `stop_sequence`, `tool_use`, `pause_turn` (server tools), `refusal` (HTTP 200, read `stop_details`) and `model_context_window_exceeded`. | CAPI-008 |
 | Does the TypeScript SDK retry, and when must I stream? | 2 retries by default (connection errors, 408, 409, 429, 5xx) and a 10-minute timeout. It throws on a non-streaming request expected to run past about 10 minutes: stream, and call `stream.finalMessage()` if you only want the whole message. | CAPI-009 |
 | Tool runner or my own loop? | The SDK's tool runner (beta; `client.beta.messages.toolRunner` with `betaZodTool`) for most apps. Write the loop yourself when you need human approval, custom logging or conditional execution. | CAPI-006 |
-| Files API, citations or Batch for a small app? | Files when the same document is reused or goes to code execution (operations free, 500 MB a file). Citations when users must see the source passage (`cited_text` isn't billed as output). Batch for anything that can wait up to 24 hours (TOK-054). | CAPI-010 |
+| How do I resume an Agent SDK session on another host, and what goes wrong? | Pass a `SessionStore` (`append` and `load` required) plus `resume` from the same `cwd`. The store mirrors local disk; a store-resumed run deletes its local copy. It throws with `persistSession: false` or file checkpointing, `Not logged in` follows a temp `CLAUDE_CONFIG_DIR` (Python drops `apiKeyHelper`), and lost batches only show as `mirror_error`. | CAPI-041, CAPI-042 |
 | Agent SDK, `claude -p`, a Managed Agents deployment or a routine? | `claude -p --bare` with `--max-turns` and `--max-budget-usd` for one prompt in a script; the Agent SDK for a Node service that needs `canUseTool`, hook callbacks, in-process tools or a session store (same binary). For scheduled repo upkeep, a routine on a subscription (1-hour minimum); a deployment when you need minute-level cron, a hard USD cap per run or secrets the model never sees (API tokens plus $0.08 per running session-hour). | CAPI-011, CAPI-012, CAPI-013, CAPI-014 |
-| How should I test an LLM feature? | Write success criteria first, then many automated cases from real tasks and failures (20–50 to start). Grade with code where possible, an LLM grader with a rubric and thinking on otherwise, and humans as a last resort. Grade the outcome, not the path. | CAPI-015 |
+| Why is my Agent SDK result `success` but empty, or an error? | `subtype: "success"` can carry `is_error` (a refusal, an API error) or no `structured_output`; check `stop_reason`, then `terminal_reason`, then `subtype`. Structured output is draft-07 JSON Schema and fails with `error_max_structured_output_retries`. `canUseTool` never fires for auto-approved tools; task tools are off on newer models. | CAPI-045, CAPI-051, CAPI-043, CAPI-048 |
 | How do I change instructions, tools or effort mid-conversation, and which models read each other's thinking? | Append a `role: "system"` message, `tool_addition`/`tool_removal` blocks (beta `inline-tools-2026-09-15`) or a per-message `output_config`; never edit `system`, `tools` or earlier messages. On Fable 5.1, Mythos 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 a replayed thinking block then fails the prefix check (400 on accounts created on or after 2026-08-31). Fable 5.1 reads Opus 5.5 but nobody reads Fable's blocks; unreadable blocks are dropped with a 200. | CAPI-016, CAPI-017, CAPI-018, CAPI-021, CAPI-022 |
 | How do I compact on the API? | Send top-level `compaction` with beta `compact-2026-09-04`, put the returned block first and drop the summarized messages. A failed summary is a 200 with empty `content`: check `stop_reason`. Kept turns keep their thinking only under three conditions. | CAPI-023, CAPI-024, CAPI-025 |
 | Which Anthropic tools are current, and what do they cost and limit? | Type strings in CAPI-031. Tool-use system prompt 286 tokens on Opus 5.5, Sonnet 5.5, Haiku 5.5; bash 325, text editor 974, computer use about 4,500, browser use about 6,600. Tool search: 10,000 deferred tools. Advisor: beta `advisor-tool-2026-03-01`. Code execution: no internet, 30-day container, free with web search or fetch, else 1,550 free hours then $0.05 an hour. | CAPI-026, CAPI-028, CAPI-031, CAPI-032, CAPI-033 |
@@ -85,6 +87,17 @@ Research basis:
 | CAPI-038 | Managed Agents permission policies: `always_allow`, `always_ask` and `auto` | fact | managed-agents, permissions, auto |
 | CAPI-039 | Securing a Managed Agents deployment: the settings, in order | recommendation | managed-agents, security, networking, vaults |
 | CAPI-040 | Managed Agents: untrusted input, sandbox boundaries and stopping a session | pattern | managed-agents, security, prompt-injection, monitoring |
+| CAPI-041 | SessionStore: the two required methods and how resume uses them | fact | agent-sdk, session-store, resume, persistence |
+| CAPI-042 | SessionStore traps: option conflicts, auth in the temp config dir, lost batches | anti-pattern | agent-sdk, session-store, auth, retention |
+| CAPI-043 | canUseTool: when it fires, what to return and how to wait for a slow human | fact | agent-sdk, can-use-tool, approvals, defer |
+| CAPI-044 | AskUserQuestion in the SDK: your callback answers, with limits | fact | agent-sdk, ask-user-question, tools, subagents |
+| CAPI-045 | Structured outputs in the Agent SDK: draft-07, retries and the silent-success case | fact | agent-sdk, structured-outputs, json-schema, errors |
+| CAPI-046 | Streaming input versus single-message input, and the V2 session API that is gone | comparison | agent-sdk, streaming-input, v2-removed, errors |
+| CAPI-047 | Python SDK differs from TypeScript: query() versus ClaudeSDKClient and other traps | comparison | agent-sdk, python, claude-sdk-client, sandbox |
+| CAPI-048 | Todo and Task tools in the SDK are off on newer models | fact | agent-sdk, todo, task-tools, opt-in |
+| CAPI-049 | SDK start-up and exit errors: message, cause, fix | pattern | agent-sdk, troubleshooting, cli-not-found, errors |
+| CAPI-050 | Agent SDK options: caps, environment, fallback and mid-session switches | fact | agent-sdk, options, max-turns, fallback-model, env |
+| CAPI-051 | ResultMessage: a "success" result can still be an error | fact | agent-sdk, result-message, stop-reason, usage |
 
 ---
 
@@ -1046,6 +1059,204 @@ After tightening an environment, start new sessions and stop old ones: a running
 
 Webhooks to watch: `session.status_idled` (the event itself is `session.status_idle`), `session.budget_reached`, `session.status_terminated` and `deployment_run.failed`. A delivery can be missed, so also list sessions on a schedule.
 
+## Agent SDK: sessions, input, output and options
+
+Read 2026-11-01 from `code.claude.com/docs/en/agent-sdk/` (FreekMencke/claude-kb#351, part C). Latest `@anthropic-ai/claude-agent-sdk` on that day: 0.3.316 (`npm view @anthropic-ai/claude-agent-sdk dist-tags`). The pages describe the SDK versions they name; local Claude Code was 2.1.296.
+
+## [CAPI-041] SessionStore: the two required methods and how resume uses them
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Persist sessions to external storage](https://code.claude.com/docs/en/agent-sdk/session-storage), [Agent SDK Python reference](https://code.claude.com/docs/en/agent-sdk/python)
+- Related: CAPI-011, CAPI-042, ORCH-015, MEM-028
+
+A `SessionStore` mirrors transcripts to your own backend "so a session created on one host can be resumed on another host running from a matching working directory". Only `append(key, entries)` and `load(key)` are required. `projectKey` encodes the working directory, so resume from the same `cwd`.
+
+**Optional methods and what breaks without them:**
+- No `listSessions`: `continue: true` throws, and `listSessions({ sessionStore })` throws unless `listSessionSummaries` exists.
+- No `listSubkeys`: resume restores only the main transcript, not the subagent files.
+- No `delete`: `deleteSession` is a no-op, which suits append-only backends. When you do implement it, deleting the main key must cascade to every subkey and the summary entry.
+
+**Dual write.** The subprocess writes to local disk first and the SDK forwards each batch, so "the store is a mirror of the local transcript rather than a replacement for it". On a run resumed from the store, "the local copy is deleted at run end, so the store holds the only durable copy".
+
+**Resume fallbacks when the store has nothing:** `resume` passes the ID to the subprocess, which resumes the local transcript. `continue: true` in TypeScript starts a fresh session, and `continue_conversation=True` in Python continues the newest local one.
+
+Python's `session_store_flush` defaults to `"batched"` (once per turn or when the buffer fills); `"eager"` flushes after every frame. `load_timeout_ms` defaults to `60000`. `InMemorySessionStore` is for tests; S3, Redis and Postgres reference adapters sit under `examples/session-stores/` in both SDK repos and are copied, not installed.
+
+## [CAPI-042] SessionStore traps: option conflicts, auth in the temp config dir, lost batches
+- Type: anti-pattern
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Persist sessions to external storage](https://code.claude.com/docs/en/agent-sdk/session-storage)
+- Related: CAPI-041, CAPI-011
+
+**Startup errors.** The SDK throws if a store is combined with TypeScript `persistSession: false` (it turns off the local writes the mirror is built from) or with file checkpointing (`enableFileCheckpointing` / `enable_file_checkpointing`; backups go to local disk and aren't mirrored).
+
+**`Not logged in`.** A run resumed from the store runs under a temporary `CLAUDE_CONFIG_DIR`. TypeScript copies credentials, `.claude.json` and your user `settings.json` into it (from v0.3.222; earlier only the first two), stripping `enabledPlugins`, `extraKnownMarketplaces`, its `additionalMarketplaces` alias (from v0.3.232) and `CLAUDE_CONFIG_DIR` in `env`. Python copies only credentials and `.claude.json`, so an `apiKeyHelper` in user `settings.json` fails there. The same error appears if you point a fresh session's `CLAUDE_CONFIG_DIR` at a temp folder to avoid local transcripts and sign in through claude.ai or `apiKeyHelper`: use `ANTHROPIC_API_KEY`, or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token` (model requests only, so claude.ai connectors are unavailable).
+
+**Mirror writes are best-effort.** A rejected `append` is retried up to two more times; a timed-out call isn't retried. Then the SDK logs it, emits `{ type: "system", subtype: "mirror_error" }`, drops the batch and continues. A retried batch can re-deliver entries, so deduplicate by `entry.uuid`. On a run resumed from the store, a dropped batch has no other copy.
+
+**Other behaviour.** `forkSession` rewrites session IDs and message UUIDs, so a backend-side object copy gives a broken fork. `getSessionMessages` returns the post-compaction chain (503 raw entries may give 18 messages); call `store.load(key)` for everything. "The SDK never deletes from your store on its own": set expiry yourself, because a store-resumed run leaves no local transcript for `cleanupPeriodDays` to sweep.
+
+## [CAPI-043] canUseTool: when it fires, what to return and how to wait for a slow human
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Handle approvals and user input](https://code.claude.com/docs/en/agent-sdk/user-input), [Configure permissions](https://code.claude.com/docs/en/agent-sdk/permissions)
+- Related: CAPI-012, CAPI-044, HOOK-006
+
+CAPI-012 has the evaluation order. This entry is the callback's contract.
+
+- **It fires only for a call nothing earlier approved.** "The callback never fires for auto-approved tools." For logic on every call, use a `PreToolUse` hook; a `PermissionRequest` hook can send Slack or email while the SDK waits.
+- **It can wait forever.** "The callback can stay pending indefinitely." If the person may take longer than your process can live, register a `PreToolUse` hook that returns `defer`, so the process exits and resumes from the persisted session.
+- **Allow:** `{ behavior: "allow", updatedInput }` (Python `PermissionResultAllow(updated_input=...)`). Before Claude Code v2.1.207 an allow without `updatedInput` was rejected with a validation error. Claude isn't told you changed the input.
+- **Deny:** `{ behavior: "deny", message }`. Claude reads the message and may change approach, so write it as guidance (`compress them into an archive instead`).
+- **Remember a choice:** echo one of `context.suggestions` back in `updatedPermissions`. A `localSettings` destination writes `.claude/settings.local.json`. TypeScript options carry `suppressAlwaysAllowRule: true` (v0.3.268+) when an always-allow choice must not be offered; Python's context lacks it. Python needs `claude-agent-sdk` 0.1.80+ for this.
+- **Redirect entirely** with streaming input, not the callback (CAPI-046).
+
+In Python the page's examples pass a streaming prompt and a dummy `PreToolUse` hook returning `{"continue_": True}`, commented "Required workaround: dummy hook keeps the stream open for can_use_tool".
+
+## [CAPI-044] AskUserQuestion in the SDK: your callback answers, with limits
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Handle approvals and user input](https://code.claude.com/docs/en/agent-sdk/user-input)
+- Related: CAPI-043, ORCH-010
+
+Claude's clarifying questions arrive in `canUseTool` with `toolName === "AskUserQuestion"`. "You can't add your own questions to this flow", so ask your own questions in application code.
+
+- **Allow-list trap.** `AskUserQuestion` is available by default. If you pass a `tools` array (a read-only agent with `Read`, `Glob`, `Grep`), include `AskUserQuestion` in it or Claude can't ask.
+- **Limits:** 1 to 4 questions per call, 2 to 4 options each, `header` at most 12 characters. "`AskUserQuestion` is not currently available in subagents spawned via the Agent tool."
+- **Reply shape:** return `behavior: "allow"` with `updatedInput` holding the original `questions` plus `answers`, a record keyed by the question text whose value is the chosen option `label`. For multi-select pass an array of labels or join them with `", "`; a free-text answer is the typed text. Omitting `questions` from `updatedInput` is a mistake the example comments warn against ("must include original questions").
+- **Previews (TypeScript).** `toolConfig.askUserQuestion.previewFormat` set to `"markdown"` or `"html"` adds a `preview` per option, for the whole session. Unset (default) means no previews. The SDK rejects `<script>`, `<style>` and `<!DOCTYPE>` in HTML previews before your callback runs; check for `undefined` before rendering.
+- Questions are common in `plan` mode.
+
+## [CAPI-045] Structured outputs in the Agent SDK: draft-07, retries and the silent-success case
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Get structured output from agents](https://code.claude.com/docs/en/agent-sdk/structured-outputs), [Troubleshoot the Agent SDK](https://code.claude.com/docs/en/agent-sdk/troubleshooting)
+- Related: CAPI-005, CAPI-051, TOK-121
+
+Pass `outputFormat: { type: "json_schema", schema }` (Python `output_format`); the final `ResultMessage` carries `structured_output`. This is the agent-loop feature, with tools used first. CAPI-005 covers the single-turn API feature and its guarantees; the SDK instead validates and re-prompts.
+
+- **Draft-07 only.** "The SDK validates schemas with JSON Schema draft-07", so a schema declaring a newer version is rejected. Zod emits 2020-12 by default: `z.toJSONSchema(schema, { target: "draft-7" })`. Pydantic: `.model_json_schema()`.
+- **Invalid schema.** Since Claude Code v2.1.205 an invalid schema fails the run at startup with an error; before that it was ignored and you got free text. `format` (such as `"email"`) is an annotation and not enforced; before v2.1.205 it made a schema invalid.
+- **Two failure shapes.** Subtype `error_max_structured_output_retries` ends a single-shot `query()` with a raise after the error result. A `success` result with `structured_output` missing is also a failure: causes are a refusal (`stop_reason` is `"refusal"`) or a schema nothing can satisfy (`minLength` above `maxLength`). A model fallback can also retract a finished output mid-stream and end in the retries error. Read the result's `errors` list to tell validation from fallback.
+- Test `subtype === "success" && structured_output`, never `subtype` alone.
+- Keep schemas focused, make fields optional when the task may not supply them.
+
+## [CAPI-046] Streaming input versus single-message input, and the V2 session API that is gone
+- Type: comparison
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Streaming input](https://code.claude.com/docs/en/agent-sdk/streaming-vs-single-mode), [TypeScript V2 preview (removed)](https://code.claude.com/docs/en/agent-sdk/typescript-v2-preview), [Configure your agent](https://code.claude.com/docs/en/agent-sdk/configuration)
+- Related: CAPI-011, CAPI-043, TOK-121
+
+**Streaming input** (an `AsyncIterable` of user messages) is the page's preferred mode. It gives image attachments, queued messages, interrupts, `setModel` and `setPermissionMode`, and a session that stays alive. **Single-message input** (a string) suits one-shot work and stateless hosts such as a lambda; it lacks images, queueing, interrupts and natural multi-turn. It can still `continue: true` or `resume`.
+
+**Failure traps:**
+- A TypeScript message generator that throws ends the stream with `Claude Code process aborted by user`, not your error, sometimes after a long minified line. Check your generator first.
+- A Python generator exception is logged at debug level and the session stalls with no raise. Turn on debug logging.
+- An image block with a missing `source` raises nothing: Claude sees a text note such as `[Image could not be processed: image block has no source object]`.
+- A single-shot `query()` that ends in an error result such as `error_max_turns` yields it, then raises.
+
+**V2 is removed.** `unstable_v2_createSession`, `unstable_v2_resumeSession`, `unstable_v2_prompt` and the `SDKSession` types went in TypeScript SDK 0.3.142; the version jumped from 0.2.x. For old code pin `@anthropic-ai/claude-agent-sdk@0.2`. Migrate to `query()` with an `AsyncIterable<SDKUserMessage>` or `options.resume`.
+
+## [CAPI-047] Python SDK differs from TypeScript: query() versus ClaudeSDKClient and other traps
+- Type: comparison
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python), [Troubleshoot the Agent SDK](https://code.claude.com/docs/en/agent-sdk/troubleshooting)
+- Related: CAPI-012, CAPI-046, CAPI-049
+
+- **`query()` or `ClaudeSDKClient`.** `query()` starts a fresh session each call and can't interrupt. `ClaudeSDKClient` keeps one session across exchanges and supports `interrupt()`, `set_model`, `rewind_files`, `get_context_usage`, MCP toggling and `stop_task`. Use it for chat UIs or when the next step depends on the reply.
+- **Don't `break` out of the message loop.** The page: "avoid using `break` to exit early as this can cause asyncio cleanup issues". Use a flag and let it finish.
+- **`interrupt()` doesn't clear the buffer.** The interrupted turn's messages, its `ResultMessage` included, stay in the stream. Drain with `receive_response()` before reading the next answer, or you get the old turn's messages.
+- **`receive_response()` stops at the first `ResultMessage`**, so one `query()` plus one loop per prompt.
+- **Sandbox fails open.** With `enabled: True` and no working sandbox, commands run unsandboxed with a stderr warning; the TypeScript SDK's `failIfUnavailable` defaults to `true`. Set `"failIfUnavailable": True` in Python to stop instead. With `bypassPermissions` plus `allowUnsandboxedCommands` the model can leave the sandbox silently.
+- **Names.** `AgentDefinition` fields are camelCase (`disallowedTools`); snake_case raises `TypeError`. `TypedDict` types are plain dicts (`config["budget_tokens"]`). Hook output uses `continue_` and `async_`.
+- `setting_sources=[]` did not disable filesystem settings in Python SDK 0.1.59 and earlier.
+- Fewer hook events than TypeScript (CAPI-012).
+
+## [CAPI-048] Todo and Task tools in the SDK are off on newer models
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Track todos](https://code.claude.com/docs/en/agent-sdk/todo-tracking)
+- Related: ORCH-010
+
+`TodoWrite`, `TaskCreate`, `TaskGet`, `TaskUpdate` and `TaskList` are "available by default only on Claude Opus 4.7, Claude Sonnet 4.6, Claude Haiku 4.5, and earlier models". On every other model, unrecognised model IDs included, there are no `tool_use` blocks for them unless you opt in. The set applies from Claude Code v2.1.268, which the TypeScript SDK bundles from v0.3.268. Newer models track multi-step work without a todo list, so opt in only when your app renders or logs the calls.
+
+**Opt in** with one of: naming a tool in `allowedTools`; listing it in `tools` (which restricts built-in tools to the ones named); or `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` in `env`. In TypeScript `env` replaces the subprocess environment, so spread `process.env`; Python merges. A custom `pathToClaudeCodeExecutable` or `cli_path` gets that install's own defaults.
+
+Where available you get the four Task tools, or `TodoWrite` alone with `CLAUDE_CODE_ENABLE_TASKS=0`. Lifecycle: `pending`, `in_progress`, completed, and `status: "deleted"` through `TaskUpdate`.
+
+**Read the stream defensively.** Claude Code repairs near-miss keys before running (`id` or `task_id` become `taskId`, `active_form` becomes `activeForm`), but "that repair is not reflected in the stream". The `+` log in the page's example doesn't carry assigned IDs, so it can't match updates to creates; capture IDs from results for that. The `SDKTaskNotificationMessage` family reports background tasks, not todos.
+
+## [CAPI-049] SDK start-up and exit errors: message, cause, fix
+- Type: pattern
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Troubleshoot the Agent SDK](https://code.claude.com/docs/en/agent-sdk/troubleshooting)
+- Related: CAPI-011, CAPI-042, CAPI-047
+
+| You see | Cause and fix |
+|---|---|
+| Python `CLINotFoundError: Claude Code not found at: ...` | No `claude` found; with `cli_path` set the SDK skips discovery, so a native install can't help. Check `claude --version` in the app's own environment: IDEs and service managers use another `PATH`. |
+| TS `Native CLI binary for <platform>-<arch> not found` | The install skipped optional dependencies. Reinstall without that, or set `pathToClaudeCodeExecutable`. In `bun build --compile` the cause differs. |
+| Python `Refusing to execute batch script ...claude.cmd` | Deliberate hardening against `cmd.exe` injection (Python SDK 0.2.124+). Use a native `claude.exe`, or the Windows x64 wheel, which bundles one. |
+| `Failed to start Claude Code` / `exists but failed to launch` | Path points to something that can't run. In a container the bundled binary may not match its architecture or libc; reinstall the SDK during the image build. |
+| Python `ProcessError: Command failed with exit code 1` | Its `Error output:` line is fixed text, not stderr. Pass a `stderr` callback in options. |
+| `ResultError` (0.2.140+) | The CLI reported an error result first. It subclasses `ProcessError`, so put `except ResultError` first. `data` holds the full result. |
+| TS `Claude Code process exited with code N. stderr: ...` | A plain `Error` with no class: wrap the `for await` loop in try/catch and match the message. A signal gives `terminated by signal <name>`. |
+| `Claude Code returned an error result: ...` | Both SDKs; start from the text after the colon. |
+| `Not connected. Call connect() first.` | Use `async with ClaudeSDKClient()` or call `connect()`. |
+
+## [CAPI-050] Agent SDK options: caps, environment, fallback and mid-session switches
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Configure your agent](https://code.claude.com/docs/en/agent-sdk/configuration), [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python)
+- Related: TOK-121, CAPI-011, CAPI-046, MEM-028
+
+- **Caps.** Both are off when unset. `maxTurns: 0` means no limit, same as unset. `maxBudgetUsd: 0` is rejected at startup, "the session never runs".
+- **`env`.** TypeScript: it "replaces the subprocess environment", so spread `process.env` or lose `PATH`, `HOME` and `ANTHROPIC_API_KEY`. Python merges over the inherited environment.
+- **No sampling knobs.** `temperature`, `top_p` and `max_tokens` have no option field in either language; use `effort`, a spend cap, or the Messages API.
+- **Fallback.** `fallbackModel` takes one model or a comma-separated chain. The primary is retried at each user turn. In TypeScript a fallback equal to `model` throws at startup.
+- **Settings.** `settings` (path or inline JSON) overrides user, project and local settings; only managed policy outranks it. `settingSources: []` loads none.
+- **Setters need streaming input.** `setModel()` with no argument returns to Claude Code's default, not your `model` option. A session in auto mode that switches to a model auto mode doesn't support falls back to `default` mode. After a model switch the next request recomputes the whole conversation uncached, since each model has its own cache.
+- TypeScript `updateSettings("userSettings", ...)` accepts only `effortLevel`, and the running session's effort doesn't change.
+- **Python timeouts** go through `env`: `API_TIMEOUT_MS` (headers only, default `600000`), `CLAUDE_CODE_MAX_RETRIES` (default 10, cap 15), `CLAUDE_ASYNC_AGENT_STALL_TIMEOUT_MS` for subagents (default 600000; stream-idle plus 5 minutes from v2.1.257). SURF-043 has the stream watchdogs.
+
+## [CAPI-051] ResultMessage: a "success" result can still be an error
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python)
+- Related: TOK-121, CAPI-045, CAPI-008
+
+TOK-121 lists the subtypes. The Python reference adds that `subtype="success"` does not mean the turn worked: `is_error` is `True` on `success` in three cases, told apart by `stop_reason`.
+
+1. `"refusal"`: the model declined; the text is in `result`, or in the preceding `AssistantMessage` when `result` is empty.
+2. `"tool_deferred_unavailable"`: a deferred tool was gone on resume. With no prompt the call stays pending and runs first once the tool is back; a prompt answers without it and the deferred call is dropped.
+3. Anything else: an error reported in place of a model reply, such as an API error. Read `terminal_reason` (`"completed"`, `"max_turns"`, `"api_error"`, `"aborted_streaming"`, `"aborted_tools"`), `result`, and `api_error_status`.
+
+**Check order** (`ResultError` too): `stop_reason`, then `terminal_reason`, then `subtype`. A refusal's `terminal_reason` doesn't single it out.
+
+**Accounting.** `usage` covers the main loop only. `model_usage` covers subagents and internal calls such as compaction, and is "an estimate, not a billing statement". In streaming input mode `model_usage` and `total_cost_usd` are cumulative, so read the latest result and don't sum. `origin` (Python SDK 0.2.137+) separates your prompt's result from an injected turn: several background-task notifications that finish together give one `ResultMessage` each, all but the last with `num_turns` 0 and empty `result`.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. None of our public repos calls the Claude API or the Agent SDK on 2026-10-17, so these are rules for when one starts to, plus one decision about scheduled work.
@@ -1070,6 +1281,7 @@ No issue was opened in another repo: none of these needs a change there today.
 
 ## Open questions
 
+- **Agent SDK pages not read in part C.** `agent-sdk/typescript.md` (only cross-checked through the Python reference and the pages above) and the `examples` page, which only routes to `claude-agent-sdk-demos` and Cookbook notebooks. The SDK was not installed, so none of CAPI-041 to CAPI-051 was run against a real session (store resume, `maxBudgetUsd: 0`, `AskUserQuestion` limits).
 - **Haiku 4.5's retirement.** The deprecations page still shows `claude-haiku-4-5-20251001` as Active, "Not sooner than October 15, 2026", two days after that date, with no deprecation entry (CAPI-003). Re-check the page.
 - **Batch with Files.** Can a Message Batches request reference a `file_id`? Neither the Files nor the Batch processing page says (CAPI-010).
 - **Managed Agents limits.** The API rate limits and what happens when a scheduled run starts while the previous session still runs (CAPI-013). `managed-agents/reference.md` wasn't read; the scheduled-deployments page has no overlap policy.
