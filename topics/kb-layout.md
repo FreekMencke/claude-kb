@@ -423,7 +423,7 @@ These are WCAG 2.2 AA requirements (ACCESS-001); everything else in this file is
 
 | Criterion | What it asks of a layout |
 |---|---|
-| 1.4.10 Reflow (AA) | No two-direction scrolling at 320 CSS px wide ("1280 CSS pixels wide at 400% zoom"), or 256 px tall for vertical-scrolling text. Excepted: "maps, diagrams), video, games, presentations, data tables (not individual cells), and interfaces where it is necessary to keep toolbars in view". A wide table scrolls in its own box; cards and dashboards don't count. Sidebars stack or become drawers (LAYOUT-007). |
+| 1.4.10 Reflow (AA) | No two-direction scrolling at 320 CSS px wide ("1280 CSS pixels wide at 400% zoom"), or 256 px tall for vertical-scrolling text. Excepted: "maps and diagrams), video, games, presentations, data tables (not individual cells), and interfaces where it is necessary to keep toolbars in view". A wide table scrolls in its own box; cards and dashboards don't count. Sidebars stack or become drawers (LAYOUT-007). |
 | 1.4.4 Resize Text (AA) | Text resized "up to 200 percent without loss of content or functionality". |
 | 1.4.12 Text Spacing (AA) | Nothing clips when users set line height 1.5, paragraph spacing 2, letter spacing 0.12 and word spacing 0.16 times the font size. Use `min-height`, not `height`, on rows, cards and buttons (failure F104). |
 | 2.5.8 Target Size (AA) | 24 by 24 CSS px, or undersized targets spaced so a "24 CSS pixel diameter circle" on each meets no other; inline links are exempt. 44 px is AAA (2.5.5). |

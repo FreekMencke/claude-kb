@@ -305,7 +305,7 @@ Defaults: `mutate` covers `{src,lib}/**` minus spec and test files; `concurrency
 
 Cost levers: `--incremental` reruns only mutants in changed code and tests; `--mutate src/file.ts:5-7` limits a run to lines; `ignoreStatic`, as static mutants "come with a big performance penalty"; the TypeScript checker drops uncompilable mutants at "a performance cost". No official run-time figure exists: mutate changed files, not the repo.
 
-**Vitest 5 bug:** Vitest 5 joins test names with `' > '`, but the runner filters by space-joined names, so "on Vitest 5 the per-test name filter matches nothing, so every covered mutant survives" (#6210, open; fix #6214 open and unmerged on 2026-10-17). Tested 2026-10-17, vitest@5.0.5, Stryker 10.0.0, Node 24.21.0: the JSTEST-013 suite scored 60% with top-level tests and 0% (10 of 10 survived) with the same tests inside one `describe`.
+**Vitest 5 bug (fixed in 10.1.0):** Vitest 5 joins test names with `' > '`, but the runner filters by space-joined names, so "on Vitest 5 the per-test name filter matches nothing, so every covered mutant survives" (#6210). The CHANGELOG lists "support vitest v5" (#6214) in 10.1.0 (2026-10-23), so this is fixed in 10.1.x, which was not re-tested. Tested 2026-10-17 on 10.0.0, vitest@5.0.5, Stryker 10.0.0, Node 24.21.0: the JSTEST-013 suite scored 60% with top-level tests and 0% (10 of 10 survived) with the same tests inside one `describe`.
 
 Angular's `unit-test` builder isn't supported (#5655, open; a maintainer workaround uses `--dump-virtual-files`). Browser mode: the runner's docs say "not supported", the 9.0.0 CHANGELOG "support vitest 3 browser mode".
 
@@ -379,7 +379,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 
 1. Done 2026-10-18: both Angular apps are on `@angular/build` 22.2.3 without the `fsModuleCache` workaround (osrs-tracker/osrs-tracker-web#354, FreekMencke/freek-mencke-web#19; JSTEST-003, JSTEST-004).
 2. **Keep Vitest 5 without `unplugin-swc` in osrs-tracker-api** (JSTEST-007, JSTEST-008): Nest 12's own template does the same, and class-typed constructor injection works on Vite 8. If a spec fails with "Nest can't resolve dependencies… (?)", check for a type-alias or `import type` parameter before adding a plugin.
-3. **Won't do now: Stryker** (JSTEST-014). On Vitest 5 its runner scores nested tests as 0% until stryker-js#6214 is released, and it doesn't support Angular's builder. Re-check `npm view @stryker-mutator/vitest-runner dist-tags` and the CHANGELOG; then pilot it on osrs-tracker-api's pipes and parsers with `--mutate`, not the whole repo.
+3. **Won't do now: Stryker** (JSTEST-014). On Vitest 5 its 10.0.0 runner scored nested tests as 0%; 10.1.0 (2026-10-23) lists Vitest 5 support (stryker-js#6214), not re-tested, and Angular's builder support is unchecked. Re-check `npm view @stryker-mutator/vitest-runner dist-tags` and the CHANGELOG; then pilot it on osrs-tracker-api's pipes and parsers with `--mutate`, not the whole repo.
 4. **Won't do now: a Playwright Test suite for the Angular apps** (JSTEST-011). The browser-checker subagent (REPO-021) and CD's smoke tests cover what changes, and a hydration-timing answer is still open. Reconsider when a regression slips past both.
 5. Done 2026-10-18: the global CLAUDE.md says never to delete, skip or loosen an existing test to make a change pass (JSTEST-016, PROMPT-028).
 6. **Won't do: Jest** (JSTEST-007, JSTEST-009). Our repos are on Vitest, and the global CLAUDE.md already says new tests use Vitest.
@@ -388,6 +388,6 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 
 - **Hydration and Playwright** (JSTEST-011): no Playwright or Angular page read here says what a test should wait on before clicking a hydrated SSR page. Looked in Playwright's best-practices, assertions and emulation docs at v1.64.1.
 - **Jest on Node older than 24.9 with Nest 12** (JSTEST-009): Jest's docs say `ERR_REQUIRE_ESM`, Nest's guide `ERR_REQUIRE_ASYNC_MODULE`, and Jest 30.5.0 added a transform fallback. Not tested: no Node older than 24.9 in the scratch setup.
-- **When stryker-js#6214 ships**, and whether the `--dump-virtual-files` workaround for Angular works on Angular 22 with Vitest 5 (JSTEST-014).
+- **Whether Stryker 10.1.x really fixes the 0% score** (stryker-js#6214 shipped in 10.1.0, untested), and whether the `--dump-virtual-files` workaround for Angular works on Angular 22 with Vitest 5 (JSTEST-014).
 - **Does `vi.mock(import('./x'))` get past the Angular builder's relative-path check** (JSTEST-005)? The patch checks for a string, so the `import()` form isn't matched; whether mocking then works on a bundled spec wasn't tested.
 - **Stryker's vitest-runner and browser mode** (JSTEST-014): the runner's docs say "not supported"; the 9.0.0 CHANGELOG says "support vitest 3 browser mode". Not tested.

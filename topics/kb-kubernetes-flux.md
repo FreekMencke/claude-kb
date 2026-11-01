@@ -15,7 +15,7 @@ Research basis:
 |---|---|---|
 | What changed in Flux 2.8 and 2.9, and what needs action? | 2.8 (2026-02-24): Helm v4 in helm-controller (server-side apply and kstatus health checks by default), `v1beta2`/`v2beta2` source, kustomize and helm APIs removed. 2.9 (2026-06-30): post-render default `combined`, image and notification `v1beta2` removed, GCR Receivers need `email` and `audience`. Latest 2.9.6 (2026-10-01). Existing HelmReleases keep client-side apply until `serverSideApply: enabled`; `UseHelm3Defaults` restores Helm 3 behaviour. | KUBE-001, KUBE-004 |
 | How do I upgrade Flux to 2.9 without breaking on removed APIs? | `flux migrate -f .` in the Git repo (rewrites old `apiVersion`s; Alert goes to `v1beta3`, not `v1`), push, then `flux migrate` against the cluster to rewrite etcd, then upgrade the controllers (rerun `flux bootstrap`, or set the Operator's version). | KUBE-002 |
-| Which Kubernetes versions does Flux 2.9 support? Can I go to 1.37? | 1.34, 1.35 and 1.36 only. Kubernetes 1.37 (2026-08-26) waits for Flux 2.10 ("mid Q4 2026", provisional); cert-manager 1.21 also stops at 1.36. | KUBE-003, KUBE-009 |
+| Which Kubernetes versions does Flux 2.9 support? Can I go to 1.37? | 1.34, 1.35 and 1.36 only. Flux 2.10 (blog 2026-10-26) supports 1.35, 1.36 and 1.37; cert-manager 1.21 stopped at 1.36 (not re-checked on 2026-11-01). | KUBE-003, KUBE-009 |
 | Flux Operator or `flux bootstrap`? | fluxcd.io still calls bootstrap "the recommended way"; the Operator (ControlPlane, AGPL-3.0) is the documented alternative, with automatic upgrades through `FluxInstance` `distribution.version` and a zero-downtime migration from bootstrap. | KUBE-005 |
 | ingress-nginx is retired: what does that mean, and what replaces it on a single node? | No releases or security fixes since March 2026; the Ingress API is frozen but GA, with no plan to remove it. Use any conformant Gateway API implementation (17 have v1.6 reports, Traefik, Envoy Gateway and NGINX Gateway Fabric among them), or Traefik's ingress-nginx provider (v3.6.2+) to keep Ingress objects and annotations. `ingress2gateway` 1.x converts 30+ annotations. | KUBE-006, KUBE-008 |
 | What's in Gateway API's Standard channel now? | v1.6.3 (2026-10-06) `standard-install.yaml` ships 10 CRDs: Gateway, GatewayClass, HTTPRoute, GRPCRoute, TLSRoute, TCPRoute, UDPRoute, ListenerSet, ReferenceGrant, BackendTLSPolicy, plus a `safe-upgrades` admission policy that blocks downgrades. CRDs install separately from the controller. | KUBE-007 |
@@ -24,7 +24,7 @@ Research basis:
 | Loki 3 on a small setup? | Monolithic mode (`-target=all`) up to about 20 GB/day. 3.0 requires the `tsdb` index and `v13` schema for structured metadata and OTLP; simple scalable mode and the legacy index stores are removed in 4.0. | KUBE-012 |
 | Promtail is EOL: how do I move to Alloy? | EOL since 2026-03-02. `alloy convert --source-format=promtail --output=out.alloy promtail.yaml`, with `--report`; tested on 1.20.1: Kubernetes discovery, pipeline stages, journal and positions file converted. Set `HOSTNAME` to the node name in the DaemonSet. | KUBE-013 |
 | Alloy or the OpenTelemetry Collector for one small cluster? | Alloy's default engine for Prometheus scrapes and Loki logs (one binary, UI, the k8s-monitoring chart); the Collector, or Alloy's preview `alloy otel` engine, when the pipeline is OTLP end to end. | KUBE-014 |
-| Why does mongod 8.0 exit at startup on Ubuntu 26.04? | 8.0.21+ refuses kernels from 6.19 (tcmalloc and rseq) and reads Ubuntu's `7.0.0-38` as 7.0.0, though it's upstream 7.0.14 with the fix. Fixed in 8.0.35 (unreleased 2026-10-22) and 9.0.4; until then start it through `setarch x86_64 --uname-2.6 docker-entrypoint.sh`. | KUBE-017 |
+| Why does mongod 8.0 exit at startup on Ubuntu 26.04? | 8.0.21+ refuses kernels from 6.19 (tcmalloc and rseq) and reads Ubuntu's `7.0.0-38` as 7.0.0, though it's upstream 7.0.14 with the fix. Fixed in 8.0.37 (server released 2026-10-30; image not yet) and 9.0.4; until then start it through `setarch x86_64 --uname-2.6 docker-entrypoint.sh`. | KUBE-017 |
 | How do I run a single MongoDB on Kubernetes? | One-member replica set; clients use `directConnection=true` (member names resolve only in-cluster); copy the keyFile in with an initContainer (0400, uid 999); exporter as its own Deployment, not a sidecar; for a second Secret overriding keys, `envFrom` takes the last one listed. | KUBE-018, KUBE-019, KUBE-020, KUBE-023 |
 | How do I stay under Grafana Cloud's free 10k series? | Count live series with `count({__name__=~".+"})`, not the lagging `grafanacloud_instance_active_series`; drop what no dashboard reads in Alloy's relabel step. One MongoDB exporter offered 5.8k series; 58 kept. | KUBE-024, KUBE-025 |
 | How often must a small cluster upgrade Kubernetes, and can it skip a minor? | Three minors a year, each patched about 14 months; kubeadm can't skip a minor, so plan one minor upgrade every four months or two a year at least. Check add-on support (Flux, cert-manager, CNI, ingress) before each. | KUBE-015, KUBE-016 |
@@ -49,7 +49,7 @@ Research basis:
 | KUBE-014 | Alloy or the OpenTelemetry Collector for one small cluster | comparison | alloy, opentelemetry-collector, otlp, k8s-monitoring |
 | KUBE-015 | Kubernetes release cadence, support period and version skew | fact | kubernetes-versions, version-skew, support-period, release-cadence |
 | KUBE-016 | Upgrading a small kubeadm cluster: one minor at a time, gated by add-ons | pattern | kubeadm, upgrade, kubernetes-versions, add-ons |
-| KUBE-017 | mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.35 | fact | mongodb, ubuntu-26-04, kernel, setarch |
+| KUBE-017 | mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.37 | fact | mongodb, ubuntu-26-04, kernel, setarch |
 | KUBE-018 | A one-member replica set behind a Service: `directConnection=true`, and when `authSource` matters | fact | mongodb, replica-set, connection-string, statefulset |
 | KUBE-019 | A MongoDB keyFile from a Secret needs an initContainer to copy it | pattern | mongodb, keyfile, secrets, init-containers |
 | KUBE-020 | Run a database's metrics exporter as its own Deployment, not a sidecar | pattern | mongodb, exporter, sidecar, labels |
@@ -70,7 +70,7 @@ Research basis:
 - Sources: [Flux 2.8 GA blog](https://fluxcd.io/blog/2026/02/flux-v2.8.0/), [Flux 2.9 GA blog](https://fluxcd.io/blog/2026/06/flux-v2.9.0/), [flux2 v2.8.0 release](https://github.com/fluxcd/flux2/releases/tag/v2.8.0), [flux2 v2.9.0 release](https://github.com/fluxcd/flux2/releases/tag/v2.9.0), [flux2 v2.9.6 release](https://github.com/fluxcd/flux2/releases/tag/v2.9.6)
 - Related: KUBE-002, KUBE-003, KUBE-004, DOCKER-013, INFRA-014
 
-Release dates from `gh api repos/fluxcd/flux2/releases/tags/<tag>`: v2.7.0 2025-09-30, v2.8.0 2026-02-24, v2.9.0 2026-06-30, latest v2.9.6 2026-10-01 (no 2.10 or release candidate on 2026-10-17).
+Release dates from `gh api repos/fluxcd/flux2/releases/tags/<tag>`: v2.7.0 2025-09-30, v2.8.0 2026-02-24, v2.9.0 2026-06-30, v2.9.6 2026-10-01, v2.10.0 2026-10-26 (the date of the Flux 2.10 blog post; the release page was not fetched).
 
 **2.8** brought Helm v4 to helm-controller ("Both server-side apply and kstatus health checking are the new defaults", KUBE-004), CEL readiness expressions and `.status.inventory` on HelmRelease, the opt-in `CancelHealthCheckOnNewRevision` gate, PR comments from notifications, and Cosign v3 for OCIRepository verification. Action: "The Flux APIs `v1beta2` and `v2beta2` (deprecated in 2024) have reached end-of-life and have been removed from the CRDs" (source, kustomize, helm).
 
@@ -110,9 +110,9 @@ Flux keeps "release branches for the most recent three minor releases", and "the
 
 The releases page promises a Flux minor "approximately two weeks after Kubernetes", supporting "Kubernetes N-2 minor versions". Observed lags (release dates from `gh api`): Kubernetes 1.34.0 (2025-08-27) to Flux 2.7.0 34 days; 1.35.0 (2025-12-17) to 2.8.0 69 days; 1.36.0 (2026-04-22) to 2.9.0 69 days.
 
-Kubernetes 1.37.0 shipped 2026-08-26. No 2.9.x patch lists it, and patches carry no "user-facing changes" by policy. The roadmap's next milestone is "v2.10 (mid Q4 2026)", "Status: Provisional", with "End-to-end testing for Kubernetes 1.37" unchecked and "End support for Kubernetes v1.34.x". The install page on `main` was already updated on 2026-10-01 for "Flux 2.10 (Kubernetes 1.37)" with 1.35 to 1.37.
+Kubernetes 1.37.0 shipped 2026-08-26. No 2.9.x patch lists it. Flux 2.10 (blog dated 2026-10-26, 61 days later) lists it: "Flux v2.10 supports the following Kubernetes versions: Distribution Versions Kubernetes 1.35, 1.36, 1.37", and "Flux v2.7 has reached end-of-life". The roadmap now shows v2.10 as completed, and the install page lists 1.35 to 1.37.
 
-So a cluster on Flux should stay on 1.36 until 2.10 is out. The install page says Flux "may work on older versions of Kubernetes", but "we don't recommend running EOL versions in production nor do we offer support for these versions". A newer-than-tested Kubernetes isn't covered either way. Kubernetes 1.34 reaches end of life on 2026-10-27 (KUBE-015).
+So a cluster on Flux 2.9 should stay on 1.36; Flux 2.10 is the first release that lists 1.37. The install page says Flux "may work on older versions of Kubernetes", but "we don't recommend running EOL versions in production nor do we offer support for these versions". A newer-than-tested Kubernetes isn't covered either way. Kubernetes 1.34 reaches end of life on 2026-10-27 (KUBE-015).
 
 ## [KUBE-004] helm-controller on Helm v4: server-side apply, kstatus and post-render defaults
 - Type: fact
@@ -354,7 +354,7 @@ Per minor:
 
 A failed upgrade can be retried with `kubeadm upgrade apply --force` at the current version. k3s ships matching lines (`v1.37.1+k3s1`, 2026-09-30) and has its own upgrade controller; not covered here.
 
-## [KUBE-017] mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.35
+## [KUBE-017] mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.37
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
@@ -364,9 +364,9 @@ A failed upgrade can be retried with `kubeadm upgrade apply --force` at the curr
 
 Linux 6.19 changed rseq behaviour in a way that breaks tcmalloc: MongoDB 8.0.0–8.0.20 there "crashes after ~60 seconds, potential corruption", so 8.0.21 and later exit at startup on kernels from 6.19 (SERVER-121912). "Linux kernel versions 7.0.14+ and 7.1.0+ (inclusive) restore previous userspace behavior", and 8.0.30 and 8.3.9 stop exiting on them (SERVER-125742).
 
-Ubuntu's kernel version isn't upstream's. Ubuntu 26.04's `7.0.0-38-generic` reads as 7.0.0; `/proc/version_signature` names the upstream base (Ubuntu's example: `Ubuntu 5.4.0-12.15-generic 5.4.8`), here 7.0.14. So 8.0.34 still exits on it. SERVER-131779 ("Add linux the kernel 7.0.14 exemption for ubuntu") fixes that in 9.0.4 (released 2026-09-30), 8.3.14 and 8.0.35. On 2026-10-22 the last two are unreleased in Jira, and Docker Hub's newest 8.0 tag is `8.0.34` (2026-10-17).
+Ubuntu's kernel version isn't upstream's. Ubuntu 26.04's `7.0.0-38-generic` reads as 7.0.0; `/proc/version_signature` names the upstream base (Ubuntu's example: `Ubuntu 5.4.0-12.15-generic 5.4.8`), here 7.0.14. So 8.0.34 still exits on it. SERVER-131779 ("Add linux the kernel 7.0.14 exemption for ubuntu") fixes that in 9.0.4 (released 2026-09-30), 8.3.16 and 8.0.37 (both released 2026-10-30; Jira's fix versions were first 8.3.14 and 8.0.35, changed 2026-10-30). On 2026-11-01 Docker Hub's newest 8.0 tag is still `8.0.34` and the docker-library 8.0 Dockerfile pins 8.0.34, so the image fix has not shipped.
 
-Workaround until 8.0.35: run the image's entrypoint through `setarch`, whose `--uname-2.6` "Causes the specified program to see a kernel version number beginning with 2.6":
+Workaround until 8.0.37: run the image's entrypoint through `setarch`, whose `--uname-2.6` "Causes the specified program to see a kernel version number beginning with 2.6":
 
 ```yaml
 command: [setarch, x86_64, --uname-2.6, docker-entrypoint.sh]
@@ -625,7 +625,7 @@ Ranked by impact against effort. Compared on 2026-10-17, read-only, with a singl
 6. **Nothing to change for 64-day certificates** (KUBE-010): cert-manager's default 2/3 renewal matches Let's Encrypt's advice. Don't add a fixed `renewBefore`; use `renewBeforePercentage` if one is ever needed.
 7. **Keep Alloy; no OpenTelemetry Collector** (KUBE-014). The pipelines are Prometheus scrapes and logs, the Default Engine's case. Promtail conversion (KUBE-013) doesn't apply.
 8. **When images are signed (DOCKER-012), check signatures at admission** (DOCKER-013): Flux's `verify` covers only its own sources.
-9. **Drop the `setarch` wrapper from mongod when `mongo:8.0.35` ships** (KUBE-017), and only then: on a kernel without the rseq fix, the wrapper would hide the hazard. The cluster check already flags new 8.0 patches.
+9. **Drop the `setarch` wrapper from mongod when `mongo:8.0.37` or later ships** (KUBE-017), and only then: on a kernel without the rseq fix, the wrapper would hide the hazard. The cluster check already flags new 8.0 patches.
 10. **Done 2026-10-21 and 2026-10-22: the server move and MongoDB on the cluster** (FreekMencke/fremen-cluster#20, FreekMencke/fremen-cluster#22): Flannel instead of Calico (KUBE-027), CrowdSec plugin 1.8.1 (KUBE-026), host fixes (KUBE-028), MongoDB with its own exporter (KUBE-017 to KUBE-024).
 11. **Won't do: Alloy's built-in MongoDB exporter** (KUBE-021): a URI Go can't parse stops every pipeline in Alloy, against one pod for Percona's exporter.
 

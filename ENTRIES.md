@@ -643,7 +643,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | KUBE-014 | Alloy or the OpenTelemetry Collector for one small cluster | comparison | alloy, opentelemetry-collector, otlp, k8s-monitoring |
 | KUBE-015 | Kubernetes release cadence, support period and version skew | fact | kubernetes-versions, version-skew, support-period, release-cadence |
 | KUBE-016 | Upgrading a small kubeadm cluster: one minor at a time, gated by add-ons | pattern | kubeadm, upgrade, kubernetes-versions, add-ons |
-| KUBE-017 | mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.35 | fact | mongodb, ubuntu-26-04, kernel, setarch |
+| KUBE-017 | mongod 8.0 exits at startup on Ubuntu 26.04's 7.0 kernel until 8.0.37 | fact | mongodb, ubuntu-26-04, kernel, setarch |
 | KUBE-018 | A one-member replica set behind a Service: `directConnection=true`, and when `authSource` matters | fact | mongodb, replica-set, connection-string, statefulset |
 | KUBE-019 | A MongoDB keyFile from a Secret needs an initContainer to copy it | pattern | mongodb, keyfile, secrets, init-containers |
 | KUBE-020 | Run a database's metrics exporter as its own Deployment, not a sidecar | pattern | mongodb, exporter, sidecar, labels |

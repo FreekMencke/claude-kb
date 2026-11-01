@@ -572,7 +572,7 @@ Tested 2026-10-23, Node 24.21.0: Papa Parse on `"﻿a;b\n1;2"` with `header: tru
 
 Turn rows into a chart or table with a tool that runs outside the context: `duckdb -c "SELECT country, sum(revenue) FROM 'data.csv' GROUP BY 1"`, `mlr --icsv --opprint stats1 -a sum -f revenue -g country`, `jq` for JSON, or a short Node script. Only the aggregate enters the conversation.
 
-Anthropic's docs say the same in general terms: the costs page shows a hook that preprocesses a 10,000-line log, "reducing context from tens of thousands of tokens to hundreds". The Read tool refuses a whole file over 256 KB and returns at most 25,000 tokens per call (TOK-040). On the API, the code execution tool runs pandas and matplotlib in a container with "5 GiB RAM" and no internet, for "Data analysis, file parsing, or visualization".
+Anthropic's docs say the same in general terms: the costs page shows a hook that preprocesses a 10,000-line log, "reducing context from tens of thousands of tokens to hundreds". The Read tool refuses a whole file over 256 KB and returns at most 25,000 tokens per call (TOK-040). On the API, the code execution tool runs pandas and matplotlib in a container with "5 GiB of RAM" and no internet, for "Data analysis, file parsing, or visualization".
 
 Measured: a 1,000-row, five-column CSV (33,916 bytes) cost about 24,900 input tokens to Read, about 1.4 bytes per token, against Anthropic's "approximately 3.5 English characters" per token on earlier models (newer models' tokenizer gives "approximately 30 percent more tokens"). Digits and commas tokenise worse than prose. A five-row aggregate costs under 100.
 
@@ -592,7 +592,7 @@ Tested 2026-10-23, v2.1.296, terminal, Haiku 5.5: `claude -p` with `--output-for
 - Sources: [Claude Code: commands](https://code.claude.com/docs/en/commands.md), [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), skill files read from the desktop app's bundled skills at 2.1.308
 - Related: VIZ-003, VIZ-006, VIZ-007, VIZ-025, SURF-015
 
-`/dataviz` is a bundled skill: "Design guidance for charts, graphs, and dashboards… validates the palette for colorblind safety and contrast with a bundled script". Added in 2.1.198 (2026-07-01), changed in 2.1.210, 2.1.216, 2.1.296 and 2.1.309 (2026-10-22, APCA added): re-read it before quoting its numbers.
+`/dataviz` is a bundled skill: "Design guidance for charts, graphs, and dashboards… validates the palette for colorblind safety and contrast with a bundled script". Added in 2.1.198 (2026-07-01), changed in 2.1.210, 2.1.216, 2.1.296, 2.1.309 (2026-10-22, APCA added) and 2.1.314 (full y-axis tick labels under 10,000; donut and pie requests answered with ranked bars or a segmented bar): re-read it before quoting its numbers.
 
 What it prescribes (2.1.308 files):
 - Form before colour; a single value is a stat tile, more than about 7 meaningful classes a table.

@@ -156,7 +156,7 @@ Environment:
 | Invalid or schema-failing JSON | Non-blocking error | Blocks; stderr is the reason | Non-blocking error |
 | Plain text or nothing | Success | Blocks; stderr is the reason | Non-blocking error |
 
-- **Exit 1 doesn't block.** "Without valid JSON on stdout, Claude Code treats exit code 1 as a non-blocking error… If your hook is meant to enforce a policy, use `exit 2`." The official validator example's comments still describe exit 1 as user-only feedback, consistent with this.
+- **Exit 1 doesn't block.** "Exit code 1 without valid JSON output is a non-blocking error unless the hook is one whose failure blocks the action, even though 1 is the conventional Unix failure code. If your hook is meant to enforce a policy, use `exit 2`." The official validator example's comments still describe exit 1 as user-only feedback, consistent with this.
 - **Exit 0 with no output on PreToolUse is "no decision", not approval**: the normal permission flow continues.
 - **Stdout:** for most events it goes to the debug log only. On `UserPromptSubmit`, `UserPromptExpansion`, `SessionStart` and `PostModelSwitch` plain stdout becomes context Claude sees.
 - **Stderr:** Claude never sees it on exit 0. On exit 2 it is the block reason, shown as `PreToolUse:Bash hook error: [<command>]: <stderr>`. A non-blocking error shows the first stderr line in the transcript.
@@ -196,13 +196,13 @@ Deprecated: top-level `decision: "approve"/"block"` on PreToolUse (maps to allow
 `permissionDecision` values:
 - `"deny"`: blocks; `permissionDecisionReason` goes to Claude. Works "even in `bypassPermissions` mode or with `--dangerously-skip-permissions`", because PreToolUse fires before any permission-mode check.
 - `"ask"`: forces a prompt, labelled `[settings]`, `[plugin:<name>]` or `[skill]`. In auto mode the classifier can still deny but can't approve silently.
-- `"allow"`: skips the prompt, but "Deny and ask rules are still evaluated regardless of what the hook returns". It can't skip prompts for network-path reads or `requiresUserInteraction` MCP tools; `AskUserQuestion` and `ExitPlanMode` need `updatedInput` with it.
+- `"allow"`: skips the prompt, but "Claude Code evaluates deny and ask rules regardless of what a PreToolUse hook returns". It can't skip prompts for network-path reads or `requiresUserInteraction` MCP tools; `AskUserQuestion` and `ExitPlanMode` need `updatedInput` with it.
 - `"defer"`: only in `-p` with a single tool call; the run exits with `stop_reason: "tool_deferred"` for a calling app to resume.
 
 Rules:
 - An exit-2 block beats allow rules. The documented recipe: allow `"Bash"` broadly and block a few commands with a hook.
 - A hook can tighten permission rules but not loosen them.
-- `updatedInput` replaces the entire input; permission rules are evaluated against the rewritten input (since v2.1.290 all safety checks are). Several hooks returning `updatedInput` race: "the last one to finish takes effect".
+- `updatedInput` replaces the entire input; permission rules are evaluated against the rewritten input (since v2.1.290 all safety checks are). Several hooks returning `updatedInput` aren't merged and which rewrite runs isn't guaranteed: "Claude Code doesn't merge the rewrites or guarantee which rewrite the tool runs with".
 - An installed mod's `tool.check` can approve a call a non-managed PreToolUse hook blocked (HOOK-035).
 
 ## [HOOK-007] `additionalContext`: where it lands and how to word it
@@ -379,7 +379,7 @@ When to use it: a hook that is the **only** guard for something that matters (se
 - **Parallel.** "its matching hooks run in parallel". Every hook "runs to completion before Claude Code merges the results"; one hook's deny doesn't stop a sibling's side effects (a logger still logs).
 - **Dedup.** The same handler in several settings files runs once. "A plugin's or skill's copy of the same handler stays separate."
 - **Merging.** PreToolUse: most restrictive wins, `deny` > `defer` > `ask` > `allow`. `additionalContext` from every hook is delivered.
-- **`updatedInput` races.** With several rewriting hooks "the last one to finish takes effect… non-deterministic. Avoid having more than one hook modify the same tool's input."
+- **`updatedInput` isn't merged.** With several rewriting hooks, "Claude Code doesn't merge the rewrites or guarantee which rewrite the tool runs with. Avoid having more than one hook rewrite the same tool's input."
 - **No ordering.** There is no priority or sequence field. If step B needs step A's result, put both in one script.
 - **Working directory.** Handlers run in the current directory; if it was deleted, Claude Code falls back to the start directory, project root, home, then temp, and logs a warning.
 
@@ -846,7 +846,7 @@ Confidence note: read from each vendor's docs on 2026-10-12; defaults there may 
 A plugin can also register hooks as **JavaScript functions** that Claude Code calls in its own process; such a plugin is a **mod**. Mods can draw in the interface (panes, status bands) as well as act on events (`tool.check`, `prompt.submit`, `agent.spawn`, …). The settings hooks in this file "keep working alongside mods".
 
 What matters for hook authors:
-- A mod's `tool.check` answers **after** permission rules and PreToolUse hooks, and "can approve a call that your `PreToolUse` hook blocked, unless the hook is in managed settings".
+- A mod's `tool.check` answers **after** permission rules and PreToolUse hooks, and with managed settings or a Team or Enterprise `/login` as the session's credential "A call that a `PreToolUse` hook blocked stays blocked, whichever settings file the hook comes from." With neither, "the mod can approve a call that a deny rule refuses or a `PreToolUse` hook blocked."
 - `disableAllHooks` also disables mods.
 - Most hook-related CHANGELOG lines from 2.1.288 to 2.1.296 are about mods, not settings hooks; check which kind an entry means.
 
