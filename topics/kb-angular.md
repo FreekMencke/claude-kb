@@ -103,7 +103,7 @@ Two official sources disagree with the packages:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [angular CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [angular-cli CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [change-detection-eager migration at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/schematics/migrations/change-detection-eager/migration.ts), [best-practices.md](https://raw.githubusercontent.com/angular/angular/main/packages/core/resources/best-practices.md), [Announcing Angular v22](https://blog.angular.dev/announcing-angular-v22-c52bb83a4664), [angular-eslint CHANGELOG](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/CHANGELOG.md), `ChangeDetectionStrategy` in `@angular/core@22.2.3`'s type definitions
 - Related: NG-004, NG-010, NG-015
 
@@ -231,7 +231,7 @@ Our two SSR apps (osrs-tracker-web, freek-mencke-web) already use `AngularNodeAp
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [angular-cli CHANGELOG 21.0.0 and 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [Testing with Karma](https://angular.dev/guide/testing/karma) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/karma.md)), [Migrating to Vitest](https://angular.dev/guide/testing/migrating-to-vitest) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/migrating-to-vitest.md)), [migrate-karma-to-vitest at v22.2.3](https://raw.githubusercontent.com/angular/angular-cli/v22.2.3/packages/schematics/angular/migrations/migrate-karma-to-vitest/migration.ts), [Announcing Angular v21](https://blog.angular.dev/announcing-angular-v21-57946c34f14b)
 - Related: NG-010, NG-006
 
@@ -270,7 +270,7 @@ Left to you:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: JSDoc tags in angular/angular and angular/components source at tag v22.2.3 (e.g. [resource.ts](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/resource.ts), [debounce.ts](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/debounce.ts)), [angular CHANGELOG](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [Announcing Angular v22](https://blog.angular.dev/announcing-angular-v22-c52bb83a4664), [Error boundaries guide](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/templates/error-boundaries.md), npm registry
 - Related: NG-007, NG-018, NG-004
 
@@ -294,7 +294,7 @@ The 22.0.0 CHANGELOG titles say `provideWebMcpTools` and `declareWebMcpTool`; th
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Angular CLI MCP Server](https://angular.dev/ai/mcp) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/ai/mcp-server-setup.md)), [mcp source at v22.2.3](https://github.com/angular/angular-cli/tree/v22.2.3/packages/angular/cli/src/commands/mcp), [angular-cli CHANGELOG](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [Announcing Angular v21](https://blog.angular.dev/announcing-angular-v21-57946c34f14b)
 - Related: NG-013, NG-014, NG-015, MCP-015
 
@@ -397,7 +397,7 @@ For Claude Code: Claude Code reads `AGENTS.md` only when there's no CLAUDE.md (M
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [angular/skills](https://github.com/angular/skills) ([README](https://raw.githubusercontent.com/angular/skills/main/README.md), [angular-developer SKILL.md](https://raw.githubusercontent.com/angular/skills/main/angular-developer/SKILL.md), [angular-new-app SKILL.md](https://raw.githubusercontent.com/angular/skills/main/angular-new-app/SKILL.md)), [Agent Skills](https://angular.dev/ai/agent-skills) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/ai/agent-skills.md)), [Announcing Angular v22](https://blog.angular.dev/announcing-angular-v22-c52bb83a4664), [claude-skills sync workflow](https://github.com/FreekMencke/claude-skills/blob/main/.github/workflows/sync-angular-skill.yml)
 - Related: NG-016, NG-007, SKILL-041, SKILL-042, SKILL-032
 

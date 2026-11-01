@@ -116,7 +116,7 @@ Tested 2026-10-17, typescript-eslint@8.71.2 and eslint@10.12.0 (the repo's lockf
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [typescript-eslint CHANGELOG](https://raw.githubusercontent.com/typescript-eslint/typescript-eslint/main/packages/typescript-eslint/CHANGELOG.md), [`typescript-eslint` package: `config(...)` (deprecated)](https://typescript-eslint.io/packages/typescript-eslint), [Dependency versions](https://typescript-eslint.io/users/dependency-versions), [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940), [typescript-eslint#12803](https://github.com/typescript-eslint/typescript-eslint/pull/12803)
 - Related: TS-009, JSTOOL-003, JSTOOL-005, JSUP-002
 
@@ -148,7 +148,7 @@ Tested 2026-10-17, typescript-eslint@8.71.2 and eslint@10.12.0 (the repo's lockf
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Oxlint linter guide](https://oxc.rs/docs/guide/usage/linter.html) ([raw](https://raw.githubusercontent.com/oxc-project/website/main/src/docs/guide/usage/linter.md)), [Migrate from ESLint](https://oxc.rs/docs/guide/usage/linter/migrate-from-eslint), [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins), [Versioning](https://oxc.rs/docs/guide/usage/linter/versioning), [nestjs/schematics 12.0.7 template](https://github.com/nestjs/schematics/tree/12.0.7/src/lib/application/files/ts)
 - Related: JSTOOL-007, JSTOOL-008, JSTOOL-010, JSUP-003
 

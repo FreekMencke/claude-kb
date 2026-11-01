@@ -291,7 +291,7 @@ Our additions, not Angular's: skip the first `NavigationEnd` (the server-rendere
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [MDN: `<dialog>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog), [MDN: `inert`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inert), [HTML spec: popover](https://html.spec.whatwg.org/multipage/popover.html), [MDN: `ariaNotify()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/ariaNotify), [WAI-ARIA 1.3 Working Draft](https://www.w3.org/TR/wai-aria-1.3/), web-features 3.43.0
 - Related: CSS-008, CSS-005, ACCESS-010, ACCESS-012
 

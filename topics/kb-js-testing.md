@@ -25,7 +25,7 @@ Research basis:
 | How do I point Playwright at an SSR app? | `webServer` builds and starts the server (`timeout` default 60 s), `reuseExistingServer: !process.env.CI`, explicit `use.baseURL`; test server HTML with `javaScriptEnabled: false` or the `request` fixture. | JSTEST-011 |
 | Should an agent check UI with Playwright tests, Test Agents, MCP or the CLI? | Tests for regressions; MCP or `@playwright/cli` to look at a page. The Test Agents' healer can mark a test `test.fixme()`. No Playwright reporter detects agents: pass `--reporter=line`. | JSTEST-012 |
 | How do I know whether an agent's tests would catch a bug? | Not from coverage: a weak suite scored 100% coverage and a 60% mutation score. Mutation testing (Thoughtworks Radar: Trial, April 2026) shows which changes no test notices. | JSTEST-013 |
-| Can I run Stryker on Vitest 5 today? | Not reliably: `@stryker-mutator/vitest-runner` 10.0.0 scores tests inside `describe` blocks as 0% on Vitest 5 (tested; fix PR open), and it has no support for Angular's builder. | JSTEST-014 |
+| Can I run Stryker on Vitest 5 today? | Not reliably: `@stryker-mutator/vitest-runner` 10.0.0 scored tests inside `describe` blocks as 0% on Vitest 5 (tested on 10.0.0; 10.1.0 reportedly fixes it, not re-tested), and it has no support for Angular's builder. | JSTEST-014 |
 | What do agents get wrong in tests, and what stops it? | Shallow assertions, over-mocking, implementation details, Jest APIs in Vitest, and skipping or loosening tests to get green. A spec that fails before the fix, a diff check on spec files, and a reviewer that didn't write the tests. | JSTEST-016, JSTEST-017 |
 
 ## Index
@@ -214,7 +214,7 @@ Upgrade traps from the Jest 30 guide that agents write from habit: removed alias
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Playwright release notes](https://playwright.dev/docs/release-notes), [Timeouts](https://playwright.dev/docs/test-timeouts), [Retries](https://playwright.dev/docs/test-retries), [Best practices](https://playwright.dev/docs/best-practices), [Command line](https://playwright.dev/docs/test-cli) (all raw from microsoft/playwright `docs/src/` at v1.64.1), npm registry
 - Related: JSTEST-011, JSTEST-012
 
@@ -234,7 +234,7 @@ Controls, cheapest first:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Web server](https://playwright.dev/docs/test-webserver), [TestConfig](https://playwright.dev/docs/api/class-testconfig), [Emulation: JavaScript enabled](https://playwright.dev/docs/emulation), [API testing](https://playwright.dev/docs/api-testing) (all raw at v1.64.1)
 - Related: JSTEST-010, WEB-014, WEB-015
 
@@ -305,7 +305,7 @@ Defaults: `mutate` covers `{src,lib}/**` minus spec and test files; `concurrency
 
 Cost levers: `--incremental` reruns only mutants in changed code and tests; `--mutate src/file.ts:5-7` limits a run to lines; `ignoreStatic`, as static mutants "come with a big performance penalty"; the TypeScript checker drops uncompilable mutants at "a performance cost". No official run-time figure exists: mutate changed files, not the repo.
 
-**Vitest 5 bug (fixed in 10.1.0):** Vitest 5 joins test names with `' > '`, but the runner filters by space-joined names, so "on Vitest 5 the per-test name filter matches nothing, so every covered mutant survives" (#6210). The CHANGELOG lists "support vitest v5" (#6214) in 10.1.0 (2026-10-23), so this is fixed in 10.1.x, which was not re-tested. Tested 2026-10-17 on 10.0.0, vitest@5.0.5, Stryker 10.0.0, Node 24.21.0: the JSTEST-013 suite scored 60% with top-level tests and 0% (10 of 10 survived) with the same tests inside one `describe`.
+**Vitest 5 bug (reportedly fixed in 10.1.0, not re-tested):** Vitest 5 joins test names with `' > '`, but the runner filters by space-joined names, so "on Vitest 5 the per-test name filter matches nothing, so every covered mutant survives" (#6210). The CHANGELOG lists "support vitest v5" (#6214) in 10.1.0 (2026-10-23), so this is fixed in 10.1.x, which was not re-tested. Tested 2026-10-17 on 10.0.0, vitest@5.0.5, Stryker 10.0.0, Node 24.21.0: the JSTEST-013 suite scored 60% with top-level tests and 0% (10 of 10 survived) with the same tests inside one `describe`.
 
 Angular's `unit-test` builder isn't supported (#5655, open; a maintainer workaround uses `--dump-virtual-files`). Browser mode: the runner's docs say "not supported", the 9.0.0 CHANGELOG "support vitest 3 browser mode".
 

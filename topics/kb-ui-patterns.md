@@ -277,7 +277,7 @@ GOV.UK: "Many browsers will autofill password inputs, even when the `autocomplet
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [GOV.UK: Error message](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/error-message/index.md), [GOV.UK: Button](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/button/index.md), [NN/g: Error-message guidelines](https://www.nngroup.com/articles/error-message-guidelines/), [Polaris: Error messages](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/content/error-messages.mdx), [Polaris: Button](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/actions/button.mdx), [Atlassian: Error messages](https://atlassian.design/foundations/content/designing-messages/error-messages), [Atlassian: Button](https://atlassian.design/components/button/usage), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: UIPAT-004, UIPAT-005, UIPAT-008, WRITE-006
 

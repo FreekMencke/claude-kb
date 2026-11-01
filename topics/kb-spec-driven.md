@@ -141,7 +141,7 @@ GSD Core itself is a large surface: 64 agent files, 72 commands and 29 hook scri
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [BMAD-METHOD README](https://github.com/bmad-code-org/BMAD-METHOD/blob/61e01f8/README.md), [BMAD docs index](https://github.com/bmad-code-org/BMAD-METHOD/blob/61e01f8/docs/index.md)
 - Related: SDD-001, SDD-008
 
@@ -243,7 +243,7 @@ Both support SDD-009: small iterative steps with a short spec, not a framework's
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Kiro: Specs](https://kiro.dev/docs/specs.md), [Kiro: Requirements-First workflow](https://kiro.dev/docs/specs/feature-specs/requirements-first.md)
 - Related: SDD-001, SDD-010, FLOW-003
 

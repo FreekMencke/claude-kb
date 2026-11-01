@@ -201,7 +201,7 @@ Dependabot won't do the re-approval: dependabot-core runs every npm install with
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [About access tokens](https://docs.npmjs.com/about-access-tokens), [Creating and viewing access tokens](https://docs.npmjs.com/creating-and-viewing-access-tokens), [npm token docs v12](https://docs.npmjs.com/cli/v12/commands/npm-token), [GitHub changelog 2025-09-29](https://github.blog/changelog/2025-09-29-strengthening-npm-security-important-changes-to-authentication-and-token-management), [2025-12-09](https://github.blog/changelog/2025-12-09-npm-classic-tokens-revoked-session-based-auth-and-cli-token-management-now-available), [2026-07-31](https://github.blog/changelog/2026-07-31-restricting-npm-bypass-2fa-granular-access-tokens), [2026-09-18](https://github.blog/changelog/2026-09-18-stage-only-npm-tokens-for-safer-automation)
 - Related: NPM-009, NPM-010, NPM-011
 
@@ -280,7 +280,7 @@ What it combines with:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [Generating provenance statements](https://docs.npmjs.com/generating-provenance-statements), [Introducing npm package provenance (GitHub blog, 2023-04-19)](https://github.blog/security/supply-chain-security/introducing-npm-package-provenance/), [GitHub changelog 2023-07-25](https://github.blog/changelog/2023-07-25-publishing-with-npm-provenance-from-private-source-repositories-is-no-longer-supported/), [npm audit docs v12](https://docs.npmjs.com/cli/v12/commands/npm-audit), [npm/cli `verify-signatures.js`](https://github.com/npm/cli/blob/latest/lib/utils/verify-signatures.js), [TanStack postmortem](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem), [Snyk on the TanStack compromise](https://snyk.io/blog/tanstack-npm-packages-compromised)
 - Related: NPM-009, NPM-011, NPM-013
 
@@ -296,7 +296,7 @@ Our `@osrs-tracker/*` packages carry none: they are published by hand (`npm view
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [npm audit docs v12](https://docs.npmjs.com/cli/v12/commands/npm-audit), [npm config docs v12](https://docs.npmjs.com/cli/v12/using-npm/config), [npm CLI CHANGELOG](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm audit: Broken by Design (Abramov, 2021-07-07)](https://overreacted.io/npm-audit-broken-by-design/)
 - Related: NPM-012
 
@@ -455,7 +455,7 @@ What to do: read the conflict (`npm explain <pkg>` shows who requires which rang
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [pnpm v11.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v11.0.0), [pnpm v12.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v12.0.0), [pnpm docs: settings](https://pnpm.io/settings), [pnpm docs: git worktrees](https://pnpm.io/git-worktrees), [pnpm feature comparison](https://pnpm.io/feature-comparison), [Dependabot options reference](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference), [Corepack README](https://github.com/nodejs/corepack/blob/main/README.md), npm registry (`npm view pnpm dist-tags`, then `'time[<version>]'`)
 - Related: NPM-004, NPM-007, SESS-008
 

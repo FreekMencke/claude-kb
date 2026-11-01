@@ -364,7 +364,7 @@ When to use them: resources suit stable reference data you want to attach by nam
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [MCP: client runtimes](https://code.claude.com/docs/en/mcp#mcp-client-runtimes), [MCP: dynamic tool updates](https://code.claude.com/docs/en/mcp#dynamic-tool-updates), [MCP spec versioning](https://modelcontextprotocol.io/specification/versioning), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [claude-code#1785](https://github.com/anthropics/claude-code/issues/1785)
 - Related: MCP-013, MCP-019, MCP-027
 
@@ -549,7 +549,7 @@ So: trim connectors per routine, and give a routine only connectors whose write 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Desktop](https://code.claude.com/docs/en/desktop), [Desktop on WSL](https://code.claude.com/docs/en/desktop-wsl), [MCP: import from Claude Desktop](https://code.claude.com/docs/en/mcp#import-mcp-servers-from-claude-desktop), [MCP: scope precedence](https://code.claude.com/docs/en/mcp#scope-hierarchy-and-precedence)
 - Related: MCP-010, SURF-034, SKILL-047, SKILL-053
 
@@ -810,7 +810,7 @@ From the issue trackers of personal remote servers (jimprosser/obsidian-web-mcp,
 - Type: comparison
 - Applies to: Claude Code, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-15
 - Sources: [Plugins (claude.com)](https://claude.com/docs/plugins/overview), [Plugin platform support](https://claude.com/docs/plugins/platform-support), [Skills how-to (claude.com)](https://claude.com/docs/skills/how-to), [Skills overview (claude.com)](https://claude.com/docs/skills/overview), [Claude Code skills](https://code.claude.com/docs/en/skills), [Agent Skills overview (platform)](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [GitHub integration](https://claude.com/docs/connectors/github), [Desktop on WSL](https://code.claude.com/docs/en/desktop-wsl)
 - Related: MCP-010, MCP-022, MCP-029, SKILL-049, SKILL-052, SKILL-059, SKILL-060
 

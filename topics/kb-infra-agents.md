@@ -218,7 +218,7 @@ Tested 2026-10-12, v2.1.296, terminal (WSL): with `Bash(kubectl * delete *)` in 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Permission modes: what the classifier blocks](https://code.claude.com/docs/en/permission-modes), [Auto mode config](https://code.claude.com/docs/en/auto-mode-config), [Anthropic: how we built auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode)
 - Related: REPO-032, INFRA-010, INFRA-021, INFRA-023
 
@@ -245,7 +245,7 @@ Tested 2026-10-12, v2.1.296, terminal (WSL): `claude auto-mode defaults` printed
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Auto mode config](https://code.claude.com/docs/en/auto-mode-config), [Permission modes](https://code.claude.com/docs/en/permission-modes)
 - Related: INFRA-009, REPO-032
 
@@ -315,7 +315,7 @@ Neither README shows tests for reordered global flags, so check before relying o
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-12
 - Sources: [Terraform plan](https://developer.hashicorp.com/terraform/cli/commands/plan), [Terraform MCP server security](https://developer.hashicorp.com/terraform/mcp-server/security), [GitHub environments](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment), [Atlantis command requirements](https://www.runatlantis.io/docs/command-requirements.html), [Grigorev post-mortem](https://aishippingblog.com/p/how-i-dropped-our-production-database)
 - Related: INFRA-014, INFRA-015, INFRA-022, INFRA-009
 
@@ -352,7 +352,7 @@ The agent's cluster identity can then be read-only (INFRA-006), with Flux holdin
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [kubectl apply](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_apply/), [kubectl diff](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_diff/), [helm-diff README](https://github.com/databus23/helm-diff), [EC2 API: DryRun](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html), [CloudFormation change sets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html), [cdk diff](https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-diff.html)
 - Related: INFRA-013, INFRA-014
 

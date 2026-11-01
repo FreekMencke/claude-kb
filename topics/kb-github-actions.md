@@ -114,7 +114,7 @@ What to do: move to majors that declare `node24` (GHA-004). For your own JavaScr
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [actions/checkout releases](https://github.com/actions/checkout/releases), [actions/checkout README](https://raw.githubusercontent.com/actions/checkout/main/README.md), [actions/setup-node releases](https://github.com/actions/setup-node/releases), [actions/cache releases](https://github.com/actions/cache/releases), [actions/upload-artifact releases](https://github.com/actions/upload-artifact/releases), [actions/download-artifact releases](https://github.com/actions/download-artifact/releases)
 - Related: GHA-003, GHA-005, GHA-011, GHA-017, GHA-019
 
@@ -136,7 +136,7 @@ For an agent: bump all five to these majors together, and read the artifact note
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [actions/setup-node releases](https://github.com/actions/setup-node/releases), [setup-node README](https://raw.githubusercontent.com/actions/setup-node/main/README.md), [setup-node advanced usage](https://raw.githubusercontent.com/actions/setup-node/main/docs/advanced-usage.md)
 - Related: GHA-004, GHA-008, GHA-022, NODE-014
 
@@ -238,7 +238,7 @@ Trade-off: "Dependabot only creates alerts for vulnerable actions that use seman
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Changelog 2026-10-14: workflow lockfiles in public preview](https://github.blog/changelog/2026-10-14-github-actions-workflow-lockfiles-in-public-preview), [Workflow dependency lockfiles](https://docs.github.com/en/actions/concepts/security/workflow-dependency-lockfiles), [Locking action dependencies](https://docs.github.com/en/actions/how-tos/secure-your-work/lock-workflow-dependencies), [Enforcing lockfiles](https://docs.github.com/en/actions/how-tos/administer/enforce-workflow-lockfiles), [github/gh-actions-lock README v0.2.0](https://raw.githubusercontent.com/github/gh-actions-lock/v0.2.0/README.md), [gh-actions-lock#174](https://github.com/github/gh-actions-lock/issues/174), [gh-actions-lock#178](https://github.com/github/gh-actions-lock/issues/178)
 - Related: GHA-009, GHA-011, GHA-012, GHA-021, HOOK-004
 
@@ -275,7 +275,7 @@ For an action you publish: turn immutable releases on and keep the major tag as 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Keeping your actions up to date with Dependabot](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/auto-update-actions), [Dependabot options reference](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference), [Dependabot on GitHub Actions](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-on-actions), [dependabot-core github_actions file_parser.rb](https://github.com/dependabot/dependabot-core/blob/main/github_actions/lib/dependabot/github_actions/file_parser.rb), [Locking action dependencies](https://docs.github.com/en/actions/how-tos/secure-your-work/lock-workflow-dependencies)
 - Related: JSUP-012, JSUP-013, JSUP-014, GHA-009, GHA-010, GHA-013
 
@@ -486,7 +486,7 @@ zizmor, actionlint and CodeQL all flag template injection (GHA-023).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Managing GitHub Actions settings for a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository), [About Actions policies](https://docs.github.com/en/actions/concepts/about-actions-policies), [Controlling workflow execution](https://docs.github.com/en/actions/how-tos/administer/control-workflow-execution), [Changelog 2026-09-17: execution protections GA](https://github.blog/changelog/2026-09-17-workflow-execution-protections-in-github-actions-generally-available), [Changelog 2026-07-28: workflows held for approval](https://github.blog/changelog/2026-07-28-github-actions-holds-potentially-malicious-workflows-for-approval), [Securely using pull_request_target](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target)
 - Related: GHA-017, GHA-018, GHA-010, GHA-013
 
@@ -499,7 +499,7 @@ zizmor, actionlint and CodeQL all flag template injection (GHA-023).
 - Enforcement `active`, `disabled` or `evaluate` (Evaluate is "GitHub Enterprise Cloud only"). A blocked run fails with "Event 'workflow_dispatch' is not allowed to trigger Actions workflows."
 - `dependabot[bot]` "must be added as an allowed actor" when an actor rule would block workflows it triggers.
 
-**Default policy**: "For public repositories that do not already have an applicable Actions event policy, GitHub adds a default policy that blocks workflows triggered by `pull_request_target`." It runs in evaluate mode until "December 2nd, 2026" (moved from 2026-11-02 by an editor's note dated 2026-10-21), when it's enforced for repos that used the default policy before GA; since Evaluate is Enterprise-only, other plans may see no insights before then. To keep such a workflow, allow the event in your own policy, or move it to `pull_request`.
+**Default policy**: "For public repositories that do not already have an applicable Actions event policy, GitHub adds a default policy that blocks workflows triggered by `pull_request_target`." It runs in evaluate mode until "December 2nd, 2026" (moved from 2026-11-02 by an editor's note dated 2026-10-21), when it's enforced (the changelog limits this to repositories that were using the default policy before GA); since Evaluate is Enterprise-only, other plans may see no insights before then. To keep such a workflow, allow the event in your own policy, or move it to `pull_request`.
 
 Not found: whether personal-account repos get the default policy. `gh api repos/OWNER/REPO/actions/policies` on two such public repos returned `{"total_count":0,"policies":[]}` (2026-10-17), which settles nothing.
 

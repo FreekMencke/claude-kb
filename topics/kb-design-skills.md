@@ -51,7 +51,7 @@ Research basis:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Impeccable SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Kowalski prototype SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/prototype/SKILL.md), [Kowalski emil-design-eng SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md)
 - Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-012, DSKILL-008, DSKILL-013, ANIMLIB-013
 
@@ -102,7 +102,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [reference/new-work.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/new-work.md), [reference/craft-floor.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [README.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/README.md)
 - Related: DSKILL-009, DSKILL-010, DSKILL-007, DESIGN-025
 
@@ -120,7 +120,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [data/products.csv](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/data/products.csv), [data/ux-guidelines.csv](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/data/ux-guidelines.csv), [scripts/design_system.py](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/scripts/design_system.py)
 - Related: DESIGN-003, DSKILL-008, DSKILL-013, DSKILL-014
 
@@ -205,7 +205,7 @@ Read, not run. Both report findings; neither generates a fix.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Impeccable plugin/hooks/hooks.json @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/hooks/hooks.json), [Impeccable launcher](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/scripts/impeccable), [Impeccable crates/skills commands.rs and hook_manifest.rs](https://github.com/pbakaus/impeccable/tree/5cb95ee/crates/skills/src), [Impeccable BUNDLE-SIGNING.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/docs/BUNDLE-SIGNING.md), [Taste install.sh @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/install.sh), [Hallmark install-hook.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/install-hook.mjs), [ui-ux-pro-max cli/src @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/28327f2/cli/src), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
 - Related: SKILL-041, SKILL-036, HOOK, DSKILL-015, DSKILL-011, SKILL-069
 
@@ -221,7 +221,7 @@ Read from source at the pinned commits, 2026-10-23. Four of the five also instal
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Impeccable LICENSE and NOTICE.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/NOTICE.md), [anthropics/skills frontend-design LICENSE.txt](https://github.com/anthropics/skills/blob/main/skills/frontend-design/LICENSE.txt), [Hallmark photos.json @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/photos.json), [Hallmark README](https://github.com/Nutlope/hallmark/blob/7ec8682/README.md), [Taste library/photos.json](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/library/photos.json), [Unsplash Terms (Wayback 2026-01-08)](http://web.archive.org/web/20260108062954/https://unsplash.com/terms), [Pexels licence](https://www.pexels.com/license/)
 - Related: LIC, FONT, DSKILL-014
 
@@ -293,7 +293,7 @@ Copying wording needs the licence: MIT keeps its notice; Apache-2.0 (Impeccable,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Impeccable concept_seed.rs @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/context/src/concept_seed.rs), [Impeccable context_cli.rs](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/context/src/context_cli.rs), [Impeccable CLAUDE.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/CLAUDE.md), [Impeccable README: telemetry](https://github.com/pbakaus/impeccable/blob/5cb95ee/README.md), [Hallmark brand-truth.md and imagegen.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/brand-truth.md), [ui-ux-pro-max design/scripts/cip/generate.py @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/design/scripts/cip/generate.py), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
 - Related: SKILL-041, MCP, DSKILL-010
 

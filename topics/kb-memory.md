@@ -480,7 +480,7 @@ Practical reading: the write path is the risk (install scripts, other tools, a s
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Memory: set up a project CLAUDE.md](https://code.claude.com/docs/en/memory), [Commands](https://code.claude.com/docs/en/commands), [Environment variables](https://code.claude.com/docs/en/env-vars)
 - Related: MEM-021, MEM-024, REPO-045
 
@@ -596,7 +596,7 @@ Claude Code already has the Codex split (MEM-017) and a `modified` timestamp. It
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Desktop](https://code.claude.com/docs/en/desktop), [Desktop WSL](https://code.claude.com/docs/en/desktop-wsl), [Routines](https://code.claude.com/docs/en/routines), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Headless](https://code.claude.com/docs/en/headless), [Memory](https://code.claude.com/docs/en/memory)
 - Related: MEM-027, MEM-028, ORCH-016, SKILL-060, MEM-029
 
@@ -635,7 +635,7 @@ Consequence: an edit to CLAUDE.md on a branch affects only sessions on that bran
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Agent SDK: Claude Code features](https://code.claude.com/docs/en/agent-sdk/claude-code-features), [Agent SDK: modifying system prompts](https://code.claude.com/docs/en/agent-sdk/modifying-system-prompts), [Headless](https://code.claude.com/docs/en/headless), [Agent SDK: migration guide](https://code.claude.com/docs/en/agent-sdk/migration-guide)
 - Related: ORCH-014, ORCH-015, MEM-009, MEM-016
 

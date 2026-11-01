@@ -236,7 +236,7 @@ Tested 2026-10-13, v2.1.296, `claude -p` on Haiku 5.5 (capped at 4 turns, $0.20)
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Search Console API limits](https://developers.google.com/webmaster-tools/limits), [searchanalytics.query](https://developers.google.com/webmaster-tools/v1/searchanalytics/query), [Getting all your data](https://developers.google.com/webmaster-tools/v1/how-tos/all-your-data), [Authorizing requests](https://developers.google.com/webmaster-tools/v1/how-tos/authorizing), [AminForou/mcp-gsc](https://github.com/AminForou/mcp-gsc)
 - Related: WEB-008, WEB-012, WEB-013
 

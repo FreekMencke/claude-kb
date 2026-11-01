@@ -373,7 +373,7 @@ Andrej Karpathy's "LLM Wiki" gist (created 2026-04-04) describes the pattern thi
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-20
 - Sources: [From Local to Global (Microsoft Research)](https://www.microsoft.com/en-us/research/publication/from-local-to-global-a-graph-rag-approach-to-query-focused-summarization/), [microsoft/graphrag](https://github.com/microsoft/graphrag), [GraphRAG-Bench](https://github.com/GraphRAG-Bench/GraphRAG-Benchmark), [LightRAG](https://github.com/HKUDS/LightRAG)
 - Related: RETR-001, RETR-017
 

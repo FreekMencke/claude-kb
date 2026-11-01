@@ -105,7 +105,7 @@ After a PR opens, it appears in the **Changes** card of the session details pane
 - **Auto-fix:** Claude reads failing checks and iterates. In a local session it also addresses new review comments from someone other than you, when the author is the repo owner, an org member, a collaborator or a GitHub App.
 - **Merge when ready:** turns on GitHub's auto-merge for the PR; "Desktop requests a squash merge unless the base branch uses a merge queue". Repo auto-merge must be enabled on GitHub. Disabled in SSH and WSL sessions: turn on auto-merge on GitHub there.
 
-**Auto-archive after PR merge or close** (Settings > Claude Code) archives the session and removes its worktree; it "Cloud sessions and sessions that are still running don't archive themselves".
+**Auto-archive after PR merge or close** (Settings > Claude Code) archives the session and removes its worktree; it doesn't archive cloud sessions or sessions that are still running.
 
 **Notifications:** "The desktop app sends an OS notification when a Code session finishes a task and you aren't currently viewing that session." Sessions inside a project get the project's notifications instead. Phone pushes are separate and need Remote Control (SURF-020).
 
@@ -216,7 +216,7 @@ Dispatch versus Remote Control: Dispatch starts new work and picks the route; Re
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Share session output as artifacts](https://code.claude.com/docs/en/artifacts)
 - Related: SURF-009, SURF-015, SURF-016
 
@@ -242,7 +242,7 @@ The docs' rule: use one "when terminal text is the wrong medium": annotated PR w
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Artifacts: availability](https://code.claude.com/docs/en/artifacts), [Feature availability](https://code.claude.com/docs/en/feature-availability), [What's new, week 25](https://code.claude.com/docs/en/whats-new/2026-w25), [What's new, week 27](https://code.claude.com/docs/en/whats-new/2026-w27), local test
 - Related: SURF-008, SURF-017, SKILL-048
 
@@ -359,7 +359,7 @@ Retention and plan rules aren't published. Treat it as a lead and don't build a 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Artifacts: page constraints](https://code.claude.com/docs/en/artifacts), local test (`Artifact` tool description, v2.1.295)
 - Related: SURF-008, SURF-012, TOK-015
 
@@ -628,7 +628,7 @@ For heavier work, use Remote Control on your own hardware or a self-hosted envir
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-12
 - Sources: [Use Claude Code in the cloud: work with sessions, limitations](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SESS-030, SURF-027, SURF-029, TOK-007
 

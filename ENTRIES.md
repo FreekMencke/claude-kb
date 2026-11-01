@@ -629,7 +629,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 |---|---|---|---|
 | KUBE-001 | Flux 2.8 and 2.9: what changed and what needs action | fact | flux, release-notes, upgrade, helm-v4 |
 | KUBE-002 | Upgrading Flux across removed APIs with `flux migrate` | fact | flux, flux-migrate, api-versions, upgrade |
-| KUBE-003 | Which Kubernetes minors Flux supports, and the 1.37 gap | fact | flux, kubernetes-versions, support-policy, release-cadence |
+| KUBE-003 | Which Kubernetes minors Flux supports, and when 1.37 arrived (Flux 2.10) | fact | flux, kubernetes-versions, support-policy, release-cadence |
 | KUBE-004 | helm-controller on Helm v4: server-side apply, kstatus and post-render defaults | fact | flux, helm-controller, helm-v4, server-side-apply |
 | KUBE-005 | Flux Operator or `flux bootstrap` | comparison | flux, flux-operator, bootstrap, fluxinstance |
 | KUBE-006 | ingress-nginx is retired; the Ingress API is frozen, not removed | fact | ingress-nginx, ingress, retirement, gateway-api |

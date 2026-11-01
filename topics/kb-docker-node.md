@@ -12,7 +12,7 @@ Research basis:
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which base image for a Node 24 or 26 server? | `node:24-alpine` (or `26-alpine` once 26 is LTS on 2026-10-28), pinned by digest, for a bundled server with no glibc-only native modules; `node:24-trixie-slim` when a dependency needs glibc. Distroless or a Docker Hardened Image only when "no shell, no npm" in production is worth an extra registry or login. | DOCKER-004, DOCKER-001, DOCKER-002, DOCKER-003 |
+| Which base image for a Node 24 or 26 server? | `node:24-alpine` (or `26-alpine` once 26 became LTS on 2026-10-28), pinned by digest, for a bundled server with no glibc-only native modules; `node:24-trixie-slim` when a dependency needs glibc. Distroless or a Docker Hardened Image only when "no shell, no npm" in production is worth an extra registry or login. | DOCKER-004, DOCKER-001, DOCKER-002, DOCKER-003 |
 | What does `node:24-alpine`, `node:24-slim` or `node:lts` point to? | `24-alpine` is Alpine 3.24, `24-slim` is Debian 12 (bookworm), not 13; `lts` is 26 since it became LTS on 2026-10-28 (`24-slim` is still Debian 12, `26-slim` is Debian 13). Compressed amd64 sizes: 62 MB alpine, 81 MB slim, 412 MB full. Node 26 images ship no Yarn. | DOCKER-001 |
 | Is Alpine (musl) safe for production Node? | On amd64 for Node 26: Node lists x64 musl as Tier 2. For Node 24 it's "Experimental", and arm64 images are compiled from source in the image build, untested by Node. Native modules need musl prebuilds (sharp has them). | DOCKER-002 |
 | Are Docker Hardened Images free, and how do I pull them? | Yes, the Community tier, under Apache 2.0 since 2025-12-17, from `dhi.io` after `docker login dhi.io`. The Node runtime image has no shell or npm and runs as `node` (UID 1000); `-dev` tags have npm. The 7-day CVE SLA is paid. | DOCKER-003 |
@@ -93,7 +93,7 @@ Native modules need a musl prebuild or a compiler in the build stage (`apk add p
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Docker press release, 2025-12-17](https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/), [Docker Hardened Images](https://docs.docker.com/dhi/), [Use a DHI](https://docs.docker.com/dhi/how-to/use/), [DHI catalog: node](https://github.com/docker-hardened-images/catalog/tree/main/image/node), [DHI migration checklist](https://docs.docker.com/dhi/migration/checklist/), [distroless README](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/README.md), [distroless common/variables.bzl](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/common/variables.bzl), [Chainguard container categories](https://edu.chainguard.dev/chainguard/containers/concepts/container-categories/)
 - Related: DOCKER-004, DOCKER-012
 
@@ -295,7 +295,7 @@ So a Deployment applied from Git with a digest that CI wrote runs whatever that 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Docker: GitHub Actions cache backend](https://docs.docker.com/build/cache/backends/gha/), [Docker: cache management with GitHub Actions](https://docs.docker.com/build/ci/github-actions/cache/), [Docker: cache storage backends](https://docs.docker.com/build/cache/backends/), [GitHub: dependency caching reference](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)
 - Related: GHA-019, GHA-008, DOCKER-006
 

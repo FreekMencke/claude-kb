@@ -738,7 +738,7 @@ Rewinding truncates to an already-cached prefix, so it's cheaper than `/compact`
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Sessions: resume from a summary](https://code.claude.com/docs/en/sessions#resume-from-a-summary), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-052, TOK-086
 
@@ -1239,7 +1239,7 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Best practices: Keep cost and context down](https://code.claude.com/docs/en/best-practices), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-030, TOK-032, TOK-035, TOK-053
 
@@ -1454,7 +1454,7 @@ Confidence note: each tool's behavior is from its own docs; Cline's quality figu
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [April 23 postmortem](https://www.anthropic.com/engineering/april-23-postmortem), [claude-code#41930](https://github.com/anthropics/claude-code/issues/41930), [claude-code#38335](https://github.com/anthropics/claude-code/issues/38335)
 - Related: TOK-052, TOK-053, TOK-034
 
@@ -1483,7 +1483,7 @@ TOK-087 onwards (FreekMencke/claude-kb#26): what the tools this knowledge base i
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-12
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.1.290), [Inside Claude Code's web tools (mikhail.io)](https://mikhail.io/2025/10/claude-code-web-tools/), [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127)
 - Related: TOK-088, TOK-089, TOK-102
 
@@ -1837,7 +1837,7 @@ Where the report arrives: in the notification's result, or, in auto mode (v2.1.2
 
 The docs give no size rule for a subagent's result. In our tests a 40,225-character report arrived whole in `claude -p`. In an interactive auto-mode session, a 50,709-byte report arrived as "Output too large (49.5KB). Full output saved to: …/tool-results/….txt" with "Preview (first 2KB)", matching 2.1.51's "Tool results larger than 50K characters are now persisted to disk".
 
-Tested 2026-10-16: desktop Code tab on WSL, v2.1.299: each agent's `.output` in the session's `tasks/` folder was a symlink to its transcript, while a Bash background task's was a regular file. `claude -p`, v2.1.296: the Agent call was backgrounded (`task_started` with `is_backgrounded: true`), although sub-agents.md says fork mode is off in `-p`.
+Tested 2026-10-16: desktop Code tab on WSL, v2.1.299: each agent's `.output` in the session's `tasks/` folder was a symlink to its transcript, while a Bash background task's was a regular file. `claude -p`, v2.1.296: the Agent call was backgrounded (`task_started` with `is_backgrounded: true`), although sub-agents.md then said fork mode is off in `-p` (on by default from v2.1.302).
 
 Confidence note: the symlink and the warning are observed harness behaviour, not documented.
 
@@ -1965,7 +1965,7 @@ Our largest Bash outputs were `git diff` and `gh`, not test runs (TOK-042), so q
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-16
 - Sources: [Costs: background token usage](https://code.claude.com/docs/en/costs), [Interactive mode](https://code.claude.com/docs/en/interactive-mode), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Permission modes: cost and latency](https://code.claude.com/docs/en/permission-modes), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-008, TOK-010, TOK-053, TOK-030
 
@@ -2236,7 +2236,7 @@ Not now: adding the Claude docs MCP servers user-wide (TOK-096). They'd cost onl
 16. **The report-file refusal.** "Subagents should return findings as text, not write report files" keys on file names in both interactive sessions and `claude -p` (TOK-107), but the full name list and the version that added it are in neither the docs nor the CHANGELOG.
 17. **When an Agent result spills to a file.** 40,225 characters arrived whole in `claude -p`; 50,709 bytes spilled in an interactive auto-mode session. The docs give no rule, and the inline cost inside an interactive session wasn't measured (TOK-105).
 18. **Does a running session pick up a new `autoCompactWindow`?** The settings docs say most edits apply without a restart, and they don't list this key among those read at start. One session started before R1 still grew to 631k (TOK-116). Untested: a fresh session edited mid-way, and an in-place edit instead of `mv`.
-19. **Background subagents in `-p`.** The docs say fork mode is off in `-p`, yet v2.1.296 backgrounded the Agent call there (TOK-105).
+19. **Background subagents in `-p`.** The docs said fork mode was off in `-p`, yet v2.1.296 backgrounded the Agent call there; fork mode is on by default from v2.1.302 (TOK-105).
 20. **Undocumented meters.** The wording and thresholds of the `/usage` warnings (2.1.299), and the OTel `cache_creation_5m_tokens` and `cache_creation_1h_tokens` attributes (2.1.300), are only in the CHANGELOG (TOK-010, TOK-012).
 21. **Other agents' defaults.** Whether Gemini CLI masks tool output by default, Codex's `model_auto_compact_token_limit` default, and whether OpenCode users run V1 (`prune`) or V2 compaction (TOK-085, TOK-114).
 22. **Env prefixes and allow rules.** Whether `PAGER=cat`, `GIT_PAGER=cat` or `CI=1` stop a `Bash(...)` allow rule from matching. The docs' wording says they would; untested (TOK-110).

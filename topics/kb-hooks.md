@@ -203,7 +203,7 @@ Rules:
 - An exit-2 block beats allow rules. The documented recipe: allow `"Bash"` broadly and block a few commands with a hook.
 - A hook can tighten permission rules but not loosen them.
 - `updatedInput` replaces the entire input; permission rules are evaluated against the rewritten input (since v2.1.290 all safety checks are). Several hooks returning `updatedInput` aren't merged and which rewrite runs isn't guaranteed: "Claude Code doesn't merge the rewrites or guarantee which rewrite the tool runs with".
-- An installed mod's `tool.check` can approve a call a non-managed PreToolUse hook blocked (HOOK-035).
+- An installed mod's `tool.check` can approve a call a `PreToolUse` hook blocked, unless managed settings or a Team or Enterprise `/login` is in force (HOOK-035).
 
 ## [HOOK-007] `additionalContext`: where it lands and how to word it
 - Type: pattern
@@ -282,7 +282,7 @@ Choosing:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: prompt-based hooks, agent-based hooks](https://code.claude.com/docs/en/hooks#prompt-based-hooks), [Costs: background token usage](https://code.claude.com/docs/en/costs#background-token-usage), [Claude Code CHANGELOG 2.1.294, 2.1.295](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-009, HOOK-015, REPO-025, SKILL-029
 
@@ -304,7 +304,7 @@ Choosing:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: run hooks in the background](https://code.claude.com/docs/en/hooks#run-hooks-in-the-background), [Claude Code CHANGELOG 2.1.295](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-012, HOOK-033
 
@@ -557,7 +557,7 @@ Uses:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-12
 - Sources: [Hooks reference: debug hooks](https://code.claude.com/docs/en/hooks#debug-hooks), [Hooks guide: check what a hook did](https://code.claude.com/docs/en/hooks-guide#check-what-a-hook-did), [CLI reference](https://code.claude.com/docs/en/cli-reference), [Claude Code CHANGELOG 2.1.296](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-023, HOOK-024
 
@@ -619,7 +619,7 @@ After editing hooks: open `/hooks`, then run one capped `-p` probe with `--debug
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: security considerations](https://code.claude.com/docs/en/hooks#security-considerations), [Permissions: what runs before you trust a folder](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder), [Sandboxing: what runs outside the sandbox](https://code.claude.com/docs/en/sandboxing)
 - Related: REPO-007, HOOK-026, HOOK-017
 
@@ -636,7 +636,7 @@ After editing hooks: open `/hooks`, then run one capped `-p` probe with `--debug
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: security best practices, bash if matching](https://code.claude.com/docs/en/hooks#security-best-practices), [Permissions: what a Bash rule doesn't match](https://code.claude.com/docs/en/permissions), [kenryu42/cc-safety-net security model](https://ccsafetynet.com/docs/guides/security-model.md)
 - Related: HOOK-025, HOOK-019, HOOK-028, REPO-035
 
@@ -705,7 +705,7 @@ Not a boundary (HOOK-026): pair with the sandbox for unattended runs.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Hooks guide: re-inject context after compaction](https://code.claude.com/docs/en/hooks-guide#re-inject-context-after-compaction), [Hooks reference: SessionStart, PreCompact, PostCompact](https://code.claude.com/docs/en/hooks#precompact), [How to configure hooks (Anthropic, 2025-12-11)](https://claude.com/resources/articles/how-to-configure-hooks)
 - Related: HOOK-007, HOOK-008, TOK-031, ORCH-019
 
@@ -753,7 +753,7 @@ Allowed: OSC 0/1/2 (titles), 9, 99, 777 and BEL; anything else voids the field. 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Hooks reference: Stop](https://code.claude.com/docs/en/hooks#stop), [Hooks guide: Stop hook hits the block cap](https://code.claude.com/docs/en/hooks-guide#stop-hook-hits-the-block-cap), [ralph-loop plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop), [Claude Code CHANGELOG 2.1.143](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: REPO-025, ORCH-019, HOOK-010
 

@@ -13,7 +13,7 @@ Research basis:
 
 | Question | Answer | Entries |
 |---|---|---|
-| What changed in Flux 2.8 and 2.9, and what needs action? | 2.8 (2026-02-24): Helm v4 in helm-controller (server-side apply and kstatus health checks by default), `v1beta2`/`v2beta2` source, kustomize and helm APIs removed. 2.9 (2026-06-30): post-render default `combined`, image and notification `v1beta2` removed, GCR Receivers need `email` and `audience`. Latest 2.9.6 (2026-10-01). Existing HelmReleases keep client-side apply until `serverSideApply: enabled`; `UseHelm3Defaults` restores Helm 3 behaviour. | KUBE-001, KUBE-004 |
+| What changed in Flux 2.8 and 2.9, and what needs action? | 2.8 (2026-02-24): Helm v4 in helm-controller (server-side apply and kstatus health checks by default), `v1beta2`/`v2beta2` source, kustomize and helm APIs removed. 2.9 (2026-06-30): post-render default `combined`, image and notification `v1beta2` removed, GCR Receivers need `email` and `audience`. 2.10 (2026-10-26) adds Kubernetes 1.37 and promotes the alerting APIs to v1. Existing HelmReleases keep client-side apply until `serverSideApply: enabled`; `UseHelm3Defaults` restores Helm 3 behaviour. | KUBE-001, KUBE-004 |
 | How do I upgrade Flux to 2.9 without breaking on removed APIs? | `flux migrate -f .` in the Git repo (rewrites old `apiVersion`s; Alert goes to `v1beta3`, not `v1`), push, then `flux migrate` against the cluster to rewrite etcd, then upgrade the controllers (rerun `flux bootstrap`, or set the Operator's version). | KUBE-002 |
 | Which Kubernetes versions does Flux 2.9 support? Can I go to 1.37? | 1.34, 1.35 and 1.36 only. Flux 2.10 (blog 2026-10-26) supports 1.35, 1.36 and 1.37; cert-manager 1.21 stopped at 1.36 (not re-checked on 2026-11-01). | KUBE-003, KUBE-009 |
 | Flux Operator or `flux bootstrap`? | fluxcd.io still calls bootstrap "the recommended way"; the Operator (ControlPlane, AGPL-3.0) is the documented alternative, with automatic upgrades through `FluxInstance` `distribution.version` and a zero-downtime migration from bootstrap. | KUBE-005 |
@@ -35,7 +35,7 @@ Research basis:
 |---|---|---|---|
 | KUBE-001 | Flux 2.8 and 2.9: what changed and what needs action | fact | flux, release-notes, upgrade, helm-v4 |
 | KUBE-002 | Upgrading Flux across removed APIs with `flux migrate` | fact | flux, flux-migrate, api-versions, upgrade |
-| KUBE-003 | Which Kubernetes minors Flux supports, and the 1.37 gap | fact | flux, kubernetes-versions, support-policy, release-cadence |
+| KUBE-003 | Which Kubernetes minors Flux supports, and when 1.37 arrived (Flux 2.10) | fact | flux, kubernetes-versions, support-policy, release-cadence |
 | KUBE-004 | helm-controller on Helm v4: server-side apply, kstatus and post-render defaults | fact | flux, helm-controller, helm-v4, server-side-apply |
 | KUBE-005 | Flux Operator or `flux bootstrap` | comparison | flux, flux-operator, bootstrap, fluxinstance |
 | KUBE-006 | ingress-nginx is retired; the Ingress API is frozen, not removed | fact | ingress-nginx, ingress, retirement, gateway-api |
@@ -98,7 +98,7 @@ Per `flux migrate --help` (2.9.6), cluster mode "requires cluster-admin permissi
 
 Tested 2026-10-17, flux CLI 2.9.6, Linux amd64: `flux migrate -f manifests --dry-run` on a file with old versions printed `GitRepository v1beta2 -> v1`, `HelmRelease v2beta2 -> v2`, `Alert v1beta2 -> v1beta3`, `ImagePolicy v1beta2 -> v1`, exit 0, file unchanged. Alert, Provider and Event stay on `v1beta3` until 2.10 promotes them (roadmap).
 
-## [KUBE-003] Which Kubernetes minors Flux supports, and the 1.37 gap
+## [KUBE-003] Which Kubernetes minors Flux supports, and when 1.37 arrived (Flux 2.10)
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
@@ -110,7 +110,7 @@ Flux keeps "release branches for the most recent three minor releases", and "the
 
 The releases page promises a Flux minor "approximately two weeks after Kubernetes", supporting "Kubernetes N-2 minor versions". Observed lags (release dates from `gh api`): Kubernetes 1.34.0 (2025-08-27) to Flux 2.7.0 34 days; 1.35.0 (2025-12-17) to 2.8.0 69 days; 1.36.0 (2026-04-22) to 2.9.0 69 days.
 
-Kubernetes 1.37.0 shipped 2026-08-26. No 2.9.x patch lists it. Flux 2.10 (blog dated 2026-10-26, 61 days later) lists it: "Flux v2.10 supports the following Kubernetes versions: Distribution Versions Kubernetes 1.35, 1.36, 1.37", and "Flux v2.7 has reached end-of-life". The roadmap now shows v2.10 as completed, and the install page lists 1.35 to 1.37.
+Kubernetes 1.37.0 shipped 2026-08-26. No 2.9.x patch lists it. Flux 2.10 (blog dated 2026-10-26, 61 days later) lists it: "Flux v2.10 supports the following Kubernetes versions": 1.35, 1.36 and 1.37, and "Flux v2.7 has reached end-of-life". The roadmap now shows v2.10 as completed, and the install page lists 1.35 to 1.37.
 
 So a cluster on Flux 2.9 should stay on 1.36; Flux 2.10 is the first release that lists 1.37. The install page says Flux "may work on older versions of Kubernetes", but "we don't recommend running EOL versions in production nor do we offer support for these versions". A newer-than-tested Kubernetes isn't covered either way. Kubernetes 1.34 reaches end of life on 2026-10-27 (KUBE-015).
 
@@ -118,7 +118,7 @@ So a cluster on Flux 2.9 should stay on 1.36; Flux 2.10 is the first release tha
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [helm-controller CHANGELOG](https://github.com/fluxcd/helm-controller/blob/main/CHANGELOG.md), [HelmRelease API](https://fluxcd.io/flux/components/helm/helmreleases/), [Flux 2.8 GA blog](https://fluxcd.io/blog/2026/02/flux-v2.8.0/), [Flux 2.9 GA blog](https://fluxcd.io/blog/2026/06/flux-v2.9.0/)
 - Related: KUBE-001, KUBE-002
 
@@ -135,7 +135,7 @@ Also: `.spec.upgrade.crds` defaults to `Create`, and from 1.6.5 (Flux 2.9.6) SSA
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Flux installation](https://fluxcd.io/flux/installation/), [flux-operator README](https://github.com/controlplaneio-fluxcd/flux-operator), [FluxInstance API](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/api/v1/fluxinstance.md), [Migrating from bootstrap](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/guides/operator/operator-migration.md)
 - Related: KUBE-002, INFRA-005, INFRA-014
 
@@ -187,7 +187,7 @@ Tested 2026-10-17, Gateway API v1.6.3 `standard-install.yaml` (downloaded, grepp
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Gateway API conformance reports v1.6](https://github.com/kubernetes-sigs/gateway-api/tree/main/conformance/reports/v1.6), [Traefik: Kubernetes Gateway provider](https://doc.traefik.io/traefik/reference/install-configuration/providers/kubernetes/kubernetes-gateway/), [Traefik: migrate from NGINX](https://doc.traefik.io/traefik/migrate/nginx-to-traefik/), [Ingress2Gateway 1.0](https://kubernetes.io/blog/2026/03/20/ingress2gateway-1-0-release/), [ingress2gateway](https://github.com/kubernetes-sigs/ingress2gateway), [Five surprising Ingress-NGINX behaviors](https://kubernetes.io/blog/2026/02/27/ingress-nginx-before-you-migrate/)
 - Related: KUBE-006, KUBE-007, KUBE-009
 
@@ -277,7 +277,7 @@ Loki 3.0.0 was published 2024-04-08; on 2026-10-17 the release lines are v3.7.8 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Alloy: migrate from Promtail](https://grafana.com/docs/alloy/latest/set-up/migrate/from-promtail/), [alloy convert](https://grafana.com/docs/alloy/latest/reference/cli/convert/), [alloy run](https://grafana.com/docs/alloy/latest/reference/cli/run/), [Kubernetes: container environment](https://kubernetes.io/docs/concepts/containers/container-environment/)
 - Related: KUBE-012, KUBE-014
 
@@ -373,7 +373,7 @@ command: [setarch, x86_64, --uname-2.6, docker-entrypoint.sh]
 args: [--replSet=rs0, --keyFile=/keyfile/keyfile, --bind_ip_all]
 ```
 
-`command` replaces the image's `ENTRYPOINT ["docker-entrypoint.sh"]`, which prepends `mongod` when the first argument starts with `-`. Drop the wrapper at 8.0.35: on a kernel without the fix it would hide a real hazard.
+`command` replaces the image's `ENTRYPOINT ["docker-entrypoint.sh"]`, which prepends `mongod` when the first argument starts with `-`. Drop the wrapper at the first image containing the fix (8.0.37 or later): on a kernel without the fix it would hide a real hazard.
 
 Observed 2026-10-21 (single-source), kubeadm 1.36.5 on Ubuntu 26.04, `mongo:8.0.34`: mongod exited at startup without the wrapper and has run with it since.
 
@@ -565,7 +565,7 @@ A series counts if its newest sample is within the lookback period, "5 minutes b
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-22
 - Sources: [crowdsec-bouncer-traefik-plugin#399](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pull/399), [#377](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/issues/377), [v1.8.0 release notes](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/releases/tag/v1.8.0), [Traefik v3.7.16 `go.mod`](https://github.com/traefik/traefik/blob/v3.7.16/go.mod), FreekMencke/fremen-cluster CHANGELOG 2026-10-21 (private)
 - Related: KUBE-008, KUBE-027
 
@@ -617,7 +617,7 @@ Three things that tripped a bootstrap script and health check written for Ubuntu
 
 Ranked by impact against effort. Compared on 2026-10-17, read-only, with a single-node kubeadm cluster reconciled by Flux from GitHub (each app repo's manifests applied by a Flux Kustomization, Flux's own install kept in a private repo), Traefik serving `Ingress` objects with cert-manager ACME HTTP-01 certificates, and Alloy shipping metrics and logs to a hosted Grafana stack. No issue was opened: nothing below needs a change in another repo now.
 
-1. **Hold the cluster's Kubernetes minor until Flux 2.10 and the next cert-manager list 1.37** (KUBE-003, KUBE-009, KUBE-016). Both supported tables stop at 1.36 on 2026-10-17; check them, and the CNI's, before each minor. Tracked in FreekMencke/fremen-cluster#8 (named home-cluster until 2026-10-21), which gained the Flux 2.10 wait on 2026-10-18.
+1. **Hold the cluster's Kubernetes minor until Flux 2.10 is installed and cert-manager lists 1.37** (KUBE-003, KUBE-009, KUBE-016). Flux 2.10 (2026-10-26) lists 1.37; cert-manager's table stopped at 1.36 on 2026-10-17 and was not re-checked on 2026-11-01; check them, and the CNI's, before each minor. Tracked in FreekMencke/fremen-cluster#8 (named home-cluster until 2026-10-21), which gained the Flux 2.10 wait on 2026-10-18.
 2. **Run `flux migrate -f` on every repo holding Flux objects before each Flux minor upgrade, and `flux migrate` against the cluster** (KUBE-002). The CLI's dry run shows what it would rewrite; Alert, Provider and Event move again when 2.10 promotes them to `v1`.
 3. **Plan Kubernetes minor upgrades three times a year, one minor each, in a downtime window** (KUBE-015, KUBE-016). On one node a drain evicts everything; a two-a-year rhythm can't keep up with 14-month support.
 4. **Won't do now: move from Ingress to Gateway API** (KUBE-006, KUBE-008). The retirement is ingress-nginx's, not Ingress's; Traefik is maintained and serves both, so routes can move one at a time when a Gateway-only feature is needed.
@@ -631,7 +631,7 @@ Ranked by impact against effort. Compared on 2026-10-17, read-only, with a singl
 
 ## Open questions
 
-- **Flux 2.10's date** (KUBE-003): the roadmap says "mid Q4 2026", provisional; no release candidate on 2026-10-17. Whether a 2.9.x patch will ever list Kubernetes 1.37 isn't stated (fluxcd.io releases page, roadmap, 2.9.x release notes read).
+- **Whether a 2.9.x patch will ever list Kubernetes 1.37** isn't stated (fluxcd.io releases page, roadmap, 2.9.x release notes read); Flux 2.10 (2026-10-26) lists it.
 - **Flux Operator footprint** (KUBE-005): no resource figures in the Operator README, FluxInstance API or fluxcd.io install pages.
 - **Controller footprints on one node** (KUBE-008, KUBE-014): no official memory or CPU figure for Traefik, Envoy Gateway, NGINX Gateway Fabric, an idle Alloy or the Collector.
 - **Traefik and ListenerSet** (KUBE-008): Traefik's `master` docs list ListenerSet support; the v3.7.15 docs don't. Traefik's docs link a `reports/v1.6.3` conformance folder that doesn't exist (the report is under `reports/v1.6`).

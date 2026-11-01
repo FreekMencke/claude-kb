@@ -92,7 +92,7 @@ Guides differ on pies, dual axes (VIZ-004) and gauges (VIZ-030).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Cleveland and McGill 1984, Graphical Perception, JASA 79(387)](https://www.jstor.org/stable/2288400), [Heer and Bostock 2010, Crowdsourcing Graphical Perception](https://idl.cs.washington.edu/files/2010-MTurk-CHI.pdf), [Kosara and Skau 2016, Judgment Error in Pie Chart Variations](https://kosara.net/papers/2016/Kosara-EuroVis-2016.pdf)
 - Related: VIZ-001, VIZ-003, VIZ-004
 
@@ -355,7 +355,7 @@ Whatever the choice: a takeaway and a table (VIZ-014), reduced motion passed in 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [ECharts: canvas vs SVG](https://echarts.apache.org/handbook/en/best-practices/canvas-vs-svg/), [Chart.js: performance at v4.6.1](https://www.chartjs.org/docs/latest/general/performance.html), [Chart.js: decimation](https://www.chartjs.org/docs/latest/configuration/decimation.html), [uPlot README at 1.6.32](https://raw.githubusercontent.com/leeoniya/uPlot/1.6.32/README.md), [Highcharts: boost module](https://www.highcharts.com/docs/advanced-chart-features/boost-module), [Plotly: WebGL vs SVG](https://plotly.com/javascript/webgl-vs-svg/)
 - Related: VIZ-012, VIZ-020, WEBPERF-001, WEBPERF-003, ANIMLIB-019
 
@@ -444,7 +444,7 @@ Angular Material's sort docs (22.2.4) warn that "most screen readers do not anno
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [CDK table at 22.2.4](https://raw.githubusercontent.com/angular/components/v22.2.4/src/cdk/table/table.md), [Material table at 22.2.4](https://raw.githubusercontent.com/angular/components/v22.2.4/src/material/table/table.md), [TanStack Table: Angular quick start](https://tanstack.com/table/latest/docs/framework/angular/quick-start), [AG Grid: accessibility](https://www.ag-grid.com/angular-data-grid/accessibility/), [AG Grid: pricing](https://www.ag-grid.com/license-pricing/), [ARIA 1.2: aria-rowcount](https://www.w3.org/TR/wai-aria-1.2/#aria-rowcount), [Understanding 1.4.10](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [axe-core rule descriptions](https://raw.githubusercontent.com/dequelabs/axe-core/develop/doc/rule-descriptions.md)
 - Related: VIZ-016, WEBPERF-001, UIPAT-012
 
@@ -633,7 +633,7 @@ For our data, prefer the built-in `dataviz` skill and a library in the app over 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Heer and Robertson 2007, Animated Transitions in Statistical Data Graphics](https://idl.cs.washington.edu/files/2007-AnimatedTransitions-InfoVis.pdf), [Bostock 2012, Object Constancy](https://bost.ocks.org/mike/constancy/), [Robertson et al. 2008, Effectiveness of Animation in Trend Visualization](https://faculty.cc.gatech.edu/~stasko/papers/infovis08-anim.pdf), [Chevalier, Dragicevic and Franconeri 2014, The Not-so-Staggering Effect of Staggered Animated Transitions](https://inria.hal.science/hal-01054408v1/file/staggered-study.pdf)
 - Related: VIZ-027, VIZ-028, ANIM-013, ANIM-015
 
@@ -674,7 +674,7 @@ Tested 2026-10-23, Chromium 156: screenshots of the charts compared at about 120
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Understanding 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html), [Scrollama README](https://raw.githubusercontent.com/russellsamora/scrollama/main/README.md), [MDN: View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API), [Robertson et al. 2008](https://faculty.cc.gatech.edu/~stasko/papers/infovis08-anim.pdf)
 - Related: VIZ-026, VIZ-027, ANIM-006, ANIM-007, ANIM-011, ANIMLIB-008, ANIMLIB-011, ANIMLIB-014, UIPAT-015
 
@@ -687,7 +687,7 @@ Tested 2026-10-23, Chromium 156: screenshots of the charts compared at about 120
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Highcharts shop](https://shop.highcharts.com/), [Highcharts licence](https://www.highcharts.com/license), [AG Charts pricing](https://www.ag-grid.com/charts/license-pricing/), [AG Charts: Community vs Enterprise](https://www.ag-grid.com/charts/angular/community-vs-enterprise/), [ApexCharts LICENSE.md](https://raw.githubusercontent.com/apexcharts/apexcharts.js/main/LICENSE.md)
 - Related: VIZ-008, VIZ-012, OSS-008
 

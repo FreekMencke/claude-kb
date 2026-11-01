@@ -13,7 +13,7 @@ Research basis:
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which Node version should a project target? | 24 for production on 2026-10-17: Active LTS, then Maintenance from 2026-10-20 with security fixes until 2028-04-30. 26 becomes LTS on 2026-10-28; 22 is Maintenance until 2027-04-30; 20 and 25 are end of life. | NODE-001 |
+| Which Node version should a project target? | 24 for production on 2026-10-17: Active LTS, then Maintenance from 2026-10-20 with security fixes until 2028-04-30. 26 became Active LTS on 2026-10-28; 22 is Maintenance until 2027-04-30; 20 and 25 are end of life. | NODE-001 |
 | Is there a Node 27, and are odd lines still skipped? | From 27, one major a year: Current in April, LTS in October, every line LTS. 27's Alpha starts 2026-10-28 (not for production); 27.0.0 is due April 2027. | NODE-002 |
 | Can `node` run a `.ts` file directly? | Yes, without flags, on 22.18+, 23.6+, and all of 24 and 26; stable since 24.12.0. It strips types only: no type check, `tsconfig.json` ignored. | NODE-003 |
 | Why does `node file.ts` fail on an enum, decorator or import? | Stripping only erases types. Enums, runtime namespaces, parameter properties, decorators, `.tsx`, extensionless imports and type imports without `type` fail; 26 removed `--experimental-transform-types`. | NODE-004 |
@@ -53,17 +53,17 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [nodejs/Release schedule.json](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json), [nodejs/Release README](https://raw.githubusercontent.com/nodejs/Release/main/README.md), [nodejs.org dist index](https://nodejs.org/dist/index.json), [Previous releases](https://nodejs.org/en/about/previous-releases)
 - Related: NODE-002, NODE-014, SURF-027
 
-On 2026-10-17 Node 26 is Current, 24 is Active LTS and 22 is Maintenance LTS; 20 reached end of life on 2026-04-30 and 25 on 2026-06-01. Target 24 for production now, and 26 from 2026-10-28.
+On 2026-10-17 Node 26 is Current, 24 is Active LTS and 22 is Maintenance LTS; 20 reached end of life on 2026-04-30 and 25 on 2026-06-01. Target 24 for production now, and 26 from 2026-10-28. Update 2026-11-01: 26 (Lithium) became Active LTS on 2026-10-28 and 24 is in Maintenance since 2026-10-20 (`schedule.json`); latest 22.23.4, 24.22.2 and 26.13.0 (nodejs.org dist index). The table below is the 2026-10-17 snapshot.
 
 | Line | Codename | Active LTS from | Maintenance from | End of life | Latest (date) |
 |---|---|---|---|---|---|
 | 22 | Jod | 2024-10-29 | 2025-10-21 | 2027-04-30 | 22.23.3 (2026-09-23) |
 | 24 | Krypton | 2025-10-28 | 2026-10-20 | 2028-04-30 | 24.22.0 (2026-10-14) |
-| 26 | none yet | 2026-10-28 | 2027-10-20 | 2029-04-30 | 26.12.0 (2026-10-14) |
+| 26 | none yet (Lithium on 2026-11-01) | 2026-10-28 | 2027-10-20 | 2029-04-30 | 26.12.0 (2026-10-14; 26.13.0 on 2026-10-28) |
 
 Dates from `schedule.json`, latest versions from `nodejs.org/dist/index.json`, both read 2026-10-17. Node's advice: "Production applications should only use _Active LTS_ or _Maintenance LTS_ releases." The phases, from the Release README:
 - Current: "most of the non-major (non-breaking) changes that land on `nodejs/node` main branch."
@@ -326,7 +326,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, with `undici@7.30.1` and `
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [actions/setup-node v7.1.0 README](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/README.md), [setup-node advanced usage (v7.1.0)](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/docs/advanced-usage.md), [npm docs: package.json `engines`, `devEngines`](https://raw.githubusercontent.com/npm/cli/latest/docs/lib/content/configuring-npm/package-json.md), [nvm README](https://raw.githubusercontent.com/nvm-sh/nvm/master/README.md), [fnm README](https://raw.githubusercontent.com/Schniz/fnm/master/README.md), [mise docs: Node](https://raw.githubusercontent.com/jdx/mise/main/docs/lang/node.md), [DefinitelyTyped README](https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/master/README.md), npm registry (`npm view @types/node dist-tags --json`, 2026-10-17)
 - Related: NODE-001, NODE-011, NODE-015, TS-003
 
@@ -372,7 +372,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 - **npm 12 in Node 27** (NODE-015): only a community comment expects it in the Alpha of 2026-10-28; re-check CHANGELOG_V27.md and `npm view npm engines` then.
 - **ts-node on Node 24 and 26 ESM projects** (NODE-005): open issues report `ERR_UNKNOWN_FILE_EXTENSION` for `.ts` in ESM projects on Node 20 and later, and #2174 says it doesn't work with TypeScript 7.0.2; no maintainer replied in the threads read, and ts-node wasn't run (community code).
 - **Does the published tsx 4.23.15 use `module.registerHooks()`** on 24.22 and 26 (NODE-010)? Read from tsx's `master` source only.
-- **The Node 27 phases** (NODE-002): the blog has one 30-month LTS phase; `schedule.json` still has a `maintenance` date for 27 and no `lts` key. Whether Active LTS and Maintenance merge isn't stated, and nodejs/Release#1142 (closed) proposed renaming Alpha.
+- **The Node 27 phases** (NODE-002): the blog has one 30-month LTS phase; `schedule.json` now has an `lts` date (2027-10-20) for 27 and no `maintenance` key. Whether Active LTS and Maintenance merge isn't stated, and nodejs/Release#1142 (closed) proposed renaming Alpha.
 - **Installed undici 7 with Node 26's bundled 8**: worked in NODE-013's test, but the undici README describes only the bridge in the other direction.
 - **`process.loadEnvFile()` precedence**: the docs state it for `--env-file` only; not tested for the function.
 - **Not read:** Volta's pinning docs, asdf, and how Dependabot or Renovate update `.nvmrc` and `.node-version`.

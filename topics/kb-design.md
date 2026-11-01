@@ -358,7 +358,7 @@ Neither system says how to pick the brand hue. That comes from the brief's subje
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-16
 - Sources: [Tailwind CSS v4.0 (2025-01-22)](https://tailwindcss.com/blog/tailwindcss-v4), [Tailwind: colors](https://tailwindcss.com/docs/colors), [MDN: oklch()](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch), [Leonardo contrast-colors README](https://github.com/adobe/leonardo/blob/main/packages/contrast-colors/README.md), [Material Web: color](https://github.com/material-components/material-web/blob/main/docs/theming/color.md), [Evil Martians: OKLCH in CSS (community)](https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl)
 - Related: DESIGN-015, DESIGN-017, DESIGN-018, DESIGN-019, DESIGN-007
 
@@ -484,7 +484,7 @@ All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS fil
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-16
 - Sources: [Tailwind `theme.css`](https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/theme.css), [Tailwind: theme variables](https://tailwindcss.com/docs/theme), [shadcn/ui: theming](https://ui.shadcn.com/docs/theming), [shadcn changelog: shadcn create (2025-12-12)](https://github.com/shadcn-ui/ui/blob/main/apps/v4/content/docs/changelog/2025-12-shadcn-create.mdx), [shadcn/ui: skills](https://ui.shadcn.com/docs/skills)
 - Related: DESIGN-003, DESIGN-014, DESIGN-015, DESIGN-021
 
@@ -698,7 +698,7 @@ DESIGN-030's steps assume a blank page. On an existing site, treat what exists a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [Google Fonts Knowledge: choosing typefaces that have optical sizes](https://fonts.google.com/knowledge/choosing_type/choosing_typefaces_that_have_optical_sizes), [Google Fonts Knowledge: optical size axis](https://fonts.google.com/knowledge/glossary/optical_size_axis), [OpenType: the `opsz` axis](https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_opsz), [CSS Fonts 4: `font-optical-sizing`](https://drafts.csswg.org/css-fonts-4/#font-optical-sizing-def), [MDN: font-optical-sizing](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-optical-sizing), [web-features 3.43.0](https://www.npmjs.com/package/web-features)
 - Related: DESIGN-020, DESIGN-033, DESIGN-035, FONT-023, FONT-006
 
@@ -881,7 +881,7 @@ A DESIGN.md imported from CLAUDE.md or read on request is text Claude acts on, l
 - Type: recommendation
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Atlassian: elevation](https://atlassian.design/foundations/elevation), [Primer: box-shadow](https://github.com/primer/design/blob/main/content/foundations/css-utilities/box-shadow.mdx), [Material Components Android: cards](https://github.com/material-components/material-components-android/blob/master/docs/components/Card.md), [Fluent 2: elevation](https://fluent2.microsoft.design/elevation), [artifact-design (Claude Code 2.1.296)](https://code.claude.com/docs/en/artifacts), [Taste Skill @6010f91 (community)](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Impeccable craft-floor @5cb95ee (community)](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [FreekMencke/freek-mencke-web#43](https://github.com/FreekMencke/freek-mencke-web/pull/43), local test
 - Related: DESIGN-006, DESIGN-022, DESIGN-037, DESIGN-042, DESIGN-044, DSKILL-001, DSKILL-002, ANIM-008
 
@@ -948,7 +948,7 @@ Tested 2026-10-23, tailwindcss@4.3.3, Chromium 156, one page, summed RGB differe
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [CSS Color Adjustment 1 (CR Snapshot, 16 December 2025)](https://www.w3.org/TR/css-color-adjust-1/), [MDN: forced-colors](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/forced-colors), [Edge blog: styling for forced colors (2020-09-17, read from the Wayback copy)](https://blogs.windows.com/msedgedev/2020/09/17/styling-for-windows-high-contrast-with-new-standards-for-forced-colors/), [Understanding WCAG 1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [WCAG 2.2: 2.4.13 Focus Appearance](https://www.w3.org/TR/WCAG22/#focus-appearance), local test
 - Related: ACCESS-014, UIREV-007, DESIGN-041, DESIGN-043, DESIGN-045
 

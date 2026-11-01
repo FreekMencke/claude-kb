@@ -91,7 +91,7 @@ Tested 2026-10-17, satori@0.62.0, Node 24.21.0: `display: 'grid'` with `repeat(3
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [satori README, Fonts](https://raw.githubusercontent.com/vercel/satori/main/README.md), [satori 0.55.0 release](https://github.com/vercel/satori/releases/tag/0.55.0), [vercel/satori#162](https://github.com/vercel/satori/issues/162), [vercel/satori#946](https://github.com/vercel/satori/pull/946)
 - Related: OG-002, OG-004, FONT-006, FONT-018, FONT-019
 

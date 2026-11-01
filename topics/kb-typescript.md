@@ -219,7 +219,7 @@ Tested 2026-10-17, typescript@7.0.2, Node 24.21.0: `Object.keys(require("typescr
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Announcing TypeScript 7.0: TypeScript and Embedded Languages](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [Angular: version compatibility](https://angular.dev/reference/versions), [An update on Angular's TypeScript 7-powered compiler](https://blog.angular.dev/an-update-on-angulars-typescript-7-powered-compiler-9619a35e2b0a), [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940), [nest-cli#3478](https://github.com/nestjs/nest-cli/pull/3478), [ts-jest#5366](https://github.com/kulshekhar/ts-jest/issues/5366), [typedoc#3098](https://github.com/TypeStrong/typedoc/issues/3098), [ts-morph#1621](https://github.com/dsherret/ts-morph/issues/1621)
 - Related: TS-008, TS-010, TS-011, JSTOOL-004
 
@@ -290,7 +290,7 @@ Instead:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [claude-plugins-official marketplace.json](https://github.com/anthropics/claude-plugins-official/blob/main/.claude-plugin/marketplace.json), [typescript-language-server CHANGELOG](https://github.com/typescript-language-server/typescript-language-server/blob/master/CHANGELOG.md), [typescript-language-server versionProvider.ts](https://github.com/typescript-language-server/typescript-language-server/blob/master/src/tsServer/versionProvider.ts), [Announcing TypeScript 7.0: Editor Experience](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)
 - Related: TOK-041, TS-006, TS-010
 
@@ -333,7 +333,7 @@ Tested 2026-10-17, typescript@7.0.2, Node 24.21.0: with `erasableSyntaxOnly`, an
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [TypeScript 7.1 Iteration Plan (microsoft/TypeScript#63703)](https://github.com/microsoft/TypeScript/issues/63703), [Announcing TypeScript 7.0: The Road Forward](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [Progress on TypeScript 7 (December 2025)](https://devblogs.microsoft.com/typescript/progress-on-typescript-7-december-2025/), [Transition to 6.0 Maintenance Mode (microsoft/TypeScript#62963)](https://github.com/microsoft/TypeScript/issues/62963)
 - Related: TS-001, TS-008, TS-015
 

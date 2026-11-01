@@ -78,7 +78,7 @@ Motion's paid parts aren't in the `motion` package: llms.txt says "The motion, m
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [GSAP Standard License, Wayback snapshot of 2026-10-17](https://web.archive.org/web/20261017164628/https://gsap.com/community/standard-license/), [GSAP 3.13 release post](https://gsap.com/blog/3-13/), [SPDX License List JSON](https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json), `gsap@3.15.0` tarball
 - Related: ANIMLIB-001, OSS-002, OSS-008, OSS-010
 
@@ -292,7 +292,7 @@ Tested 2026-10-23, `lenis@1.3.27` with `autoRaf: true` and `lenis/dist/lenis.css
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [Lenis README at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/README.md), [Lenis `lenis.ts` at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/packages/core/src/lenis.ts), [lenis.dev/llms.txt](https://lenis.dev/llms.txt), [Motion: Lenis](https://motion.dev/docs/lenis.md), local test
 - Related: ANIMLIB-004, ANIMLIB-009, ANIMLIB-014
 

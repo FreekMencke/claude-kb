@@ -63,7 +63,7 @@ Prefix: FLOW. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live th
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Permission modes: Analyze before you edit with plan mode](https://code.claude.com/docs/en/permission-modes), [Best practices](https://code.claude.com/docs/en/best-practices), [Claude Code best practices, 2025 post (archived 2025-08-01)](https://web.archive.org/web/20250801000000/https://www.anthropic.com/engineering/claude-code-best-practices)
 - Related: FLOW-005, FLOW-006, FLOW-011, ORCH-047
 
@@ -83,7 +83,7 @@ Note: the engineering-blog URL now serves the docs page. Its TDD and screenshot 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Claude Code best practices, 2025 post (archived 2025-08-01)](https://web.archive.org/web/20250801000000/https://www.anthropic.com/engineering/claude-code-best-practices), [Best practices: Tell Claude what it can't see](https://code.claude.com/docs/en/best-practices), [Costs: work efficiently on complex tasks](https://code.claude.com/docs/en/costs), [superpowers test-driven-development](https://github.com/obra/superpowers/blob/main/skills/test-driven-development/SKILL.md)
 - Related: FLOW-011, FLOW-018, ORCH-039, PROMPT-028
 
@@ -136,7 +136,7 @@ Variants:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Costs: work efficiently on complex tasks](https://code.claude.com/docs/en/costs), [Claude in Chrome](https://code.claude.com/docs/en/chrome), [Claude Code best practices, 2025 post (archived 2025-08-01)](https://web.archive.org/web/20250801000000/https://www.anthropic.com/engineering/claude-code-best-practices)
 - Related: FLOW-011, FLOW-014, REPO-021, TOK-043
 
@@ -573,7 +573,7 @@ Monitor runs a script in the background and turns each stdout line into a notifi
 
 - **Deadline:** "5 minutes by default, at most 30 minutes, and at most 10 minutes" in a single-prompt `-p` run. Claude gets one notice at expiry and can re-arm. The schema allows `timeout_ms` up to 3,600,000, but values above 1,800,000 are capped. The old no-timeout `persistent` option was removed in v2.1.271.
 - **Permissions:** same rules as Bash; in auto mode the classifier reviews it.
-- **Availability:** on Bedrock, Claude Platform on AWS, Agent Platform or Foundry, or with `DISABLE_TELEMETRY` or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, it needs Claude Code v2.1.310 or later (when feature-flag fetching is off). On Windows it needs Git Bash. Subagents keep it; stopping the subagent stops its monitors.
+- **Availability:** on Bedrock, Claude Platform on AWS, Agent Platform or Foundry, or with `DISABLE_TELEMETRY` or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, the Monitor tool needs Claude Code v2.1.310 or later (when feature-flag fetching is off). On Windows it needs Git Bash. Subagents keep it; stopping the subagent stops its monitors.
 
 From the tool's own description (v2.1.296):
 - **Every stdout line is a conversation message**: filter to the lines you'd act on, or the monitor gets stopped for volume.

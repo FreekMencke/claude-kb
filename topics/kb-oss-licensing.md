@@ -259,7 +259,7 @@ choosealicense labels these `include-copyright` and `document-changes`. Whether 
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [FSF licence list](https://www.gnu.org/licenses/license-list.html), [GNU GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.txt), [CC: compatible licenses](https://creativecommons.org/share-your-work/licensing-considerations/compatible-licenses/), [choosealicense.com: no license](https://choosealicense.com/no-permission/), [GitHub Docs: Copilot in IDEs, references to matching public code](https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-in-ides), [Claude Code: legal and compliance](https://code.claude.com/docs/en/legal-and-compliance)
 - Related: OSS-010, OSS-002, OSS-005
 

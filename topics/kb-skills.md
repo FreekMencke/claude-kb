@@ -578,7 +578,7 @@ Measure instead of guessing: `claude plugin details <plugin>` prints "Always-on"
 
 Skills, CLAUDE.md and output styles are advisory: "'never edit .env' in CLAUDE.md or a skill is a request, not a guarantee. A PreToolUse hook that blocks the edit is enforcement."
 
-- A skill's outcome "can vary"; a hook "Fires on its event without Claude deciding".
+- A skill's outcome "can vary"; a hook fires on its event without Claude deciding.
 - Hook handlers can be `command`, `http`, `mcp_tool`, `prompt` or `agent`. Exit code 2 blocks a blockable event.
 - A skill can declare `hooks:`. They apply from invocation to the end of the session, not before it. Since v2.1.299 a skill's own `UserPromptSubmit` hook first runs on the prompt after the one that invoked it.
 - Split the work: put judgement and procedure in the skill, and the invariant (format check, forbidden path, required test run) in a hook.
@@ -932,7 +932,7 @@ The agentskills.io reference validator is `skills-ref validate ./my-skill`. In-s
 
 **Sharing** (Team and Enterprise):
 - Recipients get view-only access.
-- "Publish to org" can require review. The help article: Team starts at "Open" (or "Off" if Share with organization was already off). Enterprise: "If you haven't chosen a setting, Publishing is set to \"Requires review.\"" From November 4 (no year given) it changes to "Open" for organizations with Skill and plugin security scanning on.
+- "Publish to org" can require review. The help article: Team starts at "Open" (or "Off" if Share with organization was already off). Enterprise: "If you haven't chosen a setting, Publishing is set to" Requires review From November 4 (the article gives no year; presumably 2026) it changes to "Open" for organizations with Skill and plugin security scanning on.
 - Security scanning on Enterprise blocks malicious skills and puts a caution banner on risky ones.
 
 **Org provisioning**: Organization settings › Plugins & skills. To target a group, bundle the skills into a plugin.
@@ -1388,7 +1388,7 @@ Consequence: test skill behaviour that depends on slash invocation or permission
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Settings reference: disableSideloadFlags](https://code.claude.com/docs/en/settings-reference), [Claude Code skills: restrict skill access](https://code.claude.com/docs/en/skills), [#101061](https://github.com/anthropics/claude-code/issues/101061)
 - Related: SKILL-049, SKILL-014
 
@@ -1523,7 +1523,7 @@ None of the three lists has a licence in the GitHub API or a LICENSE file (Compo
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-23
 - Sources: [skills.sh about](https://skills.sh/about), [skills.sh FAQ](https://skills.sh/docs/faq), [skills.sh audits](https://skills.sh/audits), [Skillselion about](https://skillselion.com/about), [Skillselion research methodology](https://skillselion.com/research/methodology), [Skillselion security census 2026-08](https://skillselion.com/research/agent-skill-security-census-2026-08), [find-skills SKILL.md at a80e4c9](https://github.com/vercel-labs/skills/blob/a80e4c9d12d607631249d4d7d059f835d4b2f13a/skills/find-skills/SKILL.md)
 - Related: SKILL-064, SKILL-067, SKILL-069
 

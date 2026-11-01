@@ -115,7 +115,7 @@ The current models do what the words say, most strictly at low effort. Write the
 - **Action.** "If you say 'can you suggest some changes,' Claude will sometimes provide suggestions rather than implementing them." Write "Change this function to improve its performance."
 - **Above-and-beyond.** "If you want Claude to do more than the task strictly requires, explicitly request it rather than relying on the model to infer this from vague prompts."
 - **Bars.** "Only report high-severity issues" is followed faithfully and lowers recall (PROMPT-032).
-- **Effort interacts.** At low and medium these models "scope[s] [its] work to what was asked rather than going beyond the request"; for shallow reasoning, raise effort "rather than prompting around it".
+- **Effort interacts.** At low and medium these models scope their work to what was asked (Sonnet 5 page: "the model scopes its work to what was asked rather than going beyond the request"); for shallow reasoning, raise effort "rather than prompting around it".
 
 For us: a CLAUDE.md or skill rule written as an example ("e.g. in `osrs-tracker-web`") may be read as applying only to that example. Write the rule's scope as a rule.
 
@@ -123,7 +123,7 @@ For us: a CLAUDE.md or skill rule written as an example ("e.g. in `osrs-tracker-
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Claude Code best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Best practices, 2026-01-23 snapshot](https://web.archive.org/web/20260123082902/https://code.claude.com/docs/en/best-practices), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SKILL-020, PROMPT-005, PROMPT-017
 

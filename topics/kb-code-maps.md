@@ -118,7 +118,7 @@ The other benchmark rows (LOCOMO, LongMemEval) are memory retrieval, not code. T
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Understand-Anything README](https://github.com/Egonex-AI/Understand-Anything/blob/4e6d329/README.md), [plugin agents](https://github.com/Egonex-AI/Understand-Anything/tree/4e6d329/understand-anything-plugin/agents)
 - Related: CODEMAP-006, CODEMAP-001, RETR-001
 

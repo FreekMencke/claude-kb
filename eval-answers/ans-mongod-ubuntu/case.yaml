@@ -16,5 +16,5 @@ graders:
   - name: workaround
     type: llm
     criteria: |
-      PASS if it gives `setarch` with `--uname-2.6` as the workaround until a fixed 8.0 release such as 8.0.35. Extra correct detail is fine.
+      PASS if it gives `setarch` with `--uname-2.6` as the workaround until a fixed 8.0 release such as 8.0.37. Extra correct detail is fine.
       FAIL if it only says to upgrade or to change the kernel, with no `setarch` workaround.

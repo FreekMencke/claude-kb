@@ -159,7 +159,7 @@ Tested 2026-10-17, fontmake 3.12.2: from fontmake's test files, a document with 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0), [fontc README](https://github.com/googlefonts/fontc), [fontc#837](https://github.com/googlefonts/fontc/issues/837), [fontc#717](https://github.com/googlefonts/fontc/issues/717), [fontc crater](https://googlefonts.github.io/fontc_crater/), [fontc on PyPI](https://pypi.org/project/fontc/)
 - Related: FONT-004, FONT-008, FONT-005
 
@@ -433,7 +433,7 @@ Inspect it with `ttx -t gasp -o - Family-Regular.ttf`.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Fontspector README](https://github.com/fonttools/fontspector), [Fontspector 1.9.0 release](https://github.com/fonttools/fontspector/releases/tag/fontspector-v1.9.0), [Font Bakery README](https://github.com/fonttools/fontbakery), [GF guide: QA](https://googlefonts.github.io/gf-guide/qa.html)
 - Related: FONT-015, FONT-007, FONT-013
 

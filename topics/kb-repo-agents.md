@@ -509,7 +509,7 @@ Not style, not "potential issues that depend on specific inputs or state". "If y
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [pr-test-analyzer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [code-modernization test-engineer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [wshobson test-automator](https://github.com/wshobson/agents)
 - Related: ORCH-022, ORCH-030
 
@@ -752,7 +752,7 @@ Official example, which blocks finishing until tests pass:
 **Foreground or background:**
 - Where fork mode is on (the default in interactive sessions), a subagent that Claude spawns from your main conversation "starts in the background".
 - Background subagents get "a smaller built-in tool set than foreground subagents".
-- In `-p` and the Agent SDK, fork mode is off, so the caller decides.
+- In `-p` and the Agent SDK, fork mode is on from v2.1.302 and Claude can wait for a subagent (sub-agents.md); the v2.1.296 observation under TOK-105 was before that.
 - `background: true` in frontmatter forces background.
 
 **Resume** with `SendMessage` to the agent's ID or name, for example to ask the reviewer to recheck after fixes. Names given before the last compaction still need the agent ID (v2.1.299). Explore and Plan can't be resumed.
@@ -841,7 +841,7 @@ steps:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Code review](https://code.claude.com/docs/en/code-review), [Launch post](https://claude.com/blog/code-review)
 - Related: REPO-045, REPO-049, TOK-120
 
@@ -943,7 +943,7 @@ The docs don't say this either way. They say only "The subagent gets the tools; 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Subagents: permission modes](https://code.claude.com/docs/en/sub-agents), [Permission modes](https://code.claude.com/docs/en/permission-modes)
 - Related: REPO-031, REPO-033
 
@@ -1167,7 +1167,7 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Plugin components](https://code.claude.com/docs/en/plugins/components), [Plugin manifest: user configuration](https://code.claude.com/docs/en/plugins/manifest-reference), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Cloud environments](https://code.claude.com/docs/en/cloud-environments)
 - Related: ORCH-002, REPO-040
 
@@ -1372,7 +1372,7 @@ Four official designs, from cheap to thorough:
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Code review](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [code-modernization architecture-critic](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), REPO-002
 - Related: REPO-047, REPO-050
 

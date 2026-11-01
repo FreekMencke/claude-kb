@@ -99,7 +99,7 @@ Fix order in practice: the attribution data (WEBPERF-003) says which subpart; in
 - Type: tool
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [web-vitals README at v6.2.3](https://github.com/GoogleChrome/web-vitals/blob/v6.2.3/README.md), [Long Animation Frames API (developer.chrome.com)](https://developer.chrome.com/docs/web-platform/long-animation-frames)
 - Related: WEBPERF-001, WEBPERF-002, WEB-010, WEB-011
 
@@ -144,7 +144,7 @@ Which cookie changes evict a `no-store` page in Chrome, such as those analytics 
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Back/forward cache (web.dev)](https://web.dev/articles/bfcache), [Lighthouse: page prevented back/forward cache restoration](https://developer.chrome.com/docs/lighthouse/performance/bf-cache), [PerformanceNavigationTiming.notRestoredReasons (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming/notRestoredReasons)
 - Related: WEBPERF-004, WEB-011
 
@@ -160,7 +160,7 @@ For an agent: run the DevTools test, or Chrome DevTools MCP (WEB-011) with a nav
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Prerender pages in Chrome (developer.chrome.com, updated 2026-01-23)](https://developer.chrome.com/docs/web-platform/prerender-pages), [`<script type="speculationrules">` (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/speculationrules), web-features 3.43.0 and BCD 8.1.6 via npm
 - Related: WEBPERF-007, CSS-002
 
@@ -234,7 +234,7 @@ Angular SSR sends no Early Hints: `@angular/ssr` 22.2.3 adds up to 10 `<link rel
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Image file type and format guide (MDN)](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types), web-features 3.43.0 via npm, [Image optimization (angular/angular v22.2.3)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/image-optimization.md), [sharp output options](https://sharp.pixelplumbing.com/api-output)
 - Related: WEBPERF-011, WEBPERF-012, CSS-002, IMG-004, IMG-006
 
@@ -284,7 +284,7 @@ Angular SSR sends no Early Hints: `@angular/ssr` 22.2.3 adds up to 10 `<link rel
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [compression README and HISTORY](https://github.com/expressjs/compression/blob/master/HISTORY.md), [Node.js zlib (v24.x)](https://github.com/nodejs/node/blob/v24.x/doc/api/zlib.md), web-features 3.43.0 and BCD 8.1.6 via npm
 - Related: WEBPERF-012, WEBPERF-014, NODE-001
 
@@ -310,7 +310,7 @@ At speed levels br and zstd barely beat gzip; br 11 saves 15–17% but costs abo
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Traefik compress middleware docs](https://github.com/traefik/traefik/blob/master/docs/content/reference/routing-configuration/http/middlewares/compress.md), [`middlewares.go` at v3.7.15](https://github.com/traefik/traefik/blob/v3.7.15/pkg/config/dynamic/middlewares.go), [`acceptencoding.go` at v3.7.15](https://github.com/traefik/traefik/blob/v3.7.15/pkg/middlewares/compress/acceptencoding.go)
 - Related: WEBPERF-013
 

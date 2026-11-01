@@ -103,7 +103,7 @@ So after any bump, run `npm ls --all`; `--strict-peer-deps` helps only for requi
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Nest CLI usages: nest upgrade](https://docs.nestjs.com/cli/usages), [nest-cli upgrade.command.ts at 12.0.8](https://github.com/nestjs/nest-cli/blob/12.0.8/commands/upgrade.command.ts), [ESLint configuration migration guide](https://eslint.org/docs/latest/use/configure/migration-guide), [Migrate to ESLint v10](https://eslint.org/docs/latest/use/migrate-to-10.0.0), [ESLint version support](https://eslint.org/version-support/), [Vitest migration guide](https://vitest.dev/guide/migration), [Jest migration guide](https://jestjs.io/docs/migration-guide), [nodejs/userland-migrations](https://github.com/nodejs/userland-migrations), [Node.js blog: v22 to v24 migrations](https://nodejs.org/en/blog/migrations/v22-to-v24)
 - Related: NG-010, JSUP-004, JSUP-008
 
@@ -300,7 +300,7 @@ Our three app repos follow the patterns: npm security-only (limit 0 with `applie
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Automating Dependabot with GitHub Actions](https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/automate-dependabot-with-actions), [Troubleshooting Dependabot on GitHub Actions](https://docs.github.com/en/code-security/reference/supply-chain-security/troubleshoot-dependabot/dependabot-on-actions), [Changelog 2021-10-06: Dependabot runs respect `permissions`](https://github.blog/changelog/2021-10-06-github-actions-workflows-triggered-by-dependabot-prs-will-respect-permissions-key-in-workflows/), [dependabot/fetch-metadata README](https://github.com/dependabot/fetch-metadata/blob/main/README.md)
 - Related: JSUP-012, JSUP-014, SESS-024, SURF-002
 
@@ -317,7 +317,7 @@ Safe to auto-merge: patch (and perhaps minor) updates of dev tooling, behind req
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [About Dependabot version updates](https://docs.github.com/en/code-security/concepts/supply-chain-security/about-dependabot-version-updates), [Dependabot pull request comment commands](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-pull-request-comment-commands), [Changelog 2026-01-27: comment command changes](https://github.blog/changelog/2026-01-27-changes-to-github-dependabot-pull-request-comment-commands/), [Dependabot options reference: rebase-strategy](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference)
 - Related: JSUP-001, JSUP-002, JSUP-013, DOC-018
 

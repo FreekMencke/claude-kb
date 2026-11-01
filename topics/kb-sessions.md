@@ -816,7 +816,7 @@ No official page describes issues as hand-offs between repos. That is our conven
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-14
 - Sources: [Use Claude Code with your Pro or Max plan](https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan), [Usage and length limits](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work), [Agent view](https://code.claude.com/docs/en/agent-view), [Costs](https://code.claude.com/docs/en/costs), [Status line](https://code.claude.com/docs/en/statusline), [#96872](https://github.com/anthropics/claude-code/issues/96872), [Errors](https://code.claude.com/docs/en/errors), [Claude Projects](https://code.claude.com/docs/en/claude-projects)
 - Related: ORCH-020, ORCH-013, SESS-033, SESS-034
 

@@ -120,7 +120,7 @@ Tested 2026-10-17, gh 2.102.0: the GraphQL query returned `null` for this repo a
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [About rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets), [Gated feature text for rulesets](https://github.com/github/docs/blob/main/data/reusables/gated-features/repo-rules.md), [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches), [REST: rules](https://docs.github.com/en/rest/repos/rules), [Converting branch protections to rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/converting-branch-protections-to-rulesets)
 - Related: GH-005, SESS-023, SESS-024
 
@@ -181,7 +181,7 @@ Tested 2026-10-17, gh 2.102.0: `gh ruleset check main -R FreekMencke/claude-kb` 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [Automatically generated release notes](https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes), [REST: generate release notes](https://docs.github.com/en/rest/releases/releases#generate-release-notes-content-for-a-release), [gh release create](https://cli.github.com/manual/gh_release_create)
 - Related: GH-006, DOC-006
 
@@ -270,7 +270,7 @@ So on github.com:
 - Type: fact
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [cli/cli `internal/agents/detect.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/internal/agents/detect.go), [cli/cli releases](https://github.com/cli/cli/releases), [GitHub CLI telemetry](https://docs.github.com/en/github-cli/github-cli/github-cli-telemetry), [Claude Code environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [cli/cli `skills/gh/SKILL.md` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/skills/gh/SKILL.md)
 - Related: GH-001, GH-009, SESS-025
 
@@ -310,7 +310,7 @@ The server fits a host without a shell, a read-only token for code-scanning, sec
 - Type: comparison
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [About Copilot cloud agent](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent), [Risks and mitigations](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations), [Customize the agent environment](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/customize-the-agent-environment), [Cloud agent access](https://docs.github.com/en/copilot/concepts/enterprise/cloud-agent-access), [Third-party coding agents](https://docs.github.com/en/copilot/concepts/agents/about-third-party-agents), [Copilot billing](https://docs.github.com/en/billing/concepts/product-billing/github-copilot-billing), [Changelog 2026-04-01](https://github.blog/changelog/2026-04-01-research-plan-and-code-with-copilot-cloud-agent/)
 - Related: REPO-027, REPO-038, SURF-024, SURF-025, GH-014
 
@@ -332,7 +332,7 @@ Plans: included in Student, on by default for Pro, Pro+ and Max, off by default 
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-18
 - Sources: [Changelog 2026-06-11: public preview](https://github.blog/changelog/2026-06-11-github-agentic-workflows-is-now-in-public-preview/), [About GitHub Agentic Workflows](https://docs.github.com/en/copilot/concepts/agents/about-github-agentic-workflows), [gh-aw overview at v0.92.0](https://github.com/github/gh-aw/blob/v0.92.0/docs/src/content/docs/introduction/overview.mdx), [gh-aw architecture](https://github.com/github/gh-aw/blob/v0.92.0/docs/src/content/docs/introduction/architecture.mdx), [gh-aw engines](https://github.com/github/gh-aw/blob/v0.92.0/docs/src/content/docs/reference/engines.md), [gh-aw billing](https://github.com/github/gh-aw/blob/v0.92.0/docs/src/content/docs/reference/billing.md)
 - Related: REPO-027, REPO-038, REPO-039, GHA-013, GH-013
 

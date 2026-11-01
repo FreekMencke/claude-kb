@@ -29,7 +29,7 @@ Research basis:
 | How do I force a tool call on Opus 5.5 or Sonnet 5.5? | You can't: use `tool_choice: auto`, say in the user turn when to call it, and mark the tool `strict: true`, or use structured outputs for a JSON answer. Haiku 5.5 still accepts forced tool choice, but then skips thinking. | CAPI-004 |
 | Can I turn thinking off? | Haiku 5.5 and Opus 5: `disabled` at `high` effort or below. Sonnet 5.5: `between_tools` (up-front thinking off; `xhigh` and `max` return 400). Opus 5.5 and Fable 5.1: no, lower the effort instead. Check `capabilities.thinking.types.disabled` in the Models API. To show progress between tool calls use `display: "updates"` (beta `thinking-display-updates-2026-08-18`). | CAPI-001, CAPI-003, CAPI-019, CAPI-020 |
 | Is a dateless ID like `claude-sonnet-5-5` an alias, and which models retire next? | No: from the 4.6 generation on a dateless ID is a pinned snapshot; only older models have aliases that point to the latest dated snapshot. Sonnet 4.5 (`claude-sonnet-4-5-20250929`) retires 2026-11-30, replacement `claude-sonnet-5-5`. The deprecations page lists every date, with at least 60 days' notice; the Console's Usage export shows which keys still call a model. | CAPI-003 |
-| What limits do strict tools and structured outputs have, and what isn't guaranteed? | 20 strict tools, 24 optional parameters and 16 union-typed parameters per request in total; no recursive schemas or numeric and string-length constraints; a 180-second compile timeout. Not available for Opus 5.5 or Haiku 5.5 on Claude in Amazon Bedrock. Output isn't guaranteed on `stop_reason: refusal` or `max_tokens`, an enum can come back in another capitalisation, and it returns 400 with citations and can't be combined with prefill. | CAPI-004, CAPI-005 |
+| What limits do strict tools and structured outputs have, and what isn't guaranteed? | 20 strict tools, 24 optional parameters and 16 union-typed parameters per request in total; no recursive schemas or numeric and string-length constraints; a 180-second compile timeout. Listed as stable on Amazon Bedrock; whether every Bedrock model accepts `strict` is unverified. Output isn't guaranteed on `stop_reason: refusal` or `max_tokens`, an enum can come back in another capitalisation, and it returns 400 with citations and can't be combined with prefill. | CAPI-004, CAPI-005 |
 | Which stop reasons must my code handle? | `end_turn`, `max_tokens`, `stop_sequence`, `tool_use`, `pause_turn` (server tools), `refusal` (HTTP 200, read `stop_details`) and `model_context_window_exceeded`. | CAPI-008 |
 | Does the TypeScript SDK retry, and when must I stream? | 2 retries by default (connection errors, 408, 409, 429, 5xx) and a 10-minute timeout. It throws on a non-streaming request expected to run past about 10 minutes: stream, and call `stream.finalMessage()` if you only want the whole message. | CAPI-009 |
 | Tool runner or my own loop? | The SDK's tool runner (beta; `client.beta.messages.toolRunner` with `betaZodTool`) for most apps. Write the loop yourself when you need human approval, custom logging or conditional execution. | CAPI-006 |
@@ -108,7 +108,7 @@ Code written for a 4.x model or Sonnet 5 can fail on the current models with `in
 | Non-default `temperature`/`top_p`/`top_k` | 400 | 400 | 400 | 400 |
 | Final assistant turn (prefill) | 400 | 400 | 400 | 400 |
 
-On the 5.x models "the `top_p` default is `0.99`", so `top_p: 1` and sending both `temperature` and `top_p` return 400. From API version `2026-10-21`, any of the three does, on every model. On the Claude API and Google Cloud, computer use needs `computer_toolset_20260801`: Opus and Sonnet 5.5 reject `computer_20251124`, and Haiku 5.5 rejects `computer_20250124`.
+On the 5.x models "the `top_p` default is `0.99`", so `top_p: 1` and sending both `temperature` and `top_p` return 400. From API version `2026-10-21`, setting any of `temperature`, `top_p` or `top_k` returns 400 on every model. On the Claude API and Google Cloud, computer use needs `computer_toolset_20260801`: Opus and Sonnet 5.5 reject `computer_20251124`, and Haiku 5.5 rejects `computer_20250124`.
 
 The advisor tool's pairs depend on the executor: the advisor must be at least as capable (an Opus 5.5 executor rejects a Sonnet 5.5 advisor). For a Sonnet 5.5 executor the 2026-09-28 release note says it "rejects Claude Opus 4.8, Claude Opus 4.7, and Claude Sonnet 5 as advisors"; the migration guide's fuller list adds Opus 4.6, Sonnet 4.6 and Haiku 5.5 (400 error). It accepts only Opus 5/5.5, Sonnet 5.5, Fable 5/5.1, Mythos 5/5.1.
 
@@ -169,7 +169,7 @@ Anthropic gives "at least 60 days' notice" by email. These dates cover the Claud
 Opus 5.5, Sonnet 5.5 and Fable 5.1 return 400 ("tool_choice: type "tool" and "any" are not supported for this model.") for forced tool choice. The docs' replacement:
 - Use `{type: "auto"}` "with an explicit instruction and `strict: true` tools, or use JSON outputs".
 - Put the instruction in the user turn, or in a mid-conversation `role: "system"` message "when your application requires the call" (Fable 5.1 guide).
-- Bedrock: the structured-outputs and strict-tool-use pages now list Amazon Bedrock as stable, so an earlier note to use `auto` alone there no longer holds; whether every Bedrock model accepts `strict` is unverified.
+- Bedrock: the structured-outputs and strict-tool-use pages list Amazon Bedrock as stable; whether every Bedrock model accepts `strict` is unverified.
 
 `strict: true` makes the `input` "strictly follows the `input_schema`", with a valid tool `name`, through grammar-constrained sampling.
 
@@ -412,7 +412,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 - Type: comparison
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-17
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments), [Budgets](https://platform.claude.com/docs/en/managed-agents/budgets), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Managed Agents GitHub](https://platform.claude.com/docs/en/managed-agents/github)
 - Related: ORCH-017, REPO-030, DOC-024, CAPI-013
 
@@ -776,7 +776,7 @@ A `pause_turn` response is different: re-send it unchanged, with the same tools,
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Troubleshooting tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use)
 - Related: CAPI-004, CAPI-006, CAPI-029
 
@@ -959,7 +959,7 @@ Managed Agents is beta (header `managed-agents-2026-04-01`) on the Claude API, C
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-10-30
 - Sources: [Tools](https://platform.claude.com/docs/en/managed-agents/tools), [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions)
 - Related: CAPI-036, CAPI-038, CAPI-039
 
