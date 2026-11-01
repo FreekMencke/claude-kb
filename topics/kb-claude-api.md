@@ -9,7 +9,8 @@ Prefix `CAPI`. This file covers building on Claude as a developer on 2026-10-17:
 - the Agent SDK against `claude -p`, Managed Agents scheduled deployments against Claude Code routines;
 - how Anthropic says to evaluate an LLM feature;
 - added 2026-10-30: preserved thinking and mid-conversation system messages, on-demand compaction, Anthropic's tools in the Messages API (tool search, advisor, code execution, browser use, type strings, token overhead), and Managed Agents sessions, permission policies and hardening;
-- added 2026-11-01: the Agent SDK's session store, approval and question callbacks, structured outputs, input modes, Python differences, todo tools, start-up errors, options and result fields.
+- added 2026-11-01: the Agent SDK's session store, approval and question callbacks, structured outputs, input modes, Python differences, todo tools, start-up errors, options and result fields;
+- also added 2026-11-01: Managed Agents setup and runtime (agent versions, environments, sandbox contents, files, skills, MCP, stream reconnects, deltas, idle logic, threads, outcomes, usage, workflow runs), Claude API OpenTelemetry, the Rate Limits API and MCP tunnels.
 
 It records decisions and pitfalls. For a full API reference, use the bundled `claude-api` skill or the docs. Model choice and effort live in `kb-orchestration.md` (ORCH-026 to ORCH-028), caching and pricing in `kb-token-usage.md` (TOK-050 to TOK-055), prompting in `kb-prompting.md`.
 
@@ -21,6 +22,7 @@ Research basis:
 - No API call was made: no API key was used, so API behaviour is quoted from the docs, not tested.
 - CAPI-016 to CAPI-040 were researched 2026-10-30 (FreekMencke/claude-kb#351, part A). Each page was downloaded as raw `.md` from `platform.claude.com/docs/en/…` (found through `llms.txt`) and read in full; quotes were checked against that text. No API call was made, so API and Managed Agents behaviour is quoted, not tested.
 - CAPI-041 to CAPI-051 were researched 2026-11-01 (FreekMencke/claude-kb#351, part C) from `code.claude.com/docs/en/agent-sdk/` pages `session-storage`, `user-input`, `structured-outputs`, `streaming-vs-single-mode`, `todo-tracking`, `troubleshooting`, `typescript-v2-preview`, `python` and `configuration`, downloaded as raw `.md` and grepped. `examples` is a routing page and gave no entry. Nothing about SDK behaviour was run: the SDK wasn't installed; `npm view @anthropic-ai/claude-agent-sdk dist-tags` gave `latest: 0.3.316`. Local Claude Code was 2.1.296.
+- CAPI-052 to CAPI-073 were researched 2026-11-01 (FreekMencke/claude-kb#351, part D), by an Opus 5.5 lead with three Sonnet 5.5 readers, from raw `.md` pages; every quote and figure was then looked up in those files. `managed-agents/` pages `onboarding` and `quickstart` gave nothing new. `agent-sdk/typescript.md` (329 KB) was grepped, not read. No API call was made and the SDK wasn't run, so all of it is quoted, not tested. Inference hooks were read and left out: they are Claude Enterprise only ("Inference hooks are available only to Claude Enterprise organizations"). `release-notes/system-prompts/*` gets no entry unless a claim needs one.
 - None of our public repos (osrs-tracker-web, osrs-tracker-api, freek-mencke-web, claude-skills) depends on `@anthropic-ai/sdk` or the Agent SDK. Checked 2026-10-17 with a grep of their `package.json` files and workflows.
 
 ## Quick answers
@@ -34,12 +36,12 @@ Research basis:
 | What limits do strict tools and structured outputs have, and what isn't guaranteed? | 20 strict tools, 24 optional parameters and 16 union-typed parameters per request in total; no recursive schemas or numeric and string-length constraints; a 180-second compile timeout. Listed as stable on Amazon Bedrock; whether every Bedrock model accepts `strict` is unverified. Output isn't guaranteed on `stop_reason: refusal` or `max_tokens`, an enum can come back in another capitalisation, and it returns 400 with citations and can't be combined with prefill. | CAPI-004, CAPI-005 |
 | Which stop reasons must my code handle? | `end_turn`, `max_tokens`, `stop_sequence`, `tool_use`, `pause_turn` (server tools), `refusal` (HTTP 200, read `stop_details`) and `model_context_window_exceeded`. | CAPI-008 |
 | Does the TypeScript SDK retry, and when must I stream? | 2 retries by default (connection errors, 408, 409, 429, 5xx) and a 10-minute timeout. It throws on a non-streaming request expected to run past about 10 minutes: stream, and call `stream.finalMessage()` if you only want the whole message. | CAPI-009 |
-| Tool runner or my own loop? | The SDK's tool runner (beta; `client.beta.messages.toolRunner` with `betaZodTool`) for most apps. Write the loop yourself when you need human approval, custom logging or conditional execution. | CAPI-006 |
+| When is a Managed Agents session done, and how do I recover a dropped stream? | `session.status_idle` with `end_turn`, and with workflow runs only after each run's `workflow_run.status_ended` plus a later idle. Interrupts also give `end_turn`. Open the stream first; to reconnect, open a new one, list history and skip seen IDs. | CAPI-060, CAPI-062, CAPI-067 |
 | How do I resume an Agent SDK session on another host, and what goes wrong? | Pass a `SessionStore` (`append` and `load` required) plus `resume` from the same `cwd`. The store mirrors local disk; a store-resumed run deletes its local copy. It throws with `persistSession: false` or file checkpointing, `Not logged in` follows a temp `CLAUDE_CONFIG_DIR` (Python drops `apiKeyHelper`), and lost batches only show as `mirror_error`. | CAPI-041, CAPI-042 |
 | Agent SDK, `claude -p`, a Managed Agents deployment or a routine? | `claude -p --bare` with `--max-turns` and `--max-budget-usd` for one prompt in a script; the Agent SDK for a Node service that needs `canUseTool`, hook callbacks, in-process tools or a session store (same binary). For scheduled repo upkeep, a routine on a subscription (1-hour minimum); a deployment when you need minute-level cron, a hard USD cap per run or secrets the model never sees (API tokens plus $0.08 per running session-hour). | CAPI-011, CAPI-012, CAPI-013, CAPI-014 |
 | Why is my Agent SDK result `success` but empty, or an error? | `subtype: "success"` can carry `is_error` (a refusal, an API error) or no `structured_output`; check `stop_reason`, then `terminal_reason`, then `subtype`. Structured output is draft-07 JSON Schema and fails with `error_max_structured_output_retries`. `canUseTool` never fires for auto-approved tools; task tools are off on newer models. | CAPI-045, CAPI-051, CAPI-043, CAPI-048 |
 | How do I change instructions, tools or effort mid-conversation, and which models read each other's thinking? | Append a `role: "system"` message, `tool_addition`/`tool_removal` blocks (beta `inline-tools-2026-09-15`) or a per-message `output_config`; never edit `system`, `tools` or earlier messages. On Fable 5.1, Mythos 5.1, Opus 5.5, Sonnet 5.5 and Haiku 5.5 a replayed thinking block then fails the prefix check (400 on accounts created on or after 2026-08-31). Fable 5.1 reads Opus 5.5 but nobody reads Fable's blocks; unreadable blocks are dropped with a 200. | CAPI-016, CAPI-017, CAPI-018, CAPI-021, CAPI-022 |
-| How do I compact on the API? | Send top-level `compaction` with beta `compact-2026-09-04`, put the returned block first and drop the summarized messages. A failed summary is a 200 with empty `content`: check `stop_reason`. Kept turns keep their thinking only under three conditions. | CAPI-023, CAPI-024, CAPI-025 |
+| What limits does Managed Agents have? | 300 create and 1,200 read requests a minute per organization; 500 files and 500 skills a session; 20 MCP servers an agent; 25 child threads; a run has 64 working threads, 1,000 agents and 24 hours; 10 open runs; a sandbox has up to 8 GB memory and 10 GB disk. | CAPI-054 to CAPI-058, CAPI-064, CAPI-067 |
 | Which Anthropic tools are current, and what do they cost and limit? | Type strings in CAPI-031. Tool-use system prompt 286 tokens on Opus 5.5, Sonnet 5.5, Haiku 5.5; bash 325, text editor 974, computer use about 4,500, browser use about 6,600. Tool search: 10,000 deferred tools. Advisor: beta `advisor-tool-2026-03-01`. Code execution: no internet, 30-day container, free with web search or fetch, else 1,550 free hours then $0.05 an hour. | CAPI-026, CAPI-028, CAPI-031, CAPI-032, CAPI-033 |
 | How do I run a Managed Agents agent safely? | `limited` networking, secrets in vaults, domain allowlists on web tools, `auto` or `always_ask` on risky tools (agent toolset default `always_allow`, MCP default `always_ask`), the smallest tool set, a budget, no untrusted input next to a powerful tool. `auto` is not a human checkpoint. | CAPI-038, CAPI-039, CAPI-040 |
 
@@ -98,6 +100,28 @@ Research basis:
 | CAPI-049 | SDK start-up and exit errors: message, cause, fix | pattern | agent-sdk, troubleshooting, cli-not-found, errors |
 | CAPI-050 | Agent SDK options: caps, environment, fallback and mid-session switches | fact | agent-sdk, options, max-turns, fallback-model, env |
 | CAPI-051 | ResultMessage: a "success" result can still be an error | fact | agent-sdk, result-message, stop-reason, usage |
+| CAPI-052 | Managed Agents agent updates: versions, the 409 and which fields replace or merge | fact | managed-agents, versioning, agents, optimistic-concurrency |
+| CAPI-053 | Managed Agents environments: packages, `allowed_hosts` matching and lifecycle | fact | managed-agents, environments, packages, allowed-hosts, networking |
+| CAPI-054 | Managed Agents cloud sandbox: what's preinstalled and the limits | fact | managed-agents, sandbox, runtimes, limits, self-hosted |
+| CAPI-055 | Managed Agents session files: mount paths, outputs and the 500-file cap | fact | managed-agents, files, mount-path, outputs |
+| CAPI-056 | Managed Agents skills: pinning, the 500 cap and repository discovery | fact | managed-agents, skills, versions, github-repository |
+| CAPI-057 | Managed Agents MCP connector: declaring servers, credential matching and failures | fact | managed-agents, mcp, vaults, session-error |
+| CAPI-058 | Managed Agents API rate limits, and what the reference doesn't cap | fact | managed-agents, rate-limits, branding |
+| CAPI-059 | Moving to Managed Agents: what each Agent SDK feature becomes | comparison | managed-agents, agent-sdk, migration, plan-mode, max-turns |
+| CAPI-060 | Managed Agents event stream: opening order and reconnecting | pattern | managed-agents, streaming, reconnect, events |
+| CAPI-061 | Managed Agents event deltas: opting in and rebuilding previews | fact | managed-agents, event-deltas, streaming, previews |
+| CAPI-062 | Managed Agents: when is a session done, and what to answer while it waits | pattern | managed-agents, stop-reason, idle, end-turn, workflow-runs |
+| CAPI-063 | Managed Agents session lifecycle: mid-session changes, archive and delete | fact | managed-agents, sessions, archive, delete, system-message |
+| CAPI-064 | Managed Agents session threads: streams, interrupts and answering a subagent | fact | managed-agents, threads, multiagent, interrupt |
+| CAPI-065 | Managed Agents outcomes: `user.define_outcome`, the grader and results | fact | managed-agents, outcomes, rubric, grader, max-iterations |
+| CAPI-066 | Managed Agents usage fields: list cost, active seconds and the session viewer | fact | managed-agents, usage, list-cost, active-seconds, observability |
+| CAPI-067 | Managed Agents workflow runs: limits, results and how to stop one | fact | managed-agents, workflow-runs, dynamic-workflows, limits |
+| CAPI-068 | Agent SDK partial-message streaming: what doesn't arrive and in what order | anti-pattern | agent-sdk, streaming, include-partial-messages, subagents |
+| CAPI-069 | Agent SDK TypeScript options the other entries don't cover | fact | agent-sdk, options, task-budget, typescript |
+| CAPI-070 | Claude API OpenTelemetry: the two switches, span names and prompt content | fact | opentelemetry, tracing, spans, api, content |
+| CAPI-071 | API trace delivery and counting tokens from spans | fact | opentelemetry, delivery, tokens, destinations |
+| CAPI-072 | Rate Limits API: reading limits and overriding them per workspace | fact | rate-limits, admin-api, workspaces |
+| CAPI-073 | MCP tunnels: private MCP servers without inbound ports | comparison | mcp-tunnels, mcp, cloudflare, private-network |
 
 ---
 
@@ -1018,11 +1042,11 @@ Permission policies don't govern custom tools: your code decides, then sends `us
 - Confidence: official-docs
 - Last verified: 2026-11-01
 - Sources: [Secure your Managed Agents deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment), [Security risks and sandbox boundaries](https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks)
-- Related: CAPI-013, CAPI-037, CAPI-038, CAPI-040
+- Related: CAPI-013, CAPI-037, CAPI-038, CAPI-040, CAPI-053
 
 The docs' order and recommended values:
 1. **Cloud environment**, unless tools must run on your infrastructure.
-2. **`limited` networking** with only the hosts the agent needs. Set `networking` on every create request: an omitted one "might get `unrestricted`". Keep `allow_package_managers` and `allow_mcp_servers` `false` and list the registry and MCP hosts you trust instead. "Network access is granted by host, not by operation": `git push` and package publishing included. Avoid `*.` wildcards and shared-hosting domains.
+2. **`limited` networking** with only the hosts the agent needs. Set `networking` on every create request: an omitted one "might get `unrestricted`" (the environments page: "gets `unrestricted`", CAPI-053). Keep `allow_package_managers` and `allow_mcp_servers` `false` and list the registry and MCP hosts you trust instead. "Network access is granted by host, not by operation": `git push` and package publishing included. Avoid `*.` wildcards and shared-hosting domains.
 3. **Secrets in vaults**, `injection_location` header only, `networking` `limited` to the exact hosts the key is for. Code sees a placeholder. Never give the agent a Claude API key: code in the sandbox can use it to start sessions or use web tools outside your approvals and budget.
 4. **Allowlist on each web tool.** `web_fetch` URLs can carry data to the site they point at.
 5. **Policies:** `read`, `glob`, `grep` `always_allow`; `bash`, `write`, `edit` and `web_fetch` `auto`, `always_ask` for irreversible changes or when you relay end-user text; `web_search` `always_ask` if queries may hold sensitive data; MCP tools that change data `always_ask`.
@@ -1058,6 +1082,323 @@ After tightening an environment, start new sessions and stop old ones: a running
 5. Wait for `idle`: a running session can't be archived or deleted.
 
 Webhooks to watch: `session.status_idled` (the event itself is `session.status_idle`), `session.budget_reached`, `session.status_terminated` and `deployment_run.failed`. A delivery can be missed, so also list sessions on a schedule.
+
+## [CAPI-052] Managed Agents agent updates: versions, the 409 and which fields replace or merge
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Define your agent](https://platform.claude.com/docs/en/managed-agents/agent-setup)
+- Related: CAPI-036, CAPI-038, ORCH-018
+
+An agent is a stored, versioned object. "The `version` starts at 1 and increments each time an update changes the agent." An update that changes nothing makes no new version. Send `version` for optimistic concurrency: a stale one returns 409. Omit it and the last write wins.
+
+**Per field on update:**
+- `tools`, `mcp_servers`, `skills`: the array replaces the old one in full.
+- `metadata`: merges per key; `null` deletes a key.
+- `system`, `description`: `null` clears them. `model` and `name` can't be cleared.
+- `effort`: kept while the model `id` stays the same, reset to the new model's default when it changes. Sending `model` without `inference_geo` clears the pin.
+- `multiagent`: merges level by level only while the type stays `multiagent_20261001`. `null` inside it means the default, so `workflows: null` turns dynamic workflows on.
+
+**Rollouts.** A session given a bare agent ID gets the latest version; a pinned object keeps one (CAPI-036). A parent's `predefined_agents` keep the child version they pinned until the parent is updated.
+
+**Archive:** "Archiving makes the agent read-only and cannot be undone." Existing sessions continue.
+
+**Geo pins** are checked on save, at session creation and on every turn: narrowing a workspace's `allowed_inference_geos` means "new sessions can’t be created from the agent and running sessions refuse further turns; pins are never exempted".
+
+## [CAPI-053] Managed Agents environments: packages, `allowed_hosts` matching and lifecycle
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Environments](https://platform.claude.com/docs/en/managed-agents/environments), [Secure your Managed Agents deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment)
+- Related: CAPI-037, CAPI-039, CAPI-054
+
+**Packages.** Keys `apt`, `cargo`, `gem`, `go`, `npm`, `pip`, cached across sessions that share the environment. "When multiple package managers are specified, they run in alphabetical order (apt, cargo, gem, go, npm, pip)." Pin syntax differs by manager: `hyperfine@1.18.0`, `rails:7.1.0`, `sqlalchemy==2.0.30`. `packages` with `limited` networking and `allow_package_managers: false` returns 400, even when the registries are in `allowed_hosts`.
+
+**`allowed_hosts`:** bare hostnames or wildcards, with no scheme, port or path. `example.com` doesn't match `www.example.com`, and "`*.example.com` matches every subdomain of `example.com`, but not `example.com` itself." A blocked request on port 80 or 443 gets a 403 that names the host, which makes a missing host easy to spot.
+
+- `limited` with nothing else opens no hosts; attached files, memory stores and GitHub repositories still work.
+- `allow_mcp_servers: false`: session creation returns 400 if an agent's MCP host isn't listed; `true` turns that check off.
+- The list also limits `web_fetch` and `web_search`, and a host added for them is open to the sandbox too. The two `allow_*` switches add no hosts for those tools.
+
+**Omitted `networking`:** the environments page says a create request "that omits it gets `unrestricted`"; the secure-deployment page says it "might get `unrestricted`". Either way, set it explicitly. The Console form starts on Limited.
+
+**Lifecycle.** "Environments are not versioned", so keep your own record of changes. Delete works only when no session references it; archive leaves running sessions alone. Each session gets its own sandbox and shares no filesystem state with others.
+
+## [CAPI-054] Managed Agents cloud sandbox: what's preinstalled and the limits
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Cloud sandboxes reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference), [Choosing an environment](https://platform.claude.com/docs/en/managed-agents/choosing-an-environment)
+- Related: CAPI-053, SURF-027
+
+Ubuntu 24.04 LTS on x86_64, with memory up to 8 GB and disk up to 10 GB. This is the Managed Agents sandbox, not Claude Code on the web's.
+
+- **Languages:** Python 3.10 to 3.13; Node.js 20, 21 and 22 (default); Go 1.24 (default) and 1.25; Rust stable; OpenJDK 21; Ruby 3.1 to 3.3; PHP 8.3; GCC 13 and Clang.
+- **Databases:** PostgreSQL 16 and Redis 7 are installed; "The server is not running by default." SQLite comes through language bindings.
+- **Tools:** git, curl, jq, yq, make, cmake, ripgrep, ffmpeg, ImageMagick, pandoc, headless LibreOffice, tesseract (English only), TeX Live. Docker has "limited availability".
+- **Browser:** Playwright for Python and Node with Chromium at `/opt/pw-browsers/chromium`, not on `PATH`; no Firefox or WebKit. "Use the pre-installed packages rather than installing another Playwright version, which would look for a browser build that is not present."
+
+**Default networking differs by route:** API-created environments default to `unrestricted`, sandboxes provisioned through Claude Studio to `limited`.
+
+**Cloud or self-hosted.** Self-hosted sandboxes don't get `file` or `github_repository` resources, repository skill discovery, environment-variable vault credentials or these runtimes. The docs: "Choose a self-hosted sandbox only if tools must run on infrastructure you control."
+
+## [CAPI-055] Managed Agents session files: mount paths, outputs and the 500-file cap
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Files](https://platform.claude.com/docs/en/managed-agents/files), [Session operations](https://platform.claude.com/docs/en/managed-agents/session-operations)
+- Related: CAPI-010, CAPI-036, CAPI-063
+
+"A maximum of 500 files is supported for each session." Upload through the Files API, then attach as a `file` resource at creation or later through `/v1/sessions/{id}/resources`.
+
+**Inputs.** A `mount_path` of `/data.csv` lands at `/mnt/session/uploads/data.csv`; with no path it is `/mnt/session/uploads/<file_id>`. "Files mounted in the sandbox are read-only copies." Each mount gets a new `file_id`, and these copies don't count against storage limits.
+
+**Outputs.** The agent writes to `/mnt/session/outputs/`. List them with `GET /v1/files?scope_id=<session id>`, with the beta header. They can arrive after the idle event: "If an output file you expect is missing, list again after a short delay; once it appears in the list, its upload is complete."
+
+**Lifetime.** Deleting a session removes the files it produced, not your Files API uploads (CAPI-063).
+
+The page states no per-file size limit or type restriction here; the agent unpacks archives itself with `bash`. Files in `initial_events` have their own limit: 100 file-sourced document blocks and 32 MB per request (CAPI-036).
+
+## [CAPI-056] Managed Agents skills: pinning, the 500 cap and repository discovery
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Skills](https://platform.claude.com/docs/en/managed-agents/skills)
+- Related: CAPI-040, SKILL-081
+
+An agent's `skills` entry is `{type, skill_id, version}`. `type` is `anthropic` (IDs such as `pptx`, `xlsx`, `docx`, `pdf`) or `custom` (`skill_...`). "Pin to a specific version or use `latest`. Optional. Defaults to `latest` when omitted." Upload bundles to `POST /v1/skills`, not the Files API.
+
+**Cap:** each session supports up to 500 skills, counted across all its agents after removing duplicates. More skills slow sandbox start.
+
+**Repository skills.** For a mounted `github_repository`, only `.claude/skills/<name>/SKILL.md` at the repository root is found:
+- not a deeper folder, a bare `.claude/skills/SKILL.md` or a `skills/` folder outside `.claude`;
+- it follows `checkout`, otherwise the default branch;
+- the agent needs `read` enabled;
+- cloud sandboxes only.
+
+"The scan runs once, when the session starts. Commits pushed mid-session are not picked up; to load updated skills, start a new session." These skills load with no review, so treat a repository you don't control as untrusted input (CAPI-040).
+
+## [CAPI-057] Managed Agents MCP connector: declaring servers, credential matching and failures
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector), [Reference](https://platform.claude.com/docs/en/managed-agents/reference)
+- Related: CAPI-013, CAPI-036, CAPI-038, CAPI-053, CAPI-073
+
+Declare each server in `mcp_servers` (`type: url`, unique `name`, `url`) and reference it from an `mcp_toolset` through `mcp_server_name`; a server with no toolset, or a toolset with no server, is rejected. "An agent can declare up to 20 MCP servers." Names run to 255 characters and URLs to 2,048. Definitions hold no secrets: credentials come from `vault_ids` at session creation.
+
+**Matching.** A vault credential matches on `mcp_server_url` after normalizing host case, the default port and a trailing slash. A different path, subdomain or non-default port doesn't match. "If none matches, the connection is attempted unauthenticated."
+
+**Failures don't stop the session.** "Session creation does not validate MCP connectivity or credentials." A failure emits `session.error` with `mcp_connection_failed_error` or `mcp_authentication_failed_error`, and the session runs on. "The connection is retried on the next `session.status_idle` to `session.status_running` transition."
+
+**Output and transport.** Output over 100,000 characters (about 25,000 tokens) goes to a file. Servers use streamable HTTP; "servers that only support the deprecated SSE transport still work through an automatic fallback". `configs` take only `name`, `enabled` and `permission_policy`.
+
+## [CAPI-058] Managed Agents API rate limits, and what the reference doesn't cap
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Reference](https://platform.claude.com/docs/en/managed-agents/reference)
+- Related: CAPI-013, CAPI-072
+
+Per organization: 300 requests per minute on create endpoints (agents, sessions, environments) and 1,200 on read endpoints (retrieve, list, stream). "Organization-level spend limits and usage-tier rate limits also apply."
+
+The reference states no cap on concurrent sessions, and doesn't say what happens when a scheduled run starts while the previous session still runs. The Rate Limits API (CAPI-072) doesn't cover these limits.
+
+**Naming a product built on it:** "Claude Agent" and "{YourAgentName} Powered by Claude" are allowed; names using "Claude Code" or "Claude Cowork" aren't.
+
+## [CAPI-059] Moving to Managed Agents: what each Agent SDK feature becomes
+- Type: comparison
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Migration](https://platform.claude.com/docs/en/managed-agents/migration)
+- Related: CAPI-011, CAPI-014, CAPI-038, CAPI-052
+
+The Messages loop goes away: the session stores history and `session.status_idle` ends your loop.
+
+| Agent SDK | Managed Agents |
+|---|---|
+| `ClaudeAgentOptions` | A stored, versioned agent |
+| `cwd`, `add_dirs` | File resources; built-in tools run against `/workspace` |
+| `CLAUDE.md` hierarchy | One `system` string |
+| `permission_mode`, `can_use_tool` | `permission_policy` per tool |
+| Hooks | `always_ask` on built-in tools |
+| `max_turns` | "Count turns client-side." |
+| Plan mode | "Run a planning-only session first, then a second session to run the plan." |
+| Output styles, slash commands | Apply them in your client |
+
+**Traps:**
+- Under `auto`, a hook-style check on your client misses calls: "if the server evaluates a call as safe, it runs without reaching your client."
+- `max_tokens` and `thinking` aren't exposed on the agent, and prefill doesn't exist.
+- A model change takes effect on the next session you create.
+- A bare agent ID always gets the latest version; the page advises to "pin sessions to a specific version to promote or roll back without a deploy".
+
+## [CAPI-060] Managed Agents event stream: opening order and reconnecting
+- Type: pattern
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Events and streaming](https://platform.claude.com/docs/en/managed-agents/events-and-streaming), [Session threads](https://platform.claude.com/docs/en/managed-agents/session-threads)
+- Related: CAPI-061, CAPI-062, CAPI-064
+
+"A stream delivers only the events emitted after it opens, so open the stream before you send events to avoid a race condition."
+
+**After a dropped connection:**
+1. Open a new stream.
+2. List the session's events and collect their IDs.
+3. Tail the stream, skipping IDs you've seen. Previews (`event_start`, `event_delta`) have no top-level `id` and aren't replayed.
+4. If the session is paused, `stop_reason.event_ids` on the latest `session.status_idle` lists the calls still to answer.
+
+Thread streams work the same way: "A thread's stream doesn't replay earlier events." A new thread's list can be empty right after `session.thread_created`.
+
+`processed_at` is null while a sent event is queued.
+
+## [CAPI-061] Managed Agents event deltas: opting in and rebuilding previews
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas)
+- Related: CAPI-009, CAPI-060
+
+Live text previews are opt-in per connection: repeat the query parameter `event_deltas[]` with `agent.message` or `agent.thinking`. "Any other value returns a 400 error, as does a request with more than 100 values." It works on the session stream and on a thread's stream. `agent.thinking` gets `event_start` only, with no content.
+
+**Order for one model request:** `span.model_request_start`, `event_start`, `event_delta`s, the buffered `agent.message`, `span.model_request_end`.
+
+**Rebuilding:** key a map on `(event_id, delta.index)`, append `delta.content.text`, and drop the preview when the buffered `agent.message` with that `id` arrives. Close leftovers on `span.model_request_end`.
+
+**Traps:**
+- "The delta type is `content_delta`, not `content_block_delta`. Accumulator code written for the Messages API does not carry over unchanged."
+- "Under load, the server might shed deltas for an event." You get a prefix: "the buffered `agent.message` is always the authoritative record."
+- Deltas are never stored or replayed, and cover text only, not tool use or results.
+- "A connection previews only the thread it's reading", so a child's previews never reach the session stream.
+
+## [CAPI-062] Managed Agents: when is a session done, and what to answer while it waits
+- Type: pattern
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Events and streaming](https://platform.claude.com/docs/en/managed-agents/events-and-streaming), [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
+- Related: CAPI-038, CAPI-060, CAPI-067
+
+`session.status_idle` carries `stop_reason.type`: `end_turn`, `requires_action` or `budget_reached`.
+
+- **`end_turn`** also means interrupted: "The idle event's `stop_reason.type` is `end_turn`, the same value as a turn that completes on its own."
+- **`requires_action`:** "a `user.message` returns 400, so answer the calls first."
+- **`budget_reached`:** a `user.message` returns 400 until you raise or remove the budget. "No event you send resumes a session paused at its budget."
+
+**With workflow runs open, idle isn't done.** Finished means every created run has `workflow_run.status_ended`, followed by a `session.status_idle` with `end_turn` that your own interrupt didn't cause. Meanwhile the session can stay `running` while a tool call waits on you, so answer custom tool calls and `evaluated_permission` `ask` calls as their events arrive, not at idle.
+
+**Other details:**
+- With runs, idle can carry `retries_exhausted`: the turn failed on an error, a run may still be going, and if a run ended unread the server starts a new turn by itself.
+- A custom tool result can go as soon as its event arrives, without waiting for idle; `requires_action` still follows and can be ignored. "A second result for the same call is accepted and has no effect."
+
+## [CAPI-063] Managed Agents session lifecycle: mid-session changes, archive and delete
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Session operations](https://platform.claude.com/docs/en/managed-agents/session-operations), [Events and streaming](https://platform.claude.com/docs/en/managed-agents/events-and-streaming), [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
+- Related: CAPI-021, CAPI-036, CAPI-040, CAPI-062
+
+Statuses: `idle`, `running`, `rescheduling`, `terminated`. "A session that completes its work goes `idle`, not `terminated`." Send a `user.message` to resume. "Sandbox state is preserved for only 30 days after the sandbox is created, and activity does not extend this window."
+
+**Mid-session changes.** Only the agent's tools and MCP servers can change, as a full replacement, and "The session must be `idle` to update the agent." Any open workflow run returns 400, even when idle. `model`, `system`, `skills` and the geo pin stay fixed.
+
+**`system.message`** adds instructions: a `role: "system"` turn that applies from then on and doesn't replace `system`. It takes 1 to 1,000 text items, lands on the primary thread only and is rejected with `model_does_not_support_mid_conversation_system` on models without support.
+
+**Budget.** A new cap "must be strictly greater than the session's consumed list cost". Removal is one-way: "You therefore can't re-add a removed budget or add one to a session created without it."
+
+**Archive and delete.** Not while `running`. With a run open, either may return 400 (`workflow_run_open`) or succeed; a successful archive ends open runs as `stopped`.
+
+"Deleting a session is permanent." It removes the record, events, sandbox and files the session produced. Memory stores, vaults, skills, environments, agents and Files API uploads stay.
+
+## [CAPI-064] Managed Agents session threads: streams, interrupts and answering a subagent
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Session threads](https://platform.claude.com/docs/en/managed-agents/session-threads)
+- Related: ORCH-018, CAPI-038, CAPI-060, CAPI-067
+
+The session stream is the primary thread, a condensed view with thread starts, ends and blocking events. Each child has `/threads/{thread_id}/stream` with its reasoning and tool calls. Any thread `running` makes the session `running`. The budget is one shared cap, each thread priced at its own model. ORCH-018 holds the limit of 25 child threads; advisor and workflow-run threads are exempt from it.
+
+**Answering.** A subagent's `always_ask` and custom tool calls are cross-posted to the primary stream with `session_thread_id`; answer there and it's routed. The two copies have different `id`s, so match on `type` plus `tool_use_id`.
+
+**Races.** A child's `session.thread_status_idle` can arrive before the tool events it lists, and "A `user.tool_confirmation` for a call whose event hasn't arrived yet can return 400." Answer each `ask` as its event arrives.
+
+**Under `auto`:** "Nothing in a subagent's thread counts as your intent." A server denial isn't cross-posted; it shows only on the child's stream, and the child keeps running.
+
+**Interrupts.** `user.interrupt` with `session_thread_id` hits one thread; without it, every non-archived thread including the primary. An interrupted child sends the primary no report, so the primary won't start a turn until something else reaches it. A thread on `requires_action` counts as idle, so it can be archived.
+
+## [CAPI-065] Managed Agents outcomes: `user.define_outcome`, the grader and results
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes)
+- Related: CAPI-015, CAPI-036, CAPI-055, CAPI-067
+
+An outcome tells the agent what done means. A grader checks the work against a rubric: "The grader uses a separate context window to avoid being influenced by the main agent's implementation choices." Send `user.define_outcome` with `description`, `rubric` (Markdown, inline or a Files API `file_id`) and `max_iterations`, "optional; default 3, max 20". The agent starts on receipt, with no `user.message` needed.
+
+"Only one outcome is supported at a time, but you can chain outcomes in sequence." Chain after the terminal `span.outcome_evaluation_end`.
+
+**Results in that event:**
+- `satisfied`: the session goes idle.
+- `needs_revision`: the agent continues.
+- `max_iterations_reached`: "One final acknowledgment turn follows before the session transitions to `idle`. No further evaluation runs."
+- `failed`: the rubric doesn't apply to the deliverables.
+- `interrupted`: `user.interrupt` arrived.
+
+**Following it.** `iteration` counts from 0. `span.outcome_evaluation_ongoing` is a heartbeat; the grader's reasoning stays hidden. `GET /v1/sessions/{id}` shows `outcome_evaluations[].result`. Deliverables go in `/mnt/session/outputs/` (CAPI-055).
+
+With workflow runs, "no evaluation starts while a run is open", running or idle. The page gives no grader cost or rubric size limit.
+
+## [CAPI-066] Managed Agents usage fields: list cost, active seconds and the session viewer
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Session observability](https://platform.claude.com/docs/en/managed-agents/session-observability)
+- Related: CAPI-013, CAPI-070, TOK-123
+
+**`usage` on a session:** `input_tokens` (uncached), `output_tokens`, `cache_read_input_tokens`, `cache_creation` (split by TTL), `list_cost`, `active_seconds`, `server_tool_use`. The session emits a `session.usage` event just before every idle.
+
+- `list_cost` is whole cents as a string, plus a currency code.
+- `active_seconds` counts overlapping threads once. "The session's runtime cost is priced on this duration." `stats.active_seconds` sums per thread instead.
+- Per-thread figures are rounded separately and leave out running-time cost, so they don't add up to the session's `list_cost`.
+- "Web fetch requests carry no per-request charge and aren't metered, so `web_fetch_requests` reads `0`."
+
+**Debugging.** The Console viewer at `platform.claude.com/sessions` has a timeline, transcript and Inspector tabs. `?event={event_id}` links to an event, and `ant beta:sessions connect` opens the session from a terminal. "The session viewer is only accessible to Developers and Admins."
+
+**Org view.** In the Usage and Cost API (TOK-123), group by `account_id` or `service_account_id`. Workspace keys and deployments run as `svac_...` service accounts, with `api_key_id` and `account_id` null.
+
+## [CAPI-067] Managed Agents workflow runs: limits, results and how to stop one
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
+- Related: ORCH-018, CAPI-040, CAPI-052, CAPI-062, CAPI-064
+
+A workflow is a program the agent writes; the server runs it in the background, starting agents in threads it creates. Turn it on with `workflows` in the `multiagent` block. "There's no approval step before a run starts", so to review first, tell the agent to describe its plan and wait. "Only the agent on the session's primary thread starts runs", and they don't nest.
+
+**Limits:** 64 threads working at once in a run, 1,000 agents over its life (`thread_limit_error`), 24 hours by default or what the agent sets (`timeout_error`), 10 runs open at once per session (`max_workflow_runs_error`; idle runs count).
+
+**Against ordinary threads:** the program decides which agents run next and writes their prompts, and you can't see the code or per-thread results. A run's threads share the sandbox but not history, sit outside the 25-thread cap and can't be archived or stopped by ID.
+
+**Results:** `completed`, `stopped`, `error`. "The result doesn't say whether the work passed": read each thread's events. Failed agents retry once on a new thread, so make tools idempotent.
+
+**Stopping.** "No event you send ends a run; archiving the session can." `user.interrupt` ends none: send a `user.message` asking the agent to stop.
+
+**Cost.** "A run has no price of its own": tokens count against the session budget. At the cap every open run pauses, and "A paused run's lifetime keeps passing". "Run events don't trigger webhooks."
 
 ## Agent SDK: sessions, input, output and options
 
@@ -1257,6 +1598,111 @@ TOK-121 lists the subtypes. The Python reference adds that `subtype="success"` d
 
 **Accounting.** `usage` covers the main loop only. `model_usage` covers subagents and internal calls such as compaction, and is "an estimate, not a billing statement". In streaming input mode `model_usage` and `total_cost_usd` are cumulative, so read the latest result and don't sum. `origin` (Python SDK 0.2.137+) separates your prompt's result from an injected turn: several background-task notifications that finish together give one `ResultMessage` each, all but the last with `num_turns` 0 and empty `result`.
 
+## [CAPI-068] Agent SDK partial-message streaming: what doesn't arrive and in what order
+- Type: anti-pattern
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Streaming output](https://code.claude.com/docs/en/agent-sdk/streaming-output), [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript)
+- Related: CAPI-045, CAPI-046, CAPI-069
+
+Turn on with `includePartialMessages` (TypeScript) or `include_partial_messages` (Python) to get `StreamEvent`s. Text chunks are `content_block_delta` with `delta.type` `text_delta`.
+
+**Traps:**
+- **Subagents:** "Stream events are emitted for the main session only; token-level deltas from subagents aren't forwarded." `forwardSubagentText` (default `false`) forwards a foreground subagent's finished text and thinking blocks instead, with `parent_tool_use_id` set.
+- **Order:** `AssistantMessage` arrives per completed block, before that block's `content_block_stop`, and blocks of one message share its ID.
+- **Cut streams:** `content_block_stop` arrives for the open block unless it is a tool call, so treat that call's input as incomplete. `message_delta` can be missing after a dropped connection.
+- **Older CLIs:** before Claude Code v2.1.290 a cut stream could end without `message_stop`. The TypeScript SDK bundles v2.1.290 from v0.3.290, the Python SDK from v0.2.164.
+- **Structured output:** the JSON streams as unvalidated `input_json_delta` chunks; only `ResultMessage.structured_output` holds the validated result (CAPI-045).
+
+## [CAPI-069] Agent SDK TypeScript options the other entries don't cover
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript)
+- Related: CAPI-041, CAPI-050, CAPI-068, TOK-121
+
+Picked from the Options table of `agent-sdk/typescript.md`, grepped, not read in full; CAPI-050 holds the caps and fallback options.
+
+- **`taskBudget`** (alpha, `{ total: number }`): an API-side token budget the model can see, so it can wrap up before the limit. `maxBudgetUsd` is a hard stop instead.
+- **`maxThinkingTokens`:** "*Deprecated:* Use `thinking` instead."
+- **`resumeSessionAt` with `resumeDropsTurn`** (Claude Code v2.1.223 or later): a truncating resume, refused if the discarded range holds anything not attributable to that turn.
+- **`forwardSubagentText`:** default `false` (CAPI-068).
+- **`loadTimeoutMs`** (default `60000`) and **`sessionStoreFlush`** (default `'batched'`): alpha, for a session store only (CAPI-041).
+
+## Telemetry and admin APIs
+
+## [CAPI-070] Claude API OpenTelemetry: the two switches, span names and prompt content
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [OpenTelemetry tracing](https://platform.claude.com/docs/en/manage-claude/opentelemetry), [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api), [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk)
+- Related: CAPI-066, CAPI-071, TOK-012, TOK-122
+
+"OpenTelemetry export is in beta." This is tracing of API calls, separate from Claude Code's telemetry (TOK-012) and the Agent SDK's (TOK-122).
+
+**Two independent switches, usable together:**
+- **SDK tracing:** install the SDK and register your own tracer provider. Needs no permission; covers client tools and other API requests such as file uploads.
+- **API tracing:** add a destination in the Console or through the Admin API (beta header `telemetry-destinations-2026-08-11`). Needs the Console admin role and works with any client; gives per-model-run spans, Managed Agents turns and server tools.
+
+**Spans** follow the GenAI semantic conventions. The SDK's `anthropic.messages.create` (CLIENT) parents the API's (SERVER); the API adds `anthropic.model_request`, tool spans, `anthropic.compaction` and `anthropic.session.turn`. Group session spans by `gen_ai.conversation.id` (thread) or `anthropic.session.id`.
+
+**Prompt content** is off by default: "Metadata only (`metadata_only` in the SDK): The default." Full content goes in `gen_ai.input.messages`, `gen_ai.output.messages` and `gen_ai.system_instructions`. "A full 1M-token context window needs about 4 MB", against a default of 0.75 MB per span; truncated spans set `anthropic.content.truncated`.
+
+## [CAPI-071] API trace delivery and counting tokens from spans
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api), [OpenTelemetry tracing](https://platform.claude.com/docs/en/manage-claude/opentelemetry)
+- Related: CAPI-070, TOK-123
+
+**Delivery:** "Best effort: A span can be lost before delivery." and "At least once: A destination can receive the same span more than once." Dedupe on trace ID plus span ID. Spans aren't a complete usage record: the API emits none when the `traceparent` sampled flag is off. Use TOK-123 for billing figures.
+
+**Your endpoint:** "your endpoint must complete the TLS handshake within 5 seconds and send the response headers within 5 seconds." A destination is disabled when the endpoint sends a `3xx` redirect or "All deliveries fail for 24 hours." Spans for a disabled destination are lost.
+
+**Limits:** 10 destinations per organization, 1,000 workspaces per destination, 20 headers per destination.
+
+**Counting tokens.** Use one source: "When a Messages API request has both an SDK span and an API span, sum its API spans." And "`gen_ai.usage.input_tokens` already includes the tokens read from and written to the prompt cache, so don't add the cache attributes to it." Compaction tokens sit apart in `anthropic.usage.compaction.*`.
+
+## [CAPI-072] Rate Limits API: reading limits and overriding them per workspace
+- Type: fact
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api)
+- Related: CAPI-058, TOK-018
+
+Admin credentials only: workspace API keys don't work.
+
+- **Organization:** `GET /v1/organizations/rate_limits`, read-only. You can't set organization limits here.
+- **Workspace override:** `POST /v1/organizations/workspaces/{workspace_id}/rate_limits/{rate_limit_id}`; `null` clears it. "The lower of the workspace override and the organization-level limit applies, and a change takes effect within about an hour."
+- The workspace list returns only overrides unless `include_inherited=true`.
+- `group.id` (`rlg_...`) is the stable key. `rate_limit_id` is the entry's top-level `id`, not that one.
+- Managed Agents limits aren't included (CAPI-058).
+
+Uses: sync limits to a gateway, or compare them with analytics usage (TOK-123).
+
+## [CAPI-073] MCP tunnels: private MCP servers without inbound ports
+- Type: comparison
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [MCP tunnels overview](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview), [Security](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/security)
+- Related: CAPI-057
+
+Tunnels connect private-network MCP servers to Claude with outbound traffic only, so you don't open inbound firewall ports or allowlist Anthropic's IP ranges. "MCP tunnels are in research preview", by request form, with no uptime, support or continuity commitment, and not eligible for zero data retention.
+
+**What you run:** `cloudflared` plus Anthropic's proxy, on Kubernetes (Helm) or Docker Compose, with outbound 7844 to the Cloudflare edge and 443 to `api.anthropic.com`, a tunnel token and a CA certificate you register.
+
+**Security:** outer mTLS, inner TLS to your proxy and OAuth on each server. Cloudflare can't read payloads but sees metadata such as timing and byte volume. `upstream.allowed_ips` is "the proxy's primary SSRF defense", and a tunnel doesn't authenticate to the MCP server, so keep the server's own auth. Respond to a breach by archiving the tunnel, which invalidates its token.
+
+**Reach:** Managed Agents and the Messages API MCP connector only. "MCP tunnels created through the Console are not available as connectors in claude.ai."
+
+**Against exposing the server directly:** tunnels remove the public endpoint and add two containers, a Cloudflare dependency and a research-preview service. The pages don't compare them; this is our reading.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. None of our public repos calls the Claude API or the Agent SDK on 2026-10-17, so these are rules for when one starts to, plus one decision about scheduled work.
@@ -1277,14 +1723,18 @@ Ranked by impact against effort. None of our public repos calls the Claude API o
 
 5. **If a Managed Agents agent is ever deployed, start from CAPI-039's settings** (`limited` networking, vault secrets, web-tool allowlists, `auto` or `always_ask`, a budget), and keep untrusted input away from any tool on `always_allow` (CAPI-040). `/claude-api managed-agents-secure` checks an agent against the guide.
 
+6. **Don't adopt MCP tunnels** (CAPI-073). Research preview with no continuity commitment and no claude.ai connector use, and our servers are already reachable without them.
+
 No issue was opened in another repo: none of these needs a change there today.
 
 ## Open questions
 
-- **Agent SDK pages not read in part C.** `agent-sdk/typescript.md` (only cross-checked through the Python reference and the pages above) and the `examples` page, which only routes to `claude-agent-sdk-demos` and Cookbook notebooks. The SDK was not installed, so none of CAPI-041 to CAPI-051 was run against a real session (store resume, `maxBudgetUsd: 0`, `AskUserQuestion` limits).
+- **Agent SDK not run.** `agent-sdk/typescript.md` was grepped for options (CAPI-069), not read in full. The SDK was not installed, so none of CAPI-041 to CAPI-051, CAPI-068 or CAPI-069 was run against a real session (store resume, `maxBudgetUsd: 0`, `AskUserQuestion` limits).
 - **Haiku 4.5's retirement.** The deprecations page still shows `claude-haiku-4-5-20251001` as Active, "Not sooner than October 15, 2026", two days after that date, with no deprecation entry (CAPI-003). Re-check the page.
 - **Batch with Files.** Can a Message Batches request reference a `file_id`? Neither the Files nor the Batch processing page says (CAPI-010).
-- **Managed Agents limits.** The API rate limits and what happens when a scheduled run starts while the previous session still runs (CAPI-013). `managed-agents/reference.md` wasn't read; the scheduled-deployments page has no overlap policy.
+- **Managed Agents limits.** The endpoint rate limits are in CAPI-058. Still unanswered after reading `reference`, `scheduled-deployments`, `session-operations` and `workflow-runs`: any cap on concurrent sessions, and what happens when a scheduled run starts while the previous session still runs (CAPI-013).
+- **Managed Agents outcomes.** Grader cost and the rubric size limit aren't on `define-outcomes` (CAPI-065).
+- **Are the 500-file and 500-skill caps hard errors, and with which status?** `files` and `skills` state only the caps (CAPI-055, CAPI-056).
 - **Per-run caps for routines.** None found on the routines page (CAPI-014).
 - **Billing of SDK or `claude -p` runs on a subscription login**, outside the `--bare` and API-key path. The auth precedence allows it, and no page states how it counts (CAPI-011). `agent-sdk/cost-tracking.md` wasn't read for this.
 - **Pages in the 2026-10-30 pass read for entries but not turned into one.** `handle-tool-calls`, `how-tool-use-works`, `build-a-tool-using-agent` and `mid-conversation-effort-example` (a worked orchestration mode) are tutorials of material in CAPI-006, CAPI-021 and CAPI-030; `web-search-tool` and `web-fetch-tool` beyond TOK-094, `bash-tool` and `text-editor-tool` beyond CAPI-033, and the computer use tool's member actions weren't read in full.

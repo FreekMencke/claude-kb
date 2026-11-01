@@ -164,6 +164,28 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CAPI-049 | SDK start-up and exit errors: message, cause, fix | pattern | agent-sdk, troubleshooting, cli-not-found, errors |
 | CAPI-050 | Agent SDK options: caps, environment, fallback and mid-session switches | fact | agent-sdk, options, max-turns, fallback-model, env |
 | CAPI-051 | ResultMessage: a "success" result can still be an error | fact | agent-sdk, result-message, stop-reason, usage |
+| CAPI-052 | Managed Agents agent updates: versions, the 409 and which fields replace or merge | fact | managed-agents, versioning, agents, optimistic-concurrency |
+| CAPI-053 | Managed Agents environments: packages, `allowed_hosts` matching and lifecycle | fact | managed-agents, environments, packages, allowed-hosts, networking |
+| CAPI-054 | Managed Agents cloud sandbox: what's preinstalled and the limits | fact | managed-agents, sandbox, runtimes, limits, self-hosted |
+| CAPI-055 | Managed Agents session files: mount paths, outputs and the 500-file cap | fact | managed-agents, files, mount-path, outputs |
+| CAPI-056 | Managed Agents skills: pinning, the 500 cap and repository discovery | fact | managed-agents, skills, versions, github-repository |
+| CAPI-057 | Managed Agents MCP connector: declaring servers, credential matching and failures | fact | managed-agents, mcp, vaults, session-error |
+| CAPI-058 | Managed Agents API rate limits, and what the reference doesn't cap | fact | managed-agents, rate-limits, branding |
+| CAPI-059 | Moving to Managed Agents: what each Agent SDK feature becomes | comparison | managed-agents, agent-sdk, migration, plan-mode, max-turns |
+| CAPI-060 | Managed Agents event stream: opening order and reconnecting | pattern | managed-agents, streaming, reconnect, events |
+| CAPI-061 | Managed Agents event deltas: opting in and rebuilding previews | fact | managed-agents, event-deltas, streaming, previews |
+| CAPI-062 | Managed Agents: when is a session done, and what to answer while it waits | pattern | managed-agents, stop-reason, idle, end-turn, workflow-runs |
+| CAPI-063 | Managed Agents session lifecycle: mid-session changes, archive and delete | fact | managed-agents, sessions, archive, delete, system-message |
+| CAPI-064 | Managed Agents session threads: streams, interrupts and answering a subagent | fact | managed-agents, threads, multiagent, interrupt |
+| CAPI-065 | Managed Agents outcomes: `user.define_outcome`, the grader and results | fact | managed-agents, outcomes, rubric, grader, max-iterations |
+| CAPI-066 | Managed Agents usage fields: list cost, active seconds and the session viewer | fact | managed-agents, usage, list-cost, active-seconds, observability |
+| CAPI-067 | Managed Agents workflow runs: limits, results and how to stop one | fact | managed-agents, workflow-runs, dynamic-workflows, limits |
+| CAPI-068 | Agent SDK partial-message streaming: what doesn't arrive and in what order | anti-pattern | agent-sdk, streaming, include-partial-messages, subagents |
+| CAPI-069 | Agent SDK TypeScript options the other entries don't cover | fact | agent-sdk, options, task-budget, typescript |
+| CAPI-070 | Claude API OpenTelemetry: the two switches, span names and prompt content | fact | opentelemetry, tracing, spans, api, content |
+| CAPI-071 | API trace delivery and counting tokens from spans | fact | opentelemetry, delivery, tokens, destinations |
+| CAPI-072 | Rate Limits API: reading limits and overriding them per workspace | fact | rate-limits, admin-api, workspaces |
+| CAPI-073 | MCP tunnels: private MCP servers without inbound ports | comparison | mcp-tunnels, mcp, cloudflare, private-network |
 
 ## Codebase maps and knowledge graphs for agents (`topics/kb-code-maps.md`, CODEMAP)
 
@@ -1184,6 +1206,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-090 | Writing and testing a mod: the dev loop, the test kit and its rules | pattern | mods, plugin-test, plugin-validate, dev-loop |
 | SKILL-091 | Organisation policy for mods: which managed setting stops what | comparison | mods, managed-settings, allow-managed-mods-only, disable-sideload-flags |
 | SKILL-092 | Gaps in mod controls, running your own mods and writing a policy mod | pattern | mods, policy-mod, prepend-plugins, http-fetch |
+| SKILL-093 | Mods: render sites, control props and what each surface ignores | fact | mods, elements, render-sites, surfaces |
 
 ## Spacing and alignment: scales, proximity, padding, rhythm, text and icon alignment (`topics/kb-spacing.md`, SPACE)
 
@@ -1379,6 +1402,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | TOK-120 | Review cost: managed Code Review levels and spend limits, ultrareview free runs | fact | code-review, ultrareview, usage-credits, spend-limit |
 | TOK-121 | Agent SDK loop limits: turns, budget headroom and result subtypes | fact | agent-sdk, max-turns, budget, result |
 | TOK-122 | Agent SDK telemetry: OpenTelemetry through the CLI, and what leaves the process | fact | agent-sdk, otel, telemetry, privacy |
+| TOK-123 | Usage and Cost Analytics API: replaces the report endpoints, with a slower refresh | tool | analytics, usage, cost, admin-api, freshness |
 
 ## TypeScript 6.0 to 7.0 (`topics/kb-typescript.md`, TS)
 
