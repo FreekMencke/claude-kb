@@ -108,7 +108,7 @@ Code written for a 4.x model or Sonnet 5 can fail on the current models with `in
 | Non-default `temperature`/`top_p`/`top_k` | 400 | 400 | 400 | 400 |
 | Final assistant turn (prefill) | 400 | 400 | 400 | 400 |
 
-The deprecations page scopes the sampling 400 to "Claude 4.7 and later models". On Haiku 5.5, `temperature` "must be `1`" and `top_p` "must be `0.99`", and sending both is rejected. On the Claude API and Google Cloud, computer use needs `computer_toolset_20260801`: Opus and Sonnet 5.5 reject `computer_20251124`, and Haiku 5.5 rejects `computer_20250124`.
+The deprecations page scopes the sampling 400 to "Claude 4.7 and later models". On Haiku 5.5, as on the other 5.x models, "the `top_p` default is `0.99`, so a `top_p` of `1` returns a 400 error, and so does a request that includes both `temperature` and `top_p`, even at their defaults." Starting with API version `2026-10-21`, "a request that includes `temperature`, `top_p`, or `top_k` at any value returns a 400 error on every model." On the Claude API and Google Cloud, computer use needs `computer_toolset_20260801`: Opus and Sonnet 5.5 reject `computer_20251124`, and Haiku 5.5 rejects `computer_20250124`.
 
 The advisor tool's pairs depend on the executor: the advisor must be at least as capable (an Opus 5.5 executor rejects a Sonnet 5.5 advisor). For a Sonnet 5.5 executor the 2026-09-28 release note says it "rejects Claude Opus 4.8, Claude Opus 4.7, and Claude Sonnet 5 as advisors"; the migration guide's fuller list adds Opus 4.6, Sonnet 4.6 and Haiku 5.5 (400 error). It accepts only Opus 5 and 5.5, Sonnet 5.5, Fable 5 and 5.1, Mythos 5 and 5.1.
 
@@ -123,7 +123,7 @@ Release notes: Sonnet 5 code "can break on Claude Sonnet 5.5 in five ways" (2026
 - Related: CAPI-001, PROMPT-002, TOK-050, CAPI-016, CAPI-018, CAPI-020
 
 All four current models think by default when the request has no `thinking` field, which changes what a response looks like:
-- **Read blocks by `type`.** A response "can begin with `thinking` blocks, so code that reads `content[0].text` breaks." Thinking text is empty by default (`display: "omitted"`); set `display: "summarized"` to get it.
+- **Read blocks by `type`.** A response "can start with `thinking` blocks, so code that reads `content[0].text` breaks." Thinking text is empty by default (`display: "omitted"`); set `display: "summarized"` to get it.
 - **Raise `max_tokens`.** "Thinking tokens count toward `max_tokens`", so a small limit can stop "after a `thinking` block and before any text". For Opus 5.5 at `xhigh` or `max`, the guide says to start at 64k.
 - **Pass thinking blocks back unchanged** in tool loops, empty ones included.
 - **Keep history append-only.** On Sonnet 5.5, Haiku 5.5 and Fable 5.1, a block is signed over everything before it. For accounts created on or after 2026-08-31 00:00 UTC, replaying one after a change to `system`, `tools` or earlier messages returns 400. Change instructions with mid-conversation `role: "system"` messages instead.
@@ -169,9 +169,9 @@ Anthropic gives "at least 60 days' notice" by email. These dates cover the Claud
 Opus 5.5, Sonnet 5.5 and Fable 5.1 return 400 ("tool_choice: type "tool" and "any" are not supported for this model.") for forced tool choice. The docs' replacement:
 - Use `{type: "auto"}` "with an explicit instruction and `strict: true` tools, or use JSON outputs".
 - Put the instruction in the user turn, or in a mid-conversation `role: "system"` message "when your application requires the call" (Fable 5.1 guide).
-- On Amazon Bedrock use `auto` alone, since structured outputs aren't available there for these models.
+- Bedrock: the structured-outputs and strict-tool-use pages now list Amazon Bedrock as stable, so an earlier note to use `auto` alone there no longer holds; whether every Bedrock model accepts `strict` is unverified.
 
-`strict: true` makes the `input` "strictly follow the `input_schema`", with a valid tool `name`, through grammar-constrained sampling.
+`strict: true` makes the `input` "strictly follows the `input_schema`", with a valid tool `name`, through grammar-constrained sampling.
 
 Its limits, shared with `output_config.format` and counted across the whole request:
 
@@ -194,7 +194,7 @@ The first request with a schema pays compile latency. Compiled grammars are cach
 - Sources: [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs), [Citations](https://platform.claude.com/docs/en/build-with-claude/citations), [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
 - Related: CAPI-004, CAPI-008, CAPI-010, PROMPT-011
 
-JSON outputs (`output_config.format`) are GA with no beta header on the Claude API, Google Cloud and Foundry, for every current model. On Claude in Amazon Bedrock they're unavailable; only the legacy Bedrock integration has them, for 4.x models.
+JSON outputs (`output_config.format`) are GA with no beta header; the page's platform list shows them as stable on the Claude API, Claude Platform on AWS, both Google Cloud variants, Amazon Bedrock, Amazon Bedrock (InvokeModel) and Microsoft Foundry.
 
 The deprecated `output_format` now needs the `structured-outputs-2025-11-13` header, or it returns 400.
 
@@ -261,7 +261,7 @@ Programmatic tool calling (GA) lets Claude write code in the code-execution cont
 - Not for tools with a recursive `$ref` schema.
 - The reply carrying your result must contain only `tool_result` blocks and must pass the `container` ID back.
 - A pending call times out "after about 4 minutes", and idle containers are reclaimed "after about 5 minutes".
-- `allowed_callers` "is not a hard API-level block on direct invocation": still handle a direct `tool_use`.
+- `allowed_callers` "is not a hard API-level block on direct calls": still handle a direct `tool_use`.
 
 ## [CAPI-008] Stop reasons and refusals an app must handle
 - Type: fact
@@ -285,7 +285,7 @@ When streaming, `stop_reason` arrives only in `message_delta`.
 
 **Refusal categories** are `cyber`, `bio`, `frontier_llm`, `reasoning_extraction` and `general_harms`. Since 2026-09-24, a refusal before any output is billed for `bio`, `frontier_llm` and `reasoning_extraction`; other categories are not billed.
 
-**Fallback.** Server-side fallback (`fallbacks: "default"`, header `server-side-fallback-2026-07-01`) is Claude API only and not in Batch. "Claude Haiku 5.5 has no server-side fallback": use the SDK's client-side fallback or your own retry.
+**Fallback.** Server-side fallback (`fallbacks: "default"`, header `server-side-fallback-2026-07-01`) is in beta on the Claude API and on Claude Models on Google Cloud (Anthropic managed), and not in Batch. "Claude Haiku 5.5 has no server-side fallback": use the SDK's client-side fallback or your own retry.
 
 ## [CAPI-009] TypeScript SDK: retries, timeouts, streaming and request size
 - Type: fact
@@ -305,7 +305,7 @@ Tested 2026-10-17, `@anthropic-ai/sdk@0.135.0`: `client.d.ts` documents `timeout
 
 **Mid-stream errors.** An error such as `overloaded_error` (HTTP 529 when not streaming) can arrive as an event "after the API returns a 200 response". Resuming an interrupted stream is documented "for Claude 4.5 models and earlier" only.
 
-**Request size.** Messages and token counting: 32 MB. Batch: 256 MB. Files: 500 MB.
+**Request size.** Messages and token counting: 128 MB (raised from 32 MB on 2026-10-28). Batch: 256 MB. Files: 500 MB.
 
 ## [CAPI-010] Files API, citations and Batch for a small app
 - Type: comparison
@@ -318,7 +318,7 @@ Tested 2026-10-17, `@anthropic-ai/sdk@0.135.0`: `client.d.ts` documents `timeout
 | | Files API | Citations | Batch |
 |---|---|---|---|
 | Status | GA, no beta header (`files-api-2025-04-14` optional) | GA, all active models | GA (TOK-054) |
-| Platforms | Claude API, Claude Platform on AWS, Foundry (hosted on Anthropic) | All five, Bedrock and Google Cloud included | See TOK-054 |
+| Platforms | Claude API, Claude Platform on AWS, Google Cloud (Anthropic managed), Foundry (hosted on Anthropic) | Claude API, Claude Platform on AWS, Amazon Bedrock (both), Google Cloud (Google managed), Foundry | See TOK-054 |
 | Cost | Upload, download, list and delete "are free"; content is billed as input tokens | Slightly more input; `cited_text` "does not count toward output tokens" | 50% off |
 | Limits | 500 MB per file, 1 TB per organisation, about 500 file requests a minute | Not with structured outputs (400) | Up to 24 h |
 
@@ -365,7 +365,7 @@ The docs: "The SDK version tracks the bundled Claude Code version." So an SDK bu
 - Related: CAPI-011, ORCH-015, HOOK-001, REPO-031
 
 "When Claude requests a tool, the SDK checks permissions in this order":
-1. **Hooks.** A hook can deny; "A hook that returns `allow` does not skip the deny and ask rules below".
+1. **Hooks.** A hook can deny; "A hook that returns `allow` doesn't skip the deny and ask rules below".
 2. **Deny rules**, which block "even in `bypassPermissions` mode".
 3. **Ask rules**, which go to `canUseTool` even in `bypassPermissions`.
 4. **Permission mode**: `default`, `acceptEdits`, `bypassPermissions`, `plan`, `dontAsk` or `auto`.
@@ -406,7 +406,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 **Webhooks:**
 - Signed (`webhook-id`, `webhook-timestamp`, `webhook-signature`); the SDK's `unwrap()` rejects payloads older than 5 minutes.
 - Payloads carry only the type and ID.
-- Up to three delivery attempts; "Ordering is not guaranteed".
+- Up to three delivery attempts; "Events aren't guaranteed to be delivered in the order they occurred".
 
 ## [CAPI-014] Scheduled agent work: Managed Agents deployment or Claude Code routine
 - Type: comparison
@@ -420,7 +420,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 |---|---|---|
 | Status | Beta | "research preview" |
 | Billing | API tokens plus $0.08 per `running` session-hour; idle time is free | "Scheduled tasks draw down subscription usage the same way interactive sessions do" |
-| Interval | Cron to the minute, with jitter | "The minimum interval is one hour" |
+| Interval | Cron to the minute, with jitter | "Expressions that run more often than once per hour are rejected." |
 | Count limits | 1,000 deployments per organisation | 100 scheduled runs an hour per account; 30 manual or API runs an hour per routine; "None of these hourly limits has overage" |
 | Spend cap per run | Hard USD `budget` | None documented; bounded by plan usage |
 | Secrets | Vault: write-only, substituted at egress | Environment variables "visible to anyone who uses the environment"; connectors attached by default |
@@ -429,7 +429,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 
 **Choosing.** Repo upkeep that should act as you, such as our weekly docs-drift check (DOC-024), fits a routine: no extra spend on a subscription, and its own examples include "Docs drift". A deployment fits work that must run more often than hourly, needs a hard spend cap per run, keeps secrets from the model, or belongs to an API product. Pricing's worked example: a one-hour Opus 5.5 session with 50k input and 15k output tokens costs $0.58.
 
-A routine run that shows green "does not mean the task in your prompt succeeded": read the transcript.
+Run outcomes "say how the session ended, not whether Claude completed the work your prompt describes, so open the run and read its transcript to see what happened."
 
 ## Evaluation
 
@@ -448,10 +448,10 @@ A routine run that shows green "does not mean the task in your prompt succeeded"
 
 **Graders**, fastest and most reliable first:
 1. Code: exact or string match.
-2. LLM-based: "Test to ensure reliability first then scale."
+2. LLM-based: "Test to ensure reliability first, then scale."
 3. Human: "slow and expensive. Avoid if possible."
 
-LLM graders need "detailed, clear rubrics" and an empirical output ("only 'correct' or 'incorrect', or … 1–5"). Run them with thinking on. The examples note it's "best practice to use a different model to evaluate than the model used to generate the evaluated output."
+LLM graders need "detailed, clear rubrics" and an empirical output ("only 'correct' or 'incorrect', or … 1–5"). Run them with thinking on. The examples note the code comment reads "Generally best practice to evaluate with a different model from the one used to generate the evaluated output"
 
 **For agents** (engineering post):
 - "20-50 simple tasks drawn from real failures is a great start."
