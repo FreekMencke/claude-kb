@@ -298,7 +298,7 @@ Prerender only (`RenderMode.Prerender`), first render only; request-time SSR and
 
 The build exits 0 despite the two errors, so read the prerender log. Plot rendered on the server was drawn a second time on hydration, with no console error: a component that renders on the server must skip the client render (that guard wasn't tested). Angular's server DOM has no `replaceChildren`; use `appendChild`.
 
-ECharts documents this path: "server-side SVG rendering should be preferred".
+ECharts documents this path: "the server-side SVG rendering solution should be preferred".
 
 `@defer (on viewport)` with a text placeholder fixed ngx-echarts (AG Charts under `@defer` wasn't built): the server renders the placeholder (which can carry the takeaway, VIZ-014), and the library loads only in the browser.
 
@@ -363,7 +363,7 @@ Whatever the choice: a takeaway and a table (VIZ-014), reduced motion passed in 
 |---|---|---|
 | up to about 1,000 | SVG: accessible DOM, crisp zoom, prints | ECharts: "For larger amounts of data (>1k is an experience value), canvas renderer is always recommended" |
 | thousands to hundreds of thousands | Canvas | uPlot: "150,000 data points in 90ms" from cold (author's 2023 benchmark) |
-| above that, or many series | WebGL | Highcharts boost: `boostThreshold` "5000" points per series, `boost.seriesThreshold` 50 series; Plotly `scattergl` |
+| above that, or many series | WebGL | Highcharts boost: `boostThreshold` "5,000 by default" points per series, `boost.seriesThreshold` 50 series; Plotly `scattergl` |
 
 Each threshold is a vendor's rule of thumb, not a measurement on your data: profile INP (WEBPERF-001, WEBPERF-003).
 
