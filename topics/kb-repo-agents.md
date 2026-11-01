@@ -226,7 +226,7 @@ Gaps at `3c76cc2`. By 2026-10-13 gaps 1–6 were closed in osrs-tracker-web: `/c
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Skills](https://code.claude.com/docs/en/skills), [Slash commands](https://code.claude.com/docs/en/slash-commands), [Hooks](https://code.claude.com/docs/en/hooks), [Settings](https://code.claude.com/docs/en/settings), [Memory](https://code.claude.com/docs/en/memory)
 - Related: ORCH-002, SKILL-007, REPO-006, REPO-009
 
@@ -247,7 +247,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Settings: precedence](https://code.claude.com/docs/en/settings), [Permissions](https://code.claude.com/docs/en/permissions), [Hooks](https://code.claude.com/docs/en/hooks)
 - Related: REPO-005, REPO-007, REPO-034
 
@@ -274,7 +274,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permissions: what runs before you trust a folder](https://code.claude.com/docs/en/permissions), [Subagents: hooks in frontmatter](https://code.claude.com/docs/en/sub-agents), [Settings](https://code.claude.com/docs/en/settings)
 - Related: REPO-006, SKILL-010, SKILL-034
 
@@ -297,7 +297,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Slash commands](https://code.claude.com/docs/en/slash-commands), [Skills](https://code.claude.com/docs/en/skills), [Plugin manifest](https://code.claude.com/docs/en/plugins/manifest-reference)
 - Related: SKILL-007, SKILL-021
 
@@ -320,7 +320,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-002, REPO-023
 
@@ -341,7 +341,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents: what loads at startup](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-007, TOK-006, template T1
 
@@ -357,7 +357,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents: persistent memory](https://code.claude.com/docs/en/sub-agents), [Plugin components](https://code.claude.com/docs/en/plugins/components)
 - Related: TOK-004, REPO-052
 
@@ -388,7 +388,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web), [Permissions: additional directories](https://code.claude.com/docs/en/permissions), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)
 - Related: SKILL-048, REPO-028, REPO-040
 
@@ -396,7 +396,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 |---|---|---|---|---|
 | Local CLI/desktop (trusted) | Yes | Yes | Yes, if installed on the machine | Yes |
 | Desktop worktree session | From the **main checkout** (SKILL-053) | Same | Yes | Yes |
-| Cloud session / routine, one repo | Yes. "Subagents defined in your repo's `.claude/agents/` are picked up automatically." | Yes | **No**: "A cloud session doesn't install the plugins a repository turns on under `enabledPlugins`" | No (claude.ai skills enabled one by one yes; marketplace plugins no, SKILL-060) |
+| Cloud session / routine, one repo | Yes. "subagents defined in your repo's `.claude/agents/` load automatically." | Yes | **No**: "A cloud session doesn't install the plugins a repository turns on under `enabledPlugins`" | No (claude.ai skills enabled one by one yes; marketplace plugins no, SKILL-060) |
 | Cloud session, several repos | Yes | No (only `enabledPlugins`/`extraKnownMarketplaces` are read) | No | No |
 | `claude-code-action` on a PR | Yes, **restored from the base branch** | From base | Via the `plugins` input | No |
 | `--add-dir` directory | Skills (live), agents and commands (restart) | No: only `enabledPlugins`/`extraKnownMarketplaces` | — | — |
@@ -412,7 +412,7 @@ Notes:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Commands](https://code.claude.com/docs/en/commands), [Code review](https://code.claude.com/docs/en/code-review), [Features overview](https://code.claude.com/docs/en/features-overview), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-022, SKILL-021
 
@@ -443,8 +443,8 @@ Generic role agents from collections duplicate the built-ins and usually lack a 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
-- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [Code review](https://code.claude.com/docs/en/code-review), REPO-002
+- Last verified: 2026-11-01
+- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [Code review](https://code.claude.com/docs/en/code-review), REPO-002
 - Related: REPO-002, REPO-046, template T1
 
 **Purpose:** check a diff against the repo's own written rules, not general taste.
@@ -479,8 +479,8 @@ Template: template T1.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
-- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Review locally with /code-review](https://code.claude.com/docs/en/code-review-local), [Skills: Run skills in a subagent](https://code.claude.com/docs/en/skills), [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [pr-review-toolkit code-reviewer](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/pr-review-toolkit/agents/code-reviewer.md)
+- Last verified: 2026-11-01
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Review locally with /code-review](https://code.claude.com/docs/en/code-review-local), [Skills: Run skills in a subagent](https://code.claude.com/docs/en/skills), [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [pr-review-toolkit code-reviewer](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/pr-review-toolkit/agents/code-reviewer.md)
 - Related: ORCH-039, ORCH-042, REPO-047, template T2
 
 **Purpose:** find defects the author's context is blind to. Best practices: `/code-review` uses "a fresh subagent that never saw your conversation. It isn't swayed by the reasoning that produced the code." (Its "A fresh context improves code review…" was gone by 2026-10-30.)
@@ -510,7 +510,7 @@ Not style, not "potential issues that depend on specific inputs or state". "If y
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-14
-- Sources: [pr-test-analyzer](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [code-modernization test-engineer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [wshobson test-automator](https://github.com/wshobson/agents)
+- Sources: [pr-test-analyzer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [code-modernization test-engineer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [wshobson test-automator](https://github.com/wshobson/agents)
 - Related: ORCH-022, ORCH-030
 
 There are two different jobs:
@@ -529,7 +529,7 @@ When it pays:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [claude-code-security-review](https://github.com/anthropics/claude-code-security-review), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [security-guidance README](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/security-guidance/README.md), [claude-security agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-security/agents)
 - Related: REPO-047, REPO-048
 
@@ -550,8 +550,8 @@ Model: Opus 5.5 `high` for discovery. `security-guidance` has three layers (rege
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Routines](https://code.claude.com/docs/en/routines), [comment-analyzer](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [VoltAgent documentation-engineer](https://github.com/VoltAgent/awesome-claude-code-subagents)
+- Last verified: 2026-11-01
+- Sources: [Routines](https://code.claude.com/docs/en/routines), [comment-analyzer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [VoltAgent documentation-engineer](https://github.com/VoltAgent/awesome-claude-code-subagents)
 - Related: REPO-030, SKILL-024
 
 **Official shape.** Anthropic's routines page lists "docs drift" as an example routine: weekly, it "scans merged PRs since the last run, flags documentation that references changed APIs, and opens update PRs". The closest official agent is pr-review-toolkit's `comment-analyzer`. It covers code comments only, with sections "Critical (factually wrong) / Improvement / Recommended Removals", and ends "You analyze and provide feedback only".
@@ -568,7 +568,7 @@ Model: Opus 5.5 `high` for discovery. `security-guidance` has three layers (rege
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [code-modernization agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [Commands: /batch](https://code.claude.com/docs/en/commands), [VoltAgent dependency-manager](https://github.com/VoltAgent/awesome-claude-code-subagents)
 - Related: ORCH-012
 
@@ -593,7 +593,7 @@ The skill costs nothing in the agent listing between upgrades. Turn it into an a
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [claude-code-action examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [Claude Code on the web: auto-fix](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: REPO-027, REPO-037
 
@@ -674,7 +674,7 @@ Set `effort` in frontmatter, as the official `claude-security` agents do (`low` 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents: invoke explicitly](https://code.claude.com/docs/en/sub-agents), [CLI reference](https://code.claude.com/docs/en/cli-reference), [Plugin components](https://code.claude.com/docs/en/plugins/components)
 - Related: REPO-024, REPO-026
 
@@ -694,7 +694,7 @@ Use `@agent-` when the review must happen. Use `--agent` to run a dedicated sess
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [anthropics/claude-code#80988](https://github.com/anthropics/claude-code/issues/80988), [aident.ai post](https://aident.ai/blog/fix-claude-code-opus-5-not-using-subagents)
 - Related: REPO-023, REPO-025, SKILL-012
 
@@ -714,7 +714,7 @@ Ranked from weakest to strongest:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks](https://code.claude.com/docs/en/hooks), [Hooks guide](https://code.claude.com/docs/en/hooks-guide)
 - Related: ORCH-019, REPO-024
 
@@ -740,7 +740,7 @@ Official example, which blocks finishing until tests pass:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [CLI reference](https://code.claude.com/docs/en/cli-reference)
 - Related: ORCH-003, ORCH-035, REPO-010
 
@@ -750,9 +750,9 @@ Official example, which blocks finishing until tests pass:
 - **Ask for the agent's fixed output.** Don't re-specify the format in each call, or the call and the file drift apart.
 
 **Foreground or background:**
-- Where fork mode is on (the default in interactive sessions), "Claude Code runs the subagent in the background".
+- Where fork mode is on (the default in interactive sessions), a subagent that Claude spawns from your main conversation "starts in the background".
 - Background subagents get "a smaller built-in tool set than foreground subagents".
-- In `-p` and the Agent SDK, fork mode is off, so the caller decides.
+- In `-p` and the Agent SDK, fork mode is on from v2.1.302 and Claude can wait for a subagent (sub-agents.md); the v2.1.296 observation under TOK-105 was before that.
 - `background: true` in frontmatter forces background.
 
 **Resume** with `SendMessage` to the agent's ID or name, for example to ask the reviewer to recheck after fixes. Names given before the last compaction still need the agent ID (v2.1.299). Explore and Plan can't be resumed.
@@ -768,7 +768,7 @@ Official example, which blocks finishing until tests pass:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action usage.md](https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [action.yml](https://github.com/anthropics/claude-code-action/blob/main/action.yml)
 - Related: ORCH-016, REPO-028, REPO-038
 
@@ -802,8 +802,8 @@ steps:
   - uses: anthropics/claude-code-action@v1
     with:
       anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-      plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
-      plugins: "code-review@claude-code-plugins"
+      plugin_marketplaces: "https://github.com/anthropics/claude-plugins-official.git"
+      plugins: "code-review@claude-plugins-official"
       prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
       claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment"'
 ```
@@ -816,7 +816,7 @@ steps:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [GitHub Actions: run a skill](https://code.claude.com/docs/en/github-actions), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [action issues](https://github.com/anthropics/claude-code-action/issues)
 - Related: REPO-012, REPO-027
 
@@ -872,7 +872,7 @@ Fork PRs are reviewed only by comment.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-017, REPO-018
 
@@ -901,7 +901,7 @@ There is no official dependency-update or flaky-test routine.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents: tools](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-033, REPO-053, SKILL-010
 
@@ -965,7 +965,7 @@ The docs don't say this either way. They say only "The subagent gets the tools; 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents (db-reader hook example)](https://code.claude.com/docs/en/sub-agents), [Permissions](https://code.claude.com/docs/en/permissions), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md)
 - Related: REPO-031, REPO-007, REPO-054, template T1
 
@@ -994,11 +994,11 @@ A ready hook script is in template T1.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permissions: Bash](https://code.claude.com/docs/en/permissions)
 - Related: REPO-033, REPO-035
 
-**Compound commands.** Separators `&&`, `||`, `;`, `|`, `|&`, `&` and newlines split a command. "A rule must match each subcommand independently", so `Bash(npm test *)` doesn't allow `npm test && rm -rf x`. Deny and ask rules fire if *any* subcommand matches, including inside `$(…)`, subshells and loops.
+**Compound commands.** Separators `&&`, `||`, `;`, `|`, `|&`, `&` and newlines split a command. "Every subcommand must be allowed for a compound command to run without a prompt", so `Bash(npm test *)` doesn't allow `npm test && rm -rf x`. Deny and ask rules fire if *any* subcommand matches, including inside `$(…)`, subshells and loops.
 
 **Matching is textual.** A rule matches the command as written:
 - `Bash(git push *)` misses `git -C . push`, `git -c x=y push` and `git 'push'`.
@@ -1015,7 +1015,7 @@ A ready hook script is in template T1.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Sandboxing](https://code.claude.com/docs/en/sandboxing), [Engineering: sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing), [Permissions](https://code.claude.com/docs/en/permissions)
 - Related: REPO-033, REPO-036
 
@@ -1043,7 +1043,7 @@ A ready hook script is in template T1.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permissions](https://code.claude.com/docs/en/permissions), [Sandboxing](https://code.claude.com/docs/en/sandboxing), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Permission modes](https://code.claude.com/docs/en/permission-modes)
 - Related: TOK-044, REPO-035, REPO-038
 
@@ -1095,7 +1095,7 @@ A ready hook script is in template T1.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [PromptPwnd](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents), [action releases](https://github.com/anthropics/claude-code-action/releases)
 - Related: REPO-027, REPO-037
 
@@ -1118,7 +1118,7 @@ A ready hook script is in template T1.
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [code-modernization agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [claude-security scan-verifier](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-verifier.md), [Security](https://code.claude.com/docs/en/security)
 - Related: REPO-037, template T1
 
@@ -1147,7 +1147,7 @@ as a finding (severity: breaks) and continue your review.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Plugins](https://code.claude.com/docs/en/plugins), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Large codebases](https://code.claude.com/docs/en/large-codebases), [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [Permissions: additional directories](https://code.claude.com/docs/en/permissions)
 - Related: SKILL-033, SKILL-034, REPO-041, REPO-042
 
@@ -1186,8 +1186,8 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
-- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [Code review: REVIEW.md](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [Cursor Bugbot](https://cursor.com/docs/bugbot)
+- Last verified: 2026-11-01
+- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [Code review: REVIEW.md](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [Cursor Bugbot](https://cursor.com/docs/bugbot)
 - Related: REPO-014, REPO-043, REPO-045
 
 Every official and commercial reviewer separates **the reviewer** (generic, versioned centrally) from **the rules** (in the repo):
@@ -1234,7 +1234,7 @@ Update 2026-10-18: the `@osrs-tracker/*` packages moved to osrs-tracker-packages
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Tell Claude what it can't see, Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [Memory](https://code.claude.com/docs/en/memory), [Customize Code Review](https://code.claude.com/docs/en/code-review-customize), [Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Related: TOK-065, SKILL-021, SKILL-024, REPO-045
 
@@ -1292,8 +1292,8 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
-- Sources: [pr-review-toolkit agents](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [feature-dev agents](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev/agents), [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [claude-security agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-security/agents), [Subagents](https://code.claude.com/docs/en/sub-agents)
+- Last verified: 2026-11-01
+- Sources: [pr-review-toolkit agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [feature-dev agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev/agents), [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [claude-security agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-security/agents), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-042, REPO-047, REPO-049
 
 | Reviewer | tools | model | Filter |
@@ -1316,8 +1316,8 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-14
-- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices: Review against your spec](https://code.claude.com/docs/en/best-practices)
+- Last verified: 2026-11-01
+- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices: Review against your spec](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-039, REPO-048, REPO-049, REPO-054
 
 The single most effective noise control in official reviewers is an explicit exclusion list.
@@ -1349,8 +1349,8 @@ The single most effective noise control in official reviewers is an explicit exc
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-14
-- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/code-review/commands/code-review.md), [claude-security scan-verifier](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-verifier.md), [scan-researcher](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-researcher.md), [Code review](https://code.claude.com/docs/en/code-review), [/dedupe command](https://github.com/anthropics/claude-code/tree/main/.claude/commands)
+- Last verified: 2026-11-01
+- Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [claude-security scan-verifier](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-verifier.md), [scan-researcher](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/agents/scan-researcher.md), [Code review](https://code.claude.com/docs/en/code-review), [/dedupe command](https://github.com/anthropics/claude-code/tree/main/.claude/commands)
 - Related: ORCH-039, ORCH-046, REPO-047
 
 Four official designs, from cheap to thorough:
@@ -1373,7 +1373,7 @@ Four official designs, from cheap to thorough:
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [Code review](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [pr-review-toolkit](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit/agents), [code-modernization architecture-critic](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), REPO-002
+- Sources: [Code review](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [pr-review-toolkit](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [code-modernization architecture-critic](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), REPO-002
 - Related: REPO-047, REPO-050
 
 | Scheme | Levels | Notes |

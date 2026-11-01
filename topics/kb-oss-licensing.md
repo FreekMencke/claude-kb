@@ -59,7 +59,7 @@ Research basis:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [choosealicense.com: existing projects](https://choosealicense.com/community/), [choosealicense.com: non-software licenses](https://choosealicense.com/non-software/), [choosealicense.com: no license](https://choosealicense.com/no-permission/), [GitHub Docs: licensing a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository), [CC FAQ](https://creativecommons.org/faq/)
 - Related: OSS-002, OSS-003, OSS-009, FONT-018
 
@@ -76,7 +76,7 @@ Which licence suits a business goal is a legal and commercial choice; these sour
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [SPDX License List JSON 3.29.0](https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json), [The Open Source Definition](https://opensource.org/osd), [Elastic: license change clarification](https://www.elastic.co/blog/license-change-clarification), [Elastic License 2.0 post](https://www.elastic.co/blog/elastic-license-v2), [MariaDB BSL FAQ](https://mariadb.com/bsl-faq-adopting/), [Open Definition 2.1](https://opendefinition.org/od/2.1/en/)
 - Related: OSS-001, OSS-004, OSS-011
 
@@ -93,7 +93,7 @@ So call such repos "source-available" or "public", not "open source", and expect
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [choosealicense.com: non-software licenses](https://choosealicense.com/non-software/), [GitHub Docs: licensing a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository), [npm docs: package.json `license`](https://docs.npmjs.com/cli/configuring-npm/package-json#license)
 - Related: OSS-004, OSS-005, OSS-006, DOC-012
 
@@ -112,7 +112,7 @@ Expect GitHub's sidebar to show "Other" for a repo with two licence files (OSS-0
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [GitHub Docs: licensing a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository), [licensee: what we look at](https://github.com/licensee/licensee/blob/main/docs/what-we-look-at.md), [licensee: customizing](https://github.com/licensee/licensee/blob/main/docs/customizing.md), [REST: get the license for a repository](https://docs.github.com/en/rest/licenses/licenses#get-the-license-for-a-repository)
 - Related: OSS-002, OSS-003, OSS-006
 
@@ -131,7 +131,7 @@ Tested 2026-10-18, gh 2.102.0, `gh api repos/<owner>/<repo>/license`: an MIT-onl
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [SPDX 2.3 Annex E: short identifiers in source files](https://spdx.github.io/spdx-spec/v2.3/using-SPDX-short-identifiers-in-source-files/), [SPDX 2.3 Annex D: license expressions](https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/), [spdx/spdx-spec releases](https://github.com/spdx/spdx-spec/releases), [SPDX: handling license info](https://spdx.dev/learn/handling-license-info/), [SPDX License List](https://spdx.org/licenses/)
 - Related: OSS-003, OSS-006, OSS-007
 
@@ -153,7 +153,7 @@ npm's `license` field takes the same expressions (OSS-003).
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [REUSE Specification 3.3](https://reuse.software/spec-3.3/), [reuse on PyPI](https://pypi.org/project/reuse/), [licensee: what we look at](https://github.com/licensee/licensee/blob/main/docs/what-we-look-at.md)
 - Related: OSS-003, OSS-004, OSS-005, OSS-009
 
@@ -176,7 +176,7 @@ The checker is the `reuse` Python package (6.2.0, uploaded 2025-10-27, Python 3.
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [npm sbom](https://github.com/npm/cli/blob/latest/docs/lib/content/commands/npm-sbom.md), [npm dependency selectors](https://github.com/npm/cli/blob/latest/docs/lib/content/using-npm/dependency-selectors.md), [npm package.json `license`](https://github.com/npm/cli/blob/latest/docs/lib/content/configuring-npm/package-json.md), [Angular CLI `license-extractor.ts` at v22.2.3](https://github.com/angular/angular-cli/blob/v22.2.3/packages/angular/build/src/tools/esbuild/license-extractor.ts), [Angular application builder schema at v22.2.3](https://github.com/angular/angular-cli/blob/v22.2.3/packages/angular/build/src/builders/application/schema.json)
 - Related: OSS-008, OSS-005, NPM-013, DOCKER-011
 
@@ -202,7 +202,7 @@ Tested 2026-10-18, npm 11.19.0, Node 24.21.0: `express@5.1.0` and `lodash@4.17.2
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [dependency-review-action README](https://github.com/actions/dependency-review-action/blob/main/README.md), [GitHub Docs: configuring the dependency review action](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/manage-your-dependency-security/configure-dependency-review-action), [GitHub Docs: open source license compliance](https://docs.github.com/en/code-security/concepts/supply-chain-security/open-source-license-compliance), [GitHub REST OpenAPI description](https://github.com/github/rest-api-description), [GitHub Docs: exporting an SBOM](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/establish-provenance-and-integrity/export-dependencies-as-sbom)
 - Related: OSS-007, GHA-008, NPM-013
 
@@ -224,7 +224,7 @@ Community checkers add allow-lists to a local run: `licensee` (12.0.2, 2026-08-3
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [OFL 1.1 official text](https://openfontlicense.org/open-font-license-official-text/), [OFL FAQ](https://openfontlicense.org/ofl-faq/), [OpenType spec: `name` table](https://learn.microsoft.com/en-us/typography/opentype/spec/name), [google/fonts README](https://github.com/google/fonts/blob/main/README.md), [gf-docs: METADATA](https://github.com/googlefonts/gf-docs/blob/main/METADATA/README.md)
 - Related: FONT-018, FONT-019, OG-003, OSS-006
 
@@ -241,7 +241,7 @@ Record per font: family, version, source URL, licence (SPDX `OFL-1.1`, or the EU
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [choosealicense.com licence sources](https://github.com/github/choosealicense.com/tree/gh-pages/_licenses), [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0), [Elastic License 2.0](https://www.elastic.co/licensing/elastic-license), [CC BY-NC 4.0 legal code](https://creativecommons.org/licenses/by-nc/4.0/legalcode.en), [CC: recommended practices for attribution](https://wiki.creativecommons.org/wiki/Recommended_practices_for_attribution)
 - Related: OSS-011, OSS-005, OSS-007
 
@@ -273,13 +273,13 @@ Rules for an agent copying or adapting code, with what each rests on:
 
 Instead: link to the source, or reimplement from the documented behaviour; record the source URL, licence and commit in the PR when copying is fine.
 
-No safety net exists in Claude Code: its docs index (`llms.txt`) and legal page have nothing on code matching public code. GitHub Copilot's code referencing compares a suggestion and "approximately 150 characters of surrounding code with an index of public repositories", checking only "accepted, unchanged suggestions".
+No safety net exists in Claude Code: its docs index (`llms.txt`) and legal page have nothing on code matching public code. GitHub Copilot's code referencing compares a suggestion and "approximately 150 characters of surrounding code with the public-code index", checking only "accepted, unchanged suggestions".
 
 ## [OSS-012] Community health files for a personal project: SECURITY.md, CONTRIBUTING, CODEOWNERS
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [GitHub Docs: creating a default community health file](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file), [GitHub Docs: adding a security policy](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/add-security-policy), [GitHub Docs: private vulnerability reporting for a repository](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository), [GitHub Docs: setting guidelines for contributors](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors), [GitHub Docs: about code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
 - Related: GH-005, DOC-012, OSS-001
 

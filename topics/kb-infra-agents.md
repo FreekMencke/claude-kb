@@ -68,7 +68,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Agent SDK: secure deployment](https://code.claude.com/docs/en/agent-sdk/secure-deployment), [Dev containers](https://code.claude.com/docs/en/devcontainer), [Anthropic: safe and trustworthy agents](https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents), [AWS Agentic AI Lens AGENTSEC03-BP02](https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp02.html), [AGENTSEC03-BP03](https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp03.html), [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
 - Related: INFRA-002, INFRA-020, REPO-036
 
@@ -77,7 +77,7 @@ The Claude Code docs don't tell you to give an agent its own cloud identity or a
 **Anthropic:**
 - Agent SDK: "run a proxy outside the agent's security boundary that injects credentials into outgoing requests", so "The agent never sees the actual credentials". On cloud: "Assign minimal IAM permissions to the agent's service account".
 - Dev containers: "Avoid mounting host secrets such as `~/.ssh` or cloud credential files into the container; prefer repository-scoped or short-lived tokens."
-- "Read-only by default" in Anthropic's agent framework means Claude Code's file permissions, not cloud credentials. Since v2.1.283, auto mode, not Manual, is the starting mode (REPO-032).
+- "read-only permissions by default" in Anthropic's agent framework means Claude Code's file permissions, not cloud credentials. Since v2.1.283, auto mode, not Manual, is the starting mode (REPO-032).
 
 **AWS (Well-Architected Agentic AI Lens):**
 - Anti-pattern: "Reusing human user IAM credentials or roles for agent authentication, making it impossible to distinguish agent actions from human actions in audit logs."
@@ -90,7 +90,7 @@ Together: a separate identity, the narrowest policy that does the job, short-liv
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Dev containers](https://code.claude.com/docs/en/devcontainer), [init-firewall.sh](https://github.com/anthropics/claude-code/blob/main/.devcontainer/init-firewall.sh), [Security](https://code.claude.com/docs/en/security), [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [Permission modes](https://code.claude.com/docs/en/permission-modes)
 - Related: INFRA-001, INFRA-011, REPO-035
 
@@ -110,7 +110,7 @@ For `--dangerously-skip-permissions` the docs say: "Only use this mode in isolat
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html), [AWS MCP Server quotas](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/aws-mcp-limits.html), [Tools](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/understanding-mcp-server-tools.html), [GA announcement](https://aws.amazon.com/about-aws/whats-new/2026/05/aws-mcp-server/), [mcp-proxy-for-aws README](https://github.com/aws/mcp-proxy-for-aws), [CloudTrail logging](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/logging-using-cloudtrail.html), [aws-api-mcp-server README](https://github.com/awslabs/mcp/tree/main/src/aws-api-mcp-server)
 - Related: INFRA-006, INFRA-016, INFRA-024
 
@@ -127,17 +127,17 @@ The managed AWS MCP Server went GA on 2026-05-06. It runs on AWS; a local proxy 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [README v0.0.67](https://github.com/containers/kubernetes-mcp-server/blob/v0.0.67/README.md), [Configuration](https://github.com/containers/kubernetes-mcp-server/blob/main/docs/configuration.md), [Configuration changes](https://github.com/containers/kubernetes-mcp-server/blob/main/docs/configuration-changes.md), [Releases](https://github.com/containers/kubernetes-mcp-server/releases)
 - Related: INFRA-006, INFRA-007, INFRA-024
 
-`containers/kubernetes-mcp-server` (latest release v0.0.67, 2026-09-18) acts with whatever kubeconfig identity it is given.
+`containers/kubernetes-mcp-server` (latest release v0.1.1, 2026-10-29 (npm)) acts with whatever kubeconfig identity it is given.
 
 - **`read_only`** (default false) "only exposes tools annotated with `readOnlyHint=true`". **`disable_destructive`** removes delete and update tools. Both take tools off the list rather than refusing calls.
 - **`denied_resources`** blocks kinds by GroupVersionKind, for example `Secret`, whatever RBAC allows. No masking of Secret data in tool output is documented, so deny the kind.
 - **Toolsets.** `core` and `config` are on by default; `helm` and others are opt-in. Fewer toolsets "can help reduce the context size".
 - **Output.** List output defaults to `table`. `pods_log` has `tail` (default 100) but no `since` or `grep`; `resources_get` returns the whole object.
-- **Config is changing.** v0.0.67 takes flags (`--read-only`, `--disable-destructive`). On `main`, "The CLI no longer accepts runtime flags": only `--config` with TOML keys `read_only`, `disable_destructive` and `toolsets`. A new `confirmation_rules` feature defaults `confirmation_fallback` to `"allow"` ("proceeds silently") when the client can't confirm.
+- **Config is changing.** v0.0.67 takes flags (`--read-only`, `--disable-destructive`). From v0.1.0 (2026-10-29), "The CLI no longer accepts runtime flags": only `--config` with TOML keys `read_only`, `disable_destructive` and `toolsets`. A new `confirmation_rules` feature defaults `confirmation_fallback` to `"allow"` ("proceeds silently") when the client can't confirm.
 
 Pin the version. With `npx -y kubernetes-mcp-server@latest`, a renamed key in a future release could leave a server you think is read-only able to write, with no change on your side.
 
@@ -145,7 +145,7 @@ Pin the version. With `npx -y kubernetes-mcp-server@latest`, a renamed key in a 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Flux MCP config](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/mcp/mcp-config.md), [Flux MCP tools](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/mcp/tools.md), [cmd/mcp/main.go](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/cmd/mcp/main.go), [cmd/mcp/README.md](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/cmd/mcp/README.md)
 - Related: INFRA-004, INFRA-007, INFRA-014, INFRA-018
 
@@ -162,7 +162,7 @@ Pin the version. With `npx -y kubernetes-mcp-server@latest`, a renamed key in a 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permissions](https://code.claude.com/docs/en/permissions), [Sandboxing](https://code.claude.com/docs/en/sandboxing), [Kubernetes RBAC: user-facing roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles), [AWS MCP Server IAM](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/security_iam_service-with-iam.html)
 - Related: REPO-034, INFRA-003, INFRA-004, INFRA-008
 
@@ -198,7 +198,7 @@ In our transcripts Flux MCP results averaged 998 tokens (TOK-023). Ask for field
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permissions](https://code.claude.com/docs/en/permissions)
 - Related: REPO-034, INFRA-006, INFRA-012
 
@@ -268,7 +268,7 @@ So a production namespace or bucket named after the product is judged as ordinar
 
 - Keep `"$defaults"`: an array without it "replaces the entire default list for that section".
 - The classifier doesn't read `autoMode` from a repo's `.claude/settings.json`, so it must go in user or managed settings.
-- `/auto-mode-setup` drafts entries from recent sessions (v2.1.228+, Pro, Max or Team). `claude auto-mode config` shows the result.
+- `/auto-mode-setup` drafts entries from recent sessions (v2.1.228+ on Pro, Max, Ultra or Team; v2.1.283+ on Enterprise or with a Console API key). `claude auto-mode config` shows the result.
 
 Tested 2026-10-12, v2.1.296, terminal (WSL): `claude auto-mode config` listed the 21 default environment entries and then our four. The defaults still read "None configured" for the slots we filled, so our entries are added alongside the defaults, not merged into them.
 - Scopes merge "additive, not a hard policy boundary": a user `allow` can override an organization `soft_deny`. For a hard line, use `permissions.deny`.
@@ -277,7 +277,7 @@ Tested 2026-10-12, v2.1.296, terminal (WSL): `claude auto-mode config` listed th
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Sandboxing](https://code.claude.com/docs/en/sandboxing), [Settings reference: sandbox.credentials](https://code.claude.com/docs/en/settings-reference), [Changelog](https://code.claude.com/docs/en/changelog)
 - Related: REPO-035, INFRA-020, INFRA-021
 
@@ -333,7 +333,7 @@ The DataTalks.Club post-mortem's fix is this pattern: "Generate a plan, Review i
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Flux MCP instructions](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/mcp/instructions.md), [Flux MCP config](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/mcp/mcp-config.md), [flux diff kustomization](https://fluxcd.io/flux/cmd/flux_diff_kustomization/), [flux build kustomization](https://fluxcd.io/flux/cmd/flux_build_kustomization/)
 - Related: INFRA-005, INFRA-013, INFRA-015
 
@@ -377,7 +377,7 @@ The auto mode classifier looks for preview output earlier in the transcript befo
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [CloudTrail event history](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html), [AWS MCP Server CloudTrail](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/logging-using-cloudtrail.html), [Source identity](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html), [AssumeRole API](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html), [AGENTSEC03-BP02](https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp02.html)
 - Related: INFRA-003, INFRA-017, INFRA-020
 
@@ -397,14 +397,14 @@ Neither Anthropic's docs nor the AWS MCP docs mention session names or source id
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Kubernetes auditing](https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/), [k3s hardening guide](https://docs.k3s.io/security/hardening-guide), [Hooks guide](https://code.claude.com/docs/en/hooks-guide), [Monitoring](https://code.claude.com/docs/en/monitoring-usage), [.claude directory](https://code.claude.com/docs/en/claude-directory)
 - Related: INFRA-016, INFRA-021, HOOK-028
 
 **Kubernetes.** The API server logs only with a policy file: "If the flag is omitted, no events are logged." Levels are `None`, `Metadata` (user, timestamp, resource, verb), `Request` and `RequestResponse`. k3s "doesn't enable auditing by default"; its hardening guide sets `audit-policy-file` and `audit-log-path`. The audit log names the identity that called, so a dedicated agent ServiceAccount is what makes agent actions findable.
 
 **Claude Code's own records:**
-- **Transcripts** (`~/.claude/projects/<project>/<session>.jsonl`) hold "every message, tool call, and tool result", but are swept after `cleanupPeriodDays` (default 30) and are plaintext.
+- **Transcripts** (`~/.claude/projects/<project>/<session>.jsonl`) hold "messages, tool calls, and tool results", but are swept after `cleanupPeriodDays` (default 30) and are plaintext.
 - **A logging hook.** The hooks guide's "Log every Bash command" uses `PostToolUse` with matcher `Bash` and `jq -r '.tool_input.command' >> ~/.claude/command-log.txt`. Add a matcher for `mcp__.*` to log MCP calls too.
 - **OpenTelemetry.** `claude_code.tool_result` and `tool_decision` events, with `OTEL_LOG_TOOL_DETAILS=1` for Bash commands and MCP tool names. Their `tool_use_id` "Matches the `tool_use_id` passed to hooks". OTel variables in a repo's `.claude/settings.json` are ignored.
 
@@ -416,7 +416,7 @@ Of these, only the cloud and cluster logs are written by something the agent can
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Flux MCP tools](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/mcp/tools.md), [kubernetes-mcp-server README](https://github.com/containers/kubernetes-mcp-server), [aws logs start-query](https://docs.aws.amazon.com/cli/latest/reference/logs/start-query.html), [aws logs filter-log-events](https://docs.aws.amazon.com/cli/latest/reference/logs/filter-log-events.html), [MCP](https://code.claude.com/docs/en/mcp)
 - Related: INFRA-007, INFRA-019, TOK-023
 
@@ -424,7 +424,7 @@ Narrow by time, then by pattern, then by count, before anything reaches the cont
 
 - **Flux MCP.** `get_kubernetes_events` with `type: Warning`, `since` and `grep`; then `get_kubernetes_logs` on the workload with `since` (the incident window), `grep` (`error|panic|fatal|exception`) and `limit`. If `truncated` comes back, narrow further rather than raising limits.
 - **kubernetes-mcp-server.** `pods_log` has only `tail` (default 100) and `previous`, so it suits a single pod's last lines.
-- **CloudWatch Logs.** A Logs Insights query with `filter`, `stats` and `limit` returns an aggregate rather than raw lines. `start-query` "times out after 60 minutes" and returns at most 10,000 events per `GetQueryResults` call. `filter-log-events` pages hold up to 1 MB or 10,000 events, and "A returned page might only be partially full, or even empty". Through the AWS MCP Server, run the query in `run_script` and print only the summary.
+- **CloudWatch Logs.** A Logs Insights query with `filter`, `stats` and `limit` returns an aggregate rather than raw lines. `start-query` queries "time out after 60 minutes of runtime" and returns at most 10,000 events per `GetQueryResults` call. `filter-log-events` pages hold up to 1 MB or 10,000 events, and "A returned page might only be partially full, or even empty". Through the AWS MCP Server, run the query in `run_script` and print only the summary.
 - **Fallback limits.** MCP output warns above 10,000 tokens; a result over 25,000 tokens is saved to a file and Claude gets its path (TOK-023). That is a ceiling, not a target.
 
 Raw log output is also where secrets surface: auto mode's "Production Reads" rule treats dumping env vars or configs from a prod workload as a leak in itself (INFRA-009).
@@ -433,7 +433,7 @@ Raw log output is also where secrets surface: auto mode's "Production Reads" rul
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Subagents: isolate high-volume operations](https://code.claude.com/docs/en/sub-agents), [wshobson/agents](https://github.com/wshobson/agents), [VoltAgent/awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents), [knowledge-work-plugins incident-response](https://github.com/anthropics/knowledge-work-plugins)
 - Related: TOK-035, ORCH-034, INFRA-018, REPO-031
 
@@ -461,7 +461,7 @@ Community SRE agents are broader. In `wshobson/agents` (40,471 stars), `devops-t
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html), [AWS MCP multi-account access](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/multi-account-access.html), [Root user best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-best-practices.html), [Amazon Bedrock](https://code.claude.com/docs/en/amazon-bedrock), [Settings reference](https://code.claude.com/docs/en/settings-reference), [AWS CLI: IAM roles](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html), [AssumeRole API](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html), [mcp-proxy-for-aws README](https://github.com/aws/mcp-proxy-for-aws)
 - Related: INFRA-001, INFRA-011, INFRA-021
 
@@ -480,7 +480,7 @@ Community SRE agents are broader. In `wshobson/agents` (40,471 stars), `devops-t
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [.claude directory](https://code.claude.com/docs/en/claude-directory), [Env vars](https://code.claude.com/docs/en/env-vars), [Monitoring](https://code.claude.com/docs/en/monitoring-usage), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Permission modes](https://code.claude.com/docs/en/permission-modes)
 - Related: REPO-036, INFRA-011, INFRA-009, INFRA-017
 
@@ -572,7 +572,7 @@ Read from local config and read-only AWS and cluster calls. Names, exact grants 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [kubectl auth can-i reference](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_auth/kubectl_auth_can-i/), [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/), [FreekMencke/claude-kb#69](https://github.com/FreekMencke/claude-kb/issues/69)
 - Related: INFRA-006, INFRA-024
 
@@ -619,7 +619,7 @@ The global CLAUDE.md's "The session that picks an issue up checks its steps agai
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Lambda environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html), [UpdateFunctionConfiguration API](https://docs.aws.amazon.com/lambda/latest/api/API_UpdateFunctionConfiguration.html), [osrs-tracker/osrs-tracker-aws#89](https://github.com/osrs-tracker/osrs-tracker-aws/issues/89)
 - Related: INFRA-021, INFRA-026, INFRA-013, INFRA-024
 

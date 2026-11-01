@@ -53,7 +53,7 @@ Research basis:
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [Carbon 2x Grid overview @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/overview.mdx), [Carbon grid config v11.119.0](https://github.com/carbon-design-system/carbon/blob/v11.119.0/packages/grid/scss/_config.scss), [Atlassian: grid](https://atlassian.design/foundations/grid), [Material 3: compact window](https://m3.material.io/foundations/layout/breakpoints/compact), [govuk-frontend `_measurements.scss` v6.6.0](https://github.com/alphagov/govuk-frontend/blob/v6.6.0/packages/govuk-frontend/src/govuk/settings/_measurements.scss), [Fluent 2: layout](https://fluent2.microsoft.design/layout), [Bootstrap `_variables.scss` v5.3.8](https://github.com/twbs/bootstrap/blob/v5.3.8/scss/_variables.scss)
 - Related: LAYOUT-002, LAYOUT-003, DESIGN-022
 
@@ -77,7 +77,7 @@ Carbon's usage page: "The narrow gutter mode is by far the most common choice in
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [Material 3: breakpoints](https://m3.material.io/foundations/layout/breakpoints/overview), [Carbon 2x Grid overview @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/overview.mdx), [Atlassian: grid](https://atlassian.design/foundations/grid), [Polaris breakpoint tokens @3f7954a](https://github.com/Shopify/polaris/blob/3f7954ae/polaris-tokens/src/themes/base/breakpoints.ts), [govuk-frontend `_media-queries.scss` v6.6.0](https://github.com/alphagov/govuk-frontend/blob/v6.6.0/packages/govuk-frontend/src/govuk/settings/_media-queries.scss), [Fluent 2: layout](https://fluent2.microsoft.design/layout), [Bootstrap `_variables.scss` v5.3.8](https://github.com/twbs/bootstrap/blob/v5.3.8/scss/_variables.scss), [Tailwind `theme.css` v4.3.3](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css)
 - Related: LAYOUT-001, LAYOUT-003, LAYOUT-015, LAYOUT-017, CSS-007
 
@@ -103,7 +103,7 @@ Carbon's usage page: "The narrow gutter mode is by far the most common choice in
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [GOV.UK Design System: layout](https://design-system.service.gov.uk/styles/layout/), [Material 3: breakpoints](https://m3.material.io/foundations/layout/breakpoints/overview), [Atlassian: grid](https://atlassian.design/foundations/grid), [Carbon 2x Grid usage @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/usage.mdx)
 - Related: LAYOUT-001, LAYOUT-002, LAYOUT-004, LAYOUT-009, LAYOUT-017, DESIGN-022, DSKILL-014
 
@@ -126,7 +126,7 @@ When unsure, use what most systems in LAYOUT-001, LAYOUT-002 and LAYOUT-004 agre
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [GOV.UK Design System: layout (source)](https://github.com/alphagov/govuk-design-system/blob/main/src/styles/layout/index.md), [govuk-frontend `_measurements.scss` v6.6.0](https://github.com/alphagov/govuk-frontend/blob/v6.6.0/packages/govuk-frontend/src/govuk/settings/_measurements.scss), [Atlassian: grid](https://atlassian.design/foundations/grid), [Carbon 2x Grid usage @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/usage.mdx), [Bootstrap `_variables.scss` v5.3.8](https://github.com/twbs/bootstrap/blob/v5.3.8/scss/_variables.scss), [Tailwind `utilities.ts` v4.3.3](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/src/utilities.ts), [Polaris Page docs @3f7954a](https://github.com/Shopify/polaris/blob/3f7954ae/polaris.shopify.com/content/components/layout-and-structure/page.mdx), [Primer: layout @87f799f](https://github.com/primer/design/blob/87f799f202ec/content/foundations/layout.mdx)
 - Related: LAYOUT-003, LAYOUT-007, LAYOUT-008, LAYOUT-017, DESIGN-020
 
@@ -151,7 +151,7 @@ Always a `max-width`, never a fixed `width`, which would fail reflow (LAYOUT-017
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [Material 3: density](https://m3.material.io/foundations/layout/grids-spacing/density), [Polaris: density @3f7954a](https://github.com/Shopify/polaris/blob/3f7954ae/polaris.shopify.com/content/design/layout/density.mdx), [Carbon 2x Grid usage @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/usage.mdx), [WCAG 2.2 Understanding 2.5.8](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
 - Related: LAYOUT-006, LAYOUT-007, LAYOUT-017, VIZ-016, VIZ-030, ACCESS-002, SPACE-008
 
@@ -169,7 +169,7 @@ Always a `max-width`, never a fixed `width`, which would fail reflow (LAYOUT-017
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [Angular Material theming guide v22.2.4](https://github.com/angular/components/blob/v22.2.4/guides/theming.md), [`_m3-button.scss` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/material/button/_m3-button.scss), [`_m3-table.scss` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/material/table/_m3-table.scss), [`_m3-icon-button.scss` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/material/button/_m3-icon-button.scss)
 - Related: LAYOUT-005, VIZ-017, UIREV-007, SPACE-008
 
@@ -191,7 +191,7 @@ So `-5` on a button acts as `-3`. From `-2` buttons and icon buttons lose their 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [Atlassian: grid](https://atlassian.design/foundations/grid), [Carbon 2x Grid usage @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/usage.mdx), [Polaris Layout docs @3f7954a](https://github.com/Shopify/polaris/blob/3f7954ae/polaris.shopify.com/content/components/layout-and-structure/layout.mdx), [Material 3: breakpoints](https://m3.material.io/foundations/layout/breakpoints/overview), [Android: canonical layouts](https://developer.android.com/develop/ui/compose/layouts/adaptive/canonical-layouts), [AndroidX `PaneScaffoldDirective.kt`](https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/compose/material3/adaptive/adaptive-layout/src/commonMain/kotlin/androidx/compose/material3/adaptive/layout/PaneScaffoldDirective.kt)
 - Related: LAYOUT-004, LAYOUT-005, LAYOUT-017, VIZ-030, DESIGN-022, ACCESS-013
 
@@ -211,7 +211,7 @@ These rest on design-system docs; NN/g's dashboard guidance (what goes on one) i
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [GOV.UK Design System: layout (source)](https://github.com/alphagov/govuk-design-system/blob/main/src/styles/layout/index.md), [GOV.UK: question pages](https://design-system.service.gov.uk/patterns/question-pages/), [GOV.UK: button](https://design-system.service.gov.uk/components/button/), [NN/g: website forms usability](https://www.nngroup.com/articles/web-form-design/), [Atlassian: grid](https://atlassian.design/foundations/grid), [Carbon 2x Grid usage @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/2x-grid/usage.mdx), [NN/g: OK-Cancel or Cancel-OK?](https://www.nngroup.com/articles/ok-cancel-or-cancel-ok/), [Carbon button usage @5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/components/button/usage.mdx), [Atlassian: button](https://atlassian.design/components/button/usage), [NN/g: scrolling and attention](https://www.nngroup.com/articles/scrolling-and-attention/)
 - Related: LAYOUT-004, LAYOUT-016, DESIGN-020, DESIGN-022, UIPAT-001
 
@@ -228,7 +228,7 @@ These rest on design-system docs; NN/g's dashboard guidance (what goes on one) i
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [web.dev: container queries and units in action (2025-10-23)](https://web.dev/articles/baseline-in-action-container-queries), [web.dev Learn Design: micro layouts](https://web.dev/learn/design/micro-layouts), [web.dev: container queries begin to land in stable browsers](https://web.dev/blog/cq-stable), [Every Layout: Sidebar](https://every-layout.dev/layouts/sidebar/), [webstatus.dev: container-queries](https://webstatus.dev/features/container-queries)
 - Related: LAYOUT-010, LAYOUT-011, LAYOUT-015, CSS-005, CSS-007
 
@@ -249,7 +249,7 @@ Tested 2026-10-28, Playwright 1.64.1, Chromium 156 and WebKit 27.2: one media-ob
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [MDN: `container-type`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/container-type), [MDN: container queries guide](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries), [CSS Conditional 5: `container-type`](https://drafts.csswg.org/css-conditional-5/#container-type), [CSS Containment 2: inline-size containment](https://drafts.csswg.org/css-contain-2/#containment-inline-size), [csswg-drafts#10544](https://github.com/w3c/csswg-drafts/issues/10544), [WPT: `no-layout-containment-abspos.html`](https://github.com/web-platform-tests/wpt/blob/master/css/css-conditional/container-queries/no-layout-containment-abspos.html)
 - Related: CSS-007, LAYOUT-009
 
@@ -273,7 +273,7 @@ Tested 2026-10-28, Playwright 1.64.1, Chromium 156.0.8078.4 and WebKit 27.2, sam
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [MDN: `repeat()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/repeat), [MDN: `minmax()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/minmax), [web.dev Learn CSS: grid](https://web.dev/learn/css/grid), [web.dev: ten modern layouts in one line of CSS](https://web.dev/articles/one-line-layouts), [Every Layout: Grid](https://every-layout.dev/layouts/grid/)
 - Related: LAYOUT-009, LAYOUT-012, LAYOUT-013, DESIGN-022
 
@@ -329,7 +329,7 @@ Tested 2026-10-28, Playwright 1.64.1, Chromium 156 and WebKit 27.2: the Switcher
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [MDN: subgrid guide](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Subgrid), [webstatus.dev: subgrid](https://webstatus.dev/features/subgrid)
 - Related: LAYOUT-011, DESIGN-022, CSS-005
 
@@ -355,7 +355,7 @@ Tested 2026-10-28, Playwright 1.64.1, Chromium 156 and WebKit 27.2: with the CSS
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [MDN: grid layout and accessibility](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout/Accessibility), [MDN: `order`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/order), [MDN: `reading-flow`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/reading-flow), [webstatus.dev: reading-flow](https://webstatus.dev/features/reading-flow), [WCAG 2.2 Understanding 2.4.3](https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html), [WCAG 2.2 Understanding 1.3.2](https://www.w3.org/WAI/WCAG22/Understanding/meaningful-sequence.html)
 - Related: LAYOUT-003, LAYOUT-009, LAYOUT-016, LAYOUT-017, ACCESS-008, ACCESS-012, ACCESS-015
 
@@ -373,7 +373,7 @@ Tested 2026-10-28, Playwright 1.64.1: three buttons in DOM order a, b, c shown a
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [`breakpoints.ts` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/cdk/layout/breakpoints.ts), [`media-matcher.ts` v22.2.4](https://github.com/angular/components/blob/v22.2.4/src/cdk/layout/media-matcher.ts), [Angular: SSR guide (v22.2.3 source)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/ssr.md), [Angular: hydration guide (v22.2.3 source)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/hydration.md), [web.dev: CLS](https://web.dev/articles/cls)
 - Related: LAYOUT-002, LAYOUT-009, ANIMLIB-004, WEBPERF-002, NG-005
 
@@ -395,7 +395,7 @@ Tested 2026-10-28, `@angular/core@22.2.3`, `@angular/cdk@22.2.4`, `@angular/buil
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [NN/g: F-shaped pattern, misunderstood (2017-11-12)](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/), [NN/g: text scanning patterns (2019-08-25)](https://www.nngroup.com/articles/text-scanning-patterns-eyetracking/), [NN/g: horizontal attention leans left (2017-10-22)](https://www.nngroup.com/articles/horizontal-attention-leans-left/), [NN/g: scrolling and attention (2018-04-15)](https://www.nngroup.com/articles/scrolling-and-attention/), [NN/g: zigzag image–text layouts (2017-11-26)](https://www.nngroup.com/articles/zigzag-page-layout/)
 - Related: DESIGN-022, LAYOUT-008, LAYOUT-014, WRITE-007
 
@@ -415,7 +415,7 @@ NN/g's eye-tracking studies, on desktop screens in left-to-right languages; NN/g
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [Understanding 1.4.10 Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [Understanding 1.4.4 Resize Text](https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html), [Understanding 1.4.12 Text Spacing](https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html), [Understanding 2.5.8 Target Size (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html), [Understanding 2.4.11 Focus Not Obscured (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html)
 - Related: ACCESS-001, ACCESS-002, ACCESS-008, DSKILL-014, UIREV-003, UIREV-007, LAYOUT-005, LAYOUT-007, LAYOUT-014, VIZ-016, SPACE-020
 
@@ -423,7 +423,7 @@ These are WCAG 2.2 AA requirements (ACCESS-001); everything else in this file is
 
 | Criterion | What it asks of a layout |
 |---|---|
-| 1.4.10 Reflow (AA) | No two-direction scrolling at 320 CSS px wide ("1280 CSS pixels wide at 400% zoom"), or 256 px tall for vertical-scrolling text. Excepted: "maps, diagrams), video, games, presentations, data tables (not individual cells), and interfaces where it is necessary to keep toolbars in view". A wide table scrolls in its own box; cards and dashboards don't count. Sidebars stack or become drawers (LAYOUT-007). |
+| 1.4.10 Reflow (AA) | No two-direction scrolling at 320 CSS px wide ("1280 CSS pixels wide at 400% zoom"), or 256 px tall for vertical-scrolling text. Excepted: "maps and diagrams), video, games, presentations, data tables (not individual cells), and interfaces where it is necessary to keep toolbars in view". A wide table scrolls in its own box; cards and dashboards don't count. Sidebars stack or become drawers (LAYOUT-007). |
 | 1.4.4 Resize Text (AA) | Text resized "up to 200 percent without loss of content or functionality". |
 | 1.4.12 Text Spacing (AA) | Nothing clips when users set line height 1.5, paragraph spacing 2, letter spacing 0.12 and word spacing 0.16 times the font size. Use `min-height`, not `height`, on rows, cards and buttons (failure F104). |
 | 2.5.8 Target Size (AA) | 24 by 24 CSS px, or undersized targets spaced so a "24 CSS pixel diameter circle" on each meets no other; inline links are exempt. 44 px is AAA (2.5.5). |

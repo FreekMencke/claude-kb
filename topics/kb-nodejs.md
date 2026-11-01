@@ -13,7 +13,7 @@ Research basis:
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which Node version should a project target? | 24 for production on 2026-10-17: Active LTS, then Maintenance from 2026-10-20 with security fixes until 2028-04-30. 26 becomes LTS on 2026-10-28; 22 is Maintenance until 2027-04-30; 20 and 25 are end of life. | NODE-001 |
+| Which Node version should a project target? | 24 for production on 2026-10-17: Active LTS, then Maintenance from 2026-10-20 with security fixes until 2028-04-30. 26 became Active LTS on 2026-10-28; 22 is Maintenance until 2027-04-30; 20 and 25 are end of life. | NODE-001 |
 | Is there a Node 27, and are odd lines still skipped? | From 27, one major a year: Current in April, LTS in October, every line LTS. 27's Alpha starts 2026-10-28 (not for production); 27.0.0 is due April 2027. | NODE-002 |
 | Can `node` run a `.ts` file directly? | Yes, without flags, on 22.18+, 23.6+, and all of 24 and 26; stable since 24.12.0. It strips types only: no type check, `tsconfig.json` ignored. | NODE-003 |
 | Why does `node file.ts` fail on an enum, decorator or import? | Stripping only erases types. Enums, runtime namespaces, parameter properties, decorators, `.tsx`, extensionless imports and type imports without `type` fail; 26 removed `--experimental-transform-types`. | NODE-004 |
@@ -57,13 +57,13 @@ Research basis:
 - Sources: [nodejs/Release schedule.json](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json), [nodejs/Release README](https://raw.githubusercontent.com/nodejs/Release/main/README.md), [nodejs.org dist index](https://nodejs.org/dist/index.json), [Previous releases](https://nodejs.org/en/about/previous-releases)
 - Related: NODE-002, NODE-014, SURF-027
 
-On 2026-10-17 Node 26 is Current, 24 is Active LTS and 22 is Maintenance LTS; 20 reached end of life on 2026-04-30 and 25 on 2026-06-01. Target 24 for production now, and 26 from 2026-10-28.
+On 2026-10-17 Node 26 is Current, 24 is Active LTS and 22 is Maintenance LTS; 20 reached end of life on 2026-04-30 and 25 on 2026-06-01. Target 24 for production now, and 26 from 2026-10-28. Update 2026-11-01: 26 (Lithium) became Active LTS on 2026-10-28 and 24 is in Maintenance since 2026-10-20 (`schedule.json`); latest 22.23.4, 24.22.2 and 26.13.0 (nodejs.org dist index). The table below is the 2026-10-17 snapshot.
 
 | Line | Codename | Active LTS from | Maintenance from | End of life | Latest (date) |
 |---|---|---|---|---|---|
 | 22 | Jod | 2024-10-29 | 2025-10-21 | 2027-04-30 | 22.23.3 (2026-09-23) |
 | 24 | Krypton | 2025-10-28 | 2026-10-20 | 2028-04-30 | 24.22.0 (2026-10-14) |
-| 26 | none yet | 2026-10-28 | 2027-10-20 | 2029-04-30 | 26.12.0 (2026-10-14) |
+| 26 | none yet (Lithium on 2026-11-01) | 2026-10-28 | 2027-10-20 | 2029-04-30 | 26.12.0 (2026-10-14; 26.13.0 on 2026-10-28) |
 
 Dates from `schedule.json`, latest versions from `nodejs.org/dist/index.json`, both read 2026-10-17. Node's advice: "Production applications should only use _Active LTS_ or _Maintenance LTS_ releases." The phases, from the Release README:
 - Current: "most of the non-major (non-breaking) changes that land on `nodejs/node` main branch."
@@ -76,7 +76,7 @@ So 24 moving to Maintenance on 2026-10-20 doesn't make it unsafe: it keeps secur
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Evolving the Node.js Release Schedule (2026-03-10)](https://raw.githubusercontent.com/nodejs/nodejs.org/main/apps/site/pages/en/blog/announcements/evolving-the-nodejs-release-schedule.md), [nodejs/Release schedule.json](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json), [nodejs/Release README](https://raw.githubusercontent.com/nodejs/Release/main/README.md)
 - Related: NODE-001, NODE-015
 
@@ -91,13 +91,13 @@ From the announcement of 2026-03-10 (raw text):
 - Node 27: Alpha from October 2026 (`"alpha": "2026-10-28"` in `schedule.json`), 27.0.0 in April 2027 (`start` 2027-04-22), LTS in October 2027, end of life in April 2030.
 - "This schedule is not final and may be amended."
 
-What it changes for an agent: don't put 27 alphas in production or in `engines`; a library can add one to its CI matrix. The Release README hadn't caught up on 2026-10-17: it still says "odd-numbered versions in October" and "Odd-numbered release lines are not promoted to LTS". `schedule.json`'s v27 entry has no `lts` key; its `maintenance` date (2027-10-20) matches the blog's LTS date.
+What it changes for an agent: don't put 27 alphas in production or in `engines`; a library can add one to its CI matrix. The Release README had not caught up on 2026-10-17 (it still said "odd-numbered versions in October"); by 2026-11-01 it describes the Alpha phase and says every line from 27 is promoted to LTS. `schedule.json`'s v27 entry then had `lts` 2027-10-20 and no `maintenance` key (on 2026-10-17 it had `maintenance` and no `lts`).
 
 ## [NODE-003] Running `.ts` files with plain `node`: type stripping by version
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: TypeScript (v26.12.0, same as main)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/typescript.md), [the same page at v24.22.0](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/typescript.md), [CHANGELOG_V22.md: 22.18.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V22.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md)
 - Related: NODE-004, NODE-005, TS-013, SURF-027
 
@@ -118,7 +118,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: a `.ts` file with interfac
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: TypeScript](https://raw.githubusercontent.com/nodejs/node/main/doc/api/typescript.md)
 - Related: NODE-003, NODE-005, TS-013
 
@@ -144,7 +144,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, one file per row except th
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: TypeScript](https://raw.githubusercontent.com/nodejs/node/main/doc/api/typescript.md), [tsx docs: TypeScript](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/typescript.md), [tsx docs: FAQ](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/faq.md), [ts-node README](https://raw.githubusercontent.com/TypeStrong/ts-node/main/README.md), [TypeStrong/ts-node#2140](https://github.com/TypeStrong/ts-node/issues/2140), npm registry (`npm view ts-node time --json`, `npm view tsx time --json`, 2026-10-17)
 - Related: NODE-003, NODE-004, NODE-007, NODE-010
 
@@ -167,7 +167,7 @@ Whichever runs the code, check types in CI with `tsc --noEmit`. NestJS dependenc
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: CLI `--env-file`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md), [Node.js docs: `process.loadEnvFile()`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/process.md), [dotenv README](https://raw.githubusercontent.com/motdotla/dotenv/master/README.md)
 - Related: NODE-007, NODE-009
 
@@ -187,7 +187,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, same result on all three: 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: CLI `--watch`, `--watch-path`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md), [nodemon README](https://raw.githubusercontent.com/remy/nodemon/main/README.md), [tsx docs: Watch mode](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/watch-mode.md)
 - Related: NODE-005, NODE-006
 
@@ -201,7 +201,7 @@ Conflict: the docs say `--watch-path` "is only supported on macOS and Windows" a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Test runner (v24.22.0, v26.12.0)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/test.md), [Node.js docs: CLI test flags](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md)
 - Related: NODE-003, NODE-004
 
@@ -213,7 +213,7 @@ Status on 24.22.0 and 26.12.0:
 - Snapshots (`t.assert.snapshot()`): stable since v23.4.0 and v22.13.0.
 - Coverage (`--experimental-test-coverage`): "Stability: 1 - Experimental"; thresholds (`--test-coverage-lines` and others) exit 1 when missed, also experimental. Output is a text summary or an `lcov` reporter; no HTML report.
 - Watch mode (`node --test --watch`): "1 - Experimental".
-- `mock.module()` behind `--experimental-test-module-mocks`, test tags and global setup: "1.0 - Early development". `--test-randomize` exists only on 26 (added v26.1.0).
+- `mock.module()` behind `--experimental-test-module-mocks`, test tags and global setup: "1.0 - Early development". `--test-randomize` was added in v24.16.0 (24) and v26.1.0 (26).
 - Isolation: "The default isolation mode is `'process'`."
 
 Where it isn't Jest or Vitest: no DOM environment (jsdom, browser mode), module mocking behind a flag, no HTML coverage, and the stripping limits of NODE-004 (no enums or `.tsx`). It fits small libraries, scripts and CLIs with no DOM.
@@ -224,7 +224,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: `node --test` with no argu
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: SQLite (v24.22.0, v26.12.0)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/sqlite.md), [Node.js docs: Permissions (v26.12.0)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/permissions.md), [Node.js docs: CLI `--allow-net`, `--config-file`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md)
 - Related: NODE-006, INFRA-006
 
@@ -238,7 +238,7 @@ Tested 2026-10-17: `node:sqlite` ran without flags on node@22.23.3 (with an Expe
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: Loading ECMAScript modules using `require()`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/modules.md), [Node.js docs: Deprecations, DEP0205](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/deprecations.md), [Node.js docs: `module.registerHooks()`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/module.md), [Node.js docs: Packages, `"module-sync"`](https://raw.githubusercontent.com/nodejs/node/main/doc/api/packages.md)
 - Related: NODE-005, NODE-012
 
@@ -258,7 +258,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: `require('./esm.mjs')` fro
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [CHANGELOG_V24.md: 24.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V24.md), [CHANGELOG_V25.md: 25.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V25.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [MDN browser-compat-data](https://github.com/mdn/browser-compat-data/tree/main/javascript/builtins) (`support.nodejs`), [nodejs.org dist index](https://nodejs.org/dist/index.json)
 - Related: NODE-012, NODE-014
 
@@ -284,7 +284,7 @@ Tested 2026-10-17, official node@22.23.3, 24.22.0 and 26.12.0 binaries, one prob
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [CHANGELOG_V26.md: 26.0.0 Deprecations and Removals](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [CHANGELOG_V25.md: 25.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V25.md), [Node.js docs: Deprecations](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/deprecations.md)
 - Related: NODE-003, NODE-010, NODE-011, NODE-015
 
@@ -308,7 +308,7 @@ Tested 2026-10-17: on node@26.12.0 `typeof localStorage` was `'undefined'`, with
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Globals, `fetch`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/globals.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [undici README (v8.12.2)](https://raw.githubusercontent.com/nodejs/undici/v8.12.2/README.md), [undici v8.0.0 release](https://github.com/nodejs/undici/releases/tag/v8.0.0), undici PRs [#4827](https://github.com/nodejs/undici/pull/4827), [#5448](https://github.com/nodejs/undici/pull/5448) and [#5860](https://github.com/nodejs/undici/pull/5860), [Node.js docs: CLI `NODE_USE_ENV_PROXY`](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/cli.md)
 - Related: NODE-011, NODE-012
 
@@ -343,7 +343,7 @@ Keep one version file, point CI at it, and treat `engines` as a hint. A major-on
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nodejs.org dist index](https://nodejs.org/dist/index.json), npm registry (`npm view npm engines dist-tags time --json`, 2026-10-17), [npm v12.0.0 release notes](https://github.com/npm/cli/releases/tag/v12.0.0), [nodejs/Release#1161: Plans for npm 12](https://github.com/nodejs/Release/issues/1161), [Node.js distribution doc](https://raw.githubusercontent.com/nodejs/node/main/doc/contributing/distribution.md), [Corepack README](https://raw.githubusercontent.com/nodejs/corepack/main/README.md)
 - Related: NODE-002, NODE-012, NODE-014
 
@@ -372,7 +372,7 @@ Ranked by impact against effort. Checked 2026-10-17 against `main` of osrs-track
 - **npm 12 in Node 27** (NODE-015): only a community comment expects it in the Alpha of 2026-10-28; re-check CHANGELOG_V27.md and `npm view npm engines` then.
 - **ts-node on Node 24 and 26 ESM projects** (NODE-005): open issues report `ERR_UNKNOWN_FILE_EXTENSION` for `.ts` in ESM projects on Node 20 and later, and #2174 says it doesn't work with TypeScript 7.0.2; no maintainer replied in the threads read, and ts-node wasn't run (community code).
 - **Does the published tsx 4.23.15 use `module.registerHooks()`** on 24.22 and 26 (NODE-010)? Read from tsx's `master` source only.
-- **The Node 27 phases** (NODE-002): the blog has one 30-month LTS phase; `schedule.json` still has a `maintenance` date for 27 and no `lts` key. Whether Active LTS and Maintenance merge isn't stated, and nodejs/Release#1142 (closed) proposed renaming Alpha.
+- **The Node 27 phases** (NODE-002): the blog has one 30-month LTS phase; `schedule.json` now has an `lts` date (2027-10-20) for 27 and no `maintenance` key. Whether Active LTS and Maintenance merge isn't stated, and nodejs/Release#1142 (closed) proposed renaming Alpha.
 - **Installed undici 7 with Node 26's bundled 8**: worked in NODE-013's test, but the undici README describes only the bridge in the other direction.
 - **`process.loadEnvFile()` precedence**: the docs state it for `--env-file` only; not tested for the function.
 - **Not read:** Volta's pinning docs, asdf, and how Dependabot or Renovate update `.nvmrc` and `.node-version`.

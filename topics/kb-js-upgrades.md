@@ -51,7 +51,7 @@ Research basis:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm-outdated](https://docs.npmjs.com/cli/v11/commands/npm-outdated), [npm-view](https://docs.npmjs.com/cli/v11/commands/npm-view), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [npm-explain](https://docs.npmjs.com/cli/v11/commands/npm-explain)
 - Related: TS-015, JSUP-002, JSUP-015, TOK-042
 
@@ -78,7 +78,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0, a scratch project with typescript 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm config: strict-peer-deps](https://docs.npmjs.com/cli/v11/using-npm/config#strict-peer-deps), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [npm/cli#4664](https://github.com/npm/cli/issues/4664)
 - Related: TS-011, NG-002, JSUP-009
 
@@ -125,7 +125,7 @@ Run the vendor's tool first; each says it isn't the whole job.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Tools reference: LSP tool behavior](https://code.claude.com/docs/en/tools-reference), [Best practices: Run sessions in parallel](https://code.claude.com/docs/en/best-practices), [ast-grep FAQ](https://ast-grep.github.io/advanced/faq.html), [ts-morph: renaming](https://ts-morph.com/manipulation/renaming), [How is Google using AI for internal code migrations?](https://arxiv.org/abs/2501.06972)
 - Related: JSUP-005, JSUP-006, JSUP-007, ORCH-012, TOK-041
 
@@ -147,7 +147,7 @@ Tested 2026-10-17, Claude Code 2.1.296: this session's LSP tool schema offers ni
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [ast-grep CLI: run](https://ast-grep.github.io/reference/cli/run.html), [ast-grep: rewrite code](https://ast-grep.github.io/guide/rewrite-code.html), [ast-grep FAQ](https://ast-grep.github.io/advanced/faq.html), [ts-morph docs](https://ts-morph.com/), [jscodeshift README](https://github.com/facebook/jscodeshift/blob/main/README.md), npm registry
 - Related: JSUP-004, JSUP-006, TS-009
 
@@ -170,7 +170,7 @@ Tested 2026-10-17, ast-grep 0.51.0 and ts-morph 28.0.0, Node 24.21.0: the `sg` w
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Run Claude from a script](https://code.claude.com/docs/en/best-practices), [eslint/codemods README](https://github.com/eslint/codemods), [nodejs/userland-migrations README](https://github.com/nodejs/userland-migrations), [How Anthropic runs large-scale code migrations with Claude Code](https://claude.com/blog/ai-code-migration)
 - Related: JSUP-004, JSUP-005, JSUP-008, FLOW-011, ORCH-012
 
@@ -204,7 +204,7 @@ None used a hand-written codemod for the edits themselves.
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Angular versioning and releases](https://angular.dev/reference/releases), [Angular CLI: ng update](https://angular.dev/cli/update), [Nest CLI usages: nest upgrade](https://docs.nestjs.com/cli/usages), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md)
 - Related: JSUP-003, JSUP-006, JSUP-009, NG-010, TS-004, SESS-021
 
@@ -220,7 +220,7 @@ Each PR passes CI on its own (JSUP-009), so a failure points at one step. Rebase
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [npm-ci](https://docs.npmjs.com/cli/v11/commands/npm-ci), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices)
 - Related: JSUP-002, FLOW-011, FLOW-013, SESS-008
 
@@ -239,7 +239,7 @@ Report the commands and their results (FLOW-011); best practices: "ask Claude fo
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm-install](https://docs.npmjs.com/cli/v11/commands/npm-install), [npm-update](https://docs.npmjs.com/cli/v11/commands/npm-update)
 - Related: JSUP-009, JSUP-011
 
@@ -262,7 +262,7 @@ Instead:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm v6 docs: resolving lockfile conflicts](https://docs.npmjs.com/cli/v6/configuring-npm/package-locks), [npm/cli#6989](https://github.com/npm/cli/issues/6989), [parse-conflict-json](https://github.com/npm/parse-conflict-json), [git-checkout: --ours and --theirs](https://git-scm.com/docs/git-checkout)
 - Related: JSUP-010, SESS-025, JSUP-014
 
@@ -283,7 +283,7 @@ Tested 2026-10-17, npm 11.19.0, git 2.43.0: two branches adding `picocolors` and
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Dependabot options reference](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference), [Changelog 2026-07-14: default package cooldown](https://github.blog/changelog/2026-07-14-dependabot-version-updates-introduce-default-package-cooldown), [dependabot-core github_actions file fetcher](https://github.com/dependabot/dependabot-core/blob/main/github_actions/lib/dependabot/github_actions/file_fetcher.rb)
 - Related: JSUP-013, JSUP-014, SESS-024
 
@@ -337,7 +337,7 @@ Dependabot rebases its own conflicting PRs, but stops after 30 days unmerged, or
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview), [Best practices: Write a specific prompt](https://code.claude.com/docs/en/best-practices), [Vitest migration guide source](https://github.com/vitest-dev/vitest/blob/main/docs/guide/migration/index.md), [docs.nestjs.com/llms.txt](https://docs.nestjs.com/llms.txt)
 - Related: ORCH-026, TS-015, TOK-090, TOK-095, TOK-096, PROMPT-020, JSUP-001
 

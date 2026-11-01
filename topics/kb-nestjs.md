@@ -50,7 +50,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest migration guide](https://docs.nestjs.com/migration-guide) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/migration.md)), npm registry (`npm view @nestjs/core dist-tags`, `npm view @nestjs/core 'time[12.0.0]'`)
 - Related: JSUP-003, JSTOOL-018, JSTEST-007, WEBSEC-003, WEBSEC-009, WEBSEC-013
 
@@ -58,7 +58,7 @@ Research basis:
 
 Changes that keep compiling but behave differently, which `nest upgrade` only reports:
 - **Lifecycle hooks** "are now called by component hierarchy level", which "can change the execution order" of `onModuleInit`, `onApplicationBootstrap` and the shutdown hooks.
-- **`@Optional()` is no longer inherited**: a subclass without its own constructor now throws `UnknownDependenciesException` "where v11 resolved the parameter as `undefined`".
+- **`@Optional()` is no longer inherited by a redeclared constructor**: a subclass that declares its own constructor no longer inherits its parent's optional markers, so Nest throws `UnknownDependenciesException` "where v11 resolved such a parameter as `undefined`". "Starting with NestJS v12.1, a subclass without its own constructor keeps the optional markers of its parent's constructor, as in v11. Versions 12.0.x dropped them in this case too."
 - **Structured logging params**: `ConsoleLogger` attaches plain objects after the message to the same entry; "on by default in v12; set `structuredParams: false` to restore the previous behavior."
 - **Pipe signatures**: "`ArgumentMetadata` now takes a generic parameter. Custom pipes with hand-written signatures may need their types adjusted."
 - **Express graceful shutdown**: "the Express adapter now drains in-flight requests on shutdown."
@@ -72,7 +72,7 @@ Security additions in 12.1: `app.useSecurityHeaders()` (WEBSEC-003), `app.enable
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest migration guide: Node.js requirements](https://docs.nestjs.com/migration-guide) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/migration.md)), npm registry (`npm view @nestjs/core@12.1.3 engines type`)
 - Related: NODE-010, NEST-003, NEST-012
 
@@ -86,7 +86,7 @@ So a CI image or Dockerfile on an old 22.x or 24.x patch release can run the bui
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest migration guide: ESM packages, Switching your project to ESM](https://docs.nestjs.com/migration-guide) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/migration.md)), npm registry (`npm view @nestjs/core@12.1.3 type`)
 - Related: NODE-010, NEST-002, NEST-004, JSTEST-007, JSTEST-009
 
@@ -102,7 +102,7 @@ Tested 2026-10-17, `@nestjs/core`, `common` and `platform-express` 12.1.3, TypeS
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nest-cli 12.0.8 `rspack-defaults.ts`](https://github.com/nestjs/nest-cli/blob/12.0.8/lib/compiler/defaults/rspack-defaults.ts), [nest-cli 12.0.8 `webpack-defaults.ts`](https://github.com/nestjs/nest-cli/blob/12.0.8/lib/compiler/defaults/webpack-defaults.ts), [nestjs/nest v12.1.3 `nest-application.ts`](https://github.com/nestjs/nest/blob/v12.1.3/packages/core/nest-application.ts)
 - Related: JSTOOL-018, DOCKER-005, NEST-003
 
@@ -116,7 +116,7 @@ Tested 2026-10-17, `@nestjs/cli` 12.0.8, `@rspack/core` 2.2.9, Nest 12.1.3, Node
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest 11 migration guide, docs repo at `bdefe85`](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/bdefe854568c2f679c45d1d6cea0ac76797a3553/content/migration.md), [nestjs/nest v11.0.0 release](https://github.com/nestjs/nest/releases/tag/v11.0.0), npm registry (`npm view @nestjs/core 'time[11.0.0]'`)
 - Related: NEST-001, NEST-009, NEST-010
 
@@ -133,7 +133,7 @@ Tested 2026-10-17, `@nestjs/cli` 12.0.8, `@rspack/core` 2.2.9, Nest 12.1.3, Node
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest CLI usages: nest upgrade](https://docs.nestjs.com/cli/usages) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/cli/usages.md)), [nest-cli 12.0.8 `upgrade.command.ts`](https://github.com/nestjs/nest-cli/blob/12.0.8/commands/upgrade.command.ts), [nestjs/schematics 12.0.7 `src/lib/upgrade/`](https://github.com/nestjs/schematics/tree/12.0.7/src/lib/upgrade)
 - Related: JSUP-003, NEST-001, NEST-002, JSTEST-009
 
@@ -150,7 +150,7 @@ It installs with the package manager its lockfile implies. Upgrade a global CLI 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest docs: Validation](https://docs.nestjs.com/application/validation) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/application/validation.md)), [Nest migration guide: Route decorator schemas](https://docs.nestjs.com/migration-guide), [nestjs/nest v12.1.3 `standard-schema-validation.pipe.ts`](https://github.com/nestjs/nest/blob/v12.1.3/packages/common/pipes/standard-schema-validation.pipe.ts), [Nest docs: OpenAPI introduction](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/openapi/introduction.md)
 - Related: NEST-008, JSTEST-008
 
@@ -170,7 +170,7 @@ Tested 2026-10-17, Nest 12.1.3, zod 4.6.7, CommonJS, Node 24.21.0: `@Param('id',
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest migration guide: class-validator and class-transformer, Config module](https://docs.nestjs.com/migration-guide), [Nest docs: Validation](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/application/validation.md), [nestjs/nest v12.0.0 release](https://github.com/nestjs/nest/releases/tag/v12.0.0), [nestjs/nest v12.1.3 `validation.pipe.ts`](https://github.com/nestjs/nest/blob/v12.1.3/packages/common/pipes/validation.pipe.ts), [GHSA-fj58-h2fr-3pp2](https://github.com/advisories/GHSA-fj58-h2fr-3pp2), npm registry (`npm view class-validator 'time[0.15.1]'`, `npm view class-transformer dist-tags`)
 - Related: NEST-007, NEST-006
 
@@ -190,7 +190,7 @@ Recommendation: a new app or a new module uses Zod with `StandardSchemaValidatio
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Express: Migrating to Express 5](https://expressjs.com/en/guide/migrating-5.html) ([raw at `dee32dd`](https://raw.githubusercontent.com/expressjs/expressjs.com/dee32dd56b459db85de61691934e28adfc6502f8/src/content/pages/en/guide/migrating-5.mdx)), [nestjs/nest v12.1.3 `legacy-route-converter.ts`](https://github.com/nestjs/nest/blob/v12.1.3/packages/core/router/legacy-route-converter.ts), [Nest docs: Middleware](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/middlewares.md), [path-to-regexp v8.4.2 Readme](https://github.com/pillarjs/path-to-regexp/blob/v8.4.2/Readme.md)
 - Related: NEST-005, NEST-010
 
@@ -206,7 +206,7 @@ Tested 2026-10-17, Nest 12.1.3, Node 24.21.0: `@Get('legacy/*')` logged "WARN [L
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Express: Migrating to Express 5](https://expressjs.com/en/guide/migrating-5.html) ([raw at `dee32dd`](https://raw.githubusercontent.com/expressjs/expressjs.com/dee32dd56b459db85de61691934e28adfc6502f8/src/content/pages/en/guide/migrating-5.mdx)), [Nest 11 migration guide: Query parameters parsing](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/bdefe854568c2f679c45d1d6cea0ac76797a3553/content/migration.md), [nestjs/nest v12.1.3 `express-adapter.ts`](https://github.com/nestjs/nest/blob/v12.1.3/packages/platform-express/adapters/express-adapter.ts), [express v5.3.0 `lib/utils.js`](https://github.com/expressjs/express/blob/v5.3.0/lib/utils.js)
 - Related: NEST-009, NEST-011, NEST-007
 
@@ -221,7 +221,7 @@ Tested 2026-10-17, Nest 12.1.3 (express 5.2.1), Node 24.21.0: `GET /query?a[b]=1
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [express History.md](https://github.com/expressjs/express/blob/master/History.md), [Express: Version support](https://raw.githubusercontent.com/expressjs/expressjs.com/dee32dd56b459db85de61691934e28adfc6502f8/src/content/pages/en/support.mdx), [Express blog: 5.1.0 and the LTS timeline](https://expressjs.com/2025/03/31/v5-1-latest-release.html), npm registry (`npm view @nestjs/platform-express@12.1.3 dependencies`, `npm view express dist-tags`, `npm view express@5.2.1 dependencies`)
 - Related: NEST-010, NPM-018, NPM-013
 
@@ -237,7 +237,7 @@ Tested 2026-10-17, `npm install` of `@nestjs/platform-express@12.1.3`: `express@
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [node-mongodb-native `etc/notes/CHANGES_7.0.0.md`](https://github.com/mongodb/node-mongodb-native/blob/main/etc/notes/CHANGES_7.0.0.md), [v7.0.0 release](https://github.com/mongodb/node-mongodb-native/releases/tag/v7.0.0), [js-bson v7.0.0 release](https://github.com/mongodb/js-bson/releases/tag/v7.0.0), npm registry (`npm view mongodb dist-tags`, `npm view mongodb@7.7.0 engines`, `npm view mongodb 'time[7.0.0]'`)
 - Related: NEST-013, NODE-001
 
@@ -260,7 +260,7 @@ What an ordinary app hits:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [node-mongodb-native releases](https://github.com/mongodb/node-mongodb-native/releases) (v7.1.0 to v7.7.0), [driver README at v7.7.0](https://github.com/mongodb/node-mongodb-native/blob/v7.7.0/README.md), [MongoDB Node driver: Upgrade guide](https://www.mongodb.com/docs/drivers/node/current/reference/upgrade/), npm registry (`npm view mongoose@9.11.2 dependencies`, `npm view @nestjs/mongoose@12.0.0 peerDependencies`)
 - Related: NEST-012, NEST-004
 
@@ -277,7 +277,7 @@ Mongoose 9.0.0 (2025-11-21) moved to driver 7 (`mongodb ~7.0`); 9.11.2 pins `~7.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest docs: Serverless](https://docs.nestjs.com/faq/serverless) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/faq/serverless.md)), [Nest migration guide: Node.js requirements](https://docs.nestjs.com/migration-guide), [AWS Lambda: Building with Node.js, Experimental Node.js features](https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html), [MongoDB Atlas: Manage connections with AWS Lambda](https://www.mongodb.com/docs/atlas/manage-connections-aws-lambda/), npm registry (`npm view @codegenie/serverless-express engines 'time[5.0.0]'`)
 - Related: NEST-003, NEST-004, DOCKER-005, DOCKER-010
 

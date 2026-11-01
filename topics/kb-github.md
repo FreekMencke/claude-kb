@@ -51,7 +51,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [gh v2.94.0 release notes](https://github.com/cli/cli/releases/tag/v2.94.0), [Changelog 2026-06-10: manage sub-issues, types and dependencies from GitHub CLI](https://github.blog/changelog/2026-06-10-manage-sub-issues-types-and-dependencies-from-github-cli/), [Creating issue dependencies](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies), [Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues), [gh issue view](https://cli.github.com/manual/gh_issue_view)
 - Related: GH-002, GH-003, GH-009
 
@@ -73,7 +73,7 @@ Tested 2026-10-17, gh 2.102.0: `gh issue view 194 --json parent,blockedBy` on th
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [REST: sub-issues](https://docs.github.com/en/rest/issues/sub-issues), [REST: issue dependencies](https://docs.github.com/en/rest/issues/issue-dependencies), [Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues), [Changelog 2025-08-21: dependencies on issues](https://github.blog/changelog/2025-08-21-dependencies-on-issues/), [Permissions for fine-grained PATs](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens), [cli/cli `api/queries_issue.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/api/queries_issue.go)
 - Related: GH-001, GH-009, SURF-025
 
@@ -102,7 +102,7 @@ Tested 2026-10-17, gh 2.102.0: issue #184 here returned `"blocked_by":0,"total_b
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Managing issue types in an organization](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/managing-issue-types-in-an-organization), [REST: issue types](https://docs.github.com/en/rest/orgs/issue-types), [Changelog 2026-06-10: GitHub CLI](https://github.blog/changelog/2026-06-10-manage-sub-issues-types-and-dependencies-from-github-cli/), [Changelog 2025-04-09: sub-issues and issue types GA](https://github.blog/changelog/2025-04-09-evolving-github-issues-and-projects/), [Changelog 2026-09-25: "Relates to" GA](https://github.blog/changelog/2026-09-25-personal-saved-views-for-repository-issues-and-more/), [Community discussion #175785](https://github.com/orgs/community/discussions/175785)
 - Related: GH-001, GH-002
 
@@ -145,7 +145,7 @@ The Branches settings page converts a rule ("Convert to ruleset"), except "Requi
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Available rules for rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets), [Creating rulesets for a repository](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository), [REST: rules](https://docs.github.com/en/rest/repos/rules), [Approving a pull request with required reviews](https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/approving-a-pull-request-with-required-reviews), [gh ruleset](https://cli.github.com/manual/gh_ruleset)
 - Related: GH-004, SESS-023, SESS-024, GHA-008
 
@@ -166,7 +166,7 @@ Tested 2026-10-17, gh 2.102.0: `gh ruleset check main -R FreekMencke/claude-kb` 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [gh release create](https://cli.github.com/manual/gh_release_create), [REST: releases](https://docs.github.com/en/rest/releases/releases), [Managing releases in a repository](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository), [About releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases), [cli/cli `release/create/create.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/pkg/cmd/release/create/create.go)
 - Related: GH-007, GH-008, DOC-006
 
@@ -210,7 +210,7 @@ changelog:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Managing releases in a repository](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository), [gh release create](https://cli.github.com/manual/gh_release_create), [cli/cli `release/create/create.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/pkg/cmd/release/create/create.go)
 - Related: GHA-011, GH-006
 
@@ -227,7 +227,7 @@ A CI job that builds assets in several jobs should create the draft first and pu
 - Type: fact
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [Managing your personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens), [Endpoints available for fine-grained PATs](https://docs.github.com/en/rest/authentication/endpoints-available-for-fine-grained-personal-access-tokens), [Permissions for fine-grained PATs](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens), [gh auth login](https://cli.github.com/manual/gh_auth_login), [cli/cli#14309](https://github.com/cli/cli/issues/14309), [cli/cli#8352](https://github.com/cli/cli/issues/8352)
 - Related: SURF-025, ORCH-017, SESS-022, GH-002, GHA-014
 
@@ -253,7 +253,7 @@ A REST response's `X-Accepted-GitHub-Permissions` header names the permission ne
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Changelog 2024-05-23: Projects (classic) sunset](https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/), [gh v2.82.1 release notes](https://github.com/cli/cli/releases/tag/v2.82.1), [cli/cli#14598](https://github.com/cli/cli/issues/14598), [cli/cli#14622](https://github.com/cli/cli/issues/14622), [cli/cli `feature_detection.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/internal/featuredetection/feature_detection.go)
 - Related: GH-009
 
@@ -289,7 +289,7 @@ Tested 2026-10-18, gh 2.102.0, Claude Code subagent Bash tool on Linux: `AI_AGEN
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [github-mcp-server README at v2.0.2](https://github.com/github/github-mcp-server/blob/v2.0.2/README.md), [v2.0.0 release notes](https://github.com/github/github-mcp-server/releases/tag/v2.0.0), [Remote server](https://github.com/github/github-mcp-server/blob/v2.0.2/docs/remote-server.md), [Install in Claude](https://github.com/github/github-mcp-server/blob/v2.0.2/docs/installation-guides/install-claude.md), [Scope filtering](https://github.com/github/github-mcp-server/blob/v2.0.2/docs/scope-filtering.md), [Using the GitHub MCP server](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp/use-the-github-mcp-server)
 - Related: TOK-020, TOK-021, TOK-022, INFRA-007, MCP-021, REPO-039
 

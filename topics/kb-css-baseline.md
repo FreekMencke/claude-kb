@@ -52,7 +52,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web-features: docs/baseline.md](https://raw.githubusercontent.com/web-platform-dx/web-features/main/docs/baseline.md), [web-features 3.43.0 README](https://www.npmjs.com/package/web-features/v/3.43.0), [web.dev: Baseline](https://web.dev/baseline), [web.dev: How to choose your Baseline target](https://web.dev/articles/how-to-choose-your-baseline-target)
 - Related: CSS-002, CSS-003, CSS-004, CSS-016
 
@@ -74,7 +74,7 @@ web-features 3.43.0 (published 2026-10-15, `npm view web-features 'time[3.43.0]'
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web.dev: Baseline](https://web.dev/baseline), [web.dev: Web Platform Dashboard Baseline queries](https://web.dev/articles/web-platform-dashboard-baseline), [webstatus.dev OpenAPI](https://raw.githubusercontent.com/GoogleChrome/webstatus.dev/main/openapi/backend/openapi.yaml), [compute-baseline README](https://raw.githubusercontent.com/web-platform-dx/web-features/main/packages/compute-baseline/README.md), [@mdn/browser-compat-data README](https://github.com/mdn/browser-compat-data), [Fyrd/caniuse `data-2.0.json`](https://github.com/Fyrd/caniuse)
 - Related: CSS-001, CSS-003, CSS-004
 
@@ -103,7 +103,7 @@ Tested 2026-10-17, web-features 3.43.0 via jsDelivr and api.webstatus.dev: both 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web-features 3.43.0 `data.json`](https://cdn.jsdelivr.net/npm/web-features@3.43.0/data.json), [web-features README: `by_compat_key`](https://www.npmjs.com/package/web-features/v/3.43.0), [web-features guidelines: status overrides](https://raw.githubusercontent.com/web-platform-dx/web-features/main/docs/guidelines.md)
 - Related: CSS-002, CSS-012, CSS-017
 
@@ -122,7 +122,7 @@ Lint rules work per key, so they agree with the keys, not the feature: `@eslint/
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [browserslist README](https://raw.githubusercontent.com/browserslist/browserslist/main/README.md), [browserslist CHANGELOG](https://raw.githubusercontent.com/browserslist/browserslist/main/CHANGELOG.md), [web.dev: Use Baseline with Browserslist](https://web.dev/articles/use-baseline-with-browserslist), [baseline-browser-mapping](https://github.com/web-platform-dx/baseline-browser-mapping), npm registry (`npm view browserslist 'time[4.26.0]'`)
 - Related: CSS-001, CSS-015, CSS-016
 
@@ -147,7 +147,7 @@ Tested 2026-10-17, browserslist@4.29.3, Node 24.21.0: the table above, summarise
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web-features 3.43.0 `data.json`](https://cdn.jsdelivr.net/npm/web-features@3.43.0/data.json)
 - Related: CSS-001, CSS-006, CSS-007, DESIGN-022
 
@@ -175,7 +175,7 @@ Older and also safe: cascade layers (2024-09-14) and `<dialog>` (2024-09-14). Us
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web-features 3.43.0 `data.json`](https://cdn.jsdelivr.net/npm/web-features@3.43.0/data.json), [web-features: docs/baseline.md](https://raw.githubusercontent.com/web-platform-dx/web-features/main/docs/baseline.md)
 - Related: CSS-001, CSS-005, CSS-008, CSS-009, DESIGN-018
 
@@ -208,7 +208,7 @@ On a site whose audience may run browsers older than about 2.5 years, use these 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [MDN: Using CSS nesting](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Nesting/Using), [MDN: Nesting and specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Nesting/Nesting_and_specificity), [MDN: `:has()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has), [MDN: `container-type`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/container-type), [MDN: `@container`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@container) (raw from mdn/content)
 - Related: CSS-005, CSS-009
 
@@ -233,7 +233,7 @@ All three are widely available (CSS-005); what breaks them is Sass habits and mi
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [MDN: Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API), [MDN: Using the Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using), [MDN: `popover`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/popover), [MDN: `<button>` `command`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button), [MDN: `@starting-style`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style), [MDN: `overlay`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overlay) (raw from mdn/content), web-features 3.43.0
 - Related: CSS-006, CSS-007, CSS-010, ACCESS-013
 
@@ -251,7 +251,7 @@ A bare `<div popover>` gets no dialog role; adding semantics (`<dialog popover>`
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [MDN: `@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@scope), [MDN: `@property`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@property), [MDN: Registering properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Properties_and_values_API/Registering_properties), [MDN: Using relative colors](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Colors/Using_relative_colors), [MDN: `color-mix()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/color-mix), [MDN: `field-sizing`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/field-sizing), [MDN: `view-transition-name`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/view-transition-name) (raw from mdn/content), [Chrome: same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document)
 - Related: CSS-006, CSS-007, DESIGN-016
 
@@ -272,7 +272,7 @@ Without `@property` support a custom property animates discretely, as a jump (MD
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web-features 3.43.0 `data.json`](https://cdn.jsdelivr.net/npm/web-features@3.43.0/data.json), [BCD `animation-timeline.json` (main)](https://raw.githubusercontent.com/mdn/browser-compat-data/main/css/properties/animation-timeline.json), [mdn/browser-compat-data#30856](https://github.com/mdn/browser-compat-data/pull/30856), [MDN: Firefox 159](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/159), [MDN: `if()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/if), [MDN: Customizable select](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select), [MDN: Using interest invokers](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using_interest_invokers), [MDN: `text-wrap`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-wrap), [WebKit: `text-wrap: pretty`](https://webkit.org/blog/16547/better-typography-with-text-wrap-pretty/)
 - Related: CSS-003, CSS-011, CSS-014, CSS-017, DESIGN-020
 
@@ -289,13 +289,13 @@ web-features 3.43.0 (2026-10-15); every row is `baseline: false`.
 | Interest invokers (`interestfor`) | Chrome 142 | A link "behaves like a normal link"; keep essential content off hover-only popovers |
 | `<dialog closedby>` | Chrome 134, Firefox 141 | Ignored; close it with a button |
 
-Anchor positioning's core works in all three (CSS-017). Scroll-driven animations are next: mdn/browser-compat-data#30856 (merged 2026-10-15) set `animation-timeline` to Firefox `"159"`, which MDN says "ships on October 27, 2026"; its release notes didn't list it yet.
+Anchor positioning's core works in all three (CSS-017). Scroll-driven animations are next: mdn/browser-compat-data#30856 (merged 2026-10-15) set `animation-timeline` to Firefox `"159"`, Firefox 159 was released on October 27, 2026 and its release notes list scroll-driven animations as enabled by default.
 
 ## [CSS-011] Progressive enhancement with `@supports`: patterns and blind spots
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [MDN: `@supports`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@supports), [MDN: Selector list](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/Selector_list), [MDN: Scroll-driven animation timelines](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations/Timelines), [MDN: `if()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/if), [MDN: `:has()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has), [BCD `css/at-rules/supports.json`](https://raw.githubusercontent.com/mdn/browser-compat-data/main/css/at-rules/supports.json), [Chrome: anchor positioning](https://developer.chrome.com/docs/css-ui/anchor-positioning-api)
 - Related: CSS-010, CSS-012, CSS-017
 
@@ -314,7 +314,7 @@ Write the baseline style first, then the enhancement where only supporting brows
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [@eslint/css README](https://github.com/eslint/css/blob/main/README.md), [use-baseline rule docs](https://raw.githubusercontent.com/eslint/css/main/docs/rules/use-baseline.md), [Angular: component styling](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/components/styling.md), npm registry (`npm view @eslint/css@2.0.1 engines devDependencies`)
 - Related: CSS-003, CSS-011, CSS-013, CSS-015, DESIGN-024
 
@@ -361,7 +361,7 @@ For CSS in an ESLint repo, prefer the official `@eslint/css` (CSS-012): no secon
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Interop 2026 README](https://raw.githubusercontent.com/web-platform-tests/interop/main/2026/README.md), [Interop 2025 README](https://raw.githubusercontent.com/web-platform-tests/interop/main/2025/README.md), [Interop 2026 dashboard](https://wpt.fyi/interop-2026), web-features 3.43.0, commit dates from `gh api repos/web-platform-tests/interop/commits?path=2026/README.md`
 - Related: CSS-006, CSS-010, CSS-017
 
@@ -380,7 +380,7 @@ Interop is the yearly pact between Apple, Google, Microsoft, Mozilla, Bocoup and
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Tailwind: Compatibility](https://raw.githubusercontent.com/tailwindlabs/tailwindcss.com/main/src/docs/compatibility.mdx), [Tailwind: Upgrade guide](https://raw.githubusercontent.com/tailwindlabs/tailwindcss.com/main/src/docs/upgrade-guide.mdx), [Tailwind CSS v4.1 post](https://tailwindcss.com/blog/tailwindcss-v4-1), [tailwindcss CHANGELOG](https://raw.githubusercontent.com/tailwindlabs/tailwindcss/main/CHANGELOG.md), source at v4.3.3: [`optimize.ts`](https://raw.githubusercontent.com/tailwindlabs/tailwindcss/v4.3.3/packages/@tailwindcss-node/src/optimize.ts), [`@tailwindcss/postcss`](https://raw.githubusercontent.com/tailwindlabs/tailwindcss/v4.3.3/packages/@tailwindcss-postcss/src/index.ts)
 - Related: CSS-004, CSS-006, CSS-016, DESIGN-023
 
@@ -398,7 +398,7 @@ The 4.1 claim is Tailwind's own, shown on Safari 15.5; no Firefox 119–127 test
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular.dev: Versions, browser support](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/reference/versions.md), [angular.dev: Building](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/tools/cli/build.md), [angular-cli CHANGELOG 20.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [`@angular/build@22.2.3` `supported-browsers.js`](https://cdn.jsdelivr.net/npm/@angular/build@22.2.3/src/utils/supported-browsers.js)
 - Related: CSS-004, CSS-015, NG-002
 
@@ -416,7 +416,7 @@ With `@tailwindcss/postcss`, Tailwind's own Lightning CSS pass runs only if `NOD
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: BCD at `main`, 2026-10-17: [`position-area.json`](https://raw.githubusercontent.com/mdn/browser-compat-data/main/css/properties/position-area.json), [`position-try-fallbacks.json`](https://raw.githubusercontent.com/mdn/browser-compat-data/main/css/properties/position-try-fallbacks.json), [`position-visibility.json`](https://raw.githubusercontent.com/mdn/browser-compat-data/main/css/properties/position-visibility.json); [Chrome: anchor positioning API](https://developer.chrome.com/docs/css-ui/anchor-positioning-api), [oddbird/css-anchor-positioning README](https://github.com/oddbird/css-anchor-positioning), web-features 3.43.0
 - Related: CSS-003, CSS-010, CSS-011, CSS-014
 

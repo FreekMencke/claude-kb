@@ -12,8 +12,8 @@ Research basis:
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which base image for a Node 24 or 26 server? | `node:24-alpine` (or `26-alpine` once 26 is LTS on 2026-10-28), pinned by digest, for a bundled server with no glibc-only native modules; `node:24-trixie-slim` when a dependency needs glibc. Distroless or a Docker Hardened Image only when "no shell, no npm" in production is worth an extra registry or login. | DOCKER-004, DOCKER-001, DOCKER-002, DOCKER-003 |
-| What does `node:24-alpine`, `node:24-slim` or `node:lts` point to? | `24-alpine` is Alpine 3.24, `24-slim` is Debian 12 (bookworm), not 13; `lts` is 24 until Node 26 becomes LTS on 2026-10-28. Compressed amd64 sizes: 62 MB alpine, 81 MB slim, 412 MB full. Node 26 images ship no Yarn. | DOCKER-001 |
+| Which base image for a Node 24 or 26 server? | `node:24-alpine` (or `26-alpine` once 26 became LTS on 2026-10-28), pinned by digest, for a bundled server with no glibc-only native modules; `node:24-trixie-slim` when a dependency needs glibc. Distroless or a Docker Hardened Image only when "no shell, no npm" in production is worth an extra registry or login. | DOCKER-004, DOCKER-001, DOCKER-002, DOCKER-003 |
+| What does `node:24-alpine`, `node:24-slim` or `node:lts` point to? | `24-alpine` is Alpine 3.24, `24-slim` is Debian 12 (bookworm), not 13; `lts` is 26 since it became LTS on 2026-10-28 (`24-slim` is still Debian 12, `26-slim` is Debian 13). Compressed amd64 sizes: 62 MB alpine, 81 MB slim, 412 MB full. Node 26 images ship no Yarn. | DOCKER-001 |
 | Is Alpine (musl) safe for production Node? | On amd64 for Node 26: Node lists x64 musl as Tier 2. For Node 24 it's "Experimental", and arm64 images are compiled from source in the image build, untested by Node. Native modules need musl prebuilds (sharp has them). | DOCKER-002 |
 | Are Docker Hardened Images free, and how do I pull them? | Yes, the Community tier, under Apache 2.0 since 2025-12-17, from `dhi.io` after `docker login dhi.io`. The Node runtime image has no shell or npm and runs as `node` (UID 1000); `-dev` tags have npm. The 7-day CVE SLA is paid. | DOCKER-003 |
 | What does a Dockerfile for an Angular SSR or NestJS app look like? | Two stages on the same pinned image: `npm ci` and the build in the first; only `dist` (plus any external native module) in the second, `USER` set, exec-form `CMD ["node", …]`. A bundled server needs no `node_modules` at run time. | DOCKER-005 |
@@ -32,7 +32,7 @@ Research basis:
 
 | ID | Title | Type | Tags |
 |---|---|---|---|
-| DOCKER-001 | Official `node` image tags on 2026-10-17: what each points to, and sizes | fact | node-image, alpine, slim, lts, image-size |
+| DOCKER-001 | Official `node` image tags on 2026-11-01: what each points to, and sizes | fact | node-image, alpine, slim, lts, image-size |
 | DOCKER-002 | Alpine and musl: Node's support tier and native modules | fact | alpine, musl, native-modules, sharp, arm64 |
 | DOCKER-003 | Distroless, Docker Hardened Images and Chainguard for Node | comparison | distroless, docker-hardened-images, chainguard, nonroot |
 | DOCKER-004 | Choosing a base image for a Node 24/26 server | recommendation | base-image, alpine, slim, distroless |
@@ -48,25 +48,27 @@ Research basis:
 | DOCKER-014 | Build cache in GitHub Actions: `type=gha`, its limits and read-only triggers | fact | build-cache, gha-cache, build-push-action, workflow-run |
 | DOCKER-015 | Multi-arch images: QEMU, native arm64 runners or Docker's GitHub Builder | comparison | multi-arch, arm64, qemu, github-builder |
 
-## [DOCKER-001] Official `node` image tags on 2026-10-17: what each points to, and sizes
+## [DOCKER-001] Official `node` image tags on 2026-11-01: what each points to, and sizes
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [docker-library/official-images: library/node](https://raw.githubusercontent.com/docker-library/official-images/master/library/node), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [nodejs/docker-node versions.json](https://raw.githubusercontent.com/nodejs/docker-node/main/versions.json)
 - Related: NODE-001, DOCKER-002, DOCKER-009
 
-The floating tags hide which OS and Node line you get. From `library/node` on 2026-10-17:
+The floating tags hide which OS and Node line you get. From `library/node` on 2026-11-01:
 
 | Tag | Resolves to | Architectures |
 |---|---|---|
-| `24-alpine`, `lts-alpine` | 24.22.0 on Alpine 3.24 | amd64, arm64v8, s390x |
-| `24-slim`, `lts-slim` | 24.22.0 on Debian 12 `bookworm-slim` | amd64, arm64v8, ppc64le |
-| `24`, `lts` | 24.22.0 on Debian 12 `bookworm` | amd64, arm64v8, ppc64le |
-| `26-alpine`, `alpine` | 26.12.0 on Alpine 3.24 | amd64, arm64v8 |
+| `24-alpine` | 24.22.2 on Alpine 3.24 | amd64, arm64v8, s390x |
+| `24-slim` | 24.22.2 on Debian 12 `bookworm-slim` | amd64, arm64v8, ppc64le |
+| `24` | 24.22.2 on Debian 12 `bookworm` | amd64, arm64v8, ppc64le |
+| `26-slim`, `lts-slim` | 26.13.0 on Debian 13 `trixie-slim` | amd64, arm64v8, ppc64le, s390x |
+| `26`, `lts` | 26.13.0 on Debian 13 `trixie` | amd64, arm64v8, ppc64le, s390x |
+| `26-alpine`, `alpine`, `lts-alpine` | 26.13.0 on Alpine 3.24 | amd64, arm64v8 |
 
-- `-slim` is still Debian 12; Debian 13 needs `-trixie-slim` explicitly.
-- `lts` follows Node's Active LTS, so `lts*` tags move to 26 when it becomes LTS on 2026-10-28 (`versions.json`). A major moving under a rebuild is a reason to name the major.
+- `24-slim` is still Debian 12 (`debian-default` is `bookworm` for 24); `26-slim` and `26` are Debian 13 `trixie`.
+- `lts` follows Node's Active LTS, so `lts*` tags moved to 26 when it became LTS on 2026-10-28 (`versions.json`). A major moving under a rebuild is a reason to name the major.
 - "Yarn v1 is not bundled into `node` images as of Node.js 26.0.0" (README).
 - The images run as root: the config's `User` is unset. They ship a `node` user with UID 1000 (DOCKER-008).
 
@@ -76,7 +78,7 @@ Tested 2026-10-17, Docker Hub registry API (no Docker engine), sum of compressed
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nodejs/node BUILDING.md, v24.x](https://raw.githubusercontent.com/nodejs/node/v24.x/BUILDING.md), [nodejs/node BUILDING.md, v26.x](https://raw.githubusercontent.com/nodejs/node/v26.x/BUILDING.md), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [docker-node 24/alpine3.24 Dockerfile](https://raw.githubusercontent.com/nodejs/docker-node/main/24/alpine3.24/Dockerfile), [sharp: installation](https://sharp.pixelplumbing.com/install), [npm config v11](https://docs.npmjs.com/cli/v11/using-npm/config)
 - Related: NPM-017, DOCKER-004, DOCKER-015
 
@@ -113,14 +115,14 @@ Three runtime images without a shell or package manager:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: building best practices](https://docs.docker.com/build/building/best-practices/), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md)
 - Related: DOCKER-001, DOCKER-002, DOCKER-003, NODE-001
 
 Docker's advice is a trusted source (an Official Image, Verified Publisher or hardened image) and "a minimal base image that matches your requirements", with one image for building and a slimmer one for production. For a Node server, in order:
 
-1. **`node:<major>-alpine`**, pinned by digest (DOCKER-009), when the server is bundled or its native dependencies have musl prebuilds. Smallest official image (DOCKER-001). Prefer 26 once it's LTS (2026-10-28), where x64 musl is Tier 2 (DOCKER-002).
-2. **`node:<major>-trixie-slim`** when a dependency is glibc-only, or for arm64 images, where Alpine's Node is compiled in the image build and untested upstream. Name the Debian release: plain `-slim` is still Debian 12.
+1. **`node:<major>-alpine`**, pinned by digest (DOCKER-009), when the server is bundled or its native dependencies have musl prebuilds. Smallest official image (DOCKER-001). Prefer 26, LTS since 2026-10-28, where x64 musl is Tier 2 (DOCKER-002).
+2. **`node:<major>-trixie-slim`** when a dependency is glibc-only, or for arm64 images, where Alpine's Node is compiled in the image build and untested upstream. Name the Debian release: `24-slim` is still Debian 12, while `26-slim` is Debian 13.
 3. **Distroless or a DHI runtime image** for the final stage when the attack surface matters more than debugging with a shell, and you can live with a second registry (DHI needs a login and pull secrets). Build in the matching `-dev` or official image.
 
 docker-node's "Smaller images without npm/yarn" copies `/usr/local/bin/node` onto plain `alpine` or `debian:trixie-slim`, a do-it-yourself version of option 3. Never use `node:latest` or a bare `lts` tag for production: both change major on their own.
@@ -129,7 +131,7 @@ docker-node's "Smaller images without npm/yarn" copies `/usr/local/bin/node` ont
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: building best practices](https://docs.docker.com/build/building/best-practices/), [Docker: optimize cache usage](https://docs.docker.com/build/cache/optimize/), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md), [this repo's mcp-server/Dockerfile](https://github.com/FreekMencke/claude-kb/blob/main/mcp-server/Dockerfile)
 - Related: DOCKER-006, DOCKER-007, DOCKER-008, NPM-016
 
@@ -161,7 +163,7 @@ CMD ["node", "dist/<app>/server/server.mjs"]
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm/cli config definitions, v11.19.1](https://raw.githubusercontent.com/npm/cli/v11.19.1/workspaces/config/lib/definitions/definitions.js), [Docker: optimize cache usage](https://docs.docker.com/build/cache/optimize/), [nodejs.org dist index](https://nodejs.org/dist/index.json), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md)
 - Related: NPM-004, NPM-016, NODE-015, DOCKER-014
 
@@ -176,7 +178,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0, WSL2: with `ms` as a dependency an
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: build context, .dockerignore](https://docs.docker.com/build/concepts/context/#dockerignore-files), [Docker: build secrets](https://docs.docker.com/build/building/secrets/), [Docker: provenance attestations](https://docs.docker.com/build/metadata/attestations/slsa-provenance/), [docker/build-push-action README v7.4.0](https://raw.githubusercontent.com/docker/build-push-action/v7.4.0/README.md)
 - Related: DOCKER-005, DOCKER-011, GHA-020
 
@@ -196,7 +198,7 @@ with `docker build --secret id=npmrc,src=$HOME/.npmrc .` (or build-push-action's
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md), [docker-node docker-entrypoint.sh](https://raw.githubusercontent.com/nodejs/docker-node/main/24/alpine3.24/docker-entrypoint.sh), [Docker: building best practices, USER](https://docs.docker.com/build/building/best-practices/#user), [kubelet security_context_others.go](https://raw.githubusercontent.com/kubernetes/kubernetes/master/pkg/kubelet/kuberuntime/security_context_others.go)
 - Related: DOCKER-005, DOCKER-003
 
@@ -210,7 +212,7 @@ Tested 2026-10-17, Node 24.21.0 as PID 1 of a new PID namespace (`unshare -rpf -
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: building best practices, pin base image versions](https://docs.docker.com/build/building/best-practices/#pin-base-image-versions), [Docker: rebuild your images often](https://docs.docker.com/build/building/best-practices/#rebuild-your-images-often)
 - Related: DOCKER-001, JSUP-012, GHA-012
 
@@ -224,7 +226,7 @@ Docker's other half: "rebuild your images regularly". A pinned digest is only as
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Kubernetes: images](https://kubernetes.io/docs/concepts/containers/images/), [Node v24 module.md: compile cache](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/module.md), [Node v24 src/api/environment.cc](https://raw.githubusercontent.com/nodejs/node/v24.x/src/api/environment.cc), [Node v24 cli.md](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/cli.md)
 - Related: DOCKER-001, DOCKER-005, NODE-001
 
@@ -238,7 +240,7 @@ No official source gives a size-to-startup figure. What the sources support:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: build attestations](https://docs.docker.com/build/metadata/attestations/), [Docker: provenance attestations](https://docs.docker.com/build/metadata/attestations/slsa-provenance/), [Docker: attestations in GitHub Actions](https://docs.docker.com/build/ci/github-actions/attestations/), [build-push-action src/context.ts v7.4.0](https://raw.githubusercontent.com/docker/build-push-action/v7.4.0/src/context.ts), [BuildKit releases](https://github.com/moby/buildkit/releases)
 - Related: DOCKER-007, DOCKER-012, NPM-012, GHA-011
 
@@ -256,7 +258,7 @@ Tested 2026-10-17, Docker Hub registry API: `node:24-alpine` carries `https://sp
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [cosign CHANGELOG](https://raw.githubusercontent.com/sigstore/cosign/main/CHANGELOG.md), [cosign releases](https://github.com/sigstore/cosign/releases), [Sigstore: signing containers](https://docs.sigstore.dev/cosign/signing/signing_with_containers/), [cosign-installer README](https://github.com/sigstore/cosign-installer), [actions/attest README](https://github.com/actions/attest), [actions/attest-build-provenance README](https://github.com/actions/attest-build-provenance), [GitHub: using artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations)
 - Related: DOCKER-011, DOCKER-013, NPM-012
 
@@ -279,7 +281,7 @@ A signature only matters where something refuses unsigned images (DOCKER-013).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Flux: OCIRepository, verification](https://fluxcd.io/flux/components/source/ocirepositories/#verification), [Flux: HelmChart](https://fluxcd.io/flux/components/source/helmcharts/), [Flux: ImageRepository](https://fluxcd.io/flux/components/image/imagerepositories/), [GitHub: enforcing artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/enforce-artifact-attestations)
 - Related: DOCKER-012, INFRA-013
 
@@ -310,7 +312,7 @@ A fresh runner has no layer cache: every build is cold unless it imports one.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: multi-platform builds](https://docs.docker.com/build/building/multi-platform/), [Docker: multi-platform image with GitHub Actions](https://docs.docker.com/build/ci/github-actions/multi-platform/), [Docker GitHub Builder: architecture](https://docs.docker.com/build/ci/github-actions/github-builder/architecture/), [Dockerfile reference: automatic platform ARGs](https://docs.docker.com/reference/dockerfile/#automatic-platform-args-in-the-global-scope), [npm config v11](https://docs.npmjs.com/cli/v11/using-npm/config)
 - Related: GHA-002, DOCKER-002, NPM-017
 

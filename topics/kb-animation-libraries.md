@@ -57,7 +57,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: npm registry (`npm view <pkg> dist-tags`, `npm view <pkg>@<v> license peerDependencies peerDependenciesMeta dependencies`, `npm view <pkg> 'time[<v>]'`), [Motion LICENSE.md at v14.6.0](https://raw.githubusercontent.com/motiondivision/motion/v14.6.0/LICENSE.md), [Lenis LICENSE at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/LICENSE), [motion.dev/llms.txt](https://motion.dev/llms.txt)
 - Related: ANIMLIB-002, ANIMLIB-003, OSS-002, OSS-007
 
@@ -95,7 +95,7 @@ On 2026-10-23 `gsap.com/standard-license`, the URL in the npm field and every fi
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [Motion: animate](https://motion.dev/docs/animate.md)
 - Related: ANIMLIB-005, ANIMLIB-014, WEBPERF-002, NG-004, ANIMLIB-019
 
@@ -122,7 +122,7 @@ Tested 2026-10-23, `@angular/build@22.2.4` with `@angular/core@22.2.3`, `motion@
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [GSAP `gsap-core.js` at 3.15.0](https://raw.githubusercontent.com/greensock/GSAP/3.15.0/src/gsap-core.js), [GSAP `ScrollTrigger.js` at 3.15.0](https://raw.githubusercontent.com/greensock/GSAP/3.15.0/src/ScrollTrigger.js), [Lenis `lenis.ts` at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/packages/core/src/lenis.ts), [Motion: scopeMotion](https://motion.dev/docs/scope-motion.md)
 - Related: ANIMLIB-005, ANIMLIB-006, ANIMLIB-010, NG-008, ANIMLIB-019
 
@@ -147,7 +147,7 @@ Tested 2026-10-23, Angular 22.2.3 SSR with `RenderMode.Prerender`, Node 24.21.0,
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Motion: animate](https://motion.dev/docs/animate.md), [Motion: scopeMotion](https://motion.dev/docs/scope-motion.md), [Motion: inView](https://motion.dev/docs/inview.md), [Motion: scroll](https://motion.dev/docs/scroll.md), [Motion: performance](https://motion.dev/docs/performance.md), [motion.dev/llms-full.txt](https://motion.dev/llms-full.txt), local test
 - Related: ANIMLIB-003, ANIMLIB-004, ANIMLIB-007, ANIM-005, ANIM-008, NG-004
 
@@ -184,7 +184,7 @@ Tested 2026-10-23, zoneless Angular 22.2.3, `motion@14.6.0`, Chromium 156, with 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [GSAP: gsap.matchMedia()](https://gsap.com/docs/v3/GSAP/gsap.matchMedia().md), [GSAP: gsap.context()](https://gsap.com/docs/v3/GSAP/gsap.context().md), [GSAP: JS frameworks](https://gsap.com/resources/frameworks.md), [GSAP: ScrollTrigger mistakes](https://gsap.com/resources/st-mistakes.md), local test
 - Related: ANIMLIB-004, ANIMLIB-007, ANIMLIB-008, ANIMLIB-011, ANIM-008, ANIM-009, WEBPERF-003
 
@@ -225,7 +225,7 @@ Tested 2026-10-23, zoneless Angular 22.2.3, `gsap@3.15.0`, Chromium 156: a `gsap
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Motion: MotionConfig](https://motion.dev/docs/react-motion-config.md), [Motion: accessibility](https://motion.dev/docs/react-accessibility.md), [Motion `effects.ts` at v14.6.0](https://raw.githubusercontent.com/motiondivision/motion/v14.6.0/packages/motion-dom/src/animation/animate/effects.ts), [GSAP: gsap.matchMedia()](https://gsap.com/docs/v3/GSAP/gsap.matchMedia().md), [Lenis README at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/README.md), [Lenis v1.3.26 release](https://github.com/darkroomengineering/lenis/releases/tag/v1.3.26), local test
 - Related: ACCESS-014, ANIM-010, ANIM-011, ANIMLIB-005, ANIMLIB-006, ANIMLIB-008
 
@@ -246,7 +246,7 @@ Tested 2026-10-23, Chromium 156 with Playwright `reducedMotion: 'reduce'`, a 2-s
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [GSAP: Accessible Animation](https://gsap.com/resources/a11y.md), [GSAP: gsap.matchMedia()](https://gsap.com/docs/v3/GSAP/gsap.matchMedia().md), [Understanding 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html)
 - Related: ACCESS-014, ANIM-011, ANIMLIB-006, ANIMLIB-007
 
@@ -266,7 +266,7 @@ So in a reduce branch: play once and stop (`repeat: 0`), or show the end state, 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [Lenis README at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/README.md), [Lenis `lenis.ts` at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/packages/core/src/lenis.ts)
 - Related: ANIMLIB-015, ANIMLIB-010, ACCESS-012
 
@@ -320,7 +320,7 @@ Tested 2026-10-23, `lenis@1.3.27`, Angular 22.2.3, Chromium 156 and WebKit 27.2.
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [GSAP: FOUC](https://gsap.com/resources/fouc.md), [GSAP: immediateRender](https://gsap.com/resources/immediaterender.md), [GSAP: ScrollTrigger](https://gsap.com/docs/v3/Plugins/ScrollTrigger.md), [Motion: React scroll animations](https://motion.dev/docs/react-scroll-animations.md), [Motion: motion component](https://motion.dev/docs/react-motion-component.md), [MDN: `visibility`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/visibility), local test
 - Related: ANIMLIB-005, ANIMLIB-006, ANIMLIB-007, ANIM-005, ACCESS-014
 
@@ -344,7 +344,7 @@ Tested 2026-10-23, Angular 22.2.3 SSR, `gsap@3.15.0`, `motion@14.6.0`, Chromium 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [greensock/gsap-skills at aed9cfd](https://github.com/greensock/gsap-skills/tree/aed9cfd3277740755f6bfc1155c7aa645403b760), [motiondivision/ai-kit at 78a83b1](https://github.com/motiondivision/ai-kit/tree/78a83b1485fa70dab9037c480de0c7cf53930df7), [Motion: AI Kit install](https://motion.dev/docs/ai-kit-install.md), `motion-ai@14.2.0` and `add-mcp@2.4.1` tarballs
 - Related: ANIMLIB-016, ANIMLIB-008, ANIMLIB-013, SKILL-041, REPO-039, SKILL-069
 
@@ -406,7 +406,7 @@ Whatever you pick, animate `transform` and `opacity` only: GSAP and Motion's `mo
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [darkroomengineering/lenis#107](https://github.com/darkroomengineering/lenis/issues/107) (maintainer comment, 2023-02-03; open on 2026-10-23; the test, not the issue, shows it holds in 1.3.27), [Lenis `lenis.ts` at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/packages/core/src/lenis.ts), [Lenis README at v1.3.27](https://raw.githubusercontent.com/darkroomengineering/lenis/v1.3.27/README.md)
 - Related: ANIMLIB-009, ANIMLIB-010, ANIMLIB-014
 
@@ -430,7 +430,7 @@ Tested 2026-10-23, `lenis@1.3.27`, Angular 22.2.3 SSR, Playwright 1.64.1: Chromi
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [motion.dev/llms.txt](https://motion.dev/llms.txt), [gsap.com/llms.txt](https://gsap.com/llms.txt), [lenis.dev/llms.txt](https://lenis.dev/llms.txt), [Motion: AI Kit install](https://motion.dev/docs/ai-kit-install.md)
 - Related: ANIMLIB-012, ANIMLIB-010, SKILL-066, SKILL-067, SKILL-068, ANIMLIB-018
 
@@ -467,7 +467,7 @@ Developing Taste gives no rules; the toast, drawer and clip-path techniques are 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [three.js docs/llms.txt at r187](https://github.com/mrdoob/three.js/blob/r187/docs/llms.txt), [three.js package.json at r187](https://github.com/mrdoob/three.js/blob/r187/package.json)
 - Related: ANIMLIB-016, ANIMLIB-019, VIZ-013
 
@@ -485,7 +485,7 @@ Unlike the vendors in ANIMLIB-016, three.js keeps its agent docs in the repo, so
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [three on npm](https://www.npmjs.com/package/three), [angular-three on npm](https://www.npmjs.com/package/angular-three), [angular-threejs/angular-three](https://github.com/angular-threejs/angular-three)
 - Related: ANIMLIB-004, ANIMLIB-003, ANIMLIB-018, VIZ-010, ANIM-010
 

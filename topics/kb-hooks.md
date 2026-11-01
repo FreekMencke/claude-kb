@@ -68,7 +68,7 @@ Prefix: HOOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live th
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: lifecycle, matcher patterns, exit code 2 per event](https://code.claude.com/docs/en/hooks)
 - Related: HOOK-002, HOOK-004, ORCH-019
 
@@ -96,7 +96,7 @@ Key input fields: `PreToolUse` gets `tool_name`, `tool_input`, `tool_use_id`; `P
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: lifecycle, matcher patterns, exit code 2 per event](https://code.claude.com/docs/en/hooks), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-001, ORCH-019
 
@@ -124,7 +124,7 @@ Versions from the CHANGELOG: `SubagentStart` 2.0.43, `PermissionRequest` 2.0.45,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: common input fields, reference scripts by path](https://code.claude.com/docs/en/hooks)
 - Related: HOOK-008, HOOK-036
 
@@ -146,7 +146,7 @@ Environment:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: exit code output](https://code.claude.com/docs/en/hooks#exit-code-output), [examples/hooks/bash_command_validator_example.py](https://github.com/anthropics/claude-code/blob/main/examples/hooks/bash_command_validator_example.py)
 - Related: HOOK-005, HOOK-013, HOOK-024
 
@@ -156,7 +156,7 @@ Environment:
 | Invalid or schema-failing JSON | Non-blocking error | Blocks; stderr is the reason | Non-blocking error |
 | Plain text or nothing | Success | Blocks; stderr is the reason | Non-blocking error |
 
-- **Exit 1 doesn't block.** "Without valid JSON on stdout, Claude Code treats exit code 1 as a non-blocking error… If your hook is meant to enforce a policy, use `exit 2`." The official validator example's comments still describe exit 1 as user-only feedback, consistent with this.
+- **Exit 1 doesn't block.** "Exit code 1 without valid JSON output is a non-blocking error unless the hook is one whose failure blocks the action, even though 1 is the conventional Unix failure code. If your hook is meant to enforce a policy, use `exit 2`." The official validator example's comments still describe exit 1 as user-only feedback, consistent with this.
 - **Exit 0 with no output on PreToolUse is "no decision", not approval**: the normal permission flow continues.
 - **Stdout:** for most events it goes to the debug log only. On `UserPromptSubmit`, `UserPromptExpansion`, `SessionStart` and `PostModelSwitch` plain stdout becomes context Claude sees.
 - **Stderr:** Claude never sees it on exit 0. On exit 2 it is the block reason, shown as `PreToolUse:Bash hook error: [<command>]: <stderr>`. A non-blocking error shows the first stderr line in the transcript.
@@ -167,7 +167,7 @@ Environment:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: JSON output, decision control](https://code.claude.com/docs/en/hooks#json-output), [Claude Code CHANGELOG 2.1.89](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-004, HOOK-006, HOOK-007, TOK-042
 
@@ -189,27 +189,27 @@ Deprecated: top-level `decision: "approve"/"block"` on PreToolUse (maps to allow
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: PreToolUse decision control](https://code.claude.com/docs/en/hooks#pretooluse-decision-control), [Hooks guide: hooks and permission modes](https://code.claude.com/docs/en/hooks-guide#hooks-and-permission-modes), [Permissions: extend permissions with hooks](https://code.claude.com/docs/en/permissions#extend-permissions-with-hooks)
 - Related: HOOK-014, HOOK-026, REPO-034, TOK-042
 
 `permissionDecision` values:
 - `"deny"`: blocks; `permissionDecisionReason` goes to Claude. Works "even in `bypassPermissions` mode or with `--dangerously-skip-permissions`", because PreToolUse fires before any permission-mode check.
 - `"ask"`: forces a prompt, labelled `[settings]`, `[plugin:<name>]` or `[skill]`. In auto mode the classifier can still deny but can't approve silently.
-- `"allow"`: skips the prompt, but "Deny and ask rules are still evaluated regardless of what the hook returns". It can't skip prompts for network-path reads or `requiresUserInteraction` MCP tools; `AskUserQuestion` and `ExitPlanMode` need `updatedInput` with it.
+- `"allow"`: skips the prompt, but "Claude Code evaluates deny and ask rules regardless of what a PreToolUse hook returns". It can't skip prompts for network-path reads or `requiresUserInteraction` MCP tools; `AskUserQuestion` and `ExitPlanMode` need `updatedInput` with it.
 - `"defer"`: only in `-p` with a single tool call; the run exits with `stop_reason: "tool_deferred"` for a calling app to resume.
 
 Rules:
 - An exit-2 block beats allow rules. The documented recipe: allow `"Bash"` broadly and block a few commands with a hook.
 - A hook can tighten permission rules but not loosen them.
-- `updatedInput` replaces the entire input; permission rules are evaluated against the rewritten input (since v2.1.290 all safety checks are). Several hooks returning `updatedInput` race: "the last one to finish takes effect".
-- An installed mod's `tool.check` can approve a call a non-managed PreToolUse hook blocked (HOOK-035).
+- `updatedInput` replaces the entire input; permission rules are evaluated against the rewritten input (since v2.1.290 all safety checks are). Several hooks returning `updatedInput` aren't merged and which rewrite runs isn't guaranteed: "Claude Code doesn't merge the rewrites or guarantee which rewrite the tool runs with".
+- An installed mod's `tool.check` can approve a call a `PreToolUse` hook blocked, unless managed settings or a Team or Enterprise `/login` is in force (HOOK-035).
 
 ## [HOOK-007] `additionalContext`: where it lands and how to word it
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: add context for Claude](https://code.claude.com/docs/en/hooks#add-context-for-claude)
 - Related: HOOK-005, HOOK-008, HOOK-029, TOK-065
 
@@ -232,7 +232,7 @@ How to write it:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: SessionStart](https://code.claude.com/docs/en/hooks#sessionstart)
 - Related: HOOK-007, HOOK-029, HOOK-003
 
@@ -253,7 +253,7 @@ Timing: interactive sessions run SessionStart hooks in the background so you can
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: hook handler fields, prompt-based hooks](https://code.claude.com/docs/en/hooks#hook-handler-fields), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-010, HOOK-011, REPO-025, SKILL-023
 
@@ -324,7 +324,7 @@ Use async for slow feedback that shouldn't stall the turn: a test suite after an
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: common fields, timeouts](https://code.claude.com/docs/en/hooks#common-fields), [Hooks guide: limitations](https://code.claude.com/docs/en/hooks-guide#limitations), [anthropics/claude-code#85250](https://github.com/anthropics/claude-code/issues/85250), [Hooks reference: hooks that start a background process](https://code.claude.com/docs/en/hooks), [Claude Code CHANGELOG 2.1.285](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-011, HOOK-013, HOOK-033
 
@@ -347,7 +347,7 @@ Set an explicit, tight `timeout` on anything on a hot path; the 10-minute defaul
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: block the action when a hook fails](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails), [Claude Code CHANGELOG 2.1.295](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-004, HOOK-012, HOOK-024
 
@@ -372,14 +372,14 @@ When to use it: a hook that is the **only** guard for something that matters (se
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: hook handler fields](https://code.claude.com/docs/en/hooks#hook-handler-fields), [Hooks guide: combine results from multiple hooks](https://code.claude.com/docs/en/hooks-guide#combine-results-from-multiple-hooks)
 - Related: HOOK-006, HOOK-016, REPO-006
 
 - **Parallel.** "its matching hooks run in parallel". Every hook "runs to completion before Claude Code merges the results"; one hook's deny doesn't stop a sibling's side effects (a logger still logs).
 - **Dedup.** The same handler in several settings files runs once. "A plugin's or skill's copy of the same handler stays separate."
 - **Merging.** PreToolUse: most restrictive wins, `deny` > `defer` > `ask` > `allow`. `additionalContext` from every hook is delivered.
-- **`updatedInput` races.** With several rewriting hooks "the last one to finish takes effect… non-deterministic. Avoid having more than one hook modify the same tool's input."
+- **`updatedInput` isn't merged.** With several rewriting hooks, "Claude Code doesn't merge the rewrites or guarantee which rewrite the tool runs with. Avoid having more than one hook rewrite the same tool's input."
 - **No ordering.** There is no priority or sequence field. If step B needs step A's result, put both in one script.
 - **Working directory.** Handlers run in the current directory; if it was deleted, Claude Code falls back to the start directory, project root, home, then temp, and logs a warning.
 
@@ -416,7 +416,7 @@ Confidence note: behaviour is official-docs; the timings are our measurement.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: hook locations, configuration](https://code.claude.com/docs/en/hooks#hook-locations), [Plugins reference: hooks](https://code.claude.com/docs/en/plugins-reference), [Permissions: working directories](https://code.claude.com/docs/en/permissions), [Settings](https://code.claude.com/docs/en/settings)
 - Related: REPO-005, REPO-006, REPO-040, HOOK-020
 
@@ -446,7 +446,7 @@ Gotchas:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: hook locations, workspace trust](https://code.claude.com/docs/en/hooks), [Settings: settings in cloud sessions](https://code.claude.com/docs/en/settings), [Desktop: shared configuration](https://code.claude.com/docs/en/desktop), [claude-code-action configuration](https://github.com/anthropics/claude-code-action/blob/main/docs/configuration.md), [claude-code-action security](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)
 - Related: HOOK-025, REPO-007, REPO-028
 
@@ -469,7 +469,7 @@ Consequences:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: matcher patterns, match MCP tools](https://code.claude.com/docs/en/hooks#matcher-patterns), [Hooks guide: hook not firing](https://code.claude.com/docs/en/hooks-guide#hook-not-firing), [Debug your config](https://code.claude.com/docs/en/debug-your-config)
 - Related: HOOK-019, HOOK-001, HOOK-024
 
@@ -492,7 +492,7 @@ Consequences:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: common fields, how `if` patterns match Bash commands](https://code.claude.com/docs/en/hooks#bash-if-matching), [Permissions: Bash rule limits](https://code.claude.com/docs/en/permissions), [Claude Code CHANGELOG 2.1.85](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-018, HOOK-015, HOOK-036, REPO-034
 
@@ -512,7 +512,7 @@ Pattern: filter broadly with `if` (`Bash(git *)`) and do the exact parsing in th
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: hooks in skills and agents](https://code.claude.com/docs/en/hooks#hooks-in-skills-and-agents), [Subagents: hooks in frontmatter](https://code.claude.com/docs/en/sub-agents), [Claude Code CHANGELOG 2.1.0](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: REPO-005, REPO-007, REPO-033, SKILL-023
 
@@ -542,7 +542,7 @@ Uses:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference: the /hooks menu, disable or remove hooks](https://code.claude.com/docs/en/hooks#the-%2Fhooks-menu), [Settings: when edits take effect](https://code.claude.com/docs/en/settings), [Settings reference: disableAllHooks, allowManagedHooksOnly](https://code.claude.com/docs/en/settings-reference)
 - Related: HOOK-016, HOOK-022, REPO-006
 
@@ -573,7 +573,7 @@ Uses:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks guide: hook error in output](https://code.claude.com/docs/en/hooks-guide#hook-error-in-output), [Hooks reference: hook events](https://code.claude.com/docs/en/hooks#hook-events)
 - Related: HOOK-022, HOOK-024
 
@@ -597,7 +597,7 @@ For a shared hook, keep the sample inputs next to the script and run them in CI.
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks guide: limitations and troubleshooting](https://code.claude.com/docs/en/hooks-guide#limitations-and-troubleshooting), [anthropics/claude-code#75081](https://github.com/anthropics/claude-code/issues/75081), [anthropics/claude-code#21460](https://github.com/anthropics/claude-code/issues/21460)
 - Related: HOOK-004, HOOK-013, HOOK-018, HOOK-022
 
@@ -657,7 +657,7 @@ Do:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks guide: auto-format code after edits](https://code.claude.com/docs/en/hooks-guide#auto-format-code-after-edits), [Hooks reference: run tests after file changes](https://code.claude.com/docs/en/hooks#run-tests-after-file-changes)
 - Related: HOOK-011, HOOK-036, REPO-044
 
@@ -681,7 +681,7 @@ Make it robust:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks guide: block edits to protected files](https://code.claude.com/docs/en/hooks-guide#block-edits-to-protected-files), [Hooks reference: how a hook resolves](https://code.claude.com/docs/en/hooks#how-a-hook-resolves), [examples/hooks/bash_command_validator_example.py](https://github.com/anthropics/claude-code/blob/main/examples/hooks/bash_command_validator_example.py)
 - Related: HOOK-026, HOOK-019, HOOK-032, REPO-033
 
@@ -729,7 +729,7 @@ Rules:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks guide: get notified when Claude needs input](https://code.claude.com/docs/en/hooks-guide#get-notified-when-claude-needs-input), [Hooks reference: emit terminal notifications, Notification](https://code.claude.com/docs/en/hooks#emit-terminal-notifications)
 - Related: HOOK-031, HOOK-017
 
@@ -798,7 +798,7 @@ Stale, skip: johnlindquist/claude-hooks (last push 2025-08-08), decider/claude-h
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks guide: limitations](https://code.claude.com/docs/en/hooks-guide#limitations), [Hooks reference](https://code.claude.com/docs/en/hooks), [anthropics/claude-code#85250](https://github.com/anthropics/claude-code/issues/85250)
 - Related: HOOK-024, HOOK-015, HOOK-026, SKILL-029
 
@@ -820,7 +820,7 @@ Stale, skip: johnlindquist/claude-hooks (last push 2025-08-08), decider/claude-h
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Cursor hooks](https://cursor.com/docs/hooks), [Codex hooks](https://developers.openai.com/codex/hooks), [Codex advanced config](https://developers.openai.com/codex/config-advanced), [Gemini CLI hooks](https://geminicli.com/docs/hooks/), [GitHub Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference)
 - Related: HOOK-013, HOOK-031, TOK-085
 
@@ -839,14 +839,14 @@ Confidence note: read from each vendor's docs on 2026-10-12; defaults there may 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks reference (intro)](https://code.claude.com/docs/en/hooks), [Permissions: extend permissions with hooks](https://code.claude.com/docs/en/permissions#extend-permissions-with-hooks), [Mods overview](https://code.claude.com/docs/en/plugins/mods/overview)
 - Related: HOOK-006, HOOK-016
 
 A plugin can also register hooks as **JavaScript functions** that Claude Code calls in its own process; such a plugin is a **mod**. Mods can draw in the interface (panes, status bands) as well as act on events (`tool.check`, `prompt.submit`, `agent.spawn`, …). The settings hooks in this file "keep working alongside mods".
 
 What matters for hook authors:
-- A mod's `tool.check` answers **after** permission rules and PreToolUse hooks, and "can approve a call that your `PreToolUse` hook blocked, unless the hook is in managed settings".
+- A mod's `tool.check` answers **after** permission rules and PreToolUse hooks, and with managed settings or a Team or Enterprise `/login` as the session's credential "A call that a `PreToolUse` hook blocked stays blocked, whichever settings file the hook comes from." With neither, "the mod can approve a call that a deny rule refuses or a `PreToolUse` hook blocked."
 - `disableAllHooks` also disables mods.
 - Most hook-related CHANGELOG lines from 2.1.288 to 2.1.296 are about mods, not settings hooks; check which kind an entry means.
 

@@ -45,7 +45,7 @@ Prefix: TS. Researched 2026-10-17 against the TypeScript team's announcements, t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm registry: typescript](https://www.npmjs.com/package/typescript), [npm registry: @typescript/native-preview](https://www.npmjs.com/package/@typescript/native-preview), [npm registry: @typescript/typescript6](https://www.npmjs.com/package/@typescript/typescript6), [Announcing TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/), [Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)
 - Related: TS-014, TS-015, TS-006
 
@@ -70,7 +70,7 @@ On 2026-10-17 `typescript@latest` is 7.0.2 and the newest 6.0 is 6.0.3. Read wit
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 6.0: Simple Default Changes](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/), [6.0 Migration Guide (microsoft/TypeScript#62508)](https://github.com/microsoft/TypeScript/issues/62508), [Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)
 - Related: TS-003, TS-004, TS-005
 
@@ -94,7 +94,7 @@ Tested 2026-10-17, typescript@6.0.3 and typescript@7.0.2, Node 24.21.0: a tsconf
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 6.0: types now defaults to \[\]](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/), [6.0 Migration Guide (microsoft/TypeScript#62508)](https://github.com/microsoft/TypeScript/issues/62508)
 - Related: TS-002, TS-004
 
@@ -122,7 +122,7 @@ Tested 2026-10-17, typescript@6.0.3 with @types/node@24 installed, Node 24.21.0:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 6.0: Breaking Changes and Deprecations](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/), [6.0 Migration Guide (microsoft/TypeScript#62508)](https://github.com/microsoft/TypeScript/issues/62508), [ts5to6](https://github.com/andrewbranch/ts5to6)
 - Related: TS-005, TS-002
 
@@ -144,7 +144,7 @@ Tested 2026-10-17, typescript@6.0.3, Node 24.21.0: `target: es5`, `moduleResolut
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 7.0: Updates Since 5.x](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [typescript-go CHANGES.md](https://github.com/microsoft/typescript-go/blob/main/CHANGES.md), [Announcing TypeScript 6.0: The --stableTypeOrdering Flag](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/)
 - Related: TS-004, TS-002, TS-006
 
@@ -164,7 +164,7 @@ Tested 2026-10-17, typescript@7.0.2, Node 24.21.0: the TS-004 tsconfig with `"ig
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [Announcing TypeScript 7.0 Beta](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-beta/), [Announcing TypeScript 7.0 RC](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0-rc/), [typescript-go README](https://github.com/microsoft/typescript-go/blob/main/README.md)
 - Related: TS-007, TS-008, TS-012, TS-001
 
@@ -185,7 +185,7 @@ Tested 2026-10-17, typescript@7.0.2, Node 24.21.0: an LSP `initialize` request t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 7.0: Custom Scaling](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)
 - Related: TS-006, TS-010
 
@@ -203,7 +203,7 @@ Tested 2026-10-17, Node 24.21.0, 8 cores, WSL: `tsc -p <tsconfig> --noEmit --inc
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 7.0: Running Side-by-Side with TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [TypeScript 7.1 Iteration Plan (microsoft/TypeScript#63703)](https://github.com/microsoft/TypeScript/issues/63703), [typescript-go CHANGES.md](https://github.com/microsoft/typescript-go/blob/main/CHANGES.md), [typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)
 - Related: TS-009, TS-010, TS-014
 
@@ -244,7 +244,7 @@ Tested 2026-10-17, Node 24.21.0, forced onto typescript@7.0.2: `ngc` (22.2.3) fa
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Announcing TypeScript 7.0: Running Side-by-Side with TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [@typescript/typescript6 on npm](https://www.npmjs.com/package/@typescript/typescript6), [Progress on TypeScript 7 (December 2025)](https://devblogs.microsoft.com/typescript/progress-on-typescript-7-december-2025/)
 - Related: TS-008, TS-009, TS-012, TS-007
 
@@ -270,7 +270,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0: with the two aliases, `tsc --versi
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm registry: typescript](https://www.npmjs.com/package/typescript), [Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [typescript-eslint#12518](https://github.com/typescript-eslint/typescript-eslint/issues/12518), [nest-cli#3477](https://github.com/nestjs/nest-cli/issues/3477)
 - Related: TS-009, TS-015, TS-010, JSUP-002
 
@@ -308,7 +308,7 @@ Not tested: typescript-language-server itself (community code) against these ins
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [TSConfig: erasableSyntaxOnly](https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly), [TypeScript 5.8 release notes](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html), [TypeScript 5.7 release notes](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-7.html), [TypeScript 5.0 release notes](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html)
 - Related: TS-002, TS-008
 
@@ -356,7 +356,7 @@ TypeScript 6.0 was the last JavaScript-based release: "we do not intend to relea
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm registry: typescript](https://www.npmjs.com/package/typescript), [TypeScript blog](https://devblogs.microsoft.com/typescript/), [TypeScript 7.1 Iteration Plan (microsoft/TypeScript#63703)](https://github.com/microsoft/TypeScript/issues/63703), [microsoft/TypeScript releases](https://github.com/microsoft/TypeScript/releases), [Angular: version compatibility](https://angular.dev/reference/versions)
 - Related: TS-001, TS-011, TS-014, JSUP-001
 

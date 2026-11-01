@@ -157,7 +157,7 @@ Which to trust: a pie for one total with two to five parts and one share as the 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Government Analysis Function: charts](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/), [Datawrapper: annotate tab](https://www.datawrapper.de/academy/annotate-tab), [Few: Save the Pies for Dessert](https://www.perceptualedge.com/articles/visual_business_intelligence/save_the_pies_for_dessert.pdf), [FT Visual Vocabulary README](https://raw.githubusercontent.com/Financial-Times/chart-doctor/main/visual-vocabulary/README.md), built-in `dataviz` skill (VIZ-024)
 - Related: VIZ-003, VIZ-014, VIZ-024
 
@@ -175,7 +175,7 @@ What this prevents: a chart readers must decode before they learn anything, and 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Datawrapper: colours](https://www.datawrapper.de/blog/colors), [Okabe and Ito: Color Universal Design](https://jfly.uni-koeln.de/color/), [ColorBrewer schemes](https://github.com/axismaps/colorbrewer), [d3-scale-chromatic at 3.1.0](https://github.com/d3/d3-scale-chromatic/tree/v3.1.0/src/categorical), [matplotlib colormaps (viridis)](https://bids.github.io/colormap/), [Nuñez, Anderton and Renslow 2018 (cividis)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0199239)
 - Related: DESIGN-016, VIZ-007, VIZ-024
 
@@ -199,7 +199,7 @@ Library defaults to override: Plot uses `observable10` for categories but `turbo
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Understanding 1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [Understanding 1.4.1](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html), [Chromium: simulating colour vision deficiencies](https://developer.chrome.com/docs/chromium/cvd), [Nuñez, Anderton and Renslow 2018](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0199239), built-in `dataviz` skill (VIZ-024)
 - Related: VIZ-006, VIZ-015, VIZ-024, ACCESS-014, DESIGN-016
 
@@ -219,7 +219,7 @@ This prevents series that colour-blind readers, print or a dark theme can't tell
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: npm registry (`npm view <pkg> version license peerDependencies`, `npm view <pkg> time --json`), [Plot: accessibility at v0.6.17](https://raw.githubusercontent.com/observablehq/plot/v0.6.17/docs/features/accessibility.md), [ECharts: aria](https://echarts.apache.org/handbook/en/best-practices/aria/), [Chart.js: accessibility](https://www.chartjs.org/docs/latest/general/accessibility.html), [AG Charts: Community vs Enterprise](https://www.ag-grid.com/charts/angular/community-vs-enterprise/), [ApexCharts licence](https://raw.githubusercontent.com/apexcharts/apexcharts.js/main/LICENSE.md), [Highcharts licence](https://www.highcharts.com/license)
 - Related: VIZ-009, VIZ-010, VIZ-011, VIZ-012, VIZ-029
 
@@ -248,7 +248,7 @@ d3, Plot and uPlot had no release in the 18 months to 2026-10-23; stable isn't a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [ngx-echarts README at v22.0.0](https://raw.githubusercontent.com/xieziyu/ngx-echarts/v22.0.0/README.md), [Angular: `@defer`](https://angular.dev/guide/templates/defer)
 - Related: VIZ-008, VIZ-010, VIZ-012, ANIMLIB-003, WEBPERF-002
 
@@ -279,7 +279,7 @@ Tested 2026-10-23, `@angular/build@22.2.4`, `@angular/core@22.2.3`, Node 24.21.0
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [ECharts: server-side rendering](https://echarts.apache.org/handbook/en/how-to/cross-platform/server/), [Observable Plot: getting started at v0.6.17](https://raw.githubusercontent.com/observablehq/plot/v0.6.17/docs/getting-started.md), [Angular: `@defer`](https://angular.dev/guide/templates/defer)
 - Related: VIZ-009, VIZ-011, VIZ-019, ANIMLIB-004, ANIM-005
 
@@ -298,7 +298,7 @@ Prerender only (`RenderMode.Prerender`), first render only; request-time SSR and
 
 The build exits 0 despite the two errors, so read the prerender log. Plot rendered on the server was drawn a second time on hydration, with no console error: a component that renders on the server must skip the client render (that guard wasn't tested). Angular's server DOM has no `replaceChildren`; use `appendChild`.
 
-ECharts documents this path: "server-side SVG rendering should be preferred".
+ECharts documents this path: "the server-side SVG rendering solution should be preferred".
 
 `@defer (on viewport)` with a text placeholder fixed ngx-echarts (AG Charts under `@defer` wasn't built): the server renders the placeholder (which can carry the takeaway, VIZ-014), and the library loads only in the browser.
 
@@ -308,7 +308,7 @@ Tested 2026-10-23, Angular 22.2.3 with `RenderMode.Prerender`, Node 24.21.0, the
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [ECharts: aria option](https://echarts.apache.org/en/option.html#aria), [AG Charts: accessibility](https://www.ag-grid.com/charts/angular/accessibility/), [Chart.js: accessibility](https://www.chartjs.org/docs/latest/general/accessibility.html)
 - Related: VIZ-010, VIZ-014, VIZ-015, ACCESS-008
 
@@ -332,7 +332,7 @@ Tested 2026-10-23, Playwright 1.64.1, Chromium 156.0.8078.4: `locator('app-root'
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local tests (VIZ-009 to VIZ-011, VIZ-027), npm registry, [Chart.js: performance](https://www.chartjs.org/docs/latest/general/performance.html), [ECharts: canvas vs SVG](https://echarts.apache.org/handbook/en/best-practices/canvas-vs-svg/)
 - Related: VIZ-008, VIZ-009, VIZ-010, VIZ-011, VIZ-013, VIZ-029, ANIMLIB-014
 
@@ -363,7 +363,7 @@ Whatever the choice: a takeaway and a table (VIZ-014), reduced motion passed in 
 |---|---|---|
 | up to about 1,000 | SVG: accessible DOM, crisp zoom, prints | ECharts: "For larger amounts of data (>1k is an experience value), canvas renderer is always recommended" |
 | thousands to hundreds of thousands | Canvas | uPlot: "150,000 data points in 90ms" from cold (author's 2023 benchmark) |
-| above that, or many series | WebGL | Highcharts boost: `boostThreshold` "5000" points per series, `boost.seriesThreshold` 50 series; Plotly `scattergl` |
+| above that, or many series | WebGL | Highcharts boost: `boostThreshold` "5,000 by default" points per series, `boost.seriesThreshold` 50 series; Plotly `scattergl` |
 
 Each threshold is a vendor's rule of thumb, not a measurement on your data: profile INP (WEBPERF-001, WEBPERF-003).
 
@@ -378,7 +378,7 @@ A Web Worker helps only canvas: Chart.js can render through `transferControlToOf
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [W3C WAI: Complex images](https://www.w3.org/WAI/tutorials/images/complex/), [Understanding 1.1.1](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html), [Government Analysis Function: charts](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/), [GOV.UK: text descriptions for data visualisations](https://accessibility.blog.gov.uk/2023/04/13/text-descriptions-for-data-visualisations/), [Graphics ARIA 1.0](https://www.w3.org/TR/graphics-aria-1.0/), [Chartability](https://chartability.github.io/POUR-CAF/)
 - Related: VIZ-005, VIZ-011, VIZ-015, VIZ-016, ACCESS-009
 
@@ -397,7 +397,7 @@ Graphics ARIA (`graphics-document`, `graphics-symbol`) is a W3C Recommendation o
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Understanding 1.4.13](https://www.w3.org/WAI/WCAG22/Understanding/content-on-hover-or-focus.html), [Understanding 1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [Understanding 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html), [Understanding 4.1.2](https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html), [Chartability](https://chartability.github.io/POUR-CAF/), [Highcharts: accessibility module](https://www.highcharts.com/docs/accessibility/accessibility-module)
 - Related: VIZ-007, VIZ-011, VIZ-014, VIZ-028, ACCESS-001
 
@@ -425,7 +425,7 @@ A practical shape: one Tab stop per chart, arrow keys between points, the point'
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [APG: sortable table](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/), [ARIA 1.2: aria-sort](https://www.w3.org/TR/wai-aria-1.2/#aria-sort), [GOV.UK Design System: table](https://design-system.service.gov.uk/components/table/), [Datawrapper: tables](https://www.datawrapper.de/blog/guide-what-to-consider-when-creating-tables), [Angular Material sort at 22.2.4](https://raw.githubusercontent.com/angular/components/v22.2.4/src/material/sort/sort.md)
 - Related: VIZ-014, VIZ-017, VIZ-021, DESIGN-034, UIPAT-012, UIPAT-015
 
@@ -466,7 +466,7 @@ At phone width, scroll the table in its own container rather than restacking cel
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Government Analysis Function: charts](https://analysisfunction.civilservice.gov.uk/policy-store/data-visualisation-charts/), [Chart.js: line chart](https://www.chartjs.org/docs/latest/charts/line.html), built-in `dataviz` skill, `references/anti-patterns.md` (VIZ-024)
 - Related: UIPAT-001, UIPAT-003, UIPAT-004, UIPAT-005, VIZ-014
 
@@ -483,7 +483,7 @@ Only what differs from UIPAT-001 to UIPAT-005. The Analysis Function covers gaps
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [GitHub Docs: creating diagrams](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams), [Mermaid: XY chart](https://mermaid.js.org/syntax/xyChart.html), [Mermaid: pie](https://mermaid.js.org/syntax/pie.html), [caniemail: SVG images](https://www.caniemail.com/features/image-svg/), [caniemail: inline SVG](https://www.caniemail.com/features/html-svg/), [ECharts: server-side rendering](https://echarts.apache.org/handbook/en/how-to/cross-platform/server/)
 - Related: VIZ-010, OG-002, OG-005, OG-009
 
@@ -496,7 +496,7 @@ Only what differs from UIPAT-001 to UIPAT-005. The Analysis Function covers gaps
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [MDN: Object.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/groupBy), [webstatus.dev: array-group](https://api.webstatus.dev/v1/features/array-group), [d3-array README at v3.2.4](https://raw.githubusercontent.com/d3/d3-array/v3.2.4/README.md), [Arquero README at v8.0.3](https://raw.githubusercontent.com/uwdata/arquero/v8.0.3/README.md), [Arquero issue #361](https://github.com/uwdata/arquero/issues/361), [MDN: ZonedDateTime.startOfDay](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/ZonedDateTime/startOfDay), [Lighthouse: avoid enormous network payloads](https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight)
 - Related: VIZ-021, VIZ-023, NODE-011, LAMBDA-003, CSS-002
 
@@ -514,7 +514,7 @@ Tested 2026-10-23, Node 24.21.0, `d3-array@3.2.4`: `Object.groupBy([1,2,3,4], n 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [MDN: Intl.NumberFormat constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat), [MDN: Intl.RelativeTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/RelativeTimeFormat), [MDN: Intl.DateTimeFormat constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat), [d3-format](https://d3js.org/d3-format)
 - Related: VIZ-016, VIZ-020, DESIGN-034, NODE-011
 
@@ -540,7 +540,7 @@ Tested 2026-10-23, Node 24.21.0, `d3-format@3.1.2`.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.txt), [Papa Parse docs](https://www.papaparse.com/docs), [Papa Parse source at 5.7.0](https://raw.githubusercontent.com/mholt/PapaParse/5.7.0/papaparse.js), [csv-parse: bom option](https://csv.js.org/parse/options/bom/), [DuckDB-WASM overview](https://duckdb.org/docs/stable/clients/wasm/overview), [Node: buffer constants](https://nodejs.org/api/buffer.html#bufferconstantsmax_string_length)
 - Related: VIZ-020, VIZ-023, SURF-015
 
@@ -566,13 +566,13 @@ Tested 2026-10-23, Node 24.21.0: Papa Parse on `"﻿a;b\n1;2"` with `header: tru
 - Type: recommendation
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Claude Code: costs](https://code.claude.com/docs/en/costs.md), [Claude Code: tools reference](https://code.claude.com/docs/en/tools-reference.md), [Claude API: code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md), [Claude API: glossary](https://platform.claude.com/docs/en/about-claude/glossary.md), [Claude API: reduce hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations.md), [DuckDB: SUMMARIZE](https://duckdb.org/docs/stable/guides/meta/summarize)
 - Related: TOK-040, TOK-042, TOK-043, VIZ-020, VIZ-024
 
 Turn rows into a chart or table with a tool that runs outside the context: `duckdb -c "SELECT country, sum(revenue) FROM 'data.csv' GROUP BY 1"`, `mlr --icsv --opprint stats1 -a sum -f revenue -g country`, `jq` for JSON, or a short Node script. Only the aggregate enters the conversation.
 
-Anthropic's docs say the same in general terms: the costs page shows a hook that preprocesses a 10,000-line log, "reducing context from tens of thousands of tokens to hundreds". The Read tool refuses a whole file over 256 KB and returns at most 25,000 tokens per call (TOK-040). On the API, the code execution tool runs pandas and matplotlib in a container with "5 GiB RAM" and no internet, for "Data analysis, file parsing, or visualization".
+Anthropic's docs say the same in general terms: the costs page shows a hook that preprocesses a 10,000-line log, "reducing context from tens of thousands of tokens to hundreds". The Read tool refuses a whole file over 256 KB and returns at most 25,000 tokens per call (TOK-040). On the API, the code execution tool runs pandas and matplotlib in a container with "5 GiB of RAM" and no internet, for "Data analysis, file parsing, or visualization".
 
 Measured: a 1,000-row, five-column CSV (33,916 bytes) cost about 24,900 input tokens to Read, about 1.4 bytes per token, against Anthropic's "approximately 3.5 English characters" per token on earlier models (newer models' tokenizer gives "approximately 30 percent more tokens"). Digits and commas tokenise worse than prose. A five-row aggregate costs under 100.
 
@@ -588,11 +588,11 @@ Tested 2026-10-23, v2.1.296, terminal, Haiku 5.5: `claude -p` with `--output-for
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Claude Code: commands](https://code.claude.com/docs/en/commands.md), [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), skill files read from the desktop app's bundled skills at 2.1.308
 - Related: VIZ-003, VIZ-006, VIZ-007, VIZ-025, SURF-015
 
-`/dataviz` is a bundled skill: "Design guidance for charts, graphs, and dashboards… validates the palette for colorblind safety and contrast with a bundled script". Added in 2.1.198 (2026-07-01), changed in 2.1.210, 2.1.216, 2.1.296 and 2.1.309 (2026-10-22, APCA added): re-read it before quoting its numbers.
+`/dataviz` is a bundled skill: "Design guidance for charts, graphs, and dashboards… validates the palette for colorblind safety and contrast with a bundled script". Added in 2.1.198 (2026-07-01), changed in 2.1.210, 2.1.216, 2.1.296, 2.1.309 (2026-10-22, APCA added) and 2.1.314 (full y-axis tick labels under 10,000; donut and pie requests answered with ranked bars or a segmented bar): re-read it before quoting its numbers.
 
 What it prescribes (2.1.308 files):
 - Form before colour; a single value is a stat tile, more than about 7 meaningful classes a table.
@@ -651,7 +651,7 @@ So (our reading): animate re-sorts, filters and rescales of the same marks. The 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: local test (below), [ECharts `globalDefault.js` at 6.1.0](https://raw.githubusercontent.com/apache/echarts/6.1.0/src/model/globalDefault.ts), [Chart.js: animations](https://www.chartjs.org/docs/latest/configuration/animations.html), [AG Charts: animation](https://www.ag-grid.com/charts/angular/animation/), [d3-transition at v3.0.1](https://raw.githubusercontent.com/d3/d3-transition/v3.0.1/src/selection/transition.js)
 - Related: VIZ-026, ANIMLIB-007, ANIM-010, ACCESS-014
 

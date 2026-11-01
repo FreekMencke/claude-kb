@@ -71,7 +71,7 @@ What the dates mean:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Retrieve data about Lambda Event Functions that use a deprecated runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-list-deprecated.html), [Understanding how Lambda manages runtime version updates](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html), [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
 - Related: LAMBDA-001, INFRA-003, INFRA-008
 
@@ -108,7 +108,7 @@ Tested 2026-10-17, AWS base images built 2026-10-15 (Node 22.23.3, 24.21.0, 26.1
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Define Lambda Event Function handler in Node.js](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html), [Using Node.js ES modules and top-level await in AWS Lambda](https://aws.amazon.com/blogs/compute/using-node-js-es-modules-and-top-level-await-in-aws-lambda/)
 - Related: LAMBDA-003, LAMBDA-007, NEST-014
 
@@ -124,7 +124,7 @@ Tested 2026-10-17, AWS base images built 2026-10-15 under `aws-lambda-rie`: a ca
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Deploy Node.js Lambda functions with .zip file archives](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html), [AWS SAM: building TypeScript with esbuild](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-build-typescript.html), [aws-cdk v2.273.0 `aws-lambda-nodejs/lib/bundling.ts`](https://github.com/aws/aws-cdk/blob/v2.273.0/packages/aws-cdk-lib/aws-lambda-nodejs/lib/bundling.ts), [Powertools for AWS Lambda (TypeScript) v2.36.0: Tracer](https://github.com/aws-powertools/powertools-lambda-typescript/blob/v2.36.0/docs/features/tracer.md), npm registry (`npm view esbuild dist-tags.latest`: 0.28.2)
 - Related: JSTOOL-016, JSTOOL-021, NEST-004, LAMBDA-003, LAMBDA-006
 
@@ -165,7 +165,7 @@ Tested 2026-10-17: `@aws-sdk/client-s3` in `/var/runtime/node_modules` of the `p
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Lambda execution environment lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html), [Improving startup performance with Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html), [AWS Lambda standardizes billing for INIT phase](https://aws.amazon.com/blogs/compute/aws-lambda-standardizes-billing-for-init-phase/), [Configure Lambda function memory](https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html), [Reduce Lambda cold start times: migrate to AWS SDK for JavaScript v3](https://aws.amazon.com/blogs/developer/reduce-lambda-cold-start-times-migrate-to-aws-sdk-for-javascript-v3/)
 - Related: LAMBDA-004, LAMBDA-005, LAMBDA-006, NEST-014, DOCKER-010
 
@@ -231,7 +231,7 @@ For a few fixed UTC jobs, a working rule needs no migration. Choose Scheduler fo
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Lambda: errors and retries with asynchronous invocation](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-error-handling.html), [Configuring asynchronous invocation](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-configuring.html), [Capturing records of asynchronous invocations](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html), [CloudFormation: `AWS::Lambda::EventInvokeConfig`](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-eventinvokeconfig.html), [Configure Lambda function timeout](https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html)
 - Related: INFRA-026, INFRA-027, LAMBDA-009
 

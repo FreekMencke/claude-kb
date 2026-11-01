@@ -88,7 +88,7 @@ Research basis:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Artifacts: compare alternatives, tune with interactive controls, draft a design canvas, availability](https://code.claude.com/docs/en/artifacts), [What's new, week 34](https://code.claude.com/docs/en/whats-new/2026-w34), [Desktop: auto-verify changes](https://code.claude.com/docs/en/desktop)
 - Related: DESIGN-002, DESIGN-007, SURF-006, SURF-008, SURF-016, FLOW-004, FLOW-014
 
@@ -110,11 +110,11 @@ Tested 2026-10-16, v2.1.296: a `claude -p` launched from a desktop session inher
 - Type: fact
 - Applies to: Claude Code, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design), local reading of the v2.1.296 CLI and its `DesignSync` tool description, [wmedia.es: /design-sync (community)](https://wmedia.es/en/tips/claude-code-design-sync-your-components)
 - Related: DESIGN-001, DESIGN-006, DESIGN-010, SURF-016
 
-A Design System artifact "captures your colors, typography, components, and layout patterns, so Claude applies them to every new design and deck", which includes `/design` canvases. Beta on Pro, Max, Team and Enterprise; on Enterprise it stays off "until an owner turns on Design systems". Make one from a chat (files, decks, logos, fonts: "works best for brand design systems") or with `/design-sync` "If your design system already exists as React components". An Owner can set an organization default.
+A Design System artifact "captures your colors, typography, components, and layout patterns, so Claude applies them to every new design and deck", which includes `/design` canvases. Beta on Pro, Max, Ultra, Team and Enterprise; on Enterprise it stays off "until an owner turns on Design systems". Make one from a chat (files, decks, logos, fonts: "works best for brand design systems") or with `/design-sync` "If your design system already exists as React components". An Owner can set an organization default.
 
 **`/design-sync`** keeps a local component library in sync with a design-system project, "incrementally, one component at a time, never as a wholesale replace". It diffs the remote files, then asks you to approve a plan naming every path it will write or delete (the `DesignSync` tool, v2.1.296). `/design-login` authorizes sessions without a claude.ai login. It is unavailable while `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` is set.
 
@@ -126,8 +126,8 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
-- Sources: [Improving frontend design through Skills (2025-11-12)](https://claude.com/blog/improving-frontend-design-through-skills), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5)
+- Last verified: 2026-11-01
+- Sources: [Improving frontend design through Skills (2025-11-12)](https://claude.com/blog/improving-frontend-design-through-skills), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5)
 - Related: DESIGN-004, DESIGN-005
 
 **Cause.** Anthropic's 2025-11-12 post: "Distributional convergence… Safe design choices–those that work universally and offend no one–dominate web training data. Without direction, Claude samples from this high-probability center."
@@ -138,14 +138,14 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 - **2026-09 skill (current):** five traits: (1) "a warm cream background (near #F4F1EA) with a high-contrast serif display and a terracotta or warm-clay accent (often near #D97757 — Anthropic's own Claude-interaction accent…)"; (2) "a near-black background with a single bright acid-green or vermilion accent"; (3) "a broadsheet-style layout with hairline rules, zero border-radius, and dense newspaper-like columns"; (4) "the SaaS-card kit", meaning identical rounded cards, one radius, `rgba(0,0,0,.1)` shadows and gradient washes; (5) "template chrome": all-caps eyebrows, `A · B · C` meta strings, "WORD — fragment" labels, `#0B0B0B` for black, monospace data labels and a `→` on every link.
 - Typographic tells in the same skill: one accented word in a headline, all-caps labels, labels above content, and `01 / 02 / 03` markers on content that isn't a sequence.
 
-**Model pages:** Opus 5.5 "falls back on a few default styles"; Sonnet 5 "might settle into a consistent default visual style". On both, a general "avoid a generic AI look" "mostly swaps one default for another".
+**Model pages:** Opus 5.5 "falls back on a few default styles"; Sonnet 5 "might settle into a consistent default visual style". Opus 5.5 says a general "avoid a generic AI look" "mostly swaps one default for another"; Sonnet 5 says generic instructions "tend to shift the model to a different fixed palette rather than producing variety".
 
 ## [DESIGN-004] Prompting for distinctive design
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
-- Sources: [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md)
+- Last verified: 2026-11-01
+- Sources: [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md)
 - Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-022, DESIGN-027, DESIGN-030, PROMPT-009
 
 1. **Ground it.** Name "one concrete subject, the design's audience, and the design's primary job" (frontend-design). Distinctive choices come from the subject's "industry, subject matter, materials, and vernacular".
@@ -162,11 +162,11 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-16
-- Sources: [claude-code: frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [claude-plugins-official copy](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [anthropics/skills copy](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Last verified: 2026-11-01
+- Sources: [claude-code: frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [claude-plugins-official copy](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [anthropics/skills copy](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: DESIGN-003, DESIGN-004, SURF-016, SKILL-048
 
-**Where it lives.** Three Anthropic copies, byte-identical on 2026-10-16 (71 lines): the `frontend-design` plugin in `anthropics/claude-plugins-official` (what `/plugin install frontend-design@claude-plugins-official` installs), the same plugin in `anthropics/claude-code`, and `anthropics/skills`. History: added 2025-11-12 (41 lines, the "AI slop" version banning Inter, Roboto and purple gradients), rewritten 2026-06-09 to 06-18 (55 lines, "design lead at a design studio"), and rewritten again 2026-09-01 to 09-03. Third-party mirrors often show an older version; quote GitHub.
+**Where it lives.** Two live Anthropic copies, byte-identical on 2026-11-01 (71 lines): the `frontend-design` plugin in `anthropics/claude-plugins-official` (what `/plugin install frontend-design@claude-plugins-official` installs) and `anthropics/skills`. The copy under `anthropics/claude-code/plugins/` returned 404 on 2026-11-01, since plugins moved to claude-plugins-official. History: added 2025-11-12 (41 lines, the "AI slop" version banning Inter, Roboto and purple gradients), rewritten 2026-06-09 to 06-18 (55 lines, "design lead at a design studio"), and rewritten again 2026-09-01 to 09-03. Third-party mirrors often show an older version; quote GitHub.
 
 **What it says now.** Act as the design lead of a studio whose client "has already rejected proposals that felt cliché or templated". Ground the design in the subject; pick typefaces deliberately and use The Elements of Typographic Style for the scale; keep lines under 80 characters; avoid the five default looks (DESIGN-003); plan tokens, review the plan, then build; watch CSS specificity; build to "a quality floor": "responsive down to mobile, visible keyboard focus, reduced motion respected, visually accessible, harmonious color palettes"; critique your work "taking screenshots to review if your environment supports it"; write plain, active-voice copy.
 
@@ -176,7 +176,7 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Artifacts: improve the visual design, page constraints](https://code.claude.com/docs/en/artifacts), [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design)
 - Related: DESIGN-002, DSKILL-001, DESIGN-034, DESIGN-035, DESIGN-036, DESIGN-037, DESIGN-041, DESIGN-042, DESIGN-043, DESIGN-044, DESIGN-045, SURF-016, MEM, REPO-044
 
@@ -194,8 +194,8 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
-- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Desktop: auto-verify changes](https://code.claude.com/docs/en/desktop), [Vision: limitations](https://platform.claude.com/docs/en/build-with-claude/vision), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2: contrast (minimum), non-text contrast](https://www.w3.org/TR/WCAG22/)
+- Last verified: 2026-11-01
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Desktop: auto-verify changes](https://code.claude.com/docs/en/desktop), [Vision: limitations](https://platform.claude.com/docs/en/build-with-claude/vision), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2: contrast (minimum), non-text contrast](https://www.w3.org/TR/WCAG22/)
 - Related: FLOW-004, FLOW-014, SURF-006, REPO-021, TOK-043, DESIGN-008, DESIGN-013
 
 The loop is FLOW-004's: implement, screenshot the result, compare it with the design, fix the differences. Best practices lists "A browser screenshot next to the mockup" as a check Claude can run, and says "ask Claude for *evidence*: the command it ran and its output, or the screenshot". After Claude says it's done, `/verify` "has Claude build and run the app and look at the result". The desktop Browser pane does this "after every edit" unless `"autoVerify": false` is set (SURF-006).
@@ -212,7 +212,7 @@ Anthropic's vision page says "Claude's coordinate and localization outputs are a
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Vision](https://platform.claude.com/docs/en/build-with-claude/vision), [Prompting Claude Opus 5.5: tools for complex visual inputs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7)
 - Related: DESIGN-007, DESIGN-011, TOK-043, IMG-001
 
@@ -230,7 +230,7 @@ Image cost and context effects are in TOK-043.
 - Applies to: Claude Code, claude.ai
 - Confidence: community-consensus
 - Last verified: 2026-10-16
-- Sources: [Artifacts: compare alternatives](https://code.claude.com/docs/en/artifacts), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
+- Sources: [Artifacts: compare alternatives](https://code.claude.com/docs/en/artifacts), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 - Related: DESIGN-007, DESIGN-010, DESIGN-013, FLOW-004
 
 **Inputs, best first.** This ranking is our synthesis of the official pages:
@@ -248,7 +248,7 @@ Image cost and context effects are in TOK-043.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Set up your design system](https://support.claude.com/en/articles/14604397-set-up-your-design-system-in-claude-design), [Get started with Claude Design: known limitations](https://support.claude.com/en/articles/14604416-get-started-with-claude-design), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts)
 - Related: DESIGN-002, DESIGN-006, DESIGN-007, DSKILL-001
 
@@ -294,8 +294,8 @@ Merged into DSKILL-001 (kb-design-skills.md) on 2026-10-23. Read that file for t
 - Type: anti-pattern
 - Applies to: Claude Code, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-30
-- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
+- Last verified: 2026-11-01
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
 - Related: DESIGN-007, DESIGN-009, DESIGN-003, DSKILL-001
 
 | Pitfall | Guard |
@@ -314,7 +314,7 @@ Merged into DSKILL-001 (kb-design-skills.md) on 2026-10-23. Read that file for t
 - Type: tool
 - Applies to: Claude Code, claude.ai
 - Confidence: official-example
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [theme-factory](https://github.com/anthropics/skills/blob/main/skills/theme-factory/SKILL.md), [brand-guidelines](https://github.com/anthropics/skills/blob/main/skills/brand-guidelines/SKILL.md), [canvas-design](https://github.com/anthropics/skills/blob/main/skills/canvas-design/SKILL.md), [algorithmic-art](https://github.com/anthropics/skills/blob/main/skills/algorithmic-art/SKILL.md), [web-artifacts-builder and its init script](https://github.com/anthropics/skills/blob/main/skills/web-artifacts-builder/SKILL.md)
 - Related: DESIGN-005, DESIGN-003, DESIGN-023, SKILL
 
@@ -332,7 +332,7 @@ Besides frontend-design (DESIGN-005), five skills touch visual design. Each path
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Radix Colors: understanding the scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale), [Radix Colors: composing a palette](https://www.radix-ui.com/colors/docs/palette-composition/composing-a-palette), [Material Web: color](https://github.com/material-components/material-web/blob/main/docs/theming/color.md)
 - Related: DESIGN-006, DESIGN-016, DESIGN-018, DESIGN-021
 
@@ -375,7 +375,7 @@ Neither system says how to pick the brand hue. That comes from the brief's subje
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [WCAG 3.0 Working Draft, 2026-09-10](https://www.w3.org/TR/wcag-3.0/), [APCA README](https://github.com/Myndex/apca-w3/blob/master/README.md), [Radix Colors: understanding the scale](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale), [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 - Related: DESIGN-007, DESIGN-016, DESIGN-019
 
@@ -390,7 +390,7 @@ Neither system says how to pick the brand hue. That comes from the brief's subje
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Radix Colors: usage](https://www.radix-ui.com/colors/docs/overview/usage), [Material Components Android: color theming](https://github.com/material-components/material-components-android/blob/master/docs/theming/Color.md), [Leonardo contrast-colors README](https://github.com/adobe/leonardo/blob/main/packages/contrast-colors/README.md), [MDN: light-dark()](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark), [Tailwind: colors](https://tailwindcss.com/docs/colors)
 - Related: DESIGN-015, DESIGN-016, DESIGN-017
 
@@ -406,7 +406,7 @@ Dark mode keeps the roles and re-picks the tones; it isn't the light palette inv
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [npm registry](https://registry.npmjs.org/), [culori](https://culorijs.org/), [Leonardo](https://github.com/adobe/leonardo), [Radix Colors](https://www.radix-ui.com/colors), [material-color-utilities](https://github.com/material-foundation/material-color-utilities), [Color.js](https://colorjs.io/), [utopia-core](https://www.npmjs.com/package/utopia-core)
 - Related: DESIGN-016, DESIGN-017, DESIGN-020, SURF-016
 
@@ -428,7 +428,7 @@ All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS fil
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Utopia](https://utopia.fyi/), [Utopia type calculator](https://utopia.fyi/type/calculator/), [webtypography.net 2.1.2, quoting Bringhurst](https://webtypography.net/2.1.2), [Butterick: line length](https://practicaltypography.com/line-length.html), [Butterick: point size](https://practicaltypography.com/point-size.html), [WCAG 2.2 Understanding 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html), [MDN: text-wrap](https://developer.mozilla.org/en-US/docs/Web/CSS/text-wrap), [Google Fonts Knowledge source (google/fonts, `cc-by-sa/knowledge`)](https://github.com/google/fonts/tree/main/cc-by-sa/knowledge)
 - Related: DESIGN-004, DESIGN-005, DESIGN-019, DESIGN-021, DESIGN-032, DESIGN-033, DESIGN-034
 
@@ -447,7 +447,7 @@ All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS fil
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [DTCG Format 2025.10](https://www.designtokens.org/TR/2025.10/format/), [DTCG Color 2025.10](https://www.designtokens.org/TR/2025.10/color/), [Material Web: theming](https://github.com/material-components/material-web/blob/main/docs/theming/README.md), [Style Dictionary: DTCG](https://styledictionary.com/info/dtcg/), [Terrazzo docs](https://terrazzo.app/docs/), [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4)
 - Related: DESIGN-006, DSKILL-001, DESIGN-015, DESIGN-024
 
@@ -463,7 +463,7 @@ All loaded over the CDN except `@radix-ui/colors`, which loads per-scale CSS fil
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [OpenAI: designing frontends with GPT-5.4](https://developers.openai.com/blog/designing-delightful-frontends-with-gpt-5-4), [Every Layout: layouts](https://every-layout.dev/layouts/), [MDN: grid template areas](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Grid_template_areas), [NN/g: F-shaped pattern](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/), [web-features 3.43.0](https://www.npmjs.com/package/web-features)
 - Related: DESIGN-003, DESIGN-004, DESIGN-024, DESIGN-027
 
@@ -559,7 +559,7 @@ A checker subagent can run these and return numbers (REPO-021).
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-16
-- Sources: [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), local test
+- Sources: [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), local test
 - Related: DESIGN-003, DESIGN-004, DESIGN-025, DESIGN-026, DESIGN-028, PROMPT-009
 
 **Setup.** One brief (below) plus: S0 nothing; S1 the Opus 5.5 page's banned list; S2 the Sonnet 5 page's four directions, self-picked; S3 frontend-design's two passes without its list of default looks. Sonnet 5.5, 5 runs each; Opus 5.5, 3 runs of S0 and S2; default effort. Brief and S2 suffix:
@@ -592,7 +592,7 @@ Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL, 19:05–19
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [CLI reference: --safe-mode, --disable-slash-commands, --tools, --bare](https://code.claude.com/docs/en/cli-reference), [Run Claude Code programmatically: costs when resuming](https://code.claude.com/docs/en/headless), local test
 - Related: DESIGN-027, DESIGN-001, MEM-028, SKILL-048
 
@@ -638,7 +638,7 @@ Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL, 19:39–19
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-16
-- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Run Claude Code programmatically: continue conversations](https://code.claude.com/docs/en/headless), local tests
+- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Run Claude Code programmatically: continue conversations](https://code.claude.com/docs/en/headless), local tests
 - Related: DESIGN-029, DESIGN-031, DESIGN-027, DESIGN-004, DESIGN-022, DESIGN-003, DESIGN-028
 
 Three follow-ups to DESIGN-029 on Sonnet 5.5, isolated as in DESIGN-028. The user picked from screenshots, and each pick was sent as written with `--resume`.
@@ -716,7 +716,7 @@ Tested 2026-10-18, Chrome 155.0.8059.39 headless, Literata `[opsz,wght]` from go
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Google Fonts Knowledge: pairing typefaces](https://fonts.google.com/knowledge/choosing_type/pairing_typefaces), [… based on their construction (the font matrix)](https://fonts.google.com/knowledge/choosing_type/pairing_typefaces_based_on_their_construction_using_the_font_matrix), [… within a family or superfamily](https://fonts.google.com/knowledge/choosing_type/pairing_typefaces_within_a_family_superfamily), [Butterick: mixing fonts](https://practicaltypography.com/mixing-fonts.html)
 - Related: DESIGN-004, DESIGN-020, DESIGN-030, DESIGN-032, DESIGN-034, DESIGN-003
 
@@ -734,7 +734,7 @@ Tested 2026-10-18, Chrome 155.0.8059.39 headless, Literata `[opsz,wght]` from go
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Google Fonts Knowledge: understanding numerals](https://fonts.google.com/knowledge/introducing_type/understanding_numerals), [MDN: font-variant-numeric](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-variant-numeric), [OpenType feature registry: `case`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-case), [Butterick: alternate figures](https://practicaltypography.com/alternate-figures.html), [web-features 3.43.0](https://www.npmjs.com/package/web-features)
 - Related: FONT-023, FONT-019, DESIGN-033, DESIGN-035, DESIGN-006, OG-003
 
@@ -758,7 +758,7 @@ Tested 2026-10-18, fontTools 4.46.0, files from google/fonts: Fraunces (Claude's
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Google Fonts Knowledge: OpenType features in practice](https://fonts.google.com/knowledge/introducing_type/open_type_features_in_practice), [Google Fonts CSS API v2](https://developers.google.com/fonts/docs/css2), [google/fonts](https://github.com/google/fonts)
 - Related: DESIGN-032, DESIGN-034, DESIGN-006, FONT-019, FONT-023, OG-003
 
@@ -781,11 +781,11 @@ Both served sets fall within `pyftsubset`'s defaults plus `tnum` and `pnum` (FON
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [google-labs-code/design.md README](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/README.md), [DESIGN.md spec](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/docs/spec.md), [PHILOSOPHY.md](https://github.com/google-labs-code/design.md/blob/6e5da5382f41edbba9d73b2c62f33f32e9971f15/PHILOSOPHY.md), [@google/design.md on npm](https://www.npmjs.com/package/@google/design.md), [Impeccable `init` and `document`](https://github.com/pbakaus/impeccable/tree/5cb95eea9c96479f57afe0732a45470d30183326/.agent/skills/impeccable/reference)
 - Related: DESIGN-006, DSKILL-001, DESIGN-021, DESIGN-037
 
-Google Labs' spec (Apache-2.0, read at commit `6e5da53`, 2026-10-16): "A format specification for describing a visual identity to coding agents." YAML tokens (`colors`, `typography`, `rounded`, `spacing`, `components`, with `{colors.primary}` references) in front matter or fenced blocks, then `##` sections that "can be omitted, but those present must appear in this order": Overview (alias Brand & Style), Colors, Typography, Layout (Layout & Spacing), Elevation & Depth (Elevation), Shapes, Components, Do's and Don'ts. "The DESIGN.md format is at version `alpha`… Expect changes." PHILOSOPHY.md: "The token values serve as context and are not rendering instructions." It holds colour, type, shape and spacing; layout only as prose, and no page structure or copy, so it fixes a look, not originality (DESIGN-004).
+Google Labs' spec (Apache-2.0, read at commit `6e5da53`, 2026-10-16): "A format specification for describing a visual identity to coding agents." YAML tokens (`colors`, `typography`, `rounded`, `spacing`, `components`, with `{colors.primary}` references) in front matter or fenced blocks, then `##` sections that "can be omitted if they're not relevant to your project, but those present should appear in the sequence listed": Overview (alias Brand & Style), Colors, Typography, Layout (Layout & Spacing), Elevation & Depth (Elevation), Shapes, Components, Do's and Don'ts. "The DESIGN.md format is at version `alpha`… Expect changes." PHILOSOPHY.md: "The token values serve as context and are not rendering instructions." It holds colour, type, shape and spacing; layout only as prose, and no page structure or copy, so it fixes a look, not originality (DESIGN-004).
 
 **Linter** `@google/design.md` 0.4.0, the only dist-tag, published 2026-07-27 through Google's publishing proxy, no provenance attestation (`npm view @google/design.md dist-tags 'time[0.4.0]' gitHead`). `spec --rules-only` lists eleven rules: `broken-ref` (error), `missing-primary`, `contrast-ratio` (component pairs "below WCAG AA minimum (4.5:1)"), `orphaned-tokens`, `missing-typography`, `section-order`, `unknown-key`, `token-like-ignored` (warnings), `token-summary`, `missing-sections`, `omitted-rules` (info). Its bundled README still says "seven rules". Tarball read 2026-10-23: no install scripts, no `fetch`, `http`, `net` or `child_process`. Pin it (`npm i -D @google/design.md@0.4.0`); bare `npx` runs whatever `latest` is.
 
@@ -847,7 +847,7 @@ How they were made isn't documented, and the values may be approximate: of the 2
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [15 U.S.C. § 1125 (Lanham Act § 43)](https://www.law.cornell.edu/uscode/text/15/1125), [Wal-Mart v. Samara Bros., 529 U.S. 205 (2000)](https://www.law.cornell.edu/supremecourt/text/529/205), [Two Pesos v. Taco Cabana, 505 U.S. 763 (1992)](https://www.law.cornell.edu/supremecourt/text/505/763), [USPTO: likelihood of confusion](https://www.uspto.gov/trademarks/search/likelihood-confusion), [VoltAgent/awesome-claude-design: licence and disclaimer](https://github.com/VoltAgent/awesome-claude-design/blob/8f746b5bbb69cc7544fa850c126a71f754091951/README.md)
 - Related: DESIGN-038, DESIGN-004, DESIGN-010, OSS-009, OSS-011
 
@@ -899,7 +899,7 @@ Tested 2026-10-23, v2.1.296, Sonnet 5.5, `claude -p` with DESIGN-028's flags, on
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Material Web 2.5.0 elevation tokens](https://github.com/material-components/material-web/blob/v2.5.0/tokens/versions/v0_192/_md-sys-elevation.scss), [Fluent 2: elevation](https://fluent2.microsoft.design/elevation), [Atlassian: elevation](https://atlassian.design/foundations/elevation), [Primer primitives 11.10.0](https://www.npmjs.com/package/@primer/primitives), [Radix Themes: shadows](https://www.radix-ui.com/themes/docs/theme/shadows), [Open Props 1.7.23](https://www.npmjs.com/package/open-props), [Carbon styles 1.118.0](https://www.npmjs.com/package/@carbon/styles), [Tailwind `theme.css` v4.3.3](https://github.com/tailwindlabs/tailwindcss/blob/v4.3.3/packages/tailwindcss/theme.css), [DTCG Format 2025.10: shadow](https://www.designtokens.org/TR/2025.10/format/), [MDN: light-dark()](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark), [web-features 3.44.0](https://www.npmjs.com/package/web-features), local test
 - Related: DESIGN-021, DESIGN-023, DESIGN-016, DESIGN-018, DESIGN-041, DESIGN-043, CSS-006, CSS-015
 
@@ -928,7 +928,7 @@ Tested 2026-10-23, tailwindcss@4.3.3, Node 24.21.0: `@theme { --shadow-*: initia
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Atlassian: elevation](https://atlassian.design/foundations/elevation), [Apple HIG: Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode), [Material Components Android: color theming](https://github.com/material-components/material-components-android/blob/master/docs/theming/Color.md), [Carbon: color overview](https://carbondesignsystem.com/elements/color/overview/), [Primer primitives 11.10.0](https://www.npmjs.com/package/@primer/primitives), [Fluent tokens 1.0.0-alpha.24](https://www.npmjs.com/package/@fluentui/tokens), [Open Props 1.7.23](https://www.npmjs.com/package/open-props), [Hallmark dark-mode.md @7ec8682 (community)](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/dark-mode.md), local test
 - Related: DESIGN-018, DESIGN-015, DESIGN-017, DESIGN-042, DESIGN-044
 
@@ -949,7 +949,7 @@ Tested 2026-10-23, tailwindcss@4.3.3, Chromium 156, one page, summed RGB differe
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-23
-- Sources: [CSS Color Adjustment 1 (CR Snapshot, 7 May 2026)](https://www.w3.org/TR/css-color-adjust-1/), [MDN: forced-colors](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/forced-colors), [Edge blog: styling for forced colors (2020-09-17, read from the Wayback copy)](https://blogs.windows.com/msedgedev/2020/09/17/styling-for-windows-high-contrast-with-new-standards-for-forced-colors/), [Understanding WCAG 1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [WCAG 2.2: 2.4.13 Focus Appearance](https://www.w3.org/TR/WCAG22/#focus-appearance), local test
+- Sources: [CSS Color Adjustment 1 (CR Snapshot, 16 December 2025)](https://www.w3.org/TR/css-color-adjust-1/), [MDN: forced-colors](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/forced-colors), [Edge blog: styling for forced colors (2020-09-17, read from the Wayback copy)](https://blogs.windows.com/msedgedev/2020/09/17/styling-for-windows-high-contrast-with-new-standards-for-forced-colors/), [Understanding WCAG 1.4.11](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html), [WCAG 2.2: 2.4.13 Focus Appearance](https://www.w3.org/TR/WCAG22/#focus-appearance), local test
 - Related: ACCESS-014, UIREV-007, DESIGN-041, DESIGN-043, DESIGN-045
 
 Forced colours removes shadows, and a blurred one never reaches 3:1, so it can't be a control's only boundary or its focus indicator.
@@ -970,7 +970,7 @@ Tested 2026-10-23, tailwindcss@4.3.3, playwright@1.64.1, Chromium 156 `forcedCol
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [CSS Backgrounds 3: box-shadow](https://drafts.csswg.org/css-backgrounds-3/#box-shadow), [Filter Effects 1](https://drafts.csswg.org/filter-effects-1/), [MDN: drop-shadow()](https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow), [CSS Color Adjustment 1: print-color-adjust](https://www.w3.org/TR/css-color-adjust-1/#print-color-adjust), [CSSWG wiki: print backgrounds](https://wiki.csswg.org/ideas/print-backgrounds), [web.dev: simplify paint complexity](https://web.dev/articles/simplify-paint-complexity-and-reduce-paint-areas), local test
 - Related: DESIGN-042, DESIGN-044, ANIM-008, CSS-015
 

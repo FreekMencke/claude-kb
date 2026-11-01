@@ -52,7 +52,7 @@ Research basis:
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-23
-- Sources: [Impeccable SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Kowalski prototype SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/prototype/SKILL.md), [Kowalski emil-design-eng SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md)
+- Sources: [Impeccable SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Kowalski prototype SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/prototype/SKILL.md), [Kowalski emil-design-eng SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md)
 - Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-012, DSKILL-008, DSKILL-013, ANIMLIB-013
 
 None is Anthropic's. Each fights convergence with a different mechanism; most need their scripts to do it.
@@ -74,7 +74,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [scripts/draw.mjs](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/scripts/draw.mjs), [references/research.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/references/research.md), [CHANGELOG.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/CHANGELOG.md)
 - Related: DSKILL-001, DSKILL-007, DSKILL-012, DESIGN-027
 
@@ -88,7 +88,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [scripts/theme.mjs](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/theme.mjs), [references/gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md), [references/themes/index.json](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/themes/index.json), [ROADMAP.md](https://github.com/Nutlope/hallmark/blob/7ec8682/ROADMAP.md)
 - Related: DSKILL-008, DSKILL-009, DSKILL-007, DSKILL-013
 
@@ -136,7 +136,7 @@ The plugin installs seven skills, not one; the others call Gemini, Atlas Cloud a
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [references/directions.md](https://github.com/alchaincyf/huashu-design/blob/798c423/references/directions.md), [references/evolution.md](https://github.com/alchaincyf/huashu-design/blob/798c423/references/evolution.md), [references/design-styles.md](https://github.com/alchaincyf/huashu-design/blob/798c423/references/design-styles.md)
 - Related: DSKILL-001, DSKILL-008, DESIGN-029, DESIGN-030
 
@@ -152,8 +152,8 @@ HTML prototypes, slides, animation and review; SKILL.md is in Chinese (translati
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
-- Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md), [Hallmark craft.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/craft.md), [Taste SKILL.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Impeccable craft-floor.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [Impeccable detector registry](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/foundation/src/registry.rs)
+- Last verified: 2026-11-01
+- Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md), [Hallmark craft.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/craft.md), [Taste SKILL.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Impeccable craft-floor.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [Impeccable detector registry](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/foundation/src/registry.rs)
 - Related: DESIGN-003, DSKILL-002, DSKILL-003, DSKILL-004, DSKILL-009, DSKILL-013, WRITE-002
 
 | Point | Positions |
@@ -172,7 +172,7 @@ One skill's substitute is another's ban: stacking two narrows the space without 
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Hallmark scripts/theme.mjs](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/theme.mjs), [Hallmark ROADMAP.md](https://github.com/Nutlope/hallmark/blob/7ec8682/ROADMAP.md), [ui-ux-pro-max products.csv](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/data/products.csv), [huashu-design SKILL.md](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), local test
 - Related: DESIGN-003, DESIGN-027, DSKILL-003, DSKILL-005, DSKILL-013
 
@@ -189,7 +189,7 @@ What worked in our tests and in huashu-design's design is variety from outside t
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Impeccable registry.rs @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/foundation/src/registry.rs), [Impeccable CLI-CONTRACT.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/docs/CLI-CONTRACT.md), [Hallmark sloplint.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/sloplint.mjs), [Hallmark sloplint-render.mjs](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/sloplint-render.mjs), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md)
 - Related: DESIGN-007, DESIGN-017, DSKILL-004, DSKILL-003, DSKILL-014, WRITE-002, WRITE-004
 

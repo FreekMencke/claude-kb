@@ -90,7 +90,7 @@ So the questions that matter are about write time and invocation (RETR-018). The
 - Type: recommendation
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Building agents with the Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Large codebases](https://code.claude.com/docs/en/large-codebases), [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)
 - Related: RETR-003, RETR-011, MCP-034, TOK-041
 
@@ -127,7 +127,7 @@ Re-check the quotes from a network that reaches x.com before relying on the word
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)
 - Related: RETR-005, RETR-001, MCP-034, RETR-016
 
@@ -151,7 +151,7 @@ Anthropic's post of 2024-09-19 measured retrieval of chunks cut from long docume
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-example
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Contextual embeddings guide](https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/contextual-embeddings/guide.ipynb), [RAG guide](https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/retrieval_augmented_generation/guide.ipynb)
 - Related: RETR-004, RETR-019, CAPI-015
 
@@ -175,7 +175,7 @@ Read the notebook's numbers as one dataset, not as Anthropic's headline.
 - Type: fact
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [RAG for projects](https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects), [What are projects?](https://support.claude.com/en/articles/9517075-what-are-projects)
 - Related: MCP-037, MEM-029, RETR-009
 
@@ -184,7 +184,7 @@ A Project keeps its knowledge in context until it nears the window, then switche
 - "When your project knowledge approaches the context window limit, Claude will automatically enable RAG mode to expand your project's capacity by up to 10x while maintaining quality responses."
 - In RAG mode, "Claude uses a project knowledge search tool to retrieve relevant information from your uploaded documents".
 - "If your project knowledge later drops below the context window threshold, Claude can automatically convert back to context-based processing."
-- Availability: "Pro, Max, Team, and Enterprise". Users can't choose the mode.
+- Availability: "paid plans (Pro, Max, Ultra, Team, and Enterprise)". Users can't choose the mode ("No, RAG activates automatically when needed").
 - "When possible, projects will use in-context processing for optimal performance."
 - Advice: well-named files help Claude "understand and retrieve the right information".
 
@@ -196,7 +196,7 @@ Anthropic's own product thus prefers full context while it fits and search beyon
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Search results](https://platform.claude.com/docs/en/build-with-claude/search-results), [Citations](https://platform.claude.com/docs/en/build-with-claude/citations), [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [Files API](https://platform.claude.com/docs/en/build-with-claude/files), [Managed Agents memory](https://platform.claude.com/docs/en/managed-agents/memory), [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings)
 - Related: CAPI-010, TOK-020, MEM-031, RETR-016
 
@@ -215,7 +215,7 @@ None of the platform pages read lists a hosted vector store. Anthropic's own sur
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [NoLiMa README](https://github.com/adobe-research/NoLiMa), [Context Rot repo](https://github.com/chroma-core/context-rot)
 - Related: RETR-009, TOK-007, FLOW-020, PROMPT-007
 
@@ -234,7 +234,7 @@ For us, the whole corpus in context scored 98–100% top-5 on 300 questions (RET
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), local measurement
 - Related: RETR-008, RETR-004, TOK-007, TOK-090
 
@@ -356,7 +356,7 @@ Both camps index code, which changes every minute and is written for compilers. 
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Karpathy: LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), [tobi/qmd README](https://github.com/tobi/qmd)
 - Related: RETR-001, RETR-010, RETR-016, DOC-016
 
@@ -390,7 +390,7 @@ Our lookups are local ("which flag", "which version"), and entries already link 
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [sqlite-vec README](https://github.com/asg017/sqlite-vec), [Orama README](https://github.com/oramasearch/orama), [Embeddings (Claude docs)](https://platform.claude.com/docs/en/build-with-claude/embeddings), [Contextual embeddings guide](https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/contextual-embeddings/guide.ipynb)
 - Related: RETR-020, RETR-004, RETR-007
 
