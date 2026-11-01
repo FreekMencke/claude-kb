@@ -501,7 +501,7 @@ Release static OTF and TTF, a variable TTF and WOFF2, each format in its own fol
 
 **Variable font names:** "Suffixes like `VF` or `VAR` or any other *must not* be appended to the file name. Instead the axes are appended in between brackets: `FamilyName[axis1,axis2].ttf`", e.g. `Family[wght].ttf` and `Family-Italic[wght].ttf`.
 
-**Statics beside the VF:** Google Fonts onboards only the VF when the statics are autohinted ("The API will generate statics fonts by instantiating the VF") and both when they're hand-hinted. It takes TrueType only, but "The upstream repo can of course contain OTF-CFF `.otf` fonts, as well as webfonts `.woff2`." Keep statics for desktop apps and for tools that can't read a VF: osrs-tracker-web's Open Graph cards render with satori, which "can't read a variable font", so they load two static TTFs from the release. satori's README lists TTF, OTF, WOFF and WOFF2 and is silent on variable fonts.
+**Statics beside the VF:** Google Fonts onboards only the VF when the statics are autohinted ("The API will generate statics fonts by instantiating the VF") and both when they're hand-hinted. It takes TrueType only, but "The upstream repo can of course contain OTF-CFF `.otf` fonts, as well as webfonts `.woff2`." Keep statics for desktop apps and for tools that can't read a VF: osrs-tracker-web's Open Graph cards render with satori, which "can't read a variable font", so they load two static TTFs from the release. satori's README lists TTF, OTF, WOFF and WOFF2 and says "Variable fonts are rendered as their default instance, e.g. the regular weight."
 
 **Web formats:** WOFF2 only. web.dev: "Use only WOFF2 and forget about everything else." WOFF2 in `@font-face` has been Baseline since 2016-09-20 and is widely available (web-features 3.43.0). WOFF (1) adds nothing for browsers.
 
@@ -688,7 +688,7 @@ h1 { font-weight: 650; }
 
 MDN on `font-variation-settings`: "You should only use it when no basic properties exist to set those features (e.g., font-weight, font-style)." It "will always override those set using the corresponding basic font properties … no matter where they appear in the cascade", and "If you have set values using font-variation-settings and want to change one of those values, you must redeclare all of them". Keep it for custom axes (`GRAD`, `CASL`). The `@font-face` descriptor `font-variation-settings` isn't Baseline (no Safari); the property is, since 2018-09-05.
 
-**OpenType features:** MDN: "Whenever possible, Web authors should instead use the font-variant shorthand property or an associated longhand property such as font-variant-numeric".
+**OpenType features:** MDN: "Whenever possible, Web authors should instead use the font-variant shorthand property or an associated longhand property such as font-variant-ligatures, font-variant-caps, font-variant-east-asian, font-variant-alternates, font-variant-numeric or font-variant-position".
 
 | Feature | Property |
 |---|---|
