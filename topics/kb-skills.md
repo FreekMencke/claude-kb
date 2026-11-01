@@ -1,6 +1,6 @@
 # Writing, testing and distributing skills
 
-Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2026-10-14; each entry's Last verified date is authoritative. SKILL-064 to SKILL-073 (finding and vetting community skills) were added 2026-10-23 (FreekMencke/claude-kb#256) from the Claude Code docs, vercel-labs/skills at commit a80e4c9 (skills@1.7.4), the lists' and directories' own pages and the GitHub API, read by an Opus 5.5 lead and two Sonnet 5.5 readers. "Local CLI" means `--help` output or a command run on Claude Code 2.1.296 on that date.
+Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2026-10-14; each entry's Last verified date is authoritative. SKILL-064 to SKILL-073 (finding and vetting community skills) were added 2026-10-23 (FreekMencke/claude-kb#256) from the Claude Code docs, vercel-labs/skills at commit a80e4c9 (skills@1.7.4), the lists' and directories' own pages and the GitHub API, read by an Opus 5.5 lead and two Sonnet 5.5 readers. "Local CLI" means `--help` output or a command run on Claude Code 2.1.296 on that date. SKILL-083 to SKILL-092 (writing, testing and governing mods) were added 2026-11-01 (FreekMencke/claude-kb#351, part C) from the `plugins/mods/` pages `create`, `reference`, `interface`, `events`, `api`, `test`, `gallery` and the organisation half of `admin`, read as raw `.md`; the validate and test commands were run locally on 2.1.296.
 
 ## Quick answers
 
@@ -12,10 +12,10 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | How big may SKILL.md be? | Under 500 lines / ~5k tokens; push detail into one-level-deep reference files and scripts. | SKILL-016, SKILL-017 |
 | Skill, CLAUDE.md, hook, subagent or MCP? | CLAUDE.md = always-true facts; skill = on-demand procedure; hook = must-happen guarantee; subagent = isolated side task; MCP = access to external systems. | SKILL-021, SKILL-023 |
 | How do I test a skill? | Triggering: `claude plugin eval` with a `tool_used: Skill` grader, or skill-creator's `run_loop`; ~20 queries, half near-miss negatives, 3 runs each. Usefulness: run the same prompts with and without it in fresh sessions; compare the score delta and the token/time cost. | SKILL-025 to SKILL-028, SKILL-032 |
-| Should I add a "forced skill evaluation" hook? | Not by default: no official endorsement, evidence is one author with small N, and it raises false positives. | SKILL-029 |
+| Why did my mod's guard hook not block anything, and how do I govern mods? | A mod hook that throws or times out is skipped, so the call goes ahead: chain `.catch` to fail closed (`claude plugin validate` warns `gating hook without .catch`). Organisations stop users' mods with the guard option `allowManagedModsOnly` in managed `pluginConfigs`; `disableSideloadFlags`, `allowManagedHooksOnly` and `disableAllHooks` are wider. `$.http.fetch` and `$.process.run` escape most rules. | SKILL-084, SKILL-091, SKILL-092 |
 | How do I share skills with a team? | Commit `.claude/skills/`, or ship a plugin through a marketplace registered in `.claude/settings.json`; claude.ai org provisioning for non-CLI users. A personal Git marketplace added on claude.ai reaches chat, Cowork and local Claude Code, but not cloud sessions or routines. | SKILL-034, SKILL-038, SKILL-059, SKILL-060 |
 | Why don't users get my plugin update? | A fixed `version` in `plugin.json` pins them until you bump it; auto-update is off for third-party marketplaces. | SKILL-035, SKILL-036 |
-| Which frontmatter fields are portable? | `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`. Everything else is Claude Code-only and rejected on claude.ai/API upload, except inside a plugin, where claude.ai accepts them. | SKILL-002, SKILL-040, SKILL-062 |
+| How do I write, test and keep state in a mod? | `hooks/hooks.json` with `modules`, `register(on)`; `claude --plugin-dir`, `claude plugin test` with stubs for every mods API call. Module variables die on reload, `$.state` on `/clear`, `$.store` is shared by all sessions and not atomic. A mod that submits a prompt every turn makes `claude -p` run forever without `--max-turns`. | SKILL-083, SKILL-089, SKILL-090, SKILL-088 |
 | How many skills is too many, and how do I prune? | No official number; one measurement saw a skill's invocation rate drop as the roster grew. Install few; `/skill-doctor` finds skills that cost context but are never used, `claude plugin details <name>` shows a plugin's always-on cost. | SKILL-045, TOK-005, SKILL-030 |
 | Do skills and plugins load in desktop-app Code sessions, including WSL? | Local and Cloud: claude.ai skills yes, delivered by the app as a plugin. Desktop WSL: claude.ai skills and `<name>@synced` plugins no (local tests), so symlink the skills you need into the distro's `~/.claude/skills` and install plugins with the distro's CLI (`claude plugin install <plugin>@<marketplace name>`); those load although the docs say no, but the plugin UI is missing. To check, ask the model to list its skills after the first message; the `/` menu and Customize panel are unreliable. | SKILL-049, SKILL-050, SKILL-052, SKILL-054, SKILL-056, SKILL-063 |
 | Where should skills live with desktop and WSL? | WSL uses the distro's Linux `~/.claude`; Windows and WSL share no skills, plugins, settings or credentials. Keep skills in a git repo on the distro filesystem, symlinked per skill into the distro's `~/.claude/skills`, plus repo `.claude/skills`. | SKILL-051, SKILL-056 |
@@ -108,6 +108,16 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-080 | Plugin relevance: marketplace entries that suggest a plugin from session signals | tool | plugins, marketplace, relevance, suggestions |
 | SKILL-081 | Skills in the Agent SDK: the `skills` option and setting sources | fact | agent-sdk, skills, setting-sources, allowlist |
 | SKILL-082 | Plugins in the Agent SDK: local paths only | fact | agent-sdk, plugins, local-path, init-message |
+| SKILL-083 | A mod's files and the hook model: observe, rewrite or answer | fact | mods, hooks-module, middleware, matcher |
+| SKILL-084 | A failing mod hook fails open; `.catch` makes a guard fail closed | anti-pattern | mods, fail-open, catch, time-limits |
+| SKILL-085 | The order mods and settings hooks run in | fact | mods, order, pretooluse, tool-check |
+| SKILL-086 | Adding a command, a tool or a model call from a mod | fact | mods, commands, tools, model-complete, caching |
+| SKILL-087 | Mods API reach and limits: files, processes, network, store | fact | mods, limits, process-run, http-fetch, store |
+| SKILL-088 | Mods that start work of their own: timers, interrupts and endless `claude -p` runs | pattern | mods, timers, prompt-submit, max-turns |
+| SKILL-089 | Where a mod keeps state: module variable, `$.state` or `$.store` | fact | mods, state, store, redraw |
+| SKILL-090 | Writing and testing a mod: the dev loop, the test kit and its rules | pattern | mods, plugin-test, plugin-validate, dev-loop |
+| SKILL-091 | Organisation policy for mods: which managed setting stops what | comparison | mods, managed-settings, allow-managed-mods-only, disable-sideload-flags |
+| SKILL-092 | Gaps in mod controls, running your own mods and writing a policy mod | pattern | mods, policy-mod, prepend-plugins, http-fetch |
 
 ---
 
@@ -1892,6 +1902,201 @@ Failures are quiet:
 
 TypeScript v0.3.301 and later can add a folder to a running session with `reloadPlugins({ addPlugins: [{ type: "local", path }] })`, where `path` is absolute.
 
+## Mods: how they are written, run and governed
+
+Read 2026-11-01 from `code.claude.com/docs/en/plugins/mods/` (FreekMencke/claude-kb#351, part C). SKILL-075 to SKILL-077 say what a mod is, whether it is safe and how to debug one; these entries cover writing one and the organisation controls. The reference describes the CLI and Desktop as of v2.1.290 and the VS Code extension as of v2.1.299; local Claude Code was 2.1.296.
+
+## [SKILL-083] A mod's files and the hook model: observe, rewrite or answer
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference), [React to events with a mod](https://code.claude.com/docs/en/plugins/mods/events), [Create a mod](https://code.claude.com/docs/en/plugins/mods/create)
+- Related: SKILL-075, SKILL-084, SKILL-085, HOOK-035
+
+**Files.** `.claude-plugin/plugin.json` (no extra fields), `hooks/hooks.json` with `"modules": ["./register.js"]` (one path, and its presence is what makes the plugin a mod), and the hooks module, an ES module exporting `register(on, options)`; `options` holds the `userConfig` values. `.js`, `.mjs`, `.cjs`, `.jsx`, `.ts`, `.mts`, `.cts` and `.tsx` all load with no build step. A `types/index.d.ts` is needed only when the mod uses `$.state` or adds an API namespace (manifest `types` optional from v2.1.299).
+
+**The hook.** `on(event, matcher?, async ($, e, next) => ...)`. `$` is the mods API, `e` the event as deeply frozen data, `next(e)` the rest of the chain, like middleware. The module itself has no Node.js APIs and no `setTimeout`; reach files, processes and network only through `$`.
+- **Observe:** do work, return `next(e)`.
+- **Rewrite:** `next({ ...e, text })`. Assigning to `e` throws.
+- **Answer:** return a result without calling `next`; later mods and Claude Code's own behaviour don't run. A `tool.call` `{ deny: reason }` becomes the tool result Claude reads, so write it as an instruction.
+
+A matcher compares event fields with a value, an array or a regex. `'*'` matches every event except telemetry; `'classic.*'` matches settings-hook events. **Registering one event twice without a matcher fails to load.**
+
+Tested 2026-11-01, v2.1.296: `claude plugin validate` on a module with two unfiltered `on("session.start")` calls failed with `on("session.start") is registered twice without a matcher`. With a `tool.call{tool=Bash}` hook and no `.catch`, it listed `gating hook without .catch`, plus `hooks:` and `calls: $.fs.read` lines.
+
+## [SKILL-084] A failing mod hook fails open; `.catch` makes a guard fail closed
+- Type: anti-pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [React to events with a mod](https://code.claude.com/docs/en/plugins/mods/events), [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference)
+- Related: SKILL-076, SKILL-085, SKILL-091
+
+"A hook that fails doesn't break the session". A hook that throws, times out or returns the wrong shape is skipped if it failed before calling `next`, and the next handler runs in its place, so a blocking `tool.call` hook that crashes lets the command run. If it failed after `next` resolved, that result stands. A `ui.render` tree that doesn't validate counts as the wrong shape.
+
+**Fail closed** by chaining `.catch(handler)` onto what `on` returns. The handler gets the same event, plus `next.error.kind` (`throw`, `timeout`, or `re-entry` from v2.1.292) and `next.called`. When `next.called` is false return the event's refusal: `{ deny }` for `tool.call` and `config.set`, `{ drop }` for `prompt.submit`, `{ decision: 'deny', reason }` for `tool.check` and `{ refuse }` for `plugin.register` (the last two hold even after `next`). If the handler itself throws or times out, the hook is skipped as if it had none.
+
+**Time limits.** A hook gets 10 seconds of its own execution per event (50 ms for `prompt.edit`), not counting time inside `next` or a mods API call other than `$.clock.sleep`. A `.catch` handler gets 1 second. A wait on `$.ui.ask` doesn't count; awaiting your own promise does. `drop` and `deny` reasons are cut at 4,096 characters (v2.1.292+; earlier the hook fails).
+
+**Catches:** a `tool.check` hook matching command text is a reminder for Claude, not a boundary: protect the branch on the Git host. In plan mode a `tool.check` hook can tighten a non-read-only decision, not loosen it. `e.isReadOnly` (v2.1.304+) is the tool's own claim and is true for WebFetch and Agent, so don't approve on it alone.
+
+## [SKILL-085] The order mods and settings hooks run in
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [React to events with a mod](https://code.claude.com/docs/en/plugins/mods/events), [Manage mods for your organization](https://code.claude.com/docs/en/plugins/mods/admin)
+- Related: SKILL-084, SKILL-091, HOOK-006
+
+Hooks on one event form one chain; "The first mod is outermost" and "A later mod can't stop an earlier one from seeing an event". Order: (1) the built-in guard `sec-default@builtin`, managed `prependPlugins` and other organisation mods, (2) mods you install, (3) `appendPlugins`, (4) other built-in mods. A mod runs before the mods in its manifest `dependencies`; within a module, hooks run in `on()` order.
+
+**Settings hooks inside the chain** (`tool.call`):
+- Managed-settings `PreToolUse` hooks run before the first mod's `tool.call` hook; if one blocks, no mod hook runs. If a mod rewrites the call, managed hooks run again on the rewrite.
+- `PreToolUse` hooks from other settings files and plugins' `hooks/hooks.json` run after the last mod calls `next`. A mod that answers without `next` stops them from running.
+- `tool.check` fires after the `PreToolUse` hooks and before the prompt, auto-mode classifier or `PermissionRequest` hook.
+
+`next.to(e, tier)` skips to a later tier, and only a mod in `prependPlugins` or `appendPlugins` may call it. A band hook that returns a tree replaces what later mods drew there; keep theirs by putting `await next(e)` among the children of a `Box`.
+
+A hook on any mods API call name (`fs.write`, `http.fetch`) intercepts calls from the mods that run after it. That is how an organisation audits or restricts other mods (SKILL-092).
+
+## [SKILL-086] Adding a command, a tool or a model call from a mod
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Use the mods API](https://code.claude.com/docs/en/plugins/mods/api)
+- Related: SKILL-083, CAPI-026, CAPI-027
+
+Register both in a `session.start` hook, which Claude Code waits for before the first prompt.
+
+- **Command:** `$.command.register` throws for a built-in name (`"/focus" refused: it is the built-in /focus`), and a throwing hook is skipped, so the rest of that `session.start` hook doesn't run. Register commands last, or wrap in `try`. Handle `command.run`; return `{}` to print nothing; `immediate: true` lets it run while Claude works.
+- **Tool:** Claude sees `mcp__<plugin>__<name>`; handle calls in a `tool.call` hook filtered to that full name. Under MCP tool search the description is hidden until Claude searches; `isDeferred: false` (v2.1.293+) loads it upfront.
+- **Model call:** `$.model.complete` sends only your `prompt` (and `system`), no CLAUDE.md, no tools. `$.model.fork` sends the whole conversation, which is mostly a cache hit while it is warm, with tools Claude can't call. Both bill to the user's plan or key. An API failure doesn't reject: check `r.isAnswered` and `r.reason`. `maxTokens` defaults to 1024.
+- **Caching:** pass `prompt` as `{ text }` blocks with `cache: true` on the last static block (arrays need v2.1.292+; earlier versions reject the call). The TTL is five minutes and set by the user's settings (`subagentPromptCacheTtl`), up to four breakpoints, and a fifth returns `api-error`. Put shared static text in `prompt`, not `system`, since Bedrock, Vertex, Foundry and gateways vary the attribution block at the start of `system`. Zero cache fields on both reads and writes means a prefix under the model's minimum, `DISABLE_PROMPT_CACHING`, a gateway stripping `cache_control`, or another mod rewriting the start.
+
+## [SKILL-087] Mods API reach and limits: files, processes, network, store
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference), [Use the mods API](https://code.claude.com/docs/en/plugins/mods/api)
+- Related: SKILL-076, SKILL-089
+
+| Call | Behaviour and limit |
+|---|---|
+| `$.process.run(argv)` | No shell. Resolves with `{ exitCode, stdout, stderr }` whatever the exit code; rejects if it can't start or is still running at the timeout: 30 s default, 10 min max. 4 MiB each for stdout and stderr, then `isStdoutTruncated`. |
+| `$.http.fetch` | 4 MiB request and response bodies; 30 s per call; 5 redirects. On a cross-origin redirect only `accept`, `accept-language`, `content-type` and `user-agent` survive, so `Authorization` is dropped. `HEAD` is exempt from the declared-size rejection (v2.1.296+). |
+| `$.fs.read` / `write` | 4 MiB a file. `write` isn't atomic: another process can read a half-written file. `list` isn't recursive. |
+| `$.store` | 4 MiB of JSON in total, shared by every session on the machine. |
+| `$.session.messages()` | The newest 4,096 entries. |
+| `$.ui.toast` | 4 seconds unless `{ timeoutMs }`. |
+| `$.ui.invalidate('ui.render')` | Throttled to 10 redraws a second (30 in the terminal for the visible pane, band and hint line); sooner calls are coalesced. |
+
+Names for commands, tools, subagent types and panes: letters, digits, `_` and `-`, up to 64 characters. A `Link` `href` over 2,048 characters, or a tree past 32 levels, 20,000 elements or 100,000 text characters, isn't drawn; nesting past 28,000 levels in a call rejects (v2.1.299+).
+
+A relative path resolves against the session's directory, or the subagent's. Every API call is itself an event, so an earlier mod can observe or refuse it. A refusing mod can withhold `$.process.spawn` output after the command already ran; nothing it did is undone.
+
+## [SKILL-088] Mods that start work of their own: timers, interrupts and endless `claude -p` runs
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Use the mods API](https://code.claude.com/docs/en/plugins/mods/api)
+- Related: SKILL-086, CAPI-050
+
+- **Timers** come from `$.clock.every` and `$.clock.after` (no `setInterval`), started in `session.start`. They stop when the module reloads, run outside any event, and don't start a turn. A throwing callback goes to the debug log and the timer runs again at the next interval. `next.signal` is an `AbortSignal` for the event being abandoned (an interrupt); pass it to long work.
+- **`$.prompt.submit`** starts a turn from a background job and waits for idle; don't `await` it in a handler that runs while Claude works. Claude reads the text after a sentence naming the mod, unless `asUser: true`.
+- **Show without a turn:** `$.ui.status` (a line under the prompt), `toast`, `log` (dim transcript line Claude doesn't read), `notify` (terminal notification per `preferredNotifChannel`; `isSent: false` with `reason` `disabled`, `no-channel`, `no-surface` or `refused`). `no-surface` covers `-p`, the Agent SDK, desktop, VS Code and cloud.
+- **After the user interrupts** (Esc, Stop), new session work is refused until their next input, with `the session was stopped and nobody has sent input since`; queued prompts and commands are dropped with `was removed from the queue before it ran`. Nothing retries them: keep the arguments and resend from a `turn.complete` hook. Needs v2.1.304 (except `$.prompt.submit` and `$.command.run`).
+- **A `claude -p` run never exits** if the mod submits a prompt at the end of every turn. Pass `--max-turns` or `--max-budget-usd`. The mod's prompts are refused at the limit from v2.1.299, and a spawned subagent's turns count toward `--max-turns` from v2.1.304. Other refusal reasons: the run is past its budget, or the host ended its input.
+
+## [SKILL-089] Where a mod keeps state: module variable, `$.state` or `$.store`
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Draw in the interface with a mod](https://code.claude.com/docs/en/plugins/mods/interface), [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference)
+- Related: SKILL-087, SKILL-090
+
+| Where | Lasts until |
+|---|---|
+| A module variable | The module reloads, on every file save during development |
+| `$.state` | The session ends, or `/clear`, `/resume` or `/branch` (these reset every value to its default). Survives a module reload. |
+| `$.store` | The mod deletes it, or no session touches the store for `cleanupPeriodDays`. A JSON file of the plugin's own under `~/.claude/plugins/store/`. |
+
+**Redraws.** Claude Code runs `ui.render` again when props or terminal width change, not when a module variable changes. Call `$.ui.invalidate`, or use `$.state`, where writing a value redraws every site that read it. A `ui.render` hook may read `$.state` but can't write it; write from `onPress`, `onSubmit` or another event's hook. A clock needs `$.clock.every`.
+
+**`$.state` rules.** Declare each value in `types/index.d.ts`, or validation fails with `<mod>.count is not declared`. Hold each `atom` in a `const` (a `let` fails with `takes a source the scan can read`).
+
+**After `/clear`.** `session.start` doesn't fire again, so a value copied from `$.store` into `$.state` is back to its default. Copy it again in a `classic.SessionStart` hook filtered on `e.source` of `clear`, `resume` or `fork`.
+
+**Several sessions share one store.** A `get` then `set` isn't atomic and the second write wins. Give each item its own key, and `get` again right before the `set`. Data several sessions change belongs in `$.store`, not in a file written with `$.fs.write`.
+
+An `Input` keeps the user's typing across redraws while the hook passes the same `value`. `autoFocus` accepts only `true`; `false` throws.
+
+## [SKILL-090] Writing and testing a mod: the dev loop, the test kit and its rules
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Create a mod](https://code.claude.com/docs/en/plugins/mods/create), [Test a mod](https://code.claude.com/docs/en/plugins/mods/test), [Interface gallery for mods](https://code.claude.com/docs/en/plugins/mods/gallery)
+- Related: SKILL-077, SKILL-079, SKILL-083
+
+**Loop.** `claude --plugin-dir ./mod` loads a directory for one session and reloads the module on save. `claude plugin validate ./mod` lists `hooks:` and `calls:` (`--strict` for warnings as errors, `--json`). Claude writes a mod through the built-in `plugin-authoring` skill into `~/.claude/dev-mods/<session id>/`; you approve each file in `default` and `acceptEdits` (protected path), then hot reloading. It never loads in `claude -p`, `dontAsk`, `--safe-mode`, `--bare`, `disableAllHooks` or a managed block. The folder is deleted after `cleanupPeriodDays`, so copy a keeper out. Needs v2.1.287.
+
+**Tests.** `*.test.ts` or `*.test.tsx` files, run with `claude plugin test [dir]` (exit 1 on failure, so CI works). Import `test`, `expect` and `mock` from `claude-code/testing`. A file with no `test()` fails with `declares no test(): nothing ran`; one test gets 5 seconds unless `timeoutMs`. Tested 2026-11-01, v2.1.296: a test file importing only `test` printed `(fail) the file did not load`, `it declares no test(): nothing ran`.
+
+**Rules that trip authors:**
+- The test's `$` fires events; it isn't the mods API. Register every stub with `on` before the first call on `$`.
+- Every mods API call needs a stub that returns `{ value }` (or `{ deny }`); a bare value fails with `returned neither { value } nor { deny }`, and a missing one with `no implementation for <name>`. `ui.invalidate`, `$.state` and `session.append` are answered by the kit.
+- `session.start` doesn't run by itself. A hook the kit skips doesn't fail the test; it shows under `the engine reported:` only if a later check fails.
+- A `ui.render` hook that returns `next(e)` needs a `ui.render` stub; a `turn.step` stub is an async generator. `mock.clock(on)` moves time by hand.
+
+The gallery page is samples only.
+
+## [SKILL-091] Organisation policy for mods: which managed setting stops what
+- Type: comparison
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Manage mods for your organization](https://code.claude.com/docs/en/plugins/mods/admin), [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference)
+- Related: SKILL-076, SKILL-085, SKILL-092, SKILL-034
+
+All in managed settings (file, MDM or the admin console). Mods are on by default; the admin page says "v2.1.286 and later" and the create page v2.1.287 (SKILL-075 separates terminal and desktop).
+
+| You want | Set |
+|---|---|
+| No installed mod runs, settings hooks untouched | `pluginConfigs["cc-plugin-sec-default@builtin"].options.allowManagedModsOnly: true` |
+| Only your organisation's mods | The same option, plus your mods installed as "yours" (SKILL-092), plus `disableSideloadFlags` |
+| No mods and no hooks at all | `disableAllHooks: true` (managed hooks too; custom status lines and `/goal` stop) |
+| Wider than the first row | `allowManagedHooksOnly`: only your mods and built-ins load, and users' settings hooks are blocked |
+| Mods only from approved marketplaces | Marketplace restrictions plus `disableSideloadFlags: true`; it rejects `--plugin-dir` and `--plugin-url`, keeps Claude-written mods out, and also rejects `--agents` and `--mcp-config` |
+| Let a user's mod approve past a `deny` rule | `allowModsToOverrideDenyRules: true`, under the same `options` |
+
+**Rules for the guard options.** Read only from managed settings, and only under the id `cc-plugin-sec-default@builtin` in `pluginConfigs` (inside `options`) (`prependPlugins` accepts `sec-default@builtin`); the same keys in user, project, local or `--settings` files do nothing. If you set `prependPlugins`, name the guard in it or it doesn't load. The guard fails closed: if it can't read managed settings it refuses every user's mod. `allowManagedModsOnly` also covers `--plugin-dir` mods and mods Claude wrote in the session. It works on Bedrock, Vertex and Foundry when delivered as a file or MDM. `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=0` is ignored from v2.1.287.
+
+Check on a test machine: `claude --plugin-dir ./first-mod` shows the guard's message naming `allowManagedModsOnly`.
+
+## [SKILL-092] Gaps in mod controls, running your own mods and writing a policy mod
+- Type: pattern
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Manage mods for your organization](https://code.claude.com/docs/en/plugins/mods/admin), [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference)
+- Related: SKILL-076, SKILL-084, SKILL-091
+
+**What the guard does not cover.**
+- A `WebFetch` deny rule or `CLAUDE_CODE_DISABLE_WEB_FETCH` doesn't stop mods' `$.http.fetch`. A policy that doesn't allow WebFetch does. `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` stops only built-in mods and requests carrying the session's Anthropic credentials (before v2.1.288 it stopped every mod's fetch).
+- Nothing covers a program started with `$.process.run`, and a denied `Read(.env)` doesn't stop `$.fs.read`.
+- Where the guard loads, a user's mod hooks on `classic.*`, `prompt.compose`, `prompt.section`, `prompt.context`, `prompt.attachment`, `skill.prompt`, `attribution.text`, `session.compact`, `settings.read` and some `session.append` rows never run. `/plugin` says so (v2.1.299+).
+- Three crashes of the worker thread that runs installed mods unload every non-built-in mod, yours too, until `/reload-plugins`. `--safe-mode` turns installed mods off.
+- In auto mode a call a mod approves skips the classifier, unless the guard loads and the session uses `--permission-prompt-tool` or an SDK `canUseTool`.
+
+**Mods that count as yours** need all three: managed `enabledPlugins` true, a managed marketplace given as an absolute directory on the machine (an `extraKnownMarketplaces` path), and a marketplace listing the plugin by relative path. Put the directory on every machine with device management, writable only by an administrator. A plugin Claude Code copies from GitHub, git, a URL or npm counts as a user's, whatever `enabledPlugins` says. Debug line for a wrong setup: `prependPlugins names ..., which is not an enabled managed plugin with a hooks module; skipped`. `prependPlugins` and `appendPlugins` in user settings only work with no managed settings and a non-Team/Enterprise login.
+
+**Policy mod.** Hook `plugin.register`: `e.tier` and `e.uses.calls` (like `process.run`) decide `{ refuse: reason }`. A hook on `fs.write` audits other mods. A throwing check fails open, so add `.catch` returning `{ refuse }` for the `user` tier and `next(e)` for others.
+
 ## Recommendations for our setup
 
 Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh-md-files` and `skill-workshop`. Their source is now FreekMencke/claude-skills (SKILL-050, SKILL-056, SKILL-059).
@@ -1910,6 +2115,7 @@ Reviewed on 2026-10-12: `roadmap-issues`, `parallel-code-orchestrator`, `refresh
 
 ## Open questions
 
+- **Mods: parts of `interface` and `reference` not turned into entries.** Per-element props, the render-site props table and the Desktop and VS Code differences (SKILL-083 to SKILL-092 cover behaviour, limits and policy, not drawing). The reference says it is current as of v2.1.290 (CLI) and v2.1.299 (VS Code); local Claude Code was 2.1.296. Whether the `.catch` and guard behaviours hold on Desktop was not tested.
 - **Desktop WSL mechanism.** Which launch factor stops desktop WSL sessions from loading `~/.claude/skills/synced/`: the host-brokered auth, or something in the app's inline `--settings`? The bisect (SKILL-050) ruled out the CLI version, the entrypoint variable and `--setting-sources`. The inline settings could not be inspected, because reading the process command line was blocked as credential exploration.
 - **Plugins in desktop WSL sessions.** Is it intended that they load (SKILL-052) when the docs say they don't, or will a later app build stop them loading?
 - **Skill commands in the desktop Code tab.** Do `/skills` and `/context` work there? It's undocumented and wasn't tested. `/skill-doctor` doesn't, at least in desktop WSL sessions (SKILL-054).
