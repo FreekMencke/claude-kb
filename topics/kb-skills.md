@@ -673,7 +673,7 @@ Anthropic's skill-creator skill is installed with `/plugin install skill-creator
   - `improve_description.py` rewrites the description from the training failures only and picks the best by held-out score.
 - **Fidelity caveat** (from reading `run_eval.py`): it detects triggering through a temporary `.claude/commands/` stub, and counts it as a miss if the first tool call is anything other than `Skill` or `Read`.
 
-The blog reports tuning "improved triggering on 5 of 6 public skills". Its eval format is not compatible with `claude plugin eval`.
+The blog reports tuning "improved triggering on 5 out of 6 public skills". Its eval format is not compatible with `claude plugin eval`.
 
 ## [SKILL-028] Designing a trigger eval set
 - Type: recommendation
@@ -833,7 +833,7 @@ my-plugin/
 **Anthropic's marketplaces.**
 - `claude-plugins-official` is added automatically.
 - `claude-community` must be added by hand and is SHA-pinned.
-- `claude-code-plugins` (the anthropics/claude-code repo) holds demo plugins.
+- `claude-code-plugins` (the anthropics/claude-code repo) is deprecated ("The `claude-code-plugins` marketplace in `anthropics/claude-code` is deprecated."); install with `claude plugin install <plugin>@claude-plugins-official`. `ralph-wiggum` is now `ralph-loop`.
 
 ## [SKILL-035] Plugin versioning: a fixed `version` pins users
 - Type: anti-pattern
@@ -932,7 +932,7 @@ The agentskills.io reference validator is `skills-ref validate ./my-skill`. In-s
 
 **Sharing** (Team and Enterprise):
 - Recipients get view-only access.
-- "Publish to org" can require review. The help article starts Team at "Open" and Enterprise at off, and switches an org that hadn't chosen a setting to "Requires review" on 2026-10-02; it doesn't limit that switch to Enterprise.
+- "Publish to org" can require review. The help article: Team starts at "Open" (or "Off" if Share with organization was already off). Enterprise: "If you haven't chosen a setting, Publishing is set to \"Requires review.\"" From November 4 (no year given) it changes to "Open" for organizations with Skill and plugin security scanning on.
 - Security scanning on Enterprise blocks malicious skills and puts a caution banner on risky ones.
 
 **Org provisioning**: Organization settings › Plugins & skills. To target a group, bundle the skills into a plugin.
@@ -1007,7 +1007,7 @@ Portability rules:
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise), [Plugin security](https://code.claude.com/docs/en/plugins/security), [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
 - Related: SKILL-010, SKILL-037, SKILL-069, SKILL-068, SKILL-064, SKILL-074
 
-"Only use skills from trusted sources." Installing a skill or plugin is installing software. "A Claude Code plugin you install can execute arbitrary code on your machine with your user privileges."
+"Use Skills only from trusted sources" (overview page). Installing a skill or plugin is installing software. "A Claude Code plugin you install can execute arbitrary code on your machine with your user privileges."
 - Hooks, monitors, MCP and LSP servers (and any process a mod starts) run *outside* the sandbox. A `bin/` executable runs as a Claude Bash command, so permission rules apply to it; `bin/` is on the shell's `PATH`, so read every file in it before installing.
 - Auto-update can change files after you reviewed them.
 
