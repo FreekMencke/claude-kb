@@ -131,7 +131,7 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Features overview: context costs](https://code.claude.com/docs/en/features-overview#understand-context-costs), [Context window](https://code.claude.com/docs/en/context-window)
 - Related: TOK-002, TOK-005, TOK-020, TOK-065
 
@@ -173,7 +173,7 @@ Confidence note: the figures are our local measurement; community captures (Syst
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs), [Best practices: Tell Claude what it can't see](https://code.claude.com/docs/en/best-practices)
 - Related: TOK-065, TOK-031, SKILL-024, REPO-045
 
@@ -194,7 +194,7 @@ Loading rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-003, TOK-006
 
@@ -209,7 +209,7 @@ What loads at the start of each conversation:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Skills: descriptions are cut short](https://code.claude.com/docs/en/skills), [Env vars](https://code.claude.com/docs/en/env-vars), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-061, TOK-064, TOK-067, SKILL-003, SKILL-014, SKILL-030, SKILL-045
 
@@ -236,7 +236,7 @@ The 2% figure in changelog v2.1.32 is outdated. Community estimates are about 2,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Sub-agents: what loads at startup](https://code.claude.com/docs/en/sub-agents), [Prompt caching: subagents](https://code.claude.com/docs/en/prompt-caching), local transcripts (`<session>/subagents/*.jsonl`)
 - Related: TOK-035, TOK-036, TOK-052, ORCH-007
 
@@ -255,7 +255,7 @@ Confidence note: the cache behavior is documented; the sizes are our local measu
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Model config: extended context, auto-compact](https://code.claude.com/docs/en/model-config), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)
 - Related: TOK-032, TOK-008
 
@@ -276,7 +276,7 @@ A large window removes the automatic brake on session length, so cost per turn k
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Costs: why usage climbs in a long session](https://code.claude.com/docs/en/costs), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows), local transcripts
 - Related: TOK-009, TOK-030, TOK-032
 
@@ -325,7 +325,7 @@ Confidence note: derived from our local 6-day measurement and list prices.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Commands](https://code.claude.com/docs/en/commands), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-011, TOK-013, TOK-112
 
@@ -351,7 +351,7 @@ Help-center articles still mention `/status` for remaining allocation. In curren
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Status line](https://code.claude.com/docs/en/statusline), [Model config](https://code.claude.com/docs/en/model-config)
 - Related: TOK-082, TOK-032
 
@@ -375,7 +375,7 @@ With `CLAUDE_CODE_AUTO_COMPACT_WINDOW` set, "The status line's `used_percentage`
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Monitoring usage](https://code.claude.com/docs/en/monitoring-usage), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-018
 
@@ -426,7 +426,7 @@ Confidence note: the transcript location is documented (official-docs); the `usa
 - Type: fact
 - Applies to: Claude Code, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Usage and length limits](https://support.claude.com/en/articles/11647753), [Using Claude Code with Pro/Max](https://support.claude.com/en/articles/11145838), [Max plan](https://support.claude.com/en/articles/11049741), [Pro plan](https://support.claude.com/en/articles/8325606), [Team plan](https://support.claude.com/en/articles/9266767), [Fable usage](https://support.claude.com/en/articles/15424964), [Usage credits](https://support.claude.com/en/articles/12429409)
 - Related: TOK-015, TOK-011
 
@@ -446,7 +446,7 @@ Unverified: reported May 2026 limit doubling and peak-hour changes, and per-mode
 - Type: recommendation
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Usage and length limits](https://support.claude.com/en/articles/11647753), [Usage limit best practices](https://support.claude.com/en/articles/9797557)
 - Related: TOK-014, TOK-030
 
@@ -465,7 +465,7 @@ Check Settings → Usage for the 5-hour and weekly bars.
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting), [Thinking cost](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Rate limits](https://platform.claude.com/docs/en/api/rate-limits)
 - Related: TOK-017, TOK-050
 
@@ -486,7 +486,7 @@ Claude 4.7+, Fable and Mythos use a tokenizer that produces **about 30% more tok
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode)
 - Related: TOK-050, TOK-054, TOK-055
 
@@ -514,7 +514,7 @@ All multipliers stack. Opus 5.5 is 2x Sonnet 5.5 per token; a model switch mid-s
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Usage & Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api), [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-012
 
@@ -539,7 +539,7 @@ Access and console:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [MCP: scale with tool search](https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search), [Env vars](https://code.claude.com/docs/en/env-vars), [Changelog](https://code.claude.com/docs/en/changelog), [Agent SDK: tool search](https://code.claude.com/docs/en/agent-sdk/tool-search)
 - Related: TOK-021, TOK-022, TOK-053, CAPI-026
 
@@ -565,7 +565,7 @@ History: v2.1.7 (Jan 2026) made `auto` at 10% the default, and later releases sw
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use), [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [PolicyLayer GitHub MCP cost](https://policylayer.com/token-cost/github), [Unblocked MCP budget](https://getunblocked.com/blog/mcp-token-budget-autopsy/)
 - Related: TOK-020, TOK-024
 
@@ -594,7 +594,7 @@ Confidence note: the Anthropic figures are official; the per-server community nu
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Costs](https://code.claude.com/docs/en/costs), [MCP: scopes](https://code.claude.com/docs/en/mcp), [Sub-agents](https://code.claude.com/docs/en/sub-agents)
 - Related: TOK-020, TOK-071
 
@@ -618,7 +618,7 @@ With tool search active, toggling a server mid-session doesn't break the cache. 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [MCP](https://code.claude.com/docs/en/mcp), [Env vars](https://code.claude.com/docs/en/env-vars)
 - Related: TOK-042
 
@@ -633,7 +633,7 @@ Raising `MAX_MCP_OUTPUT_TOKENS` is rarely the right fix. Prefer tools with filte
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp), [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use), [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context)
 - Related: TOK-021, SKILL-018
 
@@ -647,7 +647,7 @@ In Claude Code the equivalents are a skill script that processes data and prints
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Keep cost and context down](https://code.claude.com/docs/en/best-practices), [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Costs: manage context proactively](https://code.claude.com/docs/en/costs)
 - Related: TOK-008, TOK-031, TOK-070
 
@@ -665,7 +665,7 @@ Instructions given only in conversation are lost on `/clear` and compaction (bes
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Context window](https://code.claude.com/docs/en/context-window), [Costs](https://code.claude.com/docs/en/costs), [Skills](https://code.claude.com/docs/en/skills), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-032, SKILL-006, MEM-003, TOK-114, TOK-116
 
@@ -720,7 +720,7 @@ Confidence note: the knobs are documented (official-docs); the savings come from
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Interactive mode: /btw](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-030, TOK-031
 
@@ -738,7 +738,7 @@ Rewinding truncates to an already-cached prefix, so it's cheaper than `/compact`
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Sessions: resume from a summary](https://code.claude.com/docs/en/sessions#resume-from-a-summary), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-052, TOK-086
 
@@ -762,7 +762,7 @@ Confidence note: the share of rebuilds is our local measurement (single-source).
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Know what subagents cost](https://code.claude.com/docs/en/best-practices), [Sub-agents: isolate high-volume operations](https://code.claude.com/docs/en/sub-agents#isolate-high-volume-operations), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: TOK-006, TOK-009, TOK-036, ORCH-020, ORCH-034, TOK-103
 
@@ -785,7 +785,7 @@ For a long result the lead will only slice or forward, have the subagent write i
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Sub-agents: choose a model](https://code.claude.com/docs/en/sub-agents), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-006, TOK-035, ORCH-003, ORCH-005, ORCH-030
 
@@ -805,7 +805,7 @@ Confidence note: the official advice is documented; our numbers are local measur
 - Type: fact
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Costs: agent teams](https://code.claude.com/docs/en/costs)
 - Related: ORCH-020, ORCH-025, ORCH-010
 
@@ -815,7 +815,7 @@ Merged into ORCH-020 (kb-orchestration.md) on 2026-10-12. Token multipliers are 
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction), [Compaction threshold](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold), [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing), [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)
 - Related: TOK-050, TOK-055, TOK-114, TOK-115, CAPI-023, CAPI-024, CAPI-025
 
@@ -840,7 +840,7 @@ On-demand compaction (beta `compact-2026-09-04`): "You can't combine `compaction
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference: Read](https://code.claude.com/docs/en/tools-reference#read-tool-behavior), [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
 - Related: TOK-041, TOK-062, TOK-106
 
@@ -863,7 +863,7 @@ CHANGELOG: 2.1.86 "deduplicates unchanged re-reads"; Read "cannot split one long
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Costs](https://code.claude.com/docs/en/costs), [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: TOK-040, TOK-084
 
@@ -882,7 +882,7 @@ A "codebase-overview" skill (official suggestion) or a small repo map (TOK-085) 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference#output-limits), [Costs: offload processing to hooks](https://code.claude.com/docs/en/costs), [Hooks](https://code.claude.com/docs/en/hooks)
 - Related: TOK-009, TOK-083, TOK-023, TOK-108, TOK-109
 
@@ -910,7 +910,7 @@ Confidence note: the limits and hook pattern are documented; the 6-day numbers a
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Terminal config: paste large content](https://code.claude.com/docs/en/terminal-config#paste-large-content), [Vision](https://platform.claude.com/docs/en/build-with-claude/vision), [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support)
 - Related: TOK-009, TOK-040
 
@@ -932,7 +932,7 @@ Confidence note: the paste, image and PDF rules are documented; our counts are l
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permissions: read and edit](https://code.claude.com/docs/en/permissions#read-and-edit)
 - Related: TOK-040, TOK-071
 
@@ -947,7 +947,7 @@ Limits of deny rules:
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-017, TOK-051, TOK-054, CAPI-027
 
@@ -975,7 +975,7 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics), [Cookbook: prompt caching](https://github.com/anthropics/claude-cookbooks/blob/main/misc/prompt_caching.ipynb), [Cookbook: speculative prompt caching](https://github.com/anthropics/claude-cookbooks/blob/main/misc/speculative_prompt_caching.ipynb)
 - Related: TOK-050
 
@@ -995,7 +995,7 @@ Pitfall: non-deterministic JSON key order in `tool_use` input (Go, Swift) silent
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching), [Costs](https://code.claude.com/docs/en/costs), [Lessons from building Claude Code: prompt caching is everything](https://claude.dev/blog/lessons-from-building-claude-code-prompt-caching-is-everything/)
 - Related: TOK-053, TOK-034, TOK-006, ORCH-040
 
@@ -1021,7 +1021,7 @@ Verify with `claude -p "hi" --output-format json` and look at `usage.cache_creat
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Prompt caching (Claude Code)](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-052, TOK-020, TOK-070
 
@@ -1047,7 +1047,7 @@ Rule of thumb: pick model and effort at the start of a session, not in the middl
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing), [Rate limits](https://platform.claude.com/docs/en/api/rate-limits), [Cookbook: batch processing](https://github.com/anthropics/claude-cookbooks/blob/main/misc/batch_processing.ipynb)
 - Related: TOK-017, TOK-050
 
@@ -1067,7 +1067,7 @@ Good fits: evals, bulk classification or extraction, nightly jobs, re-verifying 
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Thinking cost](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost), [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-017, TOK-053, ORCH-028, TOK-115
 
@@ -1089,7 +1089,7 @@ In Claude Code, "You can't turn off thinking on Opus 5.5, Sonnet 5.5, Haiku 5.5,
 - Type: recommendation
 - Applies to: Claude API
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Cookbook: cost optimization](https://github.com/anthropics/claude-cookbooks/blob/main/cost_optimization/cost_optimization.ipynb)
 - Related: TOK-050, TOK-054, TOK-055, TOK-021
 
@@ -1117,7 +1117,7 @@ Tool-search rule of thumb: "once your schemas run past ~10K tokens… tool searc
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Agent Skills overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Equipping agents with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
 - Related: SKILL-004
 
@@ -1147,7 +1147,7 @@ Confidence note: the per-turn cost is documented (official-docs); the length gui
 - Type: recommendation
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Skill best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Skills (Claude Code)](https://code.claude.com/docs/en/skills), [anthropics/skills](https://github.com/anthropics/skills)
 - Related: SKILL-004, SKILL-006, SKILL-016, SKILL-017
 
@@ -1163,7 +1163,7 @@ Built-in prompts shrank too: the `claude-api` skill "from ~200k+ tokens to ~25k"
 - Type: pattern
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Skill best practices: utility scripts](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Skills: dynamic context injection](https://code.claude.com/docs/en/skills), [Equipping agents](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
 - Related: SKILL-018, SKILL-008
 
@@ -1173,7 +1173,7 @@ Merged on 2026-10-12: scripts into SKILL-018 and `!` dynamic injection into SKIL
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Skills](https://code.claude.com/docs/en/skills), [Features overview](https://code.claude.com/docs/en/features-overview)
 - Related: TOK-005, TOK-035, SKILL-006, SKILL-014
 
@@ -1192,7 +1192,7 @@ A subagent's `skills:` field preloads full bodies at spawn (max 32), so list onl
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Features overview](https://code.claude.com/docs/en/features-overview), [Memory: rules](https://code.claude.com/docs/en/memory), [Costs](https://code.claude.com/docs/en/costs)
 - Related: TOK-003, TOK-064, SKILL-021, SKILL-022
 
@@ -1212,7 +1212,7 @@ Costs page: "If it contains detailed instructions for specific workflows (like P
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Skills: skill content lifecycle](https://code.claude.com/docs/en/skills)
 - Related: SKILL-006
 
@@ -1222,7 +1222,7 @@ Merged into SKILL-006 (kb-skills.md) on 2026-10-12. Read that entry for how an i
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Plugins](https://code.claude.com/docs/en/plugins), [Plugins: measure](https://code.claude.com/docs/en/plugins/measure), [Sub-agents](https://code.claude.com/docs/en/sub-agents)
 - Related: TOK-005, TOK-061
 
@@ -1239,7 +1239,7 @@ Subagent definitions: descriptions of custom subagents are always listed. Claude
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Keep cost and context down](https://code.claude.com/docs/en/best-practices), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Costs](https://code.claude.com/docs/en/costs), [Prompt caching](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-030, TOK-032, TOK-035, TOK-053
 
@@ -1267,7 +1267,7 @@ Confidence note: each row's detail and confidence is in the linked entry.
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Skills](https://code.claude.com/docs/en/skills), [Costs](https://code.claude.com/docs/en/costs), [Permissions](https://code.claude.com/docs/en/permissions)
 - Related: TOK-003, TOK-005, TOK-022, TOK-036
 
@@ -1292,7 +1292,7 @@ Confidence note: each row's detail and confidence is in the linked entry.
 - Type: anti-pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), [Batch](https://platform.claude.com/docs/en/build-with-claude/batch-processing), [Cookbook: cost optimization](https://github.com/anthropics/claude-cookbooks/blob/main/cost_optimization/cost_optimization.ipynb)
 - Related: TOK-050, TOK-054, TOK-056
 
@@ -1429,7 +1429,7 @@ Confidence note: the savings figures are the vendors' own claims.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Aider repo map](https://aider.chat/docs/repomap.html), [Aider commands](https://aider.chat/docs/usage/commands.html), [Cline auto-compact](https://docs.cline.bot/features/auto-compact), [Cline new_task (blog)](https://cline.bot/blog/unlocking-persistent-memory-how-clines-new_task-tool-eliminates-context-window-limitations), [Cline commands](https://docs.cline.bot/core-workflows/using-commands), [Gemini CLI commands](https://google-gemini.github.io/gemini-cli/docs/cli/commands.html), [Gemini CLI configuration](https://github.com/google-gemini/gemini-cli/blob/b25669d84e1a404e30c176d779e732e25dafcec0/docs/reference/configuration.md), [Codex config schema](https://github.com/openai/codex/blob/b5115cdd669d37a8635a9742851e97ba4fb1d42c/codex-rs/core/config.schema.json), [OpenCode config](https://github.com/anomalyco/opencode/blob/582c974ee362683f5dd5c7f9741cae207581c6b5/packages/web/src/content/docs/config.mdx)
 - Related: TOK-041, TOK-030, TOK-032, TOK-114
 
@@ -1454,7 +1454,7 @@ Confidence note: each tool's behavior is from its own docs; Cline's quality figu
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [April 23 postmortem](https://www.anthropic.com/engineering/april-23-postmortem), [claude-code#41930](https://github.com/anthropics/claude-code/issues/41930), [claude-code#38335](https://github.com/anthropics/claude-code/issues/38335)
 - Related: TOK-052, TOK-053, TOK-034
 
@@ -1483,7 +1483,7 @@ TOK-087 onwards (FreekMencke/claude-kb#26): what the tools this knowledge base i
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-11-01
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.1.290), [Inside Claude Code's web tools (mikhail.io)](https://mikhail.io/2025/10/claude-code-web-tools/), [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127)
 - Related: TOK-088, TOK-089, TOK-102
 
@@ -1499,7 +1499,7 @@ Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): WebFetch of 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.0.60), [MCP output limits](https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings)
 - Related: TOK-087, TOK-089, TOK-023
 
@@ -1516,7 +1516,7 @@ So on Claude docs, WebFetch under 100,000 characters already gives full text, an
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
 - Related: TOK-087, TOK-088, TOK-090, TOK-040, TOK-042
 
@@ -1536,7 +1536,7 @@ grep -n 'WEB_SEARCH\|WEBFETCH' env-vars.md
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
 - Related: TOK-089, TOK-096
 
@@ -1555,7 +1555,7 @@ At about 4 characters per token, the Claude Code `llms-full.txt` is roughly 2.4M
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Environment variables](https://code.claude.com/docs/en/env-vars), [Permissions](https://code.claude.com/docs/en/permissions), [Data usage: WebFetch domain safety check](https://code.claude.com/docs/en/data-usage)
 - Related: TOK-087, TOK-088, REPO-033
 
@@ -1576,7 +1576,7 @@ At about 4 characters per token, the Claude Code `llms-full.txt` is roughly 2.4M
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-11-01
 - Sources: [Tools reference: WebSearch tool behavior](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior), [Environment variables](https://code.claude.com/docs/en/env-vars), [Securely deploying AI agents](https://code.claude.com/docs/en/agent-sdk/secure-deployment), [LLM gateway](https://code.claude.com/docs/en/llm-gateway), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.1.212, 2.1.290)
 - Related: TOK-093, TOK-094, TOK-099
 
@@ -1614,7 +1614,7 @@ Neither reached the official page. Extended bought breadth, not authority.
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool), [Web fetch tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: TOK-092, TOK-017, TOK-024, TOK-050
 
@@ -1653,7 +1653,7 @@ Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): a lookup on 
 - Type: tool
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [Claude Code docs server card](https://code.claude.com/docs/.well-known/mcp/server-card.json), [MCP in Claude Code](https://code.claude.com/docs/en/mcp)
 - Related: TOK-090, TOK-095, TOK-097, TOK-020
 
@@ -1716,7 +1716,7 @@ Rules that follow:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [claude-agent-sdk-demos research-agent](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/research-agent), [Tools reference: session search limit](https://code.claude.com/docs/en/tools-reference#session-search-limit), [README: Design decisions](https://github.com/FreekMencke/claude-kb/blob/main/README.md#design-decisions)
 - Related: ORCH-020, ORCH-025, ORCH-030, TOK-092, TOK-100
 
@@ -1731,7 +1731,7 @@ For one knowledge-base topic (4–6 questions), that means 1–2 subagents split
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [research_lead_agent.md](https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/prompts/research_lead_agent.md), [One-liner research agent](https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/00_The_one_liner_research_agent.ipynb)
 - Related: PROMPT-012, PROMPT-013, PROMPT-014, TOK-099, TOK-101
 
@@ -1749,7 +1749,7 @@ PROMPT-012 covers any cold-start brief: objective, what's known, inputs, boundar
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [One-liner research agent](https://github.com/anthropics/claude-cookbooks/blob/main/claude_agent_sdk/00_The_one_liner_research_agent.ipynb), [claude-agent-sdk-demos research-agent](https://github.com/anthropics/claude-agent-sdk-demos/tree/main/research-agent)
 - Related: PROMPT-013, ORCH-034, ORCH-035, TOK-100, TOK-103
 
@@ -1766,7 +1766,7 @@ What to ask for, per claim: the URL, the exact quoted wording for any number, de
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference](https://code.claude.com/docs/en/tools-reference), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [README: Re-verification routine](https://github.com/FreekMencke/claude-kb/blob/main/README.md#re-verification-routine)
 - Related: TOK-087, TOK-089, TOK-092, TOK-093, TOK-098, TOK-101
 
@@ -1791,7 +1791,7 @@ Confidence note: each row's detail and confidence is in the linked entry.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Multi-agent research system (appendix)](https://www.anthropic.com/engineering/multi-agent-research-system), [Agent SDK: subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [claude-agent-sdk-demos researcher prompt](https://github.com/anthropics/claude-agent-sdk-demos/blob/826b268506a5f3707623c9e6140b200befcbebae/research-agent/research_agent/prompts/researcher.txt), [superpowers implementer prompt](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/implementer-prompt.md)
 - Related: ORCH-034, ORCH-035, ORCH-007, TOK-035, TOK-101, TOK-104, TOK-105, TOK-106, TOK-107
 
@@ -1808,7 +1808,7 @@ Tested 2026-10-16, v2.1.296, `claude -p` on Haiku 5.5, 3 runs per arm: a 40,225-
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [The .claude directory: session scratchpad](https://code.claude.com/docs/en/claude-directory#session-scratchpad-directory), [Hooks: common input fields](https://code.claude.com/docs/en/hooks), [superpowers sdd-workspace](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/scripts/sdd-workspace), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-103, SESS-016, ORCH-009, HOOK-003
 
@@ -1827,7 +1827,7 @@ Tested 2026-10-16, desktop Code tab on WSL, v2.1.299: four parallel subagents wr
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Tools reference](https://code.claude.com/docs/en/tools-reference), [Hooks: SubagentStop](https://code.claude.com/docs/en/hooks), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-013, TOK-103, ORCH-007, ORCH-006
 
@@ -1845,7 +1845,7 @@ Confidence note: the symlink and the warning are observed harness behaviour, not
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-103, TOK-040, SKILL-017
 
@@ -1862,7 +1862,7 @@ Confidence note: the quoted rules are official for skill files and Read; applyin
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Hooks: SubagentStop](https://code.claude.com/docs/en/hooks), [Permission modes: protected paths](https://code.claude.com/docs/en/permission-modes), [VoltAgent multi-agent-coordinator](https://github.com/VoltAgent/awesome-claude-code-subagents/blob/408d3c9eee2d0c75c12a3abb5de29e53c2ca6b9e/categories/09-meta-orchestration/multi-agent-coordinator.md), [superpowers SKILL.md](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/subagent-driven-development/SKILL.md)
 - Related: TOK-103, TOK-104, TOK-105, TOK-106, ORCH-005, ORCH-019, ORCH-023
 
@@ -1886,7 +1886,7 @@ Tested 2026-10-16, v2.1.296, `claude -p`, n=2: with `CLAUDE_CODE_MAX_OUTPUT_TOKE
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Tools reference: output limits](https://code.claude.com/docs/en/tools-reference), [Skills: injected command output](https://code.claude.com/docs/en/skills), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-042, TOK-109, TOK-110, HOOK-004
 
@@ -1904,7 +1904,7 @@ Tested 2026-10-16, desktop Code tab on WSL, v2.1.299, Bash tool: `set -o` showed
 - Type: recommendation
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Writing effective tools for agents](https://www.anthropic.com/engineering/writing-tools-for-agents), [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [OpenAI cli-creator: agent CLI patterns](https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/cli-creator/references/agent-cli-patterns.md), [clig.dev](https://clig.dev/), [HumanLayer: context-efficient backpressure](https://www.humanlayer.dev/blog/context-efficient-backpressure), [npm logging](https://docs.npmjs.com/cli/v11/using-npm/logging)
 - Related: TOK-108, TOK-042, SKILL-018, MCP-018, FLOW-011, FLOW-013, HOOK-004
 
@@ -1924,7 +1924,7 @@ Confidence note: a synthesis; Anthropic's rules are written for tools and valida
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Environment variables](https://code.claude.com/docs/en/env-vars), [CLI hints for plugins](https://code.claude.com/docs/en/plugins/cli-hints), [Permissions](https://code.claude.com/docs/en/permissions), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [gh agents/detect.go](https://github.com/cli/cli/blob/b758ce35643e64cfe4d61bc58b6009c4088e5e0c/internal/agents/detect.go)
 - Related: TOK-108, TOK-111, HOOK-003
 
@@ -1941,7 +1941,7 @@ Tested 2026-10-16, desktop Code tab on WSL, v2.1.299: `CLAUDECODE=1`, `CLAUDE_CO
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Vitest reporters](https://vitest.dev/guide/reporters), [Bun test: AI agent integration](https://bun.com/docs/test), [testthat LlmReporter](https://testthat.r-lib.org/reference/LlmReporter.html), [pytest reference](https://docs.pytest.org/en/stable/reference/reference.html), [go help test](https://pkg.go.dev/cmd/go#hdr-Test_packages), [git docs](https://git-scm.com/docs/git)
 - Related: TOK-108, TOK-110, TOK-042, FLOW-011
 
@@ -1965,7 +1965,7 @@ Our largest Bash outputs were `git diff` and `gh`, not test runs (TOK-042), so q
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Costs: background token usage](https://code.claude.com/docs/en/costs), [Interactive mode](https://code.claude.com/docs/en/interactive-mode), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Permission modes: cost and latency](https://code.claude.com/docs/en/permission-modes), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-008, TOK-010, TOK-053, TOK-030
 
@@ -2015,7 +2015,7 @@ Dropping old tool outputs while keeping recent turns is the best-measured way to
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-16
+- Last verified: 2026-11-01
 - Sources: [Task budgets](https://platform.claude.com/docs/en/build-with-claude/task-budgets), [Context windows: context awareness](https://platform.claude.com/docs/en/build-with-claude/context-windows)
 - Related: TOK-038, TOK-055, TOK-072
 
@@ -2104,7 +2104,7 @@ Costs are cache-aware, and the arms were a baseline for the authors' tool. No Cl
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Code Review costs and usage](https://code.claude.com/docs/en/code-review-costs), [Set up Code Review](https://code.claude.com/docs/en/code-review-setup), [Find bugs with ultrareview](https://code.claude.com/docs/en/ultrareview)
 - Related: REPO-029, SURF-036, SURF-037
 
@@ -2122,7 +2122,7 @@ The Code Review pages fetched 2026-10-30 give no average; REPO-029 has the launc
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop)
 - Related: ORCH-015, CAPI-011, FLOW-023
 
@@ -2144,7 +2144,7 @@ Read-only tools run in parallel, `Edit`, `Write` and `Bash` run sequentially, an
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Observability with OpenTelemetry](https://code.claude.com/docs/en/agent-sdk/observability)
 - Related: TOK-012, INFRA-017
 

@@ -56,7 +56,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Angular versioning and releases](https://angular.dev/reference/releases) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/reference/releases.md)), npm registry (`npm view @angular/core time --json`, `npm view @angular/core dist-tags`)
 - Related: NG-002, NG-010
 
@@ -78,7 +78,7 @@ The registry agrees: `latest` is 22.2.3 (2026-10-14), 22.1.0 came 2026-07-29 and
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: npm registry (`npm view @angular/compiler-cli@<version> peerDependencies engines`, `npm view @angular/cli@<version> engines`), [Version compatibility](https://angular.dev/reference/versions) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/reference/versions.md)), [angular-cli CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [update guide data](https://raw.githubusercontent.com/angular/angular/main/adev/src/app/features/update/recommendations.ts), [An update on Angular's TypeScript 7-powered Compiler](https://blog.angular.dev/an-update-on-angulars-typescript-7-powered-compiler-9619a35e2b0a) (read from the blog's RSS feed; the page returned 403)
 - Related: NG-001, NG-010, TS-009, TS-015, NODE-001
 
@@ -103,7 +103,7 @@ Two official sources disagree with the packages:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [angular-cli CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [change-detection-eager migration at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/schematics/migrations/change-detection-eager/migration.ts), [best-practices.md](https://raw.githubusercontent.com/angular/angular/main/packages/core/resources/best-practices.md), [Announcing Angular v22](https://blog.angular.dev/announcing-angular-v22-c52bb83a4664), [angular-eslint CHANGELOG](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/CHANGELOG.md), `ChangeDetectionStrategy` in `@angular/core@22.2.3`'s type definitions
 - Related: NG-004, NG-010, NG-015
 
@@ -122,7 +122,7 @@ Tested 2026-10-17, `@angular/compiler-cli@22.2.3`, TypeScript 6.0.3, Node 24.21.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Zoneless guide](https://angular.dev/guide/zoneless) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/zoneless.md)), [angular CHANGELOG 21.0.0](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md)
 - Related: NG-003, NG-010, NG-012
 
@@ -139,7 +139,7 @@ Tested 2026-10-17, `@angular/compiler-cli@22.2.3`, TypeScript 6.0.3, Node 24.21.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular CHANGELOG 22.0.0 and 22.1.0](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [angular-cli CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [update guide data](https://raw.githubusercontent.com/angular/angular/main/adev/src/app/features/update/recommendations.ts)
 - Related: NG-003, NG-006, NG-010
 
@@ -164,7 +164,7 @@ Also in 22.0.0: binding two inputs, outputs or models to the same name, and `in`
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular CHANGELOG 21.0.0 to 22.2.0](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [angular-cli CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md)
 - Related: NG-005, NG-010
 
@@ -189,7 +189,7 @@ Deprecated in 22.0.0, so candidates for removal in v23: the Webpack builders (`@
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Creating and using services](https://angular.dev/guide/di/creating-and-using-services) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/di/creating-and-using-services.md)), [`service.ts` at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/di/service.ts), [angular CHANGELOG 22.0.0 and 22.1.0](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [core schematics collection at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/schematics/collection.json)
 - Related: NG-010, NG-011, NG-017
 
@@ -215,7 +215,7 @@ Tested 2026-10-17, `@angular/compiler-cli@22.2.3`, Node 24.21.0: `ngc` compiled 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular CHANGELOG 18.2.14, 19.2.15, 20.3.0, 21.0.0](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [angular-cli CHANGELOG 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [update guide data](https://raw.githubusercontent.com/angular/angular/main/adev/src/app/features/update/recommendations.ts), [GHSA-x288-3778-4hhx](https://github.com/angular/angular-cli/security/advisories/GHSA-x288-3778-4hhx)
 - Related: NG-006, NG-010
 
@@ -231,7 +231,7 @@ Our two SSR apps (osrs-tracker-web, freek-mencke-web) already use `AngularNodeAp
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular-cli CHANGELOG 21.0.0 and 22.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [Testing with Karma](https://angular.dev/guide/testing/karma) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/karma.md)), [Migrating to Vitest](https://angular.dev/guide/testing/migrating-to-vitest) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/migrating-to-vitest.md)), [migrate-karma-to-vitest at v22.2.3](https://raw.githubusercontent.com/angular/angular-cli/v22.2.3/packages/schematics/angular/migrations/migrate-karma-to-vitest/migration.ts), [Announcing Angular v21](https://blog.angular.dev/announcing-angular-v21-57946c34f14b)
 - Related: NG-010, NG-006
 
@@ -250,7 +250,7 @@ Our two Angular apps run Vitest through `@angular/build:unit-test`. Vitest itsel
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [core migrations.json at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/schematics/migrations.json), [CLI migration-collection.json at v22.2.3](https://raw.githubusercontent.com/angular/angular-cli/v22.2.3/packages/schematics/angular/migrations/migration-collection.json), [core collection.json at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/schematics/collection.json), `ng update`'s `utilities/migration.js` in `@angular/cli@22.2.3`, [update guide data](https://raw.githubusercontent.com/angular/angular/main/adev/src/app/features/update/recommendations.ts)
 - Related: NG-003, NG-005, NG-007, NG-009, NG-001
 
@@ -270,7 +270,7 @@ Left to you:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: JSDoc tags in angular/angular and angular/components source at tag v22.2.3 (e.g. [resource.ts](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/resource.ts), [debounce.ts](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/debounce.ts)), [angular CHANGELOG](https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md), [Announcing Angular v22](https://blog.angular.dev/announcing-angular-v22-c52bb83a4664), [Error boundaries guide](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/templates/error-boundaries.md), npm registry
 - Related: NG-007, NG-018, NG-004
 
@@ -294,7 +294,7 @@ The 22.0.0 CHANGELOG titles say `provideWebMcpTools` and `declareWebMcpTool`; th
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Angular CLI MCP Server](https://angular.dev/ai/mcp) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/ai/mcp-server-setup.md)), [mcp source at v22.2.3](https://github.com/angular/angular-cli/tree/v22.2.3/packages/angular/cli/src/commands/mcp), [angular-cli CHANGELOG](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [Announcing Angular v21](https://blog.angular.dev/announcing-angular-v21-57946c34f14b)
 - Related: NG-013, NG-014, NG-015, MCP-015
 
@@ -341,7 +341,7 @@ Tool results cost more than the definitions: `get_best_practices` returns the 2,
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Angular CLI MCP Server](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/ai/mcp-server-setup.md), `ai-config` schematic in `@schematics/angular@22.2.3`, [angular-cli CHANGELOG 22.1.0 and 22.1.4](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [npm exec](https://docs.npmjs.com/cli/commands/npm-exec), [MCP: installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes)
 - Related: NG-012, NG-013, MCP-002, MCP-004, MCP-028, MCP-019
 
@@ -363,7 +363,7 @@ Ours (2026-10-17): osrs-tracker-web and freek-mencke-web use exactly the snippet
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: `tools/best-practices.js` in `@angular/cli@22.2.3`, npm registry (`npm view @angular/core@<version> angular.bestPractices.path`), [best-practices.md at 22.2.3](https://unpkg.com/@angular/core@22.2.3/resources/best-practices.md) and [at 21.0.0](https://unpkg.com/@angular/core@21.0.0/resources/best-practices.md), [angular-cli CHANGELOG 21.0.0](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md)
 - Related: NG-012, NG-016, NG-003
 
@@ -379,7 +379,7 @@ So in a repo with `ng mcp`, this tool is the version-matched source for Angular'
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [LLM prompts and AI IDE setup](https://angular.dev/ai/develop-with-ai) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/ai/develop-with-ai.md)), [context files](https://github.com/angular/angular/tree/main/adev/src/context), [angular.dev/llms.txt](https://angular.dev/llms.txt), [llms-full.txt](https://angular.dev/assets/context/llms-full.txt), [docs deploy mapping](https://raw.githubusercontent.com/angular/angular/main/.github/actions/deploy-docs-site/lib/deployments.mts)
 - Related: NG-015, NG-017, MEM-008, REPO-045, TOK-090
 
@@ -397,7 +397,7 @@ For Claude Code: Claude Code reads `AGENTS.md` only when there's no CLAUDE.md (M
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular/skills](https://github.com/angular/skills) ([README](https://raw.githubusercontent.com/angular/skills/main/README.md), [angular-developer SKILL.md](https://raw.githubusercontent.com/angular/skills/main/angular-developer/SKILL.md), [angular-new-app SKILL.md](https://raw.githubusercontent.com/angular/skills/main/angular-new-app/SKILL.md)), [Agent Skills](https://angular.dev/ai/agent-skills) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/ai/agent-skills.md)), [Announcing Angular v22](https://blog.angular.dev/announcing-angular-v22-c52bb83a4664), [claude-skills sync workflow](https://github.com/FreekMencke/claude-skills/blob/main/.github/workflows/sync-angular-skill.yml)
 - Related: NG-016, NG-007, SKILL-041, SKILL-042, SKILL-032
 
@@ -413,7 +413,7 @@ Ours: claude-skills mirrors `angular-developer` weekly into the `freek-skills` p
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [WebMCP guide](https://angular.dev/ai/webmcp) ([source](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/ai/webmcp.md)), [`debug/ai/registration.ts` and `platform.ts` at v22.2.3](https://github.com/angular/angular/tree/v22.2.3/packages/core/src/debug/ai), [chrome-devtools-mcp third-party tools](https://raw.githubusercontent.com/ChromeDevTools/chrome-devtools-mcp/main/docs/third-party-developer-tools.md), [chrome-devtools-mcp configuration](https://raw.githubusercontent.com/ChromeDevTools/chrome-devtools-mcp/main/docs/configuration.md)
 - Related: NG-011, NG-012, MCP-028
 
@@ -428,7 +428,7 @@ chrome-devtools-mcp dispatches that event and lists the tools with `list_3p_deve
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-28
+- Last verified: 2026-11-01
 - Sources: [Resources guide at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/signals/resource.md), [httpResource guide at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/http/http-resource.md), [`resource/api.ts`](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/api.ts) and [`resource/resource.ts` at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/resource/resource.ts), osrs-tracker/osrs-tracker-web#479
 - Related: NG-011, UIPAT-005, UIPAT-015
 

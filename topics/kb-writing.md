@@ -41,7 +41,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 - Related: WRITE-002, WRITE-003, WRITE-004
 
@@ -57,7 +57,7 @@ Its explanation of why the signs exist: LLMs "regress to the mean; that is, the 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 - Related: WRITE-001, WRITE-003, WRITE-008, DSKILL-007, DSKILL-009
 
@@ -78,7 +78,7 @@ Word lists date fastest; structure and content tells last longer.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 - Related: WRITE-004, WRITE-009, PROMPT-027
 
@@ -95,7 +95,7 @@ For our docs and PRs the same holds: a PR description that avoids every tell but
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [blader/humanizer SKILL.md](https://github.com/blader/humanizer/blob/main/SKILL.md), [blader/humanizer LICENSE](https://github.com/blader/humanizer/blob/main/LICENSE), [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 - Related: WRITE-008, OSS-010, SKILL-069, WRITE-003, DSKILL-009
 
@@ -112,7 +112,7 @@ blader/humanizer (62,478 stars on 2026-10-30, MIT, "Copyright (c) 2025 Siqi Chen
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Prompting best practices: output and formatting](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices), [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1)
 - Related: PROMPT-009, PROMPT-023, PROMPT-024, PROMPT-026, PROMPT-030, WRITE-009
 
@@ -130,7 +130,7 @@ Neither page tells you to avoid em dashes, and the Fable 5.1 page's own sample p
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [GOV.UK: A to Z of GOV.UK style](https://www.gov.uk/guidance/style-guide/a-to-z-of-gov-uk-style), [Writing to GOV.UK standards: clear language](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-language/), [Writing to GOV.UK standards: right tone](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/right-tone/)
 - Related: UIPAT-011, WRITE-002, WRITE-009, DOC-014, UIREV-002
 
@@ -149,7 +149,7 @@ The lists differ in places: GOV.UK suggests "comprehensive" for robust and "sign
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [NN/g: How Users Read on the Web](https://www.nngroup.com/articles/how-users-read-on-the-web/), [NN/g: Concise, SCANNABLE, and Objective](https://www.nngroup.com/articles/concise-scannable-and-objective-how-to-write-for-the-web/), [NN/g: How Little Do Users Read?](https://www.nngroup.com/articles/how-little-do-users-read/)
 - Related: WRITE-002, WRITE-009, UIPAT-011, LAYOUT-016, DOC-016
 

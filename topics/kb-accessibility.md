@@ -53,7 +53,7 @@ Research basis:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [WCAG 2.2](https://www.w3.org/TR/WCAG22/), [WCAG overview (ISO status)](https://www.w3.org/WAI/standards-guidelines/wcag/), [WCAG 3.0 Working Draft](https://www.w3.org/TR/wcag-3.0/), [WCAG 3 Introduction](https://www.w3.org/WAI/standards-guidelines/wcag/wcag3-intro/), [w3c/wcag3 wiki: Schedule](https://github.com/w3c/wcag3/wiki/Schedule)
 - Related: ACCESS-002, ACCESS-004, DESIGN-017
 
@@ -69,7 +69,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [WCAG 2.2](https://www.w3.org/TR/WCAG22/), [What's new in WCAG 2.2](https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/), [axe-core rule descriptions](https://raw.githubusercontent.com/dequelabs/axe-core/develop/doc/rule-descriptions.md)
 - Related: ACCESS-001, ACCESS-005, ACCESS-012
 
@@ -92,7 +92,7 @@ axe's only WCAG 2.2 rule is `target-size`, off by default (ACCESS-005); the rest
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Directive (EU) 2019/882 (EUR-Lex)](https://eur-lex.europa.eu/eli/dir/2019/882/oj/eng), read as [the Publications Office XHTML](https://publications.europa.eu/resource/celex/32019L0882), [Dutch implementing act, Stb. 2024, 87](https://zoek.officielebekendmakingen.nl/stb-2024-87.html), [its commencement decree, Stb. 2024, 341](https://zoek.officielebekendmakingen.nl/stb-2024-341.html)
 - Related: ACCESS-004, ACCESS-001
 
@@ -111,7 +111,7 @@ Our reading, not the Directive's words: a site that concludes no consumer contra
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [ETSI EN 301 549 V4.1.1 (PDF)](https://www.etsi.org/deliver/etsi_en/301500_301599/301549/04.01.01_60/en_301549v040101p.pdf), [Implementing Decision (EU) 2021/1339](https://publications.europa.eu/resource/celex/32021D1339), [NDA Ireland: EN 301 549 published](https://nda.ie/news/en301549-published), [Deque: EN 301 549 v4.1.1 is final (2026-09-08)](https://www.deque.com/blog/en-301-549-v4-1-1-is-final-what-changed-what-it-means-and-what-you-should-do/), [Directive (EU) 2016/2102](https://publications.europa.eu/resource/celex/32016L2102)
 - Related: ACCESS-003, ACCESS-001, ACCESS-005
 
@@ -129,7 +129,7 @@ Our reading, not the Directive's words: a site that concludes no consumer contra
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [axe-core CHANGELOG](https://raw.githubusercontent.com/dequelabs/axe-core/develop/CHANGELOG.md), [axe-core API docs](https://raw.githubusercontent.com/dequelabs/axe-core/develop/doc/API.md), [rule descriptions](https://raw.githubusercontent.com/dequelabs/axe-core/develop/doc/rule-descriptions.md), [README](https://raw.githubusercontent.com/dequelabs/axe-core/develop/README.md), npm registry
 - Related: ACCESS-006, ACCESS-007, ACCESS-008, ACCESS-002
 
@@ -147,7 +147,7 @@ Tested 2026-10-17, axe-core 4.13.0 and 4.14.0 in Chrome 155 through Playwright 1
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Playwright: Accessibility testing (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/accessibility-testing-js.md), [@axe-core/playwright README](https://raw.githubusercontent.com/dequelabs/axe-core-npm/develop/packages/playwright/README.md), [Playwright: ARIA snapshots](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/aria-snapshots.md), npm registry
 - Related: ACCESS-005, ACCESS-008, JSTEST-010, JSTEST-011, JSTEST-012
 
@@ -174,7 +174,7 @@ Tested 2026-10-17, `@axe-core/playwright@4.14.0` and `@playwright/test@1.64.1` w
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Lighthouse `default-config.js` at v13.5.0](https://raw.githubusercontent.com/GoogleChrome/lighthouse/v13.5.0/core/config/default-config.js), [accessibility gatherer at v13.5.0](https://raw.githubusercontent.com/GoogleChrome/lighthouse/v13.5.0/core/gather/gatherers/accessibility.js), [Accessibility scoring](https://developer.chrome.com/docs/lighthouse/accessibility/scoring), npm registry
 - Related: WEB-011, ACCESS-005, ACCESS-008
 
@@ -190,7 +190,7 @@ Tested 2026-10-17, `lighthouse@13.5.0` (`--only-categories=accessibility`, Chrom
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [W3C WAI: Selecting evaluation tools](https://www.w3.org/WAI/test-evaluate/tools/selecting/), [Playwright: Accessibility testing](https://playwright.dev/docs/accessibility-testing), [axe-core README](https://raw.githubusercontent.com/dequelabs/axe-core/develop/README.md), [Deque: 57 percent study (2021-03-10)](https://www.deque.com/blog/automated-testing-study-identifies-57-percent-of-digital-accessibility-issues/), [GOV.UK accessibility tool audit](https://alphagov.github.io/accessibility-tool-audit/)
 - Related: ACCESS-005, ACCESS-007, ACCESS-011, ACCESS-015
 
@@ -213,7 +213,7 @@ W3C: "Web accessibility evaluation tools can not determine accessibility, they c
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [APG: Read Me First](https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/), [Using ARIA (Discontinued Draft)](https://www.w3.org/TR/using-aria/), [ARIA in HTML](https://www.w3.org/TR/html-aria/), [WebAIM Million 2026](https://webaim.org/projects/million/), [Angular: accessibility best practices](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/best-practices/a11y.md)
 - Related: ACCESS-010, ACCESS-011, ACCESS-008
 
@@ -232,7 +232,7 @@ W3C: "Web accessibility evaluation tools can not determine accessibility, they c
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [APG: Disclosure navigation menu example](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/), [APG: Menu and menubar pattern](https://www.w3.org/WAI/ARIA/apg/patterns/menubar/), [APG: Read Me First](https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/), [Angular Aria overview](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/aria/overview.md), [WebAIM Million 2026](https://webaim.org/projects/million/)
 - Related: ACCESS-009, NG-011, ACCESS-013
 
@@ -246,7 +246,7 @@ W3C: "Web accessibility evaluation tools can not determine accessibility, they c
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [angular-eslint `template-accessibility.ts`](https://github.com/angular-eslint/angular-eslint/blob/main/packages/angular-eslint/src/configs/template-accessibility.ts), npm registry, [Angular: accessibility best practices](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/best-practices/a11y.md)
 - Related: ACCESS-009, ACCESS-008, ACCESS-015
 
@@ -269,7 +269,7 @@ Tested 2026-10-17, `angular-eslint@22.6.0`, `eslint@10.13.0`, Node 24.21.0, on a
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Angular: accessibility best practices, focus management after navigation](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/best-practices/a11y.md), `@angular/router@22.2.3` package (npm), [Helsinki accessibility model: SPAs](https://saavutettavuusmalli.hel.fi/en/toteutus-ja-ohjelmistotestaus/single-page-applications-spas-notes-on-accessibility/), [Gatsby: user testing of client-side routing (2019-07-11)](https://www.gatsbyjs.com/blog/2019-07-11-user-testing-accessible-client-routing/)
 - Related: ACCESS-013, ACCESS-015, JSTEST-011, UIPAT-012, UIPAT-015
 
@@ -291,7 +291,7 @@ Our additions, not Angular's: skip the first `NavigationEnd` (the server-rendere
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [MDN: `<dialog>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog), [MDN: `inert`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inert), [HTML spec: popover](https://html.spec.whatwg.org/multipage/popover.html), [MDN: `ariaNotify()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/ariaNotify), [WAI-ARIA 1.3 Working Draft](https://www.w3.org/TR/wai-aria-1.3/), web-features 3.43.0
 - Related: CSS-008, CSS-005, ACCESS-010, ACCESS-012
 
@@ -309,7 +309,7 @@ Tested 2026-10-17, Chrome 155 through `@playwright/test@1.64.1`, Node 24.21.0: a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [WCAG 2.2: 2.2.2 and 2.3.3](https://www.w3.org/TR/WCAG22/), [Understanding 2.3.3](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html), [Technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39.html), [Understanding 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html), [MDN: `prefers-contrast`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-contrast), [MDN: `forced-colors`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/forced-colors), web-features 3.43.0
 - Related: CSS-009, CSS-011, DESIGN-007, DESIGN-017, ANIM-010, ANIMLIB-007
 

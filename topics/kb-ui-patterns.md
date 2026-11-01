@@ -55,7 +55,7 @@ Research basis:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [NN/g: Designing empty states in complex applications](https://www.nngroup.com/articles/empty-state-interface-design/), [Carbon: Empty states pattern](https://carbondesignsystem.com/patterns/empty-states-pattern/), [Angular: Async reactivity with resources (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/signals/resource.md), [MDN: min-width](https://developer.mozilla.org/en-US/docs/Web/CSS/min-width), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: UIPAT-003, UIPAT-004, UIPAT-005, UIPAT-013, UIPAT-015, DESIGN-009
 
@@ -73,7 +73,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [NN/g: Response times, the 3 important limits](https://www.nngroup.com/articles/response-times-3-important-limits/), [NN/g: Progress indicators](https://www.nngroup.com/articles/progress-indicators/), [web.dev: RAIL](https://web.dev/articles/rail), [Atlassian: Spinner](https://atlassian.design/components/spinner/usage), [Carbon: Loading (usage)](https://raw.githubusercontent.com/carbon-design-system/carbon-website/main/src/pages/components/loading/usage.mdx), [Polaris: Loading (legacy pattern)](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/patterns-legacy/loading.mdx)
 - Related: UIPAT-003, UIPAT-006, UIPAT-009, WEBPERF-001
 
@@ -96,7 +96,7 @@ Its progress-indicator article: "Use a progress indicator for any action that ta
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [NN/g: Skeleton screens 101](https://www.nngroup.com/articles/skeleton-screens/), [Atlassian: Skeleton](https://atlassian.design/components/skeleton/usage), [Carbon: Loading pattern](https://carbondesignsystem.com/patterns/loading-pattern/), [Primer React Spinner source (`3a71047`)](https://raw.githubusercontent.com/primer/react/main/packages/react/src/Spinner/Spinner.tsx), [Angular: `@defer` (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/templates/defer.md), [React: Suspense](https://react.dev/reference/react/Suspense), [Understanding 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: UIPAT-001, UIPAT-002, UIPAT-015, ACCESS-014
 
@@ -121,7 +121,7 @@ NN/g keeps skeletons "exclusively for full-page loads"; Atlassian, Carbon and Po
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [NN/g: Designing empty states](https://www.nngroup.com/articles/empty-state-interface-design/), [Carbon: Empty states pattern](https://raw.githubusercontent.com/carbon-design-system/carbon-website/main/src/pages/patterns/empty-states-pattern/index.mdx), [Atlassian: Empty state](https://atlassian.design/components/empty-state/usage), [Atlassian: Writing empty states](https://atlassian.design/foundations/content/designing-messages/empty-state), [Polaris: Empty state](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/layout-and-structure/empty-state.mdx)
 - Related: UIPAT-001, UIPAT-011, UIPAT-015, DESIGN-009
 
@@ -146,7 +146,7 @@ NN/g keeps skeletons "exclusively for full-page loads"; Atlassian, Carbon and Po
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Atlassian: Section message](https://atlassian.design/components/section-message/usage), [Carbon: Empty states pattern (error management)](https://carbondesignsystem.com/patterns/empty-states-pattern/), [web.dev: Offline UX design guidelines](https://web.dev/articles/offline-ux-design-guidelines), [NN/g: Error-message guidelines](https://www.nngroup.com/articles/error-message-guidelines/), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: UIPAT-001, UIPAT-011, UIPAT-013, UIPAT-015
 
@@ -155,7 +155,7 @@ NN/g keeps skeletons "exclusively for full-page loads"; Atlassian, Carbon and Po
 - **Scope the error to what failed.** Atlassian's section message covers "a section of a screen", including "connectivity or authentication issues"; "always try to avoid dead ends and provide people with information on how to proceed". Keep the sections that loaded.
 - **Offer retry** where retrying can help, and keep the user's input (NN/g: "Preserve the user's input"). Keep the Retry button mounted while it retries, or move focus deliberately: replacing the view sent focus to `<body>` in our test (UIPAT-015).
 - **Don't blame.** Atlassian: "'we're having trouble connecting' rather than 'you're having connection issues.'"
-- **Offline** (web.dev, 2016, updated 2022): "Inform the user of both the actions they can still take when they have a network failure and the current state of the application"; "Clearly inform the user when a change in state occurs as soon as possible."
+- **Offline** (web.dev, 2016, updated 2022): "Tell the user both the application's state and the actions they can still take when they have a network failure"; "Clearly inform the user when a change in state occurs as soon as possible."
 - **Not an error state:** GOV.UK says not to use error messages "to tell a user that they are not eligible or do not have permission"; Carbon treats permissions as an empty state with "steps or process to request access".
 
 Announce a failed section through the status region; `role="alert"` is for an error that blocks the task (UIPAT-015). Vercel, as support: "No dead ends."
@@ -166,7 +166,7 @@ Announce a failed section through the status region; `role="alert"` is for an er
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [React: useOptimistic](https://react.dev/reference/react/useOptimistic), [TanStack Query: Optimistic updates (Angular)](https://tanstack.com/query/latest/docs/framework/angular/guides/optimistic-updates), [TanStack Query: Optimistic updates (React, the prose source)](https://raw.githubusercontent.com/TanStack/query/main/docs/framework/react/guides/optimistic-updates.md), [Angular: resources (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/signals/resource.md), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: UIPAT-002, UIPAT-005, UIPAT-015
 
@@ -188,7 +188,7 @@ Announce a failed section through the status region; `role="alert"` is for an er
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [GOV.UK: Text input](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/text-input/index.md), [GOV.UK: Question pages](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/patterns/question-pages/index.md), [NN/g: Placeholders in form fields are harmful](https://www.nngroup.com/articles/form-design-placeholders/), [W3C WAI forms tutorial: Instructions](https://www.w3.org/WAI/tutorials/forms/instructions/), [Atlassian: Form](https://atlassian.design/components/form/usage), [Polaris: Text field](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/selection-and-input/text-field.mdx), [axe-core 4.14.0 `label` rule](https://raw.githubusercontent.com/dequelabs/axe-core/v4.14.0/lib/rules/label.json), [NN/g: Marking required fields](https://www.nngroup.com/articles/required-fields/)
 - Related: ACCESS-008, ACCESS-009, DESIGN-017, UIPAT-008, UIPAT-010
 
@@ -210,7 +210,7 @@ Announce a failed section through the status region; `role="alert"` is for an er
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Baymard: Inline form validation (2024-01-09)](https://baymard.com/blog/inline-form-validation), [Wroblewski: Inline validation in web forms (A List Apart, 2009)](https://alistapart.com/article/inline-validation-in-web-forms/), [NN/g: Reporting errors in forms](https://www.nngroup.com/articles/errors-forms-design-guidelines/), [GOV.UK: Validation pattern](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/patterns/validation/index.md), [GOV.UK: Error summary](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/error-summary/index.md), [GOV.UK Frontend input template (`76a8e69`)](https://raw.githubusercontent.com/alphagov/govuk-frontend/76a8e69/packages/govuk-frontend/src/govuk/components/input/template.njk), [Polaris: Text field](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/selection-and-input/text-field.mdx), [Angular signal forms: submission (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/forms/signals/form-submission.md)
 - Related: UIPAT-007, UIPAT-009, UIPAT-011, UIPAT-015, ACCESS-002
 
@@ -231,7 +231,7 @@ Announce a failed section through the status region; `role="alert"` is for an er
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [GOV.UK: Button](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/button/index.md), [Atlassian: Button](https://atlassian.design/components/button/usage), [Atlassian: Form](https://atlassian.design/components/form/usage), [NN/g: Button states](https://www.nngroup.com/articles/button-states-communicate-interaction/), [Government of Alberta: Disabled button with a required field](https://v2.design.alberta.ca/examples/disabled-button-with-a-required-field), [Angular signal forms: field state management (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/forms/signals/field-state-management.md), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: UIPAT-002, UIPAT-008, UIPAT-015, ACCESS-008
 
@@ -249,7 +249,7 @@ Announce a failed section through the status region; `role="alert"` is for an er
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [HTML Living Standard: Autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill), [WCAG 2.2: 1.3.5 Identify Input Purpose](https://www.w3.org/TR/WCAG22/#identify-input-purpose), [GOV.UK: Text input](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/text-input/index.md), [GOV.UK: Password input](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/password-input/index.md), [axe-core 4.14.0 rule descriptions](https://raw.githubusercontent.com/dequelabs/axe-core/v4.14.0/doc/rule-descriptions.md)
 - Related: UIPAT-007, ACCESS-002, ACCESS-005
 
@@ -277,7 +277,7 @@ GOV.UK: "Many browsers will autofill password inputs, even when the `autocomplet
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [GOV.UK: Error message](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/error-message/index.md), [GOV.UK: Button](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/button/index.md), [NN/g: Error-message guidelines](https://www.nngroup.com/articles/error-message-guidelines/), [Polaris: Error messages](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/content/error-messages.mdx), [Polaris: Button](https://raw.githubusercontent.com/Shopify/polaris/main/polaris.shopify.com/content/components/actions/button.mdx), [Atlassian: Error messages](https://atlassian.design/foundations/content/designing-messages/error-messages), [Atlassian: Button](https://atlassian.design/components/button/usage), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: UIPAT-004, UIPAT-005, UIPAT-008, WRITE-006
 
@@ -300,7 +300,7 @@ GOV.UK: "Many browsers will autofill password inputs, even when the `autocomplet
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Baymard: Back button expectations (2020-07-20)](https://baymard.com/blog/back-button-expectations), [Angular: Read route state (v22.2.3)](https://angular.dev/guide/routing/read-route-state), [Angular: Customizing route behavior](https://angular.dev/guide/routing/customizing-route-behavior), [GOV.UK: Tabs](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/tabs/index.md), [GOV.UK: Pagination](https://raw.githubusercontent.com/alphagov/govuk-design-system/main/src/components/pagination/index.md), [MDN: History.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState), [NN/g: User control and freedom](https://www.nngroup.com/articles/user-control-and-freedom/), [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines)
 - Related: ACCESS-012, UIPAT-013, UIPAT-015
 
@@ -321,7 +321,7 @@ GOV.UK: "Many browsers will autofill password inputs, even when the `autocomplet
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Playwright: Mock APIs (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/mock.md), [Playwright: Route (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/api/class-route.md), [Playwright: BrowserContext.setOffline (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/api/class-browsercontext.md), [Playwright: Network, service workers (v1.64.1)](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/network.md)
 - Related: UIPAT-001, UIPAT-005, UIPAT-015, JSTEST-011, JSTEST-012, ACCESS-006, UIREV-007
 
@@ -351,7 +351,7 @@ The test proves what renders, not what a screen reader says: the scratch page's 
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [APG patterns (`w3c/aria-practices` at `0f765e4`)](https://www.w3.org/WAI/ARIA/apg/patterns/), [APG: Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/), [APG: Combobox](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/), [APG: Switch](https://www.w3.org/WAI/ARIA/apg/patterns/switch/), [APG: Tooltip](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/), [web-features 3.44.0](https://www.npmjs.com/package/web-features)
 - Related: ACCESS-009, ACCESS-010, ACCESS-013, CSS-008, CSS-010, NG-011
 
@@ -380,7 +380,7 @@ Undated native entries are widely available. **Tabs:** "activate automatically w
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [MDN: ARIA live regions](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Guides/Live_regions), [WCAG 2.2: 4.1.3 Status Messages, 2.4.3 Focus Order, 2.2.1 Timing Adjustable](https://www.w3.org/TR/WCAG22/), [GOV.UK Frontend error summary template (`76a8e69`)](https://raw.githubusercontent.com/alphagov/govuk-frontend/76a8e69/packages/govuk-frontend/src/govuk/components/error-summary/template.njk)
 - Related: UIPAT-001, UIPAT-005, UIPAT-008, UIPAT-009, UIPAT-012, ACCESS-012, ACCESS-013
 

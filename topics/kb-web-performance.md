@@ -51,7 +51,7 @@ Research basis:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Optimize INP (web.dev, updated 2025-09-02)](https://web.dev/articles/optimize-inp), [Optimize long tasks (web.dev, updated 2024-12-19)](https://web.dev/articles/optimize-long-tasks), [Optimize input delay](https://web.dev/articles/optimize-input-delay), [DOM size and interactivity](https://web.dev/articles/dom-size-and-interactivity)
 - Related: WEBPERF-002, WEBPERF-003, WEB-023
 
@@ -81,7 +81,7 @@ function yieldToMain () {
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Incremental hydration (angular/angular v22.2.3)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/incremental-hydration.md), [Hydration](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/hydration.md), [Deferred loading with `@defer`](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/templates/defer.md), [Zoneless](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/zoneless.md), [Slow computations](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/best-practices/runtime-performance/slow-computations.md)
 - Related: WEBPERF-001, WEBPERF-003, NG-004, NG-005, WEB-034
 
@@ -99,7 +99,7 @@ Fix order in practice: the attribution data (WEBPERF-003) says which subpart; in
 - Type: tool
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web-vitals README at v6.2.3](https://github.com/GoogleChrome/web-vitals/blob/v6.2.3/README.md), [Long Animation Frames API (developer.chrome.com)](https://developer.chrome.com/docs/web-platform/long-animation-frames)
 - Related: WEBPERF-001, WEBPERF-002, WEB-010, WEB-011
 
@@ -126,7 +126,7 @@ Lab follow-up: reproduce the interaction with CPU throttling in the DevTools Per
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Back/forward cache (web.dev, updated 2026-10-16)](https://web.dev/articles/bfcache), [bfcache for Cache-Control: no-store pages (developer.chrome.com, updated 2025-09-09)](https://developer.chrome.com/docs/web-platform/bfcache-ccns), [Deprecating the unload event (updated 2026-10-16)](https://developer.chrome.com/docs/web-platform/deprecating-unload), [WebKit `BackForwardCache.cpp` (main)](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/history/BackForwardCache.cpp), [Firefox `test_form_restoration.html` (main)](https://github.com/mozilla-firefox/firefox/blob/main/docshell/test/mochitest/test_form_restoration.html), [Mozilla bug 567365](https://bugzilla.mozilla.org/show_bug.cgi?id=567365)
 - Related: WEBPERF-005, WEBPERF-012
 
@@ -144,7 +144,7 @@ Which cookie changes evict a `no-store` page in Chrome, such as those analytics 
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Back/forward cache (web.dev)](https://web.dev/articles/bfcache), [Lighthouse: page prevented back/forward cache restoration](https://developer.chrome.com/docs/lighthouse/performance/bf-cache), [PerformanceNavigationTiming.notRestoredReasons (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming/notRestoredReasons)
 - Related: WEBPERF-004, WEB-011
 
@@ -160,7 +160,7 @@ For an agent: run the DevTools test, or Chrome DevTools MCP (WEB-011) with a nav
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Prerender pages in Chrome (developer.chrome.com, updated 2026-01-23)](https://developer.chrome.com/docs/web-platform/prerender-pages), [`<script type="speculationrules">` (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/speculationrules), web-features 3.43.0 and BCD 8.1.6 via npm
 - Related: WEBPERF-007, CSS-002
 
@@ -183,7 +183,7 @@ For an agent: run the DevTools test, or Chrome DevTools MCP (WEB-011) with a nav
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Prerender pages in Chrome](https://developer.chrome.com/docs/web-platform/prerender-pages), [Implementing speculation rules (updated 2025-10-23)](https://developer.chrome.com/docs/web-platform/implementing-speculation-rules), [Speculation Rules API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API), [Sec-Purpose (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Sec-Purpose)
 - Related: WEBPERF-006, WEBPERF-012
 
@@ -200,7 +200,7 @@ Traps when adding rules:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Optimize LCP (web.dev, updated 2025-03-31)](https://web.dev/articles/optimize-lcp), [Fetch Priority API (web.dev, updated 2023-11-14)](https://web.dev/articles/fetch-priority), [Preload critical assets](https://web.dev/articles/preload-critical-assets), [Image optimization (angular/angular v22.2.3)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/image-optimization.md), [`ng_optimized_image.ts` v22.2.3](https://github.com/angular/angular/blob/v22.2.3/packages/common/src/directives/ng_optimized_image/ng_optimized_image.ts)
 - Related: WEBPERF-009, WEBPERF-011, FONT-020, FONT-021
 
@@ -217,7 +217,7 @@ Traps when adding rules:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Early Hints (developer.chrome.com, updated 2026-07-10)](https://developer.chrome.com/docs/web-platform/early-hints), [Node.js `response.writeEarlyHints()` (v24.x docs)](https://github.com/nodejs/node/blob/v24.x/doc/api/http.md), [Traefik `Test1xxResponses` at v3.7.15](https://github.com/traefik/traefik/blob/v3.7.15/pkg/server/service/service_test.go), [traefik/traefik#9213](https://github.com/traefik/traefik/issues/9213)
 - Related: WEBPERF-008, WEBPERF-013
 
@@ -234,7 +234,7 @@ Angular SSR sends no Early Hints: `@angular/ssr` 22.2.3 adds up to 10 `<link rel
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Image file type and format guide (MDN)](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Image_types), web-features 3.43.0 via npm, [Image optimization (angular/angular v22.2.3)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/image-optimization.md), [sharp output options](https://sharp.pixelplumbing.com/api-output)
 - Related: WEBPERF-011, WEBPERF-012, CSS-002, IMG-004, IMG-006
 
@@ -250,7 +250,7 @@ Angular SSR sends no Early Hints: `@angular/ssr` 22.2.3 adds up to 10 `<link rel
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Browser-level image lazy loading (web.dev, updated 2024-08-13)](https://web.dev/articles/browser-level-image-lazy-loading), [`<img>` (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img), [Chromium `settings.json5` (main, read 2026-10-17)](https://chromium.googlesource.com/chromium/src/+/main/third_party/blink/renderer/core/frame/settings.json5), [Image optimization (angular/angular v22.2.3)](https://github.com/angular/angular/blob/v22.2.3/adev/src/content/guide/image-optimization.md)
 - Related: WEBPERF-008, WEBPERF-010, FONT-021
 
@@ -264,7 +264,7 @@ Angular SSR sends no Early Hints: `@angular/ssr` 22.2.3 adds up to 10 `<link rel
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Cache-Control (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cache-Control), [HTTP caching (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching), [serve-static v2.2.1 README](https://github.com/expressjs/serve-static/blob/v2.2.1/README.md), [Angular CLI SSR server template v22.2.3](https://github.com/angular/angular-cli/blob/v22.2.3/packages/schematics/angular/ssr/files/application-builder/server.ts.template), [RFC 8246](https://www.rfc-editor.org/rfc/rfc8246)
 - Related: WEBPERF-004, WEBPERF-013, NG-008
 
@@ -284,7 +284,7 @@ Angular SSR sends no Early Hints: `@angular/ssr` 22.2.3 adds up to 10 `<link rel
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [compression README and HISTORY](https://github.com/expressjs/compression/blob/master/HISTORY.md), [Node.js zlib (v24.x)](https://github.com/nodejs/node/blob/v24.x/doc/api/zlib.md), web-features 3.43.0 and BCD 8.1.6 via npm
 - Related: WEBPERF-012, WEBPERF-014, NODE-001
 
@@ -310,7 +310,7 @@ At speed levels br and zstd barely beat gzip; br 11 saves 15–17% but costs abo
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Traefik compress middleware docs](https://github.com/traefik/traefik/blob/master/docs/content/reference/routing-configuration/http/middlewares/compress.md), [`middlewares.go` at v3.7.15](https://github.com/traefik/traefik/blob/v3.7.15/pkg/config/dynamic/middlewares.go), [`acceptencoding.go` at v3.7.15](https://github.com/traefik/traefik/blob/v3.7.15/pkg/middlewares/compress/acceptencoding.go)
 - Related: WEBPERF-013
 

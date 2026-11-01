@@ -45,7 +45,7 @@ Research basis:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [github/spec-kit](https://github.com/github/spec-kit/tree/2a23a84), [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec/tree/6d04a1b), [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD/tree/61e01f8), [open-gsd/gsd-core](https://github.com/open-gsd/gsd-core/tree/7d68e2b), [buildermethods/agent-os](https://github.com/buildermethods/agent-os/tree/e892e61)
 - Related: SDD-009, ORCH-044, FLOW-001
 
@@ -69,7 +69,7 @@ All five are MIT.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Spec Kit: Claude Code integration](https://github.com/github/spec-kit/blob/2a23a84/docs/integrations/claude.md), [Spec Kit quickstart](https://github.com/github/spec-kit/blob/2a23a84/docs/quickstart.md), [Spec Kit installation](https://github.com/github/spec-kit/blob/2a23a84/docs/installation.md)
 - Related: SDD-003, TOK-005, HOOK-001, SKILL-069
 
@@ -88,7 +88,7 @@ To try it without the listing and hook cost: `specify init --integration claude 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [converge command template](https://github.com/github/spec-kit/blob/2a23a84/templates/commands/converge.md), [Spec Kit README](https://github.com/github/spec-kit/blob/2a23a84/README.md), [Spec Kit installation](https://github.com/github/spec-kit/blob/2a23a84/docs/installation.md)
 - Related: SDD-009, FLOW-003, REPO-048, PROMPT-027, ORCH-039
 
@@ -105,7 +105,7 @@ A plain-prompt version for a session with a `SPEC.md`: "Compare the diff against
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [OpenSpec README](https://github.com/Fission-AI/OpenSpec/blob/6d04a1b/README.md), [OpenSpec concepts](https://github.com/Fission-AI/OpenSpec/blob/6d04a1b/docs/concepts.md)
 - Related: SDD-001, DOC-022, SDD-002
 
@@ -123,7 +123,7 @@ The archive-and-merge step is the idea with no plan-mode equivalent: specs that 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [gsd-build/get-shit-done README](https://github.com/gsd-build/get-shit-done/blob/bdcaab2/README.md), [GSD Core CHANGELOG 1.17.0](https://github.com/open-gsd/gsd-core/blob/7d68e2b/CHANGELOG.md), [GSD Core README](https://github.com/open-gsd/gsd-core/blob/7d68e2b/README.md)
 - Related: SKILL-069, SDD-001, SKILL-041
 
@@ -141,7 +141,7 @@ GSD Core itself is a large surface: 64 agent files, 72 commands and 29 hook scri
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [BMAD-METHOD README](https://github.com/bmad-code-org/BMAD-METHOD/blob/61e01f8/README.md), [BMAD docs index](https://github.com/bmad-code-org/BMAD-METHOD/blob/61e01f8/docs/index.md)
 - Related: SDD-001, SDD-008
 
@@ -158,7 +158,7 @@ For a repo that must stay reproducible, v7's moving install path is a reason to 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Agent OS CHANGELOG 3.0](https://github.com/buildermethods/agent-os/blob/e892e61/CHANGELOG.md)
 - Related: SDD-009, FLOW-001, FLOW-006, REPO-044
 
@@ -243,7 +243,7 @@ Both support SDD-009: small iterative steps with a short spec, not a framework's
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Kiro: Specs](https://kiro.dev/docs/specs.md), [Kiro: Requirements-First workflow](https://kiro.dev/docs/specs/feature-specs/requirements-first.md)
 - Related: SDD-001, SDD-010, FLOW-003
 

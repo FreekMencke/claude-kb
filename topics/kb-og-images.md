@@ -44,7 +44,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [vercel/satori#841](https://github.com/vercel/satori/pull/841), [vercel/satori#847](https://github.com/vercel/satori/pull/847), [vercel/satori#855](https://github.com/vercel/satori/pull/855), [satori releases](https://github.com/vercel/satori/releases), npm registry (`npm view satori time --json`)
 - Related: OG-002, JSUP-001
 
@@ -67,7 +67,7 @@ Tested 2026-10-17, satori@0.62.0, Node 24.21.0: a `div` with two children and no
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [satori README](https://raw.githubusercontent.com/vercel/satori/main/README.md), [satori releases](https://github.com/vercel/satori/releases)
 - Related: OG-001, OG-003, OG-005, CSS-001
 
@@ -91,7 +91,7 @@ Tested 2026-10-17, satori@0.62.0, Node 24.21.0: `display: 'grid'` with `repeat(3
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [satori README, Fonts](https://raw.githubusercontent.com/vercel/satori/main/README.md), [satori 0.55.0 release](https://github.com/vercel/satori/releases/tag/0.55.0), [vercel/satori#162](https://github.com/vercel/satori/issues/162), [vercel/satori#946](https://github.com/vercel/satori/pull/946)
 - Related: OG-002, OG-004, FONT-006, FONT-018, FONT-019
 
@@ -107,7 +107,7 @@ Tested 2026-10-17, satori@0.62.0, Node 24.21.0: static Lato TTF and Inter WOFF a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Vercel: OG image generation](https://vercel.com/docs/og-image-generation.md), [Vercel: `@vercel/og` reference](https://vercel.com/docs/og-image-generation/og-image-api.md), [Next.js: ImageResponse](https://raw.githubusercontent.com/vercel/next.js/canary/docs/01-app/03-api-reference/04-functions/image-response.mdx), [Next.js: compiled @vercel/og](https://raw.githubusercontent.com/vercel/next.js/canary/packages/next/src/compiled/@vercel/og/package.json), npm registry
 - Related: OG-001, OG-003, OG-005
 
@@ -124,7 +124,7 @@ So an agent reading these pages for a plain satori server gets limits that no lo
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [resvg-js Cargo.toml v2.6.2](https://raw.githubusercontent.com/thx/resvg-js/v2.6.2/Cargo.toml), [resvg-js CHANGELOG](https://raw.githubusercontent.com/thx/resvg-js/main/CHANGELOG.md), [thx/resvg-js#422](https://github.com/thx/resvg-js/issues/422), [linebender/resvg CHANGELOG](https://raw.githubusercontent.com/linebender/resvg/main/CHANGELOG.md), [sharp install docs v0.35.5](https://raw.githubusercontent.com/lovell/sharp/v0.35.5/docs/src/content/docs/install.md), [sharp-libvips versions v1.3.4](https://raw.githubusercontent.com/lovell/sharp-libvips/v1.3.4/versions.properties), [sharp-libvips build/posix.sh v1.3.4](https://github.com/lovell/sharp-libvips/blob/v1.3.4/build/posix.sh), [resvg-napi README](https://github.com/p8nut/resvg-napi)
 - Related: OG-002, DOCKER-002, DOCKER-005, NPM-006, NPM-017
 
@@ -148,7 +148,7 @@ Tested 2026-10-17, Node 24.21.0, WSL2 x64: mean of 20 renders of one 1200×630 c
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [The Open Graph protocol](https://ogp.me/), [X cards: getting started (Wayback, 2026-01-01)](https://web.archive.org/web/20260101000233/https://developer.x.com/en/docs/x-for-websites/cards/guides/getting-started), [X: summary card with large image (Wayback, 2026-01-12)](https://web.archive.org/web/20260112050218/https://developer.x.com/en/docs/x-for-websites/cards/overview/summary-card-with-large-image), [X cards markup (Wayback, 2025-11-13)](https://web.archive.org/web/20251113085832/https://developer.x.com/en/docs/x-for-websites/cards/overview/markup)
 - Related: OG-007, WEB-014
 
@@ -164,7 +164,7 @@ Check what crawlers see in the server HTML with curl (WEB-014): Discord runs "No
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Meta: images in link shares](https://developers.facebook.com/docs/sharing/webmasters/images/), [Meta: sharing for webmasters](https://developers.facebook.com/docs/sharing/webmasters/), [Meta: crawler](https://developers.facebook.com/docs/sharing/webmasters/web-crawlers/), [X troubleshooting (Wayback, 2025-12-31)](https://web.archive.org/web/20251231142717/https://developer.x.com/en/docs/x-for-websites/cards/guides/troubleshooting-cards), [LinkedIn: make your website shareable](https://www.linkedin.com/help/linkedin/answer/a521928), [Slack: robots](https://api.slack.com/robots), [Discord: link previews](https://raw.githubusercontent.com/discord/discord-api-docs/main/developers/link-previews/overview.mdx)
 - Related: OG-006, OG-009
 
@@ -186,7 +186,7 @@ A 1200×630 PNG or JPEG fits all of them.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Google Discover (updated 2026-03-09)](https://developers.google.com/search/docs/appearance/google-discover), [Google Images: specify a preferred image (updated 2026-03-02)](https://developers.google.com/search/docs/appearance/google-images#specify-preferred-image), [Robots meta tag (updated 2026-03-24)](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag), [Article structured data (updated 2026-09-08)](https://developers.google.com/search/docs/appearance/structured-data/article)
 - Related: OG-007, WEB-014
 

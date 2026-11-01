@@ -120,7 +120,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [unifiedfontobject.org](https://unifiedfontobject.org/), [UFO 4](https://unifiedfontobject.org/versions/ufo4/), [fontTools.ufoLib at 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/ufoLib/__init__.py), [glyphsLib README](https://github.com/googlefonts/glyphsLib), [fontmake README](https://github.com/googlefonts/fontmake), [fontc README](https://github.com/googlefonts/fontc)
 - Related: FONT-002, FONT-003, FONT-024
 
@@ -136,7 +136,7 @@ UFO 3 is the newest published UFO spec. Write UFO 3 and don't wait for UFO 4.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [designspaceLib XML format](https://fonttools.readthedocs.io/en/latest/designspaceLib/xml.html), [fonttools NEWS.rst](https://github.com/fonttools/fonttools/blob/main/NEWS.rst), [fontmake 3.12.2 source](https://github.com/googlefonts/fontmake/tree/v3.12.2/Lib/fontmake), [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0)
 - Related: FONT-001, FONT-004, FONT-006
 
@@ -159,7 +159,7 @@ Tested 2026-10-17, fontmake 3.12.2: from fontmake's test files, a document with 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0), [fontc README](https://github.com/googlefonts/fontc), [fontc#837](https://github.com/googlefonts/fontc/issues/837), [fontc#717](https://github.com/googlefonts/fontc/issues/717), [fontc crater](https://googlefonts.github.io/fontc_crater/), [fontc on PyPI](https://pypi.org/project/fontc/)
 - Related: FONT-004, FONT-008, FONT-005
 
@@ -183,7 +183,7 @@ fontc is Google Fonts' font compiler in Rust. 1.0.0 was released on 2026-09-01 (
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0), [fontmake README](https://github.com/googlefonts/fontmake), [fontmake 3.12.2 test data](https://github.com/googlefonts/fontmake/tree/v3.12.2/tests/data)
 - Related: FONT-003, FONT-002, FONT-006, FONT-017
 
@@ -212,7 +212,7 @@ Revisit when fontc#837 (designspace 5) and fontc#717 (static overlaps) close.
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [ufo2ft README](https://github.com/googlefonts/ufo2ft), [featureCompiler.py at v3.9.1](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/featureCompiler.py), [featureWriters at v3.9.1](https://github.com/googlefonts/ufo2ft/tree/v3.9.1/Lib/ufo2ft/featureWriters), [ufo2ft filters at v3.9.1](https://github.com/googlefonts/ufo2ft/tree/v3.9.1/Lib/ufo2ft/filters)
 - Related: FONT-009, FONT-010, FONT-003
 
@@ -230,7 +230,7 @@ So accented letters built as composites, with anchors and kerning groups, get ma
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [instancer docs](https://fonttools.readthedocs.io/en/latest/varLib/instancer.html), [instancer at 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/instancer/__init__.py), [fonttools NEWS.rst](https://github.com/fonttools/fonttools/blob/main/NEWS.rst)
 - Related: FONT-004, FONT-008, FONT-016, FONT-020
 
@@ -257,7 +257,7 @@ Match the `@font-face` `font-weight` range to the narrowed axis (FONT-023).
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [interpolatable.py at 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/interpolatable.py), [fonttools NEWS.rst](https://github.com/fonttools/fonttools/blob/main/NEWS.rst), [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0)
 - Related: FONT-002, FONT-014, FONT-024
 
@@ -279,7 +279,7 @@ Compatibility errors are about the drawing, not the code: Claude can run the che
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [gftools builder docs](https://github.com/googlefonts/gftools/blob/main/docs/gftools-builder/README.md), [gftools builder/fontc.py at v0.10.4](https://github.com/googlefonts/gftools/blob/v0.10.4/Lib/gftools/builder/fontc.py), [googlefonts-project-template](https://github.com/googlefonts/googlefonts-project-template), [GF guide: build](https://googlefonts.github.io/gf-guide/build.html)
 - Related: FONT-003, FONT-006, FONT-015, FONT-016
 
@@ -299,7 +299,7 @@ For a family not bound for Google Fonts, plain fontmake commands (FONT-004) are 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [OpenType Feature File Specification](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html), [spec source on GitHub](https://github.com/adobe-type-tools/afdko/blob/develop/docs/OpenTypeFeatureFileSpecification.md), [feaLib docs](https://fonttools.readthedocs.io/en/latest/feaLib/index.html)
 - Related: FONT-005, FONT-010, FONT-023
 
@@ -340,7 +340,7 @@ In a UFO build, leave `kern`, `mark` and `mkmk` to ufo2ft (FONT-005). In CSS, re
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [feaLib docs](https://fonttools.readthedocs.io/en/latest/feaLib/index.html), [feaLib __main__.py at 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/feaLib/__main__.py), [AFDKO NEWS](https://github.com/adobe-type-tools/afdko/blob/develop/NEWS.md)
 - Related: FONT-009, FONT-024, FONT-005
 
@@ -368,7 +368,7 @@ AFDKO's equivalent is now `afdko makeotf` or `afdko addfeatures`: 5.0.0 (2026-03
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [ttfautohint manual](https://freetype.org/ttfautohint/doc/ttfautohint.html), [ttfautohint 1.8.4 tarball (NEWS)](https://download.savannah.gnu.org/releases/freetype/ttfautohint-1.8.4.tar.gz), [ttfautohint-py on PyPI](https://pypi.org/project/ttfautohint-py/), [fontmake font_project.py at v3.12.2](https://github.com/googlefonts/fontmake/blob/v3.12.2/Lib/fontmake/font_project.py), [AFDKO NEWS](https://github.com/adobe-type-tools/afdko/blob/develop/NEWS.md), [GF guide: statics](https://googlefonts.github.io/gf-guide/statics.html)
 - Related: FONT-012, FONT-013, FONT-017
 
@@ -391,7 +391,7 @@ Tested 2026-10-18, AFDKO 5.0.1, with that variable: `otfautohint` warned it "wil
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [GF guide: variable fonts](https://googlefonts.github.io/gf-guide/variable.html), [how-to-hint-variable-fonts](https://github.com/googlefonts/how-to-hint-variable-fonts), [VisualTrueType](https://github.com/microsoft/VisualTrueType), [VTT docs](https://learn.microsoft.com/en-us/typography/tools/vtt/), [gftools fix.py](https://github.com/googlefonts/gftools/blob/main/Lib/gftools/fix.py)
 - Related: FONT-011, FONT-013, FONT-016
 
@@ -409,7 +409,7 @@ fontmake doesn't hint variable fonts (FONT-011), so an unhinted VF needs only th
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [OpenType spec: gasp](https://learn.microsoft.com/en-us/typography/opentype/spec/gasp), [GF guide: statics](https://googlefonts.github.io/gf-guide/statics.html), [gftools fix.py](https://github.com/googlefonts/gftools/blob/main/Lib/gftools/fix.py), [Fontspector](https://github.com/fonttools/fontspector)
 - Related: FONT-011, FONT-012, FONT-014
 
@@ -433,7 +433,7 @@ Inspect it with `ttx -t gasp -o - Family-Regular.ttf`.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Fontspector README](https://github.com/fonttools/fontspector), [Fontspector 1.9.0 release](https://github.com/fonttools/fontspector/releases/tag/fontspector-v1.9.0), [Font Bakery README](https://github.com/fonttools/fontbakery), [GF guide: QA](https://googlefonts.github.io/gf-guide/qa.html)
 - Related: FONT-015, FONT-007, FONT-013
 
@@ -457,7 +457,7 @@ For a family not bound for Google Fonts, run `universal`. 1.9.0's release notes 
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [setup-fontspector](https://github.com/fonttools/setup-fontspector), [Fontspector USING.md](https://github.com/fonttools/fontspector/blob/main/USING.md), [configuration.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-cli/src/configuration.rs), [context.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-checkapi/src/context.rs), [status.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-checkapi/src/status.rs), [args.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-cli/src/args.rs), [googlefonts-project-template build.yaml](https://github.com/googlefonts/googlefonts-project-template/blob/main/.github/workflows/build.yaml), [googlefonts-project-template Makefile](https://github.com/googlefonts/googlefonts-project-template/blob/main/Makefile)
 - Related: FONT-014, FONT-008, GHA-009
 
@@ -491,7 +491,7 @@ Tested 2026-10-18, Fontspector 1.9.0 Linux binary: overridden results read "… 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [GF guide: upstream repo](https://googlefonts.github.io/gf-guide/upstream.html), [GF guide: variable fonts](https://googlefonts.github.io/gf-guide/variable.html), [GF guide: statics](https://googlefonts.github.io/gf-guide/statics.html), [web.dev: font best practices](https://web.dev/articles/font-best-practices), [satori README](https://github.com/vercel/satori), [osrs-tracker-web docs/decisions.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/decisions.md)
 - Related: FONT-006, FONT-008, FONT-012, FONT-017
 
@@ -511,7 +511,7 @@ Version every format from the same source fields (FONT-017).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [OpenType spec: head](https://learn.microsoft.com/en-us/typography/opentype/spec/head), [OpenType spec: name](https://learn.microsoft.com/en-us/typography/opentype/spec/name), [UFO 3 fontinfo.plist](https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/), [ufo2ft fontInfoData.py](https://github.com/googlefonts/ufo2ft/blob/main/Lib/ufo2ft/fontInfoData.py), [ufo2ft outlineCompiler.py](https://github.com/googlefonts/ufo2ft/blob/main/Lib/ufo2ft/outlineCompiler.py), [Fontspector opentype/font_version](https://github.com/fonttools/fontspector/blob/main/profile-opentype/src/checks/opentype/font_version.rs), [GF guide: requirements](https://googlefonts.github.io/gf-guide/requirements.html)
 - Related: FONT-016, FONT-011, FONT-004
 
@@ -533,7 +533,7 @@ A font carries its version twice. `head.fontRevision` is a Fixed number, but "Wi
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [OFL 1.1 official text](https://openfontlicense.org/open-font-license-official-text/), [OFL FAQ](https://openfontlicense.org/ofl-faq/), [GF guide: license file](https://googlefonts.github.io/gf-guide/license-file.html), [GF guide: onboarding](https://googlefonts.github.io/gf-guide/onboarding.html)
 - Related: FONT-019, FONT-016
 
@@ -555,7 +555,7 @@ Under the SIL Open Font License 1.1, a subset web font is a Modified Version, wh
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [fontTools subset docs](https://fonttools.readthedocs.io/en/latest/subset/index.html), [subset/__init__.py](https://github.com/fonttools/fonttools/blob/main/Lib/fontTools/subset/__init__.py), [fonttools README (extras)](https://github.com/fonttools/fonttools), [Google Fonts CSS for Work Sans](https://fonts.googleapis.com/css2?family=Work+Sans:wght@100..900&display=swap)
 - Related: FONT-018, FONT-020, FONT-023
 
@@ -585,7 +585,7 @@ Subset only what you serve, and keep the features your CSS uses (FONT-023).
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Google Fonts CSS for Work Sans](https://fonts.googleapis.com/css2?family=Work+Sans:wght@100..900&display=swap), [Google Fonts: getting started](https://developers.google.com/fonts/docs/getting_started), [web.dev: font best practices](https://web.dev/articles/font-best-practices), [MDN: rel=preload](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/preload)
 - Related: FONT-019, FONT-021, FONT-006
 
@@ -604,7 +604,7 @@ A Latin-only family of a few hundred glyphs gains little from slicing; one file 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [CSS Fonts 4 (Editor's Draft): font-display](https://drafts.csswg.org/css-fonts-4/#font-display-desc), [MDN: font-display](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display), [web.dev: font best practices](https://web.dev/articles/font-best-practices), [web.dev: LCP](https://web.dev/articles/lcp), [web.dev: optimize LCP](https://web.dev/articles/optimize-lcp), [web.dev: preload optional fonts](https://web.dev/articles/preload-optional-fonts)
 - Related: FONT-020, FONT-022, WEB-010, WEB-030, WEB-034
 
@@ -631,7 +631,7 @@ Measure before changing: osrs-tracker-web's slow LCP turned out to be Lighthouse
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [web-features 3.43.0](https://www.npmjs.com/package/web-features), [@mdn/browser-compat-data 8.1.6](https://www.npmjs.com/package/@mdn/browser-compat-data), [MDN: size-adjust](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/size-adjust), [MDN: font-size-adjust](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size-adjust), [Chrome: improved font fallbacks](https://developer.chrome.com/blog/font-fallbacks), [fontaine](https://github.com/unjs/fontaine), [Capsize](https://github.com/seek-oss/capsize)
 - Related: FONT-021, FONT-023
 
@@ -669,7 +669,7 @@ In Safari only the size matches, so vertical metrics can still shift a line.
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [MDN: variable fonts guide](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_fonts/Variable_fonts_guide), [MDN: font-variation-settings](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variation-settings), [MDN: font-feature-settings](https://developer.mozilla.org/en-US/docs/Web/CSS/font-feature-settings), [web-features 3.43.0](https://www.npmjs.com/package/web-features)
 - Related: FONT-006, FONT-009, FONT-019, FONT-022
 
@@ -723,7 +723,7 @@ Verify with the tools (FONT-007, FONT-010, FONT-014) and a proof, and judge shap
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-19
+- Last verified: 2026-11-01
 - Sources: [UFO 3 glif spec](https://unifiedfontobject.org/versions/ufo3/glyphs/glif/), [OpenType `glyf` table](https://learn.microsoft.com/en-us/typography/opentype/spec/glyf), [ufo2ft 3.9.1 `__init__.py`](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/__init__.py)
 - Related: FONT-007, FONT-024
 
@@ -903,7 +903,7 @@ FontLab: "Kinks are to G1 continuity, as crimps are to G2 continuity"; it fixes 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-19
+- Last verified: 2026-11-01
 - Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible), [fontTools 4.67.0 `varLib/interpolatable.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/interpolatable.py)
 - Related: FONT-007, FONT-025, FONT-034, FONT-036
 
@@ -920,7 +920,7 @@ A smooth node, its handles in line, can be smooth in every master and still kink
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-19
+- Last verified: 2026-11-01
 - Sources: [fontmake 3.12.2 `__main__.py`](https://github.com/googlefonts/fontmake/blob/v3.12.2/Lib/fontmake/__main__.py), [OpenType variations overview](https://learn.microsoft.com/en-us/typography/opentype/spec/otvaroverview), [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
 - Related: FONT-016, FONT-025, FONT-035
 
@@ -1014,7 +1014,7 @@ Map per axis (fontTools `Transform.scale(x, y)` with separate factors, so both e
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [Glyphs, Making small caps](https://glyphsapp.com/learn/making-small-caps)
 - Related: FONT-027, FONT-031, FONT-032
 
@@ -1029,7 +1029,7 @@ Scaling a part scales its stems with it, so the R of ®, shrunk to clear a ring 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-20
+- Last verified: 2026-11-01
 - Sources: [UFO 3 glif spec](https://unifiedfontobject.org/versions/ufo3/glyphs/glif/), [FreeType `ftimage.h`](https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/include/freetype/ftimage.h), [OpenType `cmap` table](https://learn.microsoft.com/en-us/typography/opentype/spec/cmap), [OpenType recommendations](https://learn.microsoft.com/en-us/typography/opentype/spec/recom), [HarfBuzz `hb-buffer.cc`](https://github.com/harfbuzz/harfbuzz/blob/main/src/hb-buffer.cc)
 - Related: FONT-033, FONT-037, FONT-038
 

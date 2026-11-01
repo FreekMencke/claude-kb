@@ -58,7 +58,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: npm registry (`npm view npm dist-tags --json`, `npm view npm@12.2.0 'time[12.2.0]' engines.node`, 2026-10-17), [npm CLI CHANGELOG (latest)](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm CLI CHANGELOG (release/v11)](https://raw.githubusercontent.com/npm/cli/release/v11/CHANGELOG.md), [nodejs/Release#1161](https://github.com/nodejs/Release/issues/1161), [nodejs/node#66212](https://github.com/nodejs/node/pull/66212), [Node release schedule](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json)
 - Related: NPM-002, NPM-003
 
@@ -77,7 +77,7 @@ Getting it now:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm CLI CHANGELOG 12.0.0](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [Upcoming breaking changes for npm v12 (GitHub changelog, 2026-06-09)](https://github.blog/changelog/2026-06-09-upcoming-breaking-changes-for-npm-v12), [npm install-time security and GAT bypass2fa deprecation (2026-07-08)](https://github.blog/changelog/2026-07-08-npm-install-time-security-and-gat-bypass2fa-deprecation), [npm config docs v12](https://docs.npmjs.com/cli/v12/using-npm/config)
 - Related: NPM-001, NPM-003, NPM-004
 
@@ -95,7 +95,7 @@ Tested 2026-10-17, npm 12.2.0, Node 24.21.0, WSL2: `npm install github:npm/ini` 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm CLI CHANGELOG (latest)](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm CLI CHANGELOG (release/v11)](https://raw.githubusercontent.com/npm/cli/release/v11/CHANGELOG.md), [Staged publishing and new install-time controls for npm (2026-05-22)](https://github.blog/changelog/2026-05-22-staged-publishing-and-new-install-time-controls-for-npm), [npm bulk trusted publishing config and script security (2026-02-18)](https://github.blog/changelog/2026-02-18-npm-bulk-trusted-publishing-config-and-script-security-now-generally-available)
 - Related: NPM-001, NPM-002, NPM-005
 
@@ -119,7 +119,7 @@ So you can prepare a repo for npm 12 on npm 11.16 or later: approve scripts, and
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm install-scripts docs v12](https://docs.npmjs.com/cli/v12/commands/npm-install-scripts), [npm config docs v12](https://docs.npmjs.com/cli/v12/using-npm/config), [Upcoming breaking changes for npm v12 (2026-06-09)](https://github.blog/changelog/2026-06-09-upcoming-breaking-changes-for-npm-v12), [npm/rfcs RFC 54](https://github.com/npm/rfcs/blob/main/accepted/0054-make-scripts-install-opt-in.md)
 - Related: NPM-005, NPM-006, NPM-007
 
@@ -141,7 +141,7 @@ Tested 2026-10-17, Node 24.21.0, WSL2: on npm 12.2.0 the marker package's `posti
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm install-scripts docs v12](https://docs.npmjs.com/cli/v12/commands/npm-install-scripts), [npm approve-scripts docs v12](https://docs.npmjs.com/cli/v12/commands/npm-approve-scripts), [npm/cli#9629](https://github.com/npm/cli/pull/9629), [npm CLI CHANGELOG 12.0.0](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [Upcoming breaking changes for npm v12 (2026-06-09)](https://github.blog/changelog/2026-06-09-upcoming-breaking-changes-for-npm-v12)
 - Related: NPM-004, NPM-007
 
@@ -162,7 +162,7 @@ Tested 2026-10-17: on npm 12.2.0, `ls` and `approve-scripts --allow-scripts-pend
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: npm registry (`npm view <pkg> version scripts gypfile --json`, 2026-10-17), [esbuild 0.28.2 `install.js`](https://unpkg.com/esbuild@0.28.2/install.js), [nodejs/Release#1161](https://github.com/nodejs/Release/issues/1161)
 - Related: NPM-004, NPM-007, NPM-017, NPM-021
 
@@ -181,7 +181,7 @@ Tested 2026-10-17, npm 12.2.0: with `esbuild@0.28.2` installed and its script ne
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm install-scripts docs v12](https://docs.npmjs.com/cli/v12/commands/npm-install-scripts), [npm config docs v12: strict-allow-scripts](https://docs.npmjs.com/cli/v12/using-npm/config), [osrs-tracker-web 7fad45e](https://github.com/osrs-tracker/osrs-tracker-web/commit/7fad45e), [dependabot-core npm_lockfile_updater.rb](https://github.com/dependabot/dependabot-core/blob/main/npm_and_yarn/lib/dependabot/npm_and_yarn/file_updater/npm_lockfile_updater.rb)
 - Related: NPM-004, NPM-005, NPM-006, JSUP-014
 
@@ -201,7 +201,7 @@ Dependabot won't do the re-approval: dependabot-core runs every npm install with
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [About access tokens](https://docs.npmjs.com/about-access-tokens), [Creating and viewing access tokens](https://docs.npmjs.com/creating-and-viewing-access-tokens), [npm token docs v12](https://docs.npmjs.com/cli/v12/commands/npm-token), [GitHub changelog 2025-09-29](https://github.blog/changelog/2025-09-29-strengthening-npm-security-important-changes-to-authentication-and-token-management), [2025-12-09](https://github.blog/changelog/2025-12-09-npm-classic-tokens-revoked-session-based-auth-and-cli-token-management-now-available), [2026-07-31](https://github.blog/changelog/2026-07-31-restricting-npm-bypass-2fa-granular-access-tokens), [2026-09-18](https://github.blog/changelog/2026-09-18-stage-only-npm-tokens-for-safer-automation)
 - Related: NPM-009, NPM-010, NPM-011
 
@@ -218,7 +218,7 @@ Doc conflicts: `npm login`'s page still says it creates "a legacy token of `publ
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Trusted publishing for npm packages](https://docs.npmjs.com/trusted-publishers), [npm trust docs v12](https://docs.npmjs.com/cli/v12/commands/npm-trust), [npm/cli `trust-cmd.js`](https://github.com/npm/cli/blob/latest/lib/trust-cmd.js), [GitHub changelog 2025-07-31](https://github.blog/changelog/2025-07-31-npm-trusted-publishing-with-oidc-is-generally-available), [2026-09-03](https://github.blog/changelog/2026-09-03-multiple-trusted-publishing-configurations-for-npm), [2026-09-30](https://github.blog/changelog/2026-09-30-opt-in-dist-tag-permissions-for-npm-trusted-publishing), [2026-10-02](https://github.blog/changelog/2026-10-02-unvalidated-npm-trusted-publishing-configurations-now-expire)
 - Related: NPM-010, NPM-011, NPM-012
 
@@ -240,7 +240,7 @@ Then set publishing access to "Require two-factor authentication and disallow to
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Staged publishing for npm packages](https://docs.npmjs.com/staged-publishing), [npm stage docs v12](https://docs.npmjs.com/cli/v12/commands/npm-stage), [npm/cli `npm-stage.md`](https://raw.githubusercontent.com/npm/cli/latest/docs/lib/content/commands/npm-stage.md), [GitHub changelog 2026-05-22](https://github.blog/changelog/2026-05-22-staged-publishing-and-new-install-time-controls-for-npm), [2026-07-28](https://github.blog/changelog/2026-07-28-npm-publish-time-malware-scanning-and-dual-use-metadata), [2026-09-18](https://github.blog/changelog/2026-09-18-stage-only-npm-tokens-for-safer-automation), [2026-10-02](https://github.blog/changelog/2026-10-02-npm-staged-publishing-now-supports-creating-new-packages)
 - Related: NPM-008, NPM-009, NPM-011
 
@@ -260,7 +260,7 @@ What it combines with:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Trusted publishing for npm packages](https://docs.npmjs.com/trusted-publishers), [Requiring 2FA for package publishing](https://docs.npmjs.com/requiring-2fa-for-package-publishing-and-settings-modification), [GitHub changelog 2026-07-08](https://github.blog/changelog/2026-07-08-npm-install-time-security-and-gat-bypass2fa-deprecation), [2026-09-03](https://github.blog/changelog/2026-09-03-multiple-trusted-publishing-configurations-for-npm), [TanStack postmortem](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem)
 - Related: NPM-008, NPM-009, NPM-010, NPM-012
 
@@ -280,7 +280,7 @@ What it combines with:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Generating provenance statements](https://docs.npmjs.com/generating-provenance-statements), [Introducing npm package provenance (GitHub blog, 2023-04-19)](https://github.blog/security/supply-chain-security/introducing-npm-package-provenance/), [GitHub changelog 2023-07-25](https://github.blog/changelog/2023-07-25-publishing-with-npm-provenance-from-private-source-repositories-is-no-longer-supported/), [npm audit docs v12](https://docs.npmjs.com/cli/v12/commands/npm-audit), [npm/cli `verify-signatures.js`](https://github.com/npm/cli/blob/latest/lib/utils/verify-signatures.js), [TanStack postmortem](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem), [Snyk on the TanStack compromise](https://snyk.io/blog/tanstack-npm-packages-compromised)
 - Related: NPM-009, NPM-011, NPM-013
 
@@ -296,7 +296,7 @@ Our `@osrs-tracker/*` packages carry none: they are published by hand (`npm view
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm audit docs v12](https://docs.npmjs.com/cli/v12/commands/npm-audit), [npm config docs v12](https://docs.npmjs.com/cli/v12/using-npm/config), [npm CLI CHANGELOG](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm audit: Broken by Design (Abramov, 2021-07-07)](https://overreacted.io/npm-audit-broken-by-design/)
 - Related: NPM-012
 
@@ -320,7 +320,7 @@ None of our repos' CI runs `npm audit` (2026-10-17).
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js v22.10.0 release notes](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V22.md), [Node.js docs: Modules (v24.x)](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/modules.md), [nodejs/package-examples: dual packages](https://raw.githubusercontent.com/nodejs/package-examples/main/guide/07-dual-packages/README.md), [TypeScript 5.8 release notes](https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/release-notes/TypeScript%205.8.md), [Announcing Vite 7.0](https://raw.githubusercontent.com/vitejs/vite/main/docs/blog/announcing-vite7.md), [Node release schedule](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json), [Jest docs: ECMAScript Modules, `require()` of ESM](https://raw.githubusercontent.com/jestjs/jest/main/docs/ECMAScriptModules.md)
 - Related: NPM-015
 
@@ -342,7 +342,7 @@ Keep a CJS build only for consumers on Node older than 22.12, CommonJS Jest suit
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Packages (v24.x)](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/packages.md), [Node.js docs: Modules (v24.x)](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/modules.md), [TypeScript modules reference](https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/modules-reference/Reference.md), [TypeScript 5.8 release notes](https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/release-notes/TypeScript%205.8.md), [publint rules](https://raw.githubusercontent.com/publint/publint/master/site/src/pages/rules.md), [arethetypeswrong CLI README](https://raw.githubusercontent.com/arethetypeswrong/arethetypeswrong.github.io/main/packages/cli/README.md)
 - Related: NPM-014
 
@@ -375,7 +375,7 @@ Before publishing:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm ci docs v12](https://docs.npmjs.com/cli/v12/commands/npm-ci), [package-lock.json docs v12](https://docs.npmjs.com/cli/v12/configuring-npm/package-lock-json), [npm/cli `lib/commands/ci.js`](https://github.com/npm/cli/blob/latest/lib/commands/ci.js), [npm CLI CHANGELOG](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md), [npm/cli#10043](https://github.com/npm/cli/issues/10043)
 - Related: NPM-017, NPM-019, JSUP-010, JSUP-011
 
@@ -398,7 +398,7 @@ Don't delete the lock to make `ci` pass: that re-resolves every transitive depen
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm/cli#4828](https://github.com/npm/cli/issues/4828), [npm/cli#8184](https://github.com/npm/cli/pull/8184), [arborist v9.0.2 release](https://github.com/npm/cli/releases/tag/arborist-v9.0.2), [npm/cli#10043](https://github.com/npm/cli/issues/10043), [esbuild 0.28.2 `install.js`](https://unpkg.com/esbuild@0.28.2/install.js)
 - Related: NPM-006, NPM-016, JSUP-010
 
@@ -416,7 +416,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0, WSL2: a lock for `esbuild@0.28.2` 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [package.json docs v12: overrides, packageExtensions](https://docs.npmjs.com/cli/v12/configuring-npm/package-json), [npm patch docs](https://raw.githubusercontent.com/npm/cli/latest/docs/lib/content/commands/npm-patch.md), [npm CLI CHANGELOG 12.0.0-pre.1](https://raw.githubusercontent.com/npm/cli/latest/CHANGELOG.md)
 - Related: NPM-016, NPM-019
 
@@ -439,7 +439,7 @@ Three root-level tools change dependencies you don't control.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm config docs v12: legacy-peer-deps, strict-peer-deps, force](https://docs.npmjs.com/cli/v12/using-npm/config), [package.json docs v12: peerDependencies](https://docs.npmjs.com/cli/v12/configuring-npm/package-json), [npm ci docs v12](https://docs.npmjs.com/cli/v12/commands/npm-ci)
 - Related: NPM-016, NPM-018, TS-011, JSUP-002
 
@@ -455,7 +455,7 @@ What to do: read the conflict (`npm explain <pkg>` shows who requires which rang
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [pnpm v11.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v11.0.0), [pnpm v12.0.0 release notes](https://github.com/pnpm/pnpm/releases/tag/v12.0.0), [pnpm docs: settings](https://pnpm.io/settings), [pnpm docs: git worktrees](https://pnpm.io/git-worktrees), [pnpm feature comparison](https://pnpm.io/feature-comparison), [Dependabot options reference](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference), [Corepack README](https://github.com/nodejs/corepack/blob/main/README.md), npm registry (`npm view pnpm dist-tags`, then `'time[<version>]'`)
 - Related: NPM-004, NPM-007, SESS-008
 
@@ -479,7 +479,7 @@ For our few repos, npm 12 closes most of the security gap, so pnpm's lead is dis
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Claude Code setup: npm install](https://code.claude.com/docs/en/setup), [Troubleshoot installation: native binary not found after npm install](https://code.claude.com/docs/en/troubleshoot-install), [npm install-scripts docs v12](https://docs.npmjs.com/cli/v12/commands/npm-install-scripts), npm registry (`npm view @anthropic-ai/claude-code version scripts`, 2026-10-17)
 - Related: NPM-004, NPM-006
 

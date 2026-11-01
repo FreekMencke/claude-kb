@@ -53,7 +53,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nodejs/Release schedule.json](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json), [nodejs/Release README](https://raw.githubusercontent.com/nodejs/Release/main/README.md), [nodejs.org dist index](https://nodejs.org/dist/index.json), [Previous releases](https://nodejs.org/en/about/previous-releases)
 - Related: NODE-002, NODE-014, SURF-027
 
@@ -76,7 +76,7 @@ So 24 moving to Maintenance on 2026-10-20 doesn't make it unsafe: it keeps secur
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Evolving the Node.js Release Schedule (2026-03-10)](https://raw.githubusercontent.com/nodejs/nodejs.org/main/apps/site/pages/en/blog/announcements/evolving-the-nodejs-release-schedule.md), [nodejs/Release schedule.json](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json), [nodejs/Release README](https://raw.githubusercontent.com/nodejs/Release/main/README.md)
 - Related: NODE-001, NODE-015
 
@@ -97,7 +97,7 @@ What it changes for an agent: don't put 27 alphas in production or in `engines`;
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: TypeScript (v26.12.0, same as main)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/typescript.md), [the same page at v24.22.0](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/typescript.md), [CHANGELOG_V22.md: 22.18.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V22.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md)
 - Related: NODE-004, NODE-005, TS-013, SURF-027
 
@@ -118,7 +118,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: a `.ts` file with interfac
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: TypeScript](https://raw.githubusercontent.com/nodejs/node/main/doc/api/typescript.md)
 - Related: NODE-003, NODE-005, TS-013
 
@@ -144,7 +144,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, one file per row except th
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: TypeScript](https://raw.githubusercontent.com/nodejs/node/main/doc/api/typescript.md), [tsx docs: TypeScript](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/typescript.md), [tsx docs: FAQ](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/faq.md), [ts-node README](https://raw.githubusercontent.com/TypeStrong/ts-node/main/README.md), [TypeStrong/ts-node#2140](https://github.com/TypeStrong/ts-node/issues/2140), npm registry (`npm view ts-node time --json`, `npm view tsx time --json`, 2026-10-17)
 - Related: NODE-003, NODE-004, NODE-007, NODE-010
 
@@ -167,7 +167,7 @@ Whichever runs the code, check types in CI with `tsc --noEmit`. NestJS dependenc
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: CLI `--env-file`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md), [Node.js docs: `process.loadEnvFile()`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/process.md), [dotenv README](https://raw.githubusercontent.com/motdotla/dotenv/master/README.md)
 - Related: NODE-007, NODE-009
 
@@ -187,7 +187,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, same result on all three: 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: CLI `--watch`, `--watch-path`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md), [nodemon README](https://raw.githubusercontent.com/remy/nodemon/main/README.md), [tsx docs: Watch mode](https://raw.githubusercontent.com/privatenumber/tsx/master/docs/watch-mode.md)
 - Related: NODE-005, NODE-006
 
@@ -201,7 +201,7 @@ Conflict: the docs say `--watch-path` "is only supported on macOS and Windows" a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Test runner (v24.22.0, v26.12.0)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/test.md), [Node.js docs: CLI test flags](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md)
 - Related: NODE-003, NODE-004
 
@@ -224,7 +224,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: `node --test` with no argu
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: SQLite (v24.22.0, v26.12.0)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/sqlite.md), [Node.js docs: Permissions (v26.12.0)](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/permissions.md), [Node.js docs: CLI `--allow-net`, `--config-file`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/cli.md)
 - Related: NODE-006, INFRA-006
 
@@ -238,7 +238,7 @@ Tested 2026-10-17: `node:sqlite` ran without flags on node@22.23.3 (with an Expe
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Modules: Loading ECMAScript modules using `require()`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/modules.md), [Node.js docs: Deprecations, DEP0205](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/deprecations.md), [Node.js docs: `module.registerHooks()`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/module.md), [Node.js docs: Packages, `"module-sync"`](https://raw.githubusercontent.com/nodejs/node/main/doc/api/packages.md)
 - Related: NODE-005, NODE-012
 
@@ -258,7 +258,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0: `require('./esm.mjs')` fro
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [CHANGELOG_V24.md: 24.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V24.md), [CHANGELOG_V25.md: 25.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V25.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [MDN browser-compat-data](https://github.com/mdn/browser-compat-data/tree/main/javascript/builtins) (`support.nodejs`), [nodejs.org dist index](https://nodejs.org/dist/index.json)
 - Related: NODE-012, NODE-014
 
@@ -284,7 +284,7 @@ Tested 2026-10-17, official node@22.23.3, 24.22.0 and 26.12.0 binaries, one prob
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [CHANGELOG_V26.md: 26.0.0 Deprecations and Removals](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [CHANGELOG_V25.md: 25.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V25.md), [Node.js docs: Deprecations](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/deprecations.md)
 - Related: NODE-003, NODE-010, NODE-011, NODE-015
 
@@ -308,7 +308,7 @@ Tested 2026-10-17: on node@26.12.0 `typeof localStorage` was `'undefined'`, with
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Node.js docs: Globals, `fetch`](https://raw.githubusercontent.com/nodejs/node/v26.12.0/doc/api/globals.md), [CHANGELOG_V26.md: 26.0.0](https://raw.githubusercontent.com/nodejs/node/main/doc/changelogs/CHANGELOG_V26.md), [undici README (v8.12.2)](https://raw.githubusercontent.com/nodejs/undici/v8.12.2/README.md), [undici v8.0.0 release](https://github.com/nodejs/undici/releases/tag/v8.0.0), undici PRs [#4827](https://github.com/nodejs/undici/pull/4827), [#5448](https://github.com/nodejs/undici/pull/5448) and [#5860](https://github.com/nodejs/undici/pull/5860), [Node.js docs: CLI `NODE_USE_ENV_PROXY`](https://raw.githubusercontent.com/nodejs/node/v24.22.0/doc/api/cli.md)
 - Related: NODE-011, NODE-012
 
@@ -326,7 +326,7 @@ Tested 2026-10-17, node@22.23.3, 24.22.0 and 26.12.0, with `undici@7.30.1` and `
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [actions/setup-node v7.1.0 README](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/README.md), [setup-node advanced usage (v7.1.0)](https://raw.githubusercontent.com/actions/setup-node/v7.1.0/docs/advanced-usage.md), [npm docs: package.json `engines`, `devEngines`](https://raw.githubusercontent.com/npm/cli/latest/docs/lib/content/configuring-npm/package-json.md), [nvm README](https://raw.githubusercontent.com/nvm-sh/nvm/master/README.md), [fnm README](https://raw.githubusercontent.com/Schniz/fnm/master/README.md), [mise docs: Node](https://raw.githubusercontent.com/jdx/mise/main/docs/lang/node.md), [DefinitelyTyped README](https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/master/README.md), npm registry (`npm view @types/node dist-tags --json`, 2026-10-17)
 - Related: NODE-001, NODE-011, NODE-015, TS-003
 
@@ -343,7 +343,7 @@ Keep one version file, point CI at it, and treat `engines` as a hint. A major-on
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nodejs.org dist index](https://nodejs.org/dist/index.json), npm registry (`npm view npm engines dist-tags time --json`, 2026-10-17), [npm v12.0.0 release notes](https://github.com/npm/cli/releases/tag/v12.0.0), [nodejs/Release#1161: Plans for npm 12](https://github.com/nodejs/Release/issues/1161), [Node.js distribution doc](https://raw.githubusercontent.com/nodejs/node/main/doc/contributing/distribution.md), [Corepack README](https://raw.githubusercontent.com/nodejs/corepack/main/README.md)
 - Related: NODE-002, NODE-012, NODE-014
 

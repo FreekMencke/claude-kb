@@ -41,7 +41,7 @@ Research basis:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [playwright-mcp README](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md), [playwright-cli README](https://github.com/microsoft/playwright-cli/blob/b1a5903/README.md), [agent-browser README](https://github.com/vercel-labs/agent-browser/blob/099e84e/README.md), [chrome-devtools-mcp README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/3c609da/README.md), [browser-use](https://github.com/browser-use/browser-use/tree/b49a68e), [Claude in Chrome](https://code.claude.com/docs/en/chrome)
 - Related: FLOW-014, JSTEST-012, BROWSER-008, CAPI-034
 
@@ -101,7 +101,7 @@ So with the CLI, name it in the prompt or the CLAUDE.md line ("check pages with 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [playwright-mcp README: profiles](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md), [playwright-cli README](https://github.com/microsoft/playwright-cli/blob/b1a5903/README.md), [agent-browser README](https://github.com/vercel-labs/agent-browser/blob/099e84e/README.md), [Claude in Chrome](https://code.claude.com/docs/en/chrome)
 - Related: SESS-013, BROWSER-005, FLOW-014
 
@@ -116,7 +116,7 @@ So a default Playwright MCP install accumulates logins across sessions in one wo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [playwright-mcp README](https://github.com/microsoft/playwright-mcp/blob/0c4107a/README.md), [playwright-cli README](https://github.com/microsoft/playwright-cli/blob/b1a5903/README.md), [agent-browser README: security](https://github.com/vercel-labs/agent-browser/blob/099e84e/README.md), [chrome-devtools-mcp README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/3c609da/README.md)
 - Related: MCP-019, PROMPT-033, BROWSER-004
 
@@ -139,7 +139,7 @@ What actually limits damage is what the agent can reach: an isolated profile wit
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [chrome-devtools-mcp README: usage statistics](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/3c609da/README.md), [browser-use config.py](https://github.com/browser-use/browser-use/blob/b49a68e/browser_use/config.py), [browser-use telemetry service](https://github.com/browser-use/browser-use/blob/b49a68e/browser_use/telemetry/service.py)
 - Related: BROWSER-007, DSKILL-015, MCP-019, SKPACK-003
 
@@ -154,7 +154,7 @@ Absence covers only what was read and grepped at the pinned commits.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [chrome-devtools-mcp README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/3c609da/README.md)
 - Related: NG-018, WEB-011, WEBPERF-001, BROWSER-006
 

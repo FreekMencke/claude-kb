@@ -45,7 +45,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html), [Introducing public preview runtimes, starting with Node.js 26 and Python 3.15](https://aws.amazon.com/blogs/compute/introducing-public-preview-runtimes-on-aws-lambda-starting-with-node-js-26-and-python-3-15/), [Node.js 26 preview feedback issue](https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/198)
 - Related: LAMBDA-002, LAMBDA-003, NODE-001
 
@@ -71,7 +71,7 @@ What the dates mean:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Retrieve data about Lambda Event Functions that use a deprecated runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-list-deprecated.html), [Understanding how Lambda manages runtime version updates](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html), [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
 - Related: LAMBDA-001, INFRA-003, INFRA-008
 
@@ -92,7 +92,7 @@ Patch versions arrive without a deploy. Each function has a runtime update mode:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Building with Node.js: Experimental Node.js features](https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html), [Node.js 26 preview feedback issue](https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/198), `/var/runtime/bootstrap` in `public.ecr.aws/lambda/nodejs:22`, `:24` and `:26-preview`
 - Related: NODE-010, NODE-011, NEST-003, NEST-014, LAMBDA-005
 
@@ -108,7 +108,7 @@ Tested 2026-10-17, AWS base images built 2026-10-15 (Node 22.23.3, 24.21.0, 26.1
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Define Lambda Event Function handler in Node.js](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html), [Using Node.js ES modules and top-level await in AWS Lambda](https://aws.amazon.com/blogs/compute/using-node-js-es-modules-and-top-level-await-in-aws-lambda/)
 - Related: LAMBDA-003, LAMBDA-007, NEST-014
 
@@ -124,7 +124,7 @@ Tested 2026-10-17, AWS base images built 2026-10-15 under `aws-lambda-rie`: a ca
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Deploy Node.js Lambda functions with .zip file archives](https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html), [AWS SAM: building TypeScript with esbuild](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-build-typescript.html), [aws-cdk v2.273.0 `aws-lambda-nodejs/lib/bundling.ts`](https://github.com/aws/aws-cdk/blob/v2.273.0/packages/aws-cdk-lib/aws-lambda-nodejs/lib/bundling.ts), [Powertools for AWS Lambda (TypeScript) v2.36.0: Tracer](https://github.com/aws-powertools/powertools-lambda-typescript/blob/v2.36.0/docs/features/tracer.md), npm registry (`npm view esbuild dist-tags.latest`: 0.28.2)
 - Related: JSTOOL-016, JSTOOL-021, NEST-004, LAMBDA-003, LAMBDA-006
 
@@ -149,7 +149,7 @@ Tested 2026-10-17, esbuild@0.28.2 with nanoid@5.1.16 (ESM-only) and a local Comm
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Building with Node.js: Runtime-included SDK versions](https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html), [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html), [aws-cdk v2.273.0 `aws-lambda-nodejs` README](https://github.com/aws/aws-cdk/blob/v2.273.0/packages/aws-cdk-lib/aws-lambda-nodejs/README.md), [Reduce Lambda cold start times: migrate to AWS SDK for JavaScript v3](https://aws.amazon.com/blogs/developer/reduce-lambda-cold-start-times-migrate-to-aws-sdk-for-javascript-v3/), npm registry (`npm view @aws-sdk/client-lambda dist-tags`)
 - Related: LAMBDA-005, LAMBDA-007
 
@@ -165,7 +165,7 @@ Tested 2026-10-17: `@aws-sdk/client-s3` in `/var/runtime/node_modules` of the `p
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Lambda execution environment lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html), [Improving startup performance with Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html), [AWS Lambda standardizes billing for INIT phase](https://aws.amazon.com/blogs/compute/aws-lambda-standardizes-billing-for-init-phase/), [Configure Lambda function memory](https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html), [Reduce Lambda cold start times: migrate to AWS SDK for JavaScript v3](https://aws.amazon.com/blogs/developer/reduce-lambda-cold-start-times-migrate-to-aws-sdk-for-javascript-v3/)
 - Related: LAMBDA-004, LAMBDA-005, LAMBDA-006, NEST-014, DOCKER-010
 
@@ -184,7 +184,7 @@ Init costs money: "Effective August 1, 2025, AWS will standardize billing for th
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [AWS Lambda announces Lambda Web Functions](https://aws.amazon.com/about-aws/whats-new/2026/10/aws-lambda-web-functions/), [Lambda Web Functions](https://docs.aws.amazon.com/lambda/latest/dg/web-functions.html), [Web Functions runtimes](https://docs.aws.amazon.com/lambda/latest/dg/web-functions-runtimes.html), [Web Functions scaling](https://docs.aws.amazon.com/lambda/latest/dg/web-functions-scaling.html), [Announcing AWS Lambda Web Functions](https://aws.amazon.com/blogs/aws/announcing-aws-lambda-web-functions-for-fast-consistent-web-app-performance-anywhere/), [AWS Lambda pricing](https://aws.amazon.com/lambda/pricing/)
 - Related: NEST-014, DOCKER-005, LAMBDA-002
 
@@ -207,7 +207,7 @@ Not found: whether `require(esm)` is off here as well, and body size limits.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Creating a rule that runs on a schedule](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html), [Scheduler: schedule types](https://docs.aws.amazon.com/scheduler/latest/UserGuide/schedule-types.html), [Scheduler quotas](https://docs.aws.amazon.com/scheduler/latest/UserGuide/scheduler-quotas.html), [Scheduler: setting up](https://docs.aws.amazon.com/scheduler/latest/UserGuide/setting-up.html), [Invoke a Lambda function on a schedule](https://docs.aws.amazon.com/lambda/latest/dg/with-eventbridge-scheduler.html), [EventBridge pricing](https://aws.amazon.com/eventbridge/pricing/), [EventBridge: retries](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rule-retry-policy.html), [EventBridge: resource-based policies](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-use-resource-based.html), [CloudFormation: `AWS::Scheduler::Schedule` RetryPolicy](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-scheduler-schedule-retrypolicy.html)
 - Related: LAMBDA-010, LAMBDA-011, INFRA-026
 
@@ -231,7 +231,7 @@ For a few fixed UTC jobs, a working rule needs no migration. Choose Scheduler fo
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [Lambda: errors and retries with asynchronous invocation](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-error-handling.html), [Configuring asynchronous invocation](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-configuring.html), [Capturing records of asynchronous invocations](https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html), [CloudFormation: `AWS::Lambda::EventInvokeConfig`](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-eventinvokeconfig.html), [Configure Lambda function timeout](https://docs.aws.amazon.com/lambda/latest/dg/configuration-timeout.html)
 - Related: INFRA-026, INFRA-027, LAMBDA-009
 
@@ -255,7 +255,7 @@ Timeouts: "default value for this setting is 3 seconds", maximum "900 seconds (1
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [AWS Lambda pricing](https://aws.amazon.com/lambda/pricing/), [Configure Lambda function memory](https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html), [CloudWatch Logs: log groups and streams](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html), [Lambda introduces tiered pricing for CloudWatch Logs](https://aws.amazon.com/blogs/compute/aws-lambda-introduces-tiered-pricing-for-amazon-cloudwatch-logs-and-additional-logging-destinations/), [CloudWatch Logs log classes](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html), [Lambda: recursive loop detection](https://docs.aws.amazon.com/lambda/latest/dg/invocation-recursion.html)
 - Related: LAMBDA-007, LAMBDA-009, INFRA-016
 

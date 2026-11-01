@@ -45,7 +45,7 @@ Research basis:
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Vision](https://platform.claude.com/docs/en/build-with-claude/vision)
 - Related: DESIGN-008, IMG-008, OG-005
 
@@ -62,7 +62,7 @@ So "make a hero image" in a Claude Code session means a call to OpenAI or Google
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Image generation guide](https://developers.openai.com/api/docs/guides/image-generation), [Pricing](https://developers.openai.com/api/docs/pricing), [Deprecations](https://developers.openai.com/api/docs/deprecations)
 - Related: IMG-003, IMG-004, IMG-010
 
@@ -78,7 +78,7 @@ Measure the response's `usage` on a few test images before choosing a quality le
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Gemini image generation](https://ai.google.dev/gemini-api/docs/image-generation), [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing), [Gemini deprecations](https://ai.google.dev/gemini-api/docs/deprecations)
 - Related: IMG-002, IMG-005, IMG-007
 
@@ -99,7 +99,7 @@ Nano Banana 2.1 is "the primary high-efficiency workhorse model for image genera
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [OpenAI image generation guide](https://developers.openai.com/api/docs/guides/image-generation), [Gemini image generation](https://ai.google.dev/gemini-api/docs/image-generation)
 - Related: OG-007, WEBPERF-010, WEBPERF-011, IMG-006, OG-005
 
@@ -158,7 +158,7 @@ So an Angular build that converts images with sharp (directly, or through an ima
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [US Copyright Office: Copyright and AI, Part 2: Copyrightability (January 2025)](https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf), [Gemini API Additional Terms of Service (effective 2026-03-23)](https://ai.google.dev/gemini-api/terms), [OpenAI Services Agreement (unverified)](https://openai.com/policies/services-agreement/), [SCOTUSblog: Thaler v. Perlmutter](https://www.scotusblog.com/cases/thaler-v-perlmutter/), [JD Supra: Supreme Court Denies Review in AI Authorship Case](https://www.jdsupra.com/legalnews/supreme-court-denies-review-in-ai-2865518/)
 - Related: OSS-001, IMG-005, IMG-010
 
@@ -180,7 +180,7 @@ In practice, a generated hero image is yours to use but probably nobody's to own
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [JimLiu/baoyu-skills](https://github.com/JimLiu/baoyu-skills), [AgriciDaniel/banana-claude](https://github.com/AgriciDaniel/banana-claude)
 - Related: SKILL-069, IMG-001, IMG-003, SKILL-041, SKILL-074
 
@@ -201,7 +201,7 @@ A ten-line script against one vendor's SDK does the same job with less surface.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [@lucide/angular on npm](https://www.npmjs.com/package/@lucide/angular), [Lucide: Angular guide](https://lucide.dev/guide/packages/angular), [phosphor-icons/homepage](https://github.com/phosphor-icons/homepage)
 - Related: SPACE-011, SPACE-012, IMG-001
 

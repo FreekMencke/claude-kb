@@ -55,7 +55,7 @@ Prefix: DOC. Researched 2026-10-13 against the sources live that day and the `or
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), [keep-a-changelog CHANGELOG.md](https://raw.githubusercontent.com/olivierlacan/keep-a-changelog/main/CHANGELOG.md)
 - Related: DOC-002, DOC-003, DOC-004, DOC-008
 
@@ -78,7 +78,7 @@ Read in full with `curl` and grepped (HTML stripped).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-001, DOC-018, DOC-006
 
@@ -98,7 +98,7 @@ Keep a Changelog 2.0 asks for curation, not completeness. It turns down the cate
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [anthropic-sdk-python CLAUDE.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CLAUDE.md)
 - Related: DOC-001, DOC-007, DOC-019, PROMPT-015
 
@@ -114,7 +114,7 @@ Anthropic's own SDK does this in its CLAUDE.md: "**User-visible changes get a ch
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [Common Changelog](https://raw.githubusercontent.com/vweevers/common-changelog/main/README.md)
 - Related: DOC-001, DOC-018, SESS-027
 
@@ -154,7 +154,7 @@ Common Changelog calls itself "a stricter subset of Keep a Changelog". Where it 
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/), [release-please](https://github.com/googleapis/release-please), [semantic-release](https://github.com/semantic-release/semantic-release), [git-cliff](https://github.com/orhun/git-cliff), [GitHub: automatically generated release notes](https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes), [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-002, DOC-007, SESS-027
 
@@ -175,7 +175,7 @@ None of their READMEs say whether the result is a good changelog.
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [claude-code CHANGELOG.md](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [Claude Code changelog page](https://code.claude.com/docs/en/changelog.md), [anthropic-sdk-python CHANGELOG.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CHANGELOG.md), [anthropic-sdk-python CLAUDE.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CLAUDE.md)
 - Related: DOC-003, DOC-006, TOK-089
 
@@ -197,7 +197,7 @@ The Claude Code style, symptom plus trigger plus what's now possible, is the mod
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [dangoslen/changelog-enforcer action.yml](https://github.com/dangoslen/changelog-enforcer), [tarides/changelog-check-action](https://github.com/tarides/changelog-check-action), [anthropic-sdk-python](https://github.com/anthropics/anthropic-sdk-python)
 - Related: DOC-019, HOOK-004, SESS-021
 
@@ -214,7 +214,7 @@ The Claude Code style, symptom plus trigger plus what's now possible, is the mod
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices.md), [Memory](https://code.claude.com/docs/en/memory.md), [Prompt library](https://code.claude.com/docs/en/prompt-library.md), [Common workflows](https://code.claude.com/docs/en/common-workflows.md)
 - Related: MEM-021, MEM-033, REPO-044, SKILL-024, DOC-012
 
@@ -230,7 +230,7 @@ There is little direct guidance. Grepping best-practices, memory and common-work
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [anthropics/skills doc-coauthoring](https://raw.githubusercontent.com/anthropics/skills/main/skills/doc-coauthoring/SKILL.md), [claude-plugins-official](https://github.com/anthropics/claude-plugins-official)
 - Related: DOC-015, MEM-021, SKILL-021
 
@@ -266,7 +266,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [GitHub: About READMEs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes), [standard-readme spec](https://raw.githubusercontent.com/RichardLitt/standard-readme/main/spec.md), [Diátaxis](https://diataxis.fr/)
 - Related: DOC-009, DOC-013, DOC-017
 
@@ -282,7 +282,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Google documentation best practices](https://google.github.io/styleguide/docguide/best_practices.html)
 - Related: DOC-014, DOC-020, DOC-022
 
@@ -320,7 +320,7 @@ None of these checks whether a doc is true, only its form and links.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Routines: use cases](https://code.claude.com/docs/en/routines.md), [claude-code-action: custom automations](https://raw.githubusercontent.com/anthropics/claude-code-action/main/docs/custom-automations.md), [anthropics/claude-code#7103](https://github.com/anthropics/claude-code/issues/7103)
 - Related: DOC-010, DOC-013, DOC-024, REPO-018, REPO-030, ORCH-017
 

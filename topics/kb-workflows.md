@@ -63,7 +63,7 @@ Prefix: FLOW. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live th
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Permission modes: Analyze before you edit with plan mode](https://code.claude.com/docs/en/permission-modes), [Best practices](https://code.claude.com/docs/en/best-practices), [Claude Code best practices, 2025 post (archived 2025-08-01)](https://web.archive.org/web/20250801000000/https://www.anthropic.com/engineering/claude-code-best-practices)
 - Related: FLOW-005, FLOW-006, FLOW-011, ORCH-047
 
@@ -83,7 +83,7 @@ Note: the engineering-blog URL now serves the docs page. Its TDD and screenshot 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Claude Code best practices, 2025 post (archived 2025-08-01)](https://web.archive.org/web/20250801000000/https://www.anthropic.com/engineering/claude-code-best-practices), [Best practices: Tell Claude what it can't see](https://code.claude.com/docs/en/best-practices), [Costs: work efficiently on complex tasks](https://code.claude.com/docs/en/costs), [superpowers test-driven-development](https://github.com/obra/superpowers/blob/main/skills/test-driven-development/SKILL.md)
 - Related: FLOW-011, FLOW-018, ORCH-039, PROMPT-028
 
@@ -111,7 +111,7 @@ Committing the tests first (step 3) makes "don't modify the tests" checkable wit
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Brainstorm with Claude first, Review against your spec](https://code.claude.com/docs/en/best-practices), [feature-dev plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev)
 - Related: FLOW-005, FLOW-007, TOK-030, SESS-031, SKPACK-006, SKPACK-007, SDD-009
 
@@ -136,7 +136,7 @@ Variants:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Costs: work efficiently on complex tasks](https://code.claude.com/docs/en/costs), [Claude in Chrome](https://code.claude.com/docs/en/chrome), [Claude Code best practices, 2025 post (archived 2025-08-01)](https://web.archive.org/web/20250801000000/https://www.anthropic.com/engineering/claude-code-best-practices)
 - Related: FLOW-011, FLOW-014, REPO-021, TOK-043
 
@@ -154,7 +154,7 @@ Cost caveat: every screenshot stays in context and is re-read on every later tur
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices](https://code.claude.com/docs/en/best-practices), [Costs: work efficiently on complex tasks](https://code.claude.com/docs/en/costs), [Goal](https://code.claude.com/docs/en/goal)
 - Related: FLOW-001, FLOW-003, FLOW-012, ORCH-047, ORCH-021
 
@@ -178,7 +178,7 @@ Every row still needs a check Claude can run (FLOW-011). These are defaults, not
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permission modes: plan mode](https://code.claude.com/docs/en/permission-modes), [Settings reference: useAutoModeDuringPlan](https://code.claude.com/docs/en/settings-reference), [Commands](https://code.claude.com/docs/en/commands), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-007, FLOW-008, REPO-032
 
@@ -199,7 +199,7 @@ Tested 2026-10-12, v2.1.296, `claude -p --permission-mode plan`, Haiku: asked to
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Permission modes: review and approve a plan](https://code.claude.com/docs/en/permission-modes), [Settings reference: showClearContextOnPlanAccept](https://code.claude.com/docs/en/settings-reference), [Tools reference](https://code.claude.com/docs/en/tools-reference), [Claude Code CHANGELOG 2.1.81](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-003, FLOW-006, FLOW-008
 
@@ -218,7 +218,7 @@ Use it when planning read a lot of files that the implementation won't need: it'
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Settings reference: plansDirectory](https://code.claude.com/docs/en/settings-reference), [Permission modes: protected paths](https://code.claude.com/docs/en/permission-modes), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-006, FLOW-007, SESS-009
 
@@ -252,7 +252,7 @@ Don't raise to `xhigh` or `max` for planning by default: `max` "may show diminis
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Desktop](https://code.claude.com/docs/en/desktop), [Permission modes](https://code.claude.com/docs/en/permission-modes), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web), [Ultraplan](https://code.claude.com/docs/en/ultraplan), [Claude Code CHANGELOG 2.1.222](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-006, FLOW-008, SESS-030, ORCH-016
 
@@ -265,7 +265,7 @@ Don't raise to `xhigh` or `max` for planning by default: `max` "may show diminis
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Effective harnesses for long-running agents (2025-11-26)](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - Related: FLOW-012, FLOW-015, HOOK-031, ORCH-039, ORCH-037, PROMPT-027, TOK-108, TOK-109
 
@@ -289,7 +289,7 @@ A check's exit status and output must survive the Bash tool: TOK-108, TOK-109.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Goal](https://code.claude.com/docs/en/goal), [Costs: background token usage](https://code.claude.com/docs/en/costs)
 - Related: FLOW-011, FLOW-023, HOOK-031, HOOK-010
 
@@ -313,7 +313,7 @@ Behaviour:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Skills: run and verify your app](https://code.claude.com/docs/en/skills), [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Claude Code CHANGELOG 2.1.215, 2.1.286](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-011, FLOW-014, SKILL-021, TOK-108, TOK-109
 
@@ -334,7 +334,7 @@ Print a one-line summary on success and the log path on failure: Claude Code kee
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Claude in Chrome](https://code.claude.com/docs/en/chrome), [Computer use](https://code.claude.com/docs/en/computer-use), [Desktop: preview your app](https://code.claude.com/docs/en/desktop), [Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps), [Building agents with the Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk)
 - Related: FLOW-004, REPO-021, SESS-013, TOK-043
 
@@ -351,7 +351,7 @@ For us (WSL terminal and desktop WSL sessions): Chrome integration is out, so Pl
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [superpowers verification-before-completion](https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md), [Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)
 - Related: FLOW-011, FLOW-013, PROMPT-027, PROMPT-030, PROMPT-004, ORCH-039, SKILL-043
 
@@ -369,7 +369,7 @@ Model caveat (PROMPT-027, PROMPT-030): ask for evidence in the report, not for e
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Settings reference: cleanupPeriodDays](https://code.claude.com/docs/en/settings-reference), [Claude directory](https://code.claude.com/docs/en/claude-directory)
 - Related: FLOW-017, FLOW-021, TOK-033
 
@@ -392,7 +392,7 @@ After `/clear`, the menu's top entry `/resume <session-id> (previous session)` r
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Checkpointing: limitations](https://code.claude.com/docs/en/checkpointing), [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Agent SDK file checkpointing](https://code.claude.com/docs/en/agent-sdk/file-checkpointing)
 - Related: FLOW-016, FLOW-018, SESS-010
 
@@ -411,7 +411,7 @@ Rule of thumb: before Claude runs anything destructive through Bash, the safety 
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Effective harnesses for long-running agents (2025-11-26)](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents), [Permission modes: what the classifier blocks](https://code.claude.com/docs/en/permission-modes), [Worktrees](https://code.claude.com/docs/en/worktrees)
 - Related: FLOW-017, ORCH-036, ORCH-009, SESS-002, SESS-005
 
@@ -428,7 +428,7 @@ The docs give no "commit every N minutes" rule; the harness post is the stronges
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Sessions: branch a session](https://code.claude.com/docs/en/sessions), [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Claude Code CHANGELOG 2.1.77, 2.1.212, 2.1.221](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [Agent view: copy the session with /fork](https://code.claude.com/docs/en/agent-view), [Commands](https://code.claude.com/docs/en/commands)
 - Related: FLOW-016, FLOW-021, SESS-029, ORCH-008
 
@@ -445,7 +445,7 @@ Forking copies checkpoint backups too, so a branch can still rewind.
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Best practices: What you can stop doing](https://code.claude.com/docs/en/best-practices), [Effective context engineering (2025-09-29)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Troubleshooting](https://code.claude.com/docs/en/troubleshooting)
 - Related: FLOW-021, FLOW-023, TOK-030, ORCH-037
 
@@ -463,7 +463,7 @@ The common cause is a conversation full of failed attempts, so more instructions
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Checkpointing](https://code.claude.com/docs/en/checkpointing), [Sessions](https://code.claude.com/docs/en/sessions), [Troubleshooting](https://code.claude.com/docs/en/troubleshooting)
 - Related: FLOW-016, FLOW-019, FLOW-022, TOK-030, TOK-031, SESS-031
 
@@ -483,7 +483,7 @@ For autocompact thrashing (troubleshooting page): read the big file in chunks, `
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Choosing a model and effort level (2026-07-07)](https://claude.com/blog/claude-model-and-effort-level-in-claude-code), [Interactive mode: queue messages](https://code.claude.com/docs/en/interactive-mode), [Model configuration](https://code.claude.com/docs/en/model-config)
 - Related: ORCH-028, ORCH-029, TOK-053, SESS-011, FLOW-021
 
@@ -494,7 +494,7 @@ Anthropic's rule for which knob to turn after a miss:
 Effort covers how much Claude verifies, not only thinking: on Opus 5.5 and Fable 5.1, "Claude at a higher level tested more edge cases and verified more of its work". The 5.5 models default to `medium` in Claude Code (ORCH-028).
 
 Mechanics:
-- `/model` and `/effort` run immediately, even mid-turn, and apply to the next request in the current turn after you confirm any cache warning.
+- `/model` and `/effort` run immediately, even mid-turn. `/model` applies from the next request in the current turn, after you confirm any cache warning. `/effort` applies from your next message; to start it in the running turn, queue a message while Claude is running tool calls.
 - Changing model rebuilds the prompt cache (TOK-053); changing effort keeps it on the 5.5 models (ORCH-040).
 - With several sessions open, `/model` also saves your default to `settings.json`; pick "this session only" or launch with `--model` and `--effort` (SESS-011).
 
@@ -504,7 +504,7 @@ Escalate effort before tier (ORCH-029). A model switch doesn't fix a polluted co
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Hooks guide: Stop hook hits the block cap](https://code.claude.com/docs/en/hooks-guide), [Goal](https://code.claude.com/docs/en/goal), [Permission modes: when auto mode falls back](https://code.claude.com/docs/en/permission-modes), [Troubleshooting](https://code.claude.com/docs/en/troubleshooting), [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: HOOK-031, FLOW-012, FLOW-020, ORCH-038
 
@@ -526,7 +526,7 @@ Interactive sessions on a subscription have no turn or spend cap. A human notici
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference: Bash, Monitor](https://code.claude.com/docs/en/tools-reference), [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Channels](https://code.claude.com/docs/en/channels), [Desktop: monitor pull request status](https://code.claude.com/docs/en/desktop)
 - Related: FLOW-025, FLOW-026, FLOW-027, FLOW-028, FLOW-029, SESS-022, ORCH-017
 
@@ -547,7 +547,7 @@ Before waiting on a PR's checks, confirm it isn't conflicting: GitHub runs no `p
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference: Bash tool behavior](https://code.claude.com/docs/en/tools-reference), [Interactive mode: background Bash commands](https://code.claude.com/docs/en/interactive-mode), [Claude Code CHANGELOG 2.1.83, 2.1.277, 2.1.285, 2.1.288](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-024, FLOW-026, TOK-042
 
@@ -565,7 +565,7 @@ The current Bash tool description (v2.1.296) also says "Foreground `sleep` is bl
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Tools reference: Monitor tool](https://code.claude.com/docs/en/tools-reference), [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Claude Code CHANGELOG 2.1.98, 2.1.271, 2.1.274](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-024, FLOW-027, FLOW-028
 
@@ -573,7 +573,7 @@ Monitor runs a script in the background and turns each stdout line into a notifi
 
 - **Deadline:** "5 minutes by default, at most 30 minutes, and at most 10 minutes" in a single-prompt `-p` run. Claude gets one notice at expiry and can re-arm. The schema allows `timeout_ms` up to 3,600,000, but values above 1,800,000 are capped. The old no-timeout `persistent` option was removed in v2.1.271.
 - **Permissions:** same rules as Bash; in auto mode the classifier reviews it.
-- **Availability:** not on Bedrock, Agent Platform or Foundry, nor with `DISABLE_TELEMETRY` or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`. Subagents keep it; stopping the subagent stops its monitors.
+- **Availability:** on Bedrock, Claude Platform on AWS, Agent Platform or Foundry, or with `DISABLE_TELEMETRY` or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, it needs Claude Code v2.1.310 or later (when feature-flag fetching is off). On Windows it needs Git Bash. Subagents keep it; stopping the subagent stops its monitors.
 
 From the tool's own description (v2.1.296):
 - **Every stdout line is a conversation message**: filter to the lines you'd act on, or the monitor gets stopped for volume.
@@ -587,7 +587,7 @@ A script's final line and its exit arrive as one notification since v2.1.274, sa
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Tools reference](https://code.claude.com/docs/en/tools-reference), [Sub-agents: available tools](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-017, FLOW-024, FLOW-028
 
@@ -611,7 +611,7 @@ A scheduled fire runs only skills Claude may invoke itself; `/verify` and built-
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Costs: background token usage](https://code.claude.com/docs/en/costs), [Prompt caching: cache lifetime](https://code.claude.com/docs/en/prompt-caching), [Scheduled tasks: jitter](https://code.claude.com/docs/en/scheduled-tasks), [claude-code-system-prompts (ScheduleWakeup, ccVersion 2.1.284)](https://github.com/Piebald-AI/claude-code-system-prompts)
 - Related: TOK-034, TOK-052, FLOW-024, FLOW-027
 
@@ -631,13 +631,13 @@ Cheapest first: a background command that exits on the condition, then Monitor w
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Desktop: monitor pull request status](https://code.claude.com/docs/en/desktop), [Remote Control: mobile push notifications](https://code.claude.com/docs/en/remote-control), [Settings reference: agentPushNotifEnabled](https://code.claude.com/docs/en/settings-reference), [Channels](https://code.claude.com/docs/en/channels), [Claude Code on the web: auto-fix](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SESS-034, HOOK-030, FLOW-024, SURF-002, SURF-020, SURF-029
 
 Ways to be told, or to let Claude act, when external work changes. The desktop and mobile features themselves are SURF-002 (CI bar, auto-merge, desktop notifications), SURF-020 (phone pushes) and SURF-029 (cloud auto-fix).
 
-- **Desktop CI status bar:** after a PR opens, "Claude Code uses the GitHub CLI to poll check results and surface failures." Toggles: **Auto-fix CI & address comments**, and **Auto-merge when ready**, which squash-merges and needs repo auto-merge enabled.
+- **Desktop CI status** (Changes card, ⋮ menu beside the PR title) shows the PR's check status. Toggles: **Auto-fix**, and **Merge when ready**, which turns on GitHub's auto-merge and requests a squash merge unless the base branch uses a merge queue; the repo must allow auto-merge. "PR monitoring requires the GitHub CLI (`gh`) to be installed and authenticated on your machine."
 - **Cloud auto-fix** (`/autofix-pr`): subscribes to the PR's GitHub activity. GitHub sends no webhook when `main` moves and causes a conflict, so it can't react to conflicts.
 - **Push to your phone:**
   - `agentPushNotifEnabled` ("Push when Claude decides") lets Claude send one, e.g. when a long task finishes.
@@ -651,7 +651,7 @@ Ways to be told, or to let Claude act, when external work changes. The desktop a
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-01
 - Sources: [Interactive mode: keyboard shortcuts](https://code.claude.com/docs/en/interactive-mode), [Best practices: Steer the session](https://code.claude.com/docs/en/best-practices), [Claude Code CHANGELOG 2.1.73](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-021, FLOW-031, FLOW-016
 
@@ -674,7 +674,7 @@ Prefer an early `Esc` and one precise correction over letting a wrong approach f
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Interactive mode: queue messages while Claude works](https://code.claude.com/docs/en/interactive-mode), [Checkpointing: messages sent mid-turn](https://code.claude.com/docs/en/checkpointing), [Claude Code CHANGELOG 2.1.275, 2.1.281](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: FLOW-030, FLOW-032, FLOW-017
 
@@ -693,7 +693,7 @@ Use a queued message for a small steer ("also cover the error path"). Use `Esc` 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
+- Last verified: 2026-11-01
 - Sources: [Interactive mode: side questions with /btw](https://code.claude.com/docs/en/interactive-mode), [Interactive mode: queue messages](https://code.claude.com/docs/en/interactive-mode)
 - Related: TOK-033, FLOW-022, FLOW-031
 

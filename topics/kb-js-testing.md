@@ -54,7 +54,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Vitest 5 migration guide](https://vitest.dev/guide/migration) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/migration/index.md)), [v5.0.0 release](https://github.com/vitest-dev/vitest/releases/tag/v5.0.0), npm registry
 - Related: JSTEST-002, JSTEST-003, JSTEST-014, TOK-111
 
@@ -78,7 +78,7 @@ Tested 2026-10-17, vitest@5.0.5, Node 24.21.0: with no config, a module-level `v
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Vitest 4 migration guide](https://v4.vitest.dev/guide/migration) ([raw at v4.1.12](https://raw.githubusercontent.com/vitest-dev/vitest/v4.1.12/docs/guide/migration.md)), npm registry
 - Related: JSTEST-001, JSUP-003, JSUP-008
 
@@ -98,7 +98,7 @@ Path from 3.x: apply the 4 guide, run the suite, then the 5 guide (JSTEST-001), 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Vitest config: fsModuleCache](https://vitest.dev/config/fsmodulecache) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/config/fsmodulecache.md)), [fsModuleCachePath](https://vitest.dev/config/fsmodulecachepath), [angular-cli CHANGELOG 22.2.3](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [angular/angular-cli#34311](https://github.com/angular/angular-cli/pull/34311)
 - Related: JSTEST-001, JSTEST-004, JSTEST-008
 
@@ -114,7 +114,7 @@ Angular's `unit-test` builder hands Vitest a bundle, so a change to the code und
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Testing overview](https://angular.dev/guide/testing) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/overview.md)), [unit-test schema.json at v22.2.3](https://github.com/angular/angular-cli/blob/v22.2.3/packages/angular/build/src/builders/unit-test/schema.json), [vitest runner configuration.ts and plugins.ts at v22.2.3](https://github.com/angular/angular-cli/tree/v22.2.3/packages/angular/build/src/builders/unit-test/runners/vitest), [angular-cli CHANGELOG](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md)
 - Related: NG-009, JSTEST-003, JSTEST-005
 
@@ -134,7 +134,7 @@ What it overrides in that config (plugins.ts): it deletes `test.projects` and `t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Testing overview](https://angular.dev/guide/testing) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/overview.md)), [plugins.ts, browser-provider.ts and build-options.ts at v22.2.3](https://github.com/angular/angular-cli/tree/v22.2.3/packages/angular/build/src/builders/unit-test/runners/vitest), [Vitest: Why Browser Mode](https://vitest.dev/guide/browser/why), [Vitest browser mode limitations](https://vitest.dev/guide/browser/)
 - Related: JSTEST-004, JSTEST-006, NG-009
 
@@ -148,7 +148,7 @@ What it overrides in that config (plugins.ts): it deletes `test.projects` and `t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Migrating to Vitest](https://angular.dev/guide/testing/migrating-to-vitest) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/migrating-to-vitest.md)), [refactor/jasmine-vitest schematic at v22.2.3](https://github.com/angular/angular-cli/tree/v22.2.3/packages/schematics/angular/refactor/jasmine-vitest)
 - Related: NG-009, NG-010, JSTEST-005
 
@@ -166,7 +166,7 @@ Gotchas: `fakeAsync` is converted to Vitest fake timers only with the `fakeAsync
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Nest migration guide](https://docs.nestjs.com/migration-guide) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/migration.md)), [Nest CLI usages](https://docs.nestjs.com/cli/usages), [Nest testing](https://docs.nestjs.com/fundamentals/testing), [nestjs/schematics application schema at 12.0.7](https://github.com/nestjs/schematics/blob/12.0.7/src/lib/application/schema.json), [Vitest: migrating from Jest](https://vitest.dev/guide/migration/jest) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/migration/jest.md))
 - Related: JSTEST-008, JSTEST-009, JSUP-003
 
@@ -184,7 +184,7 @@ Moving a Jest suite: Nest's guide lists updating the test scripts, replacing run
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Vite features: emitDecoratorMetadata](https://vite.dev/guide/features) ([raw at v8.3.4](https://raw.githubusercontent.com/vitejs/vite/v8.3.4/docs/guide/features.md)), [Oxc transformer: TypeScript](https://oxc.rs/docs/guide/usage/transformer/typescript), [esbuild: TypeScript caveats](https://esbuild.github.io/content-types/#typescript-caveats), [Nest recipe: SWC](https://docs.nestjs.com/recipes/swc), [nestjs/schematics ts-esm template at 12.0.7](https://github.com/nestjs/schematics/tree/12.0.7/src/lib/application/files/ts-esm)
 - Related: JSTEST-007, JSTEST-003, NODE-004
 
@@ -198,7 +198,7 @@ Tested 2026-10-17, vitest@5.0.5, vite@8.3.4, @nestjs/core and @nestjs/testing 12
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Jest: ECMAScript Modules](https://jestjs.io/docs/ecmascript-modules) ([raw at v30.5.2](https://raw.githubusercontent.com/jestjs/jest/v30.5.2/docs/ECMAScriptModules.md)), [Upgrading to Jest 30](https://jestjs.io/docs/upgrading-to-jest30), [Jest CHANGELOG at v30.5.2](https://raw.githubusercontent.com/jestjs/jest/v30.5.2/CHANGELOG.md), [Nest migration guide](https://docs.nestjs.com/migration-guide), npm registry
 - Related: JSTEST-007, NPM-014, TS-009, NODE-010
 
@@ -214,7 +214,7 @@ Upgrade traps from the Jest 30 guide that agents write from habit: removed alias
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Playwright release notes](https://playwright.dev/docs/release-notes), [Timeouts](https://playwright.dev/docs/test-timeouts), [Retries](https://playwright.dev/docs/test-retries), [Best practices](https://playwright.dev/docs/best-practices), [Command line](https://playwright.dev/docs/test-cli) (all raw from microsoft/playwright `docs/src/` at v1.64.1), npm registry
 - Related: JSTEST-011, JSTEST-012
 
@@ -234,7 +234,7 @@ Controls, cheapest first:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Web server](https://playwright.dev/docs/test-webserver), [TestConfig](https://playwright.dev/docs/api/class-testconfig), [Emulation: JavaScript enabled](https://playwright.dev/docs/emulation), [API testing](https://playwright.dev/docs/api-testing) (all raw at v1.64.1)
 - Related: JSTEST-010, WEB-014, WEB-015
 
@@ -262,7 +262,7 @@ Server-rendered output, separately from the hydrated page: a project with `use: 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Playwright Test Agents](https://playwright.dev/docs/test-agents), [healer agent prompt at v1.64.1](https://github.com/microsoft/playwright/blob/v1.64.1/packages/playwright/src/agents/playwright-test-healer.agent.md), [Playwright CLI](https://playwright.dev/docs/getting-started-cli), [playwright-mcp README](https://github.com/microsoft/playwright-mcp), [Reporters](https://playwright.dev/docs/test-reporters), npm registry
 - Related: FLOW-014, REPO-021, SESS-013, JSTEST-010, JSTEST-016, BROWSER-002, BROWSER-004
 
@@ -295,7 +295,7 @@ Tested 2026-10-17, vitest@5.0.5, @vitest/coverage-v8@5.0.5, @stryker-mutator/cor
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [StrykerJS CHANGELOG](https://github.com/stryker-mutator/stryker-js/blob/master/CHANGELOG.md), [Vitest runner](https://stryker-mutator.io/docs/stryker-js/vitest-runner/), [Configuration](https://stryker-mutator.io/docs/stryker-js/configuration/), [Incremental](https://stryker-mutator.io/docs/stryker-js/incremental/) (docs raw from stryker-js `docs/` at v10.0.0), [stryker-js#6210](https://github.com/stryker-mutator/stryker-js/issues/6210), [stryker-js#6214](https://github.com/stryker-mutator/stryker-js/pull/6214), [stryker-js#5655](https://github.com/stryker-mutator/stryker-js/issues/5655), npm registry
 - Related: JSTEST-013, JSTEST-015, JSTEST-001, JSTEST-004
 
@@ -313,7 +313,7 @@ Angular's `unit-test` builder isn't supported (#5655, open; a maintainer workaro
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Stryker configuration: reporters, jsonReporter](https://stryker-mutator.io/docs/stryker-js/configuration/), [mutation-testing-report-schema](https://github.com/stryker-mutator/mutation-testing-elements/blob/master/packages/report-schema/src/mutation-testing-report-schema.json), [stryker-js clear-text reporter at v10.0.0](https://github.com/stryker-mutator/stryker-js/blob/v10.0.0/packages/core/src/reporters/clear-text-reporter.ts)
 - Related: JSTEST-013, JSTEST-014, JSTEST-016, TOK-108
 
@@ -337,7 +337,7 @@ Tested 2026-10-17, @stryker-mutator/core 10.0.0, jq on WSL2: the command listed 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/learn/writing-tests-with-ai.md)), [Claude Code best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Vitest config: allowOnly](https://vitest.dev/config/allowonly), [nizos/tdd-guard: strengthening enforcement](https://github.com/nizos/tdd-guard/blob/main/docs/enforcement.md)
 - Related: PROMPT-028, FLOW-002, HOOK-028, HOOK-032, JSTEST-012, JSTEST-013, JSTEST-015
 
@@ -360,7 +360,7 @@ Checks, cheapest first:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Claude Code best practices: Write a specific prompt](https://code.claude.com/docs/en/best-practices), [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai)
 - Related: FLOW-002, FLOW-011, FLOW-012, JSTEST-016, SKPACK-009
 

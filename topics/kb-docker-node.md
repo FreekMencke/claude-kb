@@ -52,7 +52,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [docker-library/official-images: library/node](https://raw.githubusercontent.com/docker-library/official-images/master/library/node), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [nodejs/docker-node versions.json](https://raw.githubusercontent.com/nodejs/docker-node/main/versions.json)
 - Related: NODE-001, DOCKER-002, DOCKER-009
 
@@ -78,7 +78,7 @@ Tested 2026-10-17, Docker Hub registry API (no Docker engine), sum of compressed
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nodejs/node BUILDING.md, v24.x](https://raw.githubusercontent.com/nodejs/node/v24.x/BUILDING.md), [nodejs/node BUILDING.md, v26.x](https://raw.githubusercontent.com/nodejs/node/v26.x/BUILDING.md), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [docker-node 24/alpine3.24 Dockerfile](https://raw.githubusercontent.com/nodejs/docker-node/main/24/alpine3.24/Dockerfile), [sharp: installation](https://sharp.pixelplumbing.com/install), [npm config v11](https://docs.npmjs.com/cli/v11/using-npm/config)
 - Related: NPM-017, DOCKER-004, DOCKER-015
 
@@ -93,7 +93,7 @@ Native modules need a musl prebuild or a compiler in the build stage (`apk add p
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-01
 - Sources: [Docker press release, 2025-12-17](https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/), [Docker Hardened Images](https://docs.docker.com/dhi/), [Use a DHI](https://docs.docker.com/dhi/how-to/use/), [DHI catalog: node](https://github.com/docker-hardened-images/catalog/tree/main/image/node), [DHI migration checklist](https://docs.docker.com/dhi/migration/checklist/), [distroless README](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/README.md), [distroless common/variables.bzl](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/common/variables.bzl), [Chainguard container categories](https://edu.chainguard.dev/chainguard/containers/concepts/container-categories/)
 - Related: DOCKER-004, DOCKER-012
 
@@ -115,7 +115,7 @@ Three runtime images without a shell or package manager:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: building best practices](https://docs.docker.com/build/building/best-practices/), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md)
 - Related: DOCKER-001, DOCKER-002, DOCKER-003, NODE-001
 
@@ -131,7 +131,7 @@ docker-node's "Smaller images without npm/yarn" copies `/usr/local/bin/node` ont
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: building best practices](https://docs.docker.com/build/building/best-practices/), [Docker: optimize cache usage](https://docs.docker.com/build/cache/optimize/), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md), [this repo's mcp-server/Dockerfile](https://github.com/FreekMencke/claude-kb/blob/main/mcp-server/Dockerfile)
 - Related: DOCKER-006, DOCKER-007, DOCKER-008, NPM-016
 
@@ -163,7 +163,7 @@ CMD ["node", "dist/<app>/server/server.mjs"]
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [npm/cli config definitions, v11.19.1](https://raw.githubusercontent.com/npm/cli/v11.19.1/workspaces/config/lib/definitions/definitions.js), [Docker: optimize cache usage](https://docs.docker.com/build/cache/optimize/), [nodejs.org dist index](https://nodejs.org/dist/index.json), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md)
 - Related: NPM-004, NPM-016, NODE-015, DOCKER-014
 
@@ -178,7 +178,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0, WSL2: with `ms` as a dependency an
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: build context, .dockerignore](https://docs.docker.com/build/concepts/context/#dockerignore-files), [Docker: build secrets](https://docs.docker.com/build/building/secrets/), [Docker: provenance attestations](https://docs.docker.com/build/metadata/attestations/slsa-provenance/), [docker/build-push-action README v7.4.0](https://raw.githubusercontent.com/docker/build-push-action/v7.4.0/README.md)
 - Related: DOCKER-005, DOCKER-011, GHA-020
 
@@ -198,7 +198,7 @@ with `docker build --secret id=npmrc,src=$HOME/.npmrc .` (or build-push-action's
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md), [docker-node docker-entrypoint.sh](https://raw.githubusercontent.com/nodejs/docker-node/main/24/alpine3.24/docker-entrypoint.sh), [Docker: building best practices, USER](https://docs.docker.com/build/building/best-practices/#user), [kubelet security_context_others.go](https://raw.githubusercontent.com/kubernetes/kubernetes/master/pkg/kubelet/kuberuntime/security_context_others.go)
 - Related: DOCKER-005, DOCKER-003
 
@@ -212,7 +212,7 @@ Tested 2026-10-17, Node 24.21.0 as PID 1 of a new PID namespace (`unshare -rpf -
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: building best practices, pin base image versions](https://docs.docker.com/build/building/best-practices/#pin-base-image-versions), [Docker: rebuild your images often](https://docs.docker.com/build/building/best-practices/#rebuild-your-images-often)
 - Related: DOCKER-001, JSUP-012, GHA-012
 
@@ -226,7 +226,7 @@ Docker's other half: "rebuild your images regularly". A pinned digest is only as
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Kubernetes: images](https://kubernetes.io/docs/concepts/containers/images/), [Node v24 module.md: compile cache](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/module.md), [Node v24 src/api/environment.cc](https://raw.githubusercontent.com/nodejs/node/v24.x/src/api/environment.cc), [Node v24 cli.md](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/cli.md)
 - Related: DOCKER-001, DOCKER-005, NODE-001
 
@@ -240,7 +240,7 @@ No official source gives a size-to-startup figure. What the sources support:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: build attestations](https://docs.docker.com/build/metadata/attestations/), [Docker: provenance attestations](https://docs.docker.com/build/metadata/attestations/slsa-provenance/), [Docker: attestations in GitHub Actions](https://docs.docker.com/build/ci/github-actions/attestations/), [build-push-action src/context.ts v7.4.0](https://raw.githubusercontent.com/docker/build-push-action/v7.4.0/src/context.ts), [BuildKit releases](https://github.com/moby/buildkit/releases)
 - Related: DOCKER-007, DOCKER-012, NPM-012, GHA-011
 
@@ -258,7 +258,7 @@ Tested 2026-10-17, Docker Hub registry API: `node:24-alpine` carries `https://sp
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [cosign CHANGELOG](https://raw.githubusercontent.com/sigstore/cosign/main/CHANGELOG.md), [cosign releases](https://github.com/sigstore/cosign/releases), [Sigstore: signing containers](https://docs.sigstore.dev/cosign/signing/signing_with_containers/), [cosign-installer README](https://github.com/sigstore/cosign-installer), [actions/attest README](https://github.com/actions/attest), [actions/attest-build-provenance README](https://github.com/actions/attest-build-provenance), [GitHub: using artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations)
 - Related: DOCKER-011, DOCKER-013, NPM-012
 
@@ -281,7 +281,7 @@ A signature only matters where something refuses unsigned images (DOCKER-013).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Flux: OCIRepository, verification](https://fluxcd.io/flux/components/source/ocirepositories/#verification), [Flux: HelmChart](https://fluxcd.io/flux/components/source/helmcharts/), [Flux: ImageRepository](https://fluxcd.io/flux/components/image/imagerepositories/), [GitHub: enforcing artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/enforce-artifact-attestations)
 - Related: DOCKER-012, INFRA-013
 
@@ -295,7 +295,7 @@ So a Deployment applied from Git with a digest that CI wrote runs whatever that 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: GitHub Actions cache backend](https://docs.docker.com/build/cache/backends/gha/), [Docker: cache management with GitHub Actions](https://docs.docker.com/build/ci/github-actions/cache/), [Docker: cache storage backends](https://docs.docker.com/build/cache/backends/), [GitHub: dependency caching reference](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)
 - Related: GHA-019, GHA-008, DOCKER-006
 
@@ -312,7 +312,7 @@ A fresh runner has no layer cache: every build is cold unless it imports one.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Docker: multi-platform builds](https://docs.docker.com/build/building/multi-platform/), [Docker: multi-platform image with GitHub Actions](https://docs.docker.com/build/ci/github-actions/multi-platform/), [Docker GitHub Builder: architecture](https://docs.docker.com/build/ci/github-actions/github-builder/architecture/), [Dockerfile reference: automatic platform ARGs](https://docs.docker.com/reference/dockerfile/#automatic-platform-args-in-the-global-scope), [npm config v11](https://docs.npmjs.com/cli/v11/using-npm/config)
 - Related: GHA-002, DOCKER-002, NPM-017
 

@@ -63,7 +63,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [GitHub-hosted runners reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), [runner-images README](https://raw.githubusercontent.com/actions/runner-images/main/README.md), [runner-images#14748](https://github.com/actions/runner-images/issues/14748), [runner-images#14254](https://github.com/actions/runner-images/issues/14254), [Changelog 2026-09-17: Ubuntu 26 GA](https://github.blog/changelog/2026-09-17-ubuntu-26-generally-available-and-latest-migration), [Ubuntu 26.04 image readme](https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2604-Readme.md)
 - Related: GHA-002, GHA-003, NODE-014
 
@@ -80,7 +80,7 @@ The 26.04 announcement table gives Java 17 as the default; the image readme says
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [GitHub-hosted runners reference: single-CPU runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners#single-cpu-runners), [Changelog 2026-01-22: 1 vCPU runner GA](https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions), [ubuntu-slim image readme](https://github.com/actions/runner-images/blob/main/images/ubuntu-slim/ubuntu-slim-Readme.md), [Changelog 2025-08-07: arm64 for public repos](https://github.blog/changelog/2025-08-07-arm64-hosted-runners-for-public-repositories-are-now-generally-available), [Changelog 2026-01-29: arm64 in private repos](https://github.blog/changelog/2026-01-29-arm64-standard-runners-are-now-available-in-private-repositories)
 - Related: GHA-001, GHA-008, GHA-023
 
@@ -94,7 +94,7 @@ Fits: a changed-files job, a link check, a zizmor run (zizmor-action supports it
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Changelog 2026-09-23: Node 20 is no longer available](https://github.blog/changelog/2026-09-23-node-20-is-no-longer-available-in-github-actions), [Changelog 2025-09-19: deprecation of Node 20 (edited 2026-08-25)](https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners), [actions/setup-node v4 action.yml](https://raw.githubusercontent.com/actions/setup-node/v4/action.yml), [actions/runner NodeUtil.cs](https://raw.githubusercontent.com/actions/runner/main/src/Runner.Common/Util/NodeUtil.cs)
 - Related: GHA-004, NODE-001, NODE-014
 
@@ -114,7 +114,7 @@ What to do: move to majors that declare `node24` (GHA-004). For your own JavaScr
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [actions/checkout releases](https://github.com/actions/checkout/releases), [actions/checkout README](https://raw.githubusercontent.com/actions/checkout/main/README.md), [actions/setup-node releases](https://github.com/actions/setup-node/releases), [actions/cache releases](https://github.com/actions/cache/releases), [actions/upload-artifact releases](https://github.com/actions/upload-artifact/releases), [actions/download-artifact releases](https://github.com/actions/download-artifact/releases)
 - Related: GHA-003, GHA-005, GHA-011, GHA-017, GHA-019
 
@@ -136,7 +136,7 @@ For an agent: bump all five to these majors together, and read the artifact note
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [actions/setup-node releases](https://github.com/actions/setup-node/releases), [setup-node README](https://raw.githubusercontent.com/actions/setup-node/main/README.md), [setup-node advanced usage](https://raw.githubusercontent.com/actions/setup-node/main/docs/advanced-usage.md)
 - Related: GHA-004, GHA-008, GHA-022, NODE-014
 
@@ -155,7 +155,7 @@ setup-node is the one core action with immutable releases, since v6.5.0 and v7.0
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), [Events: schedule](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule), [Changelog 2026-06-25: parallel steps](https://github.blog/changelog/2026-06-25-actions-steps-can-now-be-run-in-parallel), [Changelog 2026-07-30: self-repository syntax](https://github.blog/changelog/2026-07-30-reference-same-repository-actions-with-self-repository-syntax), [Changelog 2026-01-29: case function](https://github.blog/changelog/2026-01-29-github-actions-smarter-editing-clearer-debugging-and-a-new-case-function), [Changelog 2025-09-18: YAML anchors](https://github.blog/changelog/2025-09-18-actions-yaml-anchors-and-non-public-workflow-templates), [Changelog 2026-03-19](https://github.blog/changelog/2026-03-19-github-actions-late-march-2026-updates)
 - Related: GHA-007, GHA-010, GHA-019
 
@@ -178,7 +178,7 @@ Since 2026-01-29 an `if:` with text outside `${{ }}` (always truthy) gets a run 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Actions limits](https://docs.github.com/en/actions/reference/limits), [Dependency caching reference: usage limits](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#usage-limits-and-eviction-policy), [Changelog 2026-04-10: 50 reruns](https://github.blog/changelog/2026-04-10-actions-workflows-are-limited-to-50-reruns), [Changelog 2025-12-04: 25 inputs](https://github.blog/changelog/2025-12-04-actions-workflow-dispatch-workflows-now-support-25-inputs), [Changelog 2026-01-16: cache rate limit](https://github.blog/changelog/2026-01-16-rate-limiting-for-actions-cache-entries), [Changelog 2025-11-20: cache over 10 GB](https://github.blog/changelog/2025-11-20-github-actions-cache-size-can-now-exceed-10-gb-per-repository), [Changelog 2026-10-01: retention covers checks, runs and statuses](https://github.blog/changelog/2026-10-01-actions-retention-now-covers-checks-runs-and-statuses), [Changelog 2026-09-24: expired artifacts hidden](https://github.blog/changelog/2026-09-24-expired-github-actions-artifacts-no-longer-shown-in-ui-and-api)
 - Related: GHA-006, GHA-008
 
@@ -202,7 +202,7 @@ So a script that reads an old run's check results (to skip unchanged work, say) 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Workflow syntax: concurrency](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#concurrency), [Troubleshooting required status checks](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks), [actions/setup-node README](https://raw.githubusercontent.com/actions/setup-node/main/README.md)
 - Related: SESS-021, SESS-023, SESS-024, FLOW-024, GHA-005, GHA-019
 
@@ -217,7 +217,7 @@ Claude Code sessions push to a PR several times in minutes, and several sessions
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Secure use reference: using third-party actions](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions), [Managing GitHub Actions settings for a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository), [Changelog 2025-08-15: blocking and SHA pinning](https://github.blog/changelog/2025-08-15-github-actions-policy-now-supports-blocking-and-sha-pinning-actions), [zizmor audits: unpinned-uses, impostor-commit](https://docs.zizmor.sh/audits/), [zizmor#2371](https://github.com/zizmorcore/zizmor/issues/2371)
 - Related: GHA-010, GHA-011, GHA-012, GHA-023, GHA-024
 
@@ -238,7 +238,7 @@ Trade-off: "Dependabot only creates alerts for vulnerable actions that use seman
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Changelog 2026-10-14: workflow lockfiles in public preview](https://github.blog/changelog/2026-10-14-github-actions-workflow-lockfiles-in-public-preview), [Workflow dependency lockfiles](https://docs.github.com/en/actions/concepts/security/workflow-dependency-lockfiles), [Locking action dependencies](https://docs.github.com/en/actions/how-tos/secure-your-work/lock-workflow-dependencies), [Enforcing lockfiles](https://docs.github.com/en/actions/how-tos/administer/enforce-workflow-lockfiles), [github/gh-actions-lock README v0.2.0](https://raw.githubusercontent.com/github/gh-actions-lock/v0.2.0/README.md), [gh-actions-lock#174](https://github.com/github/gh-actions-lock/issues/174), [gh-actions-lock#178](https://github.com/github/gh-actions-lock/issues/178)
 - Related: GHA-009, GHA-011, GHA-012, GHA-021, HOOK-004
 
@@ -256,7 +256,7 @@ GitHub suggests a Copilot skill that regenerates the lockfile when a workflow ch
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases), [Changelog 2025-10-28: immutable releases GA](https://github.blog/changelog/2025-10-28-immutable-releases-are-now-generally-available/), [Verifying release integrity](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/verify-release-integrity), [zizmor#766](https://github.com/zizmorcore/zizmor/issues/766)
 - Related: GHA-009, GHA-010, GHA-004
 
@@ -275,7 +275,7 @@ For an action you publish: turn immutable releases on and keep the major tag as 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Keeping your actions up to date with Dependabot](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/auto-update-actions), [Dependabot options reference](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference), [Dependabot on GitHub Actions](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-on-actions), [dependabot-core github_actions file_parser.rb](https://github.com/dependabot/dependabot-core/blob/main/github_actions/lib/dependabot/github_actions/file_parser.rb), [Locking action dependencies](https://docs.github.com/en/actions/how-tos/secure-your-work/lock-workflow-dependencies)
 - Related: JSUP-012, JSUP-013, JSUP-014, GHA-009, GHA-010, GHA-013
 
@@ -293,7 +293,7 @@ The options themselves (schedule, groups, `directories`, the 3-day default coold
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Workflow syntax: permissions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions), [GITHUB_TOKEN](https://docs.github.com/en/actions/concepts/security/github_token), [Managing GitHub Actions settings for a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository), [Secure use reference](https://docs.github.com/en/actions/reference/security/secure-use), [Dependabot on GitHub Actions](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-on-actions)
 - Related: GHA-014, GHA-018, GHA-020, REPO-038, INFRA-001
 
@@ -310,7 +310,7 @@ Start every workflow with `permissions: contents: read` (or `permissions: {}`) a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [actions/create-github-app-token README v3.3.0](https://raw.githubusercontent.com/actions/create-github-app-token/v3.3.0/README.md), [Making authenticated API requests with a GitHub App in a workflow](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/making-authenticated-api-requests-with-a-github-app-in-a-github-actions-workflow), [Changelog 2026-10-02: stateless installation tokens rolled out](https://github.blog/changelog/2026-10-02-stateless-github-app-installation-tokens-rolled-out), [GITHUB_TOKEN](https://docs.github.com/en/actions/concepts/security/github_token)
 - Related: GHA-013, REPO-027, REPO-038, INFRA-001
 
@@ -338,7 +338,7 @@ GitHub: "you should use the built-in `GITHUB_TOKEN` if possible". An App install
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Configuring OpenID Connect in AWS](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws), [IAM: create a role for OIDC federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html), [IAM condition keys: GitHub claims](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html), [AWS What's New 2026-02-02: STS validates provider claims](https://aws.amazon.com/about-aws/whats-new/2026/01/aws-sts-supports-validation-identity-provider-claims/), [aws-actions/configure-aws-credentials README v6.3.0](https://raw.githubusercontent.com/aws-actions/configure-aws-credentials/v6.3.0/README.md)
 - Related: GHA-016, GHA-013, INFRA-001, INFRA-020
 
@@ -364,7 +364,7 @@ Agent credentials in general: INFRA-001 and INFRA-020.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [OpenID Connect reference: immutable subject claims](https://docs.github.com/en/actions/reference/security/oidc#immutable-subject-claims), [Changelog 2026-04-23: immutable subject claims (edited 2026-06-10)](https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens), [REST: OIDC customisation](https://docs.github.com/en/rest/actions/oidc), [configure-aws-credentials README v6.3.0](https://raw.githubusercontent.com/aws-actions/configure-aws-credentials/v6.3.0/README.md), [IAM: multiple values for a key](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-logic-multiple-context-keys-or-values.html)
 - Related: GHA-015, INFRA-020
 
@@ -387,7 +387,7 @@ Tested 2026-10-17, GitHub REST API, read-only: two of our repos created on 2026-
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Changelog 2025-11-07: pull_request_target and environment branch protections](https://github.blog/changelog/2025-11-07-actions-pull_request_target-and-environment-branch-protections-changes), [Changelog 2026-06-18: safer checkout defaults](https://github.blog/changelog/2026-06-18-safer-pull_request_target-defaults-for-github-actions-checkout), [Changelog 2026-06-26: read-only cache](https://github.blog/changelog/2026-06-26-read-only-actions-cache-for-untrusted-triggers), [Changelog 2026-09-17: execution protections GA](https://github.blog/changelog/2026-09-17-workflow-execution-protections-in-github-actions-generally-available), [Securely using pull_request_target](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target)
 - Related: GHA-018, GHA-019, GHA-021, GHA-004, SESS-021
 
@@ -406,7 +406,7 @@ The checkout guard doesn't cover `git fetch`, `gh pr checkout`, a fork run's art
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Securely using pull_request_target](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target), [GitHub Security Lab: Preventing pwn requests](https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/), [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)
 - Related: GHA-017, GHA-019, GHA-020, GHA-024, JSUP-013, REPO-038
 
@@ -429,7 +429,7 @@ A deploy on `workflow_run` that runs only for successful `push` runs from the sa
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Dependency caching reference](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching), [Changelog 2026-06-26: read-only cache for untrusted triggers](https://github.blog/changelog/2026-06-26-read-only-actions-cache-for-untrusted-triggers), [Changelog 2026-09-10: cache-mode](https://github.blog/changelog/2026-09-10-control-github-actions-cache-access-with-cache-mode), [actions/cache#1781](https://github.com/actions/cache/pull/1781), [actions/cache releases](https://github.com/actions/cache/releases)
 - Related: GHA-017, GHA-024, GHA-008, GHA-005
 
@@ -456,7 +456,7 @@ So a `workflow_run` deploy that restores a CI cache drops the warning with `acti
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Script injections](https://docs.github.com/en/actions/concepts/security/script-injections), [Secure use reference](https://docs.github.com/en/actions/reference/security/secure-use#use-an-intermediate-environment-variable), [Secrets reference](https://docs.github.com/en/actions/reference/security/secrets), [Deployments and environments](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments)
 - Related: GHA-013, GHA-018, GHA-023, GHA-024, REPO-038
 
@@ -486,7 +486,7 @@ zizmor, actionlint and CodeQL all flag template injection (GHA-023).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Managing GitHub Actions settings for a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository), [About Actions policies](https://docs.github.com/en/actions/concepts/about-actions-policies), [Controlling workflow execution](https://docs.github.com/en/actions/how-tos/administer/control-workflow-execution), [Changelog 2026-09-17: execution protections GA](https://github.blog/changelog/2026-09-17-workflow-execution-protections-in-github-actions-generally-available), [Changelog 2026-07-28: workflows held for approval](https://github.blog/changelog/2026-07-28-github-actions-holds-potentially-malicious-workflows-for-approval), [Securely using pull_request_target](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target)
 - Related: GHA-017, GHA-018, GHA-010, GHA-013
 
@@ -507,7 +507,7 @@ Not found: whether personal-account repos get the default policy. `gh api repos/
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-01
 - Sources: [npm: trusted publishers](https://docs.npmjs.com/trusted-publishers), [npm: generating provenance statements](https://docs.npmjs.com/generating-provenance-statements), [setup-node advanced usage](https://raw.githubusercontent.com/actions/setup-node/main/docs/advanced-usage.md), [Node.js release index](https://nodejs.org/dist/index.json), [GitHub: publishing Node.js packages](https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages), [Changelog 2026-10-02: unvalidated npm trusted publishing configurations expire](https://github.blog/changelog/2026-10-02-unvalidated-npm-trusted-publishing-configurations-now-expire), [TanStack postmortem](https://tanstack.com/blog/npm-supply-chain-compromise-postmortem)
 - Related: NPM-009, NPM-010, NPM-011, NPM-012, GHA-005, GHA-019, GHA-024, GHA-015
 
@@ -545,7 +545,7 @@ GitHub's "Publishing Node.js packages" tutorial still uses `secrets.NPM_TOKEN` w
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [zizmor audits](https://docs.zizmor.sh/audits/), [zizmor usage: exit codes](https://docs.zizmor.sh/usage/), [zizmor-action README](https://github.com/zizmorcore/zizmor-action), [actionlint checks](https://github.com/rhysd/actionlint/blob/main/docs/checks.md), [CodeQL queries for Actions](https://docs.github.com/en/code-security/reference/code-scanning/codeql/codeql-queries/actions-built-in-queries), [harden-runner README](https://github.com/step-security/harden-runner), [scorecard-action README](https://github.com/ossf/scorecard-action)
 - Related: GHA-009, GHA-019, GHA-020, GHA-002, HOOK-004, GHA-025
 

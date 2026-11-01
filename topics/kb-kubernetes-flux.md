@@ -66,7 +66,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Flux 2.8 GA blog](https://fluxcd.io/blog/2026/02/flux-v2.8.0/), [Flux 2.9 GA blog](https://fluxcd.io/blog/2026/06/flux-v2.9.0/), [flux2 v2.8.0 release](https://github.com/fluxcd/flux2/releases/tag/v2.8.0), [flux2 v2.9.0 release](https://github.com/fluxcd/flux2/releases/tag/v2.9.0), [flux2 v2.9.6 release](https://github.com/fluxcd/flux2/releases/tag/v2.9.6)
 - Related: KUBE-002, KUBE-003, KUBE-004, DOCKER-013, INFRA-014
 
@@ -82,7 +82,7 @@ Patches carry behaviour fixes too: 2.9.6 "stops helm-controller from reapplying 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Upgrade Procedure for Flux v2.7+](https://github.com/fluxcd/flux2/discussions/5572), [Flux: upgrade](https://fluxcd.io/flux/installation/upgrade/), [flux migrate](https://fluxcd.io/flux/cmd/flux_migrate/)
 - Related: KUBE-001, KUBE-005, INFRA-014, INFRA-015
 
@@ -102,7 +102,7 @@ Tested 2026-10-17, flux CLI 2.9.6, Linux amd64: `flux migrate -f manifests --dry
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Flux releases and support](https://fluxcd.io/flux/releases/), [Flux roadmap](https://fluxcd.io/roadmap/), [flux2 v2.9.0 release](https://github.com/fluxcd/flux2/releases/tag/v2.9.0), [Flux installation](https://fluxcd.io/flux/installation/)
 - Related: KUBE-001, KUBE-015, KUBE-016
 
@@ -118,7 +118,7 @@ So a cluster on Flux 2.9 should stay on 1.36; Flux 2.10 is the first release tha
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [helm-controller CHANGELOG](https://github.com/fluxcd/helm-controller/blob/main/CHANGELOG.md), [HelmRelease API](https://fluxcd.io/flux/components/helm/helmreleases/), [Flux 2.8 GA blog](https://fluxcd.io/blog/2026/02/flux-v2.8.0/), [Flux 2.9 GA blog](https://fluxcd.io/blog/2026/06/flux-v2.9.0/)
 - Related: KUBE-001, KUBE-002
 
@@ -135,7 +135,7 @@ Also: `.spec.upgrade.crds` defaults to `Create`, and from 1.6.5 (Flux 2.9.6) SSA
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Flux installation](https://fluxcd.io/flux/installation/), [flux-operator README](https://github.com/controlplaneio-fluxcd/flux-operator), [FluxInstance API](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/api/v1/fluxinstance.md), [Migrating from bootstrap](https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/docs/guides/operator/operator-migration.md)
 - Related: KUBE-002, INFRA-005, INFRA-014
 
@@ -154,7 +154,7 @@ For a single small cluster, bootstrap adds nothing to run; the Operator saves th
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Ingress NGINX Retirement](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/), [Ingress NGINX: Statement from Steering and SRC](https://kubernetes.io/blog/2026/01/29/ingress-nginx-statement/), [kubernetes/ingress-nginx README](https://github.com/kubernetes/ingress-nginx), [Kubernetes: Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
 - Related: KUBE-007, KUBE-008
 
@@ -170,7 +170,7 @@ The Ingress API itself stays: "The Ingress API has been frozen", is "generally a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Gateway API 1.5 changelog](https://github.com/kubernetes-sigs/gateway-api/blob/main/CHANGELOG/1.5-CHANGELOG.md), [Gateway API 1.6 changelog](https://github.com/kubernetes-sigs/gateway-api/blob/main/CHANGELOG/1.6-CHANGELOG.md), [Gateway API v1.6.3 release](https://github.com/kubernetes-sigs/gateway-api/releases/tag/v1.6.3)
 - Related: KUBE-006, KUBE-008, KUBE-009
 
@@ -187,7 +187,7 @@ Tested 2026-10-17, Gateway API v1.6.3 `standard-install.yaml` (downloaded, grepp
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Gateway API conformance reports v1.6](https://github.com/kubernetes-sigs/gateway-api/tree/main/conformance/reports/v1.6), [Traefik: Kubernetes Gateway provider](https://doc.traefik.io/traefik/reference/install-configuration/providers/kubernetes/kubernetes-gateway/), [Traefik: migrate from NGINX](https://doc.traefik.io/traefik/migrate/nginx-to-traefik/), [Ingress2Gateway 1.0](https://kubernetes.io/blog/2026/03/20/ingress2gateway-1-0-release/), [ingress2gateway](https://github.com/kubernetes-sigs/ingress2gateway), [Five surprising Ingress-NGINX behaviors](https://kubernetes.io/blog/2026/02/27/ingress-nginx-before-you-migrate/)
 - Related: KUBE-006, KUBE-007, KUBE-009
 
@@ -203,7 +203,7 @@ On one node, a controller with both an Ingress and a Gateway API provider lets r
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [cert-manager: Gateway API](https://cert-manager.io/docs/usage/gateway/), [cert-manager: HTTP01](https://cert-manager.io/docs/configuration/acme/http01/), [cert-manager supported releases](https://cert-manager.io/docs/releases/), [Upgrading 1.20 to 1.21](https://cert-manager.io/docs/releases/upgrading/upgrading-1.20-1.21/)
 - Related: KUBE-007, KUBE-010, KUBE-016
 
@@ -221,7 +221,7 @@ On one node, a controller with both an Ingress and a Gateway API provider lets r
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [64-Day Certificate Lifetimes Coming Feb 2027](https://letsencrypt.org/2026/10/07/64-day-certs/), [Decreasing Certificate Lifetimes to 45 Days](https://letsencrypt.org/2025/12/02/from-90-to-45/), [OCSP Service Has Reached End of Life](https://letsencrypt.org/2025/08/06/ocsp-service-has-reached-end-of-life/), [Ending expiration emails](https://letsencrypt.org/2025/01/22/ending-expiration-emails/), [Ending TLS client authentication](https://letsencrypt.org/2025/05/14/ending-tls-client-authentication/), [Challenge types](https://letsencrypt.org/docs/challenge-types/), [cert-manager: Certificate](https://cert-manager.io/docs/usage/certificate/)
 - Related: KUBE-009
 
@@ -237,7 +237,7 @@ Challenge choice: "The HTTP-01 challenge can only be done on port 80" and "canno
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Prometheus 3 migration guide](https://prometheus.io/docs/prometheus/latest/migration/), [Prometheus release cycle and LTS](https://prometheus.io/docs/introduction/release-cycle/), [Alloy CHANGELOG](https://github.com/grafana/alloy/blob/main/CHANGELOG.md)
 - Related: KUBE-014
 
@@ -257,7 +257,7 @@ Alloy, which embeds Prometheus code, took the same changes in v1.11.0 ("Promethe
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Loki: upgrade](https://grafana.com/docs/loki/latest/setup/upgrade/), [Loki: deployment modes](https://grafana.com/docs/loki/latest/get-started/deployment-modes/)
 - Related: KUBE-013, KUBE-014
 
@@ -277,7 +277,7 @@ Loki 3.0.0 was published 2024-04-08; on 2026-10-17 the release lines are v3.7.8 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Promtail](https://grafana.com/docs/loki/latest/send-data/promtail/), [Alloy: migrate from Promtail](https://grafana.com/docs/alloy/latest/set-up/migrate/from-promtail/), [alloy convert](https://grafana.com/docs/alloy/latest/reference/cli/convert/), [alloy run](https://grafana.com/docs/alloy/latest/reference/cli/run/), [Kubernetes: container environment](https://kubernetes.io/docs/concepts/containers/container-environment/)
 - Related: KUBE-012, KUBE-014
 
@@ -293,7 +293,7 @@ The converter limits discovery to the local node with `field = "spec.nodeName=" 
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Alloy README](https://github.com/grafana/alloy), [Alloy: OpenTelemetry Engine and Default Engine](https://github.com/grafana/alloy/blob/main/docs/sources/introduction/otel_alloy.md), [loki.source.kubernetes](https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.kubernetes/), [Alloy: estimate resource usage](https://grafana.com/docs/alloy/latest/set-up/estimate-resource-usage/), [OTel Collector Helm chart](https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/), [Collector distributions](https://github.com/open-telemetry/opentelemetry-collector-releases), [k8s-monitoring Helm chart](https://github.com/grafana/k8s-monitoring-helm)
 - Related: KUBE-011, KUBE-012, KUBE-013, TOK-012
 
@@ -315,7 +315,7 @@ Sizing: logs "approximately: 1 CPU core, 120 MiB of memory" per 1 MiB/s ingested
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Kubernetes releases](https://kubernetes.io/releases/), [Patch releases: support period](https://kubernetes.io/releases/patch-releases/), [Version skew policy](https://kubernetes.io/releases/version-skew-policy/), [Release cycle](https://kubernetes.io/releases/release/)
 - Related: KUBE-003, KUBE-016
 
@@ -338,7 +338,7 @@ Skew: `kubelet` "must not be newer than `kube-apiserver`" and "may be up to thre
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-01
 - Sources: [Upgrading kubeadm clusters](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/), [Version skew policy: upgrade order](https://kubernetes.io/releases/version-skew-policy/#supported-component-upgrade-order), [Changing the Kubernetes package repository](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/change-package-repository/)
 - Related: KUBE-003, KUBE-009, KUBE-015, INFRA-015
 
@@ -358,7 +358,7 @@ A failed upgrade can be retried with `kubeadm upgrade apply --force` at the curr
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [SERVER-121912](https://jira.mongodb.org/browse/SERVER-121912), [SERVER-125742](https://jira.mongodb.org/browse/SERVER-125742), [SERVER-131779](https://jira.mongodb.org/browse/SERVER-131779) (read through Jira's REST API), [Ubuntu: identifying a kernel](https://ubuntu.com/kernel), [setarch(8)](https://github.com/util-linux/util-linux/blob/master/sys-utils/setarch.8.adoc), [mongo 8.0 Dockerfile](https://github.com/docker-library/mongo/blob/master/8.0/Dockerfile), [mongo tags on Docker Hub](https://hub.docker.com/_/mongo/tags), FreekMencke/fremen-cluster `cluster/mongodb/mongodb.yaml` (private)
 - Related: KUBE-018, KUBE-019, KUBE-028, NEST-013
 
@@ -381,7 +381,7 @@ Observed 2026-10-21 (single-source), kubeadm 1.36.5 on Ubuntu 26.04, `mongo:8.0.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [MongoDB: connection string options](https://www.mongodb.com/docs/manual/reference/connection-string-options/), FreekMencke/fremen-cluster `cluster/osrs-tracker/secrets.example.yaml` and README "Access" (private)
 - Related: KUBE-017, KUBE-020, KUBE-022, NEST-012
 
@@ -403,7 +403,7 @@ With several members, list them with `replicaSet=` instead: a direct connection 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [MongoDB: internal authentication](https://www.mongodb.com/docs/manual/core/security-internal-authentication/), [MongoDB: deploy a replica set with keyfile access control](https://www.mongodb.com/docs/manual/tutorial/deploy-replica-set-with-keyfile-access-control/), [Kubernetes core/v1 `SecretVolumeSource`](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/core/v1/types.go), [Kubernetes volumes: user ownership](https://kubernetes.io/docs/concepts/storage/volumes/), [AtomicWriteVolumeUserFields](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/), FreekMencke/fremen-cluster `cluster/mongodb/mongodb.yaml` (private)
 - Related: KUBE-017, KUBE-018
 
@@ -447,7 +447,7 @@ A sidecar still fits what must share the pod's lifecycle or files, such as a log
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [alloy run](https://grafana.com/docs/alloy/latest/reference/cli/run/), [prometheus.exporter.mongodb](https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.exporter.mongodb/), [Alloy source at v1.21.1: `mongodb_exporter.go`](https://github.com/grafana/alloy/blob/v1.21.1/internal/static/integrations/mongodb_exporter/mongodb_exporter.go), FreekMencke/fremen-cluster CHANGELOG 2026-10-21 (private)
 - Related: KUBE-013, KUBE-014, KUBE-020, KUBE-024
 
@@ -490,7 +490,7 @@ Rollback: leave the source untouched and stop its writers for good instead of de
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [Kubernetes API: Pod, `envFrom`](https://kubernetes.io/docs/reference/kubernetes-api/core/pod-v1/), [core/v1 `types.go`](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/core/v1/types.go), FreekMencke/fremen-cluster `cluster/osrs-tracker/secrets.example.yaml` (private)
 - Related: KUBE-022
 
@@ -510,7 +510,7 @@ Nothing warns about the override: swapping the two lines switches the user witho
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [Grafana pricing](https://grafana.com/pricing/), [Grafana Cloud: metrics pricing](https://grafana.com/docs/grafana-cloud/platform/pricing-and-usage/metrics/), [mongodb_exporter v0.54.0 REFERENCE.md](https://github.com/percona/mongodb_exporter/blob/v0.54.0/REFERENCE.md), FreekMencke/fremen-cluster `cluster/monitoring/alloy/values.yaml` (private)
 - Related: KUBE-014, KUBE-020, KUBE-021, KUBE-025
 
@@ -544,7 +544,7 @@ A plain `keep` on `__name__` there would drop every other job's series too. Resu
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [Grafana Cloud: metrics pricing](https://grafana.com/docs/grafana-cloud/platform/pricing-and-usage/metrics/), [Prometheus: querying basics, staleness](https://prometheus.io/docs/prometheus/latest/querying/basics/#staleness)
 - Related: KUBE-024, INFRA-028
 
@@ -565,7 +565,7 @@ A series counts if its newest sample is within the lookback period, "5 minutes b
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [crowdsec-bouncer-traefik-plugin#399](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pull/399), [#377](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/issues/377), [v1.8.0 release notes](https://github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/releases/tag/v1.8.0), [Traefik v3.7.16 `go.mod`](https://github.com/traefik/traefik/blob/v3.7.16/go.mod), FreekMencke/fremen-cluster CHANGELOG 2026-10-21 (private)
 - Related: KUBE-008, KUBE-027
 
@@ -603,7 +603,7 @@ Changing the CNI on a running cluster is an outage; we switched while building a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-22
+- Last verified: 2026-11-01
 - Sources: [Ubuntu WSL docs: time synchronisation](https://documentation.ubuntu.com/wsl/stable/explanation/time-sync/), [Ubuntu Server: serve NTP with chrony](https://documentation.ubuntu.com/server/how-to/networking/serve-ntp-with-chrony/), [fwupd `fwupd-refresh.timer`](https://github.com/fwupd/fwupd/blob/main/data/motd/fwupd-refresh.timer), [journalctl(1)](https://github.com/systemd/systemd/blob/main/man/journalctl.xml), FreekMencke/fremen-cluster `host/bootstrap.sh` and `.claude/skills/server-health/` (private)
 - Related: KUBE-016, KUBE-017
 
