@@ -113,9 +113,9 @@ The current models do what the words say, most strictly at low effort. Write the
 
 - **Scope.** Sonnet 5 and Opus 4.8 "interprets prompts literally and explicitly, particularly at lower effort levels". "If you need Claude to apply an instruction broadly, state the scope explicitly (for example, 'Apply this formatting to every section, not just the first one')."
 - **Action.** "If you say 'can you suggest some changes,' Claude will sometimes provide suggestions rather than implementing them." Write "Change this function to improve its performance."
-- **Above-and-beyond.** "If you want 'above and beyond' behavior, explicitly request it rather than relying on the model to infer this from vague prompts."
+- **Above-and-beyond.** "If you want Claude to do more than the task strictly requires, explicitly request it rather than relying on the model to infer this from vague prompts."
 - **Bars.** "Only report high-severity issues" is followed faithfully and lowers recall (PROMPT-032).
-- **Effort interacts.** At low and medium these models "scope [their] work to what was asked rather than going above and beyond"; for shallow reasoning, raise effort "rather than prompting around it".
+- **Effort interacts.** At low and medium these models "scope[s] [its] work to what was asked rather than going beyond the request"; for shallow reasoning, raise effort "rather than prompting around it".
 
 For us: a CLAUDE.md or skill rule written as an example ("e.g. in `osrs-tracker-web`") may be read as applying only to that example. Write the rule's scope as a rule.
 
@@ -147,7 +147,7 @@ Both official pages now point the same way (OVERLAPS.md, Resolved conflicts). Th
 A rule with its reason gets applied to cases the rule didn't name; a bare rule only to the cases it names.
 
 - The docs' example: instead of "NEVER use ellipses", write "Your response will be read aloud by a text-to-speech engine, so never use ellipses since the text-to-speech engine will not know how to pronounce them." "Claude is smart enough to generalize from the explanation."
-- Fable 5 "tends to perform better when it understands the intent behind a request". Its template for long-running agents: `I'm working on [the larger task] for [who it's for]. They need [what the output enables]. With that in mind: [request].`
+- Fable 5 "tends to perform better when the prompt states the intent behind a request". Its template for long-running agents: `I'm working on [the larger task] for [who it's for]. They need [what the output enables]. With that in mind: [request].`
 - Anthropic's newer snippets carry their reason inline: "Only you see that command's output — the user's terminal shows at most a few lines of it. If the user needs to read any of it, put it in your reply." (Fable 5.1).
 
 Cost: one clause per rule. Our CLAUDE.md files already do this ("GitHub runs no `pull_request` CI on a conflicting PR, so waiting for checks hangs"); keep that style for new rules.
@@ -247,7 +247,7 @@ In Claude Code, effort is set per session or per agent (`effort:` frontmatter), 
 Prompts, skills or tool descriptions that ask the model to write out its thinking can be refused with `stop_reason: "refusal"`, category `reasoning_extraction`.
 
 - **Which models:** Fable 5 and 5.1, Opus 5 and 5.5, Sonnet 5.5. Haiku 5.5's refusal categories don't include it.
-- **What triggers it:** "Prompts, skills, and tool descriptions that ask Claude Opus 5 to write out its thinking or reasoning, verbatim or in a fixed format". Old chain-of-thought templates ("think step by step in `<thinking>` tags, then answer") are the classic case. Server-side fallback doesn't retry it. Anthropic's list of common triggers also includes "A `reasoning`, `thinking`, or `trace` field in JSON output or in a tool input"; the category "has no recommended fallback model, so change the prompt rather than retry the request" ([Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback)). Since 2026-09-24 such a refusal before any output is billed like a normal request (release notes).
+- **What triggers it:** "Prompts, skills, and tool descriptions that ask Claude Opus 5 to write its thinking or reasoning, verbatim or in a fixed format". Old chain-of-thought templates ("think step by step in `<thinking>` tags, then answer") are the classic case. Server-side fallback doesn't retry it. Anthropic's list of common triggers also includes "A `reasoning`, `thinking`, or `trace` field in JSON output or in a tool input"; the category "has no recommended fallback model, so change the prompt rather than retry the request" ([Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback)). Since 2026-09-24 such a refusal before any output is billed like a normal request (release notes).
 - **What is fine:** "You can still ask for a short explanation of the answer or a summary of the actions taken." Read real reasoning from summarized thinking blocks (`display: "summarized"`).
 - **Fable 5 migration advice:** "Audit existing skills and system prompts for reflection or show-your-thinking instructions."
 

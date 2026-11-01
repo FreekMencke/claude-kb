@@ -324,7 +324,7 @@ web-features 3.43.0: `prefers-reduced-motion` widely available since 2022-07-15,
 - Applies to: Claude Code
 - Confidence: community-consensus
 - Last verified: 2026-10-17
-- Sources: [Angular: best-practices.md for AI](https://angular.dev/assets/context/best-practices.md), [frontend-design SKILL.md](https://raw.githubusercontent.com/anthropics/claude-code/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Playwright: Accessibility testing](https://playwright.dev/docs/accessibility-testing), [W3C WAI: Selecting evaluation tools](https://www.w3.org/WAI/test-evaluate/tools/selecting/), [arXiv 2503.15885](https://arxiv.org/abs/2503.15885)
+- Sources: [Angular: best-practices.md for AI](https://angular.dev/assets/context/best-practices.md), [frontend-design SKILL.md](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Playwright: Accessibility testing](https://playwright.dev/docs/accessibility-testing), [W3C WAI: Selecting evaluation tools](https://www.w3.org/WAI/test-evaluate/tools/selecting/), [arXiv 2503.15885](https://arxiv.org/abs/2503.15885)
 - Related: FLOW-011, REPO-021, ACCESS-006, ACCESS-008, ACCESS-011, DESIGN-007
 
 Angular's rules file for AI tools asks for code that "MUST pass all AXE checks" and "MUST follow all WCAG AA minimums". Passing axe is the floor, not the proof (ACCESS-008). Our synthesis of the entries above, cheapest first:

@@ -127,7 +127,7 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-16
-- Sources: [Improving frontend design through Skills (2025-11-12)](https://claude.com/blog/improving-frontend-design-through-skills), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5)
+- Sources: [Improving frontend design through Skills (2025-11-12)](https://claude.com/blog/improving-frontend-design-through-skills), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5)
 - Related: DESIGN-004, DESIGN-005
 
 **Cause.** Anthropic's 2025-11-12 post: "Distributional convergence… Safe design choices–those that work universally and offend no one–dominate web training data. Without direction, Claude samples from this high-probability center."
@@ -145,7 +145,7 @@ Tested 2026-10-16, v2.1.296, desktop WSL: `DesignSync` was a deferred tool in th
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-16
-- Sources: [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md)
+- Sources: [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md)
 - Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-022, DESIGN-027, DESIGN-030, PROMPT-009
 
 1. **Ground it.** Name "one concrete subject, the design's audience, and the design's primary job" (frontend-design). Distinctive choices come from the subject's "industry, subject matter, materials, and vernacular".
@@ -163,7 +163,7 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-16
-- Sources: [claude-code: frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [claude-plugins-official copy](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [anthropics/skills copy](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- Sources: [claude-code: frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [claude-plugins-official copy](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [anthropics/skills copy](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md), [Artifacts: improve the visual design](https://code.claude.com/docs/en/artifacts), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: DESIGN-003, DESIGN-004, SURF-016, SKILL-048
 
 **Where it lives.** Two live Anthropic copies, byte-identical on 2026-11-01 (71 lines): the `frontend-design` plugin in `anthropics/claude-plugins-official` (what `/plugin install frontend-design@claude-plugins-official` installs) and `anthropics/skills`. The copy under `anthropics/claude-code/plugins/` returned 404 on 2026-11-01, since plugins moved to claude-plugins-official. History: added 2025-11-12 (41 lines, the "AI slop" version banning Inter, Roboto and purple gradients), rewritten 2026-06-09 to 06-18 (55 lines, "design lead at a design studio"), and rewritten again 2026-09-01 to 09-03. Third-party mirrors often show an older version; quote GitHub.
@@ -195,7 +195,7 @@ Tested (DESIGN-027 to DESIGN-030): whole designs converged; one small choice at 
 - Applies to: Claude Code
 - Confidence: official-docs
 - Last verified: 2026-10-30
-- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Desktop: auto-verify changes](https://code.claude.com/docs/en/desktop), [Vision: limitations](https://platform.claude.com/docs/en/build-with-claude/vision), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2: contrast (minimum), non-text contrast](https://www.w3.org/TR/WCAG22/)
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Desktop: auto-verify changes](https://code.claude.com/docs/en/desktop), [Vision: limitations](https://platform.claude.com/docs/en/build-with-claude/vision), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2: contrast (minimum), non-text contrast](https://www.w3.org/TR/WCAG22/)
 - Related: FLOW-004, FLOW-014, SURF-006, REPO-021, TOK-043, DESIGN-008, DESIGN-013
 
 The loop is FLOW-004's: implement, screenshot the result, compare it with the design, fix the differences. Best practices lists "A browser screenshot next to the mockup" as a check Claude can run, and says "ask Claude for *evidence*: the command it ran and its output, or the screenshot". After Claude says it's done, `/verify` "has Claude build and run the app and look at the result". The desktop Browser pane does this "after every edit" unless `"autoVerify": false` is set (SURF-006).
@@ -230,7 +230,7 @@ Image cost and context effects are in TOK-043.
 - Applies to: Claude Code, claude.ai
 - Confidence: community-consensus
 - Last verified: 2026-10-16
-- Sources: [Artifacts: compare alternatives](https://code.claude.com/docs/en/artifacts), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
+- Sources: [Artifacts: compare alternatives](https://code.claude.com/docs/en/artifacts), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
 - Related: DESIGN-007, DESIGN-010, DESIGN-013, FLOW-004
 
 **Inputs, best first.** This ranking is our synthesis of the official pages:
@@ -295,7 +295,7 @@ Merged into DSKILL-001 (kb-design-skills.md) on 2026-10-23. Read that file for t
 - Applies to: Claude Code, claude.ai
 - Confidence: official-docs
 - Last verified: 2026-10-30
-- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
+- Sources: [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [Get started with Claude Design](https://support.claude.com/en/articles/14604416-get-started-with-claude-design)
 - Related: DESIGN-007, DESIGN-009, DESIGN-003, DSKILL-001
 
 | Pitfall | Guard |
@@ -559,7 +559,7 @@ A checker subagent can run these and return numbers (REPO-021).
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-16
-- Sources: [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), local test
+- Sources: [Prompting Claude Opus 5.5: frontend design defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5), [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), local test
 - Related: DESIGN-003, DESIGN-004, DESIGN-025, DESIGN-026, DESIGN-028, PROMPT-009
 
 **Setup.** One brief (below) plus: S0 nothing; S1 the Opus 5.5 page's banned list; S2 the Sonnet 5 page's four directions, self-picked; S3 frontend-design's two passes without its list of default looks. Sonnet 5.5, 5 runs each; Opus 5.5, 3 runs of S0 and S2; default effort. Brief and S2 suffix:
@@ -638,7 +638,7 @@ Tested 2026-10-16, v2.1.296, terminal `-p` launched from desktop WSL, 19:39–19
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-10-16
-- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Run Claude Code programmatically: continue conversations](https://code.claude.com/docs/en/headless), local tests
+- Sources: [Lovable: design guidance](https://docs.lovable.dev/features/design-guidance), [Prompting Claude Sonnet 5: design and frontend defaults](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Run Claude Code programmatically: continue conversations](https://code.claude.com/docs/en/headless), local tests
 - Related: DESIGN-029, DESIGN-031, DESIGN-027, DESIGN-004, DESIGN-022, DESIGN-003, DESIGN-028
 
 Three follow-ups to DESIGN-029 on Sonnet 5.5, isolated as in DESIGN-028. The user picked from screenshots, and each pick was sent as written with `--resume`.

@@ -224,7 +224,7 @@ At auto-compaction, Claude Code re-attaches the most recent invocation of each s
 How to write for this:
 - Put the rules that matter most in the first part of the body. A long skill loses its tail after compaction.
 - Write standing instructions ("run the tests after every edit") rather than one-off steps you expect Claude to re-read.
-- In long sessions, invoke the skill again after a compaction if behaviour drifts. Since v2.1.299 `/reload-skills` says it re-sends the full skill list, which is how to get skills back after compaction.
+- In long sessions, invoke the skill again after a compaction if behaviour drifts. Since v2.1.304 compaction sends Claude the skill list again by itself, and `/reload-skills` sends only new or changed skills (v2.1.299 had it re-send the full list).
 - Move rarely needed detail to reference files, and run long self-contained procedures with `context: fork` (SKILL-009), so the body lives in a subagent.
 
 ## [SKILL-007] Where Claude Code finds skills, precedence and reload
@@ -347,7 +347,7 @@ Evidence: in a single-author test on Claude Code 2.1.273, "Helps with git stuff.
 - Sources: [skill-creator SKILL.md](https://github.com/anthropics/skills/tree/main/skills/skill-creator), [anthropics/skills docx skill](https://github.com/anthropics/skills/tree/main/skills/docx), [Enterprise skills guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise)
 - Related: SKILL-011, SKILL-028
 
-Anthropic's skill-creator says Claude "tends to undertrigger" skills, so descriptions should be "a little bit pushy". For example: "Make sure to use this skill whenever the user mentions dashboards, data visualization, internal metrics…".
+Anthropic's skill-creator says Claude has a tendency to "undertrigger" skills, so descriptions should be made a little bit "pushy". For example: "Make sure to use this skill whenever the user mentions dashboards, data visualization, internal metrics…".
 
 The counterweight is a **negative trigger** for neighbouring skills. Anthropic's docx skill ends its description with "Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."
 
@@ -435,7 +435,7 @@ A topic word draws in tasks that do that thing; name them in the exclusion.
   - SKILL.md under 500 lines; Anthropic, the spec and skill-creator all agree on this.
   - Under about 5,000 tokens (the spec).
   - Split the content before you reach either limit.
-- **Stricter community targets** for skills loaded often (superpowers): under 200 words, and under 150 for bootstrap skills.
+- **Stricter community targets** for skills loaded often (superpowers, references/discovery.md): getting-started workflows under 150 words, frequently-loaded skills under 200 words total, other skills under 500 words.
 - **What to cut**:
   - Generic programming knowledge.
   - Anything said twice.
@@ -578,7 +578,7 @@ Measure instead of guessing: `claude plugin details <plugin>` prints "Always-on"
 
 Skills, CLAUDE.md and output styles are advisory: "'never edit .env' in CLAUDE.md or a skill is a request, not a guarantee. A PreToolUse hook that blocks the edit is enforcement."
 
-- A skill's outcome "can vary"; a hook "always fires on its event".
+- A skill's outcome "can vary"; a hook "Fires on its event without Claude deciding".
 - Hook handlers can be `command`, `http`, `mcp_tool`, `prompt` or `agent`. Exit code 2 blocks a blockable event.
 - A skill can declare `hooks:`. They apply from invocation to the end of the session, not before it. Since v2.1.299 a skill's own `UserPromptSubmit` hook first runs on the prompt after the one that invoked it.
 - Split the work: put judgement and procedure in the skill, and the invariant (format check, forbidden path, required test run) in a hook.
@@ -1083,7 +1083,7 @@ Caveats:
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-14
-- Sources: [plugin-dev](https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev), [trailofbits/skills AGENTS.md](https://github.com/trailofbits/skills/blob/main/AGENTS.md), [wshobson/agents](https://github.com/wshobson/agents), [wshobson plugin-eval](https://github.com/wshobson/agents/blob/main/docs/plugin-eval.md), [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), [vercel-labs/skills](https://github.com/vercel-labs/skills)
+- Sources: [plugin-dev](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/plugin-dev), [trailofbits/skills AGENTS.md](https://github.com/trailofbits/skills/blob/main/AGENTS.md), [wshobson/agents](https://github.com/wshobson/agents), [wshobson plugin-eval](https://github.com/wshobson/agents/blob/main/docs/plugin-eval.md), [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills), [vercel-labs/skills](https://github.com/vercel-labs/skills)
 - Related: SKILL-042, SKILL-043
 
 | Collection | Notable pattern to adopt | Caveat |

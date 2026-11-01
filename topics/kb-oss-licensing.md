@@ -273,7 +273,7 @@ Rules for an agent copying or adapting code, with what each rests on:
 
 Instead: link to the source, or reimplement from the documented behaviour; record the source URL, licence and commit in the PR when copying is fine.
 
-No safety net exists in Claude Code: its docs index (`llms.txt`) and legal page have nothing on code matching public code. GitHub Copilot's code referencing compares a suggestion and "approximately 150 characters of surrounding code with an index of public repositories", checking only "accepted, unchanged suggestions".
+No safety net exists in Claude Code: its docs index (`llms.txt`) and legal page have nothing on code matching public code. GitHub Copilot's code referencing compares a suggestion and "approximately 150 characters of surrounding code with the public-code index", checking only "accepted, unchanged suggestions".
 
 ## [OSS-012] Community health files for a personal project: SECURITY.md, CONTRIBUTING, CODEOWNERS
 - Type: recommendation

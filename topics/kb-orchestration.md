@@ -209,7 +209,7 @@ Explore and Plan have "read-only tools; Write and Edit are denied", so they can'
 Limits and defaults:
 - **Concurrency:** 20 running subagents by default (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`, v2.1.217+). Past the cap the spawn fails with `Concurrent subagent limit reached`. There is no limit on the total over a session. Ultracode sessions are exempt.
 - **Nesting:** "a subagent can spawn subagents of its own, up to three layers below the main conversation" (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`, default 3; `1` turns nesting off). The default changed several times (5, then 1, then 3 since v2.1.219), so "subagents can't spawn subagents" is outdated.
-- **Background:** fork mode is on by default in interactive sessions (v2.1.232+). There, "Claude Code runs the subagent in the background, forks and non-fork subagents alike, and Claude can't ask for the foreground." It is off by default in `-p` and the SDK. `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` forces the foreground.
+- **Background:** fork mode is on by default in interactive terminal sessions (v2.1.232+) and everywhere from v2.1.302. In interactive terminal, VS Code and desktop sessions on your machine, "Claude also can't wait for a subagent"; in `-p` and the SDK, "Claude can wait, on its own judgment or when you ask." `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` forces the foreground.
 - **Background tool set:** background subagents get a reduced built-in tool set with no `AskUserQuestion`. Their permission prompts surface in the main session.
 - **Never available to subagents:** `AskUserQuestion`, plan-mode tools, `ScheduleWakeup` and `Workflow`.
 
@@ -401,7 +401,7 @@ All processes share one plan or API rate limit.
 - Applies to: Claude API
 - Confidence: official-docs
 - Last verified: 2026-10-14
-- Sources: [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [SDK cost tracking](https://code.claude.com/docs/en/agent-sdk/cost-tracking), [SDK sessions](https://code.claude.com/docs/en/agent-sdk/sessions)
+- Sources: [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [SDK cost tracking](https://code.claude.com/docs/en/agent-sdk/cost-tracking), [SDK sessions](https://code.claude.com/docs/en/agent-sdk/sessions), [SDK agent loop](https://code.claude.com/docs/en/agent-sdk/agent-loop)
 - Related: ORCH-003, ORCH-006, ORCH-038
 
 **Defining subagents:** pass `agents: {name: AgentDefinition}` and include `"Agent"` in `allowedTools`. Older SDKs and the init tool list call it `Task`, so match both. `AgentDefinition` takes `model`, `effort`, `maxTurns`, `tools`, `background`, `permissionMode` and `skills`; `omitClaudeMd` exists in TypeScript only. The built-in `general-purpose` agent always exists unless `CLAUDE_AGENT_SDK_DISABLE_BUILTIN_AGENTS=1` is set.
@@ -633,7 +633,7 @@ A unit you could finish in two tool calls is not worth a subagent: the brief and
 | Latency (official label) | Slower | Moderate | Fast | Fastest |
 | Context / max output | 1M / 128K | 1M / 128K | 1M / 128K | 1M / 128K |
 | Default effort (API) | high | medium | high | medium |
-| Positioning | "demanding reasoning and long-horizon agentic work" | "long-running agentic coding and knowledge work" | "best combination of speed and intelligence" | "high-volume, latency-sensitive tasks"; "sub-agent tasks" |
+| Positioning | "demanding reasoning and long-horizon agentic work" | "long-running agentic coding and knowledge work" | "best combination of speed and intelligence" | "high-volume, latency-sensitive tasks"; "subagent tasks" |
 
 Other pricing details:
 - Batch is 50% off.
@@ -718,7 +718,7 @@ The process Anthropic recommends:
 - Applies to: Claude Code
 - Confidence: community-consensus
 - Last verified: 2026-10-14
-- Sources: [Costs](https://code.claude.com/docs/en/costs), [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model), [Haiku 5.5 launch](https://www.anthropic.com/claude-haiku-5-5), [Code-review plugin](https://github.com/anthropics/claude-code/blob/main/plugins/code-review/commands/code-review.md), [Superpowers SDD](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md)
+- Sources: [Costs](https://code.claude.com/docs/en/costs), [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model), [Haiku 5.5 launch](https://www.anthropic.com/claude-haiku-5-5), [Code-review plugin](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-review/commands/code-review.md), [Superpowers SDD](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md)
 - Related: ORCH-027, ORCH-028, ORCH-033, ORCH-042
 
 | Role | Tier | Effort | Why |
@@ -900,7 +900,7 @@ Interactive Claude Code has no per-spawn dollar cap. Bound cost there through mo
 - Applies to: general
 - Confidence: official-docs
 - Last verified: 2026-10-30
-- Sources: [Best practices: Give Claude a check to run, What you can stop doing](https://code.claude.com/docs/en/best-practices), [Coordination patterns](https://claude.com/blog/multi-agent-coordination-patterns), [Cognition 2026](https://cognition.ai/blog/multi-agents-working), [Code-review plugin](https://github.com/anthropics/claude-code/blob/main/plugins/code-review/commands/code-review.md)
+- Sources: [Best practices: Give Claude a check to run, What you can stop doing](https://code.claude.com/docs/en/best-practices), [Coordination patterns](https://claude.com/blog/multi-agent-coordination-patterns), [Cognition 2026](https://cognition.ai/blog/multi-agents-working), [Code-review plugin](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-review/commands/code-review.md)
 - Related: ORCH-022, ORCH-042, ORCH-046
 
 The most broadly endorsed multi-agent pattern for coding is a separate reviewer. Best practices: "A fresh reviewer does help, because it hasn't seen your reasoning, which is a different thing from delegating", and `/code-review` "isn't swayed by the reasoning that produced the code". (The page said "A fresh context improves code review since Claude won't be biased toward code it just wrote" until at least 2026-10-14 and dropped it by 2026-10-30.) Cognition (2026) found the clean-context reviewer one of the few multi-agent flows that works.
@@ -959,7 +959,7 @@ Superpowers is the most widely used Claude Code methodology. Its flow is brainst
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-10-14
-- Sources: [anthropics/claude-code – code-review command](https://github.com/anthropics/claude-code/blob/main/plugins/code-review/commands/code-review.md), [feature-dev README](https://github.com/anthropics/claude-code/blob/main/plugins/feature-dev/README.md)
+- Sources: [anthropics/claude-code – code-review command](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-review/commands/code-review.md), [feature-dev README](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/feature-dev/README.md)
 - Related: ORCH-030, ORCH-039
 
 Anthropic's own `code-review` plugin is the clearest official example of matching model tier to role. Its pipeline:
@@ -1102,7 +1102,7 @@ Where a workflow wins is a check we repeat in the same shape, such as a reviewer
 
 **Ultracode** (`/effort ultracode`, `claude --effort ultracode`, the `ultracode` setting) plans a workflow for each substantive task, so "each request uses more tokens and takes longer". While it's on, the `Large workflow` warning is hidden, the session's concurrent subagent limit (20 by default) isn't enforced for Agent-tool spawns, and auto mode skips the first-launch approval. `--effort ultracode` also sets effort to `xhigh`. Turn it off with `/effort ultracode off`.
 
-**Reruns:** a relaunch replays agents in start order. Completed agents return saved results, but a failed one "runs again, and so does every agent that started after it, even ones that completed". Stopping one agent with `x` "counts as failing"; stopping the whole run doesn't.
+**Reruns:** a relaunch replays agents in start order. Completed agents return saved results, but a failed one "runs again, and so does every agent the script starts after it, even ones that completed". Stopping one agent with `x` "counts as failing"; stopping the whole run doesn't.
 
 Tested 2026-10-17, v2.1.296, terminal `claude -p` on Haiku 5.5: a three-agent workflow counting lines in three tiny files reported 81,724 subagent tokens, about 27k per agent, so fixed per-agent overhead dominates small runs.
 
