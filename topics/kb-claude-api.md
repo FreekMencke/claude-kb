@@ -305,7 +305,7 @@ Tested 2026-10-17, `@anthropic-ai/sdk@0.135.0`: `client.d.ts` documents `timeout
 
 **Mid-stream errors.** An error such as `overloaded_error` (HTTP 529 when not streaming) can arrive as an event "after the API returns a 200 response". Resuming an interrupted stream is documented "for Claude 4.5 models and earlier" only.
 
-**Request size.** Messages and token counting: 128 MB (raised from 32 MB on 2026-10-28). Batch: 256 MB. Files: 500 MB.
+**Request size.** Messages and token counting: 128 MB on the first-party Claude API (raised from 32 MB on 2026-10-28); Bedrock 20 MB, Google Cloud (Google managed) 30 MB, Claude Platform on AWS, Google Cloud (Anthropic managed) and Foundry 32 MB. Batch: 256 MB. Files: 500 MB.
 
 ## [CAPI-010] Files API, citations and Batch for a small app
 - Type: comparison

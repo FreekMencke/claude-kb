@@ -398,7 +398,7 @@ For anyone writing a server Claude Code will use:
 
 Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the description, so validate argument combinations server-side. Tools whose property names break the API's rules (1–64 chars of `A-Za-z0-9_.-`) or whose schema isn't valid draft 2020-12 are dropped with a reason (v2.1.216+), not the whole request.
 
-**Annotations** (`readOnlyHint`, `destructiveHint`) show in `/mcp`, but no Claude Code page says they change permissions; the spec says clients "MUST consider tool annotations to be untrusted unless they come from trusted servers". Claude Code does act on some, but not for permissions: `readOnlyHint` and `idempotentHint` let it repeat a call that was pending when a connection closed, and `readOnlyHint` runs the tool's calls in parallel with other read-only calls. On claude.ai they do: the connector review criteria say annotations "determine auto-permissions in Claude" (MCP-031).
+**Annotations** (`readOnlyHint`, `destructiveHint`) show in `/mcp`, but no Claude Code page says they change permissions; the spec says clients "MUST consider tool annotations to be untrusted unless they come from trusted servers". Claude Code does act on some, but not for permissions: `readOnlyHint` and `idempotentHint` let it repeat a pending call once on a new connection (HTTP servers and claude.ai connectors), and `readOnlyHint` runs the tool's calls in parallel with other read-only calls. On claude.ai they do: the connector review criteria say annotations "determine auto-permissions in Claude" (MCP-031).
 
 ## [MCP-016] Managed MCP patterns and what a solo user can use
 - Type: fact
@@ -539,7 +539,7 @@ They don't get local or user scope servers from `~/.claude.json` ("Add the serve
 
 Network: "MCP connectors you enable on a session or scheduled task work without adding their hosts to **Allowed domains**", because their traffic goes through Anthropic. A `.mcp.json` server that calls your own host goes through the session's network and needs that host allowed (inferred from the same page).
 
-**Routines (now "scheduled tasks", "formerly routines"):** "All of your connected MCP connectors are included by default. Remove any the task doesn't need: Claude can use an included connector during a run, including writes." A run starts in auto mode, where a classifier allows or blocks actions that would otherwise wait for approval. Actions run as your linked accounts. Local `claude mcp add` servers don't appear; a single-repo routine can use a committed `.mcp.json`.
+**Routines (now "scheduled tasks", "formerly routines"):** "All of your connected MCP connectors are included by default. Remove any the task doesn't need: Claude can use an included connector during a run, including writes." A run starts in auto mode unless it is unavailable, where a classifier allows or blocks actions that would otherwise wait for approval. Actions run as your linked accounts. Local `claude mcp add` servers don't appear; a single-repo routine can use a committed `.mcp.json`.
 
 A cloud session waiting for you to approve a connector call counts as inactive and can expire.
 

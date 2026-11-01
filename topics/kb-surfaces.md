@@ -103,7 +103,7 @@ What it adds:
 
 After a PR opens, it appears in the **Changes** card of the session details panel with its CI check status (the earlier layout has a **CI** button on the status bar). PR monitoring "requires the GitHub CLI (`gh`) to be installed and authenticated on your machine". The **⋮** menu beside the PR title has two toggles:
 - **Auto-fix:** Claude reads failing checks and iterates. In a local session it also addresses new review comments from someone other than you, when the author is the repo owner, an org member, a collaborator or a GitHub App.
-- **Merge when ready:** turns on GitHub's auto-merge for the PR; "Desktop requests a squash merge unless the base branch uses a merge queue". Repo auto-merge must be enabled on GitHub. Disabled in SSH and WSL sessions: turn on auto-merge on GitHub there.
+- **Merge when ready:** turns on GitHub's auto-merge for the PR; "In a local session, Desktop requests a squash merge unless the base branch uses a merge queue". Repo auto-merge must be enabled on GitHub. Disabled in SSH and WSL sessions: turn on auto-merge on GitHub there.
 
 **Auto-archive after PR merge or close** (Settings > Claude Code) archives the session and removes its worktree; it doesn't archive cloud sessions or sessions that are still running.
 
@@ -530,7 +530,7 @@ Repo settings can't turn it on for everyone: a `true` for `remoteControlAtStartu
 - Sources: [Configure cloud environments](https://code.claude.com/docs/en/cloud-environments), [Use Claude Code in the cloud](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-016, INFRA-002, SURF-024, SURF-026, MEM-026
 
-Every cloud session runs in an environment: a saved network level, environment variables and setup script. The same environments apply from the desktop app, the mobile app, claude.ai/code, `claude --cloud`, routines and Claude Tag. Plans: Pro, Max, Team, and Enterprise premium or Chat + Claude Code seats.
+Every cloud session runs in an environment: a saved network level, environment variables and setup script. The same environments apply from the desktop app, the mobile app, claude.ai/code, `claude --cloud`, routines and Claude Tag. Plans: Pro, Max, Ultra, Team, and Enterprise premium or Chat + Claude Code seats.
 
 **Default:** onboarding creates **Default** with **Trusted** network access and nothing else ("no environment variables or setup script").
 
