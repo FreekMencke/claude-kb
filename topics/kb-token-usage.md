@@ -126,6 +126,7 @@ Prefix: TOK. Researched 2026-10-12 on Claude Code v2.1.296 and the docs live tha
 | TOK-120 | Review cost: managed Code Review levels and spend limits, ultrareview free runs | fact | code-review, ultrareview, usage-credits, spend-limit |
 | TOK-121 | Agent SDK loop limits: turns, budget headroom and result subtypes | fact | agent-sdk, max-turns, budget, result |
 | TOK-122 | Agent SDK telemetry: OpenTelemetry through the CLI, and what leaves the process | fact | agent-sdk, otel, telemetry, privacy |
+| TOK-123 | Usage and Cost Analytics API: replaces the report endpoints, with a slower refresh | tool | analytics, usage, cost, admin-api, freshness |
 
 ## [TOK-001] What fills the context, by feature
 - Type: fact
@@ -516,7 +517,9 @@ All multipliers stack. Opus 5.5 is 2x Sonnet 5.5 per token; a model switch mid-s
 - Confidence: official-docs
 - Last verified: 2026-11-01
 - Sources: [Usage & Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api), [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api), [Costs](https://code.claude.com/docs/en/costs)
-- Related: TOK-012
+- Related: TOK-012, TOK-123, CAPI-072
+
+The docs now call the first two reports "a legacy API and remains supported", and point new integrations to TOK-123.
 
 Usage report, `GET /v1/organizations/usage_report/messages`:
 - Buckets of 1m, 1h or 1d.
@@ -2161,6 +2164,24 @@ Set the variables in the process environment for production (every `query()` pic
 **Short-lived calls lose data:** the flush on exit is bounded by a short timeout and a killed process loses the batch. Defaults are 60 seconds for metrics and 5 seconds for traces and logs; shorten them.
 
 **Content stays out by default.** Opt-in variables add it: `OTEL_LOG_USER_PROMPTS=1`, `OTEL_LOG_TOOL_DETAILS=1` (tool arguments such as shell commands), `OTEL_LOG_TOOL_CONTENT=1` (tool output, cut at 60 KB, needs tracing) and `OTEL_LOG_RAW_API_BODIES`, which "implies consent to everything the three variables above would reveal". Leave them unset unless the pipeline is approved for that data.
+
+## [TOK-123] Usage and Cost Analytics API: replaces the report endpoints, with a slower refresh
+- Type: tool
+- Applies to: Claude API
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api), [Usage & Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api)
+- Related: TOK-018, CAPI-066, CAPI-071, CAPI-072
+
+The endpoints in TOK-018 are "a legacy API and remains supported"; for new work the docs point to `GET /v1/organizations/analytics/usage` and `/analytics/cost`. No shutdown date is given. It needs beta header `analytics-usage-cost-2026-08-24` and an Admin key or `org:admin` OAuth, and serves Console and Enterprise organizations.
+
+**What differs from the legacy report:**
+- **Freshness.** Legacy: "typically appears within 5 minutes". Analytics: "Data typically refreshes within 4 hours of the underlying usage and can take up to 24 hours." Each response has `data_refreshed_at`, and values can still change until about 7 days after the end of the calendar month.
+- **Range.** "`starting_at` must be on or after January 1, 2026, and within the last 365 days. A request can span at most 31 days"; `1m` buckets cover at most 24 hours.
+- **Shape.** `group_by[]` takes up to five dimensions, and filters up to 100 values. `limit` counts rows (1 to 1,000, default 20). Time series need `time_bucket_width` plus `order_by=time`. Empty buckets return no rows, so fill the zeros yourself.
+- **`actor`** is new: a user, service account, federated identity or key. Per-user Claude Code cost is `products[]=claude_code&group_by[]=actor`.
+
+For a near-live view keep the legacy report; for attribution use this one.
 
 ## Recommendations for our setup
 

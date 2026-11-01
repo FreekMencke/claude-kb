@@ -118,6 +118,7 @@ Prefix `SKILL`. Researched 2026-10-12 against Claude Code 2.1.296. Re-verified 2
 | SKILL-090 | Writing and testing a mod: the dev loop, the test kit and its rules | pattern | mods, plugin-test, plugin-validate, dev-loop |
 | SKILL-091 | Organisation policy for mods: which managed setting stops what | comparison | mods, managed-settings, allow-managed-mods-only, disable-sideload-flags |
 | SKILL-092 | Gaps in mod controls, running your own mods and writing a policy mod | pattern | mods, policy-mod, prepend-plugins, http-fetch |
+| SKILL-093 | Mods: render sites, control props and what each surface ignores | fact | mods, elements, render-sites, surfaces |
 
 ---
 
@@ -2096,6 +2097,32 @@ Check on a test machine: `claude --plugin-dir ./first-mod` shows the guard's mes
 **Mods that count as yours** need all three: managed `enabledPlugins` true, a managed marketplace given as an absolute directory on the machine (an `extraKnownMarketplaces` path), and a marketplace listing the plugin by relative path. Put the directory on every machine with device management, writable only by an administrator. A plugin Claude Code copies from GitHub, git, a URL or npm counts as a user's, whatever `enabledPlugins` says. Debug line for a wrong setup: `prependPlugins names ..., which is not an enabled managed plugin with a hooks module; skipped`. `prependPlugins` and `appendPlugins` in user settings only work with no managed settings and a non-Team/Enterprise login.
 
 **Policy mod.** Hook `plugin.register`: `e.tier` and `e.uses.calls` (like `process.run`) decide `{ refuse: reason }`. A hook on `fs.write` audits other mods. A throwing check fails open, so add `.catch` returning `{ refuse }` for the `user` tier and `next(e)` for others.
+
+## [SKILL-093] Mods: render sites, control props and what each surface ignores
+- Type: fact
+- Applies to: Claude Code
+- Confidence: official-docs
+- Last verified: 2026-11-01
+- Sources: [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference), [Mods interface](https://code.claude.com/docs/en/plugins/mods/interface)
+- Related: SKILL-075, SKILL-083, SKILL-087
+
+Limits on redraws and element counts are in SKILL-087; these are the rules that throw or silently differ.
+
+**Sites.**
+- `Pane` is "a sidebar beside the transcript in a wide fullscreen terminal, or a framed region above the prompt otherwise". Filter with `{ component: 'Pane' }`, check `e.requestId` against your `id`, and draw to `e.props.bodyColumns`.
+- `AbovePrompt` is shared: "A tree replaces what the mods after yours draw there". Nest `await next(e)` to keep theirs.
+
+**Controls.**
+- "Give every `Input` and `Select` a `key` prop": the error is `needs a key`.
+- A `Button` needs a `label` or one string child.
+- `variant` takes `primary` or `secondary`; "any other value throws".
+- `role` takes only `dismiss`, and `autoFocus` only `true`.
+
+**By surface.**
+- VS Code ignores `Button`'s `hotkey`, `action`, `variant` and `role`, and `Code`'s `language`.
+- In Desktop and VS Code a `Link` draws as plain text unless `href` is https or `http://localhost` with no `@`.
+- `Raster` and `Image` are terminal-only.
+- `Svg` is Desktop and VS Code, up to 131,072 characters.
 
 ## Recommendations for our setup
 
