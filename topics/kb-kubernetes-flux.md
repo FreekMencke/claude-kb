@@ -112,7 +112,7 @@ The releases page promises a Flux minor "approximately two weeks after Kubernete
 
 Kubernetes 1.37.0 shipped 2026-08-26. No 2.9.x patch lists it. Flux 2.10 (blog dated 2026-10-26, 61 days later) lists it: "Flux v2.10 supports the following Kubernetes versions": 1.35, 1.36 and 1.37, and "Flux v2.7 has reached end-of-life". The roadmap now shows v2.10 as completed, and the install page lists 1.35 to 1.37.
 
-So a cluster on Flux 2.9 should stay on 1.36; Flux 2.10 is the first release that lists 1.37. The install page says Flux "may work on older versions of Kubernetes", but "we don't recommend running EOL versions in production nor do we offer support for these versions". A newer-than-tested Kubernetes isn't covered either way. Kubernetes 1.34 reaches end of life on 2026-10-27 (KUBE-015).
+So a cluster on Flux 2.9 should stay on 1.36; Flux 2.10 is the first release that lists 1.37. The install page says Flux "may work on older versions of Kubernetes", but "we don't recommend running EOL versions in production nor do we offer support for these versions". A newer-than-tested Kubernetes isn't covered either way. Kubernetes 1.34 reached end of life on 2026-10-27 (KUBE-015).
 
 ## [KUBE-004] helm-controller on Helm v4: server-side apply, kstatus and post-render defaults
 - Type: fact

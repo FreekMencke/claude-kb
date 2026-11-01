@@ -126,7 +126,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | CAPI-011 | Agent SDK or `claude -p`, and what the SDK installs | comparison | agent-sdk, headless, auth, versioning |
 | CAPI-012 | Agent SDK permission order and hook callbacks | fact | agent-sdk, permissions, can-use-tool, hooks |
 | CAPI-013 | Managed Agents scheduled deployments, budgets, vaults and webhooks | fact | managed-agents, scheduled-deployments, budgets, vaults, webhooks |
-| CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code routine | comparison | managed-agents, routines, schedule, cost, secrets |
+| CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code scheduled task (formerly routine) | comparison | managed-agents, routines, schedule, cost, secrets |
 | CAPI-015 | Evaluating an LLM feature: success criteria, test sets and graders | recommendation | evals, graders, testing, llm-judge |
 | CAPI-016 | Preserved thinking: the prefix check and what happens to a failing block | fact | api, thinking, preserved-thinking, block-binding |
 | CAPI-017 | Edits that keep or break thinking blocks, and the replacement for each | recommendation | api, thinking, preserved-thinking, append-only |
@@ -1140,7 +1140,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SKILL-057 | Skill features that behave differently in the desktop app | fact | desktop, permissions |
 | SKILL-058 | Controlling claude.ai account skills on the desktop | fact | desktop, claude.ai, context-cost |
 | SKILL-059 | Personal Git marketplaces on claude.ai, synced into Claude Code | fact | distribution, claude.ai, plugins |
-| SKILL-060 | Cloud sessions and routines don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
+| SKILL-060 | Cloud sessions and scheduled tasks (formerly routines) don't load claude.ai marketplace plugins | fact | cloud, routines, plugins |
 | SKILL-061 | Literal `$` in a skill body: substitution and the backslash escape | fact | anatomy, commands |
 | SKILL-062 | Plugins on claude.ai: Claude Code frontmatter, custom skill paths, inline servers, names and versions | fact | distribution, claude.ai, plugins, frontmatter |
 | SKILL-063 | Desktop WSL: synced plugins didn't load, a CLI install from the marketplace did | fact | desktop, wsl, plugins, sync |

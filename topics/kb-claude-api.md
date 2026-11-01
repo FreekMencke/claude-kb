@@ -58,7 +58,7 @@ Research basis:
 | CAPI-011 | Agent SDK or `claude -p`, and what the SDK installs | comparison | agent-sdk, headless, auth, versioning |
 | CAPI-012 | Agent SDK permission order and hook callbacks | fact | agent-sdk, permissions, can-use-tool, hooks |
 | CAPI-013 | Managed Agents scheduled deployments, budgets, vaults and webhooks | fact | managed-agents, scheduled-deployments, budgets, vaults, webhooks |
-| CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code routine | comparison | managed-agents, routines, schedule, cost, secrets |
+| CAPI-014 | Scheduled agent work: Managed Agents deployment or Claude Code scheduled task (formerly routine) | comparison | managed-agents, routines, schedule, cost, secrets |
 | CAPI-015 | Evaluating an LLM feature: success criteria, test sets and graders | recommendation | evals, graders, testing, llm-judge |
 | CAPI-016 | Preserved thinking: the prefix check and what happens to a failing block | fact | api, thinking, preserved-thinking, block-binding |
 | CAPI-017 | Edits that keep or break thinking blocks, and the replacement for each | recommendation | api, thinking, preserved-thinking, append-only |
@@ -98,7 +98,7 @@ Research basis:
 - Sources: [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Define tools: forcing tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools), [Model deprecations: API parameter deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations), [Haiku 5.5 migration guide](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide), [Sonnet 5.5 migration guide](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide), [Advisor tool: model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool), [Opus 5.5 migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide), [Release notes](https://platform.claude.com/docs/en/release-notes/overview), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5), [What's new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5), [What's new in Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5), [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1)
 - Related: PROMPT-002, ORCH-028, CAPI-002, CAPI-004, CAPI-019, CAPI-028
 
-Code written for a 4.x model or Sonnet 5 can fail on the current models with `invalid_request_error`. Per model (thinking page's table, define-tools, migration guides):
+Code written for a 4.x model or Sonnet 5 can fail on current models with `invalid_request_error` (thinking page's table, define-tools, migration guides):
 
 | Setting | Opus 5.5 | Sonnet 5.5 | Haiku 5.5 | Fable 5.1 |
 |---|---|---|---|---|
@@ -108,11 +108,11 @@ Code written for a 4.x model or Sonnet 5 can fail on the current models with `in
 | Non-default `temperature`/`top_p`/`top_k` | 400 | 400 | 400 | 400 |
 | Final assistant turn (prefill) | 400 | 400 | 400 | 400 |
 
-On the 5.x models "the `top_p` default is `0.99`", so `top_p: 1` and sending both `temperature` and `top_p` return 400. From API version `2026-10-21`, setting any of `temperature`, `top_p` or `top_k` returns 400 on every model. On the Claude API and Google Cloud, computer use needs `computer_toolset_20260801`: Opus and Sonnet 5.5 reject `computer_20251124`, and Haiku 5.5 rejects `computer_20250124`.
+On Claude 4.7 and later models and Mythos Preview "the `top_p` default is `0.99`", so `top_p: 1` and both `temperature` and `top_p` return 400. From API version `2026-10-21`, setting any of `temperature`, `top_p` or `top_k` returns 400 on every model. On the Claude API and Google Cloud, computer use needs `computer_toolset_20260801`: Opus and Sonnet 5.5 reject `computer_20251124`, and Haiku 5.5 rejects `computer_20250124`.
 
 The advisor tool's pairs depend on the executor: the advisor must be at least as capable (an Opus 5.5 executor rejects a Sonnet 5.5 advisor). For a Sonnet 5.5 executor the 2026-09-28 release note says it "rejects Claude Opus 4.8, Claude Opus 4.7, and Claude Sonnet 5 as advisors"; the migration guide's fuller list adds Opus 4.6, Sonnet 4.6 and Haiku 5.5 (400 error). It accepts only Opus 5/5.5, Sonnet 5.5, Fable 5/5.1, Mythos 5/5.1.
 
-Release notes: Sonnet 5 code "can break on Claude Sonnet 5.5 in five ways" (2026-09-28); Haiku 4.5 code "can break on Claude Haiku 5.5" (2026-10-07). `/claude-api migrate this project to <model>` applies the swaps (migration guides).
+Release notes: Sonnet 5 code "can break on Claude Sonnet 5.5 in five ways" (2026-09-28); Haiku 4.5 code "can break on Claude Haiku 5.5" (2026-10-07). `/claude-api migrate this project to <model>` applies the swaps.
 
 ## [CAPI-002] Thinking blocks in responses: read by type, pass back, keep history append-only
 - Type: fact
@@ -408,7 +408,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 - Payloads carry only the type and ID.
 - Up to three delivery attempts; "Events aren't guaranteed to be delivered in the order they occurred".
 
-## [CAPI-014] Scheduled agent work: Managed Agents deployment or Claude Code routine
+## [CAPI-014] Scheduled agent work: Managed Agents deployment or Claude Code scheduled task (formerly routine)
 - Type: comparison
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
@@ -421,7 +421,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 | Status | Beta | "research preview" |
 | Billing | API tokens plus $0.08 per `running` session-hour; idle time is free | "Scheduled tasks draw down subscription usage the same way interactive sessions do" |
 | Interval | Cron to the minute, with jitter | "Expressions that run more often than once per hour are rejected." |
-| Count limits | 1,000 deployments per organisation | 100 scheduled runs an hour per account; 30 manual or API runs an hour per routine; "None of these hourly limits has overage" |
+| Count limits | 1,000 deployments per organisation | 100 scheduled runs an hour per account; 30 an hour per scheduled task, shared by **Run now**, API fires and re-running a one-off task; "None of these hourly limits has overage" |
 | Spend cap per run | Hard USD `budget` | None documented; bounded by plan usage |
 | Secrets | Vault: write-only, substituted at egress | Environment variables "visible to anyone who uses the environment"; connectors attached by default |
 | GitHub | `github_repository` resource with a fine-grained token | Your GitHub identity, pushes to `claude/` branches |

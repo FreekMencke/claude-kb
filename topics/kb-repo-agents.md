@@ -396,7 +396,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 |---|---|---|---|---|
 | Local CLI/desktop (trusted) | Yes | Yes | Yes, if installed on the machine | Yes |
 | Desktop worktree session | From the **main checkout** (SKILL-053) | Same | Yes | Yes |
-| Cloud session / routine, one repo | Yes. "subagents defined in your repo's `.claude/agents/` load automatically." | Yes | **No**: "A cloud session doesn't install the plugins a repository turns on under `enabledPlugins`" | No (claude.ai skills enabled one by one yes; marketplace plugins no, SKILL-060) |
+| Cloud session / routine, one repo | Yes, outside a project's threads: "subagents defined in your repo's `.claude/agents/` load automatically." | Yes | **No**: "A cloud session doesn't install the plugins a repository turns on under `enabledPlugins`" | No (claude.ai skills enabled one by one yes; marketplace plugins no, SKILL-060) |
 | Cloud session, several repos | Yes | No (only `enabledPlugins`/`extraKnownMarketplaces` are read) | No | No |
 | `claude-code-action` on a PR | Yes, **restored from the base branch** | From base | Via the `plugins` input | No |
 | `--add-dir` directory | Skills (live), agents and commands (restart) | No: only `enabledPlugins`/`extraKnownMarketplaces` | — | — |
@@ -876,7 +876,7 @@ Fork PRs are reviewed only by comment.
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-017, REPO-018
 
-| | Actions cron + `claude-code-action` | Cloud routine |
+| | Actions cron + `claude-code-action` | Cloud scheduled task (formerly routine) |
 |---|---|---|
 | Trigger | `schedule`, `workflow_dispatch`, any event | Schedule (≥ 1 hour), API POST, GitHub **pull request** or **release** events with filters (author, title, labels, draft, merged, branch; regex must match the whole field) |
 | Runs as | The action's App token; billed by API key or OAuth token | Your account and identity; subscription usage; no permission prompts |
