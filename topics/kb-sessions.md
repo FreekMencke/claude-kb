@@ -822,7 +822,7 @@ No official page describes issues as hand-offs between repos. That is our conven
 
 **One pool.** "Pro and Max plans have a five-hour session limit and a weekly limit." "These limits are shared across Claude and Claude Code, meaning all activity in both tools counts against the same limits." Cloud sessions draw on it too, with no VM charge.
 
-**Burn scales linearly.** "running ten agents in parallel uses quota roughly ten times as fast as running one" (agent view). Messages between sessions count like prompts. No per-account cap on concurrent sessions is documented. Projects enforce "200 new threads per day".
+**Burn scales linearly.** "running ten agents in parallel uses quota roughly ten times as fast as running one" (agent view). Messages between sessions count like prompts. No per-account cap on concurrent sessions is documented. Projects enforce "500 new threads per day".
 
 **Seeing usage:**
 - `/usage` shows the plan bars and what consumed them, but its breakdown is "computed from local session history on this machine, so usage from other devices or claude.ai is not included".
