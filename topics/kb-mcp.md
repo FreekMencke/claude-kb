@@ -147,7 +147,7 @@ Tool names are `mcp__<server>__<tool>`; plugin tools are `mcp__plugin_<plugin>_<
 
 Rule forms:
 - `mcp__github` or `mcp__github__*`: every tool on that server.
-- `mcp__github__get_*`: allow globs work only after a literal `mcp__<server>__` prefix. "An unanchored allow glob such as `"*"`, `"B*"`, or `"mcp__*"` is skipped with a warning and doesn't auto-approve anything."
+- `mcp__github__get_*`: allow globs work only after a literal `mcp__<server>__` prefix. "An unanchored allow glob such as `"*"`, `"B*"`, or `"mcp__*"` is skipped and doesn't auto-approve anything."
 - Deny and ask take any glob: `"mcp__*"` in `deny` removes every MCP tool from Claude's context.
 - **No parameter rules in settings.** "When Claude Code loads a settings file, it skips any `mcp__` rule that has parentheses." A deny on one argument value works only through `--disallowedTools`.
 
@@ -294,7 +294,7 @@ They arrive only with a claude.ai subscription login, not with `ANTHROPIC_API_KE
 
 A server you add with the same URL hides the connector.
 
-Tested 2026-10-13, v2.1.296, WSL terminal `-p`: two connectors were connected, MongoDB Atlas (42 tools, including `drop-database`, `delete-many` and `atlas-create-db-user`) and Claude Docs (8). Tested 2026-10-13, desktop WSL session (CLI 2.1.295): three connectors arrived mid-session as servers named by a UUID (`mcp__<uuid>__find`), although the WSL page says "connectors and plugins" aren't available in WSL sessions. Rules written for `mcp__claude_ai_…` names don't match those.
+Tested 2026-10-13, v2.1.296, WSL terminal `-p`: two connectors were connected, MongoDB Atlas (42 tools, including `drop-database`, `delete-many` and `atlas-create-db-user`) and Claude Docs (8). Tested 2026-10-13, desktop WSL session (CLI 2.1.295): three connectors arrived mid-session as servers named by a UUID (`mcp__<uuid>__find`), although the WSL page says connectors are "rolling out separately" to WSL sessions and plugins are "not available in WSL sessions". Rules written for `mcp__claude_ai_…` names don't match those.
 
 Tested 2026-10-15, desktop WSL session (CLI 2.1.295): this session's tool list had no connector tools, while `claude mcp list` (v2.1.296) run from its shell showed the claude.ai Claude Docs and Grafana Cloud connectors connected. Connectors in desktop WSL sessions are inconsistent: use a user-scope server there (MCP-037).
 
@@ -318,7 +318,7 @@ Tested 2026-10-15 with our claude-kb server on each surface (names, duplicates, 
 
 Backgrounded calls appear in `/tasks` and return as a task notification. Subagent calls, IDE servers and `-p` runs (unless `CLAUDE_AUTO_BACKGROUND_TASKS=1`) never background.
 
-**Reconnection.** A remote server that drops is retried up to five times with backoff from 1 s; a first connection gets three retries on transient errors (not on auth or 404). **Stdio servers are never reconnected automatically**: a crashed local server stays failed until you reconnect it in `/mcp` or run `/mcp reconnect all` (v2.1.284+). In `claude -p` and the SDK, a remote server that keeps failing with a transient error is retried in the background for up to about half an hour.
+**Reconnection.** A remote server that drops is retried up to five times with backoff from 1 s; a first connection gets three retries on transient errors (not on auth or 404). **Stdio servers are not reconnected automatically in an interactive session**: a crashed local server stays failed until you reconnect it in `/mcp` or run `/mcp reconnect all` (v2.1.284+). In `claude -p` and Agent SDK sessions, Claude Code starts a stdio server again the next time Claude calls one of its tools. In `claude -p` and the SDK, a remote server that keeps failing with a transient error is retried in the background for up to about half an hour.
 
 With tool search on, Claude is told which server failed and why, so it can say so instead of guessing. Without tool search, it isn't told.
 
@@ -398,7 +398,7 @@ For anyone writing a server Claude Code will use:
 
 Schemas: a root-level `anyOf`/`oneOf`/`allOf` is flattened and explained in the description, so validate argument combinations server-side. Tools whose property names break the API's rules (1–64 chars of `A-Za-z0-9_.-`) or whose schema isn't valid draft 2020-12 are dropped with a reason (v2.1.216+), not the whole request.
 
-**Annotations** (`readOnlyHint`, `destructiveHint`) show in `/mcp`, but no Claude Code page says they change permissions; the spec says clients "MUST consider tool annotations to be untrusted unless they come from trusted servers". Unverified whether Claude Code acts on them. On claude.ai they do: the connector review criteria say annotations "determine auto-permissions in Claude" (MCP-031).
+**Annotations** (`readOnlyHint`, `destructiveHint`) show in `/mcp`, but no Claude Code page says they change permissions; the spec says clients "MUST consider tool annotations to be untrusted unless they come from trusted servers". Claude Code does act on some, but not for permissions: `readOnlyHint` and `idempotentHint` let it repeat a call that was pending when a connection closed, and `readOnlyHint` runs the tool's calls in parallel with other read-only calls. On claude.ai they do: the connector review criteria say annotations "determine auto-permissions in Claude" (MCP-031).
 
 ## [MCP-016] Managed MCP patterns and what a solo user can use
 - Type: fact
@@ -539,7 +539,7 @@ They don't get local or user scope servers from `~/.claude.json` ("Add the serve
 
 Network: "MCP connectors you enable on a session or scheduled task work without adding their hosts to **Allowed domains**", because their traffic goes through Anthropic. A `.mcp.json` server that calls your own host goes through the session's network and needs that host allowed (inferred from the same page).
 
-**Routines:** "all of your connected MCP connectors are included by default. Remove any the routine doesn't need: Claude can use every tool from an included connector, including writes, without asking for permission during a run." Actions run as your linked accounts. Local `claude mcp add` servers don't appear; a single-repo routine can use a committed `.mcp.json`.
+**Routines (now "scheduled tasks", "formerly routines"):** "All of your connected MCP connectors are included by default. Remove any the task doesn't need: Claude can use an included connector during a run, including writes." A run starts in auto mode, where a classifier allows or blocks actions that would otherwise wait for approval. Actions run as your linked accounts. Local `claude mcp add` servers don't appear; a single-repo routine can use a committed `.mcp.json`.
 
 A cloud session waiting for you to approve a connector call counts as inactive and can expire.
 
@@ -593,7 +593,7 @@ SDK MCP tools are deferred by tool search like CLI ones; the first-turn wait rul
 
 The Messages API can call a remote MCP server itself. Beta header `mcp-client-2025-11-20` (`mcp-client-2025-04-04` is deprecated); `mcp-client-2026-09-15` adds everything in it plus tool-list recording and pinning (Claude API only).
 
-Limits: "only tool calls are currently supported" (no resources or prompts). "The server must be publicly exposed through HTTP (supports both Streamable HTTP and SSE transports). Local STDIO servers cannot be connected directly." Platforms: Claude API, Claude Platform on AWS and Microsoft Foundry, all beta; Bedrock and Vertex aren't listed. Not eligible for zero data retention.
+Limits: "only tool calls are currently supported" (no resources or prompts). "The server must be publicly exposed through HTTP (supports both Streamable HTTP and SSE transports). Local STDIO servers cannot be connected directly." Platforms, all beta: Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed) and Microsoft Foundry; Bedrock isn't listed. Not eligible for zero data retention.
 
 Shape: `mcp_servers: [{type: "url", url: "https://…", name, authorization_token}]`, plus one `{"type": "mcp_toolset", "mcp_server_name": …}` per server in `tools`, with `default_config` and per-tool `configs` taking `enabled` and `defer_loading`. You run the OAuth flow and refresh tokens yourself. Responses carry `mcp_tool_use` and `mcp_tool_result` blocks.
 
@@ -785,7 +785,7 @@ For a small corpus: Anthropic's Contextual Retrieval post says a knowledge base 
 
 Two stacks that can meet claude.ai's OAuth rules (MCP-030), read 2026-10-15:
 
-**Cloudflare Worker.** `McpAgent` "is deprecated and feature-frozen", and the quick-deploy templates "still use the deprecated `McpAgent` path. Do not use that path for a new server." Use the stateless `createMcpHandler` behind `@cloudflare/workers-oauth-provider` (1.2.3), which "needs a KV namespace bound as `OAUTH_KV`, and the `global_fetch_strictly_public` compatibility flag if it accepts Client ID Metadata Documents". The GitHub template (`cloudflare/ai/demos/remote-mcp-github-oauth`, on provider `^0.8.1`) lets any GitHub user sign in; its `ALLOWED_USERNAMES` gates only one tool. CPU per request: "10 ms" on Free; Paid has a "minimum charge of $5 USD per month". Test with `@cloudflare/vitest-plugin` (1.4.2), the renamed `@cloudflare/vitest-pool-workers`.
+**Cloudflare Worker.** `McpAgent` "is deprecated and feature-frozen", and the remote-server guide's templates now "build the server with `createMcpHandler` from the Agents SDK". Use the stateless `createMcpHandler` behind `@cloudflare/workers-oauth-provider` (1.2.4), which "needs a KV namespace bound as `OAUTH_KV`, and the `global_fetch_strictly_public` compatibility flag if it accepts Client ID Metadata Documents". The GitHub template (`cloudflare/ai/demos/remote-mcp-github-oauth`, on provider `^1.2.4`, built on `createMcpHandler`) lets any GitHub user sign in; its `ALLOWED_USERNAMES` gates only one tool. CPU per request: "10 ms" on Free; Paid has a "minimum charge of $5 USD per month". Test with `@cloudflare/vitest-plugin` (1.4.2), the renamed `@cloudflare/vitest-pool-workers`.
 
 **Your own server.** FastMCP 4.1.0's OAuth proxy makes the server the authorization server Claude sees, with GitHub as the upstream login, and supports CIMD. For "persistent token management across server restarts" set `jwt_signing_key` and `client_storage`. Limit it to one person with `AuthMiddleware` and a check on `ctx.token.claims`; that check runs per request, so a stranger can still finish sign-in. For content from a private repo, a git-sync sidecar: the basename of its link's target "is the current hash", so the server can rebuild its index when it changes. You also own TLS, a public IPv4 address, WAF rules for `160.79.104.0/21` and uptime.
 

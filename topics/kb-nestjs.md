@@ -58,7 +58,7 @@ Research basis:
 
 Changes that keep compiling but behave differently, which `nest upgrade` only reports:
 - **Lifecycle hooks** "are now called by component hierarchy level", which "can change the execution order" of `onModuleInit`, `onApplicationBootstrap` and the shutdown hooks.
-- **`@Optional()` is no longer inherited**: a subclass without its own constructor now throws `UnknownDependenciesException` "where v11 resolved the parameter as `undefined`".
+- **`@Optional()` is no longer inherited by a redeclared constructor**: a subclass that declares its own constructor no longer inherits its parent's optional markers, so Nest throws `UnknownDependenciesException` "where v11 resolved such a parameter as `undefined`". "Starting with NestJS v12.1, a subclass without its own constructor keeps the optional markers of its parent's constructor, as in v11. Versions 12.0.x dropped them in this case too."
 - **Structured logging params**: `ConsoleLogger` attaches plain objects after the message to the same entry; "on by default in v12; set `structuredParams: false` to restore the previous behavior."
 - **Pipe signatures**: "`ArgumentMetadata` now takes a generic parameter. Custom pipes with hand-written signatures may need their types adjusted."
 - **Express graceful shutdown**: "the Express adapter now drains in-flight requests on shutdown."

@@ -91,7 +91,7 @@ From the announcement of 2026-03-10 (raw text):
 - Node 27: Alpha from October 2026 (`"alpha": "2026-10-28"` in `schedule.json`), 27.0.0 in April 2027 (`start` 2027-04-22), LTS in October 2027, end of life in April 2030.
 - "This schedule is not final and may be amended."
 
-What it changes for an agent: don't put 27 alphas in production or in `engines`; a library can add one to its CI matrix. The Release README hadn't caught up on 2026-10-17: it still says "odd-numbered versions in October" and "Odd-numbered release lines are not promoted to LTS". `schedule.json`'s v27 entry has no `lts` key; its `maintenance` date (2027-10-20) matches the blog's LTS date.
+What it changes for an agent: don't put 27 alphas in production or in `engines`; a library can add one to its CI matrix. The Release README had not caught up on 2026-10-17 (it still said "odd-numbered versions in October"); by 2026-11-01 it describes the Alpha phase and says every line from 27 is promoted to LTS. `schedule.json`'s v27 entry then had `lts` 2027-10-20 and no `maintenance` key (on 2026-10-17 it had `maintenance` and no `lts`).
 
 ## [NODE-003] Running `.ts` files with plain `node`: type stripping by version
 - Type: fact
@@ -213,7 +213,7 @@ Status on 24.22.0 and 26.12.0:
 - Snapshots (`t.assert.snapshot()`): stable since v23.4.0 and v22.13.0.
 - Coverage (`--experimental-test-coverage`): "Stability: 1 - Experimental"; thresholds (`--test-coverage-lines` and others) exit 1 when missed, also experimental. Output is a text summary or an `lcov` reporter; no HTML report.
 - Watch mode (`node --test --watch`): "1 - Experimental".
-- `mock.module()` behind `--experimental-test-module-mocks`, test tags and global setup: "1.0 - Early development". `--test-randomize` exists only on 26 (added v26.1.0).
+- `mock.module()` behind `--experimental-test-module-mocks`, test tags and global setup: "1.0 - Early development". `--test-randomize` was added in v24.16.0 (24) and v26.1.0 (26).
 - Isolation: "The default isolation mode is `'process'`."
 
 Where it isn't Jest or Vitest: no DOM environment (jsdom, browser mode), module mocking behind a flag, no HTML coverage, and the stripping limits of NODE-004 (no enums or `.tsx`). It fits small libraries, scripts and CLIs with no DOM.

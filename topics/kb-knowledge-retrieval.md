@@ -184,7 +184,7 @@ A Project keeps its knowledge in context until it nears the window, then switche
 - "When your project knowledge approaches the context window limit, Claude will automatically enable RAG mode to expand your project's capacity by up to 10x while maintaining quality responses."
 - In RAG mode, "Claude uses a project knowledge search tool to retrieve relevant information from your uploaded documents".
 - "If your project knowledge later drops below the context window threshold, Claude can automatically convert back to context-based processing."
-- Availability: "Pro, Max, Team, and Enterprise". Users can't choose the mode.
+- Availability: "paid plans (Pro, Max, Ultra, Team, and Enterprise)". Users can't choose the mode ("No, RAG activates automatically when needed").
 - "When possible, projects will use in-context processing for optimal performance."
 - Advice: well-named files help Claude "understand and retrieve the right information".
 
