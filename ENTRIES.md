@@ -277,6 +277,8 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | DSKILL-013 | Test: Hallmark, ui-ux-pro-max and frontend-design as text only on two briefs | comparison | experiment, convergence, text-only, isolation |
 | DSKILL-014 | What to borrow from the design skills, and the notice it needs | recommendation | borrow, log, floor-rules, guidelines, licences |
 | DSKILL-015 | Security surface, part 2: network, remote text in context and telemetry | fact | security, network, telemetry, remote-text, prompt-injection |
+| DSKILL-016 | diagram-design: 45 diagram types as one HTML and SVG file | tool | diagram-design, diagrams, svg, complexity-budget, geometry-check |
+| DSKILL-017 | Anatomy: interactive isometric machines as explanatory figures | tool | anatomy, figures, svg, isometric |
 
 ## Visual and UI design with Claude (`topics/kb-design.md`, DESIGN)
 
@@ -1579,6 +1581,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | WEBSEC-011 | What coding agents get wrong in web security | anti-pattern | agents, xss, csp, cors, secrets, logging |
 | WEBSEC-012 | What `/security-review`, security-guidance and Claude Security check | comparison | security-review, security-guidance, claude-security, review |
 | WEBSEC-013 | Deterministic checks and log redaction behind the model reviews | tool | codeql, semgrep, eslint, security-patterns, redaction, logging |
+| WEBSEC-014 | Cloudflare's security-audit skill: separate hunters and refuters, and a coverage ledger | tool | security-audit, cloudflare, community-skills, adversarial-review, coverage |
 
 ## Session workflows (`topics/kb-workflows.md`, FLOW)
 

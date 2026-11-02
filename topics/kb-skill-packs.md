@@ -5,6 +5,7 @@ Prefix `SKPACK`. This file covers the six most-starred engineering-method packs 
 Research basis:
 - Researched 2026-10-30 in a cloud session, Claude Code v2.1.314, Opus 5.5 lead with a Sonnet reader on the packs' files.
 - The lead shallow-cloned each repo and read it locally; nothing from them was installed or run. Commits: obra/superpowers `2ce8aa1` (2026-10-21, plugin 7.0.1), mattpocock/skills `a496f55` (2026-10-29, 1.3.2), affaan-m/ECC `b38be6a` (2026-10-29, 2.2.3), multica-ai/andrej-karpathy-skills `2c60614` (2026-04-20, 1.0.0), DietrichGebert/ponytail `96608e0` (2026-10-29, 5.3.3) and addyosmani/agent-skills `eb07f19` (2026-10-28, 0.6.14).
+- Checked 2026-11-02 against heads: superpowers and ponytail are still at the pinned commits. mattpocock/skills is at `4ae2317` (2026-10-31), two commits on: `software-factory` (new, a glossary for designing an agent factory) and a `chief-of-staff` edit, both under `skills/in-progress/`, which the plugin doesn't list; still plugin 1.3.2 with 27 skills. ECC, Karpathy and agent-skills weren't rechecked.
 - Stars are from GitHub repository search on 2026-10-30. They are popularity signals that can be gamed; nothing here rests on them.
 - Nothing was tested: running a pack means running its hooks, which the research rules exclude. Hook output was read from the hook scripts.
 
@@ -47,7 +48,7 @@ Research basis:
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-11-01
-- Sources: [obra/superpowers](https://github.com/obra/superpowers/tree/2ce8aa1), [mattpocock/skills](https://github.com/mattpocock/skills/tree/a496f55), [affaan-m/ECC](https://github.com/affaan-m/ECC/tree/b38be6a), [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills/tree/2c60614), [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail/tree/96608e0), [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills/tree/eb07f19)
+- Sources: [obra/superpowers](https://github.com/obra/superpowers/tree/2ce8aa1), [mattpocock/skills](https://github.com/mattpocock/skills/tree/4ae2317), [affaan-m/ECC](https://github.com/affaan-m/ECC/tree/b38be6a), [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills/tree/2c60614), [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail/tree/96608e0), [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills/tree/eb07f19)
 - Related: SKPACK-002, SKPACK-003, SKPACK-013, ORCH-041, PROMPT-037
 
 Stars from GitHub search on 2026-10-30; skill counts are SKILL.md files in the plugin.
@@ -55,7 +56,7 @@ Stars from GitHub search on 2026-10-30; skill counts are SKILL.md files in the p
 | Pack | Stars | Licence | What it is | Model-invocable? |
 |---|--:|---|---|---|
 | obra/superpowers 7.0.1 | 308,884 | MIT | A mandatory workflow: brainstorm, worktree, plan, subagent execution, TDD, review; 15 skills | Yes, and forced (SKPACK-002) |
-| mattpocock/skills 1.3.2 | 306,841 | MIT | 27 plugin skills (grilling, tdd, pr, spec, triage…); 23 of the repo's 38 SKILL.md set `disable-model-invocation: true` | Mostly user-invoked |
+| mattpocock/skills 1.3.2 | 306,841 | MIT | 27 plugin skills (grilling, tdd, pr, spec, triage…); 24 of the repo's 39 SKILL.md set `disable-model-invocation: true` | Mostly user-invoked |
 | affaan-m/ECC 2.2.3 | 292,908 | MIT | "71 agents, 314 skills, and 98 legacy command shims, plus hooks, rules, memory…" | Yes |
 | multica-ai/andrej-karpathy-skills 1.0.0 | 226,572 | README says MIT; no LICENSE file | One 65-line CLAUDE.md, also as one skill | Yes |
 | DietrichGebert/ponytail 5.3.3 | 180,432 | MIT | One always-on "lazy senior dev" mode (lite, full, ultra) plus review and debt commands | On by hook |

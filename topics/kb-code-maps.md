@@ -6,6 +6,7 @@ Research basis:
 - Researched 2026-10-30 in a cloud session, Claude Code v2.1.314, Opus 5.5 lead with a Sonnet reader on the READMEs.
 - The lead shallow-cloned each repo and read it locally; nothing was installed or run. Commits: Graphify-Labs/graphify `0a8cd4e` (branch `v8`, 2026-10-27), Egonex-AI/Understand-Anything `4e6d329` (2026-10-26, plugin 2.9.8), yamadashy/repomix `7d7b28b` (2026-10-29) and oraios/serena `ede329a` (2026-10-28).
 - Versions from the registries: PyPI `graphifyy` 0.9.97 (uploaded 2026-10-27, `curl https://pypi.org/pypi/graphifyy/json`), PyPI `serena-agent` 2.1.0 (2026-10-19), npm `repomix` 1.18.1 (`npm view repomix 'time[1.18.1]'`: 2026-09-21).
+- Re-verified Graphify 2026-11-02 in a Claude Code remote session: `32e5efe` (branch `v8`, 2026-11-01), PyPI `graphifyy` 0.9.100 (uploaded 2026-11-01). 102 commits past `0a8cd4e`, mostly extractor fixes; the README, `install.py`, `cli.py` and `graphify/skill.md` diffs were read and every quote in CODEMAP-002 to 004 re-checked; `BENCHMARKS.md` is unchanged.
 - Stars are from GitHub repository search on 2026-10-30. They are popularity signals that can be gamed; nothing here rests on them.
 - Nothing was tested: the research rules exclude running community code, so every figure about cost or benefit is the vendor's own.
 
@@ -17,6 +18,7 @@ Research basis:
 | Does building a Graphify graph cost tokens? | Not for code: tree-sitter, "Nothing leaves your machine". Docs, PDFs and images go through your session's model or an API key. | CODEMAP-002 |
 | Does Graphify change how Claude searches? | Yes. `graphify claude install` adds `PreToolUse` hooks on `Bash|Grep` and `Read|Glob` that inject a nudge toward `graphify query`; strict mode denies the first raw read per session. | CODEMAP-003 |
 | Does a graph beat grep? | One vendor result: Graphify lifted key-fact coverage from 70.8% to 82.0% on 6 questions about a 1M-line repo, at about 140k tokens per query. No independent test of any tool. | CODEMAP-004 |
+| When does Graphify itself say a graph is worth building? | Its skill, since 0.9.100: query a graph that exists; with none, use plain search for one targeted lookup; build for many questions, a large or unfamiliar corpus, doc-to-code links or structural questions. | CODEMAP-009 |
 | Does Graphify send telemetry or my code anywhere? | "No telemetry"; code stays local. Docs, PDFs and images go to your session's model, or headless to whichever provider's API key is set first. Every query is logged to `~/.cache/graphify-queries.log` (`GRAPHIFY_QUERY_LOG_DISABLE=1`). | CODEMAP-002 |
 | What does Understand-Anything cost? | An LLM multi-agent pipeline over the whole codebase that "can consume a significant number of tokens on large projects"; no figures. Later runs are incremental. | CODEMAP-005 |
 | Is Understand-Anything safe to install? | Read it first: its `SessionStart` hook tells Claude to run a prompt file and "Do not ask the user for confirmation — just do it", and its quick install is `curl … | bash`. | CODEMAP-006 |
@@ -44,14 +46,14 @@ Research basis:
 - Applies to: Claude Code
 - Confidence: official-example
 - Last verified: 2026-11-01
-- Sources: [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify/tree/0a8cd4e), [Egonex-AI/Understand-Anything](https://github.com/Egonex-AI/Understand-Anything/tree/4e6d329), [yamadashy/repomix](https://github.com/yamadashy/repomix/tree/7d7b28b), [oraios/serena](https://github.com/oraios/serena/tree/ede329a)
+- Sources: [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify/tree/32e5efe), [Egonex-AI/Understand-Anything](https://github.com/Egonex-AI/Understand-Anything/tree/4e6d329), [yamadashy/repomix](https://github.com/yamadashy/repomix/tree/7d7b28b), [oraios/serena](https://github.com/oraios/serena/tree/ede329a)
 - Related: CODEMAP-009, RETR-013, TOK-084, RETR-015, TOK-085
 
 Stars from GitHub search on 2026-10-30.
 
 | Tool | Stars | Licence | Map | Built by | Gets into Claude through |
 |---|--:|---|---|---|---|
-| Graphify 0.9.97 | 138,954 | Apache-2.0 (plus a `LICENSE-MIT` file) | Graph of code, docs and media; `GRAPH_REPORT.md`; HTML export | tree-sitter for code; an LLM for docs, PDFs, images | A skill, `.claude/CLAUDE.md` registration, `PreToolUse` hooks, an MCP query tool |
+| Graphify 0.9.100 | 138,954 | Apache-2.0 (plus a `LICENSE-MIT` file) | Graph of code, docs and media; `GRAPH_REPORT.md`; HTML export | tree-sitter for code; an LLM for docs, PDFs, images | A skill, `.claude/CLAUDE.md` registration, `PreToolUse` hooks, an MCP query tool |
 | Understand-Anything 2.9.8 | 88,960 | MIT | `.ua/knowledge-graph.json` with summaries, layers, tours; a dashboard | "Tree-sitter + LLM hybrid", 10 agent definitions | A plugin with skills and `SessionStart`/`PostToolUse` hooks |
 | Repomix 1.18.1 | 29,078 | MIT | None: one packed file | File concatenation, optional tree-sitter compression | You paste or attach the file, or its MCP server |
 | Serena 2.1.0 | 30,865 | GPL-3.0-or-later (SolidLSP MIT) | None: live symbol queries | Language servers | MCP tools |
@@ -62,25 +64,26 @@ Only the first two build a persistent map. They differ in the expensive step: Gr
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
-- Sources: [graphify README](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/README.md), [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/BENCHMARKS.md)
+- Last verified: 2026-11-02
+- Sources: [graphify README](https://github.com/Graphify-Labs/graphify/blob/32e5efe/README.md), [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/32e5efe/BENCHMARKS.md)
 - Related: CODEMAP-003, CODEMAP-004, RETR-015
 
-From the README at `0a8cd4e`:
+From the README at `32e5efe`:
 
 - **Code:** "processed locally via tree-sitter. Nothing leaves your machine. A code-only corpus requires no API key"; `--code-only` skips the rest.
 - **Docs, PDFs, images:** "sent to your AI assistant for semantic extraction (via the `/graphify` skill, using whatever model your IDE session runs)". Headless `graphify extract` needs an API key and picks the provider from whichever key is set ("priority: Gemini → Kimi → Claude → OpenAI → DeepSeek → Azure → Bedrock → Ollama"), printing which one it chose. Pass `--backend` to choose; on a mixed repo with several keys set, the auto-pick may send docs somewhere you didn't intend.
 - **Privacy:** "No telemetry, no usage tracking, no analytics." Every query is logged to `~/.cache/graphify-queries.log` (question, corpus, nodes returned, duration); `GRAPHIFY_QUERY_LOG_DISABLE=1` opts out.
+- **Claude backend:** since 0.9.100 `--backend claude` caches its system prompt unless `GRAPHIFY_CLAUDE_PROMPT_CACHE=0`.
 - **Freshness:** `graphify hook install` adds git hooks that rebuild "on commit + branch checkout".
 
-**Embeddings:** the README says "No embeddings, no vector store: a real graph you traverse", while BENCHMARKS.md mentions "a local embedder" and "BGE-m3". The shipped package matches the README: `pyproject.toml` at `0a8cd4e` lists no embedding dependency (networkx, numpy, rapidfuzz, pyyaml, tree-sitter grammars), and a grep of `graphify/` for sentence-transformers, fastembed, BGE-m3 and onnxruntime finds nothing. BGE-m3 is the shared embedder of the memory-benchmark harness.
+**Embeddings:** the README says "No embeddings, no vector store: a real graph you traverse", while BENCHMARKS.md mentions "a local embedder" and "BGE-m3". The shipped package matches the README: `pyproject.toml` at `32e5efe` lists no embedding dependency (networkx, numpy, rapidfuzz, pyyaml, tree-sitter grammars), and a grep of `graphify/` for sentence-transformers, fastembed, BGE-m3 and onnxruntime finds nothing. BGE-m3 is the shared embedder of the memory-benchmark harness.
 
 ## [CODEMAP-003] Graphify's hooks steer Claude from grep to the graph
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
-- Sources: [graphify install.py](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/graphify/install.py), [graphify cli.py `_run_hook_guard`](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/graphify/cli.py), [graphify README: always-on](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/README.md)
+- Last verified: 2026-11-02
+- Sources: [graphify install.py](https://github.com/Graphify-Labs/graphify/blob/32e5efe/graphify/install.py), [graphify cli.py `_run_hook_guard`](https://github.com/Graphify-Labs/graphify/blob/32e5efe/graphify/cli.py), [graphify README: always-on](https://github.com/Graphify-Labs/graphify/blob/32e5efe/README.md)
 - Related: HOOK-006, HOOK-007, TOK-041, SKILL-069
 
 `graphify claude install` writes a skill registration into `.claude/CLAUDE.md` and two `PreToolUse` hooks (read in `install.py` and `cli.py`, not run):
@@ -96,8 +99,8 @@ Cost: one Python process per Bash, Grep, Read and Glob call ("~170ms warm"), plu
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-30
-- Sources: [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/BENCHMARKS.md)
+- Last verified: 2026-11-02
+- Sources: [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/32e5efe/BENCHMARKS.md)
 - Related: CODEMAP-002, CODEMAP-009, TOK-084, RETR-010, TOK-020
 
 The only head-to-head against grep among these tools. BENCHMARKS.md, "Last updated: 2026-07-05":
@@ -181,13 +184,13 @@ TOK-084 covers Serena's tools; this adds its version and licence. PyPI `serena-a
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-30
-- Sources: [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/0a8cd4e/BENCHMARKS.md), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- Last verified: 2026-11-02
+- Sources: [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/32e5efe/BENCHMARKS.md), [graphify skill.md](https://github.com/Graphify-Labs/graphify/blob/32e5efe/graphify/skill.md), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: CODEMAP-003, CODEMAP-004, CODEMAP-006, RETR-002, RETR-013, TOK-041, TOK-085
 
 Our judgement from the entries above.
 
-**Don't add one to repos of our size.** Claude Code finds code by searching on demand (RETR-002), Anthropic's context guidance favours that "just-in-time" approach (TOK-041), and the only published gain for a map is 6 questions on a 1M-line repo (CODEMAP-004). Graphify's hooks would also override that default on every search.
+**Don't add one to repos of our size.** Claude Code finds code by searching on demand (RETR-002), Anthropic's context guidance favours that "just-in-time" approach (TOK-041), and the only published gain for a map is 6 questions on a 1M-line repo (CODEMAP-004). Graphify's hooks would also override that default on every search. Since 0.9.100 Graphify's own skill agrees for single lookups: with no graph, one targeted lookup "is faster and free with a plain text search", while semantic extraction "can cost minutes and tens of thousands of tokens". Its hooks still nudge away from grep once a graph exists (CODEMAP-003).
 
 **Worth a trial when:**
 - the repo is large and unfamiliar (hundreds of thousands of lines, several languages), and the questions are about structure ("what calls this across services?") rather than one symbol;

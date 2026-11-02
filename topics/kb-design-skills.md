@@ -1,6 +1,6 @@
 # Community design skills: mechanisms, security surface, a test
 
-Prefix `DSKILL`. This file covers five community design skills for coding agents (Impeccable, Taste Skill, Hallmark, ui-ux-pro-max and huashu-design), compared by mechanism with Anthropic's frontend-design as the baseline: what steers their output, where they disagree, what installing them runs, sends and writes, their licences, their cost and upkeep, a text-only test, and what to borrow. It replaces DESIGN-012's one-table summary. It links rather than repeats: why Claude's pages look generic and the dated clichés (DESIGN-003), prompting for distinctive design (DESIGN-004), frontend-design itself (DESIGN-005), Anthropic's other design skills (DESIGN-014), critique and variants (DESIGN-025), our earlier prompting tests and isolation flags (DESIGN-027 to DESIGN-030), and the general security review of third-party skills (SKILL-041). DESIGN.md and brand collections (#253), finding and vetting skills in general (#256) and animation skills (#258) are out of scope.
+Prefix `DSKILL`. This file covers five community design skills for coding agents (Impeccable, Taste Skill, Hallmark, ui-ux-pro-max and huashu-design), compared by mechanism with Anthropic's frontend-design as the baseline: what steers their output, where they disagree, what installing them runs, sends and writes, their licences, their cost and upkeep, a text-only test, and what to borrow. It replaces DESIGN-012's one-table summary, and also records two figure skills (DSKILL-016, DSKILL-017). It links rather than repeats: why Claude's pages look generic and the dated clichés (DESIGN-003), prompting for distinctive design (DESIGN-004), frontend-design itself (DESIGN-005), Anthropic's other design skills (DESIGN-014), critique and variants (DESIGN-025), our earlier prompting tests and isolation flags (DESIGN-027 to DESIGN-030), and the general security review of third-party skills (SKILL-041). DESIGN.md and brand collections (#253), finding and vetting skills in general (#256) and animation skills (#258) are out of scope.
 
 Research basis:
 - Researched 2026-10-23 (FreekMencke/claude-kb#252) in a desktop WSL session, Claude Code v2.1.296, Opus 5.5 lead.
@@ -8,23 +8,26 @@ Research basis:
 - Three Sonnet 5.5 readers covered security and licences; ui-ux-pro-max, huashu-design, cost and upkeep; and Impeccable's detector and Hallmark's `sloplint`. The lead re-read every quote used here against the downloaded files, and the Impeccable roll, the hook manifests and the photo licences in the source.
 - The lead ran a text-only test (DSKILL-013): 24 `claude -p` runs on Sonnet 5.5, measured with Playwright 1.64.1, judged from contact sheets.
 - Stars and install counts are popularity signals that can be gamed; nothing here rests on them.
+- Re-verified 2026-11-02 in a Claude Code remote session, no subagents: Impeccable `e89e3ad` (2026-11-01, skill v4.8.0, engine 0.1.18), Taste Skill `12af471` (2026-10-25, v2.1.5) and Hallmark `4f6a46c` (2026-10-29, 50 themes), cloned and read, not run. Every quote in the re-pinned entries was checked against those heads. ui-ux-pro-max (`3a13158`) and huashu-design (`9b01ee8`) each moved 6 commits; only their changed-file lists and the patches for the claims here were read, and their source links stay at the old pins. DSKILL-013's test stays at the commits it ran on.
+- Added 2026-11-02: two figure skills, cathrynlavery/diagram-design `0cf73c3` (2026-10-27, plugin 2.6.136) and wheresryan22/anatomy `1482e84` (2026-10-18), cloned and read, not run (DSKILL-016, DSKILL-017).
 - Added 2026-10-24: Emil Kowalski's skills (emilkowalski/skills `2d22863`, cloned and read, not run) for DSKILL-001's note; they aren't compared or tested here.
 
 ## Quick answers
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which community design skills exist, and how do they differ? | Impeccable (a remote roll of directions, a 62-rule detector, hooks), Taste Skill (a script deals 3 of 20 directions, strict house bans), Hallmark (deals from 48 themes against a project log, Floor gates), ui-ux-pro-max (a fixed lookup by product type) and huashu-design (three drafted directions, a seconds roulette and a look ledger). frontend-design is text only: a calibration list and a plan-review-build process. Emil Kowalski's `prototype` works on one component instead: 3 to 5 variants on named axes, behind a picker, for you to choose. | DSKILL-001 |
+| Which community design skills exist, and how do they differ? | Impeccable (a remote roll of directions, a 62-rule detector, hooks), Taste Skill (a script deals 3 of 20 directions, strict house bans), Hallmark (deals from 50 themes against a project log, Floor gates), ui-ux-pro-max (a fixed lookup by product type) and huashu-design (three drafted directions, a seconds roulette and a look ledger). frontend-design is text only: a calibration list and a plan-review-build process. Emil Kowalski's `prototype` works on one component instead: 3 to 5 variants on named axes, behind a picker, for you to choose. | DSKILL-001 |
 | What actually stops a skill converging on one look? | Something outside the model's choice: a script's random deal, a log of past builds checked by the next deal, or a person picking. Text alone doesn't: run without their scripts, Hallmark and ui-ux-pro-max gave one look per brief in 4 of 4 runs. | DSKILL-001, DSKILL-008, DSKILL-013 |
-| Does a fixed catalogue of themes become its own default? | Yes. Hallmark ranks its 48 themes by keyword and genre fit and uses its seeded random to break ties; picking by hand (its no-Node fallback), the model took Cobalt for the webhook brief 4 times of 4. Its own roadmap says parts of its catalogue "now read as generated looks". ui-ux-pro-max maps "Bakery/Cafe" to "Warm Brown + Cream" every time. | DSKILL-008, DSKILL-005 |
+| Does a fixed catalogue of themes become its own default? | Yes. Hallmark ranks its 50 themes by keyword and genre fit and uses its seeded random to break ties; picking by hand (its no-Node fallback), the model took Cobalt for the webhook brief 4 times of 4. Its own roadmap says parts of its catalogue "now read as generated looks". ui-ux-pro-max maps "Bakery/Cafe" to "Warm Brown + Cream" every time. | DSKILL-008, DSKILL-005 |
 | Is ui-ux-pro-max a good way to pick a style? | No for originality: it routes back to category defaults (SaaS: glassmorphism and "Trust blue"; bakery: cream and brown), and in our test gave the cream, serif, italic-accent look frontend-design names as a tell in 4 of 4 runs. Its UX guideline rows are worth borrowing. | DSKILL-005, DSKILL-013, DSKILL-014 |
 | Where do the skills disagree? | Hallmark requires tinted near-black (chroma 0.005 or more); frontend-design lists "tinted near-black (#0B0B0B, #111)" as a tell. Hallmark's Floor is never waivable; frontend-design and Impeccable let the brief win. Taste bans all thin rules; Hallmark themes use rules. Hallmark bans em dashes outright; Impeccable flags 8 or more. | DSKILL-007 |
-| What does installing Impeccable run and send? | Hooks on SessionStart, PostToolUse (`Edit|Write`) and Stop; a pinned Rust engine (0.1.16) from GitHub, checked only against a `.sha256` from the same release (the skill zip, unlike the engine, is Ed25519-signed); a roll request to impeccable.style whose length-checked, unsigned text the agent is told to follow; a daily version check whose text reaches context; telemetry on unless opted out. | DSKILL-010, DSKILL-015 |
+| What does installing Impeccable run and send? | Hooks on SessionStart, PostToolUse (`Edit|Write`) and Stop; a pinned Rust engine (0.1.18) from GitHub, checked against digests committed in the skill (the skill zip is Ed25519-signed); a roll request to impeccable.style whose length-checked, unsigned text the agent is told to follow; a daily version check whose text reaches context; telemetry on unless opted out. | DSKILL-010, DSKILL-015 |
 | Which skills write hooks into settings? | Impeccable: its plugin's `hooks.json`, or `npx impeccable install` into `.claude/settings.local.json` (project) or `~/.claude/settings.json` (user), default yes and without asking when not on a TTY. Hallmark: `install-hook.mjs` on request, into the project's `.claude/settings.json` or `~/.claude/settings.json`. The other three write none, but all five tell the agent to run their scripts, and Taste's `install.sh` symlinks so a `git pull` changes live text. | DSKILL-010 |
 | What licences apply when borrowing? | Impeccable and frontend-design are Apache-2.0 (keep the licence, notices and a change note); Taste, Hallmark, ui-ux-pro-max and huashu-design are MIT. Hallmark's photos are mostly CC BY-SA (546 of 755), which needs credit and ShareAlike. | DSKILL-011 |
 | How many tokens does a build cost? | Taste says "a few hundred thousand tokens" a build. In our text-only test, a Hallmark build read about 388k input tokens ($0.52–0.67 on Sonnet 5.5), ui-ux-pro-max 61k, frontend-design 34k. | DSKILL-012 |
 | Do the skills' own tests show they beat no skill? | Not clearly. Taste's own blind test (model jurors, the skill revised after each round) scored it below no skill in rounds 1, 2 and 4, level in round 3, and 0.1 below in the last, within its stated noise; its strong result is 0 inspector FAILs against 8 to 13 for the baselines. No other skill publishes a comparison. | DSKILL-002, DSKILL-012 |
 | What are Impeccable's `detect` and Hallmark's `sloplint`? | Deterministic linters: Impeccable has 62 rules (31 slop, 31 quality) in a Rust engine, static or rendered; Hallmark's checks 90 gate rows plus 26 Finish checks, statically or in headless Chrome. Both mix numeric thresholds with pattern bans. | DSKILL-009 |
+| Is there a skill for diagrams and explanatory figures? | diagram-design: 45 diagram types as one HTML and SVG file, no hooks, fonts from Google unless you ask for system fonts. Anatomy: interactive isometric machines, slow on purpose. Install neither; borrow diagram-design's complexity budget and geometry check. | DSKILL-016, DSKILL-017 |
 | What should we borrow? | A per-project log that the next design run reads, "add options, not bans", a mirror test, a checker that keeps WCAG requirements (contrast, 24 px targets, visible focus, reflow, text spacing) apart from conventions (16 px body, 1.5 leading, 45–75ch), and Impeccable's and Hallmark's state lists. Don't install any of the five. | DSKILL-014 |
 
 ## Index
@@ -46,13 +49,15 @@ Research basis:
 | DSKILL-013 | Test: Hallmark, ui-ux-pro-max and frontend-design as text only on two briefs | comparison | experiment, convergence, text-only, isolation |
 | DSKILL-014 | What to borrow from the design skills, and the notice it needs | recommendation | borrow, log, floor-rules, guidelines, licences |
 | DSKILL-015 | Security surface, part 2: network, remote text in context and telemetry | fact | security, network, telemetry, remote-text, prompt-injection |
+| DSKILL-016 | diagram-design: 45 diagram types as one HTML and SVG file | tool | diagram-design, diagrams, svg, complexity-budget, geometry-check |
+| DSKILL-017 | Anatomy: interactive isometric machines as explanatory figures | tool | anatomy, figures, svg, isometric |
 
 ## [DSKILL-001] Five community design skills and frontend-design, by mechanism
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
-- Sources: [Impeccable SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Kowalski prototype SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/prototype/SKILL.md), [Kowalski emil-design-eng SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md)
+- Last verified: 2026-11-02
+- Sources: [Impeccable SKILL.md @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @12af471](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Kowalski prototype SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/prototype/SKILL.md), [Kowalski emil-design-eng SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md)
 - Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-012, DSKILL-008, DSKILL-013, ANIMLIB-013
 
 None is Anthropic's. Each fights convergence with a different mechanism; most need their scripts to do it.
@@ -62,37 +67,37 @@ None is Anthropic's. Each fights convergence with a different mechanism; most ne
 | frontend-design (Apache-2.0) | Text: a dated list of five default looks, plan, review against the brief, build, critique | Nothing |
 | Impeccable (Apache-2.0) | The agent lists seven directions; `impeccable concept-seed` assigns one and deals catalogue challengers from impeccable.style ("the roll"); modes; a craft floor; a 62-rule detector | Its binary, network |
 | Taste Skill (MIT) | `draw.mjs` deals "three of twenty researched directions" and a type system, palette and sections; house bans; a browser inspector | Node 22+, Chrome |
-| Hallmark (MIT) | `theme.mjs deal` picks 3 of 48 themes clear of `.hallmark/log.json`; `draw` deals structure; Floor, Reflex and Finish gates; `sloplint` | Node; Chrome for render checks |
+| Hallmark (MIT) | `theme.mjs deal` picks 3 of 50 themes clear of `.hallmark/log.json`; `draw` deals structure; Floor, Reflex and Finish gates; `sloplint` | Node; Chrome for render checks |
 | ui-ux-pro-max (MIT) | `search.py --design-system` looks up the product type and returns a fixed style, palette and fonts | Python 3 |
 | huashu-design (MIT) | Six candidates from three logics, one a random style by the clock's seconds; three drafted directions; a ledger of past looks | Python, Playwright |
 
 DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mode sends data to an external model), OneRedOak's design-review agent (given Edit and Write, which a reviewer shouldn't need) and Google's DESIGN.md spec, now covered by DESIGN-036 to DESIGN-040 (FreekMencke/claude-kb#253); DESIGN-006 holds where tokens live.
 
-**Not compared:** Emil Kowalski's skills (MIT, `2d22863`) pick no look for a page. `prototype` builds 3 to 5 variants of one UI piece on named axes behind a picker, and "the choice belongs to the user" (DSKILL-008); `emil-design-eng` and `apple-design` are craft text, mostly motion (ANIMLIB-013).
+**Not compared:** Emil Kowalski's skills (MIT, `2d22863`) pick no look for a page. `prototype` builds 3 to 5 variants of one UI piece on named axes behind a picker, and "the choice belongs to the user" (DSKILL-008); `emil-design-eng` and `apple-design` are craft text, mostly motion (ANIMLIB-013). Figures: DSKILL-016, DSKILL-017.
 
 ## [DSKILL-002] Taste Skill: a scripted deal of 3 of 20 directions, a user-level history, house bans
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
-- Sources: [SKILL.md @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [scripts/draw.mjs](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/scripts/draw.mjs), [references/research.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/references/research.md), [CHANGELOG.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/CHANGELOG.md)
+- Last verified: 2026-11-02
+- Sources: [SKILL.md @12af471](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/SKILL.md), [scripts/draw.mjs](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/scripts/draw.mjs), [references/research.md](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/references/research.md), [CHANGELOG.md](https://github.com/Leonxlnx/taste-skill/blob/12af471/CHANGELOG.md)
 - Related: DSKILL-001, DSKILL-007, DSKILL-012, DESIGN-027
 
 **Mechanism.** "A script deals the directions, you choose among them. Asked to invent a look, a model picks the category default every time. `scripts/draw.mjs` deals three of twenty researched directions" (`library/directions.json` holds 20). The draw is "random within what fits the brief, and it remembers recent draws": a seedable PRNG and a history of the last 24 draws in `~/.taste-skill/history.json` (outside the project; `TASTE_SKILL_HISTORY` moves it). The agent must "Adopt it… Never redraw to get something more comfortable."
 
 **House rules,** each with a replacement: no eyebrows, no monospace outside code, no 01/02/03, "No thin rules", no gradients, no shadows at rest, "No assistant palette. No yellow-cream ground with terracotta or rust; no violet or indigo", no tracked caps, no icon cards, no glass, no accent word, two typefaces at most. It warns that removing ornament alone "reads as thin": fill the space with scale, content or pictures.
 
-**Its evidence** is a study of 247 gallery sites scored by "21 model reviewers" ("not human jurors"), and a blind test against no skill (DSKILL-012). Since v2.1.3 (2026-10-19) the repo is one skill; the older variants moved to Leonxlnx/taste-skill-classics.
+**Its evidence** is a study of 247 gallery sites scored by "21 model reviewers" ("not human jurors"), and a blind test against no skill (DSKILL-012). Since v2.1.3 (2026-10-19) the repo is one skill; the older variants moved to Leonxlnx/taste-skill-classics. v2.1.5 (2026-10-25) escapes the text `charts.js` and `Stage.split` insert, and the inspector warns `dev-server` when it reads a dev server, not the built page.
 
 ## [DSKILL-003] Hallmark: dealt themes, a project log, and Floor, Reflex and Finish gates
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
-- Sources: [SKILL.md @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/SKILL.md), [scripts/theme.mjs](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/theme.mjs), [references/gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md), [references/themes/index.json](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/themes/index.json), [ROADMAP.md](https://github.com/Nutlope/hallmark/blob/7ec8682/ROADMAP.md)
+- Last verified: 2026-11-02
+- Sources: [SKILL.md @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/SKILL.md), [scripts/theme.mjs](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/theme.mjs), [references/gates.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/gates.md), [references/themes/index.json](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/themes/index.json), [ROADMAP.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/ROADMAP.md)
 - Related: DSKILL-008, DSKILL-009, DSKILL-007, DSKILL-013
 
-**Mechanism.** "A hard floor against the defaults every model was trained into, a dealt direction so consecutive builds do not converge, one idea per screen." `theme.mjs deal` "deals three themes that fit the prompt and clear the log"; the agent picks one by its picture. The catalogue has 48 themes (20 editorial, 11 modern-minimal, 9 playful, 8 atmospheric). A theme is blocked if it was one of the last 3 logged builds; `.hallmark/log.json` keeps 20. `theme.mjs draw` then deals the page shape, hero, nav and footer, with a "Mirror test: would a neighbouring prompt in the same category get this exact combination? If yes, change one decision". Without Node: "pick from `references/themes/index.json` by hand and stamp `deal: manual`" (DSKILL-008, DSKILL-013).
+**Mechanism.** "A hard floor against the defaults every model was trained into, a dealt direction so consecutive builds do not converge, one idea per screen." `theme.mjs deal` "deals three themes that fit the prompt and clear the log"; the agent picks one by its picture. The catalogue has 50 themes (20 editorial, 12 modern-minimal, 9 playful, 9 atmospheric; Refract and Vantage were added after the 2026-10-23 research). A theme is blocked if it was one of the last 3 logged builds; `.hallmark/log.json` keeps 20. `theme.mjs draw` then deals the page shape, hero, nav and footer, with a "Mirror test: would a neighbouring prompt in the same category get this exact combination? If yes, change one decision". Without Node: "pick from `references/themes/index.json` by hand and stamp `deal: manual`" (DSKILL-008, DSKILL-013).
 
 **Gates** (`gates.md`): Floor "Never waivable"; Reflex "A default a language model falls into", waivable on the record; Finish "Reported and answered, never blocking". "Nothing ships with an open `FAIL` or an open `REFLEX`." Floor house rules include "Never an eyebrow, and never a label in tracked capitals or small caps", "Never middle-dot-joined meta strings, arrows glued to link text", "About 80 words on any one screen" and "Never `transition: all`".
 
@@ -102,8 +107,8 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
-- Sources: [SKILL.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/SKILL.md), [reference/new-work.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/new-work.md), [reference/craft-floor.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [README.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/README.md)
+- Last verified: 2026-11-02
+- Sources: [SKILL.md @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/SKILL.md), [reference/new-work.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/new-work.md), [reference/craft-floor.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/craft-floor.md), [README.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/README.md)
 - Related: DSKILL-009, DSKILL-010, DSKILL-007, DESIGN-025
 
 "Impeccable started from" Anthropic's frontend-design (README). 24 commands (`shape`, `critique`, `audit`, `polish`…).
@@ -114,7 +119,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 
 **Calibration** names Claude's rendition prior: "warm, bookish, family, and child-facing subjects come out as cream grounds, serif display with italic accents, and lamplight… Treat that first palette as already spent." It lists fonts that mean "you stopped looking": "Fraunces, Playfair Display, Cormorant, Lora, Crimson, Newsreader, Syne, Space Grotesk, Space Mono, IBM Plex, Inter-as-display, DM Sans, DM Serif, Outfit, Plus Jakarta Sans, Instrument Sans".
 
-**Craft floor:** contrast ≥4.5:1 and 3:1, "body measure 65–75ch, display max 6rem, tracking floor -0.04em", states (hover, disabled, loading, error, empty), theme the browser's own surfaces (selection, caret, scrollbars, focus rings). Most "Refuse" items are "defaults, not bans: the brief's own words can earn any of them"; the eyebrow "is a ban, not a default". Its `critique` scores Nielsen's ten heuristics 0–4 (DESIGN-025): one model's estimate, not evidence from users.
+**Craft floor:** contrast ≥4.5:1 and 3:1, "body measure 65–75ch, display max 6rem, tracking floor -0.04em", states (hover, disabled, loading, error, empty), theme the browser's own surfaces (selection, caret, scrollbars, focus rings). Most "Refuse" items are "defaults, not bans: the brief's own words can earn any of them"; the eyebrow "is a ban, not a default". At `e89e3ad` a pinned brief overrides the floor "except a line marked as a ban". Its `critique` scores Nielsen's ten heuristics 0–4 (DESIGN-025): one model's estimate, not evidence from users.
 
 ## [DSKILL-005] ui-ux-pro-max: a fixed lookup from product type to style and palette
 - Type: tool
@@ -152,8 +157,8 @@ HTML prototypes, slides, animation and review; SKILL.md is in Chinese (translati
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
-- Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md), [Hallmark craft.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/craft.md), [Taste SKILL.md](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/SKILL.md), [Impeccable craft-floor.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/craft-floor.md), [Impeccable detector registry](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/foundation/src/registry.rs)
+- Last verified: 2026-11-02
+- Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/gates.md), [Hallmark craft.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/craft.md), [Taste SKILL.md](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/SKILL.md), [Impeccable craft-floor.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/craft-floor.md), [Impeccable detector registry](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/foundation/src/registry.rs)
 - Related: DESIGN-003, DSKILL-002, DSKILL-003, DSKILL-004, DSKILL-009, DSKILL-013, WRITE-002
 
 | Point | Positions |
@@ -172,8 +177,8 @@ One skill's substitute is another's ban: stacking two narrows the space without 
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-01
-- Sources: [Hallmark scripts/theme.mjs](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/theme.mjs), [Hallmark ROADMAP.md](https://github.com/Nutlope/hallmark/blob/7ec8682/ROADMAP.md), [ui-ux-pro-max products.csv](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/data/products.csv), [huashu-design SKILL.md](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), local test
+- Last verified: 2026-11-02
+- Sources: [Hallmark scripts/theme.mjs](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/theme.mjs), [Hallmark ROADMAP.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/ROADMAP.md), [ui-ux-pro-max products.csv](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/data/products.csv), [huashu-design SKILL.md](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), local test
 - Related: DESIGN-003, DESIGN-027, DSKILL-003, DSKILL-005, DSKILL-013
 
 A catalogue removes the model's default only if something outside the model picks from it, and keeps picking differently.
@@ -189,13 +194,13 @@ What worked in our tests and in huashu-design's design is variety from outside t
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
-- Sources: [Impeccable registry.rs @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/foundation/src/registry.rs), [Impeccable CLI-CONTRACT.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/docs/CLI-CONTRACT.md), [Hallmark sloplint.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/sloplint.mjs), [Hallmark sloplint-render.mjs](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/sloplint-render.mjs), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/gates.md)
+- Last verified: 2026-11-02
+- Sources: [Impeccable registry.rs @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/foundation/src/registry.rs), [Impeccable CLI-CONTRACT.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/docs/CLI-CONTRACT.md), [Hallmark sloplint.mjs @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/sloplint.mjs), [Hallmark sloplint-render.mjs](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/sloplint-render.mjs), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/gates.md)
 - Related: DESIGN-007, DESIGN-017, DSKILL-004, DSKILL-003, DSKILL-014, WRITE-002, WRITE-004
 
 Read, not run. Both report findings; neither generates a fix.
 
-**Impeccable** (README: "62 deterministic detector rules"; the registry has 62: 31 `slop`, 31 `quality`). A Rust engine: regex over source files, static HTML and CSS, Puppeteer for URLs; on regex-only files "findings are an undercount". Thresholds: `low-contrast` (4.5:1, 3:1), `tight-leading` ("below 1.3x"), `tiny-text` ("below 12px"), `line-length` ("~80 characters… 65ch to 75ch"). Pattern rules: `overused-font` (Inter, Roboto, Fraunces, Geist, Space Grotesk…), `kicker-above-heading` ("banned outright"), `gradient-text`, `cream-palette`. Only 12 run at edit time; the rest wait for the Stop hook.
+**Impeccable** (README: "62 deterministic detector rules"; the registry has 62: 31 `slop`, 31 `quality`). A Rust engine: regex over source files, static HTML and CSS, Puppeteer for URLs; on regex-only files "findings are an undercount". Thresholds: `low-contrast` (4.5:1, 3:1), `tight-leading` ("below 1.3x"), `tiny-text` ("below 12px"), `line-length` ("~80 characters… 65ch to 75ch"). Pattern rules: `overused-font` (Inter, Roboto, Fraunces, Geist, Space Grotesk…), `kicker-above-heading` ("banned outright"), `gradient-text`, `cream-palette`. Only 12 run at edit time; the Stop hook runs the full set over the UI files touched and "surfaces the remaining findings once". "A session with nothing left to report stops silently."
 
 **Hallmark `sloplint`** ("Zero dependencies, Node 18+"): 90 gate rows (39 Floor, 50 Reflex, 1 Ledger) plus Finish checks F1–F26; 45 static, the rest rendered in headless Chrome (320 to 1920 px) or judged. Its 12 px and 1.3 lines are fail lines; the fix it gives is "body 16px at 1.5 to 1.65". Contrast passes at "4.5:1 or APCA Lc 60", although APCA isn't a WCAG conformance measure (DESIGN-017). Exit 1 on any FAIL or REFLEX.
 
@@ -205,13 +210,13 @@ Read, not run. Both report findings; neither generates a fix.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
-- Sources: [Impeccable plugin/hooks/hooks.json @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/hooks/hooks.json), [Impeccable launcher](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/scripts/impeccable), [Impeccable crates/skills commands.rs and hook_manifest.rs](https://github.com/pbakaus/impeccable/tree/5cb95ee/crates/skills/src), [Impeccable BUNDLE-SIGNING.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/docs/BUNDLE-SIGNING.md), [Taste install.sh @6010f91](https://github.com/Leonxlnx/taste-skill/blob/6010f91/install.sh), [Hallmark install-hook.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/install-hook.mjs), [ui-ux-pro-max cli/src @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/28327f2/cli/src), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
+- Last verified: 2026-11-02
+- Sources: [Impeccable plugin/hooks/hooks.json @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/hooks/hooks.json), [Impeccable launcher](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/scripts/impeccable), [Impeccable crates/skills commands.rs and hook_manifest.rs](https://github.com/pbakaus/impeccable/tree/e89e3ad/crates/skills/src), [Impeccable BUNDLE-SIGNING.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/docs/BUNDLE-SIGNING.md), [Taste install.sh @12af471](https://github.com/Leonxlnx/taste-skill/blob/12af471/install.sh), [Hallmark install-hook.mjs @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/install-hook.mjs), [ui-ux-pro-max cli/src @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/28327f2/cli/src), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
 - Related: SKILL-041, SKILL-036, HOOK, DSKILL-015, DSKILL-011, SKILL-069
 
 Read from source at the pinned commits, 2026-10-23. Four of the five also install as a plugin marketplace (SKILL-036: third-party auto-update is off by default).
 
-- **Impeccable.** Plugin hooks: SessionStart (timeout 5), PostToolUse `Edit|Write` (5), Stop (30). `npx impeccable install` (unpinned) writes them to `.claude/settings.local.json`, or `~/.claude/settings.json` for a user install; the prompt defaults to yes and is skipped without a TTY; `--no-hooks` opts out. The engine is pinned (`VERSION` 0.1.16) and downloaded from GitHub releases with a `.sha256` from the same release: corruption, not compromise. The skill zip is Ed25519-signed with a key in that binary. `IMPECCABLE_BIN` or an `impeccable` on `PATH` is run after a handshake only.
+- **Impeccable.** Plugin hooks: SessionStart (timeout 5), PostToolUse `Edit|Write` (5), Stop (30). `npx impeccable install` (unpinned) writes them to `.claude/settings.local.json`, or `~/.claude/settings.json` for a user install; the prompt defaults to yes and is skipped without a TTY; `--no-hooks` opts out. The engine is pinned (`VERSION` 0.1.18) and downloaded from GitHub releases. Since 2026-10-26 (skill v4.8.0) it is checked against `engine-checksums.txt`, committed in the skill, "never against anything published beside the binary"; a mismatch or a missing digest refuses the download, so a swapped release asset no longer passes. The skill zip is Ed25519-signed with a key in that binary. `IMPECCABLE_BIN` is "exec'd without a probe"; a home-directory or `PATH` binary runs after a handshake only. The hook runs the engine unsandboxed with the agent's environment and network (`hooks.md`), and hooks "run even when you deny the model's own commands, so the first edit can download the engine" (README).
 - **Taste.** No hooks. `install.sh` "links instead of copying, so `git pull` updates every installed skill in place" in `~/.claude/skills`; `npx skills add` is unpinned. The skill has the agent run `draw`, `assets`, `lint` and `inspect` (headless Chrome with a DevTools port).
 - **Hallmark.** No hooks shipped; `install-hook.mjs` writes a PostToolUse `Write|Edit|MultiEdit` hook (timeout 10) into the project's `.claude/settings.json`, or `~/.claude/settings.json` with `--global`. `sloplint --render` loads a global `puppeteer-core`.
 - **ui-ux-pro-max.** The plugin installs 7 skills. The `uipro` CLI downloads the `latest` release zip with no checksum, and `update` runs `npm install -g`.
@@ -221,8 +226,8 @@ Read from source at the pinned commits, 2026-10-23. Four of the five also instal
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-10-23
-- Sources: [Impeccable LICENSE and NOTICE.md @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/NOTICE.md), [anthropics/skills frontend-design LICENSE.txt](https://github.com/anthropics/skills/blob/main/skills/frontend-design/LICENSE.txt), [Hallmark photos.json @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/scripts/photos.json), [Hallmark README](https://github.com/Nutlope/hallmark/blob/7ec8682/README.md), [Taste library/photos.json](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/library/photos.json), [Unsplash Terms (Wayback 2026-01-08)](http://web.archive.org/web/20260108062954/https://unsplash.com/terms), [Pexels licence](https://www.pexels.com/license/)
+- Last verified: 2026-11-02
+- Sources: [Impeccable LICENSE and NOTICE.md @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/NOTICE.md), [anthropics/skills frontend-design LICENSE.txt](https://github.com/anthropics/skills/blob/main/skills/frontend-design/LICENSE.txt), [Hallmark NOTICE.md as added, later removed @65b5e40](https://github.com/Nutlope/hallmark/blob/65b5e40/NOTICE.md), [Hallmark photos.json @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/photos.json), [Hallmark README](https://github.com/Nutlope/hallmark/blob/4f6a46c/README.md), [Taste library/photos.json](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/library/photos.json), [Unsplash Terms (Wayback 2026-01-08)](http://web.archive.org/web/20260108062954/https://unsplash.com/terms), [Pexels licence](https://www.pexels.com/license/)
 - Related: LIC, FONT, DSKILL-014
 
 | Skill | Code | Assets |
@@ -236,21 +241,23 @@ Read from source at the pinned commits, 2026-10-23. Four of the five also instal
 
 **Fonts:** none of the five ships a typeface in its skill; pages load Google Fonts (OFL or Apache, DESIGN-035), a third-party request each visit.
 
+**Hallmark's credits:** on 2026-10-28 it added a `NOTICE.md` naming what it took from each skill (from Impeccable, "Some slop rules, the edit-time hook, per-model tics"), then the same day replaced it with an "Inspired by" link list in the README.
+
 **Hallmark's photos** need author, licence and link, as it says; BY-SA adds ShareAlike for adaptations, which it omits. Its claim that Unsplash, Pexels and Pixabay "bar AI tools from picking their images" is partly supported: Unsplash's Terms bar "bots, spiders, scripts, crawlers, scrapers" and "machine learning and/or artificial intelligence datasets"; the Pexels and Pixabay licence pages had no such clause, and their full terms weren't read.
 
 ## [DSKILL-012] Token cost per build and release cadence
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-23
-- Sources: [Taste README and CHANGELOG](https://github.com/Leonxlnx/taste-skill/blob/6010f91/CHANGELOG.md), [Taste research.md §11](https://github.com/Leonxlnx/taste-skill/blob/6010f91/skills/taste-skill/references/research.md), [Hallmark ROADMAP.md](https://github.com/Nutlope/hallmark/blob/7ec8682/ROADMAP.md), GitHub releases API, local test
+- Last verified: 2026-11-02
+- Sources: [Taste README and CHANGELOG](https://github.com/Leonxlnx/taste-skill/blob/12af471/CHANGELOG.md), [Taste research.md §11](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/references/research.md), [Hallmark ROADMAP.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/ROADMAP.md), GitHub releases API, local test
 - Related: TOK, DSKILL-013, DSKILL-002
 
 **Cost.** Only Taste states one: "A build takes roughly 30 to 45 minutes and a few hundred thousand tokens", most of it "finding or drawing pictures". Hallmark lists "Measure a build" as a roadmap item. Measured in DSKILL-013 (text only, no scripts, Sonnet 5.5, 8 runs per skill): Hallmark read 388k input tokens a build on average (mostly cache reads), $0.52–0.67, 167 s; ui-ux-pro-max 61k, $0.18–0.33; frontend-design 34k, $0.13–0.16. Hallmark's page build loads seven reference files (about 110 KB) on top of SKILL.md.
 
 **Does it pay?** Taste's own blind test, model jurors, with "The skill… revised after each round": 6.6 vs 7.7, 7.1 vs 8.0, 7.5 vs 7.5, 6.9 vs 7.9, 7.7 vs 7.8 (skill vs no skill); the last round won 2 of 3 briefs and sits within "about half a point of noise". Its clear result: "the final builds measured 0 FAIL each; the baselines measured 8 to 13 FAIL each", on its own inspector.
 
-**Upkeep** (GitHub API, 2026-10-23): Impeccable 34 `skill-v*` releases, skill-v4.7.0 on 2026-10-19; Taste v2.0.0 to v2.1.4 in 2026-10-13 to 10-20, restructured twice; Hallmark no releases or tags; ui-ux-pro-max v2.15.0 on 2026-08-13, none since; huashu-design v3.0.0 on 2026-10-17. A reviewed copy goes stale within days.
+**Upkeep** (GitHub API, 2026-11-02): Impeccable 35 `skill-v*` releases, skill-v4.8.0 on 2026-10-26, and 81 commits from 2026-10-23 to 11-01; Taste v2.0.0 to v2.1.5 in 2026-10-13 to 10-25, restructured twice; Hallmark no releases or tags, 13 commits since 2026-10-22; ui-ux-pro-max v2.15.0 on 2026-08-13, none since; huashu-design v3.1.0 on 2026-10-30. A reviewed copy goes stale within days: DSKILL-010's engine check changed three days after it was first read.
 
 ## [DSKILL-013] Test: Hallmark, ui-ux-pro-max and frontend-design as text only on two briefs
 - Type: comparison
@@ -275,8 +282,8 @@ Tested 2026-10-23, v2.1.296, `-p` from desktop WSL, 06:34–06:45 UTC: 24 runs, 
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-23
-- Sources: [Hallmark SKILL.md and interaction-and-states.md](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/interaction-and-states.md), [huashu-design SKILL.md](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [Impeccable animate.md and harden.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/plugin/skills/impeccable/reference/animate.md), [WCAG 2.2](https://www.w3.org/TR/WCAG22/), [NN/g: response time limits](https://www.nngroup.com/articles/response-times-3-important-limits/)
+- Last verified: 2026-11-02
+- Sources: [Hallmark SKILL.md and interaction-and-states.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/interaction-and-states.md), [huashu-design SKILL.md](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [Impeccable animate.md and harden.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/animate.md), [WCAG 2.2](https://www.w3.org/TR/WCAG22/), [NN/g: response time limits](https://www.nngroup.com/articles/response-times-3-important-limits/)
 - Related: DESIGN-004, DESIGN-007, DESIGN-017, DESIGN-030, ACCESS-014, DSKILL-008, DSKILL-011, UIPAT-001, UIPAT-004, ANIM-013
 
 **Don't install any of the five** (DSKILL-010, DSKILL-015). Borrow ideas in our own words:
@@ -293,17 +300,61 @@ Copying wording needs the licence: MIT keeps its notice; Apache-2.0 (Impeccable,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
-- Sources: [Impeccable concept_seed.rs @5cb95ee](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/context/src/concept_seed.rs), [Impeccable context_cli.rs](https://github.com/pbakaus/impeccable/blob/5cb95ee/crates/context/src/context_cli.rs), [Impeccable CLAUDE.md](https://github.com/pbakaus/impeccable/blob/5cb95ee/CLAUDE.md), [Impeccable README: telemetry](https://github.com/pbakaus/impeccable/blob/5cb95ee/README.md), [Hallmark brand-truth.md and imagegen.mjs @7ec8682](https://github.com/Nutlope/hallmark/blob/7ec8682/skills/hallmark/references/brand-truth.md), [ui-ux-pro-max design/scripts/cip/generate.py @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/design/scripts/cip/generate.py), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
+- Last verified: 2026-11-02
+- Sources: [Impeccable concept_seed.rs @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/context/src/concept_seed.rs), [Impeccable context_cli.rs](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/context/src/context_cli.rs), [Impeccable CLAUDE.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/CLAUDE.md), [Impeccable README: telemetry](https://github.com/pbakaus/impeccable/blob/e89e3ad/README.md), [Impeccable privacy page](https://impeccable.style/privacy), [Hallmark brand-truth.md and imagegen.mjs @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/brand-truth.md), [ui-ux-pro-max design/scripts/cip/generate.py @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/design/scripts/cip/generate.py), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
 - Related: SKILL-041, MCP, DSKILL-010
 
 - **Impeccable's roll.** `concept-seed` "has no local catalog": it tries `IMPECCABLE_CATALOG_DIR`, then "the roll API at impeccable.style, then a degraded promotion-only seed". The response's `form`, `spark`, `system` and `webLeverage` fields (length-checked, unsigned, unpinned) are printed into directives, and the skill says "follow what it prints. No substitute, no skip". Degraded, it nudges the agent toward a "network-enabled or escalated command tool".
 - **Impeccable's update check.** `/api/version` at most every 24 h; the returned version string is compared by its leading digits, then put whole and unchecked into an `UPDATE_AVAILABLE` directive, which offers `npx impeccable update` but forbids running it that turn. Off with `IMPECCABLE_NO_UPDATE_CHECK` or `"updateCheck": false`.
-- **Impeccable's telemetry:** on "Unless you opt out": roll key, scope, mode, re-roll round, the winning card and its position, client version. Off with `npx impeccable telemetry off`, `DO_NOT_TRACK=1`, `IMPECCABLE_NO_TELEMETRY=1` or `"telemetry": false`; "the roll still works and the API is told not to record it".
+- **Impeccable's telemetry:** on until opted out. The privacy page lists the roll key, round, catalogue version, scope, page mode, and the chosen card and its position; "The roll key is never stored", only a keyed hash. Off with `npx impeccable telemetry off`, `DO_NOT_TRACK=1`, `IMPECCABLE_NO_TELEMETRY=1` or `"telemetry": false`. "Turning telemetry off doesn't stop that request", the roll itself (README).
 - **Taste:** six open image archives; results enter context. No telemetry.
 - **Hallmark:** `api.together.xyz` whenever `TOGETHER_API_KEY` is set; brand homepages fetched as "untrusted data" with an address denylist, the best remote-text handling of the five.
 - **ui-ux-pro-max:** sibling skills load every key in `~/.claude/.env` into the environment and call Gemini, Atlas Cloud and muapi.
 - **huashu-design:** Wikimedia; Volcengine and ByteDance only after consent; an unlisted `git ls-remote` every 30 days.
+
+## [DSKILL-016] diagram-design: 45 diagram types as one HTML and SVG file
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-11-02
+- Sources: [README @0cf73c3](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/README.md), [SKILL.md](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/skills/diagram-design/SKILL.md), [PRIVACY.md](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/PRIVACY.md), [ADR 0005](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/docs/adr/0005-label-geometry-is-verified.md), [SECURITY.md](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/SECURITY.md)
+- Related: DSKILL-001, DSKILL-017, VIZ-019, SKILL-003, SKILL-069
+
+An MIT skill and plugin, read at `0cf73c3` (2026-10-27, plugin 2.6.136), not run. It "draws diagrams as one self-contained HTML + SVG file": "45 diagram types", plus redraws of draw.io, Mermaid and Excalidraw files and PNG or SVG export.
+
+**Worth borrowing:**
+- **A complexity budget per diagram:** at most 9 nodes, 12 arrows, 2 accent elements and 2 callouts; past that, split into an overview and a detail.
+- **One focal point:** "If you're tempted to accent 4 things, you haven't decided what's focal yet."
+- **A geometry check.** ADR 0005 records nine shipped examples whose labels were clipped by nodes while "Every existing gate passed"; `verify-geometry.py` now reads the coordinates.
+
+**What installing it runs:** no hook files or hook events outside its docs (grepped). The agent runs local Python scripts. PRIVACY.md says "no analytics, and no telemetry".
+
+**Limits:**
+- The file still loads fonts: Google Fonts is "the only network request it makes", unless you ask for system fonts.
+- It is large: `SKILL.md` is 394 lines and 30,874 bytes, with 220 asset and 63 reference files.
+- It "does not currently publish versioned releases", so pin a commit.
+- Our judgement: generated SVG is harder to diff and review than Mermaid, which GitHub renders from text (VIZ-019). A search on 2026-11-02 found no head-to-head test.
+
+## [DSKILL-017] Anatomy: interactive isometric machines as explanatory figures
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-11-02
+- Sources: [README @1482e84](https://github.com/wheresryan22/anatomy/blob/1482e84/README.md), [SKILL.md](https://github.com/wheresryan22/anatomy/blob/1482e84/SKILL.md), [SECURITY.md](https://github.com/wheresryan22/anatomy/blob/1482e84/SECURITY.md), [CHANGELOG.md](https://github.com/wheresryan22/anatomy/blob/1482e84/CHANGELOG.md)
+- Related: DSKILL-001, DSKILL-016, ANIMLIB-013
+
+An MIT skill, repo created 2026-10-08, read at `1482e84` (2026-10-18), not run. It "explains an idea by building it as a real, working object": a cache key becomes a pin-tumbler lock, built from many small shaded SVG parts, with optional WebGL and 3D. "Every number the figure shows comes from the same small model that moves its parts."
+
+**Needs:** Node 20.10 or later with built-in modules only, and Chrome or Chromium for its checks. No hooks.
+
+**Limits, by its own README:**
+- "It is slow on purpose": a full 3D orbit audit "takes 15 to 20 minutes for 30 parts".
+- "It is not a chart library", and it draws no people or exact maps.
+- "The 3D mode is beta."
+
+**What it runs:** its Chrome scripts use a throwaway profile and `--allow-file-access-from-files` (SECURITY.md). `publish.mjs --submit` opens a pull request on its community gallery through the GitHub CLI, after a confirmation.
+
+**The idea worth keeping:** a figure's readout and its moving parts share one model, so the drawing can't disagree with the numbers. The rest suits a landing-page showpiece, not routine docs: DSKILL-016 or Mermaid (VIZ-019) covers those at far less cost.
 
 ## Recommendations for our setup
 
@@ -311,12 +362,13 @@ Ranked by impact against effort.
 
 1. **Don't install Impeccable, Taste Skill, Hallmark, ui-ux-pro-max or huashu-design** (DSKILL-010, DSKILL-015, DSKILL-013). Borrow their ideas (DSKILL-014). This replaces DESIGN recommendation 7. To try one anyway: a pinned copy without its scripts, as in DSKILL-013, or for Impeccable `--no-hooks`, `DO_NOT_TRACK=1` and `IMPECCABLE_NO_UPDATE_CHECK=1`, from a marketplace with auto-update off.
 2. **Decided 2026-10-23 (FreekMencke/claude-kb#260): borrow into our own skills.** The log of past looks and "add options, not bans" with the mirror test go to `design-workshop` (FreekMencke/claude-skills#108); the checker that labels WCAG rules apart from conventions, and the state lists, go to `ui-review` (FreekMencke/claude-skills#106). DSKILL-014, DSKILL-008.
-3. **Keep the measuring scripts with the next design test.** DSKILL-013's Playwright measure, contact-sheet and axe scripts weren't committed, because #252 leaves `evals/` to #259; the DESIGN recommendation 8 note still applies.
+3. **Don't install diagram-design or Anatomy** (DSKILL-016, DSKILL-017). If we write diagram guidance, take diagram-design's complexity budget and the idea of a coordinate check, in our own words.
+4. **Keep the measuring scripts with the next design test.** DSKILL-013's Playwright measure, contact-sheet and axe scripts weren't committed, because #252 leaves `evals/` to #259; the DESIGN recommendation 8 note still applies.
 
 ## Open questions
 
 - **The skills' mechanisms weren't tested:** their deals run only in their binary or scripts, which the issue ruled out. A test with our own random deal plus a log would show whether the mechanism, not the text, removes convergence (DSKILL-008).
-- **What Impeccable's Stop hook prints into context** ("Design deep pass"), and what address its `live` mode's local server binds: the code wasn't read.
+- **What address Impeccable's `live` mode's local server binds:** the code wasn't read. `hooks.md` now describes the Stop hook's output (DSKILL-009).
 - **Pexels and Pixabay terms:** only their licence pages were read (via Wayback; the live pages returned bot walls). A search result says Pexels' Terms bar scraping for machine learning; unread, so Hallmark's "AI-driven selection" wording stays unverified for both.
 - **Licences not traced:** Impeccable's bundled `modern-screenshot.umd.js`, huashu-design's BGM and ElevenLabs SFX, ui-ux-pro-max's Phosphor icon data.
 - **Taste's token figure** has no sample or model; our numbers are for text-only runs without picture search or screenshots.
