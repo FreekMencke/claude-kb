@@ -9,7 +9,7 @@ Prefix `WEBSEC`. This file covers the security of web code an agent writes for a
 - SSRF in outbound `fetch`;
 - cookie defaults, and CSRF with Angular's XSRF helper and Nest 12.1's `enableCsrfProtection()`;
 - Angular's sanitizer, `bypassSecurityTrust*` and Trusted Types;
-- what coding agents get wrong, what `/security-review`, the security-guidance and Claude Security plugins check, and the deterministic rules and log redaction that back them up.
+- what coding agents get wrong, what `/security-review`, the security-guidance and Claude Security plugins check, what Cloudflare's security-audit skill adds, and the deterministic rules and log redaction that back them up.
 
 CI and package supply chain live in `kb-github-actions.md` and `kb-npm.md`; reviewer agents in `kb-repo-agents.md`; guard hooks in `kb-hooks.md`.
 
@@ -52,6 +52,7 @@ Research basis:
 | When is `[innerHTML]` safe, and when is `bypassSecurityTrust*` acceptable? | `[innerHTML]` goes through Angular's sanitizer, which drops scripts. `bypassSecurityTrust*` turns that off for the value, so use it only on a value your code built from a constant, never on input. Trusted Types (Baseline since 2026-02-24) can enforce this. | WEBSEC-010 |
 | What do coding agents get wrong in web security? | In Veracode's 2025 test of 100+ LLMs, models failed to prevent XSS in 86% and log injection in 88% of cases. Typical slips: the escape hatch to make HTML render, loosening a CSP to silence a console error, wildcard CORS, logging tokens, hard-coded secrets. | WEBSEC-011 |
 | Does `/security-review` catch a loosened CSP or wildcard CORS? | Unlikely: it excludes "A lack of hardening measures" and log spoofing, and names no headers, CSP or CORS. The security-guidance plugin's review rates missing headers as medium at most. Keep such rules in the repo's reviewer rules or a static check. | WEBSEC-012 |
+| What is Cloudflare's security-audit skill, and is it worth running? | A multi-agent repo audit: isolated hunters, a fresh agent trying to refute each candidate, a coverage ledger and validated JSON. Try one scoped `quick` run; no independent evaluation was found, and a bare missing header isn't a finding, so keep the reviewer rules. | WEBSEC-014 |
 | Which deterministic checks catch these mistakes? | CodeQL's default JS suite: SSRF, permissive CORS, insecure helmet configuration, missing CSRF middleware, clear-text logging. Semgrep and CodeQL both flag `bypassSecurityTrust*`; angular-eslint 22 has no security rule. security-guidance's custom `security-patterns` rules warn on edit. | WEBSEC-013 |
 | How do I keep secrets out of Nest logs? | `ConsoleLogger`'s `redact` option (present in `@nestjs/common` 12.1.3, not in 12.1.0) or pino's `redact` paths. Neither masks secrets inside string messages, so never interpolate a token into a message. | WEBSEC-013 |
 
@@ -72,6 +73,7 @@ Research basis:
 | WEBSEC-011 | What coding agents get wrong in web security | anti-pattern | agents, xss, csp, cors, secrets, logging |
 | WEBSEC-012 | What `/security-review`, security-guidance and Claude Security check | comparison | security-review, security-guidance, claude-security, review |
 | WEBSEC-013 | Deterministic checks and log redaction behind the model reviews | tool | codeql, semgrep, eslint, security-patterns, redaction, logging |
+| WEBSEC-014 | Cloudflare's security-audit skill: separate hunters and refuters, and a coverage ledger | tool | security-audit, cloudflare, community-skills, adversarial-review, coverage |
 
 ## [WEBSEC-001] OWASP Top 10:2025: what changed from 2021
 - Type: fact
@@ -358,7 +360,7 @@ Put the rules in the instruction file the agent reads, as the OpenSSF guide sugg
 - Confidence: official-docs
 - Last verified: 2026-11-01
 - Sources: [Claude Code: security-guidance](https://code.claude.com/docs/en/security-guidance.md), [Claude Code: Claude Security](https://code.claude.com/docs/en/claude-security.md), [Commands: `/security-review`](https://code.claude.com/docs/en/commands.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [security-guidance `patterns.py`](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/security-guidance/hooks/patterns.py), [security-guidance `llm.py`](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/security-guidance/hooks/llm.py), [claude-security README](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/README.md)
-- Related: REPO-017, REPO-047, REPO-048, WEBSEC-013, HOOK-026
+- Related: REPO-017, REPO-047, REPO-048, WEBSEC-013, WEBSEC-014, HOOK-026
 
 | Tool | When | What it covers for this stack | Blind spots |
 |---|---|---|---|
@@ -392,6 +394,30 @@ How to use it:
 - **pino** 10.4.0's `redact` takes paths, censor `[Redacted]`; "Path strings must not originate from user input".
 - Neither masks a token interpolated into a message: log objects, not template strings.
 
+## [WEBSEC-014] Cloudflare's security-audit skill: separate hunters and refuters, and a coverage ledger
+- Type: tool
+- Applies to: Claude Code
+- Confidence: official-example
+- Last verified: 2026-11-02
+- Sources: [README @c1c8a8c](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/README.md), [SKILL.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/SKILL.md), [VALIDATION-AND-REPORTING.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/VALIDATION-AND-REPORTING.md), [WEB-PROTOCOL-AND-AUTH.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/WEB-PROTOCOL-AND-AUTH.md), [CLIENT-SIDE.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/CLIENT-SIDE.md), [Build your own vulnerability harness](https://blog.cloudflare.com/build-your-own-vulnerability-harness)
+- Related: WEBSEC-012, WEBSEC-013, REPO-017, SKILL-069
+
+MIT, read at `c1c8a8c` (2026-09-14), not run. Guidance mode is the default; a full audit needs an explicit request.
+
+**How it differs from WEBSEC-012's tools:**
+- Six phases: reconnaissance, hunting from a coverage ledger, validation, structured output, independent record verification, report.
+- Each candidate's verifier is told "You did not write this candidate", and tries to refute it.
+- Verdicts are `confirmed`, `needs_validation` (no severity) or `rejected`. "Only `confirmed` records receive severity."
+- A scoped or `quick` run "must present itself as partial coverage". Two zero-dependency Node validators check the JSON.
+
+**Safety:** output goes outside the target by default. Target code runs only in an OS-enforced sandbox with no external network; without one, the lead stays `needs_validation`. It doesn't probe deployed endpoints.
+
+**Blind spot:** "A missing header, cookie attribute, MFA prompt, or rate limit is not a finding alone." CORS counts when an origin is reflected with credentials and sensitive data returned. Our reading: a loosened CSP alone stays a hardening note, so recommendation 2 below stands.
+
+**Evidence:** Cloudflare's funnel (20,799 raw candidates, about 12,057 surviving validation) is its fleet harness, not this skill. The README says a single run "found roughly half of the vulnerabilities that repeated runs found in total". A search on 2026-11-02 found no independent evaluation or published false-positive rate; the write-ups it returned restate Cloudflare's claims.
+
+**Cost:** no token figure. At least four reconnaissance agents and a critic, about one hunter per ledger unit, and one or two verifiers per candidate.
+
 ## Recommendations for our setup
 
 Ranked by impact against effort. Checked 2026-10-18 against `main` of our two Angular SSR apps and the NestJS API. The SSR apps already follow WEBSEC-004: a per-response nonce through helmet with `'strict-dynamic'`, a placeholder swapped only inside nonce attributes, `allowedHosts` and a generic 500 handler. The patterns in WEBSEC-007 for a server-side image fetch are the ones our API uses.
@@ -400,6 +426,7 @@ Ranked by impact against effort. Checked 2026-10-18 against `main` of our two An
 2. **Keep CSP, CORS and header rules in each repo's reviewer rules, not only in `/security-review`** (decision; in place since 2026-10-18 through 3). `/security-review` excludes "lack of hardening" and names no headers, so the 2026-10-14 decision in `kb-repo-agents.md` that it plus the conventions rules cover CSP stands only through the conventions rules (WEBSEC-012).
 3. Done 2026-10-18: the three app repos' skills bar `bypassSecurityTrust*` and `innerHTML` for stripped markup, a loosened CSP, secrets in logs and hard-coded secret fallbacks (osrs-tracker/osrs-tracker-web#383, osrs-tracker/osrs-tracker-api#202, FreekMencke/freek-mencke-web#36; WEBSEC-011).
 4. **Decision: no security-guidance plugin for now.** Its model reviews run on Opus at every turn end and commit, which costs usage on every session. Its per-edit layer misses Angular templates and `bypassSecurityTrust` without custom rules (WEBSEC-012). Revisit if CodeQL and the reviewer rules miss something.
+5. **Try Cloudflare's security-audit skill once** (WEBSEC-014): one `quick` run scoped to the NestJS API's auth paths, from a copy pinned to `c1c8a8c` after reading every file (SKILL-069), with its output outside the repo and kept private. Keep it only if it finds what CodeQL and the reviewer rules didn't, for a token cost we accept.
 
 ## Open questions
 
@@ -407,5 +434,6 @@ Ranked by impact against effort. Checked 2026-10-18 against `main` of our two An
 - **Event replay and the nonce in SSR:** whether `@angular/ssr` copies the nonce onto the `ng-event-dispatch-contract` script in every response. The build's `addNonce` copies it onto every `<script>`, but this wasn't observed in a rendered response (WEBSEC-004).
 - **`connect.lookup` as an SSRF guard:** a lookup hook that checks every address and pins the one used was not tested. It also wasn't tested whether `net.BlockList` passed through undici's `connect` options is honoured (WEBSEC-007).
 - **Nest `ConsoleLogger.redact`:** which of 12.1.1 to 12.1.3 added it. It's absent from 12.1.0's typings and present in 12.1.3's (WEBSEC-013).
+- **Cloudflare's skill on a repo our size:** findings, false positives and tokens are unmeasured; nothing was run (WEBSEC-014).
 - **Agent-specific evidence:** no primary study found of agents loosening a CSP or adding wildcard CORS. Veracode's 2026 report and its full CWE table weren't read (WEBSEC-011).
 - **CHIPS support:** web-features 3.43.0 lists `Partitioned` cookies for Chromium only, while browser-compat-data 8.1.6 also lists Firefox 141 and Safari 26.2 (WEBSEC-008).
