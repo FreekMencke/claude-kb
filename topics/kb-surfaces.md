@@ -12,7 +12,7 @@ Prefix: SURF. Researched 2026-10-12 against the Claude Code docs live that day, 
 | What's missing in a desktop WSL session? | The integrated terminal, connectors, plugins, session forking, the file pane, `@` file suggestions, `/resume` of CLI sessions and Open in > Cloud. | SURF-004 |
 | What is an artifact and when should I make one? | A live HTML page Claude publishes to a private claude.ai URL. Use it when output is easier to look at than to read (annotated diffs, dashboards, options side by side) or a teammate needs a link; keep a Markdown file for anything that belongs in the repo. | SURF-008, SURF-016 |
 | Who can see an artifact? | Only you, until you share it from the page header: people or everyone in your org (Team and Enterprise), or a public link. Viewers can't edit unless made editors. | SURF-010 |
-| Where do artifacts work? | CLI and desktop with a claude.ai login on Pro, Max, Team or Enterprise via the Anthropic API. Off by default in `-p`, the SDK and the GitHub Action; never on API keys, Bedrock, Vertex or Foundry, or with ZDR or HIPAA. | SURF-009 |
+| Where do artifacts work? | CLI and desktop with a claude.ai login on Pro, Max, Ultra, Team or Enterprise via the Anthropic API; Remote Control sessions you started (v2.1.281+) per the docs, but iPhone-started ones lacked the tool on v2.1.316. Off by default in `-p`, the SDK and the GitHub Action; never on API keys, Bedrock, Vertex or Foundry, or with ZDR or HIPAA. | SURF-009, SURF-046 |
 | Can an artifact show live data or collect input? | Yes: connector calls run as the viewer, file downloads go through a declared capability, and teammates can comment and send threads to Claude. A shared database exists in the tool but not in the docs. | SURF-012, SURF-013, SURF-014 |
 | How do I steer a local session from my phone? | Remote Control: `/remote-control` (or auto-connect), then the Code tab in the Claude app. Messages, attachments, permission prompts, model and effort work; terminal-panel commands such as `/plugin` and `/resume` don't. | SURF-018, SESS-020 |
 | How do I get a push notification when Claude finishes or needs me? | Turn on **Push when Claude decides** (`agentPushNotifEnabled`) and **Push when actions required** (`inputNeededNotifEnabled`) in `/config`; both are off by default and fire only while Remote Control is connected. | SURF-020 |
@@ -71,6 +71,7 @@ Prefix: SURF. Researched 2026-10-12 against the Claude Code docs live that day, 
 | SURF-043 | Streaming idle watchdogs: four timers that abort a quiet response | fact | timeouts, streaming, watchdog, network |
 | SURF-044 | Hosts Claude Code reaches, for a proxy or firewall allowlist | fact | allowlist, firewall, hosts, network |
 | SURF-045 | Server-managed settings: fetch, cache and fail-closed startup | fact | managed-settings, admin, caching, fail-closed |
+| SURF-046 | Artifact tool missing from iPhone-started Remote Control sessions (v2.1.316) | fact | artifacts, remote-control, mobile, availability |
 
 ## [SURF-001] What the desktop Code tab adds over the terminal
 - Type: fact
@@ -242,20 +243,20 @@ The docs' rule: use one "when terminal text is the wrong medium": annotated PR w
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-14
-- Sources: [Artifacts: availability](https://code.claude.com/docs/en/artifacts), [Feature availability](https://code.claude.com/docs/en/feature-availability), [What's new, week 25](https://code.claude.com/docs/en/whats-new/2026-w25), [What's new, week 27](https://code.claude.com/docs/en/whats-new/2026-w27), local test
-- Related: SURF-008, SURF-017, SKILL-048
+- Last verified: 2026-11-03
+- Sources: [Artifacts: availability](https://code.claude.com/docs/en/artifacts), [Feature availability](https://code.claude.com/docs/en/feature-availability), [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [What's new, week 25](https://code.claude.com/docs/en/whats-new/2026-w25), [What's new, week 27](https://code.claude.com/docs/en/whats-new/2026-w27), local test
+- Related: SURF-008, SURF-017, SURF-046, SKILL-048
 
 "Artifacts require every condition below. When one is not met, Claude writes a local HTML file or says it cannot publish instead."
-- **Plan:** Pro, Max, Team or Enterprise. On by default for Team and Enterprise; an Owner can turn them off.
-- **Login:** a claude.ai account via `/login`. "Sessions using an API key, gateway token, or cloud-provider credential cannot publish."
-- **Provider:** Anthropic API only; not Bedrock, Agent Platform (Vertex) or Foundry.
-- **Org policy:** not with CMEK, HIPAA or Zero Data Retention. The policy is loaded from `api.anthropic.com`; if it can't load, artifacts are unavailable.
-- **Surface:** "Claude Code CLI, or the Claude desktop app version 1.13576.0 or later", Claude Tag, and sessions served by `claude remote-control` you started yourself (v2.1.281+). "Off by default in the Agent SDK, the GitHub Action, and MCP-server contexts, when you run Claude Code with `-p`", and when `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` is set.
+- **Plan:** Pro, Max, Ultra, Team or Enterprise; Team and Enterprise Owners can turn them off.
+- **Login:** a claude.ai account. "Sessions using an API key, gateway token, or cloud-provider credential cannot publish."
+- **Provider:** Anthropic API only; not Bedrock, Vertex or Foundry.
+- **Org policy:** not with CMEK, HIPAA or ZDR; loaded from `api.anthropic.com`, unavailable if it can't load.
+- **Surface:** "Claude Code CLI, or the Claude desktop app version 1.13576.0 or later", Claude Tag, and Remote Control: "can publish artifacts when you started the session yourself. Requires Claude Code v2.1.281 or later." "Off by default in the Agent SDK, the GitHub Action, and MCP-server contexts", with `-p` and with `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`. The page doesn't say how the Remote Control and SDK conditions combine. Cloud sessions aren't in the list, though the page gives them their own delete and read rules and 2.1.317 fixes "auto mode in cloud sessions stopping for approval when the Artifact tool uploaded".
 
-History: introduced in the week of 2026-06-15 (v2.1.178 to v2.1.183); "generally available and included on Pro and Max plans, joining Team and Enterprise" in the week of 2026-06-29. Version gates: `/artifacts` v2.1.208, connector calls v2.1.209, comments v2.1.221, auto-reply to comments v2.1.228, `/slides` and `/design` v2.1.265 (the artifacts page; the week-34 What's new says `/design` needs v2.1.234, see INDEX.md Conflicts). The CHANGELOG implies cloud sessions and routine runs use the Artifact tool too (v2.1.285, v2.1.292); the docs' surface list doesn't name them.
+History: introduced in the week of 2026-06-15 (v2.1.178 to v2.1.183); "generally available and included on Pro and Max plans, joining Team and Enterprise" in the week of 2026-06-29. Version gates: `/artifacts` v2.1.208, connector calls v2.1.209, comments v2.1.221, auto-reply to comments v2.1.228, `/slides` and `/design` v2.1.265 (week-34 What's new says `/design` needs v2.1.234, see INDEX.md Conflicts). 2.1.281 "Fixed the Artifact tool missing from Remote Control sessions that `claude remote-control` starts for you to open from Claude Desktop, claude.ai or the mobile app".
 
-Tested 2026-10-12, v2.1.295, desktop WSL session: the `Artifact` tool was present, with `ArtifactComments` and `ArtifactData` as deferred tools, and the skills `artifact-design`, `artifact-capabilities` and `artifact-diagramming` were listed. Cloud sessions are not listed as a publishing surface; the docs only describe cloud sessions reading artifacts.
+Tests: present in desktop WSL (2026-10-12, v2.1.295) and a cloud session (2026-11-02). Absent in iPhone-started and session-spawned Remote Control sessions on v2.1.316, which the docs say should have it: SURF-046.
 
 ## [SURF-010] Artifact privacy, sharing, editors and admin controls
 - Type: fact
@@ -1004,6 +1005,31 @@ Owners of a Claude for Teams or Enterprise organization set these in the claude.
 - Settings changes apply to a running session without restart except some, such as `model` and OTel exporter settings.
 
 Endpoint-managed settings don't reach cloud sessions, so organizations whose developers use them need server-managed settings too.
+
+## [SURF-046] Artifact tool missing from iPhone-started Remote Control sessions (v2.1.316)
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-11-03
+- Sources: [Artifacts: availability](https://code.claude.com/docs/en/artifacts), [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [FreekMencke/claude-kb#367](https://github.com/FreekMencke/claude-kb/issues/367), local tests
+- Related: SURF-009, SURF-008
+
+The docs and the behaviour disagree. The docs: Remote Control sessions "can publish artifacts when you started the session yourself. Requires Claude Code v2.1.281 or later." On v2.1.316, sessions started by hand from the iPhone app had no Artifact tool. The CHANGELOG up to 2.1.317 has no later fix.
+
+Tested 2026-11-02 and 2026-11-03, v2.1.316, Linux, claude.ai Max login, `ToolSearch` with `select:Artifact,ArtifactComments,ArtifactData` (absent means `No matching deferred tools found` and no `Artifact` in the tool list):
+
+| Session | Artifact tool |
+|---|---|
+| Started by hand from the iPhone app, `claude remote-control --spawn worktree` host run as a systemd user service | Absent |
+| Started by hand from the iPhone app, plain `claude remote-control` host (no `--spawn`), systemd user service | Absent |
+| Spawned by another session (`create_session`) on a `--spawn worktree` host | Absent |
+| `claude` launched from an absent session's shell, inheriting its environment | Absent |
+| Plain terminal `claude` with a cleared environment | Present; published |
+| Cloud session, Default environment | Present; no publish tried |
+
+The inherited-environment row points at the session's environment, but no single variable was isolated. Settings had no `enableArtifact` or `disableArtifact`, and the host had neither `CLAUDE_CODE_DISABLE_ARTIFACT` nor `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` set. The docs' "Off by default in the Agent SDK" may overlap; they don't say how.
+
+Not tested: sessions started from claude.ai on the web or Claude Desktop through Remote Control, and a host not run by systemd.
 
 ## Recommendations for our setup
 
