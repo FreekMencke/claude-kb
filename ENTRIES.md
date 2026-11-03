@@ -1301,6 +1301,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SURF-043 | Streaming idle watchdogs: four timers that abort a quiet response | fact | timeouts, streaming, watchdog, network |
 | SURF-044 | Hosts Claude Code reaches, for a proxy or firewall allowlist | fact | allowlist, firewall, hosts, network |
 | SURF-045 | Server-managed settings: fetch, cache and fail-closed startup | fact | managed-settings, admin, caching, fail-closed |
+| SURF-046 | Artifact tool missing from iPhone-started Remote Control sessions (v2.1.316) | fact | artifacts, remote-control, mobile, availability |
 
 ## Token usage and context efficiency (`topics/kb-token-usage.md`, TOK)
 
