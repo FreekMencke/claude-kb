@@ -210,7 +210,7 @@ What loads at the start of each conversation:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-11
 - Sources: [Skills: descriptions are cut short](https://code.claude.com/docs/en/skills), [Env vars](https://code.claude.com/docs/en/env-vars), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: TOK-061, TOK-064, TOK-067, SKILL-003, SKILL-014, SKILL-030, SKILL-045
 
@@ -221,7 +221,7 @@ How the budget works:
 - On overflow, Claude Code drops descriptions, starting with the skills you invoke least. A dropped skill silently stops triggering.
 - Each entry's `description` + `when_to_use` is capped at **1,536 characters** (`skillListingMaxDescChars`).
 - To raise the budget, use `skillListingBudgetFraction` or `SLASH_COMMAND_TOOL_CHAR_BUDGET` (a fixed character count).
-- To trim entries, use `skillOverrides` values `"name-only"`, `"user-invocable-only"` or `"off"`. These don't apply to plugin skills; manage those with `/plugin`.
+- To trim entries, use `skillOverrides` values `"name-only"`, `"user-invocable-only"` or `"off"`. These don't apply to plugin skills; manage those with `/plugin`. `name-only` still lets an agent's `skills:` preload inject the full body; `off` and `user-invocable-only` don't (SKILL-014, tested 2.1.318).
 
 Diagnostics:
 - `/doctor` estimates listing cost.

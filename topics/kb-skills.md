@@ -291,25 +291,26 @@ Custom slash commands were merged into skills in v2.1.3. `.claude/commands/x.md`
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
-- Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Subagents](https://code.claude.com/docs/en/sub-agents)
+- Last verified: 2026-11-11
+- Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Subagents](https://code.claude.com/docs/en/sub-agents), [claude-kb#371](https://github.com/FreekMencke/claude-kb/issues/371)
 - Related: SKILL-021, MCP-039
 
 There are two ways to combine skills and subagents.
 
 **A skill that runs as a subagent** (`context: fork`):
 - The body becomes the prompt of a new subagent. `agent:` picks its type (default `general-purpose`).
-- The subagent has no conversation history, so the body must be self-contained.
+- It has no conversation history, so the body must be self-contained.
 - Since v2.1.218 it runs in the background by default; set `background: false` to wait for its result.
-- Use it only for skills with an explicit task. A guideline-only skill forked this way "returns without meaningful output".
-- In the background it gets the narrower background-subagent tool set, and its edits aren't covered by `/rewind`; set `background: false` if it needs other tools.
+- Use it only for skills with an explicit task: a guideline-only skill "returns without meaningful output".
+- In the background it gets the narrower tool set and its edits aren't covered by `/rewind`; set `background: false` for other tools.
 
 **A subagent that preloads skills** (`skills:` in the agent's frontmatter):
 - It injects the full skill content at startup, up to the first 32 distinct names.
 - It controls what is preloaded, not what is accessible. The subagent can still invoke other skills through the `Skill` tool unless `Skill` is removed from its tools.
 - Skills with `disable-model-invocation: true` can't be preloaded.
+- `skillOverrides` `name-only` still preloads the full body; `off` and `user-invocable-only` don't (SKILL-014).
 
-Use a preloading reviewer agent when a checklist must always apply to that agent. Use `context: fork` when a skill's work would flood the main context.
+Use a preloading agent when a checklist must always apply to it; use `context: fork` when a skill's work would flood the main context.
 
 Tested 2026-10-15, v2.1.296, WSL terminal, Opus 5.5 main session: a forked Haiku skill gets the session's MCP tools (it loaded them with ToolSearch). Looking up the claude-kb server through the fork cost 0.24 USD per lookup plus one follow-up turn, against 0.35 USD with the main session calling the same tools itself (12 runs each, 6 questions); the fork cited the expected entries in 12 of 12 runs, direct calls in 10 of 12 ([FreekMencke/claude-kb#114](https://github.com/FreekMencke/claude-kb/issues/114)). Direct calls spent 4 Opus turns per lookup, the fork 2.
 
@@ -387,8 +388,8 @@ This conflicts with Anthropic's "what + when" (SKILL-011). Reconciliation, which
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
-- Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Extend Claude Code](https://code.claude.com/docs/en/features-overview)
+- Last verified: 2026-11-11
+- Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [Extend Claude Code](https://code.claude.com/docs/en/features-overview), [claude-kb#371](https://github.com/FreekMencke/claude-kb/issues/371)
 - Related: TOK-005, SKILL-015, TOK-064
 
 | Control | Effect | Use for |
@@ -400,6 +401,17 @@ This conflicts with Anthropic's "what + when" (SKILL-011). Reconciliation, which
 | `disableBundledSkills` / `CLAUDE_CODE_DISABLE_BUNDLED_SKILLS` | Drops Claude Code's own bundled skills | Small listing budgets |
 
 These are Claude Code-only fields. Skills synced from claude.ai cannot carry them (SKILL-002), but the `skillOverrides` setting still works on terminal-synced copies (not on the desktop app's plugin-delivered ones, SKILL-058).
+
+`skillOverrides` and an agent's `skills:` preload (SKILL-009): the docs say nothing on how they combine, so this rests on a local test. Tested 2026-11-11, v2.1.318, Linux CLI, Haiku: a `canary` skill whose body says "The secret word is PERIWINKLE-42", and an agent with `tools: Read` (no `Skill` tool) and `skills: [canary]`. The agent's reply:
+
+| `skillOverrides` for `canary` | Agent replied |
+|---|---|
+| absent | `PERIWINKLE-42` |
+| `name-only` | `PERIWINKLE-42` |
+| `off` | `NONE` |
+| `user-invocable-only` | `NONE` |
+
+So `name-only` trims only the listing and the body still preloads; `off` and `user-invocable-only` also stop the preload. With `name-only`, the main session's listing showed `NAME-ONLY` in place of the description. Not tested: the desktop app, plugin skills.
 
 ## [SKILL-015] Troubleshooting: not triggering, over-triggering, not followed
 - Type: recommendation
