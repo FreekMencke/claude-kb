@@ -75,7 +75,7 @@ describe('normalise', () => {
 describe('withoutCounters', () => {
   test("drops GitHub's counters and keeps the rest", () => {
     const page =
-      'Star 89.1k ( 89.1k ) You must be signed in\n89.1k stars\nIssues 126 ( 126 )\nPull requests 67\nIssues are tracked here\nA real line';
+      'Star 89.1k ( 89.1k ) You must be signed in\n89.1k stars\nIssues 126 ( 126 )\nPull requests 67\n332 Commits\n7 commits\nIssues are tracked here\nA real line';
     expect(withoutCounters(page)).toBe('Issues are tracked here\nA real line');
   });
 });
@@ -232,5 +232,56 @@ describe('run', () => {
     expect(summary(report)[1]).toBe(
       'quotes of 6+ words: 3 in 1 entries, 1 found, 1 near matches, 1 not found; 0 entries fully verified',
     );
+  });
+
+  test('a line that changed on five pages of a host is site furniture: listed once, and no change by itself', async () => {
+    const urls = [1, 2, 3, 4, 5].map(n => `https://example.com/p${n}`);
+    const root = repo(urls.map((url, i) => entry(`TST-00${i + 1}`, `[P](${url})`, 'Body.')).join(''));
+    const state = tempDir();
+    const pages = (footer: string, own: string) =>
+      Object.fromEntries(urls.map((url, i) => [url, `page ${i}\n${i === 0 ? own : 'steady'}\n${footer}`]));
+    await run(options(root, state, pages('footer 2025', 'before')));
+    const report = await run(options(root, state, pages('footer 2026', 'after')));
+    expect(report.pages.map(p => p.state)).toEqual(['changed', 'same', 'same', 'same', 'same']);
+    expect(report.diffs).toEqual({ [urls[0]]: { added: ['after'], removed: ['before'] } });
+    expect(report.pages[0]).toMatchObject({ added: 1, removed: 1 });
+    expect(report.siteWide).toEqual({
+      'example.com': [
+        { line: 'footer 2026', pages: 5 },
+        { line: 'footer 2025', pages: 5 },
+      ],
+    });
+    expect(summary(report).join('\n')).toContain('site-wide example.com: 2 lines left out of the diffs');
+    expect(summary(report).join('\n')).not.toContain('footer 2026');
+  });
+
+  test('a quote the last run found and this one does not is reported as lost', async () => {
+    const quote = 'this sentence has more than six words';
+    const root = repo(
+      entry('TST-001', `[A](${URL_A})`, `It says "${quote}" and "nothing like this appears in that page".`),
+    );
+    const state = tempDir();
+    const first = await run(options(root, state, { [URL_A]: `Page: ${quote}.` }));
+    expect(first.quotes[0].lost).toEqual([]);
+    const second = await run(options(root, state, { [URL_A]: 'Page: rewritten.' }));
+    expect(second.quotes[0]).toMatchObject({ found: 0, lost: [quote] });
+    expect(summary(second)).toContain('lost quote TST-001: 1 of 2 quotes found last run');
+    const third = await run(options(root, state, { [URL_A]: 'Page: rewritten.' }));
+    expect(third.quotes[0].lost).toEqual([]);
+  });
+
+  test('a page refused with 429 gets a second pass after the others', async () => {
+    const root = repo(entry('TST-001', `[A](${URL_A})`, 'Body.'));
+    let calls = 0;
+    const report = await run({
+      ...options(root, tempDir(), {}),
+      fetcher: async () => {
+        calls += 1;
+        return calls <= 2
+          ? { status: 429, text: '', contentType: '' }
+          : { status: 200, text: 'content', contentType: '' };
+      },
+    });
+    expect(report.pages[0]).toEqual({ url: URL_A, entries: ['TST-001'], state: 'new' });
   });
 });
