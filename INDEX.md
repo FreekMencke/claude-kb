@@ -14,7 +14,7 @@ Start here. Find your question in Quick answers below. If it isn't there, grep [
 | `topics/kb-prompting.md` | PROMPT | Instructing the 5.x models: prompts, CLAUDE.md wording, subagent briefs | 39 (0 merged into other entries) |
 | `topics/kb-workflows.md` | FLOW | Session workflows: planning, verification, safety nets, recovery, waiting, steering | 33 (0 merged into other entries) |
 | `topics/kb-memory.md` | MEM | Memory and instruction files: locations, load order, auto memory, upkeep, surfaces | 35 (0 merged into other entries) |
-| `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 46 (0 merged into other entries) |
+| `topics/kb-surfaces.md` | SURF | Desktop app, artifacts, Remote Control, mobile, cloud sessions, IDE and Chrome | 47 (0 merged into other entries) |
 | `topics/kb-mcp.md` | MCP | MCP servers: scopes, approval, auth, permissions, subagent scoping, surfaces, vetting and writing servers; claude.ai custom connectors, hosting a remote server, a repo's knowledge without a checkout | 41 (0 merged into other entries) |
 | `topics/kb-documentation.md` | DOC | Repo docs: changelogs, READMEs, decision records, runbooks, plan docs and drift, plus a survey of our repos | 24 (0 merged into other entries) |
 | `topics/kb-web-analytics-seo.md` | WEB | Claude for web analytics and SEO: Google data access (GA4, Search Console), crawler view, retired advice, SEO skills, Google's 2025–2026 changes (2MB limit, spam policies), AI crawler tokens, hreflang | 42 (0 merged into other entries) |
