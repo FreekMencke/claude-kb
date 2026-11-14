@@ -322,7 +322,8 @@ routine, not in this repo.
 - **Between runs, source changes:** [sources.yml](.github/workflows/sources.yml) runs every Monday at 05:47 UTC with
   [check-sources.ts](scripts/check-sources.ts): it reports pages whose normalised text changed, with the entries citing
   them, only the added bullets of the claude-code CHANGELOG, and each quote of 6+ words it can't find in the entry's
-  sources, as a near match or not found. It never fails a run: misses mix wording edits with examples, prompts and
+  sources, as a near match or not found, and as lost when the run before found it. A line that changed on five or more
+  pages of one host is site furniture: it is listed once under `siteWide` and doesn't make a page changed. It never fails a run: misses mix wording edits with examples, prompts and
   paraphrase. The routine reads these reports (FreekMencke/claude-kb#343).
 - **Between runs, source links:** [links.yml](.github/workflows/links.yml) runs every Monday at 05:17 UTC (and on
   `workflow_dispatch`, never on pull requests) with [lychee](https://github.com/lycheeverse/lychee) over the `Sources:`

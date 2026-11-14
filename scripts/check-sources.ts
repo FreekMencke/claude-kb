@@ -6,8 +6,8 @@
  * Usage: node scripts/check-sources.ts [--state DIR] [--hosts a.com,b.com] [--limit N] [--concurrency N]
  * --hosts keeps only URLs on those hosts, and only entries citing nothing else for the quote check.
  * Prints counts, URLs and entry IDs. Third-party text stays in the state directory (default: the git-ignored
- * evals/results/sources/, in Actions a cache and an artifact): hashes.json, text/<hash of the URL>.txt and report.json
- * with diffs and near matches. Never commit it; the repo is public.
+ * evals/results/sources/, in Actions a cache and an artifact): hashes.json, quotes.json (the quotes the last run found),
+ * text/<hash of the URL>.txt and report.json with diffs and near matches. Never commit it; the repo is public.
  * A quote that isn't found is reported, never failed: the misses mix wording edits with examples, prompts and paraphrase.
  *
  * Our own rather than changedetection.io (a long-running service with a browser) or urlwatch (Python, a config per URL):
@@ -28,6 +28,9 @@ const MIN_QUOTE_WORDS = 6;
 const NEAR_MATCH = 0.8;
 const FETCH_TIMEOUT_MS = 30_000;
 const PER_HOST = 3;
+// A line that changed on this many pages of one host in a run is the site's furniture (navigation, footer, a sidebar of
+// recent posts), not the page. Measured 2026-11-09 against 2026-11-02: 1,052 of 2,970 pages changed, 632 without it.
+const SITE_WIDE_PAGES = 5;
 // Changes too often for a hash to mean anything: 718 new bullets in 14 versions after 2.1.299 (2026-10-30)
 const CHANGELOG_URL = 'https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md';
 
@@ -99,7 +102,7 @@ export function normalise(body: string, contentType: string): string {
 
 /** GitHub's page furniture, whose counters change by the hour, so a repo or issue page would look changed every run. */
 const GITHUB_COUNTER =
-  /^(?:(?:Star|Fork|Issues|Pull requests|Discussions|Watch) [\d.,]+k?\b|[\d.,]+k? (?:stars?|forks?|watching)\b)/;
+  /^(?:(?:Star|Fork|Issues|Pull requests|Discussions|Watch) [\d.,]+k?\b|[\d.,]+k? (?:stars?|forks?|watching|[Cc]ommits?)\b)/;
 
 export function withoutCounters(text: string): string {
   return text
@@ -269,6 +272,8 @@ export interface QuoteResult {
   found: number;
   near: { quote: string; ratio: number; passage: string }[];
   missing: string[];
+  /** Quotes the last run found and this one didn't: the sign that a source stopped saying what the entry quotes. */
+  lost: string[];
   unreadSources: number;
 }
 
@@ -278,6 +283,8 @@ export interface Report {
   quotes: QuoteResult[];
   changelogBullets: string[];
   diffs: Record<string, { added: string[]; removed: string[] }>;
+  /** Per host, the lines left out of `diffs` as furniture, once each: a real site-wide change (a version) shows here. */
+  siteWide: Record<string, { line: string; pages: number }[]>;
 }
 
 export interface Options {
@@ -310,7 +317,11 @@ export async function run(options: Options): Promise<Report> {
   const hashesFile = join(state, 'hashes.json');
   const stored: Record<string, StoredPage> = existsSync(hashesFile) ? JSON.parse(readFileSync(hashesFile, 'utf8')) : {};
   const textFile = (url: string) => join(state, 'text', `${sha256(url)}.txt`);
-  const report: Report = { date, pages: [], quotes: [], changelogBullets: [], diffs: {} };
+  const report: Report = { date, pages: [], quotes: [], changelogBullets: [], diffs: {}, siteWide: {} };
+  const quotesFile = join(state, 'quotes.json');
+  const foundBefore: Record<string, string[]> = existsSync(quotesFile)
+    ? JSON.parse(readFileSync(quotesFile, 'utf8'))
+    : {};
   const fresh = new Map<string, string>();
 
   const read = async (url: string): Promise<string> => {
@@ -330,6 +341,38 @@ export async function run(options: Options): Promise<Report> {
     return text;
   };
 
+  const check = async (result: PageResult): Promise<void> => {
+    const { url } = result;
+    try {
+      const text = await read(url);
+      fresh.set(url, text);
+      const hash = sha256(text);
+      const before = stored[url];
+      if (!before) result.state = 'new';
+      else if (before.hash !== hash) {
+        // A page that differs between two requests in a row changes by itself: nonces, counters, rotating content
+        const again = await read(url);
+        if (sha256(again) !== hash) result.state = 'volatile';
+        else {
+          result.state = 'changed';
+          const previous = existsSync(textFile(url)) ? readFileSync(textFile(url), 'utf8') : '';
+          const diff = changedLines(previous, text);
+          result.added = diff.added.length;
+          result.removed = diff.removed.length;
+          if (rawUrl(url) === CHANGELOG_URL) report.changelogBullets = diff.added.filter(l => l.startsWith('- '));
+          else report.diffs[url] = diff;
+        }
+      }
+      stored[url] = { hash, checked: date };
+      writeFileSync(textFile(url), text);
+    } catch (error) {
+      result.state = 'failed';
+      result.error = error instanceof Error ? error.message : String(error);
+      // A page that was readable last time still answers for the quote check
+      if (existsSync(textFile(url))) fresh.set(url, readFileSync(textFile(url), 'utf8'));
+    }
+  };
+
   await pooled(
     urls,
     u => new URL(rawUrl(u)).hostname,
@@ -337,36 +380,17 @@ export async function run(options: Options): Promise<Report> {
     async url => {
       const result: PageResult = { url, entries: [...byUrl.get(url)!].sort(), state: 'same' };
       report.pages.push(result);
-      try {
-        const text = await read(url);
-        fresh.set(url, text);
-        const hash = sha256(text);
-        const before = stored[url];
-        if (!before) result.state = 'new';
-        else if (before.hash !== hash) {
-          // A page that differs between two requests in a row changes by itself: nonces, counters, rotating content
-          const again = await read(url);
-          if (sha256(again) !== hash) result.state = 'volatile';
-          else {
-            result.state = 'changed';
-            const previous = existsSync(textFile(url)) ? readFileSync(textFile(url), 'utf8') : '';
-            const diff = changedLines(previous, text);
-            result.added = diff.added.length;
-            result.removed = diff.removed.length;
-            if (rawUrl(url) === CHANGELOG_URL) report.changelogBullets = diff.added.filter(l => l.startsWith('- '));
-            else report.diffs[url] = diff;
-          }
-        }
-        stored[url] = { hash, checked: date };
-        writeFileSync(textFile(url), text);
-      } catch (error) {
-        result.state = 'failed';
-        result.error = error instanceof Error ? error.message : String(error);
-        // A page that was readable last time still answers for the quote check
-        if (existsSync(textFile(url))) fresh.set(url, readFileSync(textFile(url), 'utf8'));
-      }
+      await check(result);
     },
   );
+  // github.com answered 429 for 109 of 880 pages at 3 in parallel (2026-11-09), so those get a second, slow pass
+  for (const result of report.pages.filter(p => p.error === 'HTTP 429')) {
+    await delay(retryDelayMs);
+    result.state = 'same';
+    delete result.error;
+    await check(result);
+  }
+  dropSiteWide(report);
   writeFileSync(hashesFile, JSON.stringify(stored, null, 0));
 
   const comparableText = new Map<string, string>();
@@ -394,20 +418,61 @@ export async function run(options: Options): Promise<Report> {
         found: 0,
         near: [],
         missing: [],
+        lost: [],
         unreadSources: cited.length - readable.length,
       };
+      const found: string[] = [];
       for (const quote of quotes) {
         const hit = findQuote(quote, source);
-        if (hit.found) result.found += 1;
-        else if (hit.near) result.near.push({ quote, ratio: hit.near.ratio, passage: hit.near.passage });
+        if (hit.found) {
+          result.found += 1;
+          found.push(quote);
+          continue;
+        }
+        if (foundBefore[id]?.includes(quote)) result.lost.push(quote);
+        if (hit.near) result.near.push({ quote, ratio: hit.near.ratio, passage: hit.near.passage });
         else result.missing.push(quote);
       }
       report.quotes.push(result);
+      foundBefore[id] = found;
     }
   }
+  writeFileSync(quotesFile, JSON.stringify(foundBefore, null, 0));
   report.pages.sort((a, b) => (a.url < b.url ? -1 : 1));
   writeFileSync(join(state, 'report.json'), JSON.stringify(report, null, 1));
   return report;
+}
+
+/**
+ * Takes the lines that changed on SITE_WIDE_PAGES or more pages of one host out of the diffs, lists them once under
+ * `siteWide`, and counts a page with nothing else changed as the same.
+ */
+export function dropSiteWide(report: Report): void {
+  const pagesWith = new Map<string, number>();
+  const key = (url: string, line: string) => `${new URL(url).hostname}\n${line}`;
+  for (const [url, diff] of Object.entries(report.diffs)) {
+    for (const line of new Set([...diff.added, ...diff.removed]))
+      pagesWith.set(key(url, line), (pagesWith.get(key(url, line)) ?? 0) + 1);
+  }
+  for (const [hostAndLine, pages] of pagesWith) {
+    if (pages < SITE_WIDE_PAGES) continue;
+    const [host, line] = hostAndLine.split('\n');
+    (report.siteWide[host] ??= []).push({ line, pages });
+  }
+  for (const page of report.pages) {
+    const diff = report.diffs[page.url];
+    if (!diff) continue;
+    const own = (line: string) => (pagesWith.get(key(page.url, line)) ?? 0) < SITE_WIDE_PAGES;
+    diff.added = diff.added.filter(own);
+    diff.removed = diff.removed.filter(own);
+    page.added = diff.added.length;
+    page.removed = diff.removed.length;
+    if (page.added || page.removed) continue;
+    page.state = 'same';
+    delete page.added;
+    delete page.removed;
+    delete report.diffs[page.url];
+  }
 }
 
 /** The report's counts, with URLs and entry IDs only, so a public job log carries no third-party text. */
@@ -437,6 +502,10 @@ export function summary(report: Report): string[] {
       `changed ${page.url} (+${page.added} -${page.removed} lines), cited by ${page.entries.length}: ${page.entries.slice(0, 12).join(', ')}`,
     );
   }
+  for (const [host, rows] of Object.entries(report.siteWide).sort(([a], [b]) => (a < b ? -1 : 1)))
+    lines.push(`site-wide ${host}: ${rows.length} lines left out of the diffs`);
+  for (const q of quoted.filter(q => q.lost.length))
+    lines.push(`lost quote ${q.id}: ${q.lost.length} of ${q.total} quotes found last run`);
   for (const q of quoted.filter(q => q.near.length))
     lines.push(`near match ${q.id}: ${q.near.length} of ${q.total} quotes`);
   return lines;
