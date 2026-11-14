@@ -1302,6 +1302,7 @@ Merged entries keep their ID and a pointer, so old references still resolve.
 | SURF-044 | Hosts Claude Code reaches, for a proxy or firewall allowlist | fact | allowlist, firewall, hosts, network |
 | SURF-045 | Server-managed settings: fetch, cache and fail-closed startup | fact | managed-settings, admin, caching, fail-closed |
 | SURF-046 | Artifact tool missing from iPhone-started Remote Control sessions (v2.1.316) | fact | artifacts, remote-control, mobile, availability |
+| SURF-047 | `claude-code-remote` write tools refused in `bypassPermissions` Remote Control sessions | fact | remote-control, permissions, create-session, bypass |
 
 ## Token usage and context efficiency (`topics/kb-token-usage.md`, TOK)
 

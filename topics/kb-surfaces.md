@@ -72,6 +72,7 @@ Prefix: SURF. Researched 2026-10-12 against the Claude Code docs live that day, 
 | SURF-044 | Hosts Claude Code reaches, for a proxy or firewall allowlist | fact | allowlist, firewall, hosts, network |
 | SURF-045 | Server-managed settings: fetch, cache and fail-closed startup | fact | managed-settings, admin, caching, fail-closed |
 | SURF-046 | Artifact tool missing from iPhone-started Remote Control sessions (v2.1.316) | fact | artifacts, remote-control, mobile, availability |
+| SURF-047 | `claude-code-remote` write tools refused in `bypassPermissions` Remote Control sessions | fact | remote-control, permissions, create-session, bypass |
 
 ## [SURF-001] What the desktop Code tab adds over the terminal
 - Type: fact
@@ -1030,6 +1031,36 @@ Tested 2026-11-02 and 2026-11-03, v2.1.316, Linux, claude.ai Max login, `ToolSea
 The inherited-environment row points at the session's environment, but no single variable was isolated. Settings had no `enableArtifact` or `disableArtifact`, and the host had neither `CLAUDE_CODE_DISABLE_ARTIFACT` nor `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` set. The docs' "Off by default in the Agent SDK" may overlap; they don't say how.
 
 Not tested: sessions started from claude.ai on the web or Claude Desktop through Remote Control, and a host not run by systemd.
+
+## [SURF-047] `claude-code-remote` write tools refused in `bypassPermissions` Remote Control sessions
+- Type: fact
+- Applies to: Claude Code
+- Confidence: single-source
+- Last verified: 2026-11-14
+- Sources: [Remote Control](https://code.claude.com/docs/en/remote-control), [Permission modes](https://code.claude.com/docs/en/permission-modes), [FreekMencke/claude-kb#373](https://github.com/FreekMencke/claude-kb/issues/373), local transcripts
+- Related: SESS-020, SURF-046, SESS-018
+
+A session on a `claude remote-control` host gets a `claude-code-remote` MCP server for starting and managing other sessions. In our sessions running in `bypassPermissions`, its tools that change something were refused at once with `MCP tool call requires approval`, and no prompt appeared in the app. The same tools ran in sessions in auto mode.
+
+Measured 2026-11-14 from one Linux host's transcripts, 2026-11-01 to 2026-11-12, v2.1.316 and v2.1.318, 13 sessions that called these tools:
+
+| Session's mode | Tool | Result |
+|---|---|---|
+| `bypassPermissions` (9 sessions) | `create_session` | 36 of 36 refused |
+| `bypassPermissions` | `create_trigger`, `delete_trigger`, `archive_session`, `get_environment` | 5 of 5 refused |
+| `bypassPermissions` | `send_later` | 8 of 8 ran |
+| auto (4 sessions) | `create_session` | 21 of 21 ran |
+| auto | `archive_session`, `send_message`, `delete_trigger`, `send_later` | 26 of 26 ran |
+
+- The tools that ran under `bypassPermissions` (`send_later`, and reads such as `get_session` and `list_environments`) are the ones the host passes to the session in `--allowedTools`; `create_session` isn't among them.
+- `permissions.allow` entries for `mcp__claude-code-remote__create_session` in user settings changed nothing.
+- The server is an `http` server reached through the session's API endpoint, so the check seems to run outside local permission settings.
+
+The docs name neither the server nor its tools. The Remote Control page only has `--permission-mode`: "Set the starting permission mode for the server's sessions, such as `acceptEdits`."
+
+**Workaround:** run the session that spawns others in auto mode, or use in-session subagents in their own worktrees.
+
+This is an association across sessions, not a controlled test: nobody switched one session's mode and retried, and how each session was started (desktop, phone, web) wasn't recorded.
 
 ## Recommendations for our setup
 
