@@ -1,0 +1,100 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Edit(**/CLAUDE.md)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Write(**/CLAUDE.md)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Edit(**/SKILL.md)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Write(**/SKILL.md)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Edit(**/agents/*.md)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Write(**/agents/*.md)"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(ng update *)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(npx ng update *)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(npm install *)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(npm i *)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(npm update *)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(npm up *)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(npx npm-check-updates *)"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/kb-reminder.mjs\"",
+            "timeout": 5,
+            "if": "Bash(ncu *)"
+          }
+        ]
+      }
+    ]
+  }
+}

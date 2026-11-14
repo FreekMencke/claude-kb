@@ -69,6 +69,10 @@ claude plugin install kb-lookup@freek-kb
   `FORCE_AUTOUPDATE_PLUGINS=1` is set too (SKILL-036). Without it, update by hand:
   `claude plugin marketplace update freek-kb && claude plugin update kb-lookup@freek-kb`.
 - This copy wins over `kb-lookup@synced`, so the skill is listed once.
+- It ships one hook, [hooks/kb-reminder.mjs](hooks/kb-reminder.mjs): once per session, before the first edit of a
+  `CLAUDE.md`, `SKILL.md` or agent file or the first major-version install, it adds one line saying the knowledge base
+  covers that kind of change. It never blocks, needs `node` on the PATH, and is measured by `scripts/kb-usage.ts`'s
+  "instruction-file or upgrade sessions" row (FreekMencke/claude-kb#342).
 - Its tools are named `mcp__plugin_kb-lookup_claude-kb__*` (MCP-009): allow that pattern in `permissions.allow`.
 
 ### The server at user scope
@@ -195,6 +199,7 @@ building, such as which breakpoints or a component's padding, ask the lookup ski
 | [.claude/skills/claude-kb-lookup/](.claude/skills/claude-kb-lookup/SKILL.md) | The lookup skill |
 | [evals/claude-kb-lookup/](evals/claude-kb-lookup) | Its trigger evals |
 | [eval-tasks/](eval-tasks) | Its task-shaped evals, passing on either route to the KB |
+| [hooks/](hooks) | The plugin's PreToolUse hook: a one-line reminder of the KB, once per session, on instruction-file edits and major upgrades |
 | [evals/retrieval/](evals/retrieval/README.md) | The retrieval eval behind RETR-010 to RETR-012 |
 | `eval-answers/` | 20 cases scoring answers with and without the plugin (RETR-030, RETR-031) |
 | [.claude-plugin/](.claude-plugin/plugin.json) | The `kb-lookup` plugin (the skill plus the server) and its marketplace, `freek-kb`. No `version`, so installs follow each commit (SKILL-062) |
@@ -300,6 +305,11 @@ took 139 s of wall time and $6.01. On the same machine and version, real session
 work reached it in about 1 of 4 (`scripts/kb-usage.ts`), so the plugin alone explains little of the gap: other context in
 a real repo is the next suspect. A scaffold's project configuration isn't loaded in a run, so these cases can't test
 that.
+
+With the [reminder hook](hooks/kb-reminder.mjs) in the plugin (2026-11-14, Opus 5.5, 2.1.318), `task-claude-md` reached it
+in 3 of 6 runs and `task-hook` in 0 of 3, but these cases can't measure the hook: each pass looked the rule up before
+writing, the traces don't record hook output, and a one-edit task is over by the time the reminder arrives next to the
+first write's result. Its measure is the `kb-usage.ts` row for real sessions, due again on 2026-11-28.
 
 ## Re-verification routine
 

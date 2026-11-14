@@ -22,6 +22,8 @@ on:
     paths:
       - 'mcp-server/**'
       - 'scripts/**'
+      # The plugin's hook is tested from mcp-server/tests. Pull requests only: it isn't in the image, so no deploy
+      - 'hooks/**'
       - '.node-version'
       - '.prettierrc.json'
       - '.prettierignore'
