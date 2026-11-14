@@ -315,15 +315,17 @@ first write's result. Its measure is the `kb-usage.ts` row for real sessions, du
 
 A cloud scheduled task (formerly a routine, ORCH-017), "claude-kb re-verification" at
 [claude.ai/code/routines](https://claude.ai/code/routines), runs at 08:00 Europe/Brussels on the 1st and 15th of each month
-on Sonnet 5.5. A targeted run checks, in order: entries citing a source the weekly [source check](scripts/check-sources.ts)
-reported as changed, entries with failed quotes, new claude-code CHANGELOG bullets, the 50 entries with the most inbound
+on Sonnet 5.5. A targeted run checks, in order: entries with a quote the weekly [source check](scripts/check-sources.ts)
+stopped finding since the previous run, entries without a quote of 6+ words that cite a changed page which lost lines, the
+site-wide lines of each host, entries with failed quotes, new claude-code CHANGELOG bullets, the 50 entries with the most inbound
 `Related` links, and a random 5% of the other official-docs and official-example entries. It falls back to a full run of every
 official-docs and official-example entry on the 1st of each quarter, or when it can't read a report or the reports have
 nothing to compare. Every run also checks the single-source, community-consensus and unverified entries
 whose Last verified is more than 25 days old, so each of those comes up every other run: does each source still exist and
 still say the claim, and is there now an official source that raises the Confidence. An unchecked official entry's Last
-verified advances, as a "mechanical" CHANGELOG row, only when all its sources are unchanged and every quote of 6+ words was
-found. The run logs corrections in CHANGELOG.md, checks new and changed entries for overlap, and opens a PR from
+verified advances, as a "mechanical" CHANGELOG row, only when every quote of 6+ words was found, none was lost and no source
+failed or was volatile. A changed page alone no longer puts an entry in a run: in the week to 2026-11-09, 1,052 of 2,970
+pages changed and nearly every entry cited one, while 9 entries lost a quote (FreekMencke/claude-kb#343). The run logs corrections in CHANGELOG.md, checks new and changed entries for overlap, and opens a PR from
 `claude/reverify-<YYYY-MM-DD>` whose body gives the run type and lists the weaker entries it covered. Its prompt lives in the
 routine, not in this repo.
 
