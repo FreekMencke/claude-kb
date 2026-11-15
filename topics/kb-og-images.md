@@ -107,7 +107,7 @@ Tested 2026-10-17, satori@0.62.0, Node 24.21.0: static Lato TTF and Inter WOFF a
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Vercel: OG image generation](https://vercel.com/docs/og-image-generation.md), [Vercel: `@vercel/og` reference](https://vercel.com/docs/og-image-generation/og-image-api.md), [Next.js: ImageResponse](https://raw.githubusercontent.com/vercel/next.js/canary/docs/01-app/03-api-reference/04-functions/image-response.mdx), [Next.js: compiled @vercel/og](https://raw.githubusercontent.com/vercel/next.js/canary/packages/next/src/compiled/@vercel/og/package.json), npm registry
 - Related: OG-001, OG-003, OG-005
 
@@ -148,7 +148,7 @@ Tested 2026-10-17, Node 24.21.0, WSL2 x64: mean of 20 renders of one 1200×630 c
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [The Open Graph protocol](https://ogp.me/), [X cards: getting started (Wayback, 2026-01-01)](https://web.archive.org/web/20260101000233/https://developer.x.com/en/docs/x-for-websites/cards/guides/getting-started), [X: summary card with large image (Wayback, 2026-01-12)](https://web.archive.org/web/20260112050218/https://developer.x.com/en/docs/x-for-websites/cards/overview/summary-card-with-large-image), [X cards markup (Wayback, 2025-11-13)](https://web.archive.org/web/20251113085832/https://developer.x.com/en/docs/x-for-websites/cards/overview/markup)
 - Related: OG-007, WEB-014
 
@@ -186,7 +186,7 @@ A 1200×630 PNG or JPEG fits all of them.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Google Discover (updated 2026-03-09)](https://developers.google.com/search/docs/appearance/google-discover), [Google Images: specify a preferred image (updated 2026-03-02)](https://developers.google.com/search/docs/appearance/google-images#specify-preferred-image), [Robots meta tag (updated 2026-03-24)](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag), [Article structured data (updated 2026-09-08)](https://developers.google.com/search/docs/appearance/structured-data/article)
 - Related: OG-007, WEB-014
 
@@ -206,7 +206,7 @@ Google picks a page's preview image itself ("completely automated"), for "a text
 - Type: recommendation
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Next.js: opengraph-image](https://raw.githubusercontent.com/vercel/next.js/canary/docs/01-app/03-api-reference/03-file-conventions/01-metadata/opengraph-image.mdx), [Vercel: `@vercel/og` reference](https://vercel.com/docs/og-image-generation/og-image-api.md), [helmet README](https://raw.githubusercontent.com/helmetjs/helmet/main/README.md), [osrs-tracker-web decisions](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/decisions.md)
 - Related: OG-005, OG-007, WEBPERF-012, DOCKER-005, NG-008
 

@@ -97,7 +97,7 @@ Only Fluent says why: "A 4x system reduces confusion while being easy to impleme
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [govuk-frontend `_spacing.scss` at 78d66a8](https://github.com/alphagov/govuk-frontend/blob/78d66a80594224f358c09c8ba9309dd78e116a0c/packages/govuk-frontend/src/govuk/settings/_spacing.scss), [GOV.UK spacing](https://design-system.service.gov.uk/styles/spacing/), [Carbon spacing at 5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/spacing/overview.mdx), [M3 spacing](https://m3.material.io/foundations/layout/grids-spacing/spacing), [NN/g: proximity](https://www.nngroup.com/articles/gestalt-proximity/)
 - Related: SPACE-001, SPACE-004, SPACE-005, LAYOUT-002
 
@@ -115,7 +115,7 @@ No source measured fluid against stepped spacing. Pick by the codebase: fixed to
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Utopia space calculator](https://utopia.fyi/space/calculator/), [utopia-core `src/index.ts` at 135c051](https://github.com/trys/utopia-core/blob/135c05142be271f1906897b61437d87465c09ec2/src/index.ts), [Utopia: designing with a fluid space palette](https://utopia.fyi/blog/designing-with-a-fluid-space-palette/), [Utopia: painting with a fluid space palette](https://utopia.fyi/blog/painting-with-a-fluid-space-palette/)
 - Related: DESIGN-020, SPACE-002, SPACE-003, SPACE-020
 
@@ -138,7 +138,7 @@ Utopia derives space from the type scale: "'Step 0' of our type scale becomes th
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [NN/g: proximity principle (2020-08-02)](https://www.nngroup.com/articles/gestalt-proximity/), [NN/g: group form elements with white space](https://www.nngroup.com/articles/form-design-white-space/), [Carbon spacing at 5e9cd1d](https://github.com/carbon-design-system/carbon-website/blob/5e9cd1da43c32d3d3b991dc947b427f674da61a8/src/pages/elements/spacing/overview.mdx), [govuk-frontend at 78d66a8](https://github.com/alphagov/govuk-frontend/tree/78d66a80594224f358c09c8ba9309dd78e116a0c/packages/govuk-frontend/src/govuk), [Atlassian spacing](https://atlassian.design/foundations/spacing)
 - Related: SPACE-006, SPACE-003, SPACE-020, SPACE-021, UIPAT-007
 
@@ -175,7 +175,7 @@ That is 4–6× (our arithmetic, not GOV.UK's statement), and it serves NN/g's f
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [material-web at 86cb0d4](https://github.com/material-components/material-web/tree/86cb0d484d0cda1193f09bb3ee70b8e2ed8e6a79), [Carbon styles at 131963f](https://github.com/carbon-design-system/carbon/tree/131963f845690100432f8c62a3372caf151f31fa/packages/styles/scss), [govuk-frontend components at 78d66a8](https://github.com/alphagov/govuk-frontend/tree/78d66a80594224f358c09c8ba9309dd78e116a0c/packages/govuk-frontend/src/govuk/components), [`@fluentui/react-button` 9.11.3](https://www.npmjs.com/package/@fluentui/react-button/v/9.11.3), [`@shopify/polaris-tokens` 9.4.2](https://www.npmjs.com/package/@shopify/polaris-tokens/v/9.4.2)
 - Related: SPACE-008, SPACE-011, SPACE-014, SPACE-020, ACCESS-002
 
@@ -203,7 +203,7 @@ Values in px, from component source (material-web tokens and `_dialog.scss`; Car
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [M3 density](https://m3.material.io/foundations/layout/grids-spacing/density), [Carbon `_layout.scss` at 131963f](https://github.com/carbon-design-system/carbon/blob/131963f845690100432f8c62a3372caf151f31fa/packages/styles/scss/utilities/_layout.scss), [`@shopify/polaris-tokens` 9.4.2](https://www.npmjs.com/package/@shopify/polaris-tokens/v/9.4.2)
 - Related: SPACE-007, SPACE-001, SPACE-020, LAYOUT-005, LAYOUT-006
 
@@ -237,7 +237,7 @@ When to go dense is LAYOUT-005, and Angular Material's density scale LAYOUT-006;
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GOV.UK: font override classes](https://design-system.service.gov.uk/styles/font-override-classes/), [Butterick: centered text](https://practicaltypography.com/centered-text.html), [Butterick: justified text](https://practicaltypography.com/justified-text.html), [USWDS typography](https://designsystem.digital.gov/components/typography/), [WCAG 2.2 Understanding 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html), [MDN: text-align](https://developer.mozilla.org/en-US/docs/Web/CSS/text-align)
 - Related: SPACE-020, DESIGN-020, VIZ-016, CSS-006
 
@@ -330,7 +330,7 @@ Tested 2026-10-28, Playwright 1.64.1 (Chromium 156, WebKit 27.2, Firefox 157), D
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [CSS Inline 3 (ED 2026-10-14)](https://drafts.csswg.org/css-inline-3/), [MDN: text-box-edge](https://developer.mozilla.org/en-US/docs/Web/CSS/text-box-edge), [Firefox 156 release notes](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/156)
 - Related: SPACE-013, SPACE-007, SPACE-011, SPACE-020
 
@@ -459,7 +459,7 @@ Tested 2026-10-28, `tailwindcss` and `@tailwindcss/cli` 4.3.3, Node 24.21.0: wit
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [WCAG 2.2 Understanding 1.4.12](https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html), [WCAG 2.2 Understanding 1.4.8](https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html), [WCAG 2.2 Understanding 1.4.10](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [WCAG 2.2 Understanding 1.3.1](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html), [WCAG 2.2 Understanding 2.5.8](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
 - Related: ACCESS-001, ACCESS-002, SPACE-005, SPACE-007, SPACE-010, SPACE-015, DSKILL-014, LAYOUT-017
 
@@ -477,7 +477,7 @@ DSKILL-014 has the same split for type sizes and targets.
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Atlassian spacing](https://atlassian.design/foundations/spacing), [govuk-frontend at 78d66a8](https://github.com/alphagov/govuk-frontend/tree/78d66a80594224f358c09c8ba9309dd78e116a0c/packages/govuk-frontend/src/govuk), [material-web at 86cb0d4](https://github.com/material-components/material-web/tree/86cb0d484d0cda1193f09bb3ee70b8e2ed8e6a79), [Carbon `_layout.scss` at 131963f](https://github.com/carbon-design-system/carbon/blob/131963f845690100432f8c62a3372caf151f31fa/packages/styles/scss/utilities/_layout.scss)
 - Related: SPACE-002, SPACE-005, SPACE-006, SPACE-011, SPACE-007
 

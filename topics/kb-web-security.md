@@ -106,7 +106,7 @@ The 2025 list keeps the format: 248 CWEs in 10 categories, eight ranked from con
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [A01](https://raw.githubusercontent.com/OWASP/Top10/master/2025/docs/en/A01_2025-Broken_Access_Control.md), [A02](https://raw.githubusercontent.com/OWASP/Top10/master/2025/docs/en/A02_2025-Security_Misconfiguration.md), [A09](https://raw.githubusercontent.com/OWASP/Top10/master/2025/docs/en/A09_2025-Security_Logging_and_Alerting_Failures.md), [A10](https://raw.githubusercontent.com/OWASP/Top10/master/2025/docs/en/A10_2025-Mishandling_of_Exceptional_Conditions.md), [SSRF Prevention Cheat Sheet](https://raw.githubusercontent.com/OWASP/CheatSheetSeries/master/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md)
 - Related: WEBSEC-001, NG-008, GHA-023, NPM-013
 
@@ -130,7 +130,7 @@ For an agent, the useful order is A02, A01, then A05:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [helmet README](https://raw.githubusercontent.com/helmetjs/helmet/main/README.md), [helmet CHANGELOG](https://raw.githubusercontent.com/helmetjs/helmet/main/CHANGELOG.md), [Nest docs: Security headers](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/security/helmet.md), [hstspreload.org](https://hstspreload.org/), web-features 3.43.0 (`permissions-policy`), npm registry (`npm view helmet dist-tags`, `npm view helmet 'time[8.3.0]'`)
 - Related: WEBSEC-004, WEBSEC-005, OG-009
 
@@ -161,7 +161,7 @@ Tested 2026-10-18, Node 24.21.0:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Angular security guide: CSP](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/security.md), [`@angular/ssr` `app.ts` at v22.2.3](https://github.com/angular/angular-cli/blob/v22.2.3/packages/angular/ssr/src/app.ts), [build `nonce.ts` at v22.2.3](https://github.com/angular/angular-cli/blob/v22.2.3/packages/angular/build/src/utils/index-file/nonce.ts), [angular/angular-cli#32684](https://github.com/angular/angular-cli/issues/32684), [beasties README](https://github.com/danielroe/beasties), [helmet README](https://raw.githubusercontent.com/helmetjs/helmet/main/README.md), [RFC 9111 §3.2](https://www.rfc-editor.org/rfc/rfc9111.html#section-3.2)
 - Related: WEBSEC-003, WEBSEC-005, WEBPERF-007, WEBPERF-012
 
@@ -184,7 +184,7 @@ Pages cached in the server's own memory work the same way: store them with the p
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [MDN: Content Security Policy guide](https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/http/guides/csp/index.md), [MDN: frame-ancestors](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors), [MDN: report-uri](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/report-uri), web-features 3.43.0 (`reporting-csp-violations`)
 - Related: WEBSEC-004, WEBPERF-007
 
@@ -201,7 +201,7 @@ From MDN's CSP guide:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [express v5.3.0 `lib/application.js`](https://github.com/expressjs/express/blob/v5.3.0/lib/application.js), [Express: behind proxies](https://expressjs.com/en/guide/behind-proxies.html), [body-parser README](https://raw.githubusercontent.com/expressjs/body-parser/master/README.md), [Nest docs: CORS](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/security/cors.md), [cors README](https://raw.githubusercontent.com/expressjs/cors/master/README.md), [Nest docs: exception filters](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/exception-filters.md)
 - Related: WEBSEC-002, WEBSEC-003, NEST-010, NEST-011
 
@@ -214,7 +214,7 @@ From MDN's CSP guide:
 **Nest 12:**
 - `app.enableCors()` with no options uses the cors package's defaults: `"origin": "*"` and `GET,HEAD,PUT,PATCH,POST,DELETE`. Pass an explicit `origin` list, with no dev origins in production.
 - For an error that isn't an `HttpException`, the response is `{"statusCode":500,"message":"Internal server error"}`. The original message and stack go to the log only.
-- One caveat (docs): an error shaped like http-errors' (`statusCode` and `message`) is sent back as is.
+- One caveat (docs): an error shaped like http-errors' (`statusCode` and `message`) is sent back with those values. From Nest 12.2, if its `expose` is `false` (http-errors' default for 5xx), the body carries the status's reason phrase instead (for example `Bad Gateway`); the tests here ran on 12.1.3.
 
 Tested 2026-10-18, Node 24.21.0:
 - **express 5.3.0:** a thrown error's message and stack were in the 500 body with `NODE_ENV` unset, and absent with `production`.
@@ -228,7 +228,7 @@ Tested 2026-10-18, Node 24.21.0:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OWASP SSRF Prevention Cheat Sheet](https://raw.githubusercontent.com/OWASP/CheatSheetSeries/master/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md), [undici v7.29.1 `fetch/index.js`](https://github.com/nodejs/undici/blob/v7.29.1/lib/web/fetch/index.js), [Node v24 `net` docs](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/net.md), [undici Client docs: `connect`](https://raw.githubusercontent.com/nodejs/undici/main/docs/docs/api/Client.md)
 - Related: WEBSEC-002, NG-008, WEBSEC-012
 
@@ -256,7 +256,7 @@ Tested 2026-10-18, Node 24.21.0:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [MDN: Set-Cookie](https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/http/reference/headers/set-cookie/index.md), [MDN: Using HTTP cookies](https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/http/guides/cookies/index.md), @mdn/browser-compat-data 8.1.6 (`http/headers/Set-Cookie.json`), [express-session README](https://raw.githubusercontent.com/expressjs/session/master/README.md), [draft-ietf-httpbis-rfc6265bis-22](https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-22.txt), [IETF datatracker](https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/), [jshttp/cookie v2.0.0](https://github.com/jshttp/cookie/releases/tag/v2.0.0)
 - Related: WEBSEC-009
 
@@ -284,7 +284,7 @@ Tested 2026-10-18, express 5.3.0, Node 24.21.0: `res.cookie('a','1')` sent `a=1;
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Angular security guide: HttpClient XSRF](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/security.md), [Nest docs: CSRF protection](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/security/csrf.md), [OWASP Top 10:2025 A01](https://raw.githubusercontent.com/OWASP/Top10/master/2025/docs/en/A01_2025-Broken_Access_Control.md)
 - Related: WEBSEC-008, WEBSEC-006
 
@@ -309,7 +309,7 @@ Tested 2026-10-18, Nest 12.1.3, Node 24.21.0, POSTs:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Angular security guide](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/security.md), web-features 3.43.0 (`trusted-types`), @mdn/browser-compat-data 8.1.6 (`api/TrustedTypePolicy.json`)
 - Related: WEBSEC-011, WEBSEC-013, WEBSEC-005
 
@@ -334,12 +334,12 @@ To audit a diff, grep for `bypassSecurityTrust`, `innerHTML`, `outerHTML`, `inse
 - Type: anti-pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-18
+- Last verified: 2026-11-15
 - Sources: [Veracode press release, 2025-07-30](https://www.veracode.com/press-release/ai-generated-code-poses-major-security-risks-in-nearly-half-of-all-development-tasks-veracode-research-reveals/), [OpenSSF: Security-Focused Guide for AI Code Assistant Instructions](https://raw.githubusercontent.com/ossf/wg-best-practices-os-developers/main/docs/Security-Focused-Guide-for-AI-Code-Assistant-Instructions.md), [Angular security guide](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/security.md)
 - Related: WEBSEC-010, WEBSEC-005, WEBSEC-006, WEBSEC-012, WEBSEC-013
 
 **The measured part (single vendor source).**
-- Veracode gave "more than 100 LLMs" 80 completion tasks. "In 45 percent of all test cases, LLMs introduced vulnerabilities classified within the OWASP Top 10".
+- Veracode gave "more than 100 LLMs" 80 completion tasks. "In 45 percent of all test cases, LLMs introduced vulnerabilities classified within the OWASP (Open Web Application Security Project) Top 10".
 - JavaScript's failure rate was among "38 percent and 45 percent".
 - Models "failed to secure code against cross-site scripting (CWE-80) and log injection (CWE-117) in 86 percent and 88 percent of cases".
 - The OpenSSF guide (2025-08-01, expert opinion): "Assume AI-written code can have bugs or vulnerabilities, because it often does".
@@ -358,7 +358,7 @@ Put the rules in the instruction file the agent reads, as the OpenSSF guide sugg
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Claude Code: security-guidance](https://code.claude.com/docs/en/security-guidance.md), [Claude Code: Claude Security](https://code.claude.com/docs/en/claude-security.md), [Commands: `/security-review`](https://code.claude.com/docs/en/commands.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [security-guidance `patterns.py`](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/security-guidance/hooks/patterns.py), [security-guidance `llm.py`](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/security-guidance/hooks/llm.py), [claude-security README](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-security/README.md)
 - Related: REPO-017, REPO-047, REPO-048, WEBSEC-013, WEBSEC-014, HOOK-026
 
@@ -378,7 +378,7 @@ How to use it:
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GitHub docs: CodeQL JavaScript and TypeScript queries](https://docs.github.com/en/code-security/reference/code-scanning/codeql/codeql-queries/javascript-typescript-built-in-queries), [CodeQL `Angular2.qll`](https://github.com/github/codeql/blob/main/javascript/ql/lib/semmle/javascript/frameworks/Angular2.qll), [Semgrep `angular-domsanitizer.yaml`](https://raw.githubusercontent.com/semgrep/semgrep-rules/develop/typescript/angular/security/audit/angular-domsanitizer.yaml), [eslint-plugin-no-unsanitized](https://github.com/mozilla/eslint-plugin-no-unsanitized), [security-guidance: custom patterns](https://code.claude.com/docs/en/security-guidance.md), [pino redaction](https://raw.githubusercontent.com/pinojs/pino/main/docs/redaction.md), [`@nestjs/common` ConsoleLogger source](https://github.com/nestjs/nest/blob/master/packages/common/services/console-logger.service.ts), npm registry
 - Related: WEBSEC-011, WEBSEC-012, GHA-023, JSTOOL-005
 
@@ -398,7 +398,7 @@ How to use it:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [README @c1c8a8c](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/README.md), [SKILL.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/SKILL.md), [VALIDATION-AND-REPORTING.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/VALIDATION-AND-REPORTING.md), [WEB-PROTOCOL-AND-AUTH.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/WEB-PROTOCOL-AND-AUTH.md), [CLIENT-SIDE.md](https://github.com/cloudflare/security-audit-skill/blob/c1c8a8c/skills/security-audit/CLIENT-SIDE.md), [Build your own vulnerability harness](https://blog.cloudflare.com/build-your-own-vulnerability-harness)
 - Related: WEBSEC-012, WEBSEC-013, REPO-017, SKILL-069
 

@@ -78,7 +78,7 @@ Prefix: SURF. Researched 2026-10-12 against the Claude Code docs live that day, 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Desktop application](https://code.claude.com/docs/en/desktop), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SKILL-047, SURF-002, SURF-003, SURF-006
 
@@ -99,7 +99,7 @@ What it adds:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Desktop: monitor pull request status](https://code.claude.com/docs/en/desktop), [Desktop: work in parallel with sessions](https://code.claude.com/docs/en/desktop)
 - Related: SURF-001, SESS-005, SESS-034, HOOK-017, FLOW-029
 
@@ -117,7 +117,7 @@ Not documented: whether the CI bar polling costs tokens, how often it polls, and
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Desktop: what's not available](https://code.claude.com/docs/en/desktop), [Desktop: feature comparison](https://code.claude.com/docs/en/desktop), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SKILL-057, SURF-004, SURF-005
 
@@ -137,7 +137,7 @@ The CLI is "the most complete surface for terminal-native work: scripting and th
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Claude Code Desktop in WSL](https://code.claude.com/docs/en/desktop-wsl), [Desktop application](https://code.claude.com/docs/en/desktop), local test
 - Related: SKILL-047, SKILL-050, SKILL-052, SURF-034
 
@@ -157,7 +157,7 @@ Tested 2026-10-12, desktop app 2.31226.1, WSL session: the app ran its own Claud
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Desktop: CLI flag equivalents, keyboard shortcuts, coming from the CLI](https://code.claude.com/docs/en/desktop)
 - Related: SESS-030, SURF-003
 
@@ -183,7 +183,7 @@ Other keys: Cmd/Ctrl+N new session, Ctrl+Tab next session, Cmd/Ctrl+Shift+D diff
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Desktop: preview your app, browse external sites, configure preview servers](https://code.claude.com/docs/en/desktop)
 - Related: SURF-001, SURF-032, REPO-021, SESS-016, FLOW-014
 
@@ -201,7 +201,7 @@ Auto-verify after every edit adds screenshots and tool calls to each turn. For a
 - Type: tool
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Desktop: sessions from Dispatch](https://code.claude.com/docs/en/desktop), [Claude Code on mobile](https://code.claude.com/docs/en/mobile), [Feature availability](https://code.claude.com/docs/en/feature-availability)
 - Related: SURF-021, SURF-018
 
@@ -244,7 +244,7 @@ The docs' rule: use one "when terminal text is the wrong medium": annotated PR w
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-03
+- Last verified: 2026-11-15
 - Sources: [Artifacts: availability](https://code.claude.com/docs/en/artifacts), [Feature availability](https://code.claude.com/docs/en/feature-availability), [Claude Code CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [What's new, week 25](https://code.claude.com/docs/en/whats-new/2026-w25), [What's new, week 27](https://code.claude.com/docs/en/whats-new/2026-w27), local test
 - Related: SURF-008, SURF-017, SURF-046, SKILL-048
 
@@ -263,13 +263,13 @@ Tests: present in desktop WSL (2026-10-12, v2.1.295) and a cloud session (2026-1
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Artifacts: share, let someone edit, manage for your organization](https://code.claude.com/docs/en/artifacts), [Share artifacts (help center)](https://support.claude.com/en/articles/9547008-share-artifacts)
 - Related: SURF-008, SURF-011, SURF-013
 
 "A new artifact is visible only to you." Share from the **Share** control in the page header; the gallery is claude.ai/code/artifacts.
 - **Within the org** (Team and Enterprise): named people or everyone; viewers sign in as org members.
-- **Public link:** the Claude Code docs: "anyone on the internet can open, with no claude.ai sign-in required". The help center disagrees: "Everyone needs a Claude account ... Anyone signed in to Claude who has the link can open it" (INDEX.md, Conflicts). Off on Team and Enterprise until an Owner turns on **External sharing**; turning it off again blocks existing public links. Outside viewers see "Content is user-generated and unverified." instead of your name.
+- **Public link:** the Claude Code docs: "anyone on the internet can open, with no claude.ai sign-in required". The help center now mostly agrees: "Anyone who has the link can open it, including people outside your organization and, for most artifacts shared this way, people who aren't signed in to Claude" (docs open only for signed-in people). Off on Team and Enterprise until an Owner turns on **External sharing**; turning it off again blocks existing public links. Outside viewers see "Content is user-generated and unverified." instead of your name.
 - **Versions:** viewers see the version you pick in the Share menu, or always the latest.
 - **Editors** (Team and Enterprise): an editor gives Claude the URL and Claude republishes. If someone published since Claude's copy, "Claude Code refuses a publish built on that copy" and Claude merges first.
 
@@ -283,7 +283,7 @@ Deleting an artifact is permanent and breaks its link for everyone.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Artifacts: when Claude Code asks before publishing, read an artifact shared with you](https://code.claude.com/docs/en/artifacts)
 - Related: SURF-010, REPO-037, INFRA-021
 
@@ -303,7 +303,7 @@ So a page publishes without asking. Treat what goes into the page as published t
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Artifacts: pull live data with MCP connectors, offer a file download](https://code.claude.com/docs/en/artifacts), local test (bundled `artifact-capabilities` type files, contract 0.2.75 on 2026-10-12 and 0.2.77 on 2026-10-14, both in v2.1.295)
 - Related: SURF-011, SURF-014, SURF-015
 
@@ -324,7 +324,7 @@ A page declares its capabilities when Claude publishes it, and declaring any of 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Artifacts: collect comments on an artifact](https://code.claude.com/docs/en/artifacts), [Environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code CHANGELOG 2.1.271, 2.1.283](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SURF-010, SURF-008, FLOW-029
 
@@ -342,7 +342,7 @@ This gives a light review loop without GitHub: publish a plan or design, share i
 - Type: tool
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Artifacts](https://code.claude.com/docs/en/artifacts) (no mention), local test (`Artifact` tool description and the bundled `artifact-capabilities` `db.d.ts`, contract 0.2.75 and 0.2.77, v2.1.295, desktop WSL session), [Claude Code CHANGELOG 2.1.269–2.1.288](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SURF-012, SURF-008
 
@@ -380,7 +380,7 @@ Pages run under a strict CSP:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Artifacts: improve the visual design, start from a template](https://code.claude.com/docs/en/artifacts), [Artifacts admin guide](https://support.claude.com/en/articles/16994751-artifacts-admin-guide-for-team-and-enterprise-plans), [Release notes, 2026-09-16](https://support.claude.com/en/articles/12138966-release-notes), local test
 - Related: SURF-008, SKILL-048, DESIGN-001, DESIGN-002, DESIGN-005
 
@@ -396,7 +396,7 @@ This answers part of SKILL's open question: `artifact-design` is the built-in de
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Artifacts: disable artifacts](https://code.claude.com/docs/en/artifacts), [Settings reference: enableArtifact](https://code.claude.com/docs/en/settings-reference), [Environment variables](https://code.claude.com/docs/en/env-vars)
 - Related: SURF-009, SURF-011, REPO-006
 
@@ -421,7 +421,7 @@ Use the project-level `false` for a repo whose code must not leave the machine a
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Remote Control: what connected devices see, limitations](https://code.claude.com/docs/en/remote-control), [Claude Code on mobile](https://code.claude.com/docs/en/mobile)
 - Related: SESS-020, SURF-019, SURF-020
 
@@ -440,7 +440,7 @@ With Remote Control, a new artifact doesn't open a browser tab on the machine (S
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Remote Control: connection and security, Trusted Devices, limitations, resume sessions](https://code.claude.com/docs/en/remote-control), [Claude Code CHANGELOG 2.1.232](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SESS-020, SURF-018, INFRA-021
 
@@ -464,7 +464,7 @@ To keep a machine off Remote Control entirely: `"disableRemoteControl": true` in
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Remote Control: mobile push notifications](https://code.claude.com/docs/en/remote-control), [Settings reference: agentPushNotifEnabled, inputNeededNotifEnabled](https://code.claude.com/docs/en/settings-reference), [Environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code CHANGELOG 2.1.110](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SESS-034, HOOK-030, SURF-002, FLOW-029
 
@@ -487,7 +487,7 @@ Other notification paths: desktop OS notifications for finished sessions (SURF-0
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Claude Code on mobile](https://code.claude.com/docs/en/mobile), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SURF-007, SURF-018, SURF-028
 
@@ -510,7 +510,7 @@ Limits: terminal-panel commands such as `/plugin` and `/resume` don't work; clou
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Desktop: control which sessions appear on your other devices](https://code.claude.com/docs/en/desktop), [Remote Control: enable for all sessions](https://code.claude.com/docs/en/remote-control)
 - Related: SESS-020, SURF-019
 
@@ -528,7 +528,7 @@ Repo settings can't turn it on for everyone: a `true` for `remoteControlAtStartu
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Configure cloud environments](https://code.claude.com/docs/en/cloud-environments), [Use Claude Code in the cloud](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-016, INFRA-002, SURF-024, SURF-026, MEM-026
 
@@ -548,7 +548,7 @@ Every cloud session runs in an environment: a saved network level, environment v
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cloud environments: network access, access levels, allow specific domains](https://code.claude.com/docs/en/cloud-environments), [Claude Code in the cloud: security and isolation](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SURF-023, SURF-025, INFRA-002
 
@@ -572,7 +572,7 @@ Other rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cloud environments: GitHub proxy, work with GitHub issues and pull requests](https://code.claude.com/docs/en/cloud-environments)
 - Related: ORCH-017, SURF-024, SESS-028
 
@@ -589,7 +589,7 @@ Built-in GitHub tools read issues, list PRs, fetch diffs and comment without set
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cloud environments: setup scripts, environment caching, setup scripts vs SessionStart hooks](https://code.claude.com/docs/en/cloud-environments)
 - Related: HOOK-017, SURF-023, SURF-027
 
@@ -610,7 +610,7 @@ The docs' split: setup script for the VM (toolchains), SessionStart hook for pro
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cloud environments: what's available, installed tools, resource limits, time limits](https://code.claude.com/docs/en/cloud-environments), [Claude Code in the cloud: environment expired](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-016, SURF-026, SURF-028
 
@@ -650,7 +650,7 @@ For heavier work, use Remote Control on your own hardware or a self-hosted envir
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Use Claude Code in the cloud: auto-fix pull requests](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SURF-002, SURF-028, SESS-021, REPO-037, FLOW-024
 
@@ -673,7 +673,7 @@ Compared with the desktop CI bar (SURF-002): auto-fix runs in the cloud and keep
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Use Claude Code in VS Code](https://code.claude.com/docs/en/vs-code)
 - Related: SURF-031, SURF-032, FLOW-010
 
@@ -699,7 +699,7 @@ A `claude` in VS Code's integrated terminal gets the same diff viewer and diagno
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [JetBrains IDEs](https://code.claude.com/docs/en/jetbrains), [Platforms and integrations](https://code.claude.com/docs/en/platforms)
 - Related: SURF-030, SURF-033
 
@@ -721,7 +721,7 @@ Caveats:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Use Claude Code with Chrome](https://code.claude.com/docs/en/chrome), [Desktop: choose between the Browser and the Chrome extension](https://code.claude.com/docs/en/desktop)
 - Related: SURF-006, SESS-013, REPO-021, FLOW-014
 
@@ -744,7 +744,7 @@ For WSL setups the browser check stays Playwright MCP, ideally in a subagent so 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Platforms and integrations](https://code.claude.com/docs/en/platforms), [Remote Control vs cloud sessions](https://code.claude.com/docs/en/remote-control), [Desktop: coming from the CLI](https://code.claude.com/docs/en/desktop), [Claude Code on mobile](https://code.claude.com/docs/en/mobile)
 - Related: SURF-001, SURF-021, ORCH-001, ORCH-017, SESS-030
 
@@ -770,7 +770,7 @@ Mixing is normal: "Configuration, project memory, and MCP servers are shared acr
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Claude Code Desktop in WSL](https://code.claude.com/docs/en/desktop-wsl), [Use Claude Code with Chrome](https://code.claude.com/docs/en/chrome), [Artifacts](https://code.claude.com/docs/en/artifacts), local test
 - Related: SURF-004, SKILL-056, SESS-035, MEM-026
 
@@ -795,7 +795,7 @@ Consequences: browser checks stay on Playwright MCP; scripted runs and agent tea
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tools reference: SendUserFile](https://code.claude.com/docs/en/tools-reference), [Use Claude Code in VS Code](https://code.claude.com/docs/en/vs-code), [Claude Code CHANGELOG 2.1.234](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
 - Related: SURF-018, SURF-008, SURF-021
 
@@ -814,7 +814,7 @@ When to use which: `SendUserFile` for a file you want on the phone now (a screen
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Find bugs with ultrareview](https://code.claude.com/docs/en/ultrareview)
 - Related: REPO-029, SURF-037, TOK-120
 
@@ -832,7 +832,7 @@ Tested 2026-10-30, v2.1.296, WSL terminal: `claude ultrareview --help` lists `--
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Read and request reviews on a pull request](https://code.claude.com/docs/en/code-review-pull-requests), [Troubleshoot Code Review](https://code.claude.com/docs/en/code-review-troubleshooting), [Set up Code Review](https://code.claude.com/docs/en/code-review-setup)
 - Related: REPO-029, SURF-038, TOK-120
 
@@ -854,7 +854,7 @@ The Action's default `@claude` trigger also fires on `@claude review`; give it a
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Read and request reviews on a pull request](https://code.claude.com/docs/en/code-review-pull-requests), [Troubleshoot Code Review](https://code.claude.com/docs/en/code-review-troubleshooting)
 - Related: REPO-029, SURF-037
 
@@ -878,7 +878,7 @@ A later automatic review concentrates on what changed and posts fewer nits and p
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Choose a sandbox environment](https://code.claude.com/docs/en/sandbox-environments)
 - Related: INFRA-002, REPO-035, SURF-040
 
@@ -900,7 +900,7 @@ Only the Bash sandbox is enforced by Claude Code itself, through `sandbox` keys 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Choose a sandbox environment](https://code.claude.com/docs/en/sandbox-environments)
 - Related: SURF-039, INFRA-002
 
@@ -921,7 +921,7 @@ Traps:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
 - Related: SURF-042, SURF-044
 
@@ -938,7 +938,7 @@ Only the proxy URL is validated at startup; a bad certificate path shows up late
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
 - Related: SURF-041, SESS-009
 
@@ -952,7 +952,7 @@ A corporate launcher has the same gap: the supervisor starts Claude Code from a 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
 - Related: SURF-041
 
@@ -975,7 +975,7 @@ A mid-stream abort ends in a retry, an error, or kept partial output with an inc
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Enterprise network configuration](https://code.claude.com/docs/en/network-config)
 - Related: SURF-041, SURF-024
 
@@ -992,7 +992,7 @@ Artifacts load fonts from `fonts.googleapis.com` and `fonts.gstatic.com` (option
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Configure server-managed settings](https://code.claude.com/docs/en/server-managed-settings)
 - Related: REPO-006, MCP-016
 

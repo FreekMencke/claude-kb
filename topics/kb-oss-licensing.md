@@ -112,7 +112,7 @@ Expect GitHub's sidebar to show "Other" for a repo with two licence files (OSS-0
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GitHub Docs: licensing a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository), [licensee: what we look at](https://github.com/licensee/licensee/blob/main/docs/what-we-look-at.md), [licensee: customizing](https://github.com/licensee/licensee/blob/main/docs/customizing.md), [REST: get the license for a repository](https://docs.github.com/en/rest/licenses/licenses#get-the-license-for-a-repository)
 - Related: OSS-002, OSS-003, OSS-006
 
@@ -153,7 +153,7 @@ npm's `license` field takes the same expressions (OSS-003).
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [REUSE Specification 3.3](https://reuse.software/spec-3.3/), [reuse on PyPI](https://pypi.org/project/reuse/), [licensee: what we look at](https://github.com/licensee/licensee/blob/main/docs/what-we-look-at.md)
 - Related: OSS-003, OSS-004, OSS-005, OSS-009
 
@@ -202,7 +202,7 @@ Tested 2026-10-18, npm 11.19.0, Node 24.21.0: `express@5.1.0` and `lodash@4.17.2
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [dependency-review-action README](https://github.com/actions/dependency-review-action/blob/main/README.md), [GitHub Docs: configuring the dependency review action](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/manage-your-dependency-security/configure-dependency-review-action), [GitHub Docs: open source license compliance](https://docs.github.com/en/code-security/concepts/supply-chain-security/open-source-license-compliance), [GitHub REST OpenAPI description](https://github.com/github/rest-api-description), [GitHub Docs: exporting an SBOM](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/establish-provenance-and-integrity/export-dependencies-as-sbom)
 - Related: OSS-007, GHA-008, NPM-013
 
@@ -224,7 +224,7 @@ Community checkers add allow-lists to a local run: `licensee` (12.0.2, 2026-08-3
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OFL 1.1 official text](https://openfontlicense.org/open-font-license-official-text/), [OFL FAQ](https://openfontlicense.org/ofl-faq/), [OpenType spec: `name` table](https://learn.microsoft.com/en-us/typography/opentype/spec/name), [google/fonts README](https://github.com/google/fonts/blob/main/README.md), [gf-docs: METADATA](https://github.com/googlefonts/gf-docs/blob/main/METADATA/README.md)
 - Related: FONT-018, FONT-019, OG-003, OSS-006
 
@@ -279,7 +279,7 @@ No safety net exists in Claude Code: its docs index (`llms.txt`) and legal page 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GitHub Docs: creating a default community health file](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file), [GitHub Docs: adding a security policy](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/add-security-policy), [GitHub Docs: private vulnerability reporting for a repository](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository), [GitHub Docs: setting guidelines for contributors](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors), [GitHub Docs: about code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
 - Related: GH-005, DOC-012, OSS-001
 

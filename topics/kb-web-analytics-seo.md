@@ -83,7 +83,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative.
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: osrs-tracker-web `main` at `9f8eadc` (`src/index.html`, `src/app/common/seo/`, `src/app/common/analytics/`, `public/robots.txt`, `docs/decisions.md`), [osrs-tracker/osrs-tracker-web#239](https://github.com/osrs-tracker/osrs-tracker-web/pull/239), [osrs-tracker/osrs-tracker-web#159](https://github.com/osrs-tracker/osrs-tracker-web/issues/159)
 - Related: WEB-002, WEB-024, WEB-034, REPO-001
 
@@ -111,7 +111,7 @@ The SEO roadmap (#159, 19 sub-issues: 17 in osrs-tracker-web and 2 in osrs-track
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: local transcript of the `seo-audit-report` worktree session (2026-10-09), [osrs-tracker/osrs-tracker-web#159](https://github.com/osrs-tracker/osrs-tracker-web/issues/159)
 - Related: WEB-014, WEB-028, WEB-031, FLOW-014
 
@@ -135,7 +135,7 @@ The audit was one Opus 5.5 session driven by a long prompt the user wrote. That 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: local transcript of the `roadmap-skill-location` worktree session (2026-10-10), [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235), osrs-tracker-web auto memory `search-console-pagespeed-access`
 - Related: WEB-007, WEB-008, WEB-010, WEB-030, WEB-031
 
@@ -158,7 +158,7 @@ The access notes ended up in the repo's auto memory, not in the repo (WEB-004). 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: osrs-tracker-web auto memory `search-console-pagespeed-access` and this session's denied tool call, read 2026-10-13; [Auto mode](https://code.claude.com/docs/en/permission-modes)
 - Related: WEB-012, INFRA-021, INFRA-024, REPO-036
 
@@ -179,7 +179,7 @@ The GA4 MCP server (WEB-006) uses the same Search Console key, so one read-only 
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: local transcript of the `indexnow-evaluation` worktree session (2026-10-11), in [osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web)
 - Related: WEB-006, WEB-022, PROMPT-012
 
@@ -197,7 +197,7 @@ The recommendation itself was sensible (check Bing Webmaster Tools first). The f
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [googleanalytics/google-analytics-mcp README](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/README.md), [client.py](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/analytics_mcp/tools/client.py), [PyPI analytics-mcp](https://pypi.org/project/analytics-mcp/)
 - Related: WEB-004, WEB-009, WEB-012, INFRA-003, TOK-020
 
@@ -263,7 +263,7 @@ The 16-month retention is stated only on a GA help page ("Search Console keeps d
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [urlInspection.index.inspect](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect), [URL Inspection tool help](https://support.google.com/webmasters/answer/9012289), osrs-tracker-web auto memory `search-console-pagespeed-access`
 - Related: WEB-003, WEB-007, WEB-017
 
@@ -359,7 +359,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Claude Code MCP](https://code.claude.com/docs/en/mcp), [Search Console authorizing](https://developers.google.com/webmaster-tools/v1/how-tos/authorizing), [GA MCP README](https://raw.githubusercontent.com/googleanalytics/google-analytics-mcp/main/README.md)
 - Related: WEB-004, WEB-006, WEB-007, INFRA-001, INFRA-006, INFRA-021
 
@@ -381,7 +381,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: synthesis of WEB-003, WEB-007 to WEB-011, WEB-014 and the [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235)
 - Related: WEB-028, WEB-030, INFRA-018, INFRA-024
 
@@ -403,7 +403,7 @@ osrs-tracker-web has no field data in Search Console or PSI (#160), so for us on
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Google common crawlers](https://developers.google.com/search/docs/crawling-indexing/google-common-crawlers), [Spam policies](https://developers.google.com/search/docs/essentials/spam-policies), WEB-002's `probe.sh`
 - Related: WEB-015, WEB-016, WEB-018, TOK-089
 
@@ -432,7 +432,7 @@ Record per page: status, time, bytes, title, description, canonical, h1 count, `
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [microsoft/playwright-mcp README](https://github.com/microsoft/playwright-mcp)
 - Related: WEB-014, FLOW-014, REPO-021, BROWSER-002
 
@@ -475,7 +475,7 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [Dynamic rendering](https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering), [Search Central documentation updates](https://developers.google.com/search/updates)
 - Related: WEB-008, WEB-014, WEB-022, WEB-035, WEB-036
 
@@ -498,7 +498,7 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: osrs-tracker-web server logs read through the flux MCP server (2026-10-13), [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235)
 - Related: WEB-013, WEB-014, INFRA-018
 
@@ -516,7 +516,7 @@ The same applies to `/trackers/*` render timings: audit fetches are cache misses
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [schemaorg discussion #3261](https://github.com/schemaorg/schemaorg/discussions/3261), [urlInspection.index.inspect](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect), [Search Console API reference](https://developers.google.com/webmaster-tools/v1/api_reference_index)
 - Related: WEB-017, WEB-023
 
@@ -537,7 +537,7 @@ Community skills point out that curl misses JSON-LD that JavaScript injects (WEB
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Does Anthropic crawl data from the web?](https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler), [Tools reference](https://code.claude.com/docs/en/tools-reference)
 - Related: WEB-016, WEB-021, WEB-039, WEB-040, WEB-041
 
@@ -566,7 +566,7 @@ The support article (modified 2026-04-07): "Below is information on the three ro
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [AI features and your website](https://developers.google.com/search/docs/appearance/ai-features), [Google's AI optimization guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide), [llmstxt.org](https://llmstxt.org/)
 - Related: WEB-020, TOK-090, WEB-040
 
@@ -586,7 +586,7 @@ The support article (modified 2026-04-07): "Below is information on the three ro
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Build a sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap), [Sitemaps ping deprecation](https://developers.google.com/search/blog/2023/06/sitemaps-lastmod-ping), [Special tags](https://developers.google.com/search/docs/crawling-indexing/special-tags), [robots.txt spec](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt), [Block indexing](https://developers.google.com/search/docs/crawling-indexing/block-indexing), [Canonicalization](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls), [Snippets](https://developers.google.com/search/docs/appearance/snippet)
 - Related: WEB-005, WEB-023, WEB-027
 
@@ -705,7 +705,7 @@ The property never registered them. On 2026-10-13 `get_custom_dimensions_and_met
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-13
+- Last verified: 2026-11-15
 - Sources: [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo), [coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills), [Hainrixz/claude-seo-ai](https://github.com/Hainrixz/claude-seo-ai), [wshobson/agents](https://github.com/wshobson/agents), [VoltAgent seo-specialist](https://github.com/VoltAgent/awesome-claude-code-subagents/blob/main/categories/07-specialized-domains/seo-specialist.md)
 - Related: WEB-026, WEB-028, WEB-022
 
@@ -725,7 +725,7 @@ Stars as of 2026-10-13.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: synthesis of WEB-002, WEB-003, WEB-013 to WEB-019, WEB-026, WEB-027; [Skills frontmatter reference](https://code.claude.com/docs/en/skills), [FreekMencke/claude-skills#31](https://github.com/FreekMencke/claude-skills/pull/31)
 - Related: WEB-029, WEB-030, REPO-033, REPO-039, SKILL-010, SKILL-017, SKILL-021, HOOK-020
 
@@ -756,7 +756,7 @@ The design for `/seo-audit`. It is generic, and it reads each repo's own rules a
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [seo-ai-visibility audit checklist](https://github.com/anthropics/knowledge-work-plugins/tree/main/small-business/skills/seo-ai-visibility), [Hainrixz/claude-seo-ai](https://github.com/Hainrixz/claude-seo-ai), WEB-002's report
 - Related: WEB-028, REPO-049, REPO-050
 
@@ -784,7 +784,7 @@ REPO-049 and REPO-050 compare reviewers' severity schemes and output formats. An
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [#160 results comment](https://github.com/osrs-tracker/osrs-tracker-web/issues/159#issuecomment-6098227235), [#159 roadmap](https://github.com/osrs-tracker/osrs-tracker-web/issues/159), [marketingskills rankings-push](https://github.com/coreyhaines31/marketingskills)
 - Related: WEB-003, WEB-013, WEB-028
 
@@ -807,7 +807,7 @@ The roadmap first scheduled a Search Console check of #162 for "about 4-6 weeks 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: local transcripts under `~/.claude/projects/` for osrs-tracker-web worktrees, read 2026-10-13; prices from TOK-017's table ([Pricing](https://platform.claude.com/docs/en/about-claude/pricing))
 - Related: WEB-002, WEB-003, WEB-015, TOK-017, ORCH-029
 
@@ -828,7 +828,7 @@ Main-thread usage from each transcript's assistant `usage` fields, counted once 
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Manage your sitemaps using the Sitemaps report](https://support.google.com/webmasters/answer/7451001), [Search Console API: Sitemaps resource](https://developers.google.com/webmaster-tools/v1/sitemaps), osrs-tracker-web's app and Traefik logs and `sitemaps.list`, read 2026-10-10 to 2026-10-13 ([FreekMencke/claude-kb#89](https://github.com/FreekMencke/claude-kb/issues/89))
 - Related: WEB-007, WEB-008, WEB-013, WEB-018, WEB-029
 
@@ -849,7 +849,7 @@ Minutes after a submit, the Sitemaps report can show "Couldn't fetch" (details: 
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Influencing your title links in search results](https://developers.google.com/search/docs/appearance/title-link) (last updated 2025-12-10, read 2026-10-13), Google results and URL Inspection for osrs-tracker-web, 2026-10-13 ([FreekMencke/claude-kb#89](https://github.com/FreekMencke/claude-kb/issues/89), fixed in [osrs-tracker/osrs-tracker-web@6c4937f](https://github.com/osrs-tracker/osrs-tracker-web/commit/6c4937f))
 - Related: WEB-001, WEB-014, WEB-022, WEB-029
 
@@ -875,7 +875,7 @@ Since 2026-10-13 the `seo-audit` skill flags `Brand: phrase` titles whose phrase
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [osrs-tracker/osrs-tracker-web#263](https://github.com/osrs-tracker/osrs-tracker-web/pull/263), [osrs-tracker/osrs-tracker-web#248](https://github.com/osrs-tracker/osrs-tracker-web/pull/248)
 - Related: WEB-001, WEB-010, WEB-025
 
@@ -894,7 +894,7 @@ Measured locally (production build, mobile emulation, 4× CPU): first paint of t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Search Central documentation updates](https://developers.google.com/search/updates), [JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics) (last updated 2026-03-04), [Fix Search-related JavaScript problems](https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript) (2025-12-18), [Robots meta tag](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) (2026-03-24), [Consolidate duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls) (2026-07-10)
 - Related: WEB-017, WEB-036, WEB-037, NG-008
 
@@ -913,7 +913,7 @@ Canonical and hreflang links still count only in the `<head>` (WEB-042). Google'
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [angular.dev: Server and hybrid rendering](https://angular.dev/guide/ssr) ([raw at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/ssr.md)), [`RESPONSE_INIT` source](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/application/platform_tokens.ts), [`ServerRoute` source](https://raw.githubusercontent.com/angular/angular-cli/v22.2.3/packages/angular/ssr/src/routes/route-config.ts), [osrs-tracker-web `not-found.ts`](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/src/app/features/not-found/not-found.ts)
 - Related: WEB-035, WEB-014, WEB-001, NG-008
 
@@ -933,7 +933,7 @@ Tested 2026-10-18, osrs-tracker-web production (`@angular/ssr` ^22.2.2, `NotFoun
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Googlebot](https://developers.google.com/search/docs/crawling-indexing/googlebot) (last updated 2026-02-03), [Overview of Google crawlers and fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/overview-google-crawlers) (2026-06-12), [Search Central documentation updates](https://developers.google.com/search/updates)
 - Related: WEB-014, WEB-035, WEBPERF-013
 
@@ -972,7 +972,7 @@ The updates page shows no other spam-policy change from 2025-01-01 to 2026-10-18
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OpenAI: Overview of OpenAI crawlers](https://developers.openai.com/api/docs/bots), [Perplexity crawlers](https://docs.perplexity.ai/docs/resources/perplexity-crawlers), [About Applebot](https://support.apple.com/en-us/119829) (published 2026-09-04), [Meta web crawlers](https://developers.facebook.com/documentation/sharing/webmasters/web-crawlers), [Amazonbot](https://developer.amazon.com/amazonbot), [Mistral robots](https://docs.mistral.ai/robots), [DuckAssistBot](https://duckduckgo.com/duckduckgo-help-pages/results/duckassistbot), [CCBot](https://commoncrawl.org/ccbot)
 - Related: WEB-020, WEB-040, WEB-041, WEB-021
 
@@ -998,7 +998,7 @@ Most vendors split training, search and user-triggered fetching into separate ro
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Google's common crawlers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers) (last updated 2026-10-15), [AI features and your website](https://developers.google.com/search/docs/appearance/ai-features) (2025-12-10), [Google user-triggered fetchers](https://developers.google.com/crawling/docs/crawlers-fetchers/google-user-triggered-fetchers) (2026-08-19), [Web Bot Auth](https://developers.google.com/crawling/docs/crawlers-fetchers/web-bot-auth), [Crawling docs changelog](https://developers.google.com/crawling/docs/changelog)
 - Related: WEB-021, WEB-039, WEB-020, WEB-041
 
@@ -1014,7 +1014,7 @@ Disallowing `Google-Extended` doesn't take a site out of AI Overviews or AI Mode
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [draft-ietf-aipref-attach-05](https://www.ietf.org/archive/id/draft-ietf-aipref-attach-05.txt) (2026-08-19), [draft-ietf-aipref-vocab-08](https://www.ietf.org/archive/id/draft-ietf-aipref-vocab-08.txt) (2026-09-14), [IETF datatracker: aipref](https://datatracker.ietf.org/wg/aipref/about/)
 - Related: WEB-039, WEB-040
 
@@ -1037,7 +1037,7 @@ Content-Usage: train-ai=n
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tell Google about localized versions of your page](https://developers.google.com/search/docs/specialty/international/localized-versions) (last updated 2026-09-21), [Managing multi-regional and multilingual sites](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites) (2025-12-10), [Angular i18n: deploy](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/i18n/deploy.md)
 - Related: WEB-035, WEB-036, WEB-022
 

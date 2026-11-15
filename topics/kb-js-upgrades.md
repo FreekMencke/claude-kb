@@ -51,7 +51,7 @@ Research basis:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [npm-outdated](https://docs.npmjs.com/cli/v11/commands/npm-outdated), [npm-view](https://docs.npmjs.com/cli/v11/commands/npm-view), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [npm-explain](https://docs.npmjs.com/cli/v11/commands/npm-explain)
 - Related: TS-015, JSUP-002, JSUP-015, TOK-042
 
@@ -78,7 +78,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0, a scratch project with typescript 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [npm config: strict-peer-deps](https://docs.npmjs.com/cli/v11/using-npm/config#strict-peer-deps), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [npm/cli#4664](https://github.com/npm/cli/issues/4664)
 - Related: TS-011, NG-002, JSUP-009
 
@@ -103,7 +103,7 @@ So after any bump, run `npm ls --all`; `--strict-peer-deps` helps only for requi
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Nest CLI usages: nest upgrade](https://docs.nestjs.com/cli/usages), [nest-cli upgrade.command.ts at 12.0.8](https://github.com/nestjs/nest-cli/blob/12.0.8/commands/upgrade.command.ts), [ESLint configuration migration guide](https://eslint.org/docs/latest/use/configure/migration-guide), [Migrate to ESLint v10](https://eslint.org/docs/latest/use/migrate-to-10.0.0), [ESLint version support](https://eslint.org/version-support/), [Vitest migration guide](https://vitest.dev/guide/migration), [Jest migration guide](https://jestjs.io/docs/migration-guide), [nodejs/userland-migrations](https://github.com/nodejs/userland-migrations), [Node.js blog: v22 to v24 migrations](https://nodejs.org/en/blog/migrations/v22-to-v24)
 - Related: NG-010, JSUP-004, JSUP-008
 
@@ -125,7 +125,7 @@ Run the vendor's tool first; each says it isn't the whole job.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tools reference: LSP tool behavior](https://code.claude.com/docs/en/tools-reference), [Best practices: Run sessions in parallel](https://code.claude.com/docs/en/best-practices), [ast-grep FAQ](https://ast-grep.github.io/advanced/faq.html), [ts-morph: renaming](https://ts-morph.com/manipulation/renaming), [How is Google using AI for internal code migrations?](https://arxiv.org/abs/2501.06972)
 - Related: JSUP-005, JSUP-006, JSUP-007, ORCH-012, TOK-041
 
@@ -137,7 +137,7 @@ Pick the tool by what the change needs to know.
 | Rename or move one symbol or file across the project | ts-morph `rename()` or `move()`: it follows references through the type checker |
 | One syntax pattern, many places, no types needed | ast-grep `run -p … -r …`, or a YAML rule with `fix` |
 | Edits that vary by context (an API whose semantics changed) | The agent, per file, from a discovery list, behind a build-and-test gate |
-| Many files of any kind | `/batch` (ORCH-012), which runs each unit "in its own worktree and opens a PR for it", or a `claude -p` loop (ORCH-014) |
+| Many files of any kind | `/batch` (ORCH-012), which runs each unit in its own worktree and "opens a PR or reports what happened", or a `claude -p` loop (ORCH-014) |
 
 Claude Code's LSP tool can find references but not rename: its docs list definition, references, type information, symbols, workspace search, implementations and call hierarchy. Google's experience report: "The use of LLMs alone through simple prompting is not sufficient for anything but the simplest of migrations"; locating and validating changes "are handled mostly using deterministic AST techniques".
 
@@ -147,8 +147,8 @@ Tested 2026-10-17, Claude Code 2.1.296: this session's LSP tool schema offers ni
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
-- Sources: [ast-grep CLI: run](https://ast-grep.github.io/reference/cli/run.html), [ast-grep: rewrite code](https://ast-grep.github.io/guide/rewrite-code.html), [ast-grep FAQ](https://ast-grep.github.io/advanced/faq.html), [ts-morph docs](https://ts-morph.com/), [jscodeshift README](https://github.com/facebook/jscodeshift/blob/main/README.md), npm registry
+- Last verified: 2026-11-15
+- Sources: [ast-grep CLI: run](https://ast-grep.github.io/reference/cli/run.html), [ast-grep: rewrite code](https://ast-grep.github.io/guide/rewrite-code.html), [ast-grep FAQ](https://ast-grep.github.io/advanced/faq.html), [ts-morph docs](https://ts-morph.com/), [jscodeshift README](https://github.com/facebook/jscodeshift/blob/main/README.md), npm registry, [ts-morph: performance](https://raw.githubusercontent.com/dsherret/ts-morph/latest/docs/manipulation/performance.md)
 - Related: JSUP-004, JSUP-006, TS-009
 
 | | ast-grep 0.51.0 | ts-morph 28.0.0 | jscodeshift 17.4.0 |
@@ -160,7 +160,7 @@ Tested 2026-10-17, Claude Code 2.1.296: this session's LSP tool schema offers ni
 | Rules and tests | YAML rules with `fix`, `ast-grep scan`, `ast-grep test` | A script | Transform module `(fileInfo, api, options)` |
 
 Gotchas:
-- ast-grep: `-r` means `--rewrite` in `run` but `--rule` in `scan`; "Pattern code must be valid code that tree-sitter can parse". 0.51.0 prints "`sg` is deprecated. Use `ast-grep` instead.", while the quick start still offers `sg`. The ast-grep org publishes a search-only MCP server and a Claude Code plugin (`ast-grep/agent-skill`).
+- ast-grep: `-r` means `--rewrite` in `run` but `--rule` in `scan`; "Make sure your pattern is valid code that tree-sitter can parse". 0.51.0 prints "`sg` is deprecated. Use `ast-grep` instead.", while the quick start still offers `sg`. The ast-grep org publishes a search-only MCP server and a Claude Code plugin (`ast-grep/agent-skill`).
 - ts-morph re-parses after each manipulation: "Analyze then Manipulate". `rename()` skips comments and strings by default. It bundles TypeScript 6.0, so it can't drive TypeScript 7 (TS-009).
 - jscodeshift: last commit 2026-10-13, so maintained.
 
@@ -170,7 +170,7 @@ Tested 2026-10-17, ast-grep 0.51.0 and ts-morph 28.0.0, Node 24.21.0: the `sg` w
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Best practices: Run Claude from a script](https://code.claude.com/docs/en/best-practices), [eslint/codemods README](https://github.com/eslint/codemods), [nodejs/userland-migrations README](https://github.com/nodejs/userland-migrations), [How Anthropic runs large-scale code migrations with Claude Code](https://claude.com/blog/ai-code-migration)
 - Related: JSUP-004, JSUP-005, JSUP-008, FLOW-011, ORCH-012
 
@@ -187,7 +187,7 @@ Re-run discovery afterwards: zero remaining sites is the done-when.
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [How is Google using AI for internal code migrations? (arXiv 2501.06972)](https://arxiv.org/abs/2501.06972), [Migrating Code At Scale With LLMs At Google (arXiv 2504.09691)](https://arxiv.org/abs/2504.09691), [Airbnb: Accelerating large-scale test migration with LLMs](https://airbnb.tech/ai-ml/accelerating-large-scale-test-migration-with-llms/), [How Anthropic runs large-scale code migrations with Claude Code](https://claude.com/blog/ai-code-migration)
 - Related: JSUP-004, JSUP-006, REPO-019
 
@@ -204,7 +204,7 @@ None used a hand-written codemod for the edits themselves.
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Angular versioning and releases](https://angular.dev/reference/releases), [Angular CLI: ng update](https://angular.dev/cli/update), [Nest CLI usages: nest upgrade](https://docs.nestjs.com/cli/usages), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md)
 - Related: JSUP-003, JSUP-006, JSUP-009, NG-010, TS-004, SESS-021
 
@@ -220,7 +220,7 @@ Each PR passes CI on its own (JSUP-009), so a failure points at one step. Rebase
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [npm-ci](https://docs.npmjs.com/cli/v11/commands/npm-ci), [npm-ls](https://docs.npmjs.com/cli/v11/commands/npm-ls), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [Best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices)
 - Related: JSUP-002, FLOW-011, FLOW-013, SESS-008
 
@@ -239,7 +239,7 @@ Report the commands and their results (FLOW-011); best practices: "ask Claude fo
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [npm-install](https://docs.npmjs.com/cli/v11/commands/npm-install), [npm-update](https://docs.npmjs.com/cli/v11/commands/npm-update)
 - Related: JSUP-009, JSUP-011
 
@@ -283,7 +283,7 @@ Tested 2026-10-17, npm 11.19.0, git 2.43.0: two branches adding `picocolors` and
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Dependabot options reference](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference), [Changelog 2026-07-14: default package cooldown](https://github.blog/changelog/2026-07-14-dependabot-version-updates-introduce-default-package-cooldown), [dependabot-core github_actions file fetcher](https://github.com/dependabot/dependabot-core/blob/main/github_actions/lib/dependabot/github_actions/file_fetcher.rb)
 - Related: JSUP-013, JSUP-014, SESS-024
 
@@ -300,7 +300,7 @@ Our three app repos follow the patterns: npm security-only (limit 0 with `applie
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Automating Dependabot with GitHub Actions](https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/automate-dependabot-with-actions), [Troubleshooting Dependabot on GitHub Actions](https://docs.github.com/en/code-security/reference/supply-chain-security/troubleshoot-dependabot/dependabot-on-actions), [Changelog 2021-10-06: Dependabot runs respect `permissions`](https://github.blog/changelog/2021-10-06-github-actions-workflows-triggered-by-dependabot-prs-will-respect-permissions-key-in-workflows/), [dependabot/fetch-metadata README](https://github.com/dependabot/fetch-metadata/blob/main/README.md)
 - Related: JSUP-012, JSUP-014, SESS-024, SURF-002
 
@@ -317,7 +317,7 @@ Safe to auto-merge: patch (and perhaps minor) updates of dev tooling, behind req
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [About Dependabot version updates](https://docs.github.com/en/code-security/concepts/supply-chain-security/about-dependabot-version-updates), [Dependabot pull request comment commands](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-pull-request-comment-commands), [Changelog 2026-01-27: comment command changes](https://github.blog/changelog/2026-01-27-changes-to-github-dependabot-pull-request-comment-commands/), [Dependabot options reference: rebase-strategy](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference)
 - Related: JSUP-001, JSUP-002, JSUP-013, DOC-018
 

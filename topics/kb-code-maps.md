@@ -45,7 +45,7 @@ Research basis:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify/tree/32e5efe), [Egonex-AI/Understand-Anything](https://github.com/Egonex-AI/Understand-Anything/tree/4e6d329), [yamadashy/repomix](https://github.com/yamadashy/repomix/tree/7d7b28b), [oraios/serena](https://github.com/oraios/serena/tree/ede329a)
 - Related: CODEMAP-009, RETR-013, TOK-084, RETR-015, TOK-085
 
@@ -64,7 +64,7 @@ Only the first two build a persistent map. They differ in the expensive step: Gr
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [graphify README](https://github.com/Graphify-Labs/graphify/blob/32e5efe/README.md), [graphify BENCHMARKS.md](https://github.com/Graphify-Labs/graphify/blob/32e5efe/BENCHMARKS.md)
 - Related: CODEMAP-003, CODEMAP-004, RETR-015
 
@@ -82,7 +82,7 @@ From the README at `32e5efe`:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [graphify install.py](https://github.com/Graphify-Labs/graphify/blob/32e5efe/graphify/install.py), [graphify cli.py `_run_hook_guard`](https://github.com/Graphify-Labs/graphify/blob/32e5efe/graphify/cli.py), [graphify README: always-on](https://github.com/Graphify-Labs/graphify/blob/32e5efe/README.md)
 - Related: HOOK-006, HOOK-007, TOK-041, SKILL-069
 
@@ -121,7 +121,7 @@ The other benchmark rows (LOCOMO, LongMemEval) are memory retrieval, not code. T
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-30
+- Last verified: 2026-11-15
 - Sources: [Understand-Anything README](https://github.com/Egonex-AI/Understand-Anything/blob/4e6d329/README.md), [plugin agents](https://github.com/Egonex-AI/Understand-Anything/tree/4e6d329/understand-anything-plugin/agents)
 - Related: CODEMAP-006, CODEMAP-001, RETR-001
 
@@ -136,7 +136,7 @@ Unlike Graphify, every node summary is model-written, so the map can be wrong in
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [hooks.json](https://github.com/Egonex-AI/Understand-Anything/blob/4e6d329/understand-anything-plugin/hooks/hooks.json), [auto-update-prompt.md](https://github.com/Egonex-AI/Understand-Anything/blob/4e6d329/understand-anything-plugin/hooks/auto-update-prompt.md), [README install](https://github.com/Egonex-AI/Understand-Anything/blob/4e6d329/README.md)
 - Related: SKILL-069, SKILL-041, HOOK-008, PROMPT-004
 
@@ -153,7 +153,7 @@ The pattern to avoid in our own plugins: a hook that tells the model to act with
 - Type: tool
 - Applies to: Claude Code, claude.ai
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [repomix README](https://github.com/yamadashy/repomix/blob/7d7b28b/README.md)
 - Related: CODEMAP-001, TOK-041, RETR-001
 

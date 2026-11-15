@@ -60,7 +60,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Migrate to v10.x](https://eslint.org/docs/latest/use/migrate-to-10.0.0) ([raw](https://raw.githubusercontent.com/eslint/eslint/main/docs/src/use/migrate-to-10.0.0.md)), [ESLint releases](https://github.com/eslint/eslint/releases), [ESLint version support](https://eslint.org/version-support/)
 - Related: JSUP-003, JSTOOL-002, JSTOOL-004, JSTOOL-005
 
@@ -81,7 +81,7 @@ Tested 2026-10-17, eslint@10.13.0, Node 24.21.0: with only `.eslintrc.json`, `es
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Command line interface reference](https://eslint.org/docs/latest/use/command-line-interface) ([raw](https://raw.githubusercontent.com/eslint/eslint/main/docs/src/use/command-line-interface.md)), [Formatters reference](https://eslint.org/docs/latest/use/formatters/) ([raw](https://raw.githubusercontent.com/eslint/eslint/main/docs/src/use/formatters/index.md)), [Migrate to v9.x: removed formatters](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
 - Related: JSTOOL-001, JSTOOL-003, JSTOOL-020, TOK-109, HOOK-027
 
@@ -100,7 +100,7 @@ Tested 2026-10-17, eslint@10.13.0: `-f unix` exited 2 with "The unix formatter i
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Linting with type information](https://typescript-eslint.io/getting-started/typed-linting) ([raw](https://raw.githubusercontent.com/typescript-eslint/typescript-eslint/main/docs/getting-started/Typed_Linting.mdx)), [Performance troubleshooting](https://typescript-eslint.io/troubleshooting/typed-linting/performance) ([raw](https://raw.githubusercontent.com/typescript-eslint/typescript-eslint/main/docs/troubleshooting/typed-linting/Performance.mdx)), [Parser: projectService](https://typescript-eslint.io/packages/parser), [FAQ: ESLint `--cache`](https://typescript-eslint.io/troubleshooting/faqs/eslint)
 - Related: JSTOOL-002, JSTOOL-004, JSTOOL-007, TS-009
 
@@ -131,7 +131,7 @@ Tested 2026-10-17, typescript-eslint@8.71.2 and eslint@10.12.0 (the repo's lockf
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [angular-eslint README](https://github.com/angular-eslint/angular-eslint) ([raw](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/README.md)), [angular-eslint CHANGELOG](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/CHANGELOG.md), [Rules requiring type information](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/docs/RULES_REQUIRING_TYPE_INFORMATION.md), [Configuring ESLint](https://raw.githubusercontent.com/angular-eslint/angular-eslint/main/docs/CONFIGURING_ESLINT.md)
 - Related: ACCESS-011, NG-002, JSTOOL-004, JSTOOL-010, JSTOOL-022
 
@@ -148,7 +148,7 @@ Tested 2026-10-17, typescript-eslint@8.71.2 and eslint@10.12.0 (the repo's lockf
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Oxlint linter guide](https://oxc.rs/docs/guide/usage/linter.html) ([raw](https://raw.githubusercontent.com/oxc-project/website/main/src/docs/guide/usage/linter.md)), [Migrate from ESLint](https://oxc.rs/docs/guide/usage/linter/migrate-from-eslint), [JS plugins](https://oxc.rs/docs/guide/usage/linter/js-plugins), [Versioning](https://oxc.rs/docs/guide/usage/linter/versioning), [nestjs/schematics 12.0.7 template](https://github.com/nestjs/schematics/tree/12.0.7/src/lib/application/files/ts)
 - Related: JSTOOL-007, JSTOOL-008, JSTOOL-010, JSUP-003
 
@@ -169,7 +169,7 @@ Tested 2026-10-17, oxlint@1.88.0, on osrs-tracker-web with no config: 96 default
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Type-aware linting](https://oxc.rs/docs/guide/usage/linter/type-aware) ([raw](https://raw.githubusercontent.com/oxc-project/website/main/src/docs/guide/usage/linter/type-aware.md)), [Oxc blog: Type-Aware Linting Stable](https://oxc.rs/blog/2026-07-22-type-aware-linting-stable)
 - Related: JSTOOL-003, JSTOOL-006, TS-009, TS-011
 
@@ -185,7 +185,7 @@ Tested 2026-10-17, oxlint@1.88.0 with oxlint-tsgolint@7.0.2004 installed in osrs
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Oxlint output formats](https://oxc.rs/docs/guide/usage/linter/output-formats), [oxc#21955: add agent output mode](https://github.com/oxc-project/oxc/pull/21955), [oxc#25300: make automatic output format selection discoverable](https://github.com/oxc-project/oxc/pull/25300)
 - Related: JSTOOL-006, JSTOOL-020, TOK-108, TOK-109
 
@@ -201,7 +201,7 @@ Tested 2026-10-17, oxlint@1.88.0, Claude Code 2.1.299 Bash tool (terminal, WSL):
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Comparison with other tools](https://biomejs.dev/introduction/comparison-with-other-tools/) ([raw at `570c827`](https://raw.githubusercontent.com/biomejs/website/570c82786cb7488b87a0d054234c7f2673dbbc39/src/content/docs/en/introduction/comparison-with-other-tools.mdx)), [Language support](https://biomejs.dev/introduction/language-support/), [Linter domains](https://biomejs.dev/linter/domains/), [Migrate from other tools](https://biomejs.dev/installation/migrate-from-other-tools/), [CLI reference](https://biomejs.dev/reference/cli/)
 - Related: JSTOOL-010, JSTOOL-011, JSTOOL-006
 
@@ -219,7 +219,7 @@ Tested 2026-10-17, @biomejs/biome@2.5.15: on one file, the default reporter prin
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Oxlint linter guide](https://oxc.rs/docs/guide/usage/linter.html), [Biome comparison](https://biomejs.dev/introduction/comparison-with-other-tools/) ([raw at `570c827`](https://raw.githubusercontent.com/biomejs/website/570c82786cb7488b87a0d054234c7f2673dbbc39/src/content/docs/en/introduction/comparison-with-other-tools.mdx)), [angular-eslint README](https://github.com/angular-eslint/angular-eslint), [nestjs/nest-cli 12.0.0 release](https://github.com/nestjs/nest-cli/releases/tag/12.0.0)
 - Related: JSTOOL-003, JSTOOL-005, JSTOOL-006, JSTOOL-007, JSTOOL-009
 
@@ -237,7 +237,7 @@ Judgment: an Angular app keeps ESLint, because only angular-eslint lints templat
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Prettier options](https://prettier.io/docs/options) ([raw](https://raw.githubusercontent.com/prettier/prettier/main/docs/options.md)), [Configuration file](https://prettier.io/docs/configuration), [CLI](https://prettier.io/docs/cli), [Ignoring code](https://prettier.io/docs/ignore), [Integrating with linters](https://prettier.io/docs/integrating-with-linters), [Prettier CHANGELOG](https://raw.githubusercontent.com/prettier/prettier/main/CHANGELOG.md), [Angular style guide: file names](https://angular.dev/style-guide)
 - Related: JSTOOL-012, JSTOOL-009, HOOK-027, DOC-014
 
@@ -256,7 +256,7 @@ Tested 2026-10-17, prettier@3.9.10: `--file-info` gave `"inferredParser":"html"`
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Oxc blog: Oxfmt beta](https://oxc.rs/blog/2026-02-24-oxfmt-beta), [Oxfmt formatter guide](https://oxc.rs/docs/guide/usage/formatter), [Migrate from Prettier](https://oxc.rs/docs/guide/usage/formatter/migrate-from-prettier)
 - Related: JSTOOL-011, JSTOOL-006, JSTOOL-009
 
@@ -292,7 +292,7 @@ Tested 2026-10-17, knip@6.41.0 on osrs-tracker-web: 0.73 s; it flagged only the 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Announcing Vite 8](https://vite.dev/blog/announcing-vite8) ([raw](https://raw.githubusercontent.com/vitejs/vite/main/docs/blog/announcing-vite8.md)), [Migration from v7](https://vite.dev/guide/migration) ([raw](https://raw.githubusercontent.com/vitejs/vite/main/docs/guide/migration.md))
 - Related: JSTEST-008, JSTOOL-015, JSTOOL-016, JSTOOL-021, CSS-016
 
@@ -326,7 +326,7 @@ What changes for a config:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [esbuild CHANGELOG](https://raw.githubusercontent.com/evanw/esbuild/main/CHANGELOG.md), [esbuild CHANGELOG-2025](https://raw.githubusercontent.com/evanw/esbuild/main/CHANGELOG-2025.md), [esbuild: TypeScript caveats](https://esbuild.github.io/content-types/#typescript-caveats), [esbuild API: log level and metafile](https://esbuild.github.io/api/)
 - Related: JSTEST-008, JSTOOL-014, JSTOOL-017, NPM-006
 
@@ -340,7 +340,7 @@ For agents: `--log-level=warning` (or `error`, `silent`; the CLI default `info` 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [angular.dev: build system migration](https://angular.dev/tools/cli/build-system-migration) ([raw](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/tools/cli/build-system-migration.md)), [angular-cli CHANGELOG](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [`@angular/build` environment-options.ts](https://github.com/angular/angular-cli/blob/main/packages/angular/build/src/utils/environment-options.ts), [angular-cli commit 585d08af8](https://github.com/angular/angular-cli/commit/585d08af881a35653dc5e7b1ee7a75b42e154517)
 - Related: CSS-016, NG-002, JSTOOL-014, JSTOOL-020
 
@@ -358,7 +358,7 @@ Tested 2026-10-17, `@angular/build` 22.2.2 (osrs-tracker-web lockfile), Node 24.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [nest-cli 12.0.0 release](https://github.com/nestjs/nest-cli/releases/tag/12.0.0), [nest-cli `build.command.ts`](https://github.com/nestjs/nest-cli/blob/master/commands/build.command.ts), [nest-cli `rspack-defaults.ts`](https://github.com/nestjs/nest-cli/blob/master/lib/compiler/defaults/rspack-defaults.ts), [Nest docs: SWC recipe](https://docs.nestjs.com/recipes/swc), [Nest docs: migration guide](https://docs.nestjs.com/migration-guide), [nestjs/schematics 12.0.7 `nest-cli.json`](https://github.com/nestjs/schematics/blob/12.0.7/src/lib/application/files/ts/nest-cli.json)
 - Related: JSTEST-007, JSTEST-008, JSTOOL-016, JSTOOL-019, TS-009, DOCKER-005
 
@@ -377,7 +377,7 @@ Conflict: the 12.0.0 notes say rspack "is the builder that `nest new` scaffolds 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Announcing Rspack 2.0](https://rspack.rs/blog/announcing-2-0) ([raw](https://raw.githubusercontent.com/web-infra-dev/rspack/main/website/docs/en/blog/announcing-2-0.mdx)), [Announcing Rsbuild 2.0](https://rsbuild.rs/blog/v2-0) ([raw](https://raw.githubusercontent.com/web-infra-dev/rsbuild/main/website/docs/en/blog/v2-0.mdx)), [Rspack CLI](https://rspack.rs/api/cli)
 - Related: JSTOOL-018, JSTOOL-021, JSTOOL-020
 
@@ -393,7 +393,7 @@ Where it fits: moving a webpack app off webpack (the reason Nest adopted it, JST
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [ESLint CLI](https://eslint.org/docs/latest/use/command-line-interface), [Oxlint output formats](https://oxc.rs/docs/guide/usage/linter/output-formats), [Biome CLI](https://biomejs.dev/reference/cli/), [Prettier CLI](https://prettier.io/docs/cli), [knip reporters](https://knip.dev/features/reporters), [Vite CLI](https://vite.dev/guide/cli), [`@angular/build` environment-options.ts](https://github.com/angular/angular-cli/blob/main/packages/angular/build/src/utils/environment-options.ts), [esbuild API](https://esbuild.github.io/api/), [TSConfig: pretty](https://www.typescriptlang.org/tsconfig/#pretty)
 - Related: TOK-108, TOK-109, JSTOOL-002, JSTOOL-008, HOOK-027
 
@@ -420,7 +420,7 @@ Tested 2026-10-17, Claude Code 2.1.299 Bash tool, `@angular/build` 22.2.2 on osr
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Rolldown: getting started](https://rolldown.rs/guide/getting-started), [angular.dev: build system migration](https://angular.dev/tools/cli/build-system-migration), [Nest docs: SWC recipe](https://docs.nestjs.com/recipes/swc), [Announcing Rsbuild 2.0](https://rsbuild.rs/blog/v2-0), [esbuild: TypeScript caveats](https://esbuild.github.io/content-types/#typescript-caveats)
 - Related: JSTOOL-014, JSTOOL-015, JSTOOL-016, JSTOOL-017, JSTOOL-018, JSTOOL-019, NODE-003, DOCKER-005
 
@@ -469,7 +469,7 @@ Tested 2026-10-28, `eslint@10.13.0`, `angular-eslint@22.6.0`, `typescript-eslint
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [better-tailwindcss README at v4.10.0](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/README.md), [no-restricted-classes](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/docs/rules/no-restricted-classes.md), [no-unknown-classes](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/docs/rules/no-unknown-classes.md), [Angular setup](https://raw.githubusercontent.com/schoero/eslint-plugin-better-tailwindcss/v4.10.0/docs/parsers/angular.md), [eslint-plugin-tailwindcss README at v4.4.0](https://raw.githubusercontent.com/francoismassart/eslint-plugin-tailwindcss/v4.4.0/README.md), npm registry (`npm view <pkg>@<version> peerDependencies`, `'time[<version>]'`)
 - Related: JSTOOL-022, SPACE-019, JSTOOL-005
 

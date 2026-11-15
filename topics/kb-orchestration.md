@@ -83,7 +83,7 @@ How to split work across several Claude agents, which mechanism to use for it, a
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Run agents in parallel](https://code.claude.com/docs/en/agents), [Dynamic workflows](https://code.claude.com/docs/en/workflows)
 - Related: ORCH-010, ORCH-011, ORCH-013, ORCH-047
 
@@ -108,7 +108,7 @@ They also warn: "Running several sessions or subagents at once multiplies token 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
 - Related: ORCH-003, ORCH-004, ORCH-009
 
@@ -138,7 +138,7 @@ Gotchas:
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents – choose a model](https://code.claude.com/docs/en/sub-agents), [Model config](https://code.claude.com/docs/en/model-config), [Agent teams](https://code.claude.com/docs/en/agent-teams), [Workflows](https://code.claude.com/docs/en/workflows)
 - Related: ORCH-004, ORCH-005, ORCH-030
 
@@ -161,7 +161,7 @@ A model given at spawn overrides the model a repo agent pins in its file. To kee
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents – effort level](https://code.claude.com/docs/en/sub-agents), [Model config – effort](https://code.claude.com/docs/en/model-config)
 - Related: ORCH-003, ORCH-028
 
@@ -179,7 +179,7 @@ The model default matters. In Claude Code, Opus 5.5, Sonnet 5.5 and Haiku 5.5 de
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents – built-in subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-003, ORCH-030, ORCH-033, TOK-107
 
@@ -202,7 +202,7 @@ Explore and Plan have "read-only tools; Write and Edit are denied", so they can'
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Env vars](https://code.claude.com/docs/en/env-vars), [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
 - Related: ORCH-007, ORCH-008, ORCH-037
 
@@ -219,7 +219,7 @@ The SDK docs warn that Opus 5 "delegates to subagents more readily than earlier 
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Tools reference – Agent tool](https://code.claude.com/docs/en/tools-reference), [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents)
 - Related: ORCH-008, ORCH-034, ORCH-035, REPO-010, TOK-006, TOK-103, TOK-105
 
@@ -250,7 +250,7 @@ The brief is the only channel down (TOK-103); how results arrive and when they s
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents – fork](https://code.claude.com/docs/en/sub-agents), [Run agents in parallel](https://code.claude.com/docs/en/agents)
 - Related: ORCH-007, ORCH-022
 
@@ -268,7 +268,7 @@ A fork "inherits the entire conversation so far instead of starting fresh", alon
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Subagents](https://code.claude.com/docs/en/sub-agents), [Agent view](https://code.claude.com/docs/en/agent-view)
 - Related: ORCH-010, ORCH-023, ORCH-024
 
@@ -297,7 +297,7 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an Agent call with `subagent_type: 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Agent teams](https://code.claude.com/docs/en/agent-teams), [Costs](https://code.claude.com/docs/en/costs), [Run agents in parallel](https://code.claude.com/docs/en/agents)
 - Related: ORCH-001, ORCH-009, ORCH-020
 
@@ -320,7 +320,7 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an Agent call with `subagent_type: 
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Dynamic workflows](https://code.claude.com/docs/en/workflows)
 - Related: ORCH-001, ORCH-034, ORCH-038, ORCH-040, ORCH-048, ORCH-049, ORCH-050
 
@@ -342,11 +342,11 @@ A workflow is a JavaScript script, written by Claude and run by a runtime in the
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Run agents in parallel](https://code.claude.com/docs/en/agents), [Best practices: Run sessions in parallel](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-009, ORCH-014
 
-`/batch` is a bundled skill that "has Claude split one large change into 5 to 30 worktree-isolated subagents". It is a packaged use of subagents and worktrees, not a separate coordination style. Best practices adds that it "splits the work into 5 to 30 units and shows you the plan. Then it runs each unit in its own worktree and opens a PR for it." Outside a git repo it needs a `WorktreeCreate` hook (v2.1.281+).
+`/batch` is a bundled skill that "has Claude split one large change into 5 to 30 worktree-isolated subagents". It is a packaged use of subagents and worktrees, not a separate coordination style. Best practices adds that it "splits the work into 5 to 30 units and shows you the plan. Once you approve it, each unit gets its own worktree and opens a PR or reports what happened." Outside a git repo it needs a `WorktreeCreate` hook (v2.1.281+).
 
 It fits a repetitive change across many independent files: a lint-rule migration, an API rename, adding types module by module. It does not fit changes that need a shared design decided first. Settle the contract yourself, then batch.
 
@@ -354,7 +354,7 @@ It fits a repetitive change across many independent files: a lint-rule migration
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Agent view](https://code.claude.com/docs/en/agent-view), [Run agents in parallel](https://code.claude.com/docs/en/agents)
 - Related: ORCH-001, ORCH-009, ORCH-020
 
@@ -378,7 +378,7 @@ It fits a repetitive change across many independent files: a lint-rule migration
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Headless](https://code.claude.com/docs/en/headless), [CLI reference](https://code.claude.com/docs/en/cli-reference), [Best practices: Run Claude from a script](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-012, ORCH-038
 
@@ -400,7 +400,7 @@ All processes share one plan or API rate limit.
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [SDK cost tracking](https://code.claude.com/docs/en/agent-sdk/cost-tracking), [SDK sessions](https://code.claude.com/docs/en/agent-sdk/sessions), [SDK agent loop](https://code.claude.com/docs/en/agent-sdk/agent-loop)
 - Related: ORCH-003, ORCH-006, ORCH-038
 
@@ -422,7 +422,7 @@ All processes share one plan or API rate limit.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web), [GitHub Actions](https://code.claude.com/docs/en/github-actions)
 - Related: ORCH-017, ORCH-020
 
@@ -443,7 +443,7 @@ All processes share one plan or API rate limit.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Scheduled tasks](https://code.claude.com/docs/en/scheduled-tasks), [Routines](https://code.claude.com/docs/en/routines), [Desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks), local test (routine runs 2026-10-12)
 - Related: ORCH-016, REPO-030, SKILL-060
 
@@ -454,7 +454,7 @@ All processes share one plan or API rate limit.
 | Runs on | Anthropic cloud (fresh clone) | Your machine (app open, awake) | Your open session |
 | Minimum interval | 1 hour | 1 minute | 1 minute |
 | Local files | No | Yes | Yes |
-| Permissions | Autonomous, no prompts | Per task | Inherited from the session |
+| Permissions | Auto mode by default (classifier; ask rules and repeated blocks can still pause a run) | Per task | Inherited from the session |
 | Expiry or caps | 100 scheduled runs/hour/account | One catch-up run within 7 days | Recurring tasks expire after 7 days; 50 per session |
 
 Notes:
@@ -468,7 +468,7 @@ Docs: "Use cloud tasks for work that should run reliably without your machine. U
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview), [Multi-agent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 - Related: ORCH-011, ORCH-015, CAPI-036, CAPI-038, CAPI-064, CAPI-067
 
@@ -485,7 +485,7 @@ Use it when you are building a product that needs long-running asynchronous agen
 - Type: tool
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Hooks](https://code.claude.com/docs/en/hooks), [Agent teams](https://code.claude.com/docs/en/agent-teams)
 - Related: ORCH-037, ORCH-039
 
@@ -505,7 +505,7 @@ Matchers on `SubagentStart` and `SubagentStop` take the agent type, so you can t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Multi-agent research system (2025-06-13)](https://www.anthropic.com/engineering/multi-agent-research-system), [When and how to use multi-agent (2026-01-23)](https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them), [Costs](https://code.claude.com/docs/en/costs), [Agent view](https://code.claude.com/docs/en/agent-view), [C compiler (2026-02-05)](https://www.anthropic.com/engineering/building-c-compiler)
 - Related: ORCH-021, ORCH-038
 
@@ -525,7 +525,7 @@ The 15× and 3–10× figures measure different baselines (versus chat and versu
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [When and how](https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them), [Subagents](https://code.claude.com/docs/en/sub-agents), [Agent teams](https://code.claude.com/docs/en/agent-teams), [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence)
 - Related: ORCH-022, ORCH-023, ORCH-047
 
@@ -549,7 +549,7 @@ Also when the work "fans out across genuinely independent files, documents, or c
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [When and how to use multi-agent](https://claude.com/blog/building-multi-agent-systems-when-and-how-to-use-them)
 - Related: ORCH-021, ORCH-024
 
@@ -565,7 +565,7 @@ The practical consequence is to keep a feature and its tests in the same unit. A
 - Type: pattern
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Cognition – Multi-Agents: What's Actually Working (2026-04-22)](https://cognition.ai/blog/multi-agents-working), [Run agents in parallel](https://code.claude.com/docs/en/agents), [Superpowers SDD](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md), [C compiler](https://www.anthropic.com/engineering/building-c-compiler)
 - Related: ORCH-009, ORCH-024, ORCH-045
 
@@ -584,7 +584,7 @@ Anthropic's 16-agent C compiler had all three and still saw frequent merge confl
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Cognition – Don't build multi-agents](https://cognition.ai/blog/dont-build-multi-agents), [Agent teams](https://code.claude.com/docs/en/agent-teams), [Superpowers parallel agents](https://github.com/obra/superpowers/blob/main/skills/dispatching-parallel-agents/SKILL.md)
 - Related: ORCH-022, ORCH-023, ORCH-035
 
@@ -601,7 +601,7 @@ A unit can run in parallel when it can finish without knowing how the others tur
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Agent teams](https://code.claude.com/docs/en/agent-teams), [Workflows](https://code.claude.com/docs/en/workflows)
 - Related: ORCH-020, ORCH-037
 
@@ -646,7 +646,7 @@ Other pricing details:
 - Type: recommendation
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model), [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence), [Haiku 5.5 launch](https://www.anthropic.com/claude-haiku-5-5), [Sonnet 5.5 launch](https://www.anthropic.com/claude-sonnet-5-5), [Opus 5.5 launch](https://www.anthropic.com/claude-opus-5-5), [Costs](https://code.claude.com/docs/en/costs)
 - Related: ORCH-026, ORCH-029, ORCH-030
 
@@ -673,7 +673,7 @@ The Claude Code costs page still says "Sonnet handles most coding tasks well… 
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Model config](https://code.claude.com/docs/en/model-config), [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Sonnet 5.5 launch](https://www.anthropic.com/claude-sonnet-5-5)
 - Related: ORCH-004, ORCH-029, ORCH-033, TOK-055
 
@@ -698,7 +698,7 @@ Other details:
 - Type: fact
 - Applies to: Claude API, general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence), [Research system](https://www.anthropic.com/engineering/multi-agent-research-system)
 - Related: ORCH-021, ORCH-027, ORCH-030, CAPI-028
 
@@ -717,7 +717,7 @@ The process Anthropic recommends:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Costs](https://code.claude.com/docs/en/costs), [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model), [Haiku 5.5 launch](https://www.anthropic.com/claude-haiku-5-5), [Code-review plugin](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-review/commands/code-review.md), [Superpowers SDD](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md)
 - Related: ORCH-027, ORCH-028, ORCH-033, ORCH-042
 
@@ -739,7 +739,7 @@ Set the model on every spawn, unless a repo agent pins its own (ORCH-003). Escal
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Model config](https://code.claude.com/docs/en/model-config), [Fable on your plan](https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan), [Pro/Max usage](https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan)
 - Related: ORCH-003, ORCH-026
 
@@ -762,13 +762,13 @@ Set the model on every spawn, unless a repo agent pins its own (ORCH-003). Escal
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Fast mode](https://code.claude.com/docs/en/fast-mode), [Pricing – fast mode](https://platform.claude.com/docs/en/about-claude/pricing#fast-mode-pricing)
 - Related: ORCH-026
 
-`/fast` runs the same Opus model in a speed-priority configuration, up to 2.5× faster output. It is not a smaller model.
+`/fast` runs the same model (Opus or Fable) in a speed-priority configuration, up to 2.5× faster output. It is not a smaller model.
 
-**Availability:** Opus 5.5, Opus 5 and Opus 4.8 only; not Sonnet or Haiku. Priced at $8/$40 per MTok on Opus 5.5.
+**Availability:** Fable 5.2, Opus 5.5, Opus 5 and Opus 4.8; not Sonnet or Haiku. Opus 5 and 4.8 are a research preview, and Opus 4.8 fast mode is deprecated (removed 2026-11-30). Priced at $8/$40 per MTok on Opus 5.5 and $16/$80 on Fable 5.2.
 
 **Billing:** on subscription plans it is billed through usage credits, outside plan limits. It has its own rate-limit pool and falls back to standard speed when limited. Enable it at session start, because the first enable re-bills the whole context at the uncached fast price.
 
@@ -778,7 +778,7 @@ Set the model on every spawn, unless a repo agent pins its own (ORCH-003). Escal
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Superpowers SDD – model selection](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md), [Effort](https://platform.claude.com/docs/en/build-with-claude/effort), [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence)
 - Related: ORCH-028, ORCH-030
 
@@ -810,8 +810,8 @@ The post's criterion: "The pattern works particularly well for structured output
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
-- Sources: [Superpowers SDD](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md), [Workflows – schema](https://code.claude.com/docs/en/workflows), [CLI reference – json-schema](https://code.claude.com/docs/en/cli-reference)
+- Last verified: 2026-11-15
+- Sources: [Superpowers SDD](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md), [Workflows – schema](https://code.claude.com/docs/en/workflows), [CLI reference – json-schema](https://code.claude.com/docs/en/cli-reference), [superpowers SDD: handling reports](https://raw.githubusercontent.com/obra/superpowers/main/skills/subagent-driven-development/references/handling-reports.md)
 - Related: ORCH-034, ORCH-037
 
 Have each subagent open its report with a status code the orchestrator can route on:
@@ -840,7 +840,7 @@ Superpowers uses the four statuses above. Our skill adds `HANDOFF` for budget ex
 - Type: pattern
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Effective harnesses for long-running agents (2025-11-26)](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents), [Harness design for long-running apps](https://www.anthropic.com/engineering/harness-design-long-running-apps), [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Magentic-One](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/magentic-one.html)
 - Related: ORCH-034, ORCH-041
 
@@ -858,7 +858,7 @@ Compaction and resets:
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Agent teams](https://code.claude.com/docs/en/agent-teams), [C compiler](https://www.anthropic.com/engineering/building-c-compiler), [Harness design](https://www.anthropic.com/engineering/harness-design-long-running-apps), [Coordination patterns (2026-04-10)](https://claude.com/blog/multi-agent-coordination-patterns)
 - Related: ORCH-024, ORCH-038, ORCH-039
 
@@ -879,7 +879,7 @@ Compaction and resets:
 - Type: recommendation
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [CLI reference](https://code.claude.com/docs/en/cli-reference), [SDK cost tracking](https://code.claude.com/docs/en/agent-sdk/cost-tracking), [Workflows](https://code.claude.com/docs/en/workflows), [Costs](https://code.claude.com/docs/en/costs), [GitHub Actions](https://code.claude.com/docs/en/github-actions)
 - Related: ORCH-014, ORCH-015, ORCH-020
 
@@ -899,7 +899,7 @@ Interactive Claude Code has no per-spawn dollar cap. Bound cost there through mo
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Best practices: Give Claude a check to run, What you can stop doing](https://code.claude.com/docs/en/best-practices), [Coordination patterns](https://claude.com/blog/multi-agent-coordination-patterns), [Cognition 2026](https://cognition.ai/blog/multi-agents-working), [Code-review plugin](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-review/commands/code-review.md)
 - Related: ORCH-022, ORCH-042, ORCH-046
 
@@ -916,7 +916,7 @@ Rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Prompt caching](https://code.claude.com/docs/en/prompt-caching), [Workflows – caching](https://code.claude.com/docs/en/workflows), [Settings reference](https://code.claude.com/docs/en/settings-reference)
 - Related: ORCH-011, ORCH-020, TOK-052
 
@@ -936,7 +936,7 @@ Rules:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [obra/superpowers (297,942 stars on 2026-10-12)](https://github.com/obra/superpowers), [SDD skill](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md), [Parallel agents skill](https://github.com/obra/superpowers/blob/main/skills/dispatching-parallel-agents/SKILL.md)
 - Related: ORCH-035, ORCH-039, ORCH-033, TOK-103, TOK-104, SKPACK-001
 
@@ -976,7 +976,7 @@ The pattern: cheap models for gates and lookups, mid-tier for rule checking, top
 - Type: tool
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [claude-squad](https://github.com/smtg-ai/claude-squad), [vibe-kanban](https://github.com/BloopAI/vibe-kanban), [ccmanager](https://github.com/kbwo/ccmanager), [Conductor docs](https://www.conductor.build/docs/), [Crystal](https://github.com/stravu/crystal)
 - Related: ORCH-009, ORCH-013
 
@@ -996,7 +996,7 @@ Native agent view (`claude agents`) plus automatic worktrees per background sess
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Aider architect/editor (2024)](https://aider.chat/2024/09/26/architect.html), [Amp models and subagents](https://ampcode.com/docs/models-and-subagents), [Cursor worktrees](https://cursor.com/docs/configuration/worktrees), [OpenAI Agents SDK multi-agent](https://openai.github.io/openai-agents-python/multi_agent/), [Magentic-One](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/magentic-one.html), [langgraph-supervisor](https://github.com/langchain-ai/langgraph-supervisor-py), [Gemini CLI subagents](https://geminicli.com/docs/core/subagents/), [spec-kit](https://github.com/github/spec-kit)
 - Related: ORCH-029, ORCH-036, SDD-001, SDD-003
 
@@ -1016,7 +1016,7 @@ Cursor documents a worktree per agent task and `/best-of-n`, which "runs the sam
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Cognition – Don't Build Multi-Agents (2025-06-12)](https://cognition.ai/blog/dont-build-multi-agents), [Cognition – Multi-Agents: What's Actually Working (2026-04-22)](https://cognition.ai/blog/multi-agents-working), [Anthropic research system](https://www.anthropic.com/engineering/multi-agent-research-system), [Coordination patterns](https://claude.com/blog/multi-agent-coordination-patterns)
 - Related: ORCH-023, ORCH-039
 
@@ -1040,7 +1040,7 @@ Cursor documents a worktree per agent task and `/best-of-n`, which "runs the sam
 - Type: fact
 - Applies to: general
 - Confidence: unverified
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Agentic Rubrics, arXiv 2601.04171](https://arxiv.org/abs/2601.04171), [SWE-Gym, arXiv 2412.21139](https://arxiv.org/abs/2412.21139)
 - Related: ORCH-039
 
@@ -1054,7 +1054,7 @@ So spending N× tokens on parallel attempts pays only when you have an executabl
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: synthesis of ORCH-001 to ORCH-046
 - Related: ORCH-001, ORCH-021, ORCH-030
 
@@ -1080,7 +1080,7 @@ So spending N× tokens on parallel attempts pays only when you have an executabl
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Dynamic workflows](https://code.claude.com/docs/en/workflows), [Plugins reference – workflows](https://code.claude.com/docs/en/plugins-reference), [parallel-code-orchestrator SKILL.md at be126d4](https://github.com/FreekMencke/claude-skills/blob/be126d4dd488/plugins/freek-skills/skills/parallel-code-orchestrator/SKILL.md)
 - Related: ORCH-011, ORCH-012, ORCH-021, ORCH-024, ORCH-039, ORCH-047
 
@@ -1094,7 +1094,7 @@ Where a workflow wins is a check we repeat in the same shape, such as a reviewer
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Dynamic workflows](https://code.claude.com/docs/en/workflows), [Settings reference – workflowSizeGuideline](https://code.claude.com/docs/en/settings-reference), [Model config – ultracode](https://code.claude.com/docs/en/model-config), [Subagents – concurrent limit](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-011, ORCH-020, ORCH-025, ORCH-038, ORCH-040
 
@@ -1110,7 +1110,7 @@ Tested 2026-10-17, v2.1.296, terminal `claude -p` on Haiku 5.5: a three-agent wo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Dynamic workflows – approve the plan](https://code.claude.com/docs/en/workflows), [claude-code CHANGELOG 2.1.210](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [claude-code-action package.json](https://github.com/anthropics/claude-code-action/blob/main/package.json)
 - Related: ORCH-011, ORCH-014, ORCH-016, ORCH-038
 
