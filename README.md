@@ -331,6 +331,12 @@ routine, not in this repo.
 
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`; pause or delete it on the routines page.
+- **Reading GitHub in its sessions:** `curl` and `gh` against github.com pages and api.github.com return 403 there
+  (2026-11-15: every checking subagent hit it), so star counts, release dates and issue state went unchecked. What
+  works: `raw.githubusercontent.com`, `gh api` REST routes for the session's own repositories, and the GitHub tools
+  (`mcp__github__issue_read`, `get_file_contents`, `get_latest_release`, `list_releases`, `pull_request_read`), which a
+  subagent loads with ToolSearch. They reach only repositories in the session's scope. Tell subagents this in their
+  brief, and treat what they can't read as "not found", never as wrong.
 - **Between runs, source changes:** [sources.yml](.github/workflows/sources.yml) runs every Monday at 05:47 UTC with
   [check-sources.ts](scripts/check-sources.ts): it reports pages whose normalised text changed, with the entries citing
   them, only the added bullets of the claude-code CHANGELOG, and each quote of 6+ words it can't find in the entry's
