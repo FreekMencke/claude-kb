@@ -55,7 +55,7 @@ Prefix: DOC. Researched 2026-10-13 against the sources live that day and the `or
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/), [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), [keep-a-changelog CHANGELOG.md](https://raw.githubusercontent.com/olivierlacan/keep-a-changelog/main/CHANGELOG.md)
 - Related: DOC-002, DOC-003, DOC-004, DOC-008
 
@@ -78,7 +78,7 @@ Read in full with `curl` and grepped (HTML stripped).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-001, DOC-018, DOC-006
 
@@ -132,7 +132,7 @@ A standard WebSearch found no other spec for date-only changelogs (not verified 
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Common Changelog README](https://raw.githubusercontent.com/vweevers/common-changelog/main/README.md)
 - Related: DOC-001, DOC-004, DOC-006
 
@@ -175,7 +175,7 @@ None of their READMEs say whether the result is a good changelog.
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [claude-code CHANGELOG.md](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [Claude Code changelog page](https://code.claude.com/docs/en/changelog.md), [anthropic-sdk-python CHANGELOG.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CHANGELOG.md), [anthropic-sdk-python CLAUDE.md](https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CLAUDE.md)
 - Related: DOC-003, DOC-006, TOK-089
 
@@ -230,7 +230,7 @@ There is little direct guidance. Grepping best-practices, memory and common-work
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [anthropics/skills doc-coauthoring](https://raw.githubusercontent.com/anthropics/skills/main/skills/doc-coauthoring/SKILL.md), [claude-plugins-official](https://github.com/anthropics/claude-plugins-official)
 - Related: DOC-015, MEM-021, SKILL-021
 
@@ -248,7 +248,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: comparison
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Nygard: Documenting Architecture Decisions (2011, Wayback)](https://web.archive.org/web/2023/https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions), [MADR minimal template](https://raw.githubusercontent.com/adr/madr/main/template/adr-template-minimal.md), [MADR releases](https://github.com/adr/madr/releases), [adr-tools](https://github.com/npryce/adr-tools), [adr.github.io](https://adr.github.io/)
 - Related: DOC-021, DOC-010, REPO-044
 
@@ -266,7 +266,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GitHub: About READMEs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes), [standard-readme spec](https://raw.githubusercontent.com/RichardLitt/standard-readme/main/spec.md), [Diátaxis](https://diataxis.fr/)
 - Related: DOC-009, DOC-013, DOC-017
 
@@ -282,7 +282,7 @@ Ours: the `refresh-md-files` skill (FreekMencke/claude-skills) audits `.md` docs
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Google documentation best practices](https://google.github.io/styleguide/docguide/best_practices.html)
 - Related: DOC-014, DOC-020, DOC-022
 
@@ -320,7 +320,7 @@ None of these checks whether a doc is true, only its form and links.
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Routines: use cases](https://code.claude.com/docs/en/routines.md), [claude-code-action: custom automations](https://raw.githubusercontent.com/anthropics/claude-code-action/main/docs/custom-automations.md), [anthropics/claude-code#7103](https://github.com/anthropics/claude-code/issues/7103)
 - Related: DOC-010, DOC-013, DOC-024, REPO-018, REPO-030, ORCH-017
 
@@ -336,7 +336,7 @@ None of these checks whether a doc is true, only its form and links.
 - Type: recommendation
 - Applies to: general
 - Confidence: unverified
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 - Related: TOK-062, PROMPT-015, DOC-012, WRITE-007, WRITE-009
 
@@ -359,7 +359,7 @@ Community guides (Fern, Mintlify, Sentry) give the same advice. A subagent saw t
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [osrs-tracker org repos](https://github.com/osrs-tracker), [FreekMencke repos](https://github.com/FreekMencke); read with `git ls-tree origin/main` and `git show origin/main:<file>` in each local checkout after `git fetch`, 2026-10-13; the osrs-tracker-aws and osrs-tracker-packages rows re-read on GitHub `main`, 2026-10-18
 - Related: DOC-018, DOC-021, DOC-022, DOC-023
 
@@ -383,7 +383,7 @@ A spot check of README version claims against `package.json` and Dockerfiles fou
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: each repo's `CHANGELOG.md`, `CLAUDE.md`, repo skill and `conventions-reviewer.md` on `origin/main`, 2026-10-13, re-read 2026-10-14; [Keep a Changelog 2.0.0](https://keepachangelog.com/en/2.0.0/)
 - Related: DOC-001, DOC-002, DOC-004, DOC-019, SESS-026
 
@@ -416,14 +416,14 @@ solix follows the spec apart from a seventh "Development" type. claude-kb's tabl
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [osrs-tracker-api CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/CLAUDE.md), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [osrs-tracker-web skill](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/skills/osrs-tracker-web/SKILL.md), read on `origin/main` 2026-10-13
 - Related: DOC-003, DOC-018, REPO-044, MEM-023
 
 Each osrs-tracker repo states its changelog rule in CLAUDE.md, again in the repo skill's conventions, and a third time as a cross-file pair in the skill's review rules, which `conventions-reviewer` reads. On 2026-10-13 the copies had diverged (fixed the same day, see Recommendations item 3):
 
 - **osrs-tracker-api.** CLAUDE.md: "Every change gets a `CHANGELOG.md` entry". Review rules: "a user-visible change and `CHANGELOG.md`". The reviewer won't flag a missing entry for a tooling change that CLAUDE.md requires.
-- **osrs-tracker-web.** CLAUDE.md: "Every change to the app, its dependencies or tooling (except Dependabot PRs)". Review rules: "a user-visible change and `CHANGELOG.md`". Same gap.
+- **osrs-tracker-web.** CLAUDE.md: `Every change to the app, its dependencies or tooling (except Dependabot PRs)` on 2026-10-13 (now "Every change to the app, its dependencies or tooling gets a user-facing" changelog entry). Review rules: "a user-visible change and `CHANGELOG.md`". Same gap.
 - **osrs-tracker-aws and home-cluster (now fremen-cluster)** were consistent ("a change and its `CHANGELOG.md` entry", "any change and `CHANGELOG.md`").
 
 The repos already apply this fix to agents: "keep rules here, not in the agent". Apply it one level further. State the rule once (CLAUDE.md for the hard rule, or the skill for its details), and make the review-rule pair point to it: "a change that needs an entry under CLAUDE.md's changelog rule and `CHANGELOG.md`". A copy that's only a pointer can't drift.
@@ -432,7 +432,7 @@ The repos already apply this fix to agents: "keep rules here, not in the agent".
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: review rules in the [osrs-tracker-api](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [osrs-tracker-aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/SKILL.md) and [osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/skills/osrs-tracker-web/SKILL.md) skills, [fremen-cluster conventions-reviewer.md](https://github.com/FreekMencke/fremen-cluster/blob/main/.claude/agents/conventions-reviewer.md) (private), read on `origin/main` 2026-10-13
 - Related: DOC-013, DOC-015, DOC-019, REPO-044
 
@@ -444,7 +444,7 @@ Our reviewers check pairs of files "against the whole diff". Each pair is a doc 
   - A new env var and `Env`/`validateEnv`/`.env.example`.
   - A change and `CHANGELOG.md`.
 - **osrs-tracker-aws.**
-  - A Mongo write, query or index and `DATA-MODEL.md` ("its rows must match the change").
+  - Since 2026-11-15 the Mongo write and `DATA-MODEL.md` pair is gone: the data model moved to osrs-tracker-api's `DATA-MODEL.md` (osrs-tracker-api#205) and aws's skill lists only a change and its `CHANGELOG.md` entry, except where `CLAUDE.md` exempts it.
   - A Lambda's trigger or env vars and its README (a CLAUDE.md rule in aws, not in its review-rule pairs).
 - **osrs-tracker-packages** (since 2026-10-18, read that day).
   - A change to the stored hiscore format or a stored document's type in `models` and osrs-tracker-aws's `DATA-MODEL.md` (or an issue there).
@@ -460,7 +460,7 @@ Our reviewers check pairs of files "against the whole diff". Each pair is a doc 
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [osrs-tracker-web docs/decisions.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/decisions.md), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [fremen-cluster README.md](https://github.com/FreekMencke/fremen-cluster/blob/main/README.md) (private), read on `origin/main` 2026-10-13
 - Related: DOC-011, DOC-020, REPO-044
 
@@ -501,7 +501,7 @@ fremen-cluster's (home-cluster until 2026-10-21) Kubernetes upgrade plan opens w
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [osrs-tracker-web docs/runbook.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/runbook.md), [osrs-tracker-aws DEPLOY.md](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/skills/osrs-tracker-aws/DEPLOY.md), [osrs-tracker-api skill](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/skills/osrs-tracker-api/SKILL.md), [fremen-cluster docs/rebuild.md](https://github.com/FreekMencke/fremen-cluster/blob/main/docs/rebuild.md) (private), read on `origin/main` 2026-10-13
 - Related: DOC-012, SKILL-021, REPO-044
 
@@ -524,7 +524,7 @@ By that rule, api's and aws's rollback steps are in the wrong place. Today only 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-13
+- Last verified: 2026-11-15
 - Sources: [osrs-tracker/osrs-tracker-web#231](https://github.com/osrs-tracker/osrs-tracker-web/pull/231), [osrs-tracker/osrs-tracker-api#137](https://github.com/osrs-tracker/osrs-tracker-api/pull/137), [osrs-tracker/osrs-tracker-api#136](https://github.com/osrs-tracker/osrs-tracker-api/pull/136)
 - Related: DOC-015, DOC-020, REPO-018, SKILL-060
 

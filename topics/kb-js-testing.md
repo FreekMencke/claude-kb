@@ -78,7 +78,7 @@ Tested 2026-10-17, vitest@5.0.5, Node 24.21.0: with no config, a module-level `v
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Vitest 4 migration guide](https://v4.vitest.dev/guide/migration) ([raw at v4.1.12](https://raw.githubusercontent.com/vitest-dev/vitest/v4.1.12/docs/guide/migration.md)), npm registry
 - Related: JSTEST-001, JSUP-003, JSUP-008
 
@@ -98,7 +98,7 @@ Path from 3.x: apply the 4 guide, run the suite, then the 5 guide (JSTEST-001), 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Vitest config: fsModuleCache](https://vitest.dev/config/fsmodulecache) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/config/fsmodulecache.md)), [fsModuleCachePath](https://vitest.dev/config/fsmodulecachepath), [angular-cli CHANGELOG 22.2.3](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md), [angular/angular-cli#34311](https://github.com/angular/angular-cli/pull/34311)
 - Related: JSTEST-001, JSTEST-004, JSTEST-008
 
@@ -108,13 +108,13 @@ What an agent sees: it changes `tsconfig.json` or a plugin option, reruns, and n
 
 Tested 2026-10-17, vitest@5.0.5 with vite@8.3.4, Node 24.21.0: after flipping `emitDecoratorMetadata` in `tsconfig.json` without touching the spec, the next run kept the old transform (a Nest DI spec stayed failing); `--fsModuleCache=false` passed, and so did a normal run after `vitest --clearCache`.
 
-Angular's `unit-test` builder hands Vitest a bundle, so a change to the code under test alone could reuse the old one. Our two Angular apps hit this and set `fsModuleCache: false` in a `vitest-base.config.ts`; `@angular/build` 22.2.3 (2026-10-15) does it itself: "disable Vitest fsModuleCache in unit-test builder". CI starts from a fresh `node_modules`, so this is a local problem.
+Angular's `unit-test` builder hands Vitest a bundle, so a change to the code under test alone could reuse the old one. Our two Angular apps hit this and set `fsModuleCache: false` in a `vitest-base.config.ts`; `@angular/build` 22.2.3 (2026-10-15) does it itself: "disable Vitest fsModuleCache in unit-test builder". CI starts from a fresh `node_modules`, so this is a local problem. From 22.3 the builder keys the cache on the build output instead of disabling it (changelog 22.3.0-next.4, 2026-10-28).
 
 ## [JSTEST-004] Angular's `unit-test` builder: options, defaults and what it overrides
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Testing overview](https://angular.dev/guide/testing) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/overview.md)), [unit-test schema.json at v22.2.3](https://github.com/angular/angular-cli/blob/v22.2.3/packages/angular/build/src/builders/unit-test/schema.json), [vitest runner configuration.ts and plugins.ts at v22.2.3](https://github.com/angular/angular-cli/tree/v22.2.3/packages/angular/build/src/builders/unit-test/runners/vitest), [angular-cli CHANGELOG](https://raw.githubusercontent.com/angular/angular-cli/main/CHANGELOG.md)
 - Related: NG-009, JSTEST-003, JSTEST-005
 
@@ -134,7 +134,7 @@ What it overrides in that config (plugins.ts): it deletes `test.projects` and `t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Testing overview](https://angular.dev/guide/testing) ([source at v22.2.3](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/testing/overview.md)), [plugins.ts, browser-provider.ts and build-options.ts at v22.2.3](https://github.com/angular/angular-cli/tree/v22.2.3/packages/angular/build/src/builders/unit-test/runners/vitest), [Vitest: Why Browser Mode](https://vitest.dev/guide/browser/why), [Vitest browser mode limitations](https://vitest.dev/guide/browser/)
 - Related: JSTEST-004, JSTEST-006, NG-009
 
@@ -166,7 +166,7 @@ Gotchas: `fakeAsync` is converted to Vitest fake timers only with the `fakeAsync
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Nest migration guide](https://docs.nestjs.com/migration-guide) ([raw](https://raw.githubusercontent.com/nestjs/docs.nestjs.com/master/content/migration.md)), [Nest CLI usages](https://docs.nestjs.com/cli/usages), [Nest testing](https://docs.nestjs.com/fundamentals/testing), [nestjs/schematics application schema at 12.0.7](https://github.com/nestjs/schematics/blob/12.0.7/src/lib/application/schema.json), [Vitest: migrating from Jest](https://vitest.dev/guide/migration/jest) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/migration/jest.md))
 - Related: JSTEST-008, JSTEST-009, JSUP-003
 
@@ -184,7 +184,7 @@ Moving a Jest suite: Nest's guide lists updating the test scripts, replacing run
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Vite features: emitDecoratorMetadata](https://vite.dev/guide/features) ([raw at v8.3.4](https://raw.githubusercontent.com/vitejs/vite/v8.3.4/docs/guide/features.md)), [Oxc transformer: TypeScript](https://oxc.rs/docs/guide/usage/transformer/typescript), [esbuild: TypeScript caveats](https://esbuild.github.io/content-types/#typescript-caveats), [Nest recipe: SWC](https://docs.nestjs.com/recipes/swc), [nestjs/schematics ts-esm template at 12.0.7](https://github.com/nestjs/schematics/tree/12.0.7/src/lib/application/files/ts-esm)
 - Related: JSTEST-007, JSTEST-003, NODE-004
 
@@ -198,7 +198,7 @@ Tested 2026-10-17, vitest@5.0.5, vite@8.3.4, @nestjs/core and @nestjs/testing 12
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Jest: ECMAScript Modules](https://jestjs.io/docs/ecmascript-modules) ([raw at v30.5.2](https://raw.githubusercontent.com/jestjs/jest/v30.5.2/docs/ECMAScriptModules.md)), [Upgrading to Jest 30](https://jestjs.io/docs/upgrading-to-jest30), [Jest CHANGELOG at v30.5.2](https://raw.githubusercontent.com/jestjs/jest/v30.5.2/CHANGELOG.md), [Nest migration guide](https://docs.nestjs.com/migration-guide), npm registry
 - Related: JSTEST-007, NPM-014, TS-009, NODE-010
 
@@ -214,11 +214,11 @@ Upgrade traps from the Jest 30 guide that agents write from habit: removed alias
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
-- Sources: [Playwright release notes](https://playwright.dev/docs/release-notes), [Timeouts](https://playwright.dev/docs/test-timeouts), [Retries](https://playwright.dev/docs/test-retries), [Best practices](https://playwright.dev/docs/best-practices), [Command line](https://playwright.dev/docs/test-cli) (all raw from microsoft/playwright `docs/src/` at v1.64.1), npm registry
+- Last verified: 2026-11-15
+- Sources: [Playwright release notes](https://playwright.dev/docs/release-notes), [Timeouts](https://playwright.dev/docs/test-timeouts), [Retries](https://playwright.dev/docs/test-retries), [Best practices](https://playwright.dev/docs/best-practices), [Command line](https://playwright.dev/docs/test-cli) (all raw from microsoft/playwright `docs/src/` at v1.64.1), npm registry, [Playwright: Page.waitForTimeout](https://playwright.dev/docs/api/class-page#page-wait-for-timeout)
 - Related: JSTEST-011, JSTEST-012
 
-`@playwright/test` latest is 1.64.1 (2026-10-14; 1.64.0 on 2026-10-07), engines `node >=20`. 1.64 forwards `screen` from device descriptors ("`window.screen` and media queries now see the emulated screen size"; opt out with `screen: undefined`), which can change responsive snapshots.
+`@playwright/test` was 1.64.1 on 2026-10-14 (1.64.0 on 2026-10-07; latest on 2026-11-15 is 1.65.1), engines `node >=20`. 1.64 forwards `screen` from device descriptors ("`window.screen` and media queries now see the emulated screen size"; opt out with `screen: undefined`), which can change responsive snapshots.
 
 Defaults: test timeout `30_000 ms`, expect timeout `5_000 ms`, action and navigation "no timeout"; "By default failing tests are not retried"; workers "half of the number of logical CPU cores"; tests within a file run in order unless `fullyParallel`.
 
@@ -234,7 +234,7 @@ Controls, cheapest first:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Web server](https://playwright.dev/docs/test-webserver), [TestConfig](https://playwright.dev/docs/api/class-testconfig), [Emulation: JavaScript enabled](https://playwright.dev/docs/emulation), [API testing](https://playwright.dev/docs/api-testing) (all raw at v1.64.1)
 - Related: JSTEST-010, WEB-014, WEB-015
 
@@ -262,7 +262,7 @@ Server-rendered output, separately from the hydrated page: a project with `use: 
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Playwright Test Agents](https://playwright.dev/docs/test-agents), [healer agent prompt at v1.64.1](https://github.com/microsoft/playwright/blob/v1.64.1/packages/playwright/src/agents/playwright-test-healer.agent.md), [Playwright CLI](https://playwright.dev/docs/getting-started-cli), [playwright-mcp README](https://github.com/microsoft/playwright-mcp), [Reporters](https://playwright.dev/docs/test-reporters), npm registry
 - Related: FLOW-014, REPO-021, SESS-013, JSTEST-010, JSTEST-016, BROWSER-002, BROWSER-004
 
@@ -270,8 +270,8 @@ Server-rendered output, separately from the hydrated page: a project with `use: 
 |---|---|---|
 | A Playwright Test suite | Regressions, as the check an agent runs | Deterministic; the agent reads a pass or fail |
 | Test Agents (1.56+) | Writing or repairing tests | `npx playwright init-agents --loop=claude` writes planner, generator and healer agents to `.claude/agents/` (on `model: sonnet`) plus `.mcp.json`; "should be regenerated whenever Playwright is updated" |
-| Playwright MCP (`@playwright/mcp` 0.0.83) | Looking at a page interactively | Our browser checker (REPO-021); "persistent state and iterative reasoning over page structure" |
-| `@playwright/cli` (0.1.22; bundled as `npx playwright cli` since 1.62) | The same, through Bash and a skill | Vendor: "CLI commands avoid loading large tool schemas and verbose accessibility trees into the model context". In Claude Code it cost more than MCP in our test (BROWSER-002). The unscoped `playwright-cli` package is a different one |
+| Playwright MCP (`@playwright/mcp` 0.0.83) | Looking at a page interactively | Our browser checker (REPO-021); "persistent state, rich introspection, and iterative reasoning over page structure" |
+| `@playwright/cli` (0.1.22; bundled as `npx playwright cli` since 1.62) | The same, through Bash and a skill | Vendor: "CLI invocations are more token-efficient: they avoid loading large tool schemas and verbose accessibility trees into the model context". In Claude Code it cost more than MCP in our test (BROWSER-002). The unscoped `playwright-cli` package is a different one |
 
 The healer can give up by skipping: its prompt says "If the error persists and you have high level of confidence that the test is correct, mark this test as test.fixme()", and "Do not ask user questions". Review its diffs for new `fixme` lines (JSTEST-016).
 
@@ -281,13 +281,13 @@ Output: Playwright doesn't detect agents (the only `CLAUDECODE` check in v1.64.1
 - Type: fact
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Stryker: what is mutation testing](https://stryker-mutator.io/docs/) ([raw](https://raw.githubusercontent.com/stryker-mutator/stryker-mutator.github.io/develop/docs/General/introduction.mdx)), [Thoughtworks Technology Radar: Mutation testing](https://www.thoughtworks.com/radar/techniques/mutation-testing), [Vitest coverage config](https://vitest.dev/config/coverage), [Mutation-Guided LLM-based Test Generation at Meta (arXiv 2501.12862)](https://arxiv.org/abs/2501.12862)
 - Related: JSTEST-014, JSTEST-015, JSTEST-016, PROMPT-028
 
 Coverage counts lines that ran, not whether any assertion would notice them changing. Stryker: "code coverage doesn't tell you everything about the effectiveness of your tests. Think about it, when was the last time you saw a test without an assertion, purely to increase the code coverage?" Mutation testing changes the code (`<` to `<=`, `-` to `+`, a block emptied) and reruns the tests: a mutant that survives is a change no test noticed.
 
-Thoughtworks Radar, published 2026-04-15, ring Trial: "high coverage percentages can mask logically hollow tests or generated code that has never been meaningfully asserted. With AI-generated test cases now commonplace, mutation testing acts as a reinforcement layer for catching "perpetually green" tests — those that pass regardless of logic changes due to missing assertions or decoupled mocks." Meta's ACH (paper submitted 2025-01-22) generates targeted mutants and has an LLM write tests that kill them; engineers "accepted 73% of its tests". It's internal, not a tool you can install.
+Thoughtworks Radar, published 2026-04-15, ring Trial (moved to Adopt in the Nov 2026 edition): "high coverage percentages can mask logically hollow tests or generated code that has never been meaningfully asserted. With AI-generated test cases now commonplace, mutation testing acts as a reinforcement layer for catching "perpetually green" tests — those that pass regardless of logic changes due to missing assertions or decoupled mocks." Meta's ACH (paper submitted 2025-01-22) generates targeted mutants and has an LLM write tests that kill them; engineers "accepted 73% of its tests". It's internal, not a tool you can install.
 
 Tested 2026-10-17, vitest@5.0.5, @vitest/coverage-v8@5.0.5, @stryker-mutator/core and vitest-runner 10.0.0, Node 24.21.0: a three-test, happy-path suite for a tax function scored 100% statements, branches, functions and lines, and a 60% mutation score (6 of 10 mutants killed). The survivors were the `< 50` boundary (`<= 50`, `false`, the emptied block) and `price - tax` turned into `price + tax`, which `toBeDefined()` didn't catch.
 
@@ -313,7 +313,7 @@ Angular's `unit-test` builder isn't supported (#5655, open; a maintainer workaro
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Stryker configuration: reporters, jsonReporter](https://stryker-mutator.io/docs/stryker-js/configuration/), [mutation-testing-report-schema](https://github.com/stryker-mutator/mutation-testing-elements/blob/master/packages/report-schema/src/mutation-testing-report-schema.json), [stryker-js clear-text reporter at v10.0.0](https://github.com/stryker-mutator/stryker-js/blob/v10.0.0/packages/core/src/reporters/clear-text-reporter.ts)
 - Related: JSTEST-013, JSTEST-014, JSTEST-016, TOK-108
 
@@ -337,7 +337,7 @@ Tested 2026-10-17, @stryker-mutator/core 10.0.0, jq on WSL2: the command listed 
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Vitest: Writing tests with AI](https://vitest.dev/guide/learn/writing-tests-with-ai) ([raw at v5.0.5](https://raw.githubusercontent.com/vitest-dev/vitest/v5.0.5/docs/guide/learn/writing-tests-with-ai.md)), [Claude Code best practices: Give Claude a check to run](https://code.claude.com/docs/en/best-practices), [Vitest config: allowOnly](https://vitest.dev/config/allowonly), [nizos/tdd-guard: strengthening enforcement](https://github.com/nizos/tdd-guard/blob/main/docs/enforcement.md)
 - Related: PROMPT-028, FLOW-002, HOOK-028, HOOK-032, JSTEST-012, JSTEST-013, JSTEST-015
 

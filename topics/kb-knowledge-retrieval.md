@@ -71,7 +71,7 @@ Research basis:
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [Karpathy: LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview)
 - Related: RETR-014, RETR-018, JSUP-015, MEM-033
 
@@ -90,7 +90,7 @@ So the questions that matter are about write time and invocation (RETR-018). The
 - Type: recommendation
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Building agents with the Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [Large codebases](https://code.claude.com/docs/en/large-codebases), [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)
 - Related: RETR-003, RETR-011, MCP-034, TOK-041
 
@@ -106,28 +106,26 @@ Anthropic's engineering posts recommend letting the agent search with tools firs
 ## [RETR-003] Claude Code dropped RAG and a local vector database
 - Type: fact
 - Applies to: Claude Code
-- Confidence: unverified
-- Last verified: 2026-10-20
+- Confidence: single-source
+- Last verified: 2026-11-15
 - Sources: [Boris Cherny on X](https://x.com/bcherny/status/2017824286489383315), [Hacker News comment](https://news.ycombinator.com/item?id=43164253)
 - Related: RETR-002, RETR-013
 
 Claude Code's creator has said that early versions used RAG with a local vector database, and that agentic search replaced it.
 
-The wording below comes from search-result text only: x.com and news.ycombinator.com were blocked in this session.
-- **X post, about 2026-02-01:** "Early versions of Claude Code used RAG + a local vector db, but we found pretty quickly that agentic search generally works better. It is also simpler and doesn't have the same issues around security, privacy, staleness, and reliability."
-- **Hacker News comment, 2025-02-24:** begins "Right -- Claude Code doesn't use RAG currently. In our testing we found that age…" (cut off in the snippet).
+Both quotes were read on their own pages on 2026-11-15 (the X post is dated 2026-02-01; the Hacker News comment through its API item 43164253).
+- **X post, about 2026-02-01:** "Early versions of Claude Code used RAG + a local vector db, but we found pretty quickly that agentic search generally works better. It is also simpler and doesn’t have the same issues around security, privacy, staleness, and reliability."
+- **Hacker News comment, 2025-02-24:** "Right -- Claude Code doesn't use RAG currently. In our testing we found that agentic search out-performed RAG for the kinds of things people use Code for."
 
 Secondary write-ups attribute "It outperformed everything. By a lot." to a 2025 podcast. That quote wasn't traced to a transcript.
 
 What the official docs do say is in RETR-002. A grep of `code.claude.com/docs/llms-full.txt` for "agentic search", "semantic search", "vector", "embedding" and "RAG" on 2026-10-20 found no docs page stating why Claude Code has no index.
 
-Re-check the quotes from a network that reaches x.com before relying on the wording.
-
 ## [RETR-004] Contextual Retrieval: what it measured and what it means for curated entries
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)
 - Related: RETR-005, RETR-001, MCP-034, RETR-016
 
@@ -151,7 +149,7 @@ Anthropic's post of 2024-09-19 measured retrieval of chunks cut from long docume
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Contextual embeddings guide](https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/contextual-embeddings/guide.ipynb), [RAG guide](https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/retrieval_augmented_generation/guide.ipynb)
 - Related: RETR-004, RETR-019, CAPI-015
 
@@ -175,7 +173,7 @@ Read the notebook's numbers as one dataset, not as Anthropic's headline.
 - Type: fact
 - Applies to: claude.ai
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [RAG for projects](https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects), [What are projects?](https://support.claude.com/en/articles/9517075-what-are-projects)
 - Related: MCP-037, MEM-029, RETR-009
 
@@ -196,7 +194,7 @@ Anthropic's own product thus prefers full context while it fits and search beyon
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Search results](https://platform.claude.com/docs/en/build-with-claude/search-results), [Citations](https://platform.claude.com/docs/en/build-with-claude/citations), [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [Files API](https://platform.claude.com/docs/en/build-with-claude/files), [Managed Agents memory](https://platform.claude.com/docs/en/managed-agents/memory), [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings)
 - Related: CAPI-010, TOK-020, MEM-031, RETR-016
 
@@ -215,7 +213,7 @@ None of the platform pages read lists a hosted vector store. Anthropic's own sur
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows), [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [NoLiMa README](https://github.com/adobe-research/NoLiMa), [Context Rot repo](https://github.com/chroma-core/context-rot)
 - Related: RETR-009, TOK-007, FLOW-020, PROMPT-007
 
@@ -234,7 +232,7 @@ For us, the whole corpus in context scored 98–100% top-5 on 300 questions (RET
 - Type: fact
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), local measurement
 - Related: RETR-008, RETR-004, TOK-007, TOK-090
 
@@ -255,7 +253,7 @@ The token counts are `cache_creation_input_tokens` minus about 1.4k for an empty
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: local measurement, [evals/retrieval](https://github.com/FreekMencke/claude-kb/tree/main/evals/retrieval)
 - Related: RETR-011, RETR-009, RETR-012, RETR-019, MCP-041
 
@@ -287,7 +285,7 @@ Tested 2026-10-20, Claude Code 2.1.304, cloud session, commit `c1ffe45` (990 ent
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: local measurement (RETR-010), [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)
 - Related: RETR-010, RETR-002, RETR-017, MCP-041
 
@@ -315,7 +313,7 @@ The hard rewordings were written with the answer visible, so they are longer and
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: local measurement, [mcp-server/README.md](https://github.com/FreekMencke/claude-kb/blob/main/mcp-server/README.md)
 - Related: RETR-010, RETR-019, MCP-041
 
@@ -333,7 +331,7 @@ A wrong "the knowledge base says" is worse than "no entry". We tested whether se
 - Type: comparison
 - Applies to: general
 - Confidence: unverified
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [Codex prompt](https://github.com/openai/codex/blob/main/codex-rs/core/gpt_5_codex_prompt.md), [Cursor: semantic search](https://cursor.com/blog/semsearch), [Cline: why we don't index](https://cline.bot/blog/why-cline-doesnt-index-your-codebase-and-why-thats-a-good-thing), [Sourcegraph Cody 5.3 FAQ](https://5.3.sourcegraph.com/cody/faq), [VS Code workspace context](https://code.visualstudio.com/docs/agents/reference/workspace-context), [Augment: real-time index](https://www.augmentcode.com/blog/a-real-time-index-for-your-codebase-secure-personal-scalable), [Context7 README](https://github.com/upstash/context7)
 - Related: RETR-003, TOK-084, MCP-034
 
@@ -408,7 +406,7 @@ The embeddings are the easy part. The ongoing costs are an API key in the deploy
 - Type: comparison
 - Applies to: general
 - Confidence: unverified
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [BEIR](https://arxiv.org/abs/2104.08663), [BrowseComp-Plus](https://arxiv.org/abs/2508.06600), [SAGE](https://arxiv.org/abs/2602.05975), [Self-Route](https://arxiv.org/abs/2407.16833), [LaRA README](https://github.com/Alibaba-NLP/LaRA)
 - Related: RETR-011, RETR-008, RETR-010
 
@@ -448,7 +446,7 @@ So effort pays off most in triggering, coverage and verification. A better ranke
 - Type: recommendation
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [RAG guide](https://github.com/anthropics/claude-cookbooks/blob/main/capabilities/retrieval_augmented_generation/guide.ipynb), [mcp-server/tests/kb-index.test.ts](https://github.com/FreekMencke/claude-kb/blob/main/mcp-server/tests/kb-index.test.ts), local measurement
 - Related: RETR-010, RETR-012, RETR-005, CAPI-015, SKILL-025
 
@@ -469,7 +467,7 @@ So effort pays off most in triggering, coverage and verification. A better ranke
 - Type: anti-pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [Building agents with the Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk), local measurement (RETR-010), [README design decisions](https://github.com/FreekMencke/claude-kb/blob/main/README.md#design-decisions)
 - Related: RETR-002, RETR-010, RETR-016, MEM-033, TOK-084
 

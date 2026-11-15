@@ -56,7 +56,7 @@ Research basis:
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [Impeccable SKILL.md @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/SKILL.md), [Taste Skill SKILL.md @12af471](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/SKILL.md), [Hallmark SKILL.md @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/SKILL.md), [ui-ux-pro-max SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Kowalski prototype SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/prototype/SKILL.md), [Kowalski emil-design-eng SKILL.md @2d22863](https://github.com/emilkowalski/skills/blob/2d228630ba1446365f614a108cb8252f1feda202/skills/emil-design-eng/SKILL.md)
 - Related: DESIGN-003, DESIGN-005, DESIGN-006, DESIGN-012, DSKILL-008, DSKILL-013, ANIMLIB-013
 
@@ -93,7 +93,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [SKILL.md @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/SKILL.md), [scripts/theme.mjs](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/theme.mjs), [references/gates.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/gates.md), [references/themes/index.json](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/themes/index.json), [ROADMAP.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/ROADMAP.md)
 - Related: DSKILL-008, DSKILL-009, DSKILL-007, DSKILL-013
 
@@ -107,7 +107,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [SKILL.md @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/SKILL.md), [reference/new-work.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/new-work.md), [reference/craft-floor.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/craft-floor.md), [README.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/README.md)
 - Related: DSKILL-009, DSKILL-010, DSKILL-007, DESIGN-025
 
@@ -125,7 +125,7 @@ DESIGN-012 also listed designlang (a computed-style extractor whose `--smart` mo
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-23
+- Last verified: 2026-11-15
 - Sources: [SKILL.md @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/SKILL.md), [data/products.csv](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/data/products.csv), [data/ux-guidelines.csv](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/data/ux-guidelines.csv), [scripts/design_system.py](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/ui-ux-pro-max/scripts/design_system.py)
 - Related: DESIGN-003, DSKILL-008, DSKILL-013, DSKILL-014
 
@@ -141,7 +141,7 @@ The plugin installs seven skills, not one; the others call Gemini, Atlas Cloud a
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [references/directions.md](https://github.com/alchaincyf/huashu-design/blob/798c423/references/directions.md), [references/evolution.md](https://github.com/alchaincyf/huashu-design/blob/798c423/references/evolution.md), [references/design-styles.md](https://github.com/alchaincyf/huashu-design/blob/798c423/references/design-styles.md)
 - Related: DSKILL-001, DSKILL-008, DESIGN-029, DESIGN-030
 
@@ -149,7 +149,7 @@ HTML prototypes, slides, animation and review; SKILL.md is in Chinese (translati
 
 **Mechanism.** Every new design first gets three real draft directions for the user to pick, "指定风格/品牌也不豁免" (even when a style or brand is given). Six candidates come from three logics, two each: "the best designer" for the subject, a "real reference" screenshotted with `ref_board.py`, and a "秒数轮盘" (seconds roulette) drawn from an 84-style library by `date +%S`. It picks the three strongest, most different ones that don't collide with the ledger, then "摆出来就停… 包括无人值守会话" (stop once they're shown… including unattended sessions).
 
-**Ledger.** `~/.huashu-design/ledger.jsonl` records each delivery's ground, palette, heading font and layout fingerprint; `ledger` shows the last 8. Its reason: "every new session re-converges from the same prior".
+**Ledger.** `~/.huashu-design/ledger.jsonl` records each delivery's ground, palette, heading font and layout fingerprint; `ledger` shows the last 8. Its reason, in `evolution.md` (translated): `every new session re-converges from the same prior`.
 
 **Its stance on bans:** "加选项，不加禁令" (add options, not bans): a look family such as warm-paper serif "本身不是问题，三版挤在同一家族才是" (isn't the problem itself; three drafts crowding into one family is). It still names Claude's default (warm cream, high-contrast serif, terracotta, all-caps labels, 01/02/03) and deletes template chrome. It has a burned-out display-font list (Fraunces, Inter, Space Grotesk, Playfair Display) with substitutes.
 
@@ -157,7 +157,7 @@ HTML prototypes, slides, animation and review; SKILL.md is in Chinese (translati
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [frontend-design SKILL.md](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md), [Hallmark gates.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/gates.md), [Hallmark craft.md](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/craft.md), [Taste SKILL.md](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/SKILL.md), [Impeccable craft-floor.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/craft-floor.md), [Impeccable detector registry](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/foundation/src/registry.rs)
 - Related: DESIGN-003, DSKILL-002, DSKILL-003, DSKILL-004, DSKILL-009, DSKILL-013, WRITE-002
 
@@ -210,8 +210,8 @@ Read, not run. Both report findings; neither generates a fix.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
-- Sources: [Impeccable plugin/hooks/hooks.json @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/hooks/hooks.json), [Impeccable launcher](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/scripts/impeccable), [Impeccable crates/skills commands.rs and hook_manifest.rs](https://github.com/pbakaus/impeccable/tree/e89e3ad/crates/skills/src), [Impeccable BUNDLE-SIGNING.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/docs/BUNDLE-SIGNING.md), [Taste install.sh @12af471](https://github.com/Leonxlnx/taste-skill/blob/12af471/install.sh), [Hallmark install-hook.mjs @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/install-hook.mjs), [ui-ux-pro-max cli/src @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/28327f2/cli/src), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
+- Last verified: 2026-11-15
+- Sources: [Impeccable plugin/hooks/hooks.json @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/hooks/hooks.json), [Impeccable launcher](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/scripts/impeccable), [Impeccable crates/skills commands.rs and hook_manifest.rs](https://github.com/pbakaus/impeccable/tree/e89e3ad/crates/skills/src), [Impeccable BUNDLE-SIGNING.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/docs/BUNDLE-SIGNING.md), [Taste install.sh @12af471](https://github.com/Leonxlnx/taste-skill/blob/12af471/install.sh), [Hallmark install-hook.mjs @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/install-hook.mjs), [ui-ux-pro-max cli/src @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/tree/28327f2/cli/src), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [Impeccable README at e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/README.md)
 - Related: SKILL-041, SKILL-036, HOOK, DSKILL-015, DSKILL-011, SKILL-069
 
 Read from source at the pinned commits, 2026-10-23. Four of the five also install as a plugin marketplace (SKILL-036: third-party auto-update is off by default).
@@ -226,7 +226,7 @@ Read from source at the pinned commits, 2026-10-23. Four of the five also instal
 - Type: fact
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [Impeccable LICENSE and NOTICE.md @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/NOTICE.md), [anthropics/skills frontend-design LICENSE.txt](https://github.com/anthropics/skills/blob/main/skills/frontend-design/LICENSE.txt), [Hallmark NOTICE.md as added, later removed @65b5e40](https://github.com/Nutlope/hallmark/blob/65b5e40/NOTICE.md), [Hallmark photos.json @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/scripts/photos.json), [Hallmark README](https://github.com/Nutlope/hallmark/blob/4f6a46c/README.md), [Taste library/photos.json](https://github.com/Leonxlnx/taste-skill/blob/12af471/skills/taste-skill/library/photos.json), [Unsplash Terms (Wayback 2026-01-08)](http://web.archive.org/web/20260108062954/https://unsplash.com/terms), [Pexels licence](https://www.pexels.com/license/)
 - Related: LIC, FONT, DSKILL-014
 
@@ -300,8 +300,8 @@ Copying wording needs the licence: MIT keeps its notice; Apache-2.0 (Impeccable,
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
-- Sources: [Impeccable concept_seed.rs @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/context/src/concept_seed.rs), [Impeccable context_cli.rs](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/context/src/context_cli.rs), [Impeccable CLAUDE.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/CLAUDE.md), [Impeccable README: telemetry](https://github.com/pbakaus/impeccable/blob/e89e3ad/README.md), [Impeccable privacy page](https://impeccable.style/privacy), [Hallmark brand-truth.md and imagegen.mjs @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/brand-truth.md), [ui-ux-pro-max design/scripts/cip/generate.py @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/design/scripts/cip/generate.py), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md)
+- Last verified: 2026-11-15
+- Sources: [Impeccable concept_seed.rs @e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/context/src/concept_seed.rs), [Impeccable context_cli.rs](https://github.com/pbakaus/impeccable/blob/e89e3ad/crates/context/src/context_cli.rs), [Impeccable CLAUDE.md](https://github.com/pbakaus/impeccable/blob/e89e3ad/CLAUDE.md), [Impeccable README: telemetry](https://github.com/pbakaus/impeccable/blob/e89e3ad/README.md), [Impeccable privacy page](https://impeccable.style/privacy), [Hallmark brand-truth.md and imagegen.mjs @4f6a46c](https://github.com/Nutlope/hallmark/blob/4f6a46c/skills/hallmark/references/brand-truth.md), [ui-ux-pro-max design/scripts/cip/generate.py @28327f2](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/28327f2/.claude/skills/design/scripts/cip/generate.py), [huashu-design SKILL.md @798c423](https://github.com/alchaincyf/huashu-design/blob/798c423/SKILL.md), [Impeccable new-work.md at e89e3ad](https://github.com/pbakaus/impeccable/blob/e89e3ad/plugin/skills/impeccable/reference/new-work.md)
 - Related: SKILL-041, MCP, DSKILL-010
 
 - **Impeccable's roll.** `concept-seed` "has no local catalog": it tries `IMPECCABLE_CATALOG_DIR`, then "the roll API at impeccable.style, then a degraded promotion-only seed". The response's `form`, `spark`, `system` and `webLeverage` fields (length-checked, unsigned, unpinned) are printed into directives, and the skill says "follow what it prints. No substitute, no skip". Degraded, it nudges the agent toward a "network-enabled or escalated command tool".
@@ -316,7 +316,7 @@ Copying wording needs the licence: MIT keeps its notice; Apache-2.0 (Impeccable,
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [README @0cf73c3](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/README.md), [SKILL.md](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/skills/diagram-design/SKILL.md), [PRIVACY.md](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/PRIVACY.md), [ADR 0005](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/docs/adr/0005-label-geometry-is-verified.md), [SECURITY.md](https://github.com/cathrynlavery/diagram-design/blob/0cf73c3/SECURITY.md)
 - Related: DSKILL-001, DSKILL-017, VIZ-019, SKILL-003, SKILL-069
 
@@ -339,7 +339,7 @@ An MIT skill and plugin, read at `0cf73c3` (2026-10-27, plugin 2.6.136), not run
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-02
+- Last verified: 2026-11-15
 - Sources: [README @1482e84](https://github.com/wheresryan22/anatomy/blob/1482e84/README.md), [SKILL.md](https://github.com/wheresryan22/anatomy/blob/1482e84/SKILL.md), [SECURITY.md](https://github.com/wheresryan22/anatomy/blob/1482e84/SECURITY.md), [CHANGELOG.md](https://github.com/wheresryan22/anatomy/blob/1482e84/CHANGELOG.md)
 - Related: DSKILL-001, DSKILL-016, ANIMLIB-013
 

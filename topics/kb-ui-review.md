@@ -68,7 +68,7 @@ Its accessibility rules restate WCAG and the APG; they weren't tested here as a 
 - Type: comparison
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [README at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/README.md), [command.md at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/command.md)
 - Related: UIREV-001, UIREV-003, UIREV-005, NG-003, WEBPERF-008, WRITE-006
 
@@ -106,7 +106,7 @@ Our sorting; the README itself marks only the copy section.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [agent-skills web-design-guidelines SKILL.md at ba46938](https://raw.githubusercontent.com/vercel-labs/agent-skills/ba46938889d4/skills/web-design-guidelines/SKILL.md), [web-interface-guidelines install.sh at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/install.sh), [Tools reference: WebFetch](https://code.claude.com/docs/en/tools-reference)
 - Related: UIREV-005, UIREV-006, TOK-087, SKILL-034, DSKILL-001, SKILL-070
 
@@ -148,7 +148,7 @@ Our synthesis, best first:
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Playwright Page.emulateMedia at v1.64.1](https://raw.githubusercontent.com/microsoft/playwright/v1.64.1/docs/src/api/class-page.md), [Playwright MCP README: browser_emulate_media](https://github.com/microsoft/playwright-mcp/blob/main/README.md), [axe-core 4.14.0 rules](https://github.com/dequelabs/axe-core/tree/v4.14.0/lib/rules), [Understanding 2.4.11](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html), [Understanding 1.4.10](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [command.md at 434b7f9](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/434b7f913646/command.md)
 - Related: UIREV-007, DESIGN-007, ACCESS-005, ACCESS-011, ACCESS-012, ACCESS-014, ACCESS-015, UIPAT-013
 
@@ -201,7 +201,7 @@ Tested 2026-10-23, `playwright@1.64.1` (Chromium 156.0.8078.4, WebKit 27.2) and 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [NN/g: How to conduct a heuristic evaluation (2023-06-25)](https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/), [Nielsen: The theory behind heuristic evaluations (1994-11-01)](https://www.nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/theory-heuristic-evaluations/), [Nielsen: Severity ratings for usability problems (1994-11-01)](https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/), [Nielsen: Usability problems found by heuristic evaluation](https://www.nngroup.com/articles/usability-problems-found-by-heuristic-evaluation/)
 - Related: UIREV-009, UIREV-012, DESIGN-025
 

@@ -68,7 +68,7 @@ Angular's own angular-developer skill (angular/skills at `8e2dd06`) tells agents
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Migrating away from Angular's Animations package (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/animations/migration.md), [Angular animation examples (v22.2.3)](https://github.com/angular/angular/tree/v22.2.3/adev/src/content/examples/animations/src/app/native-css)
 - Related: ANIM-001, ANIM-003, ANIM-007, CSS-008
 
@@ -144,7 +144,7 @@ Tested 2026-10-23, `@angular/core@22.2.3` SSR (prerendered), zoneless, Chromium 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [`utils.ts` (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/animation/utils.ts), [`animation.ts` (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/core/src/render3/instructions/animation.ts), [web.dev: Largest Contentful Paint](https://web.dev/articles/lcp), [Zoneless guide](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/zoneless.md)
 - Related: ANIM-004, ANIM-009, NG-004, WEBPERF-002
 
@@ -161,7 +161,7 @@ Tested 2026-10-23, `@angular/core@22.2.3` SSR, Chromium 156 with JavaScript disa
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Route transition animations (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/routing/route-transition-animations.md) and [on `main`](https://raw.githubusercontent.com/angular/angular/main/adev/src/content/guide/routing/route-transition-animations.md), [commit 64502f9ae2](https://github.com/angular/angular/commit/64502f9ae2), [`view_transition.ts` (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/packages/router/src/utils/view_transition.ts), [Chrome: same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document)
 - Related: CSS-009, CSS-010, ACCESS-012, ANIM-010
 
@@ -180,7 +180,7 @@ Tested 2026-10-23, `@angular/router@22.2.3`, Chromium 156 and WebKit 27.2: `star
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [web-features 3.44.0 `data.json`](https://cdn.jsdelivr.net/npm/web-features@3.44.0/data.json), [MDN: Using the Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Using_the_Web_Animations_API), [MDN: `transition-behavior`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/transition-behavior), [MDN: `interpolate-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/interpolate-size), [MDN: `view-transition-class`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/view-transition-class)
 - Related: CSS-006, CSS-008, CSS-009, CSS-010, CSS-011, ANIM-002, ANIMLIB-014
 
@@ -206,7 +206,7 @@ Not when (our judgement): a view transition for a change inside one component (i
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [web.dev: How to create high-performance CSS animations (updated 2020-10-06)](https://web.dev/articles/animations-guide), [web.dev: Animations and performance (2020-10-06)](https://web.dev/articles/animations-overview), [web.dev: Stick to compositor-only properties (2015-03-20)](https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count), [MDN: Animation performance and frame rate](https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Animation_performance_and_frame_rate), [MDN: `will-change`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/will-change), [Chrome: Hardware-accelerated animation capabilities (2021-02-22)](https://developer.chrome.com/blog/hardware-accelerated-animations), [Chromium `compositor_animations.cc`](https://chromium.googlesource.com/chromium/src/+/main/third_party/blink/renderer/core/animation/compositor_animations.cc)
 - Related: ANIM-009, WEBPERF-002, WEBPERF-003
 
@@ -222,7 +222,7 @@ An infinite `box-shadow` pulse repaints every frame; a `transform: scale()` and 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [web.dev: Cumulative Layout Shift](https://web.dev/articles/cls), [web.dev: Largest Contentful Paint](https://web.dev/articles/lcp), [web.dev: Interaction to Next Paint (updated 2025-09-02)](https://web.dev/articles/inp), [Chrome: Long Animation Frames API](https://developer.chrome.com/docs/web-platform/long-animation-frames)
 - Related: WEBPERF-001, WEBPERF-002, WEBPERF-003, ANIM-005, ANIM-008
 
@@ -237,7 +237,7 @@ Diagnose with web-vitals attribution and LoAF (WEBPERF-003): `totalStyleAndLayou
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Media Queries 5: `prefers-reduced-motion`](https://drafts.csswg.org/mediaqueries-5/#prefers-reduced-motion), [MDN: `prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), [Chrome: same-document view transitions](https://developer.chrome.com/docs/web-platform/view-transitions/same-document), [WCAG technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39.html), [web.dev: prefers-reduced-motion (2019-03-11)](https://web.dev/articles/prefers-reduced-motion), [NN/g: animation duration (2020-02-09)](https://www.nngroup.com/articles/animation-duration/), [Tailwind: hover, focus and other states](https://raw.githubusercontent.com/tailwindlabs/tailwindcss.com/main/src/docs/hover-focus-and-other-states.mdx), [Complex animations with CSS (v22.2.3)](https://raw.githubusercontent.com/angular/angular/v22.2.3/adev/src/content/guide/animations/css.md), [emilkowalski/skills `review-animations/STANDARDS.md` at 2d22863](https://raw.githubusercontent.com/emilkowalski/skills/2d228630ba1446365f614a108cb8252f1feda202/skills/review-animations/STANDARDS.md)
 - Related: ACCESS-014, CSS-011, ANIM-006, ANIM-011, ANIMLIB-007, ANIMLIB-013, ANIMLIB-017
 

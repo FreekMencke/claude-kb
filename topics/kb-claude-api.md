@@ -131,7 +131,7 @@ Research basis:
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [Define tools: forcing tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools), [Model deprecations: API parameter deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations), [Haiku 5.5 migration guide](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide), [Sonnet 5.5 migration guide](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide), [Advisor tool: model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool), [Opus 5.5 migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide), [Release notes](https://platform.claude.com/docs/en/release-notes/overview), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5), [What's new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5), [What's new in Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5), [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1)
 - Related: PROMPT-002, ORCH-028, CAPI-002, CAPI-004, CAPI-019, CAPI-028
 
@@ -155,7 +155,7 @@ Release notes: Sonnet 5 code "can break on Claude Sonnet 5.5 in five ways" (2026
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Sonnet 5.5 migration guide](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide), [Haiku 5.5 migration guide](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide), [Fable 5.1 migration guide](https://platform.claude.com/docs/en/models/fable-5-1/migration-guide), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5), [What's new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5), [What's new in Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5)
 - Related: CAPI-001, PROMPT-002, TOK-050, CAPI-016, CAPI-018, CAPI-020
 
@@ -174,7 +174,7 @@ Haiku 5.5 counts the same text as about 30% more tokens than Haiku 4.5: recount 
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions), [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations), [Models overview: Using the Models API](https://platform.claude.com/docs/en/models/overview), [Release notes](https://platform.claude.com/docs/en/release-notes/overview)
 - Related: ORCH-026, ORCH-031
 
@@ -199,7 +199,7 @@ Anthropic gives "at least 60 days' notice" by email. These dates cover the Claud
 - Type: recommendation
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Define tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools), [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use), [Structured outputs: schema complexity limits](https://platform.claude.com/docs/en/build-with-claude/structured-outputs), [Fable 5.1 migration guide](https://platform.claude.com/docs/en/models/fable-5-1/migration-guide)
 - Related: CAPI-001, CAPI-005, CAPI-007
 
@@ -227,7 +227,7 @@ The first request with a schema pays compile latency. Compiled grammars are cach
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs), [Citations](https://platform.claude.com/docs/en/build-with-claude/citations), [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
 - Related: CAPI-004, CAPI-008, CAPI-010, PROMPT-011
 
@@ -252,7 +252,7 @@ The format adds an injected system prompt (more input tokens), and changing it i
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tool runner](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner), [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use), [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons)
 - Related: CAPI-007, CAPI-008, MCP-024
 
@@ -274,7 +274,7 @@ A separate message per result "teaches" Claude to stop calling in parallel. Text
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling), [Models overview: Using the Models API](https://platform.claude.com/docs/en/models/overview)
 - Related: CAPI-004, CAPI-006, TOK-054
 
@@ -304,7 +304,7 @@ Programmatic tool calling (GA) lets Claude write code in the code-execution cont
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons), [Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback), [Release notes 2026-09-24](https://platform.claude.com/docs/en/release-notes/overview)
 - Related: CAPI-005, CAPI-009, PROMPT-011
 
@@ -328,11 +328,11 @@ When streaming, `stop_reason` arrives only in `message_delta`.
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [TypeScript SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript), [Errors](https://platform.claude.com/docs/en/api/errors), [Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming)
 - Related: CAPI-008, TOK-054
 
-**Retries.** Connection errors, 408, 409, 429 and >=500 "are all retried by default", "2 times by default, with a short exponential backoff", honouring `retry-after`. Set `maxRetries` to change it. A 429 caused by a usage tier's monthly spend cap "has no `retry-after` header and keeps failing until access resumes": don't let it retry forever. Sudden traffic growth can hit "acceleration limits", so ramp up gradually.
+**Retries.** Connection errors, 408, 409, 429 and >=500 "are all retried by default", "2 times by default, with a short exponential backoff", honouring `retry-after`. Set `maxRetries` to change it. A 429 caused by a usage tier's monthly spend cap "has no `retry-after` header and keeps failing until access resumes": don't let it retry forever. A sharp increase in usage can hit "ramp limits", so ramp up gradually.
 
 **Timeouts.** "By default requests time out after 10 minutes". The SDK "throws an error if a non-streaming request is expected to be above roughly 10 minutes long", which a large `max_tokens` triggers. Timed-out requests are retried twice too. Fixes:
 - Stream, and use `stream.finalMessage()` to get the complete `Message` without handling events.
@@ -348,7 +348,7 @@ Tested 2026-10-17, `@anthropic-ai/sdk@0.135.0`: `client.d.ts` documents `timeout
 - Type: comparison
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Files API](https://platform.claude.com/docs/en/build-with-claude/files), [Citations](https://platform.claude.com/docs/en/build-with-claude/citations), [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing)
 - Related: TOK-054, CAPI-005, CAPI-007
 
@@ -371,7 +371,7 @@ Tested 2026-10-17, `@anthropic-ai/sdk@0.135.0`: `client.d.ts` documents `timeout
 - Type: comparison
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Headless](https://code.claude.com/docs/en/headless), [Agent SDK overview](https://code.claude.com/docs/en/agent-sdk/overview), [Agent SDK quickstart](https://code.claude.com/docs/en/agent-sdk/quickstart), [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript), [Hosting](https://code.claude.com/docs/en/agent-sdk/hosting), [Agent SDK CHANGELOG](https://github.com/anthropics/claude-agent-sdk-typescript/blob/main/CHANGELOG.md)
 - Related: ORCH-014, ORCH-015, MCP-024, MEM-028, CAPI-012
 
@@ -397,12 +397,12 @@ The docs: "The SDK version tracks the bundled Claude Code version." So an SDK bu
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
-- Sources: [SDK permissions](https://code.claude.com/docs/en/agent-sdk/permissions), [SDK hooks](https://code.claude.com/docs/en/agent-sdk/hooks), [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript)
+- Last verified: 2026-11-15
+- Sources: [SDK permissions](https://code.claude.com/docs/en/agent-sdk/permissions), [SDK hooks](https://code.claude.com/docs/en/agent-sdk/hooks), [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript), [Agent SDK TypeScript CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-agent-sdk-typescript/main/CHANGELOG.md)
 - Related: CAPI-011, ORCH-015, HOOK-001, REPO-031
 
-"When Claude requests a tool, the SDK checks permissions in this order":
-1. **Hooks.** A hook can deny; "A hook that returns `allow` doesn't skip the deny and ask rules below".
+"When Claude requests a tool, Claude Code checks the call at these steps":
+1. **Hooks.** A hook can deny; "A hook that returns `allow` doesn't skip the deny-rule and ask-rule steps".
 2. **Deny rules**, which block "even in `bypassPermissions` mode".
 3. **Ask rules**, which go to `canUseTool` even in `bypassPermissions`.
 4. **Permission mode**: `default`, `acceptEdits`, `bypassPermissions`, `plan`, `dontAsk` or `auto`.
@@ -413,13 +413,13 @@ The trap: `canUseTool` is "Not invoked for calls auto-approved by `allowedTools`
 
 **Hooks.** The TypeScript `HookEvent` union has 33 events, the same names as the CLI's hooks page (compared by reading, not by script). Python lacks many of them, `SessionStart` and `SessionEnd` included. Callbacks return the CLI hooks' JSON shape.
 
-Shell hooks from settings files also run, because default `query()` options load all setting sources. Since 0.3.300, `updatedInput` from `PreToolUse` and `PermissionRequest` callbacks "is now validated like Claude's own input and unknown keys are dropped".
+Shell hooks from settings files also run, because default `query()` options load all setting sources. Since 0.3.300, `updatedInput` from `PreToolUse` and `PermissionRequest` callbacks "it is now validated like Claude's own input and unknown keys are dropped".
 
 ## [CAPI-013] Managed Agents scheduled deployments, budgets, vaults and webhooks
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments), [Budgets](https://platform.claude.com/docs/en/managed-agents/budgets), [Vaults](https://platform.claude.com/docs/en/managed-agents/vaults), [Webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Release notes](https://platform.claude.com/docs/en/release-notes/overview)
 - Related: ORCH-018, MEM-031, CAPI-014
 
@@ -449,7 +449,7 @@ All of these are beta under `managed-agents-2026-04-01`. Managed Agents launched
 - Type: comparison
 - Applies to: Claude Code, Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments), [Budgets](https://platform.claude.com/docs/en/managed-agents/budgets), [Pricing](https://platform.claude.com/docs/en/about-claude/pricing), [Managed Agents GitHub](https://platform.claude.com/docs/en/managed-agents/github)
 - Related: ORCH-017, REPO-030, DOC-024, CAPI-013
 
@@ -474,7 +474,7 @@ Run outcomes "say how the session ended, not whether Claude completed the work y
 - Type: recommendation
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Define success criteria and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests), [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) (2026-01-09)
 - Related: SKILL-025, SKILL-028, JSTEST-013, PROMPT-028
 
@@ -505,7 +505,7 @@ Run evals on the target model before a migration (CAPI-001), since Anthropic adv
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking), [Troubleshooting thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5), [What's new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5), [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1)
 - Related: CAPI-002, CAPI-017, CAPI-018
 
@@ -527,7 +527,7 @@ Set `thinking.block_binding.prefix_mismatch_behavior` (beta header `thinking-bin
 - Type: recommendation
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking), [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages)
 - Related: CAPI-016, CAPI-021, CAPI-022, TOK-038
 
@@ -551,7 +551,7 @@ On the models that run the prefix check (CAPI-016), keep `system` and `tools` fi
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Preserved thinking: switching models](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5), [What's new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5), [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1)
 - Related: CAPI-002, CAPI-016
 
@@ -574,7 +574,7 @@ With `thinking-binding-controls-2026-08-01`, the response's `input_transformatio
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Troubleshooting thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting), [What's new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5), [What's new in Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5)
 - Related: CAPI-001, CAPI-003, TOK-055
 
@@ -594,7 +594,7 @@ Changing the thinking mode, the effort value or `budget_tokens` invalidates mess
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Thinking: progress updates](https://platform.claude.com/docs/en/build-with-claude/thinking), [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5), [What's new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5)
 - Related: CAPI-002, CAPI-019
 
@@ -617,7 +617,7 @@ Details:
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages), [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking)
 - Related: CAPI-002, CAPI-017, CAPI-022, TOK-050
 
@@ -639,7 +639,7 @@ On Sonnet 5.5 and Haiku 5.5, relay input the user typed mid-loop as a `text` blo
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages), [Compaction and preserved thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks), [What's new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5)
 - Related: CAPI-017, CAPI-021, TOK-050
 
@@ -657,7 +657,7 @@ A compaction request that also carries `inline-tools-2026-09-15` records the net
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Compaction on demand](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand), [Compaction overview](https://platform.claude.com/docs/en/build-with-claude/compaction)
 - Related: TOK-038, CAPI-024, CAPI-025, CAPI-006
 
@@ -679,7 +679,7 @@ You send the conversation with the top-level `compaction: {"type": "summarize"}`
 - Type: comparison
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Compaction overview](https://platform.claude.com/docs/en/build-with-claude/compaction), [Compaction on demand](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand), [Compaction at a token threshold](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold)
 - Related: TOK-038, CAPI-023, CAPI-025, CAPI-017
 
@@ -728,7 +728,7 @@ Nothing fails at compaction when a condition breaks; the first later request tha
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context)
 - Related: TOK-020, TOK-038, CAPI-027, CAPI-031
 
@@ -751,13 +751,13 @@ The API's counterpart of Claude Code's MCP tool search (TOK-020). The docs: "Cla
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching), [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool), [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context)
 - Related: TOK-050, TOK-038, CAPI-022, CAPI-026
 
 **Breakpoint.** Put `cache_control: {"type": "ephemeral"}` on the last tool in `tools`: it caches the prefix from the first tool through it. For `mcp_toolset`, put it on the toolset entry itself, since you don't control tool order inside it. The same goes for the computer and browser use toolsets: on the entry, not inside a member's `configs`.
 
-**Deferred tools stay out of the prefix.** A tool found through tool search is appended inline as a `tool_reference`, so adding tools this way keeps the cache. Anthropic's order of adoption for a high-volume agent: cache tool definitions from the start ("Cache writes carry a 25 percent markup over base input pricing"), add tool search past roughly 20 tools, add context editing when old results stop mattering, then consider programmatic tool calling for chains of small calls.
+**Deferred tools stay out of the prefix.** A tool found through tool search is appended inline as a `tool_reference`, so adding tools this way keeps the cache. Anthropic's order of adoption for a high-volume agent: cache tool definitions from the start ("Cache writes carry a 25 percent markup over base input pricing"), add tool search once you have 10 or more tools or your baseline context usage becomes noticeable, add context editing when old results stop mattering, then consider programmatic tool calling for chains of small calls.
 
 | Change | Invalidates |
 |---|---|
@@ -775,7 +775,7 @@ If `tool_choice` must vary, put breakpoints before the variation point.
 - Type: tool
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Advisor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool)
 - Related: ORCH-029, CAPI-001, CAPI-027
 
@@ -794,7 +794,7 @@ ORCH-029 has the measured economics and CAPI-001 the model pairs. The mechanics 
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools), [Troubleshooting tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use)
 - Related: CAPI-006, CAPI-008, CAPI-007, TOK-094
 
@@ -813,7 +813,7 @@ A `pause_turn` response is different: re-send it unchanged, with the same tools,
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-15
 - Sources: [Troubleshooting tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use)
 - Related: CAPI-004, CAPI-006, CAPI-029
 
@@ -839,7 +839,7 @@ A `pause_turn` response is different: re-send it unchanged, with the same tools,
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference), [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming), [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool)
 - Related: CAPI-001, CAPI-026, CAPI-028, CAPI-032, CAPI-034
 
@@ -868,7 +868,7 @@ The older `computer_20251124` and `computer_20250124` need `computer-use-2025-11
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool)
 - Related: CAPI-007, CAPI-031, TOK-024, TOK-094
 
@@ -884,7 +884,7 @@ The older `computer_20251124` and `computer_20250124` need `computer-use-2025-11
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Tool use overview: pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview), [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool), [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool), [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool), [Browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool)
 - Related: TOK-050, CAPI-026, CAPI-034
 
@@ -914,7 +914,7 @@ Screenshots returned in results are billed as image input, roughly 1,000–1,800
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool), [Browser and computer use with the SDK toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-sdk), [Tool combinations](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-combinations), [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool)
 - Related: CAPI-031, CAPI-033, BROWSER-001
 
@@ -941,7 +941,7 @@ Availability: browser use on the Claude API and Google Cloud (Google managed). C
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context), [Tool combinations](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-combinations)
 - Related: TOK-038, CAPI-007, CAPI-026, CAPI-027, MEM-030
 
@@ -973,7 +973,7 @@ Anthropic's pairings, "starting points, not prescriptions":
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Start a session](https://platform.claude.com/docs/en/managed-agents/sessions)
 - Related: CAPI-013, CAPI-037, CAPI-038
 
@@ -996,7 +996,7 @@ Managed Agents is beta (header `managed-agents-2026-04-01`) on the Claude API, C
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-10-30
+- Last verified: 2026-11-15
 - Sources: [Tools](https://platform.claude.com/docs/en/managed-agents/tools), [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions)
 - Related: CAPI-036, CAPI-038, CAPI-039
 
@@ -1020,7 +1020,7 @@ Managed Agents is beta (header `managed-agents-2026-04-01`) on the Claude API, C
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies)
 - Related: CAPI-012, CAPI-037, CAPI-039
 
@@ -1040,8 +1040,8 @@ Permission policies don't govern custom tools: your code decides, then sends `us
 - Type: recommendation
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
-- Sources: [Secure your Managed Agents deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment), [Security risks and sandbox boundaries](https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks)
+- Last verified: 2026-11-15
+- Sources: [Secure your Managed Agents deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment), [Security risks and sandbox boundaries](https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks), [Managed Agents: environments](https://platform.claude.com/docs/en/managed-agents/environments)
 - Related: CAPI-013, CAPI-037, CAPI-038, CAPI-040, CAPI-053
 
 The docs' order and recommended values:
@@ -1061,7 +1061,7 @@ After tightening an environment, start new sessions and stop old ones: a running
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Secure your Managed Agents deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment), [Security risks and sandbox boundaries](https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks), [Review and monitor agent sessions](https://platform.claude.com/docs/en/managed-agents/secure-deployment-monitoring)
 - Related: CAPI-039, CAPI-038, CAPI-013
 
@@ -1087,7 +1087,7 @@ Webhooks to watch: `session.status_idled` (the event itself is `session.status_i
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Define your agent](https://platform.claude.com/docs/en/managed-agents/agent-setup)
 - Related: CAPI-036, CAPI-038, ORCH-018
 
@@ -1110,11 +1110,11 @@ An agent is a stored, versioned object. "The `version` starts at 1 and increment
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Environments](https://platform.claude.com/docs/en/managed-agents/environments), [Secure your Managed Agents deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment)
 - Related: CAPI-037, CAPI-039, CAPI-054
 
-**Packages.** Keys `apt`, `cargo`, `gem`, `go`, `npm`, `pip`, cached across sessions that share the environment. "When multiple package managers are specified, they run in alphabetical order (apt, cargo, gem, go, npm, pip)." Pin syntax differs by manager: `hyperfine@1.18.0`, `rails:7.1.0`, `sqlalchemy==2.0.30`. `packages` with `limited` networking and `allow_package_managers: false` returns 400, even when the registries are in `allowed_hosts`.
+**Packages.** Keys `apt`, `cargo`, `gem`, `go`, `npm`, `pip`, cached across sessions that share the environment. "Package managers run in alphabetical order (apt, cargo, gem, go, npm, pip)." Pin syntax differs by manager: `hyperfine@1.18.0`, `rails:7.1.0`, `sqlalchemy==2.0.30`. `packages` with `limited` networking and `allow_package_managers: false` returns 400, even when the registries are in `allowed_hosts`.
 
 **`allowed_hosts`:** bare hostnames or wildcards, with no scheme, port or path. `example.com` doesn't match `www.example.com`, and "`*.example.com` matches every subdomain of `example.com`, but not `example.com` itself." A blocked request on port 80 or 443 gets a 403 that names the host, which makes a missing host easy to spot.
 
@@ -1130,7 +1130,7 @@ An agent is a stored, versioned object. "The `version` starts at 1 and increment
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cloud sandboxes reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference), [Choosing an environment](https://platform.claude.com/docs/en/managed-agents/choosing-an-environment)
 - Related: CAPI-053, SURF-027
 
@@ -1149,7 +1149,7 @@ Ubuntu 24.04 LTS on x86_64, with memory up to 8 GB and disk up to 10 GB. This is
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Files](https://platform.claude.com/docs/en/managed-agents/files), [Session operations](https://platform.claude.com/docs/en/managed-agents/session-operations)
 - Related: CAPI-010, CAPI-036, CAPI-063
 
@@ -1167,7 +1167,7 @@ The page states no per-file size limit or type restriction here; the agent unpac
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Skills](https://platform.claude.com/docs/en/managed-agents/skills)
 - Related: CAPI-040, SKILL-081
 
@@ -1187,7 +1187,7 @@ An agent's `skills` entry is `{type, skill_id, version}`. `type` is `anthropic` 
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector), [Reference](https://platform.claude.com/docs/en/managed-agents/reference)
 - Related: CAPI-013, CAPI-036, CAPI-038, CAPI-053, CAPI-073
 
@@ -1203,7 +1203,7 @@ Declare each server in `mcp_servers` (`type: url`, unique `name`, `url`) and ref
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Reference](https://platform.claude.com/docs/en/managed-agents/reference)
 - Related: CAPI-013, CAPI-072
 
@@ -1217,7 +1217,7 @@ The reference states no cap on concurrent sessions, and doesn't say what happens
 - Type: comparison
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Migration](https://platform.claude.com/docs/en/managed-agents/migration)
 - Related: CAPI-011, CAPI-014, CAPI-038, CAPI-052
 
@@ -1244,7 +1244,7 @@ The Messages loop goes away: the session stores history and `session.status_idle
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Events and streaming](https://platform.claude.com/docs/en/managed-agents/events-and-streaming), [Session threads](https://platform.claude.com/docs/en/managed-agents/session-threads)
 - Related: CAPI-061, CAPI-062, CAPI-064
 
@@ -1264,7 +1264,7 @@ Thread streams work the same way: "A thread's stream doesn't replay earlier even
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas)
 - Related: CAPI-009, CAPI-060
 
@@ -1284,7 +1284,7 @@ Live text previews are opt-in per connection: repeat the query parameter `event_
 - Type: pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Events and streaming](https://platform.claude.com/docs/en/managed-agents/events-and-streaming), [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
 - Related: CAPI-038, CAPI-060, CAPI-067
 
@@ -1304,7 +1304,7 @@ Live text previews are opt-in per connection: repeat the query parameter `event_
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Session operations](https://platform.claude.com/docs/en/managed-agents/session-operations), [Events and streaming](https://platform.claude.com/docs/en/managed-agents/events-and-streaming), [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
 - Related: CAPI-021, CAPI-036, CAPI-040, CAPI-062
 
@@ -1324,7 +1324,7 @@ Statuses: `idle`, `running`, `rescheduling`, `terminated`. "A session that compl
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Session threads](https://platform.claude.com/docs/en/managed-agents/session-threads)
 - Related: ORCH-018, CAPI-038, CAPI-060, CAPI-067
 
@@ -1342,7 +1342,7 @@ The session stream is the primary thread, a condensed view with thread starts, e
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes), [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
 - Related: CAPI-015, CAPI-036, CAPI-055, CAPI-067
 
@@ -1365,7 +1365,7 @@ With workflow runs, "no evaluation starts while a run is open", running or idle.
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Session observability](https://platform.claude.com/docs/en/managed-agents/session-observability)
 - Related: CAPI-013, CAPI-070, TOK-123
 
@@ -1384,7 +1384,7 @@ With workflow runs, "no evaluation starts while a run is open", running or idle.
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs)
 - Related: ORCH-018, CAPI-040, CAPI-052, CAPI-062, CAPI-064
 
@@ -1408,7 +1408,7 @@ Read 2026-11-01 from `code.claude.com/docs/en/agent-sdk/` (FreekMencke/claude-kb
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Persist sessions to external storage](https://code.claude.com/docs/en/agent-sdk/session-storage), [Agent SDK Python reference](https://code.claude.com/docs/en/agent-sdk/python)
 - Related: CAPI-011, CAPI-042, ORCH-015, MEM-028
 
@@ -1445,13 +1445,13 @@ Python's `session_store_flush` defaults to `"batched"` (once per turn or when th
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Handle approvals and user input](https://code.claude.com/docs/en/agent-sdk/user-input), [Configure permissions](https://code.claude.com/docs/en/agent-sdk/permissions)
 - Related: CAPI-012, CAPI-044, HOOK-006
 
 CAPI-012 has the evaluation order. This entry is the callback's contract.
 
-- **It fires only for a call nothing earlier approved.** "The callback never fires for auto-approved tools." For logic on every call, use a `PreToolUse` hook; a `PermissionRequest` hook can send Slack or email while the SDK waits.
+- **It fires only for a call nothing earlier approved.** "Auto-approved tools never reach `canUseTool`." For logic on every call, use a `PreToolUse` hook; a `PermissionRequest` hook can send Slack or email while the SDK waits.
 - **It can wait forever.** "The callback can stay pending indefinitely." If the person may take longer than your process can live, register a `PreToolUse` hook that returns `defer`, so the process exits and resumes from the persisted session.
 - **Allow:** `{ behavior: "allow", updatedInput }` (Python `PermissionResultAllow(updated_input=...)`). Before Claude Code v2.1.207 an allow without `updatedInput` was rejected with a validation error. Claude isn't told you changed the input.
 - **Deny:** `{ behavior: "deny", message }`. Claude reads the message and may change approach, so write it as guidance (`compress them into an archive instead`).
@@ -1464,7 +1464,7 @@ In Python the page's examples pass a streaming prompt and a dummy `PreToolUse` h
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Handle approvals and user input](https://code.claude.com/docs/en/agent-sdk/user-input)
 - Related: CAPI-043, ORCH-010
 
@@ -1480,7 +1480,7 @@ Claude's clarifying questions arrive in `canUseTool` with `toolName === "AskUser
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Get structured output from agents](https://code.claude.com/docs/en/agent-sdk/structured-outputs), [Troubleshoot the Agent SDK](https://code.claude.com/docs/en/agent-sdk/troubleshooting)
 - Related: CAPI-005, CAPI-051, TOK-121
 
@@ -1514,7 +1514,7 @@ Pass `outputFormat: { type: "json_schema", schema }` (Python `output_format`); t
 - Type: comparison
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python), [Troubleshoot the Agent SDK](https://code.claude.com/docs/en/agent-sdk/troubleshooting)
 - Related: CAPI-012, CAPI-046, CAPI-049
 
@@ -1567,7 +1567,7 @@ Where available you get the four Task tools, or `TodoWrite` alone with `CLAUDE_C
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Configure your agent](https://code.claude.com/docs/en/agent-sdk/configuration), [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python)
 - Related: TOK-121, CAPI-011, CAPI-046, MEM-028
 
@@ -1584,14 +1584,14 @@ Where available you get the four Task tools, or `TodoWrite` alone with `CLAUDE_C
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Agent SDK reference - Python](https://code.claude.com/docs/en/agent-sdk/python)
 - Related: TOK-121, CAPI-045, CAPI-008
 
 TOK-121 lists the subtypes. The Python reference adds that `subtype="success"` does not mean the turn worked: `is_error` is `True` on `success` in three cases, told apart by `stop_reason`.
 
 1. `"refusal"`: the model declined; the text is in `result`, or in the preceding `AssistantMessage` when `result` is empty.
-2. `"tool_deferred_unavailable"`: a deferred tool was gone on resume. With no prompt the call stays pending and runs first once the tool is back; a prompt answers without it and the deferred call is dropped.
+2. `"tool_deferred_unavailable"`: a deferred tool was gone on resume. With no prompt the call stays pending and runs first once the tool is back. By default a prompt doesn't reach Claude and the call stays pending; to continue without the tool, drop the call (resume with a prompt and `CLAUDE_CODE_DROP_UNAVAILABLE_DEFERRED_TOOL=1`, per the hooks page).
 3. Anything else: an error reported in place of a model reply, such as an API error. Read `terminal_reason` (`"completed"`, `"max_turns"`, `"api_error"`, `"aborted_streaming"`, `"aborted_tools"`), `result`, and `api_error_status`.
 
 **Check order** (`ResultError` too): `stop_reason`, then `terminal_reason`, then `subtype`. A refusal's `terminal_reason` doesn't single it out.
@@ -1602,7 +1602,7 @@ TOK-121 lists the subtypes. The Python reference adds that `subtype="success"` d
 - Type: anti-pattern
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Streaming output](https://code.claude.com/docs/en/agent-sdk/streaming-output), [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript)
 - Related: CAPI-045, CAPI-046, CAPI-069
 
@@ -1619,7 +1619,7 @@ Turn on with `includePartialMessages` (TypeScript) or `include_partial_messages`
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Agent SDK TypeScript reference](https://code.claude.com/docs/en/agent-sdk/typescript)
 - Related: CAPI-041, CAPI-050, CAPI-068, TOK-121
 
@@ -1637,7 +1637,7 @@ Picked from the Options table of `agent-sdk/typescript.md`, grepped, not read in
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OpenTelemetry tracing](https://platform.claude.com/docs/en/manage-claude/opentelemetry), [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api), [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk)
 - Related: CAPI-066, CAPI-071, TOK-012, TOK-122
 
@@ -1655,7 +1655,7 @@ Picked from the Options table of `agent-sdk/typescript.md`, grepped, not read in
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api), [OpenTelemetry tracing](https://platform.claude.com/docs/en/manage-claude/opentelemetry)
 - Related: CAPI-070, TOK-123
 
@@ -1671,7 +1671,7 @@ Picked from the Options table of `agent-sdk/typescript.md`, grepped, not read in
 - Type: fact
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api)
 - Related: CAPI-058, TOK-018
 
@@ -1689,7 +1689,7 @@ Uses: sync limits to a gateway, or compare them with analytics usage (TOK-123).
 - Type: comparison
 - Applies to: Claude API
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [MCP tunnels overview](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview), [Security](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/security)
 - Related: CAPI-057
 

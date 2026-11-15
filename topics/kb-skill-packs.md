@@ -84,7 +84,7 @@ Read from the hook files at the pinned commits; not run.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [superpowers README: Visual companion telemetry](https://github.com/obra/superpowers/blob/2ce8aa1/README.md#visual-companion-telemetry), [superpowers server.cjs](https://github.com/obra/superpowers/blob/2ce8aa1/skills/brainstorming/scripts/server.cjs), [ponytail plugin.json](https://github.com/DietrichGebert/ponytail/blob/96608e0/.claude-plugin/plugin.json), [ECC README](https://github.com/affaan-m/ECC/blob/b38be6a/README.md)
 - Related: SKPACK-002, SKILL-069, DSKILL-015, BROWSER-006
 
@@ -115,7 +115,7 @@ Caveats: one model, the author's own tasks and judge; "Bash is disabled for ever
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [agent-skills docs/comparison.md](https://github.com/addyosmani/agent-skills/blob/eb07f19/docs/comparison.md), [agent-skills evals](https://github.com/addyosmani/agent-skills/tree/eb07f19/evals), [superpowers README](https://github.com/obra/superpowers/blob/2ce8aa1/README.md), [Karpathy CLAUDE.md](https://github.com/multica-ai/andrej-karpathy-skills/blob/2c60614/CLAUDE.md), [Tran: Claude Code tool benchmark](https://claude-tool-benchmark.pages.dev/preview/paper)
 - Related: SKPACK-004, SKILL-043, TOK-113
 
@@ -131,7 +131,7 @@ Star counts are the main evidence the packs offer. TOK-113 shows how far an adve
 - Type: pattern
 - Applies to: Claude Code, claude.ai
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [mattpocock/skills grilling SKILL.md](https://github.com/mattpocock/skills/blob/a496f55/skills/productivity/grilling/SKILL.md), [grill-me SKILL.md](https://github.com/mattpocock/skills/blob/a496f55/skills/productivity/grill-me/SKILL.md)
 - Related: SKPACK-007, FLOW-003, PROMPT-025, ORCH-024
 
@@ -149,7 +149,7 @@ What it adds to FLOW-003's interview-then-spec: batching by dependency instead o
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [agent-skills interview-me SKILL.md](https://github.com/addyosmani/agent-skills/blob/eb07f19/skills/interview-me/SKILL.md)
 - Related: SKPACK-006, FLOW-003, PROMPT-014
 
@@ -166,7 +166,7 @@ The non-interactive rule is the piece to copy into any interviewing skill: PROMP
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [ponytail SKILL.md](https://github.com/DietrichGebert/ponytail/blob/96608e0/skills/ponytail/SKILL.md)
 - Related: SKPACK-004, PROMPT-031, PROMPT-024, PROMPT-027
 
@@ -189,7 +189,7 @@ The closing line complements PROMPT-027's evidence-before-claims: it reports wha
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [mattpocock/skills tdd SKILL.md](https://github.com/mattpocock/skills/blob/a496f55/skills/engineering/tdd/SKILL.md), [superpowers test-driven-development SKILL.md](https://github.com/obra/superpowers/blob/2ce8aa1/skills/test-driven-development/SKILL.md)
 - Related: JSTEST-017, FLOW-002, PROMPT-028, SKPACK-004, JSTEST-016
 
@@ -223,7 +223,7 @@ Two lines cost a reviewer nothing to read and answer the question they ask first
 - Type: pattern
 - Applies to: Claude Code, claude.ai
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [mattpocock/skills writing-for-agents SKILL.md](https://github.com/mattpocock/skills/blob/a496f55/skills/productivity/writing-for-agents/SKILL.md)
 - Related: REPO-044, MEM-001, TOK-005, PROMPT-015, SKILL-014, TOK-064
 
@@ -239,7 +239,7 @@ Use it when deciding where a rule goes (REPO-044): a line in CLAUDE.md pays cont
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [andrej-karpathy-skills CLAUDE.md](https://github.com/multica-ai/andrej-karpathy-skills/blob/2c60614/CLAUDE.md), [README](https://github.com/multica-ai/andrej-karpathy-skills/blob/2c60614/README.md)
 - Related: PROMPT-031, PROMPT-037, PROMPT-003, OSS-001
 

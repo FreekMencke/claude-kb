@@ -67,7 +67,7 @@ How to run several Claude Code sessions on the same repositories at once: what t
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [git-worktree](https://git-scm.com/docs/git-worktree), [gitrepository-layout](https://git-scm.com/docs/gitrepository-layout), [git-config](https://git-scm.com/docs/git-config), [githooks](https://git-scm.com/docs/githooks)
 - Related: SESS-002, SESS-003, SESS-004, ORCH-009
 
@@ -90,7 +90,7 @@ Consequences for parallel sessions:
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [git-stash](https://git-scm.com/docs/git-stash), [git-worktree](https://git-scm.com/docs/git-worktree)
 - Related: SESS-001, SESS-025
 
@@ -110,7 +110,7 @@ Claude Code's own environment prompt for worktree sessions gives the same rule, 
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [git-config](https://git-scm.com/docs/git-config), [Claude Code CHANGELOG 2.1.271](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md)
 - Related: SESS-001
 
@@ -138,7 +138,7 @@ Separately, Claude Code v2.1.271 fixed "a stale `.git/config.lock` breaking `git
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees)
 - Related: SESS-001, ORCH-009, SKILL-053, TOK-004
 
@@ -159,7 +159,7 @@ All of this applies whether the worktree came from `--worktree` or `git worktree
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Desktop](https://code.claude.com/docs/en/desktop), [Settings reference](https://code.claude.com/docs/en/settings-reference), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-009, ORCH-013, ORCH-016, SESS-006
 
@@ -183,7 +183,7 @@ The desktop app takes a **Branch prefix** (Settings > Claude Code) that it prepe
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Settings reference](https://code.claude.com/docs/en/settings-reference)
 - Related: SESS-005, SESS-025, SESS-036, ORCH-009
 
@@ -236,7 +236,7 @@ Each refusal said to split the command into plain, separate commands. Putting `-
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Worktrees](https://code.claude.com/docs/en/worktrees), [Settings reference: worktree.symlinkDirectories](https://code.claude.com/docs/en/settings-reference), [pnpm motivation](https://pnpm.io/motivation), [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md)
 - Related: SESS-004, SESS-016, ORCH-043, INFRA-021
 
@@ -281,7 +281,7 @@ The CHANGELOG records many concurrency fixes, which shows these collisions were 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [Settings: configuration error](https://code.claude.com/docs/en/settings), [Claude directory](https://code.claude.com/docs/en/claude-directory), [#78439](https://github.com/anthropics/claude-code/issues/78439), [#92908](https://github.com/anthropics/claude-code/issues/92908)
 - Related: SESS-009, SESS-014
 
@@ -304,7 +304,7 @@ Symptoms that point here: a trust dialog reappearing, an MCP server disappearing
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Settings](https://code.claude.com/docs/en/settings), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [#66402](https://github.com/anthropics/claude-code/issues/66402), [#93742](https://github.com/anthropics/claude-code/issues/93742)
 - Related: SESS-009, ORCH-028
 
@@ -332,7 +332,7 @@ The flag advice is our inference from the issues, not a documented rule.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Errors](https://code.claude.com/docs/en/errors), [Authentication](https://code.claude.com/docs/en/authentication), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md)
 - Related: SESS-009, SESS-014
 
@@ -356,7 +356,7 @@ Open issues (#88947, single-source) still report weekly forced re-logins with 10
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [MCP](https://code.claude.com/docs/en/mcp), [CHANGELOG 2.1.154](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md), [#45880](https://github.com/anthropics/claude-code/issues/45880), [#28860](https://github.com/anthropics/claude-code/issues/28860), [playwright-mcp README](https://github.com/microsoft/playwright-mcp)
 - Related: TOK-020, SESS-009, MCP-012, MCP-028, BROWSER-004
 
@@ -377,7 +377,7 @@ Tested 2026-10-13, desktop WSL sessions (CLI 2.1.295), `ps -eo pid,ppid,rss,args
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Environment variables](https://code.claude.com/docs/en/env-vars), [Authentication](https://code.claude.com/docs/en/authentication), [Agent view](https://code.claude.com/docs/en/agent-view), [Sessions](https://code.claude.com/docs/en/sessions), [MCP quickstart](https://code.claude.com/docs/en/mcp-quickstart), [Devcontainer](https://code.claude.com/docs/en/devcontainer)
 - Related: SESS-009, SESS-012
 
@@ -403,7 +403,7 @@ It is a heavy tool for collisions: every directory needs its own login and plugi
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Prompt caching: cache scope](https://code.claude.com/docs/en/prompt-caching)
 - Related: TOK-052, ORCH-040
 
@@ -420,7 +420,7 @@ The cost is per session start, not per turn, so it rarely justifies giving up wo
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-12
+- Last verified: 2026-11-15
 - Sources: [osrs-tracker-web CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/CLAUDE.md), [Agent view: CLAUDE_JOB_DIR](https://code.claude.com/docs/en/agent-view)
 - Related: SESS-008, TOK-104
 
@@ -428,7 +428,7 @@ Worktrees don't isolate the network. Dev servers, test databases and emulators i
 
 Our osrs-tracker-web rule:
 - The dev server is "always on port 4200 (the API's CORS allows only that)".
-- "Other sessions share port 4200: check `ss -ltn | grep :4200` before `npm start`, and stop it when done."
+- "Other sessions share port 4200: check `ss -ltn | grep :4200` before `npm start`. If it's taken by a server this session didn't start, it's another session's: don't stop it, wait or ask the user. Stop your own when done."
 - osrs-tracker-api does the same for port 3000.
 
 Other options:
@@ -444,7 +444,7 @@ Where subagent handoff files go, scratchpad included: TOK-104.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cross-session messaging](https://code.claude.com/docs/en/cross-session-messaging), [Tools reference](https://code.claude.com/docs/en/tools-reference)
 - Related: SESS-018, SESS-019, SESS-020, ORCH-013
 
@@ -472,7 +472,7 @@ Use it for "X landed on main, rebase" or "the migration finished". It is not a h
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cross-session messaging: how a session treats an incoming message](https://code.claude.com/docs/en/cross-session-messaging), [Agent teams](https://code.claude.com/docs/en/agent-teams), [CHANGELOG 2.1.166, 2.1.222](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md)
 - Related: SESS-017, SESS-019, ORCH-010
 
@@ -495,7 +495,7 @@ The same holds for subagent hand-backs inside one session: they are model output
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cross-session messaging](https://code.claude.com/docs/en/cross-session-messaging), [Settings reference](https://code.claude.com/docs/en/settings-reference)
 - Related: SESS-017, SESS-018
 
@@ -527,7 +527,7 @@ It is also in `/config` as "Messages from your other sessions" (v2.1.232+).
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Remote Control](https://code.claude.com/docs/en/remote-control), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: SESS-017, SESS-030, ORCH-016
 
@@ -556,7 +556,7 @@ Remote Control also carries cross-machine messages and `--teleport`.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Events that trigger workflows: pull_request](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request)
 - Related: SESS-022, SESS-028
 
@@ -576,7 +576,7 @@ Don't switch CI to `pull_request_target` to get around this: it runs the base br
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [REST: get a pull request](https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request), [GraphQL schema](https://docs.github.com/public/fpt/schema.docs.graphql), [gh pr view](https://cli.github.com/manual/gh_pr_view)
 - Related: SESS-021, SESS-023
 
@@ -608,7 +608,7 @@ Don't switch CI to `pull_request_target` to get around this: it runs the base br
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches), [Keeping your PR in sync](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch)
 - Related: SESS-022, SESS-024
 
@@ -653,7 +653,7 @@ Notes:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [git-push](https://git-scm.com/docs/git-push), [git-rerere](https://git-scm.com/docs/git-rerere), [git-worktree](https://git-scm.com/docs/git-worktree)
 - Related: SESS-001, SESS-006, SESS-022
 
@@ -673,7 +673,7 @@ The loop: `git fetch origin && git rebase origin/main`, resolve conflicts, rerun
 - Type: fact
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [gitattributes: union](https://git-scm.com/docs/gitattributes), [community discussion #9288](https://github.com/orgs/community/discussions/9288), [kubernetes#70576](https://github.com/kubernetes/kubernetes/pull/70576)
 - Related: SESS-027, SESS-021
 
@@ -692,7 +692,7 @@ The loop: `git fetch origin && git rebase origin/main`, resolve conflicts, rerun
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [towncrier](https://towncrier.readthedocs.io/en/stable/), [changesets](https://github.com/changesets/changesets), [scriv](https://scriv.readthedocs.io/en/latest/), [GitLab changelogs](https://docs.gitlab.com/user/project/changelogs/), [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 - Related: SESS-026
 
@@ -713,7 +713,7 @@ Keep a Changelog's "Keep an `Unreleased` section at the top" is the hot spot the
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [claude-code-action FAQ](https://github.com/anthropics/claude-code-action/blob/main/docs/faq.md), [Claude Code on the web: auto-fix](https://code.claude.com/docs/en/claude-code-on-the-web), [GitHub Actions](https://code.claude.com/docs/en/github-actions)
 - Related: SESS-021, ORCH-016, REPO-036
 
@@ -734,7 +734,7 @@ Conclusion: keeping branches current is the job of a local or cloud session, not
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Sessions](https://code.claude.com/docs/en/sessions), [Worktrees: resume a worktree session](https://code.claude.com/docs/en/worktrees)
 - Related: SESS-030, SESS-031, TOK-032
 
@@ -765,13 +765,13 @@ Sessions are stored per project directory.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web), [Desktop](https://code.claude.com/docs/en/desktop), [CLI reference](https://code.claude.com/docs/en/cli-reference)
 - Related: ORCH-016, SESS-020, SESS-029
 
 | Direction | How | What moves |
 |---|---|---|
-| Cloud → terminal | `claude --teleport [id]`, `/teleport` (`/tp`), or web **Open in > Terminal** | The full conversation, and the cloud branch is checked out. The terminal gets "its own copy of the session" |
+| Cloud → terminal | `claude --teleport [id]`, `/teleport` (`/tp`), or web **Open in > Terminal** | The conversation (messages the cloud session compacted aren't copied; Claude continues from the summary), and the cloud branch is checked out. The terminal gets "its own copy of the session" |
 | Terminal → cloud | `claude --cloud "task"` (`--remote` is a deprecated alias) | Nothing from the session: it starts a new cloud task on your pushed branch. With no git remote, or without the Claude GitHub App on the repository, it uploads a bundle of your local repository instead |
 | Terminal → existing cloud session | `claude -p "msg" --cloud <session-id>` | One queued message |
 | Desktop local → cloud | Session menu **Open in > Cloud** | The conversation "carried over as a summary"; the dialog says whether files move |
@@ -793,7 +793,7 @@ The docs: "From the CLI, session handoff is one-way: you can pull cloud sessions
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cross-session messaging](https://code.claude.com/docs/en/cross-session-messaging), [Sessions: --from-pr](https://code.claude.com/docs/en/sessions), [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - Related: ORCH-036, TOK-030, SESS-017, SESS-029, SESS-030
 
@@ -857,7 +857,7 @@ Tools that manage the sessions themselves are in ORCH-043.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Hooks](https://code.claude.com/docs/en/hooks), [Status line](https://code.claude.com/docs/en/statusline), [ccusage](https://github.com/ryoppippi/ccusage), [Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor), [ccstatusline](https://github.com/sirmalloc/ccstatusline), [multi-agent observability](https://github.com/disler/claude-code-hooks-multi-agent-observability)
 - Related: ORCH-013, ORCH-043, SESS-032
 
@@ -906,7 +906,7 @@ The global `~/.claude/CLAUDE.md` and our repos, as read on 2026-10-12 and re-rea
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Hooks reference: WorktreeCreate, SessionStart](https://code.claude.com/docs/en/hooks), [Worktrees: choose the base branch](https://code.claude.com/docs/en/worktrees)
 - Related: SESS-006, SESS-004, SESS-025, HOOK-003, HOOK-008, HOOK-029
 

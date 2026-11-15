@@ -97,7 +97,7 @@ Templates T1–T3 (changed `conventions-reviewer`, new `bug-reviewer`, new `brow
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [CLAUDE.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/CLAUDE.md), [.claude/settings.json](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/settings.json), [SKILL.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/skills/osrs-tracker-web/SKILL.md), [workflows](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.github/workflows), [dependabot.yml](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.github/dependabot.yml) at `3c76cc2` (2026-10-10); untracked `settings.local.json` and user settings read locally 2026-10-12
 - Related: REPO-002, REPO-004
 
@@ -122,7 +122,7 @@ The sibling repos `osrs-tracker-api`, `osrs-tracker-aws` and `osrs-tracker-packa
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [conventions-reviewer.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/agents/conventions-reviewer.md) at `3c76cc2`, read 2026-10-12
 - Related: REPO-001, REPO-003
 
@@ -152,7 +152,7 @@ model: sonnet
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: local transcripts in `~/.claude/projects/` (all repos), analysed 2026-10-12; [SKILL.md "Release" step 2](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/skills/osrs-tracker-web/SKILL.md)
 - Related: REPO-002, REPO-024, REPO-026, REPO-054
 
@@ -183,7 +183,7 @@ Caveat: outcomes were counted by regex over report text, and only 63 of the 160 
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: local transcripts in `~/.claude/projects/` (all repos), analysed 2026-10-14 (FreekMencke/claude-kb#101); [template T1 in osrs-tracker-web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/agents/conventions-reviewer.md)
 - Related: REPO-003, REPO-033, REPO-047, REPO-049
 
@@ -226,7 +226,7 @@ Gaps at `3c76cc2`. By 2026-10-13 gaps 1–6 were closed in osrs-tracker-web: `/c
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Skills](https://code.claude.com/docs/en/skills), [Slash commands](https://code.claude.com/docs/en/slash-commands), [Hooks](https://code.claude.com/docs/en/hooks), [Settings](https://code.claude.com/docs/en/settings), [Memory](https://code.claude.com/docs/en/memory)
 - Related: ORCH-002, SKILL-007, REPO-006, REPO-009
 
@@ -247,7 +247,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Settings: precedence](https://code.claude.com/docs/en/settings), [Permissions](https://code.claude.com/docs/en/permissions), [Hooks](https://code.claude.com/docs/en/hooks)
 - Related: REPO-005, REPO-007, REPO-034
 
@@ -274,7 +274,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Permissions: what runs before you trust a folder](https://code.claude.com/docs/en/permissions), [Subagents: hooks in frontmatter](https://code.claude.com/docs/en/sub-agents), [Settings](https://code.claude.com/docs/en/settings)
 - Related: REPO-006, SKILL-010, SKILL-034
 
@@ -297,7 +297,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Slash commands](https://code.claude.com/docs/en/slash-commands), [Skills](https://code.claude.com/docs/en/skills), [Plugin manifest](https://code.claude.com/docs/en/plugins/manifest-reference)
 - Related: SKILL-007, SKILL-021
 
@@ -320,7 +320,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-002, REPO-023
 
@@ -341,7 +341,7 @@ All of these are plain files, so they work in every surface that clones the repo
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents: what loads at startup](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-007, TOK-006, template T1
 
@@ -357,7 +357,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents: persistent memory](https://code.claude.com/docs/en/sub-agents), [Plugin components](https://code.claude.com/docs/en/plugins/components)
 - Related: TOK-004, REPO-052
 
@@ -388,7 +388,7 @@ What a subagent starts with, including `omitClaudeMd`: see ORCH-007 (merged ther
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Cloud environments: what carries over](https://code.claude.com/docs/en/cloud-environments), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web), [Permissions: additional directories](https://code.claude.com/docs/en/permissions), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md)
 - Related: SKILL-048, REPO-028, REPO-040
 
@@ -412,7 +412,7 @@ Notes:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Commands](https://code.claude.com/docs/en/commands), [Code review](https://code.claude.com/docs/en/code-review), [Features overview](https://code.claude.com/docs/en/features-overview), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-022, SKILL-021
 
@@ -509,7 +509,7 @@ Not style, not "potential issues that depend on specific inputs or state". "If y
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [pr-test-analyzer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [code-modernization test-engineer](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [wshobson test-automator](https://github.com/wshobson/agents)
 - Related: ORCH-022, ORCH-030
 
@@ -568,7 +568,7 @@ Model: Opus 5.5 `high` for discovery. `security-guidance` has three layers (rege
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [code-modernization agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-modernization/agents), [Commands: /batch](https://code.claude.com/docs/en/commands), [VoltAgent dependency-manager](https://github.com/VoltAgent/awesome-claude-code-subagents)
 - Related: ORCH-012
 
@@ -593,7 +593,7 @@ The skill costs nothing in the agent listing between upgrades. Turn it into an a
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [claude-code-action examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [Claude Code on the web: auto-fix](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: REPO-027, REPO-037
 
@@ -616,7 +616,7 @@ Both are workflow plus command, not repo subagents. For a solo repo where every 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-18
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), TOK-035, TOK-043, local measurement in kb-token-usage.md (TOK-008 baseline), local test in osrs-tracker-web 2026-10-12 (osrs-tracker/osrs-tracker-web#223), local transcripts 2026-10-13 to 10-18 (FreekMencke/claude-kb#101); [wshobson ui-visual-validator](https://github.com/wshobson/agents)
 - Related: template T3, TOK-043, REPO-053
 
@@ -646,7 +646,7 @@ Template: template T3.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: Synthesis of REPO-013 to REPO-021 and ORCH-030; [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-030, REPO-013
 
@@ -694,7 +694,7 @@ Use `@agent-` when the review must happen. Use `--agent` to run a dedicated sess
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [anthropics/claude-code#80988](https://github.com/anthropics/claude-code/issues/80988), [aident.ai post](https://aident.ai/blog/fix-claude-code-opus-5-not-using-subagents)
 - Related: REPO-023, REPO-025, SKILL-012
 
@@ -740,7 +740,7 @@ Official example, which blocks finishing until tests pass:
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [CLI reference](https://code.claude.com/docs/en/cli-reference)
 - Related: ORCH-003, ORCH-035, REPO-010
 
@@ -768,7 +768,7 @@ Official example, which blocks finishing until tests pass:
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GitHub Actions](https://code.claude.com/docs/en/github-actions), [action usage.md](https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [action.yml](https://github.com/anthropics/claude-code-action/blob/main/action.yml)
 - Related: ORCH-016, REPO-028, REPO-038
 
@@ -816,7 +816,7 @@ steps:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GitHub Actions: run a skill](https://code.claude.com/docs/en/github-actions), [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [action issues](https://github.com/anthropics/claude-code-action/issues)
 - Related: REPO-012, REPO-027
 
@@ -872,14 +872,14 @@ Fork PRs are reviewed only by comment.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Routines](https://code.claude.com/docs/en/routines), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web)
 - Related: ORCH-017, REPO-018
 
 | | Actions cron + `claude-code-action` | Cloud scheduled task (formerly routine) |
 |---|---|---|
-| Trigger | `schedule`, `workflow_dispatch`, any event | Schedule (≥ 1 hour), API POST, GitHub **pull request** or **release** events with filters (author, title, labels, draft, merged, branch; regex must match the whole field) |
-| Runs as | The action's App token; billed by API key or OAuth token | Your account and identity; subscription usage; no permission prompts |
+| Trigger | `schedule`, `workflow_dispatch`, any event | Schedule (≥ 1 hour), API POST, GitHub **pull request**, **release** or **issue** events (filters apply to pull requests) (author, title, labels, draft, merged, branch; regex must match the whole field) |
+| Runs as | The action's App token; billed by API key or OAuth token | Your account and identity; subscription usage; starts in auto mode (a classifier decides), but can still stop for ask rules or repeated blocks |
 | Repo config | Checked out; base branch on PRs | Fresh clone; repo agents and skills load (REPO-012) |
 | Caveats | Cron only from the default branch. Public repos disable schedules after 60 days of inactivity. `schedule` skips the write-access check, but the bot check still applies: if the user who last edited the cron is a bot, list it in `allowed_bots`. | 100 scheduled runs/hour/account. Needs the Claude GitHub App for GitHub triggers. Pushes go to `claude/` branches by default. |
 
@@ -901,7 +901,7 @@ There is no official dependency-update or flaky-test routine.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents: tools](https://code.claude.com/docs/en/sub-agents)
 - Related: REPO-033, REPO-053, SKILL-010
 
@@ -923,7 +923,7 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Subagents: mcpServers](https://code.claude.com/docs/en/sub-agents), [Playwright MCP 0.0.83 README](https://github.com/microsoft/playwright-mcp/blob/v0.0.83/README.md) (both read 2026-10-14), local transcripts 2026-10-13 to 10-14, osrs-tracker/osrs-tracker-web@1a1e30e
 - Related: REPO-031, REPO-021, REPO-033, MCP-008
 
@@ -965,7 +965,7 @@ The docs don't say this either way. They say only "The subagent gets the tools; 
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Subagents (db-reader hook example)](https://code.claude.com/docs/en/sub-agents), [Permissions](https://code.claude.com/docs/en/permissions), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md)
 - Related: REPO-031, REPO-007, REPO-054, template T1
 
@@ -994,7 +994,7 @@ A ready hook script is in template T1.
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Permissions: Bash](https://code.claude.com/docs/en/permissions)
 - Related: REPO-033, REPO-035
 
@@ -1015,7 +1015,7 @@ A ready hook script is in template T1.
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Sandboxing](https://code.claude.com/docs/en/sandboxing), [Engineering: sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing), [Permissions](https://code.claude.com/docs/en/permissions)
 - Related: REPO-033, REPO-036
 
@@ -1067,7 +1067,7 @@ A ready hook script is in template T1.
 - Type: fact
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Lethal trifecta (Willison)](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/), [PromptPwnd (Aikido)](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents), [Flatt Security](https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/), [GHSA-8q5r-mmjf-575q](https://github.com/anthropics/claude-code-action/security/advisories/GHSA-8q5r-mmjf-575q), [Snyk on Cline](https://snyk.io/blog/cline-supply-chain-attack-prompt-injection-github-actions/), [Invariant Labs](https://invariantlabs.ai/blog/mcp-github-vulnerability), [JFrog on Nx](https://research.jfrog.com/post/nx-supply-chain-attack-targets-ai-tool-users/), [Anthropic: injection defenses](https://www.anthropic.com/research/prompt-injection-defenses)
 - Related: REPO-038, REPO-039
 
@@ -1095,8 +1095,8 @@ A ready hook script is in template T1.
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
-- Sources: [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [PromptPwnd](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents), [action releases](https://github.com/anthropics/claude-code-action/releases)
+- Last verified: 2026-11-15
+- Sources: [action security.md](https://github.com/anthropics/claude-code-action/blob/main/docs/security.md), [GitHub Actions](https://code.claude.com/docs/en/github-actions), [examples](https://github.com/anthropics/claude-code-action/tree/main/examples), [PromptPwnd](https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents), [action releases](https://github.com/anthropics/claude-code-action/releases), [claude-code-security-review README](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/README.md)
 - Related: REPO-027, REPO-037
 
 **Defaults to keep:**
@@ -1147,7 +1147,7 @@ as a finding (severity: breaks) and continue your review.
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Plugins](https://code.claude.com/docs/en/plugins), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Large codebases](https://code.claude.com/docs/en/large-codebases), [Cloud environments](https://code.claude.com/docs/en/cloud-environments), [Permissions: additional directories](https://code.claude.com/docs/en/permissions)
 - Related: SKILL-033, SKILL-034, REPO-041, REPO-042
 
@@ -1186,7 +1186,7 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [Code review: REVIEW.md](https://code.claude.com/docs/en/code-review), [Codex GitHub review](https://learn.chatgpt.com/docs/third-party/github), [Cursor Bugbot](https://cursor.com/docs/bugbot)
 - Related: REPO-014, REPO-043, REPO-045
 
@@ -1212,11 +1212,11 @@ Applied to Claude Code repo agents:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: `diff` of [web](https://github.com/osrs-tracker/osrs-tracker-web/blob/3c76cc21fa71c6c955ce707a2f2ae5042e1a93ac/.claude/agents/conventions-reviewer.md), [api](https://github.com/osrs-tracker/osrs-tracker-api/blob/a7d7c79c2fcad054b5030c108ae8a23660f98b17/.claude/agents/conventions-reviewer.md) and [aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/8b01209a8c19ffccfdf7234ac33119ae1b9f731c/.claude/agents/conventions-reviewer.md) `conventions-reviewer.md`, 2026-10-12; current files on `main` of [web](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/.claude/agents/conventions-reviewer.md), [api](https://github.com/osrs-tracker/osrs-tracker-api/blob/main/.claude/agents/conventions-reviewer.md) and [aws](https://github.com/osrs-tracker/osrs-tracker-aws/blob/main/.claude/agents/conventions-reviewer.md), read 2026-10-14
 - Related: REPO-040, REPO-042
 
-Since 2026-10-12 the web, api and aws `conventions-reviewer.md` files are the shared read-only v2. They differ only in the repo and skill names, and api's description also lists its rule areas (osrs-tracker/osrs-tracker-web#224, osrs-tracker/osrs-tracker-aws#76, osrs-tracker-api commit 7b66993 closing osrs-tracker/osrs-tracker-api#134). The `read-only-bash.sh` hook is the same file in all three.
+Since 2026-10-12 the web, api and aws `conventions-reviewer.md` files are the shared read-only v2. As of 2026-10-12 they differ only in the repo and skill names, and api's description also lists its rule areas (web has since added two Angular skills and reworded its rule sources) (osrs-tracker-web#224, osrs-tracker-aws#76, osrs-tracker-api commit 7b66993 closing #134). The `read-only-bash.sh` hook is identical in all three.
 
 **Shared shape:** `tools: Read, Grep, Glob, Bash`, `model: sonnet`, `effort: medium`, the repo skill preloaded with `skills:`, the frontmatter hook, a do-not-flag list, an untrusted-content rule, a first-line `VERDICT:` and at most 3 **check** items (template T1).
 
@@ -1224,7 +1224,7 @@ Since 2026-10-12 the web, api and aws `conventions-reviewer.md` files are the sh
 
 Update 2026-10-18: the `@osrs-tracker/*` packages moved to osrs-tracker-packages, and aws's skill no longer has `PACKAGES.md`. osrs-tracker-packages' `conventions-reviewer.md` is a fourth copy of v2 (only the names and two line wraps differ from aws's) with the same `read-only-bash.sh`. Its skill's `## Review rules` read aws's `DATA-MODEL.md` for a stored-format change; its extra **breaks** cases are a stored-format change without a migration and a build that drops `dist/cjs`, `dist/esm` or `dist/types`.
 
-**Before** (pinned SHAs above, 2026-10-12): the copies differed in rule sources, scope rules and **breaks** definitions, about 60% of each file was shared, and aws alone forbade mutating `aws`, `npm publish` and git writes in its prompt. Option (b), specifics in the skill so drift shows in a `diff`, was the recommendation; it is what the repos did. Option (c), a user-level or plugin agent, would lose the hook-based read-only guard (REPO-041).
+**Before** (pinned SHAs above, 2026-10-12): the copies differed in rule sources, scope rules and **breaks** definitions, and aws alone forbade mutating `aws`, `npm publish` and git writes in its prompt. Option (b), specifics in the skill so drift shows in a `diff`, was the recommendation; it is what the repos did. Option (c), a user-level or plugin agent, would lose the read-only hook guard (REPO-041).
 
 ---
 
@@ -1234,7 +1234,7 @@ Update 2026-10-18: the `@osrs-tracker/*` packages moved to osrs-tracker-packages
 - Type: recommendation
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Best practices: Tell Claude what it can't see, Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [Memory](https://code.claude.com/docs/en/memory), [Customize Code Review](https://code.claude.com/docs/en/code-review-customize), [Large codebases](https://code.claude.com/docs/en/large-codebases)
 - Related: TOK-065, SKILL-021, SKILL-024, REPO-045
 
@@ -1261,7 +1261,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: fact
 - Applies to: general
 - Confidence: community-consensus
-- Last verified: 2026-10-12
+- Last verified: 2026-11-15
 - Sources: [Memory](https://code.claude.com/docs/en/memory), [Best practices: Keep CLAUDE.md short](https://code.claude.com/docs/en/best-practices), [IFScale, arXiv 2507.11538](https://arxiv.org/abs/2507.11538), [HumanLayer: writing a good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md), [Copilot response customization](https://docs.github.com/en/copilot/concepts/prompting/response-customization)
 - Related: TOK-003, SKILL-024, REPO-044
 
@@ -1292,7 +1292,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [pr-review-toolkit agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit/agents), [feature-dev agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/feature-dev/agents), [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [claude-security agents](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/claude-security/agents), [Subagents](https://code.claude.com/docs/en/sub-agents)
 - Related: ORCH-042, REPO-047, REPO-049
 
@@ -1316,7 +1316,7 @@ The general rules are in TOK-065 and SKILL-021. What is specific to repos with a
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [code-review command](https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/code-review/commands/code-review.md), [security-review command](https://raw.githubusercontent.com/anthropics/claude-code-security-review/main/.claude/commands/security-review.md), [Best practices: Review against your spec](https://code.claude.com/docs/en/best-practices)
 - Related: ORCH-039, REPO-048, REPO-049, REPO-054
 
@@ -1395,8 +1395,8 @@ What works, across sources:
 - Type: pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
-- Sources: [wshobson team-reviewer](https://raw.githubusercontent.com/wshobson/agents/main/plugins/agent-teams/agents/team-reviewer.md), [Code review: bughunter-severity](https://code.claude.com/docs/en/code-review), [CLI reference: --json-schema](https://code.claude.com/docs/en/cli-reference)
+- Last verified: 2026-11-15
+- Sources: [wshobson team-reviewer](https://raw.githubusercontent.com/wshobson/agents/main/plugins/agent-teams/agents/team-reviewer.md), [Code review: bughunter-severity](https://code.claude.com/docs/en/code-review), [CLI reference: --json-schema](https://code.claude.com/docs/en/cli-reference), [Code review: pull requests](https://code.claude.com/docs/en/code-review-pull-requests)
 - Related: ORCH-035, REPO-049
 
 **Per finding**, these fields recur across good reviewers:
@@ -1426,7 +1426,7 @@ Managed Code Review does the same for machines with its `bughunter-severity: {"n
 - Type: anti-pattern
 - Applies to: Claude Code
 - Confidence: community-consensus
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [wshobson/agents](https://github.com/wshobson/agents) (40.4k★), [VoltAgent/awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) (25.7k★), [contains-studio/agents](https://github.com/contains-studio/agents) (12.4k★), [lst97/claude-code-sub-agents](https://github.com/lst97/claude-code-sub-agents) (1.7k★), [iannuttall/claude-agents](https://github.com/iannuttall/claude-agents) (2.0k★), [0xfurai/claude-code-subagents](https://github.com/0xfurai/claude-code-subagents) (1.0k★); stars via GitHub API 2026-10-12
 - Related: SKILL-045, REPO-013, REPO-046
 
@@ -1452,7 +1452,7 @@ Treat collections as idea sources (SKILL-045), not installs.
 - Type: comparison
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-14
+- Last verified: 2026-11-15
 - Sources: [Codex GitHub](https://learn.chatgpt.com/docs/third-party/github), [Cursor Bugbot docs](https://cursor.com/docs/bugbot), [Bugbot learning](https://cursor.com/blog/bugbot-learning), [Greptile nitpickiness](https://www.greptile.com/docs/code-review/controlling-nitpickiness), [CodeRabbit config](https://docs.coderabbit.ai/reference/configuration), [Graphite on false positives](https://graphite.dev/guides/ai-code-review-false-positives)
 - Related: REPO-042, REPO-049, REPO-011
 

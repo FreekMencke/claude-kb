@@ -120,7 +120,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [unifiedfontobject.org](https://unifiedfontobject.org/), [UFO 4](https://unifiedfontobject.org/versions/ufo4/), [fontTools.ufoLib at 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/ufoLib/__init__.py), [glyphsLib README](https://github.com/googlefonts/glyphsLib), [fontmake README](https://github.com/googlefonts/fontmake), [fontc README](https://github.com/googlefonts/fontc)
 - Related: FONT-002, FONT-003, FONT-024
 
@@ -136,7 +136,7 @@ UFO 3 is the newest published UFO spec. Write UFO 3 and don't wait for UFO 4.
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [designspaceLib XML format](https://fonttools.readthedocs.io/en/latest/designspaceLib/xml.html), [fonttools NEWS.rst](https://github.com/fonttools/fonttools/blob/main/NEWS.rst), [fontmake 3.12.2 source](https://github.com/googlefonts/fontmake/tree/v3.12.2/Lib/fontmake), [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0)
 - Related: FONT-001, FONT-004, FONT-006
 
@@ -159,7 +159,7 @@ Tested 2026-10-17, fontmake 3.12.2: from fontmake's test files, a document with 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0), [fontc README](https://github.com/googlefonts/fontc), [fontc#837](https://github.com/googlefonts/fontc/issues/837), [fontc#717](https://github.com/googlefonts/fontc/issues/717), [fontc crater](https://googlefonts.github.io/fontc_crater/), [fontc on PyPI](https://pypi.org/project/fontc/)
 - Related: FONT-004, FONT-008, FONT-005
 
@@ -183,7 +183,7 @@ fontc is Google Fonts' font compiler in Rust. 1.0.0 was released on 2026-09-01 (
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [fontc 1.0.0 release notes](https://github.com/googlefonts/fontc/releases/tag/fontc-v1.0.0), [fontmake README](https://github.com/googlefonts/fontmake), [fontmake 3.12.2 test data](https://github.com/googlefonts/fontmake/tree/v3.12.2/tests/data)
 - Related: FONT-003, FONT-002, FONT-006, FONT-017
 
@@ -230,7 +230,7 @@ So accented letters built as composites, with anchors and kerning groups, get ma
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [instancer docs](https://fonttools.readthedocs.io/en/latest/varLib/instancer.html), [instancer at 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/instancer/__init__.py), [fonttools NEWS.rst](https://github.com/fonttools/fonttools/blob/main/NEWS.rst)
 - Related: FONT-004, FONT-008, FONT-016, FONT-020
 
@@ -279,7 +279,7 @@ Compatibility errors are about the drawing, not the code: Claude can run the che
 - Type: tool
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [gftools builder docs](https://github.com/googlefonts/gftools/blob/main/docs/gftools-builder/README.md), [gftools builder/fontc.py at v0.10.4](https://github.com/googlefonts/gftools/blob/v0.10.4/Lib/gftools/builder/fontc.py), [googlefonts-project-template](https://github.com/googlefonts/googlefonts-project-template), [GF guide: build](https://googlefonts.github.io/gf-guide/build.html)
 - Related: FONT-003, FONT-006, FONT-015, FONT-016
 
@@ -299,7 +299,7 @@ For a family not bound for Google Fonts, plain fontmake commands (FONT-004) are 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OpenType Feature File Specification](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html), [spec source on GitHub](https://github.com/adobe-type-tools/afdko/blob/develop/docs/OpenTypeFeatureFileSpecification.md), [feaLib docs](https://fonttools.readthedocs.io/en/latest/feaLib/index.html)
 - Related: FONT-005, FONT-010, FONT-023
 
@@ -340,7 +340,7 @@ In a UFO build, leave `kern`, `mark` and `mkmk` to ufo2ft (FONT-005). In CSS, re
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [feaLib docs](https://fonttools.readthedocs.io/en/latest/feaLib/index.html), [feaLib __main__.py at 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/feaLib/__main__.py), [AFDKO NEWS](https://github.com/adobe-type-tools/afdko/blob/develop/NEWS.md)
 - Related: FONT-009, FONT-024, FONT-005
 
@@ -368,7 +368,7 @@ AFDKO's equivalent is now `afdko makeotf` or `afdko addfeatures`: 5.0.0 (2026-03
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [ttfautohint manual](https://freetype.org/ttfautohint/doc/ttfautohint.html), [ttfautohint 1.8.4 tarball (NEWS)](https://download.savannah.gnu.org/releases/freetype/ttfautohint-1.8.4.tar.gz), [ttfautohint-py on PyPI](https://pypi.org/project/ttfautohint-py/), [fontmake font_project.py at v3.12.2](https://github.com/googlefonts/fontmake/blob/v3.12.2/Lib/fontmake/font_project.py), [AFDKO NEWS](https://github.com/adobe-type-tools/afdko/blob/develop/NEWS.md), [GF guide: statics](https://googlefonts.github.io/gf-guide/statics.html)
 - Related: FONT-012, FONT-013, FONT-017
 
@@ -391,7 +391,7 @@ Tested 2026-10-18, AFDKO 5.0.1, with that variable: `otfautohint` warned it "wil
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GF guide: variable fonts](https://googlefonts.github.io/gf-guide/variable.html), [how-to-hint-variable-fonts](https://github.com/googlefonts/how-to-hint-variable-fonts), [VisualTrueType](https://github.com/microsoft/VisualTrueType), [VTT docs](https://learn.microsoft.com/en-us/typography/tools/vtt/), [gftools fix.py](https://github.com/googlefonts/gftools/blob/main/Lib/gftools/fix.py)
 - Related: FONT-011, FONT-013, FONT-016
 
@@ -457,7 +457,7 @@ For a family not bound for Google Fonts, run `universal`. 1.9.0's release notes 
 - Type: pattern
 - Applies to: general
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [setup-fontspector](https://github.com/fonttools/setup-fontspector), [Fontspector USING.md](https://github.com/fonttools/fontspector/blob/main/USING.md), [configuration.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-cli/src/configuration.rs), [context.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-checkapi/src/context.rs), [status.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-checkapi/src/status.rs), [args.rs at 1.9.0](https://github.com/fonttools/fontspector/blob/fontspector-v1.9.0/fontspector-cli/src/args.rs), [googlefonts-project-template build.yaml](https://github.com/googlefonts/googlefonts-project-template/blob/main/.github/workflows/build.yaml), [googlefonts-project-template Makefile](https://github.com/googlefonts/googlefonts-project-template/blob/main/Makefile)
 - Related: FONT-014, FONT-008, GHA-009
 
@@ -491,7 +491,7 @@ Tested 2026-10-18, Fontspector 1.9.0 Linux binary: overridden results read "â€¦ 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [GF guide: upstream repo](https://googlefonts.github.io/gf-guide/upstream.html), [GF guide: variable fonts](https://googlefonts.github.io/gf-guide/variable.html), [GF guide: statics](https://googlefonts.github.io/gf-guide/statics.html), [web.dev: font best practices](https://web.dev/articles/font-best-practices), [satori README](https://github.com/vercel/satori), [osrs-tracker-web docs/decisions.md](https://github.com/osrs-tracker/osrs-tracker-web/blob/main/docs/decisions.md)
 - Related: FONT-006, FONT-008, FONT-012, FONT-017
 
@@ -511,7 +511,7 @@ Version every format from the same source fields (FONT-017).
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OpenType spec: head](https://learn.microsoft.com/en-us/typography/opentype/spec/head), [OpenType spec: name](https://learn.microsoft.com/en-us/typography/opentype/spec/name), [UFO 3 fontinfo.plist](https://unifiedfontobject.org/versions/ufo3/fontinfo.plist/), [ufo2ft fontInfoData.py](https://github.com/googlefonts/ufo2ft/blob/main/Lib/ufo2ft/fontInfoData.py), [ufo2ft outlineCompiler.py](https://github.com/googlefonts/ufo2ft/blob/main/Lib/ufo2ft/outlineCompiler.py), [Fontspector opentype/font_version](https://github.com/fonttools/fontspector/blob/main/profile-opentype/src/checks/opentype/font_version.rs), [GF guide: requirements](https://googlefonts.github.io/gf-guide/requirements.html)
 - Related: FONT-016, FONT-011, FONT-004
 
@@ -533,7 +533,7 @@ A font carries its version twice. `head.fontRevision` is a Fixed number, but "Wi
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OFL 1.1 official text](https://openfontlicense.org/open-font-license-official-text/), [OFL FAQ](https://openfontlicense.org/ofl-faq/), [GF guide: license file](https://googlefonts.github.io/gf-guide/license-file.html), [GF guide: onboarding](https://googlefonts.github.io/gf-guide/onboarding.html)
 - Related: FONT-019, FONT-016
 
@@ -555,7 +555,7 @@ Under the SIL Open Font License 1.1, a subset web font is a Modified Version, wh
 - Type: anti-pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [fontTools subset docs](https://fonttools.readthedocs.io/en/latest/subset/index.html), [subset/__init__.py](https://github.com/fonttools/fonttools/blob/main/Lib/fontTools/subset/__init__.py), [fonttools README (extras)](https://github.com/fonttools/fonttools), [Google Fonts CSS for Work Sans](https://fonts.googleapis.com/css2?family=Work+Sans:wght@100..900&display=swap)
 - Related: FONT-018, FONT-020, FONT-023
 
@@ -585,7 +585,7 @@ Subset only what you serve, and keep the features your CSS uses (FONT-023).
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Google Fonts CSS for Work Sans](https://fonts.googleapis.com/css2?family=Work+Sans:wght@100..900&display=swap), [Google Fonts: getting started](https://developers.google.com/fonts/docs/getting_started), [web.dev: font best practices](https://web.dev/articles/font-best-practices), [MDN: rel=preload](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/preload)
 - Related: FONT-019, FONT-021, FONT-006
 
@@ -604,7 +604,7 @@ A Latin-only family of a few hundred glyphs gains little from slicing; one file 
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [CSS Fonts 4 (Editor's Draft): font-display](https://drafts.csswg.org/css-fonts-4/#font-display-desc), [MDN: font-display](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display), [web.dev: font best practices](https://web.dev/articles/font-best-practices), [web.dev: LCP](https://web.dev/articles/lcp), [web.dev: optimize LCP](https://web.dev/articles/optimize-lcp), [web.dev: preload optional fonts](https://web.dev/articles/preload-optional-fonts)
 - Related: FONT-020, FONT-022, WEB-010, WEB-030, WEB-034
 
@@ -704,7 +704,7 @@ All of these are Baseline widely available. A feature only works if the served f
 - Type: fact
 - Applies to: Claude Code
 - Confidence: single-source
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [VecGlypher (arXiv 2602.21461, CVPR 2026)](https://arxiv.org/abs/2602.21461), [fontmake 3.12.2 test data](https://github.com/googlefonts/fontmake/tree/v3.12.2/tests/data)
 - Related: FONT-001, FONT-007, FONT-010, FONT-025, DESIGN-007
 
@@ -723,7 +723,7 @@ Verify with the tools (FONT-007, FONT-010, FONT-014) and a proof, and judge shap
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [UFO 3 glif spec](https://unifiedfontobject.org/versions/ufo3/glyphs/glif/), [OpenType `glyf` table](https://learn.microsoft.com/en-us/typography/opentype/spec/glyf), [ufo2ft 3.9.1 `__init__.py`](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/__init__.py)
 - Related: FONT-007, FONT-024
 
@@ -742,7 +742,7 @@ A straight edge drawn as curves, to stay compatible with masters where it bends,
 - Type: recommendation
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [Glyphs, Multiple Masters part 1](https://glyphsapp.com/learn/multiple-masters-part-1-setting-up-masters), [LucasFonts, Interpolation theory](https://www.lucasfonts.com/learn/interpolation-theory), [designspace XML spec, fontTools 4.67.0](https://github.com/fonttools/fonttools/blob/4.67.0/Doc/source/designspaceLib/xml.rst), [fontTools 4.67.0 `varLib/models.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/models.py), [OpenType variations overview](https://learn.microsoft.com/en-us/typography/opentype/spec/otvaroverview), [TypeDrawers, How extreme do you make your light and bold masters (2018)](https://typedrawers.com/discussion/comment/35730)
 - Related: FONT-002, FONT-007, FONT-027, FONT-028
 
@@ -760,7 +760,7 @@ fontTools' `VariationModel` extrapolates only "If the extrapolate argument is se
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [LucasFonts, Interpolation theory](https://www.lucasfonts.com/learn/interpolation-theory)
 - Related: FONT-026, FONT-028, FONT-029
 
@@ -778,7 +778,7 @@ At Black, only stop strokes from getting thinner than in Bold: scaling every str
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [TypeDrawers, How extreme do you make your light and bold masters (2018)](https://typedrawers.com/discussion/comment/35730)
 - Related: FONT-026, FONT-027, FONT-029, FONT-032
 
@@ -797,7 +797,7 @@ The common alternative, extrapolating once and redrawing by hand (one TypeDrawer
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible), [fontTools 4.67.0 `misc/transform.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/misc/transform.py)
 - Related: FONT-025, FONT-027, FONT-030, FONT-031, FONT-033
 
@@ -817,7 +817,7 @@ A derived weight at exactly the nearest master times the stem ratio k scales up 
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
 - Related: FONT-029, FONT-031, FONT-032
 
@@ -837,7 +837,7 @@ Carried through as one stroke, & was confirmed by an independent reviewer, with 
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [skia-pathops 0.9.2 README](https://github.com/fonttools/skia-pathops/blob/v0.9.2/README.md), [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
 - Related: FONT-029, FONT-030, FONT-032
 
@@ -855,7 +855,7 @@ Sources that keep overlaps (FONT-030) hold the parts apart already; ours store Â
 - Type: recommendation
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [Speed Punk README](https://github.com/yanone/speedpunk/blob/master/README.md)
 - Related: FONT-024, FONT-028, FONT-030, FONT-031, FONT-033
 
@@ -869,7 +869,7 @@ Point views and curvature combs show smoothness, not weight: Speed Punk's README
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [scikit-image 0.26.0 `medial_axis`](https://github.com/scikit-image/scikit-image/blob/v0.26.0/src/skimage/morphology/_skeletonize.py)
 - Related: FONT-029, FONT-032
 
@@ -887,7 +887,7 @@ Next to a stroke-end cut the disc runs past the end, since the cut mustn't limit
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-19
+- Last verified: 2026-11-15
 - Sources: [FontLab 8, PROJECT: Fixing the S problem](https://help.fontlab.com/fontlab/8/tutorials/calfonts/2.%20Honing/2c-0a%20PROJECT%20Fixing%20the%20S%20Problem/), [Glyphs 4 announcement (2026-07-27)](https://glyphsapp.com/news/glyphs-4-create-love-the-process)
 - Related: FONT-025, FONT-032, FONT-035
 
@@ -903,7 +903,7 @@ FontLab: "Kinks are to G1 continuity, as crimps are to G2 continuity"; it fixes 
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible), [fontTools 4.67.0 `varLib/interpolatable.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/varLib/interpolatable.py)
 - Related: FONT-007, FONT-025, FONT-034, FONT-036
 
@@ -920,7 +920,7 @@ A smooth node, its handles in line, can be smooth in every master and still kink
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [fontmake 3.12.2 `__main__.py`](https://github.com/googlefonts/fontmake/blob/v3.12.2/Lib/fontmake/__main__.py), [OpenType variations overview](https://learn.microsoft.com/en-us/typography/opentype/spec/otvaroverview), [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
 - Related: FONT-016, FONT-025, FONT-035
 
@@ -936,13 +936,13 @@ A variable font isn't rounded that way: the OpenType spec "has no other requirem
 - Type: fact
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [mekkablue Glyphs-Scripts README, Kerning](https://github.com/mekkablue/Glyphs-Scripts/blob/master/README.md#kerning), [KernCrasher's `kernanalysis.py`](https://github.com/mekkablue/Glyphs-Scripts/blob/master/Kerning/kernanalysis.py), [FontLab 8, Metrics and kerning: Kern to distance](https://help.fontlab.com/fontlab/8/whats-new/whats-new-06-metrics-kerning/), [Fontspector `iso15008/intercharacter_spacing`](https://github.com/fonttools/fontspector/blob/main/profile-iso15008/src/checks/iso15008/intercharacter_spacing.rs)
 - Related: FONT-026, FONT-029, FONT-038, FONT-043
 
 A heavier weight eats into every sidebearing at once, so letters that reach past their sidebearings and nearly touch in Bold (T, V, W, Y, L, f, j) overlap in an extrapolated Black with no kern pair involved. Reviewing the kerning table misses them: measure clearance, the shortest distance between the two glyphs' edges as set.
 
-Type-design tools measure it horizontally, one master at a time. mekkablue's KernCrasher "Opens a new tab with Kerning Combos that crash in the current fontmaster", adding the two sidebearings at each height (default "Min distance" 10 units); FontLab 8's Kern to Distance sets "the smallest horizontal distance between the contours". Rows find overlaps, but a diagonal pair is closer than any one row shows, so also compare edge points on nearby rows. Fontspector has no general check: a code search of fonttools/fontspector for "collision" found only the ISO 15008 profile's spacing check, which tests a few pairs ("diagonal characters should not touch (e.g. "vv")").
+Type-design tools measure it horizontally, one master at a time. mekkablue's KernCrasher "Finds kerning collisions in the current master (or all masters of the frontmost font, or of all open fonts)", adding the two sidebearings at each height (default "Min distance" 10 units); FontLab 8's Kern to Distance sets "the smallest horizontal distance between the contours". Rows find overlaps, but a diagonal pair is closer than any one row shows, so also compare edge points on nearby rows. Fontspector has no general check: a code search of fonttools/fontspector for "collision" found only the ISO 15008 profile's spacing check, which tests a few pairs ("diagonal characters should not touch (e.g. "vv")").
 
 **Tested 2026-10-20 on our typeface project (fontTools 4.67.0, uharfbuzz 0.56.3, Python 3.12, WSL2)**, clearance from edge points on rows up to 60 units apart:
 - Bold to Black shrank every gap by about the same amount: HH 117 to 102 units, nn 99 to 85.
@@ -953,7 +953,7 @@ Type-design tools measure it horizontally, one master at a time. mekkablue's Ker
 - Type: recommendation
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [ufo2ft 3.9.1 `instantiator.py`](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/instantiator.py), [FontLab 8, Auto Kerning Exceptions](https://help.fontlab.com/fontlab/8/tutorials/calfonts/3.%20Fitting%20and%20Spacing/3e-1%20Auto%20Kerning%20Exceptions/), [mekkablue Glyphs-Scripts README, Kerning](https://github.com/mekkablue/Glyphs-Scripts/blob/master/README.md#kerning)
 - Related: FONT-028, FONT-036, FONT-037, FONT-039
 
@@ -970,7 +970,7 @@ Tools add such exceptions per master: mekkablue's Auto Bumper ("Specify a minimu
 - Type: anti-pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [fontMath 0.10.0 `mathKerning.py`](https://github.com/robotools/fontMath/blob/0.10.0/Lib/fontMath/mathKerning.py), [ufo2ft 3.9.1 `instantiator.py`](https://github.com/googlefonts/ufo2ft/blob/v3.9.1/Lib/ufo2ft/instantiator.py)
 - Related: FONT-026, FONT-028, FONT-038
 
@@ -984,7 +984,7 @@ A pair a master doesn't list isn't skipped in the arithmetic. fontMath's `MathKe
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [Glyphs, Multiple Masters part 2](https://glyphsapp.com/learn/multiple-masters-part-2-keeping-your-outlines-compatible)
 - Related: FONT-007, FONT-031, FONT-032, FONT-035
 
@@ -996,7 +996,7 @@ Interpolation needs only matching structure. Glyphs lists what compatibility tak
 - Type: pattern
 - Applies to: general
 - Confidence: single-source
-- Last verified: 2026-10-20
+- Last verified: 2026-11-15
 - Sources: [fontTools 4.67.0 `misc/transform.py`](https://github.com/fonttools/fonttools/blob/4.67.0/Lib/fontTools/misc/transform.py)
 - Related: FONT-028, FONT-029, FONT-034
 
@@ -1014,7 +1014,7 @@ Map per axis (fontTools `Transform.scale(x, y)` with separate factors, so both e
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Glyphs, Making small caps](https://glyphsapp.com/learn/making-small-caps)
 - Related: FONT-027, FONT-031, FONT-032
 

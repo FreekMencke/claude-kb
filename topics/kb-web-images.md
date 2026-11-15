@@ -45,7 +45,7 @@ Research basis:
 - Type: fact
 - Applies to: Claude Code, Claude API, claude.ai
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Vision](https://platform.claude.com/docs/en/build-with-claude/vision)
 - Related: DESIGN-008, IMG-008, OG-005
 
@@ -62,15 +62,15 @@ So "make a hero image" in a Claude Code session means a call to OpenAI or Google
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Image generation guide](https://developers.openai.com/api/docs/guides/image-generation), [Pricing](https://developers.openai.com/api/docs/pricing), [Deprecations](https://developers.openai.com/api/docs/deprecations)
 - Related: IMG-003, IMG-004, IMG-010
 
 **Models:** "generate and edit images from text prompts using `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`. Choose Sunburst for workflows where editing precision matters most, and Flare for fast, high-quality everyday image generation." Both "add `xhigh` and `max` quality settings" and "default to `auto`".
 
-**Shutdowns** (deprecations page): `gpt-image-1` on 2026-10-23; `gpt-image-1.5`, `gpt-image-1-mini` and `chatgpt-image-latest` on "Dec 1, 2026", replaced by "`gpt-image-2.5-sunburst` or `gpt-image-2.5-flare`"; `dall-e-2` and `dall-e-3` on 2026-05-12.
+**Shutdowns** (deprecations page): `gpt-image-1` on 2026-10-23; `gpt-image-1.5`, `gpt-image-1-mini` and `chatgpt-image-latest` on "Dec 1, 2026", replaced by "`gpt-image-2.6-sunburst` or `gpt-image-2.6-flare`"; `gpt-image-2` and `gpt-image-2-2026-04-21` follow on 2027-02-10 (deprecated 2026-11-10); `dall-e-2` and `dall-e-3` on 2026-05-12.
 
-**Price:** per token, not per image. Standard tier, per 1M tokens: image input $8.00, image output $30.00, the same for 2.5 and `gpt-image-2`; Batch halves it. The guide warns: "Equal token rates don't mean equal cost per image: token consumption can differ by model and quality setting." No per-image table exists for 2.5. The older-model examples for `gpt-image-2` at 1024×1024 are $0.006 (low), $0.053 (medium) and $0.211 (high).
+**Price:** per token, not per image. Standard tier, per 1M tokens: image input $8.00, image output $30.00, the same for 2.5 and `gpt-image-2`; Batch halves it. The guide warns: "Equal token rates don't mean equal cost per image: token consumption can differ by model and quality setting." No per-image table exists for 2.5. GPT-Image-2.6 Sunburst and Flare now exist at the same Standard rates; the guide's examples still use 2.5. The older-model examples for `gpt-image-2` at 1024×1024 are $0.006 (low), $0.053 (medium) and $0.211 (high).
 
 Measure the response's `usage` on a few test images before choosing a quality level; `xhigh` and `max` will cost more than these examples.
 
@@ -78,7 +78,7 @@ Measure the response's `usage` on a few test images before choosing a quality le
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Gemini image generation](https://ai.google.dev/gemini-api/docs/image-generation), [Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing), [Gemini deprecations](https://ai.google.dev/gemini-api/docs/deprecations)
 - Related: IMG-002, IMG-005, IMG-007
 
@@ -99,7 +99,7 @@ Nano Banana 2.1 is "the primary high-efficiency workhorse model for image genera
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [OpenAI image generation guide](https://developers.openai.com/api/docs/guides/image-generation), [Gemini image generation](https://ai.google.dev/gemini-api/docs/image-generation)
 - Related: OG-007, WEBPERF-010, WEBPERF-011, IMG-006, OG-005
 
@@ -180,7 +180,7 @@ In practice, a generated hero image is yours to use but probably nobody's to own
 - Type: tool
 - Applies to: Claude Code
 - Confidence: official-example
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [JimLiu/baoyu-skills](https://github.com/JimLiu/baoyu-skills), [AgriciDaniel/banana-claude](https://github.com/AgriciDaniel/banana-claude)
 - Related: SKILL-069, IMG-001, IMG-003, SKILL-041, SKILL-074
 

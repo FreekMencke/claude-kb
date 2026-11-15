@@ -51,7 +51,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [gh v2.94.0 release notes](https://github.com/cli/cli/releases/tag/v2.94.0), [Changelog 2026-06-10: manage sub-issues, types and dependencies from GitHub CLI](https://github.blog/changelog/2026-06-10-manage-sub-issues-types-and-dependencies-from-github-cli/), [Creating issue dependencies](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies), [Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues), [gh issue view](https://cli.github.com/manual/gh_issue_view)
 - Related: GH-002, GH-003, GH-009
 
@@ -73,7 +73,7 @@ Tested 2026-10-17, gh 2.102.0: `gh issue view 194 --json parent,blockedBy` on th
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [REST: sub-issues](https://docs.github.com/en/rest/issues/sub-issues), [REST: issue dependencies](https://docs.github.com/en/rest/issues/issue-dependencies), [Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues), [Changelog 2025-08-21: dependencies on issues](https://github.blog/changelog/2025-08-21-dependencies-on-issues/), [Permissions for fine-grained PATs](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens), [cli/cli `api/queries_issue.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/api/queries_issue.go)
 - Related: GH-001, GH-009, SURF-025
 
@@ -145,7 +145,7 @@ The Branches settings page converts a rule ("Convert to ruleset"), except "Requi
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Available rules for rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets), [Creating rulesets for a repository](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository), [REST: rules](https://docs.github.com/en/rest/repos/rules), [Approving a pull request with required reviews](https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/approving-a-pull-request-with-required-reviews), [gh ruleset](https://cli.github.com/manual/gh_ruleset)
 - Related: GH-004, SESS-023, SESS-024, GHA-008
 
@@ -181,7 +181,7 @@ Tested 2026-10-17, gh 2.102.0: `gh ruleset check main -R FreekMencke/claude-kb` 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-15
 - Sources: [Automatically generated release notes](https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes), [REST: generate release notes](https://docs.github.com/en/rest/releases/releases#generate-release-notes-content-for-a-release), [gh release create](https://cli.github.com/manual/gh_release_create)
 - Related: GH-006, DOC-006
 
@@ -210,7 +210,7 @@ changelog:
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Managing releases in a repository](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository), [gh release create](https://cli.github.com/manual/gh_release_create), [cli/cli `release/create/create.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/pkg/cmd/release/create/create.go)
 - Related: GHA-011, GH-006
 
@@ -253,7 +253,7 @@ A REST response's `X-Accepted-GitHub-Permissions` header names the permission ne
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Changelog 2024-05-23: Projects (classic) sunset](https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/), [gh v2.82.1 release notes](https://github.com/cli/cli/releases/tag/v2.82.1), [cli/cli#14598](https://github.com/cli/cli/issues/14598), [cli/cli#14622](https://github.com/cli/cli/issues/14622), [cli/cli `feature_detection.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/internal/featuredetection/feature_detection.go)
 - Related: GH-009
 
@@ -270,12 +270,12 @@ So on github.com:
 - Type: fact
 - Applies to: Claude Code, general
 - Confidence: official-docs
-- Last verified: 2026-10-18
+- Last verified: 2026-11-15
 - Sources: [cli/cli `internal/agents/detect.go` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/internal/agents/detect.go), [cli/cli releases](https://github.com/cli/cli/releases), [GitHub CLI telemetry](https://docs.github.com/en/github-cli/github-cli/github-cli-telemetry), [Claude Code environment variables](https://code.claude.com/docs/en/env-vars), [Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md), [cli/cli `skills/gh/SKILL.md` at v2.102.0](https://github.com/cli/cli/blob/v2.102.0/skills/gh/SKILL.md)
 - Related: GH-001, GH-009, SESS-025
 
 `gh` detects an agent from the environment: `AI_AGENT` first, then per-tool variables, for Claude Code `CLAUDECODE` or `CLAUDE_CODE` (Cowork: `CLAUDE_CODE_IS_COWORK`). Claude Code sets `CLAUDECODE=1` in its subprocesses and, since 2.1.120, `AI_AGENT` "so `gh` can attribute traffic to Claude Code". When detected, gh:
-- prints the full command help after a usage error (v2.100.0), "giving AI agents the examples, JSON fields and environment variables they need to correct themselves without a second round trip";
+- prints the full command help after a usage error (v2.100.0), "Print full command help after command misuse when `gh` is invoked by a coding agent" (release notes);
 - shows a text-only spinner (v2.99.0; `GH_SPINNER_DISABLED` overrides);
 - records the agent in its User-Agent and telemetry. Telemetry is on since v2.91.0 (2026-04-22); turn it off with `GH_TELEMETRY=false`, `DO_NOT_TRACK=true` or `gh config set telemetry disabled`, and print it instead with `GH_TELEMETRY=log`.
 
@@ -289,7 +289,7 @@ Tested 2026-10-18, gh 2.102.0, Claude Code subagent Bash tool on Linux: `AI_AGEN
 - Type: comparison
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [github-mcp-server README at v2.0.2](https://github.com/github/github-mcp-server/blob/v2.0.2/README.md), [v2.0.0 release notes](https://github.com/github/github-mcp-server/releases/tag/v2.0.0), [Remote server](https://github.com/github/github-mcp-server/blob/v2.0.2/docs/remote-server.md), [Install in Claude](https://github.com/github/github-mcp-server/blob/v2.0.2/docs/installation-guides/install-claude.md), [Scope filtering](https://github.com/github/github-mcp-server/blob/v2.0.2/docs/scope-filtering.md), [Using the GitHub MCP server](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp/use-the-github-mcp-server)
 - Related: TOK-020, TOK-021, TOK-022, INFRA-007, MCP-021, REPO-039
 

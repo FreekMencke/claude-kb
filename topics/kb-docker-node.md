@@ -52,7 +52,7 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [docker-library/official-images: library/node](https://raw.githubusercontent.com/docker-library/official-images/master/library/node), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [nodejs/docker-node versions.json](https://raw.githubusercontent.com/nodejs/docker-node/main/versions.json)
 - Related: NODE-001, DOCKER-002, DOCKER-009
 
@@ -93,7 +93,7 @@ Native modules need a musl prebuild or a compiler in the build stage (`apk add p
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-23
+- Last verified: 2026-11-15
 - Sources: [Docker press release, 2025-12-17](https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/), [Docker Hardened Images](https://docs.docker.com/dhi/), [Use a DHI](https://docs.docker.com/dhi/how-to/use/), [DHI catalog: node](https://github.com/docker-hardened-images/catalog/tree/main/image/node), [DHI migration checklist](https://docs.docker.com/dhi/migration/checklist/), [distroless README](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/README.md), [distroless common/variables.bzl](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/common/variables.bzl), [Chainguard container categories](https://edu.chainguard.dev/chainguard/containers/concepts/container-categories/)
 - Related: DOCKER-004, DOCKER-012
 
@@ -115,7 +115,7 @@ Three runtime images without a shell or package manager:
 - Type: recommendation
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Docker: building best practices](https://docs.docker.com/build/building/best-practices/), [nodejs/docker-node README](https://raw.githubusercontent.com/nodejs/docker-node/main/README.md), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md)
 - Related: DOCKER-001, DOCKER-002, DOCKER-003, NODE-001
 
@@ -131,7 +131,7 @@ docker-node's "Smaller images without npm/yarn" copies `/usr/local/bin/node` ont
 - Type: pattern
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Docker: building best practices](https://docs.docker.com/build/building/best-practices/), [Docker: optimize cache usage](https://docs.docker.com/build/cache/optimize/), [nodejs/docker-node BestPractices](https://raw.githubusercontent.com/nodejs/docker-node/main/docs/BestPractices.md), [this repo's mcp-server/Dockerfile](https://github.com/FreekMencke/claude-kb/blob/main/mcp-server/Dockerfile)
 - Related: DOCKER-006, DOCKER-007, DOCKER-008, NPM-016
 
@@ -178,7 +178,7 @@ Tested 2026-10-17, npm 11.19.0, Node 24.21.0, WSL2: with `ms` as a dependency an
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Docker: build context, .dockerignore](https://docs.docker.com/build/concepts/context/#dockerignore-files), [Docker: build secrets](https://docs.docker.com/build/building/secrets/), [Docker: provenance attestations](https://docs.docker.com/build/metadata/attestations/slsa-provenance/), [docker/build-push-action README v7.4.0](https://raw.githubusercontent.com/docker/build-push-action/v7.4.0/README.md)
 - Related: DOCKER-005, DOCKER-011, GHA-020
 
@@ -226,7 +226,7 @@ Docker's other half: "rebuild your images regularly". A pinned digest is only as
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Kubernetes: images](https://kubernetes.io/docs/concepts/containers/images/), [Node v24 module.md: compile cache](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/module.md), [Node v24 src/api/environment.cc](https://raw.githubusercontent.com/nodejs/node/v24.x/src/api/environment.cc), [Node v24 cli.md](https://raw.githubusercontent.com/nodejs/node/v24.x/doc/api/cli.md)
 - Related: DOCKER-001, DOCKER-005, NODE-001
 
@@ -295,7 +295,7 @@ So a Deployment applied from Git with a digest that CI wrote runs whatever that 
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-10-17
+- Last verified: 2026-11-15
 - Sources: [Docker: GitHub Actions cache backend](https://docs.docker.com/build/cache/backends/gha/), [Docker: cache management with GitHub Actions](https://docs.docker.com/build/ci/github-actions/cache/), [Docker: cache storage backends](https://docs.docker.com/build/cache/backends/), [GitHub: dependency caching reference](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)
 - Related: GHA-019, GHA-008, DOCKER-006
 
@@ -312,7 +312,7 @@ A fresh runner has no layer cache: every build is cold unless it imports one.
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-01
+- Last verified: 2026-11-15
 - Sources: [Docker: multi-platform builds](https://docs.docker.com/build/building/multi-platform/), [Docker: multi-platform image with GitHub Actions](https://docs.docker.com/build/ci/github-actions/multi-platform/), [Docker GitHub Builder: architecture](https://docs.docker.com/build/ci/github-actions/github-builder/architecture/), [Dockerfile reference: automatic platform ARGs](https://docs.docker.com/reference/dockerfile/#automatic-platform-args-in-the-global-scope), [npm config v11](https://docs.npmjs.com/cli/v11/using-npm/config)
 - Related: GHA-002, DOCKER-002, NPM-017
 
