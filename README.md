@@ -331,12 +331,15 @@ routine, not in this repo.
 
 - **Reviewing it:** spot-check the removals and "unverified" marks before merging.
 - **Debugging it:** RemoteTrigger `list_runs` and `get_run_log`; pause or delete it on the routines page.
-- **Reading GitHub in its sessions:** `curl` and `gh` against github.com pages and api.github.com return 403 there
-  (2026-11-15: every checking subagent hit it), so star counts, release dates and issue state went unchecked. What
-  works: `raw.githubusercontent.com`, `gh api` REST routes for the session's own repositories, and the GitHub tools
+- **Reading GitHub in its sessions:** the cloud GitHub proxy returns 403 for repositories not attached to the session
+  (SURF-025) and for GraphQL (GH-009), so `curl` and `gh` against github.com pages and api.github.com fail for
+  third-party repositories (2026-11-15: every checking subagent hit it, and star counts, release dates and issue state
+  went unchecked). For the session's own repositories, `gh api` REST routes work, and so do the GitHub tools
   (`mcp__github__issue_read`, `get_file_contents`, `get_latest_release`, `list_releases`, `pull_request_read`), which a
-  subagent loads with ToolSearch. They reach only repositories in the session's scope. Tell subagents this in their
-  brief, and treat what they can't read as "not found", never as wrong.
+  subagent loads with ToolSearch. For other repositories only `raw.githubusercontent.com` works, and it serves files:
+  take release dates from a raw `CHANGELOG.md` or the npm registry (`npm view <pkg> 'time[<version>]'`). Star counts
+  and issue state there stay out of reach. Tell subagents this in their brief, and treat what they can't read as "not
+  found", never as wrong.
 - **Between runs, source changes:** [sources.yml](.github/workflows/sources.yml) runs every Monday at 05:47 UTC with
   [check-sources.ts](scripts/check-sources.ts): it reports pages whose normalised text changed, with the entries citing
   them, only the added bullets of the claude-code CHANGELOG, and each quote of 6+ words it can't find in the entry's
