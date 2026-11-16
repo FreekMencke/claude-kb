@@ -93,8 +93,8 @@ Native modules need a musl prebuild or a compiler in the build stage (`apk add p
 - Type: comparison
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-15
-- Sources: [Docker press release, 2025-12-17](https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/), [Docker Hardened Images](https://docs.docker.com/dhi/), [Use a DHI](https://docs.docker.com/dhi/how-to/use/), [DHI catalog: node](https://github.com/docker-hardened-images/catalog/tree/main/image/node), [DHI migration checklist](https://docs.docker.com/dhi/migration/checklist/), [distroless README](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/README.md), [distroless common/variables.bzl](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/common/variables.bzl), [Chainguard container categories](https://edu.chainguard.dev/chainguard/containers/concepts/container-categories/)
+- Last verified: 2026-11-16
+- Sources: [Docker press release, 2025-12-17](https://www.docker.com/press-release/docker-makes-hardened-images-free-open-and-transparent-for-everyone/), [Docker Hardened Images](https://docs.docker.com/dhi/), [Use a DHI](https://docs.docker.com/dhi/how-to/use/), [DHI catalog repository](https://github.com/docker-hardened-images/catalog), [DHI catalog: node (Docker Hub)](https://hub.docker.com/hardened-images/catalog/dhi/node), [DHI migration checklist](https://docs.docker.com/dhi/migration/checklist/), [distroless README](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/README.md), [distroless common/variables.bzl](https://raw.githubusercontent.com/GoogleContainerTools/distroless/main/common/variables.bzl), [Chainguard container categories](https://edu.chainguard.dev/chainguard/containers/concepts/container-categories/)
 - Related: DOCKER-004, DOCKER-012
 
 Three runtime images without a shell or package manager:
@@ -108,7 +108,7 @@ Three runtime images without a shell or package manager:
 | Signed | cosign keyless | signatures, SBOM, SLSA L3 provenance, VEX | not checked |
 
 - DHI became free on 2025-12-17: "free and fully open source under the Apache 2.0 license", "No subscription required". The "Critical CVE fixes < 7 days with SLA-backed continuous patching" and FIPS/STIG variants are paid tiers.
-- DHI's migration checklist says runtime images "run as nonroot (UID 65532)", but the Node image's catalog definition says `run-as: node`, `uid: 1000`; trust the per-image definition and inspect the image.
+- DHI's migration checklist says runtime images "run as nonroot (UID 65532)", but the Node image's catalog definition said `run-as: node`, `uid: 1000` when read; trust the per-image definition and inspect the image. That file's old path (`image/node` in the catalog repository) returned 404 on 2026-11-16 and its new one wasn't found, so the UID is unverified since then.
 - No shell means no `docker exec sh`: distroless offers `debug` tags with busybox, DHI the `-dev` variant.
 
 ## [DOCKER-004] Choosing a base image for a Node 24/26 server
