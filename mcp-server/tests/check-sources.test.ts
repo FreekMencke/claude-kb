@@ -94,6 +94,21 @@ describe('quotesIn', () => {
     );
     expect(quotesIn(text)).toEqual(['run `/clear` before you start the next task', 'a curly quote of six whole words']);
   });
+
+  test('keeps a quote that sits between two code spans', () => {
+    const text = entry(
+      'TST-001',
+      '[A](https://example.com)',
+      [
+        'With `enabledPlugins` set, "the session does not add the declared marketplaces" unless `extra` is set.',
+        'Both `say "an example of our own in code"` and "a real quote of six whole words" after `it`.',
+      ].join('\n'),
+    );
+    expect(quotesIn(text)).toEqual([
+      'the session does not add the declared marketplaces',
+      'a real quote of six whole words',
+    ]);
+  });
 });
 
 describe('findQuote', () => {
