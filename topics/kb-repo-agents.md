@@ -19,7 +19,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | Can I scope Bash per agent, e.g. `Bash(git diff *)`? | No. `tools: Bash(git diff *)` gives all of Bash (tested), and `disallowedTools: Bash(git push *)` removes **all** of Bash. Use a hook, a `permissions.deny` rule (which affects the whole session) or the sandbox. Nor does `tools` limit an agent's own inline `mcpServers` server: it gets all that server's tools, so remove the dangerous ones with `disallowedTools` (observed). | REPO-031, REPO-034, REPO-053 |
 | Does `permissionMode: plan` on an agent hold? | Only when the parent is in default, `dontAsk` or plan mode. Auto, `acceptEdits` and bypass parents override it. | REPO-032 |
 | How do user, project and plugin levels combine? | Scalars: managed > `--settings` > local > project > user. Permission lists and hooks **merge**, and deny wins. Agents: managed > `--agents` > project > user > plugin. Skills: enterprise > personal > project; plugins are namespaced. | REPO-005, REPO-006 |
-| How do I make sure a review actually runs? | Name it in a procedure the session follows (skill or orchestrator), or `@agent-<name>`. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
+| How do I make sure a review actually runs? | Name it in a procedure the session follows (skill or orchestrator). `@agent-<name>` asks for that agent, but the docs no longer promise it runs. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
 | Can a hook run my repo's reviewer agent? | Not by name. An `agent` hook runs an anonymous verifier (experimental); a `prompt` hook makes one model call. A Stop hook can only return a reason asking Claude to spawn it. | REPO-025 |
 | How do I run a repo agent in GitHub Actions? | Wrap it in a skill or plugin command and pass `prompt: "/name"`. On PRs, `.claude/` and CLAUDE.md are restored from the base branch. Running a named agent via `claude_args` is undocumented. | REPO-027, REPO-028 |
 | How do I keep CI agents safe from prompt injection in PRs and issues? | Keep the write-access gate. Never use `allowed_non_write_users: "*"` or put `${{ …body }}` in prompts. Use read-only job tokens and split triage from action. Pin action v1.0.94+. | REPO-037, REPO-038 |
@@ -680,15 +680,15 @@ Set `effort` in frontmatter, as the official `claude-security` agents do (`low` 
 
 | Trigger | Effect |
 |---|---|
-| Natural language ("Have the conventions-reviewer subagent look at my changes") | Claude "typically delegates". This is a request, not a guarantee. |
-| `@agent-<name>`, or `@"name (agent)"` from the picker; plugin agents use `@agent-plugin:name` | "ensures that specific subagent runs rather than leaving the choice to Claude". Claude still writes the task prompt from your message. |
+| Natural language (`Have the conventions-reviewer subagent look at my changes`) | Claude "typically delegates". This is a request, not a guarantee. |
+| `@agent-<name>`, or `@"name (agent)"` from the picker; plugin agents use `@agent-plugin:name` | The docs call it a request that "tells Claude to run the subagent for one task". An earlier version of the page also said it ensured that specific subagent runs rather than leaving the choice to Claude; that sentence is gone, so a hard guarantee is unverified (checked 2026-11-23). Claude still writes the "subagent's task prompt based on what you asked". |
 | `claude --agent <name>` | The whole session *is* that agent: its prompt replaces the default system prompt, and its tools and model apply. CLAUDE.md still loads. |
 | `"agent": "<name>"` in `.claude/settings.json` | Same as `--agent`, as the project default. The CLI flag wins. A plugin's `settings.json` may set it as the lowest layer. |
 | `claude --agents '<json>'` | Session-only definitions. In `-p` mode the value can be a file path (v2.1.281+). Hooks in them run without the trust dialog. |
 | `claude --bg --agent <name> "…"` | A background session running that agent. It can't be combined with `-p`. |
 | `/agents` | Only prints a reminder now (REPO-009) |
 
-Use `@agent-` when the review must happen. Use `--agent` to run a dedicated session, such as a review-only terminal, under the agent's restrictions.
+Use `@agent-` to ask for one agent on one task; it is stronger than naming it in prose, but the docs no longer promise the run. When the review must happen, use a hook or CI job (REPO-024, REPO-025). Use `--agent` to run a dedicated session, such as a review-only terminal, under the agent's restrictions.
 
 ## [REPO-024] Auto-delegation is advisory; make mandatory reviews deterministic
 - Type: recommendation
@@ -924,12 +924,12 @@ Tested 2026-10-12, v2.1.296, -p (Haiku 5.5): an agent with `tools: Bash(git diff
 - Applies to: Claude Code
 - Confidence: single-source
 - Last verified: 2026-11-15
-- Sources: [Subagents: mcpServers](https://code.claude.com/docs/en/sub-agents), [Playwright MCP 0.0.83 README](https://github.com/microsoft/playwright-mcp/blob/v0.0.83/README.md) (both read 2026-10-14), local transcripts 2026-10-13 to 10-14, osrs-tracker/osrs-tracker-web@1a1e30e
+- Sources: [Subagents: mcpServers](https://code.claude.com/docs/en/sub-agents), [Playwright MCP 0.0.83 README](https://github.com/microsoft/playwright-mcp/blob/v0.0.83/README.md) (both read 2026-10-14; the Subagents page re-read 2026-11-23), local transcripts 2026-10-13 to 10-14, osrs-tracker/osrs-tracker-web@1a1e30e
 - Related: REPO-031, REPO-021, REPO-033, MCP-008
 
 When an agent defines its own MCP server inline in frontmatter `mcpServers`, its `tools` allowlist limits only the other tools: the agent gets **every** tool of that server, listed or not. `disallowedTools: mcp__<server>__<tool>` does remove them, so name the dangerous ones there.
 
-The docs don't say this either way. They say only "The subagent gets the tools; the parent conversation doesn't."
+The docs don't say this either way. They say only "To keep an MCP server out of the main conversation entirely and avoid its tool descriptions consuming context there, define it inline here rather than in `.mcp.json`."
 
 **Evidence** (osrs-tracker-web's `browser-checker`, inline `@playwright/mcp@0.0.83 --headless --isolated`, Claude Code 2.1.296, local sessions):
 - `tools` named 15 of the server's tools; a run's `subagents/agent-*.prefix.json` listed all 25.
@@ -1177,7 +1177,9 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - A plugin-root `CLAUDE.md` is not loaded.
 - Plugin `settings.json` supports only `agent` and `subagentStatusLine`.
 - Agents are namespaced (`plugin:agent`).
-- **Enabling doesn't install.** `enabledPlugins` in a committed `.claude/settings.json` doesn't fetch a plugin onto a new machine unless its marketplace source is a relative path. The `/plugin` Errors tab shows "enabled in project settings but isn't installed here". Cloud sessions never install them.
+- **Enabling doesn't install.** A plugin enabled only in a committed settings file "doesn't load at session start until you install it on your machine". The exceptions are a plugin in a seed directory and one listed by a relative path in a marketplace you added from a local path; for a git marketplace, `/reload-plugins` loads it for that session only.
+  - With the marketplace on your machine, the Errors tab of the plugin panel shows "a line ending in `isn't installed here`".
+  - In an Anthropic-hosted cloud session, "The session doesn't add the marketplaces a repository lists under `extraKnownMarketplaces`", so those plugins don't arrive there either (inferred: the page's earlier row on plugins turned on under enabledPlugins is gone).
 - **`userConfig` is per user, not per repo.** It prompts on enable and stores values in user `settings.json` under `pluginConfigs`, which is read from "User or managed" only. Values reach agent and skill content as `${user_config.KEY}`.
 - **Repo-specific behaviour has to come from the repo.** The agent reads files under `${CLAUDE_PROJECT_DIR}` at runtime.
 - Two enabled plugins with the same name from different marketplaces register hooks for only one of them.

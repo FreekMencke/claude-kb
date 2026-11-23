@@ -359,7 +359,7 @@ Tested 2026-10-12, v2.1.296, `claude -p` on Haiku: "Remember for future sessions
 - Sources: [Memory: how it works](https://code.claude.com/docs/en/memory), [Errors: memory index over its read limit](https://code.claude.com/docs/en/errors)
 - Related: TOK-004, MEM-013, MEM-003, MEM-018
 
-- **At start:** "The first 200 lines of `MEMORY.md`, or the first 25KB, whichever comes first". The rest is not loaded (limits in TOK-004).
+- **At start:** "the first 200 lines or 25KB of `MEMORY.md`, whichever comes first, load at session start". The rest is not loaded (limits in TOK-004).
 - **Topic files:** not loaded at startup; "Claude reads them on demand using its standard file tools when it needs the information." The interface shows "Recalled 2 memories" or "Saved 2 memories".
 - **Undocumented selection step (unverified):** the v2.1.296 binary holds a side-query prompt that returns "a list of filenames for the memories that will clearly be useful… (up to 5)", judged "based on their name and description". The CHANGELOG mentions "memory recall" (v2.1.288) but no doc describes it. No embedding search either way.
 - **Keeping the index small:** after a write near a limit, Claude Code reminds Claude to "keep one line per entry, move detail into topic files, and merge or drop stale entries". Over a limit, the write succeeds but returns an error telling Claude to rewrite the index (v2.1.210+).

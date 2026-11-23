@@ -266,7 +266,7 @@ So a production namespace or bucket named after the product is judged as ordinar
 ] } }
 ```
 
-- Keep `"$defaults"`: an array without it "replaces the entire default list for that section".
+- Keep `"$defaults"` in every list you set: the page says to include it "so you don't lose any built-in rules it holds", so an array without it drops the defaults for that section. An earlier version of the page said so outright; on 2026-11-23 it says it by implication only.
 - The classifier doesn't read `autoMode` from a repo's `.claude/settings.json`, so it must go in user or managed settings.
 - `/auto-mode-setup` drafts entries from recent sessions (v2.1.228+ on Pro, Max, Ultra or Team; v2.1.283+ on Enterprise or with a Console API key). `claude auto-mode config` shows the result.
 

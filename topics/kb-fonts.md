@@ -437,7 +437,7 @@ Inspect it with `ttx -t gasp -o - Family-Regular.ttf`.
 - Sources: [Fontspector README](https://github.com/fonttools/fontspector), [Fontspector 1.9.0 release](https://github.com/fonttools/fontspector/releases/tag/fontspector-v1.9.0), [Font Bakery README](https://github.com/fonttools/fontbakery), [GF guide: QA](https://googlefonts.github.io/gf-guide/qa.html)
 - Related: FONT-015, FONT-007, FONT-013
 
-Use Fontspector for font QA. It "is a Rust port of fontbakery"; its repo calls it the "successor to fontbakery". Google Fonts' guide: "Fontbakery was previously our primary quality assurance testing tool. We now use Fontspector". Font Bakery's README now says "See also: Fontspector (the Rust port of Font Bakery)"; its last release is 1.1.0 (2025-10-02), and the README doesn't call it deprecated.
+Use Fontspector for font QA. It "is a Rust port of fontbakery"; its repo calls it the "successor to fontbakery". Google Fonts' guide: "Fontspector is our primary quality assurance testing tool. It is a Rust port of Fontbakery, which Google Fonts used previously". Font Bakery's README now says "See also: Fontspector (the Rust port of Font Bakery)"; its last release is 1.1.0 (2025-10-02), and the README doesn't call it deprecated.
 
 **Versions** (GitHub releases, 2026-10-09): `fontspector-v1.9.0`, with profiles googlefonts 1.10.0, universal 1.9.0 and opentype 1.7.1.
 
