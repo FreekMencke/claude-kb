@@ -459,7 +459,7 @@ Tested 2026-10-13, Playwright MCP from the official plugin (`@playwright/mcp@lat
 - Related: TOK-087, TOK-089, WEB-014, WEB-020
 
 **Claude Code's WebFetch**
-- It answers through a second model: "a separate model call reads the page and returns an answer", and "Claude's reply can leave out anything on the page that Claude didn't ask about." For the raw page the docs say: "For the raw page, ask it to run curl on the URL through the Bash tool."
+- It answers through a second model: "a separate model call reads the page and returns an answer", and "Claude's reply can leave out anything on the page that Claude didn't ask about." For the raw page the docs say: "For the raw page, ask it to run `curl` on the URL through the Bash tool."
 - It doesn't report the status code, headers, head tags or JSON-LD. An audit can't trust it for any of them.
 - It identifies itself: "WebFetch sets a `User-Agent` header beginning with `Claude-User`". The 2.1.83 changelog says: "Improved `WebFetch` to identify as `Claude-User` so site operators can recognize and allowlist Claude Code traffic via `robots.txt`". It also sends an `Accept` header that prefers Markdown, so a server doing content negotiation can answer with Markdown instead of the HTML a crawler gets, and it caches each response for 15 minutes by default.
 - Whether it obeys a `Disallow` isn't documented.

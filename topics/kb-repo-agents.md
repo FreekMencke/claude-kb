@@ -19,7 +19,7 @@ Re-verified 2026-10-14; each entry's Last verified date is authoritative. Docs b
 | Can I scope Bash per agent, e.g. `Bash(git diff *)`? | No. `tools: Bash(git diff *)` gives all of Bash (tested), and `disallowedTools: Bash(git push *)` removes **all** of Bash. Use a hook, a `permissions.deny` rule (which affects the whole session) or the sandbox. Nor does `tools` limit an agent's own inline `mcpServers` server: it gets all that server's tools, so remove the dangerous ones with `disallowedTools` (observed). | REPO-031, REPO-034, REPO-053 |
 | Does `permissionMode: plan` on an agent hold? | Only when the parent is in default, `dontAsk` or plan mode. Auto, `acceptEdits` and bypass parents override it. | REPO-032 |
 | How do user, project and plugin levels combine? | Scalars: managed > `--settings` > local > project > user. Permission lists and hooks **merge**, and deny wins. Agents: managed > `--agents` > project > user > plugin. Skills: enterprise > personal > project; plugins are namespaced. | REPO-005, REPO-006 |
-| How do I make sure a review actually runs? | Name it in a procedure the session follows (skill or orchestrator), or `@agent-<name>`. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
+| How do I make sure a review actually runs? | Name it in a procedure the session follows (skill or orchestrator). `@agent-<name>` asks for that agent, but the docs no longer promise it runs. Auto-delegation from the description is advisory. Use hooks or CI for hard gates. | REPO-023, REPO-024, REPO-025 |
 | Can a hook run my repo's reviewer agent? | Not by name. An `agent` hook runs an anonymous verifier (experimental); a `prompt` hook makes one model call. A Stop hook can only return a reason asking Claude to spawn it. | REPO-025 |
 | How do I run a repo agent in GitHub Actions? | Wrap it in a skill or plugin command and pass `prompt: "/name"`. On PRs, `.claude/` and CLAUDE.md are restored from the base branch. Running a named agent via `claude_args` is undocumented. | REPO-027, REPO-028 |
 | How do I keep CI agents safe from prompt injection in PRs and issues? | Keep the write-access gate. Never use `allowed_non_write_users: "*"` or put `${{ …body }}` in prompts. Use read-only job tokens and split triage from action. Pin action v1.0.94+. | REPO-037, REPO-038 |
@@ -1167,7 +1167,7 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-23
+- Last verified: 2026-10-14
 - Sources: [Plugin components](https://code.claude.com/docs/en/plugins/components), [Plugin manifest: user configuration](https://code.claude.com/docs/en/plugins/manifest-reference), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Cloud environments](https://code.claude.com/docs/en/cloud-environments)
 - Related: ORCH-002, REPO-040
 
@@ -1178,8 +1178,8 @@ Official guidance points to plugins for "several skills, subagents, hooks, or MC
 - Plugin `settings.json` supports only `agent` and `subagentStatusLine`.
 - Agents are namespaced (`plugin:agent`).
 - **Enabling doesn't install.** A plugin enabled only in a committed settings file "doesn't load at session start until you install it on your machine". The exceptions are a plugin in a seed directory and one listed by a relative path in a marketplace you added from a local path; for a git marketplace, `/reload-plugins` loads it for that session only.
-  - With the marketplace on your machine, the Errors tab of `/plugin` shows "a line ending in isn't installed here".
-  - In an Anthropic-hosted cloud session, "The session doesn't add the marketplaces a repository lists under extraKnownMarketplaces", so those plugins don't arrive there either. The page's earlier row on plugins turned on under `enabledPlugins` is gone.
+  - With the marketplace on your machine, the Errors tab of the plugin panel shows "a line ending in `isn't installed here`".
+  - In an Anthropic-hosted cloud session, "The session doesn't add the marketplaces a repository lists under `extraKnownMarketplaces`", so those plugins don't arrive there either (inferred: the page's earlier row on plugins turned on under enabledPlugins is gone).
 - **`userConfig` is per user, not per repo.** It prompts on enable and stores values in user `settings.json` under `pluginConfigs`, which is read from "User or managed" only. Values reach agent and skill content as `${user_config.KEY}`.
 - **Repo-specific behaviour has to come from the repo.** The agent reads files under `${CLAUDE_PROJECT_DIR}` at runtime.
 - Two enabled plugins with the same name from different marketplaces register hooks for only one of them.

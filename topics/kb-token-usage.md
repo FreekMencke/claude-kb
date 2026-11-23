@@ -1490,7 +1490,8 @@ TOK-087 onwards (FreekMencke/claude-kb#26): what the tools this knowledge base i
 
 WebFetch answers through a second model: "For most pages, Claude doesn't see the full text. It asks a question about the page, and a separate model call reads the page and returns an answer." So "Claude's reply can leave out anything on the page that Claude didn't ask about." (The page no longer describes a Markdown conversion.)
 
-- **Window:** "The web-fetch subagent reads pages of up to about 48,000 characters in full, and WebFetch reads the first 100,000 when Claude calls it." Since v2.1.290 the result says how much went unread and takes an `offset`; before, the rest was "silently" dropped. The extraction step sees only the cut text.
+- **Window:** "The `web-fetch` subagent reads pages of up to about 48,000 characters in full, and WebFetch reads the first 100,000 when Claude calls it."
+- **Reading on:** since v2.1.290 the result says how much went unread and takes an `offset`; before, the rest was "silently" dropped. The extraction step sees only the cut text.
 - **Subagent:** "Your session can use the subagent when you're signed in with a claude.ai account on Claude Code v2.1.287 or later"; it runs on the model that Haiku's alias points to. Without it, "the model that Claude Code uses for background tasks reads the page".
 - **Quote limits (single-source):** a 2025-10 runtime inspection (mikhail.io) found a Haiku pass told to "Enforce a strict 125-character maximum for quotes from any source document" on non-preapproved domains, so never cite a WebFetch "quote" as exact wording. Since v2.1.299, page reads "pick their effort as web searches do" (CHANGELOG). [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127) (open, no maintainer reply) reports the truncation invisible to the extraction step.
 
@@ -1521,7 +1522,7 @@ So on Claude docs, WebFetch under 100,000 characters already gives full text, an
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
 - Related: TOK-087, TOK-088, TOK-090, TOK-040, TOK-042
 
-The docs' own fix for a page that looks incomplete: "For the raw page, ask it to run curl on the URL through the Bash tool." For an exact limit, default, price or version (CLAUDE.md's research rule), save the page and grep it instead of reading it whole:
+The docs' own fix for a page that looks incomplete: "For the raw page, ask it to run `curl` on the URL through the Bash tool." For an exact limit, default, price or version (CLAUDE.md's research rule), save the page and grep it instead of reading it whole:
 
 ```bash
 curl -sL https://code.claude.com/docs/en/env-vars.md -o env-vars.md

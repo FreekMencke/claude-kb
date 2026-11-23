@@ -255,7 +255,7 @@ A copied `.env` is a snapshot: later edits in the main checkout don't reach exis
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-23
+- Last verified: 2026-11-01
 - Sources: [Claude directory](https://code.claude.com/docs/en/claude-directory), [Settings](https://code.claude.com/docs/en/settings), [Memory](https://code.claude.com/docs/en/memory), [Sessions](https://code.claude.com/docs/en/sessions), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md)
 - Related: SESS-010, SESS-011, SESS-012, SESS-014, TOK-004
 
