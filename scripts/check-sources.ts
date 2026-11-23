@@ -131,7 +131,9 @@ export function quotesIn(entry: string): string[] {
     .replace(/^## .*$/gm, '')
     .replace(/^- (?:Type|Applies to|Confidence|Last verified|Sources|Related):.*$/gm, '')
     .replace(/^```[\s\S]*?^```/gm, '')
-    .replace(/`[^`\n]*["“”][^`\n]*`/g, '');
+    // Matched span by span: one pattern for "a span with a quote in it" also matches from one span's closing backtick
+    // to the next one's opening backtick, which drops a quote in the prose between them
+    .replace(/`([^`\n]*)`/g, (span, code: string) => (/["“”]/.test(code) ? '' : span));
   const found: string[] = [];
   for (const m of prose.matchAll(/"([^"\n]+)"|“([^”\n]+)”/g)) {
     const quote = m[1] ?? m[2];
