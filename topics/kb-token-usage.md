@@ -200,7 +200,7 @@ Loading rules:
 - Related: TOK-003, TOK-006
 
 What loads at the start of each conversation:
-- "The first 200 lines of MEMORY.md, or the first 25KB, whichever comes first."
+- "the first 200 lines or 25KB of `MEMORY.md`, whichever comes first, load at session start".
 - Topic files are read on demand, so put detail there and keep MEMORY.md a one-line-per-entry index.
 - Writes past the limit succeed, but return an error telling Claude to rewrite the index.
 - The directory `~/.claude/projects/<project>/memory/` is shared across worktrees of one repo.
@@ -612,7 +612,7 @@ Scopes:
 
 Ways to narrow:
 - Use `claude mcp add --scope project` for servers one repo needs.
-- Define a server inline in a subagent's `mcpServers`, and "the subagent gets the tools; the parent conversation doesn't."
+- Define a server inline in a subagent's `mcpServers` instead of `.mcp.json`: "To keep an MCP server out of the main conversation entirely and avoid its tool descriptions consuming context there, define it inline here".
 - `--strict-mcp-config --mcp-config x.json` gives a minimal set for scripted runs.
 
 With tool search active, toggling a server mid-session doesn't break the cache. With upfront loading, it does.
@@ -1039,7 +1039,7 @@ Verify with `claude -p "hi" --output-format json` and look at `usage.cache_creat
 
 **Keeps the cache:**
 - Editing repo files.
-- Editing CLAUDE.md (but "the new content loads on the next `/clear`, `/compact`, or restart").
+- Editing CLAUDE.md, which doesn't apply to the running session: "To reload them, run `/clear` or `/compact`, or restart Claude Code".
 - Permission mode and output style changes (v2.1.251+).
 - Invoking skills and commands, `/rewind`, `/recap`, spawning subagents.
 - Plugin skills and hooks.
@@ -1484,15 +1484,15 @@ TOK-087 onwards (FreekMencke/claude-kb#26): what the tools this knowledge base i
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
+- Last verified: 2026-11-23
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) (2.1.290), [Inside Claude Code's web tools (mikhail.io)](https://mikhail.io/2025/10/claude-code-web-tools/), [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127)
 - Related: TOK-088, TOK-089, TOK-102
 
-WebFetch converts the page to Markdown, then "for most fetches, it then runs the prompt against the content in a separate model call, and Claude receives the result of that call rather than the raw page". It is "lossy by design": "a result that says a page doesn't mention something may only mean the prompt didn't ask about it."
+WebFetch answers through a second model: "For most pages, Claude doesn't see the full text. It asks a question about the page, and a separate model call reads the page and returns an answer." So "Claude's reply can leave out anything on the page that Claude didn't ask about." (The page no longer describes a Markdown conversion.)
 
-- **Window:** "WebFetch reads up to 100,000 characters of a page's content per call." Since v2.1.290 the result says how much went unread and takes an `offset`; before, the rest was "silently" dropped.
-- **The extraction model** sees only the cut text, ending in "[Content truncated due to length...]"; the offset note is added after its answer.
-- **Which model, and quote limits (single-source):** the tool says "a small fast model". A 2025-10 runtime inspection (mikhail.io) found a Haiku pass told to "Enforce a strict 125-character maximum for quotes from any source document" on non-preapproved domains, so never cite a WebFetch "quote" as exact wording. Since v2.1.299, page reads "pick their effort as web searches do: the caller's level on the caller's own model, otherwise the level settings give the small model" (CHANGELOG). [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127) (open, no maintainer reply) reports the truncation invisible to the extraction step.
+- **Window:** "The web-fetch subagent reads pages of up to about 48,000 characters in full, and WebFetch reads the first 100,000 when Claude calls it." Since v2.1.290 the result says how much went unread and takes an `offset`; before, the rest was "silently" dropped. The extraction step sees only the cut text.
+- **Subagent:** "Your session can use the subagent when you're signed in with a claude.ai account on Claude Code v2.1.287 or later"; it runs on the model that Haiku's alias points to. Without it, "the model that Claude Code uses for background tasks reads the page".
+- **Quote limits (single-source):** a 2025-10 runtime inspection (mikhail.io) found a Haiku pass told to "Enforce a strict 125-character maximum for quotes from any source document" on non-preapproved domains, so never cite a WebFetch "quote" as exact wording. Since v2.1.299, page reads "pick their effort as web searches do" (CHANGELOG). [claude-code#95127](https://github.com/anthropics/claude-code/issues/95127) (open, no maintainer reply) reports the truncation invisible to the extraction step.
 
 Tested 2026-10-12, v2.1.296, Claude Code on WSL (subagent session): WebFetch of the raw `CHANGELOG.md` (986,110 characters by `curl`) answered from characters 0–100,000 only (2.1.296 to 2.1.287, 714 of 8,789 lines), missed a variable further down, and ended with "the final 886110 were not read — to read on, call WebFetch again with the same url and offset: 100000".
 
@@ -1521,7 +1521,7 @@ So on Claude docs, WebFetch under 100,000 characters already gives full text, an
 - Sources: [Tools reference: WebFetch tool behavior](https://code.claude.com/docs/en/tools-reference#webfetch-tool-behavior), [Claude Code docs llms.txt](https://code.claude.com/docs/llms.txt), [Claude Platform docs llms.txt](https://platform.claude.com/llms.txt), [llms.txt proposal](https://llmstxt.org/)
 - Related: TOK-087, TOK-088, TOK-090, TOK-040, TOK-042
 
-The docs' own fix for a lossy fetch: "use `curl` via Bash for the unprocessed page." For an exact limit, default, price or version (CLAUDE.md's research rule), save the page and grep it instead of reading it whole:
+The docs' own fix for a page that looks incomplete: "For the raw page, ask it to run curl on the URL through the Bash tool." For an exact limit, default, price or version (CLAUDE.md's research rule), save the page and grep it instead of reading it whole:
 
 ```bash
 curl -sL https://code.claude.com/docs/en/env-vars.md -o env-vars.md
@@ -1621,7 +1621,7 @@ Neither reached the official page. Extended bought breadth, not authority.
 
 **Web search** (`web_search_20250305`, `_20260209` with dynamic filtering, `_20260318` with response inclusion):
 - "$10 USD per 1,000 searches, plus standard token costs for search-generated content."
-- "Web search results retrieved throughout a conversation are counted as input tokens, in search iterations run during a single turn and in subsequent conversation turns": results are re-read every later turn, like any tool output (TOK-008).
+- "Search results count as input tokens, both while Claude keeps searching within a turn and in later conversation turns": results are re-read every later turn, like any tool output (TOK-008).
 - "Each web search counts as one use, regardless of the number of results returned"; failed searches aren't billed. Citation fields "do not count toward input or output token usage".
 - `max_uses` caps searches per request: "Single-fact queries typically use 1–3 searches; comparative or multientity research can use 10 or more."
 

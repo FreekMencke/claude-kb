@@ -12,7 +12,7 @@ Research basis:
 
 | Question | Answer | Entries |
 |---|---|---|
-| Which Node runtime should a Lambda function use, and when do they go away? | `nodejs24.x` (deprecation 2028-04-30, update block 2028-07-01). `nodejs22.x` deprecates 2027-04-30; `nodejs20.x` was deprecated 2026-04-30 and blocks updates from 2027-08-31. `nodejs26.x` is a preview until its GA, targeted for November 2026. | LAMBDA-001 |
+| Which Node runtime should a Lambda function use, and when do they go away? | `nodejs24.x` (deprecation 2028-04-30, update block 2028-07-01). `nodejs26.x` went GA on 2026-11-20 (deprecation 2029-04-30). `nodejs22.x` deprecates 2027-05-30; `nodejs20.x` was deprecated 2026-04-30 and blocks updates from 2027-08-31. | LAMBDA-001 |
 | How do I find functions still on a deprecated runtime? | `aws lambda list-functions --function-version ALL --region <r> --output text --query "Functions[?Runtime=='nodejs20.x'].FunctionArn"`, once per region and account; or Trusted Advisor's deprecated-runtimes check. | LAMBDA-002 |
 | Can a CommonJS handler `require()` an ESM-only package on Lambda? | No: every Node runtime, the `nodejs26.x` preview included, starts Node with `--no-experimental-require-module`, so it throws `ERR_REQUIRE_ESM`. Bundle the package in, or write the handler as ESM. `NODE_OPTIONS=--experimental-require-module` works but voids the SLA and AWS Support. | LAMBDA-003 |
 | Do callback handlers still work? | Not on `nodejs24.x` and later: init fails with `Runtime.CallbackHandlerDeprecated`. Use an `async` handler. `nodejs22.x` still runs them, with a warning. | LAMBDA-004 |
@@ -45,21 +45,21 @@ Research basis:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-15
-- Sources: [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html), [Introducing public preview runtimes, starting with Node.js 26 and Python 3.15](https://aws.amazon.com/blogs/compute/introducing-public-preview-runtimes-on-aws-lambda-starting-with-node-js-26-and-python-3-15/), [Node.js 26 preview feedback issue](https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/198)
+- Last verified: 2026-11-23
+- Sources: [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html), [Introducing public preview runtimes, starting with Node.js 26 and Python 3.15](https://aws.amazon.com/blogs/compute/introducing-public-preview-runtimes-on-aws-lambda-starting-with-node-js-26-and-python-3-15/), [Node.js 26 preview feedback issue](https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/198), [AWS Lambda adds support for Node.js 26](https://aws.amazon.com/about-aws/whats-new/2026/11/aws-lambda-nodejs-26/), [Runtime deprecation](https://docs.aws.amazon.com/lambda/latest/dg/runtime-support-policy.html)
 - Related: LAMBDA-002, LAMBDA-003, NODE-001
 
-The runtimes table on 2026-10-18:
+The runtimes table on 2026-11-23 (deprecated rows and the rules below: the Runtime deprecation page):
 
 | ID | OS | Deprecation | Block create | Block update |
 |---|---|---|---|---|
-| `nodejs26.x` | AL2023 | Not scheduled | Not scheduled | Not scheduled |
+| `nodejs26.x` | AL2023 | Apr 30, 2029 | Jun 1, 2029 | Jul 1, 2029 |
 | `nodejs24.x` | AL2023 | Apr 30, 2028 | Jun 1, 2028 | Jul 1, 2028 |
-| `nodejs22.x` | AL2023 | Apr 30, 2027 | Jul 29, 2027 | Aug 31, 2027 |
+| `nodejs22.x` | AL2023 | May 30, 2027 | Jul 29, 2027 | Aug 31, 2027 |
 | `nodejs20.x` (deprecated) | AL2023 | Apr 30, 2026 | Jul 29, 2027 | Aug 31, 2027 |
 | `nodejs18.x` (deprecated) | AL2 | Sep 1, 2025 | Jul 29, 2027 | Aug 31, 2027 |
 
-`nodejs26.x` is a public preview (issue opened 2026-07-24): "not covered by the Lambda SLA or Technical Support, and should not be used for production workloads". The page lists "Node.js 26 - November 2026" as its target launch; the preview blog (2026-08-15) says "nodejs26.x in preview is the same nodejs26.x at GA". Lambda adds a Node line only when it "reaches the Active LTS phase".
+`nodejs26.x` went GA on 2026-11-20: "AWS Lambda now supports creating serverless applications using Node.js 26, for both Lambda Web Functions and Lambda Event Functions." It was a public preview from 2026-08-15 ("nodejs26.x in preview is the same nodejs26.x at GA"). The runtimes page lost its preview note, but its upcoming list still shows Node.js 26 for November 2026. Lambda adds a Node line only when it "reaches the Active LTS phase".
 
 What the dates mean:
 - Deprecation: no more security patches or support, and the console can't create or update such functions; the CLI, SAM and CloudFormation still can.
@@ -71,8 +71,8 @@ What the dates mean:
 - Type: fact
 - Applies to: general
 - Confidence: official-docs
-- Last verified: 2026-11-15
-- Sources: [Retrieve data about Lambda Event Functions that use a deprecated runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-list-deprecated.html), [Understanding how Lambda manages runtime version updates](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html), [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
+- Last verified: 2026-11-23
+- Sources: [Runtime deprecation: listing function versions that use a runtime](https://docs.aws.amazon.com/lambda/latest/dg/runtime-support-policy.html) (the old runtimes-list-deprecated URL redirects there), [Understanding how Lambda manages runtime version updates](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html), [Lambda runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
 - Related: LAMBDA-001, INFRA-003, INFRA-008
 
 AWS's command lists every version on a runtime in one region:
@@ -82,7 +82,7 @@ aws lambda list-functions --function-version ALL --region us-east-1 --output tex
   --query "Functions[?Runtime=='nodejs20.x'].FunctionArn"
 ```
 
-"You'll need to repeat this command for each region in which your account has functions and for each of your AWS accounts." Drop `--function-version ALL` for `$LATEST` only. The command "doesn't return Lambda Web Functions" (LAMBDA-008). Trusted Advisor's deprecated-runtimes check and an AWS Config advanced query list them too; Config returns only `$LATEST`, but across regions and accounts. An agent with read-only AWS access can run the same `ListFunctions` call through the AWS MCP server (INFRA-003).
+"Repeat this command for each Region in which your account has functions and for each of your AWS accounts." Drop `--function-version ALL` for `$LATEST` only. The command "doesn't return Lambda Web Functions" (LAMBDA-008). Trusted Advisor's deprecated-runtimes check and an AWS Config advanced query list them too; Config returns only `$LATEST`, but across regions and accounts. An agent with read-only AWS access can run the same `ListFunctions` call through the AWS MCP server (INFRA-003).
 
 Moving a function is `aws lambda update-function-configuration --function-name <fn> --runtime nodejs24.x`, after testing the code on the new runtime (LAMBDA-003, LAMBDA-004 list what breaks).
 

@@ -259,7 +259,7 @@ For our agents: ask reviewers for "evidence" or "why it's a problem" per finding
 - Applies to: Claude Code, general
 - Confidence: official-docs
 - Last verified: 2026-11-15
-- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Agent SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [research_lead_agent.md](https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/prompts/research_lead_agent.md), [Claude Code system prompt fragment: Writing subagent prompts (Piebald, v2.1.235)](https://github.com/Piebald-AI/claude-code-system-prompts/blob/main/system-prompts/system-prompt-writing-subagent-prompts.md)
+- Sources: [Subagents](https://code.claude.com/docs/en/sub-agents), [Agent SDK subagents](https://code.claude.com/docs/en/agent-sdk/subagents), [Multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system), [research_lead_agent.md](https://github.com/anthropics/claude-cookbooks/blob/main/patterns/agents/prompts/research_lead_agent.md), [Claude Code system prompt fragment: Writing subagent prompts (Piebald, v2.1.328)](https://github.com/Piebald-AI/claude-code-system-prompts/blob/main/system-prompts/system-prompt-writing-subagent-prompts.md), [fragment: Agent tool usage notes (Piebald, v2.1.330)](https://github.com/Piebald-AI/claude-code-system-prompts/blob/main/system-prompts/tool-description-agent-usage-notes.md)
 - Related: ORCH-007, ORCH-024, PROMPT-013, PROMPT-005
 
 A non-fork subagent "doesn't see your conversation history, the skills you've already invoked, or the files Claude has already read". "The only content you pass from parent to subagent is the Agent tool's prompt string, so include any file paths, error messages, or decisions the subagent needs directly in that prompt." It does get CLAUDE.md (not the built-in Explore and Plan agents, nor a custom agent with `omitClaudeMd`), so restate only rules it must apply.
@@ -273,7 +273,7 @@ What the brief holds, merged from Anthropic's sources:
 6. **Done-when** and how to verify.
 7. **Return format and length** (PROMPT-013).
 
-Claude Code's built-in delegation guidance, as extracted by the community (single source, but shipped text): "Brief the agent like a smart colleague who just walked into the room". "Lookups: hand over the exact command. Investigations: hand over the question — prescribed steps become dead weight when the premise is wrong." "Never delegate understanding. Don't write 'based on your findings, fix the bug'." For an independent review, pass the code and the criteria, not your conclusion.
+Claude Code's built-in delegation guidance, as extracted by the community (single source, but shipped text): "Brief the agent like a smart colleague who just walked into the room". "Lookups: hand over the exact command. Investigations: hand over the question — prescribed steps become dead weight when the premise is wrong." "Never delegate understanding." (now in the Agent tool usage notes fragment, v2.1.330, no longer in the writing-prompts one), whose example of what not to write is `based on your findings, fix the bug`: "Those phrases push synthesis onto the agent instead of doing it yourself." For an independent review, pass the code and the criteria, not your conclusion.
 
 The research post's failure case: a one-line brief made two subagents duplicate one track.
 

@@ -255,8 +255,8 @@ A copied `.env` is a snapshot: later edits in the main checkout don't reach exis
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-01
-- Sources: [Claude directory](https://code.claude.com/docs/en/claude-directory), [Settings](https://code.claude.com/docs/en/settings), [Memory](https://code.claude.com/docs/en/memory), [Sessions](https://code.claude.com/docs/en/sessions), [Plugin loading](https://code.claude.com/docs/en/plugins/loading)
+- Last verified: 2026-11-23
+- Sources: [Claude directory](https://code.claude.com/docs/en/claude-directory), [Settings](https://code.claude.com/docs/en/settings), [Memory](https://code.claude.com/docs/en/memory), [Sessions](https://code.claude.com/docs/en/sessions), [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [CHANGELOG](https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md)
 - Related: SESS-010, SESS-011, SESS-012, SESS-014, TOK-004
 
 Every session on a machine uses one config directory (`~/.claude`, unless `CLAUDE_CONFIG_DIR` is set).
@@ -268,7 +268,7 @@ Every session on a machine uses one config directory (`~/.claude`, unless `CLAUD
 | `history.jsonl` | All projects | Lock-protected; race fixes up to v2.1.218 |
 | `projects/<dir>/*.jsonl` | Per working directory, one file per session | Resuming one session in two terminals interleaves (SESS-029) |
 | `projects/<repo>/memory/` | Per repo, all worktrees | No documented write locking |
-| Plugins, `known_marketplaces.json` | User | Auto-update runs after a random delay of up to ten minutes; "The running session keeps the versions it loaded" |
+| Plugins, `known_marketplaces.json` | User | Auto-update runs after a random delay of up to ten minutes. A running session keeps the plugin set "loaded at startup or at the last reload"; "the new versions load on your next launch" |
 | `.credentials.json` / Keychain | User | Shared refresh lock (SESS-012) |
 | `sessions/` | One file per running session | "used to detect concurrent sessions and crashes" |
 | `shell-snapshots/`, `file-history/` | Per session | Checkpoints don't capture other sessions' edits |

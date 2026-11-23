@@ -121,7 +121,7 @@ Its description triggers on "review my UI", "check accessibility", "audit design
 
 **What follows:**
 - **Unpinned.** The rules are whatever `main` holds at run time: `command.md` changed 6 times from 2026-01-12 to 2026-10-23 (`gh api "repos/vercel-labs/web-interface-guidelines/commits?path=command.md"`), and the skill's version doesn't move with them.
-- **Lossy.** For most fetches WebFetch "runs the prompt against the content in a separate model call… This makes WebFetch lossy by design" (TOK-087), so a 104-rule list can come back summarised. Not tested here.
+- **Lossy.** For most pages WebFetch uses "a separate model call reads the page and returns an answer" (TOK-087), so a 104-rule list can come back summarised. Not tested here.
 - **Remote text in context.** Whoever can push to `main` writes part of the reviewer's prompt.
 - **Source text only.** It never renders the page, so computed contrast, focus visibility, target sizes and reduced-motion behaviour are out of reach (UIREV-006).
 - The repo's `install.sh` instead curls `command.md` from `main` once into `~/.claude/commands/web-interface-guidelines.md`: a snapshot, unpinned and unrecorded.

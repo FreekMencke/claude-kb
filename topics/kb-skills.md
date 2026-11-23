@@ -887,7 +887,7 @@ Other rules:
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-11-15
+- Last verified: 2026-11-23
 - Sources: [Plugin loading](https://code.claude.com/docs/en/plugins/loading), [Host a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace)
 - Related: SKILL-035, SKILL-047
 
@@ -903,7 +903,7 @@ Other rules:
 
 **Pinning**: a `ref` or `sha` on the plugin source, or `owner/repo#ref` on `marketplace add`.
 
-**Channels**: "Claude Code has no release-channel concept." Publish two marketplaces with different names pointing at different refs (e.g. `stable` and `latest`).
+**Channels**: the docs have a "Run release channels" section: "To offer stable and early-access tracks, host two marketplaces whose entries point at different refs of the same plugin". An admin can give each user group its own `extraKnownMarketplaces` entry. Give the two `marketplace.json` files different `name` values, because "a user can't have two marketplaces with the same name registered at once". The page no longer says Claude Code has no release-channel concept.
 
 **Removal**
 - `renames` (old name → new name, or → `null`) migrates or removes plugins.
