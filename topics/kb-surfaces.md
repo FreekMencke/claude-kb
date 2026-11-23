@@ -630,11 +630,11 @@ For heavier work, use Remote Control on your own hardware or a self-hosted envir
 - Type: fact
 - Applies to: Claude Code
 - Confidence: official-docs
-- Last verified: 2026-10-12
-- Sources: [Use Claude Code in the cloud: work with sessions, limitations](https://code.claude.com/docs/en/claude-code-on-the-web)
+- Last verified: 2026-11-23
+- Sources: [Use Claude Code in the cloud: work with sessions, limitations](https://code.claude.com/docs/en/claude-code-on-the-web), [Share a cloud or Remote Control session](https://code.claude.com/docs/en/share-sessions)
 - Related: SESS-030, SURF-027, SURF-029, TOK-007
 
-**Commands:** text-output commands work; "`/plugin` or `/resume`, aren't available". `/model`, `/effort`, `/rename` take arguments (v2.1.205+ in the environment), `/fast` toggles (v2.1.271+). `/compact`, `/context` and `/clear` work (`/clear` starts a fresh conversation with empty context in the same cloud session). `/config` opens settings; change behaviour with environment variables or the repo's `.claude/settings.json`.
+**Commands:** text-output commands work; "Commands that only run in the terminal interface, such as `/resume`, aren't available". `/model`, `/effort`, `/color` and `/rename` take their value as an argument, `/fast` toggles (v2.1.271+ in the environment). `/compact`, `/context` and `/clear` work (`/clear` empties the context in the same session). `/config` opens settings; change behaviour with an environment variable on the environment, or the repo's `.claude/settings.json` in a one-repository session outside a project's threads.
 
 **Compaction:** cloud sessions set `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` themselves, overriding yours, so compaction fires partway through the window. Change the window with `CLAUDE_CODE_AUTO_COMPACT_WINDOW` or `/autocompact`.
 
@@ -642,9 +642,9 @@ For heavier work, use Remote Control on your own hardware or a self-hosted envir
 
 **Review:** the diff view compares against the base branch, or any branch with **Compare against**; inline comments go with your next message. Git diff drivers and `textconv` don't apply. A queued message can be taken back with ✕ until Claude reads it.
 
-**Sharing:** Team and Enterprise offer Private or Team visibility, with repo-access verification on by default; Pro and Max offer Private or Public (any logged-in claude.ai user), verification off by default. Shared views don't update live. "Sessions may contain code and credentials from private GitHub repositories".
+**Sharing** (on its own page): Team and Enterprise offer Private or Team, and recipients need access to the session's private repositories. Max, Ultra and Pro offer Private or Public (anyone with the link who is signed in to claude.ai); **Require repository access** is off by default. "A recipient's view doesn't update in real time." Recipients see tool calls and results, including "keys or tokens that appear in a message, a file, or command output", so read the session before sharing.
 
-**Limits:** cloud sessions share the account's rate limits; repos must be on GitHub (GHES on Team and Enterprise); an org IP allowlist makes every Anthropic-hosted session fail until support exempts it.
+**Limits:** cloud sessions share the account's rate limits; cloning in Anthropic-hosted environments and pull request creation need GitHub (GHES on Team and Enterprise). Another host's repository can go up as a local bundle with `CCR_FORCE_BUNDLE=1`, but the session can't push back. The page no longer says an organization IP allowlist fails every Anthropic-hosted session until support exempts it (unverified, checked 2026-11-23).
 
 ## [SURF-029] Cloud auto-fix for pull requests
 - Type: tool
